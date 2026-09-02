@@ -1,0 +1,58 @@
+/*
+  rux-theme.css — the custom theme. Roadmap §4.10, 2026-09-02.
+
+  ONE BLOCK OF TOKEN OVERRIDES ON TOP OF `white`. Link it after css/rux.css and
+  set data-theme="rux" on <html>, or on any zone, exactly as for g10, g90 and
+  g100. Custom properties inherit, so everything not named here keeps white's
+  value, and a zone inside it that sets its own data-theme keeps Carbon's
+  theme there — the app shell's g100 header stays g100 on a rux page.
+
+  RULES. Every name here is a token css/rux.css already declares; check-tokens
+  fails on one it does not, because a new token is a value no component reads.
+  No selector and no component rule — those go in css/rux-overrides.css. No
+  Carbon file is touched, and css/rux.css is the same bytes whether this file
+  is linked or not.
+
+  WHAT IT CHANGES, AND WHY THESE TWENTY. The interactive family: every token
+  whose white value is an IBM blue grade AND that means "this is a control" —
+  buttons, links, focus, the selection highlight, the chat button. Left alone
+  on purpose: support-info, status-blue, tag-*-blue and notification-*-info,
+  where blue MEANS information rather than interaction; the syntax-* code
+  colours; and the ai-* tokens Carbon reserves for its AI identity.
+
+  THE VALUES ARE A PLACEHOLDER, chosen so the mechanism can be seen and
+  measured: IBM's purple grade for each blue grade, 60 for 60, 70 for 70, and
+  purple-60-hover for blue-60-hover, so every contrast pair Carbon designed
+  still holds. rux's own accent goes here when it is chosen. The mark in
+  assets/brand is Carbon blue on Carbon's greys, which is why white itself
+  needed no change at all.
+*/
+[data-theme="rux"] {
+  /* the control itself */
+  --rux-interactive: #8a3ffc;
+  --rux-icon-interactive: #8a3ffc;
+  --rux-border-interactive: #8a3ffc;
+  --rux-background-brand: #8a3ffc;
+  --rux-focus: #8a3ffc;
+  --rux-highlight: #e8daff;
+
+  /* links, on light and on an inverse surface */
+  --rux-link-primary: #8a3ffc;
+  --rux-link-primary-hover: #6929c4;
+  --rux-link-secondary: #6929c4;
+  --rux-link-inverse: #be95ff;
+  --rux-link-inverse-hover: #d4bbff;
+
+  /* the primary and tertiary buttons; secondary, ghost and danger are not blue */
+  --rux-button-primary: #8a3ffc;
+  --rux-button-primary-hover: #7c3dd6;
+  --rux-button-primary-active: #491d8b;
+  --rux-button-tertiary: #8a3ffc;
+  --rux-button-tertiary-hover: #7c3dd6;
+  --rux-button-tertiary-active: #491d8b;
+
+  /* the chat pieces that are controls */
+  --rux-chat-button: #8a3ffc;
+  --rux-chat-button-text-hover: #6929c4;
+  --rux-chat-avatar-user: #8a3ffc;
+}

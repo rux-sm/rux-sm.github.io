@@ -1,0 +1,8 @@
+tag     v0.1.1
+commit  a3f25e15846b7b25750e34f0ffe7ddd3c1db34d4
+date    2026-09-02T06:40:42Z
+subject feat(shell): Add the switcher and its behaviour
+
+Written by rux-ds tools/new-project.sh from a clean tree. Re-run it to move
+the pin; do not edit anything under vendor/, the next run overwrites it.
+CHANGES.md in rux-ds names any class that left between two tags.

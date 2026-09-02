@@ -1,0 +1,20 @@
+/*
+  rux-overrides.css — component-level changes. Roadmap §4.10, 2026-09-02.
+
+  THE ONLY PLACE A COMPONENT'S LOOK IS CHANGED. Link it after css/rux.css and
+  after css/rux-theme.css, so its rules win on equal specificity with no
+  !important. A change that is a colour is not a rule here: it is a token, in
+  css/rux-theme.css, so every component reading that token moves together.
+
+  RULES. Selectors use classes css/rux.css compiles; check-classes fails on one
+  it does not, because a class Carbon never wrote is markup no capture backs.
+  Match Carbon's own specificity rather than beating it — a rule that needs
+  !important is aimed at the wrong selector. No Carbon file is touched, and
+  `git diff css/rux.css` after any edit here is empty.
+
+  IT SHIPS EMPTY. Nothing has been decided about rux's look beyond Carbon's,
+  and a live rule here would move every template away from the captures the
+  gates compare against. The example below is the shape, commented out:
+
+  .rux--btn { border-radius: 0.25rem; }
+*/

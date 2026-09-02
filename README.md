@@ -1,0 +1,47 @@
+# Rux Portal
+
+The front door to every app built on [rux-ds](https://github.com/rux-sm/rux-ds),
+published at the root of the account: https://rux-sm.github.io/. Also the
+design system shown working, since the page is rux-ds's app-shell template
+with real content.
+
+## How it is built
+
+Started with one command from a rux-ds checkout at a tag:
+
+```sh
+sh rux-ds/tools/new-project.sh ~/Developer/rux-sm.github.io --name Portal --title "Rux Portal"
+```
+
+That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
+`index.html` from the template. Everything else here is the portal's own:
+
+| File | What |
+|---|---|
+| `switcher.json` | **The one list of apps.** Name, path, description. Adding a module is one entry |
+| `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped |
+| `tools/check.mjs` | The check: every class resolves in the vendored stylesheet, the list parses, the pin names a tag |
+| `tools/serve.mjs` | `node tools/serve.mjs`, port 8643 |
+| `.github/workflows/pages.yml` | Check, then deploy. A failing push is never served |
+
+## Modules
+
+| App | Path | Repository |
+|---|---|---|
+| Portal | `/` | this one |
+| Notes | `/rux-ln-notes/` | rux-ln-notes |
+
+Each module renders its own shell from the same template and links
+`/switcher.js`, so the header and the switcher match everywhere while the
+side nav and the page are the app's own. Older projects join when they are
+rebuilt on rux-ds.
+
+## Moving the design-system pin
+
+```sh
+git -C ../rux-ds checkout v0.2.0
+sh ../rux-ds/tools/new-project.sh . 
+git diff --stat vendor/
+```
+
+`CHANGES.md` in rux-ds names any class that left between two tags.

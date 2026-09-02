@@ -1,6 +1,6 @@
 {
   "apps": [
-    { "name": "Portal", "path": "/", "description": "The front door: every app built on rux-ds, and the design system shown working." },
+    { "name": "Home", "path": "/", "description": "The front door: every app built on rux-ds, and the design system shown working." },
     { "name": "Notes", "path": "/rux-ln-notes/", "description": "Infor LN scenario guides, rendered from the Atlas export." }
   ]
 }

@@ -6,7 +6,7 @@ version.
 ## What this repository is
 
 **Public, and the root of the account.** It publishes at rux-sm.github.io, so
-every other project site already sits under it by path. It is the Rux Portal:
+every other project site already sits under it by path. It is Rux Apps:
 the front door to every app built on rux-ds, and the design system shown
 working. It hosts nothing else. A module is its own repository and its own
 folder, started by rux-ds's `tools/new-project.sh`, pinned to a tag, with its

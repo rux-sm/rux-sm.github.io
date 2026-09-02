@@ -1,4 +1,4 @@
-# Rux Portal
+# Rux Apps
 
 The front door to every app built on [rux-ds](https://github.com/rux-sm/rux-ds),
 published at the root of the account: https://rux-sm.github.io/. Also the
@@ -10,11 +10,11 @@ with real content.
 Started with one command from a rux-ds checkout at a tag:
 
 ```sh
-sh rux-ds/tools/new-project.sh ~/Developer/rux-sm.github.io --name Portal --title "Rux Portal"
+sh rux-ds/tools/new-project.sh ~/Developer/rux-sm.github.io --name Apps --title "Rux Apps"
 ```
 
 That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
-`index.html` from the template. Everything else here is the portal's own:
+`index.html` from the template. Everything else here is this repository's own:
 
 | File | What |
 |---|---|
@@ -24,11 +24,11 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 | `tools/serve.mjs` | `node tools/serve.mjs`, port 8643 |
 | `.github/workflows/pages.yml` | Check, then deploy. A failing push is never served |
 
-## Modules
+## Apps
 
 | App | Path | Repository |
 |---|---|---|
-| Portal | `/` | this one |
+| Home | `/` | this one |
 | Notes | `/rux-ln-notes/` | rux-ln-notes |
 
 Each module renders its own shell from the same template and links

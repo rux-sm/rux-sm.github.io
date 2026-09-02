@@ -2,7 +2,7 @@
    and fetches /switcher.json from the account root, so the switcher panel on
    every site names the same apps and marks the one you are on. If the fetch
    fails — a module served alone, offline — the entries the page shipped stay.
-   The portal's own landing grid is filled from the same list. */
+   The hub's own landing grid is filled from the same list. */
 (async () => {
   let apps;
   try { apps = (await (await fetch('/switcher.json', { cache: 'no-store' })).json()).apps; }
@@ -19,7 +19,7 @@
     // A collapsed panel's links stay out of the tab order, as js/ui-shell.js leaves them.
     if (!ul.closest('.rux--header-panel--expanded')) for (const a of ul.querySelectorAll('a')) a.tabIndex = -1;
   }
-  const grid = document.getElementById('modules-grid');
+  const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.map(a =>
     `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><p><strong>${esc(a.name)}</strong></p><p>${esc(a.description)}</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>`).join('');
 })();

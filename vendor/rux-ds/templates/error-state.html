@@ -306,6 +306,15 @@
        products, and anything a product adds of its own goes in the band LEFT
        of them, with search furthest left of all. Right-aligned, no gaps.
 
+       TWO OF THE FOUR SHIP HERE, and the order above is why these two and in
+       this order. NOTIFICATIONS AND HELP ARE NOT HERE, dropped 2026-09-03:
+       an icon-only button with no handler is an affordance that lies, the
+       rule js/ states about itself, and nothing in this ecosystem notifies
+       or has help to open. Carbon's captured story has all of them and
+       sink/ui-shell.html keeps them, because that fragment is the capture
+       and this file is what an app ships. Add one back in a product when it
+       does something; put it here, in this order, not at the end.
+
        A theme control is NOT a header action: Carbon reserves these utilities
        for "universal, system-level functions" and no capture has one. Since
        2026-09-02 it lives INSIDE the account panel below, with the profile
@@ -313,7 +322,6 @@
        convenience. It moves `data-theme` on <html>, which is the CONTENT
        only: the shell keeps its own g100 either way. -->
   <div class="rux--header__global">
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
   </div>

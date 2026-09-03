@@ -1,7 +1,7 @@
-tag     v0.1.4
-commit  40164f75a88c96ff96a2bb3951b746ddd9c9e987
-date    2026-09-03T05:24:54Z
-subject docs(gates): Record the portal cells at 4745c77
+tag     v0.1.5
+commit  38111ecee36356d3c6c5a81a19e94fb9d43b9f0b
+date    2026-09-03T22:53:43Z
+subject docs(gates): Correct portal's self-check cells
 
 Written by rux-ds tools/new-project.sh from a clean tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

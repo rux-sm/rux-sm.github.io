@@ -12,10 +12,10 @@
   !important is aimed at the wrong selector. No Carbon file is touched, and
   `git diff css/rux.css` after any edit here is empty.
 
-  ONE RULE IS LIVE, since 2026-09-02 (roadmap §4.13). Nothing else has been
-  decided about rux's look beyond Carbon's, and a rule that moves a captured
-  component away from its capture does not belong here. The example below is
-  the shape of such a rule, commented out:
+  THREE RULES ARE LIVE, since 2026-09-02 and 2026-09-03 (roadmap §4.13,
+  §4.10). Nothing else has been decided about rux's look beyond Carbon's, and
+  a rule that moves a captured component away from its capture does not
+  belong here. The example below is the shape of such a rule, commented out:
 
   .rux--btn { border-radius: 0.25rem; }
 
@@ -42,3 +42,15 @@
    beats specificity, and no gate reads the attribute against the box. One
    more class on the selector keeps it at Carbon's own specificity. */
 .rux--btn[hidden] { display: none; }
+
+/* A CLICKABLE TILE FILLS ITS GRID CELL. Found on the hub, measured 2026-09-03:
+   two cells in the same row both stretched to 152px, but the tiles inside
+   them measured 152 and 128, so the shorter card stopped above the taller
+   one and the row had a ragged bottom edge. Carbon's grid stretches the
+   COLUMN; the tile is a block inside it and takes its content height, and
+   nothing in rux.css tells it otherwise. One compiled class, at Carbon's own
+   specificity, no !important. Scoped to the clickable variant because that
+   is what an app-directory or component-index card is; a plain tile in
+   prose should still be its own height. portal.html's own component grid
+   carries titles of uneven length and shows the same condition. */
+.rux--tile--clickable { block-size: 100%; }

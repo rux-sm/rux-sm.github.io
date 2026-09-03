@@ -4,13 +4,3 @@
    component rules at Carbon's own specificity with no !important
    (rux-overrides.css). Empty is the normal state. rux-ds AGENTS.md, "Where a
    change goes". */
-
-/* A TILE FILLS ITS GRID CELL. Measured on this page 2026-09-03: the two cells
-   both stretched to 152px and the tiles inside them measured 152 and 128, so
-   the shorter card stopped above the taller one and the row had a ragged
-   bottom edge. Carbon's grid stretches the COLUMN; the tile is a block inside
-   it and takes its content height, and nothing in rux.css tells it otherwise.
-   One compiled class, at Carbon's own specificity, no !important. Scoped to
-   the clickable variant because that is what an app-directory card is; a
-   plain tile in prose should still be its own height. */
-.rux--tile--clickable { block-size: 100%; }

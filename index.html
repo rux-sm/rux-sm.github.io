@@ -13,91 +13,50 @@
 <link rel="stylesheet" href="rux-theme.css">
 <link rel="stylesheet" href="rux-overrides.css">
 <script src="vendor/rux-ds/js/theme.js"></script>
-<style>
-/* THE ONE PIECE OF LAYOUT CARBON DOES NOT SHIP.
-   `.rux--content` is only ever indented by a SIBLING side nav, and the nav in
-   this shell lives inside the header, so none of Carbon's three rules match.
-   IBM hit the same wall: carbondesignsystem.com pads its own main region with
-   a site class, `Main-module--padded`, at `padding: 80px 32px 160px 302.5px`.
-   There is no Carbon class for it to use, and none for this to use either.
-
-   A GRID OFFSET WAS TRIED AND IS WRONG. `lg:col-start-4` indents by three of
-   sixteen columns, which is proportional, while the nav is a fixed 16rem. At
-   1440 that overshoots to 60px of clearance; at 1100 it undershoots and the
-   content starts 4px INSIDE the nav. It also indents one column rather than
-   the region, so anything dropped into `main` outside that column slides
-   under the nav.
-
-   16rem clears the nav and the remaining 2rem is `.rux--content`'s own
-   padding, kept the same on every side. The breakpoint is the one Carbon
-   pairs the nav with. When Phase 4 makes `css/` the source this belongs
-   there as a real class, not here. */
-@media (min-width: 66rem) {
-  .rux--content { padding-inline-start: 18rem; }
-}
-</style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
+<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-actions-and-right-panel
+     and --header-w-actions-and-switcher, captured 2026-08-31 in rux-ds
+     (docs/carbon-react-dom.json); header-only since 2026-09-03, see below -->
+<!-- BEHAVIOUR: verified-live · the switcher panel on
+     components-ui-shell-header--header-w-actions-and-switcher, 2026-09-02:
+     press opens, second press, outside press and Escape close, focus stays
+     put. Its entries here are real and /switcher.js replaces them from the
+     root. The account panel is rux-ds's, verified there against
+     --header-w-actions-and-right-panel (rux-ds roadmap §4.13 step 3).
+     NOT COVERED: anything about a side nav, because this page has had none
+     since 2026-09-03; the 2026-08-28 reading of the hamburger against the
+     2x-grid usage page left with it.
 -->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
+  RUX APPS IS HEADER-ONLY, and that is rux-ds roadmap §4.13 step 6: the app
+  grid from switcher.json, one quiet Foundations link, and nothing else until
+  cross-app data exists. The side nav that rux-ds's app-shell template carries
+  left on 2026-09-03. It held two items, Home and an anchor to the grid on the
+  same screen, so it navigated nowhere the page did not already show; the
+  switcher in the header is this site's navigation, and it is the same on
+  every app. With the nav went the hamburger, whose only job is to open one,
+  the scrim it overlays, and the <style> block that indented .rux--content
+  past a nav inside the header. With no nav, Carbon's own rule applies:
+  `.rux--header ~ .rux--content` clears the header and nothing indents it.
 
-  THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
-  shells and this is the one with a working hamburger:
+  THE SHAPE IS CAPTURED. components-ui-shell-header--header-w-actions-and-
+  right-panel renders a header with global actions, a panel and a content
+  region, and no menu trigger, no side nav and no header nav -- read from
+  rux-ds docs/carbon-react-dom.json, not guessed. This is not a rail or a
+  collapsed nav, which rux-ds's choices.md says to ask before offering; it is
+  the absence of one.
 
-    rail      nav.--side-nav--ux INSIDE header, 3rem wide, expanded to 16rem
-              over the page by button.--header__menu-toggle. Five captures
-              render it, and they are the ones whose headers also carry
-              __nav and __global. js/ui-shell.js finds the nav with
-              `burger.closest('.rux--header')`, so this nesting is what makes
-              the hamburger work at all.
-
-    expanded  nav.--side-nav--expanded BESIDE header and main, permanent, no
-              hamburger in any of the 641 captures. Its one advantage is that
-              the content region is offset by a sibling rule
-              (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
-              arrangement cannot satisfy. REJECTED so the shell could have a
-              hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
-
-  WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
-  that lives inside the header. `.rux--content` is only ever indented by a
-  SIBLING side nav, and this one is not a sibling, so the page indents itself
-  — see the <style> block in the head, which is the only CSS these templates
-  carry and says why it has to exist.
-
-  `--side-nav--ux` is 16rem, NOT a 3rem rail — the rail is `--side-nav--rail`,
-  and the bare `.rux--side-nav` is 3rem before `--ux` widens it. The nav is a
-  full panel sitting below the header, so the content has a fixed 16rem to
-  clear, which is why the indent is a fixed padding and not a share of the
-  grid.
+  tools/drift.mjs names the nav, the hamburger and the scrim as missing
+  against the vendored template on every pin move. That is the report being
+  honest about a page that leaves them out on purpose, not a fault.
 
   THE SHELL CARRIES ITS OWN THEME, and `data-theme="g100"` on the header is
   that. Carbon's UI-shell-header/style.mdx says the shell "can be customized to
   use any of the four IBM themes by applying an inline theme to the shell
   zone", and the header's background token is plain `$background` — so a shell
-  left on the page's theme is white on a white page, with the nav, the page and
-  the header separated by one 1px border and nothing else. The shell zone is
-  the header, and the side nav sits inside it, so one attribute themes both.
+  left on the page's theme is white on a white page, separated from it by one
+  1px border and nothing else. The shell zone is the header.
   Change it to `white` only if you mean the shell to disappear into the page.
 
   THE SPRITE IS INLINED, and has to be. Referencing it as
@@ -189,32 +148,8 @@
 <header class="rux--header" data-theme="g100" aria-label="Rux Apps">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
-  <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
-       and keeps aria-expanded in step; nothing here needs a script.
-
-       `__menu-toggle__hidden` IS WHAT MAKES THIS IBM'S DESIGN, not a
-       decoration. It is `display: none` above 66rem, and `--side-nav--ux` is
-       16rem above 66rem and 0 below it: one breakpoint, two halves of one
-       behaviour. IBM's UI-shell-left-panel/accessibility.mdx describes it —
-       the left panel is PERSISTENT at desktop, and "on smaller screens, or if
-       content is zoomed up to approximately 175% magnification, Carbon
-       responsively hides the left panel behind a 'hamburger' button", which
-       then "overlays the main content area, which often becomes dimmed". The
-       header doc puts it plainly: the hamburger "is only needed when there is
-       a collapsable left navigation".
-
-       WITHOUT THE CLASS THE BUTTON SHOWS AT DESKTOP, and closing the nav there
-       leaves the content indented against a nav that is no longer beside it.
-       That state does not exist in IBM's design, and this template shipped it
-       until 2026-08-28.
-
-       IT SHIPS CLOSED, as the captures do. Shipping it `--expanded` was tried
-       and is worse: below the breakpoint the nav overlays, js/ui-shell.js
-       activates `side-nav__overlay`, and the page loads behind a grey scrim.
-
-       js/ui-shell.js swaps the glyph to a close icon while the nav is open,
-       which is the rest of what IBM specifies for this control. -->
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle rux--header__menu-toggle__hidden" aria-label="Toggle navigation" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <!-- NO HAMBURGER: IBM's header doc says it "is only needed when there is a
+       collapsable left navigation", and this page has none. -->
 
   <!-- REPLACE: product name. The prefix span is the lighter-weight half.
        The mark is INLINE, not a <use>: assets/icons.svg is quarried from
@@ -386,36 +321,12 @@
       <button type="button" class="rux--btn rux--btn--tertiary" id="rux-profile-sign-in" hidden>Sign in</button>
     </div>
   </div>
-
-  <!-- The scrim. Only visible under the mobile media query, where the nav
-       overlays the page; pressing it closes the nav. -->
-  <div class="rux--side-nav__overlay"></div>
-
-  <!-- REPLACE: the navigation. Every item needs an icon because the rail shows
-       nothing else. An expandable category is a <button> plus its <ul>; a
-       standalone link is an <a> on its own. -->
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Side navigation">
-    <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="./" aria-current="page">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
-          <span class="rux--side-nav__link-text">Home</span>
-        </a>
-      </li>
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="#apps">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></div>
-          <span class="rux--side-nav__link-text">Apps</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
 </header>
 
 <main id="main-content" class="rux--content">
-  <!-- REPLACE: everything below EXCEPT the stack. The region is already clear
-       of the nav — see the <style> block in the head for why that is a padding
-       rather than a grid offset — so the column runs full width inside it. -->
+  <!-- REPLACE: everything below EXCEPT the stack. The region is Carbon's own:
+       `.rux--header ~ .rux--content` clears the header, and with no side nav
+       nothing indents it, so the column runs full width inside its 2rem. -->
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
 
@@ -474,6 +385,14 @@
     <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
           </div>
         </section>
+        <!-- THE ONE QUIET LINK OUT, rux-ds roadmap §4.13 step 6. rux-ds has
+             no site of its own -- the kitchen sink and the portal are read
+             from the repository -- so this goes to the repository. Inline,
+             because it sits in a sentence; a bare link on its own line would
+             be a call to action, and this is a footnote. A sibling of the
+             two sections above inside the scale-7 stack, so it keeps their
+             32px and is not part of the Apps section's own rhythm. -->
+        <p><a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-ds">Foundations</a> — rux-ds, the design system every app here is built on.</p>
       </div>
     </div>
   </div>

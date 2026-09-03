@@ -3,7 +3,9 @@
 The front door to every app built on [rux-ds](https://github.com/rux-sm/rux-ds),
 published at the root of the account: https://rux-sm.github.io/. Also the
 design system shown working, since the page is rux-ds's app-shell template
-with real content.
+with real content — and without its side nav, since 2026-09-03: the switcher
+is this site's navigation, and a landing page with two cards on one screen
+has nothing else to navigate to (rux-ds roadmap §4.13 step 6).
 
 ## How it is built
 

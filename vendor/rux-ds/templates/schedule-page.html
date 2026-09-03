@@ -3,16 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rux Apps</title>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<link rel="stylesheet" href="vendor/rux-ds/assets/fonts/plex.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-theme.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<script src="vendor/rux-ds/js/theme.js"></script>
+<title>Schedule page — rux-ds</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexMono-Regular-Latin1.woff2">
+<link rel="stylesheet" href="../assets/fonts/plex.css">
+<link rel="stylesheet" href="../css/rux.css">
+<link rel="stylesheet" href="../css/rux-theme.css">
+<link rel="stylesheet" href="../css/rux-overrides.css">
+<script src="../js/theme.js"></script>
 <style>
 /* THE ONE PIECE OF LAYOUT CARBON DOES NOT SHIP.
    `.rux--content` is only ever indented by a SIBLING side nav, and the nav in
@@ -35,31 +34,69 @@
 @media (min-width: 66rem) {
   .rux--content { padding-inline-start: 18rem; }
 }
+
 </style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
+<!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
+     form structure from components-form--default; controls from
+     components-timepicker--default, components-dropdown--default,
+     components-numberinput--default and components-inlineloading--default,
+     via the sink fragments they were diffed in, 2026-08-31 -->
+<!-- BEHAVIOUR: verified-live · https://react.carbondesignsystem.com/iframe.html?id=components-timepicker--default
+     read on 2026-08-31, with components-dropdown--default and
+     components-numberinput--default on the same origin the same day.
+
+     CONFIRMED THERE, NOT INFERRED HERE. The three controls this page adds put
+     their label in three DIFFERENT places, and reading it off css/rux.css
+     would not have told you:
+
+       time-picker   `.cds--label`.parentElement is `cds--form-item` — the
+                     label is a SIBLING above the picker, not inside it.
+                     `.cds--time-picker` computes `display: flex`,
+                     `align-items: flex-end`, `column-gap: normal`, over three
+                     children: `__input` at 78px and two
+                     `select time-picker__select` at 85px and 143px.
+       dropdown      `.cds--label`.parentElement is
+                     `cds--dropdown__wrapper cds--list-box__wrapper` — the
+                     label is inside the WRAPPER, and there is no form-item in
+                     the story at all. The root carries the size on both
+                     families: `dropdown--md`, `list-box--md`, `layout--size-md`.
+       number-input  `.cds--label`.parentElement is `cds--number` — the label
+                     is the component's FIRST CHILD, and its children read
+                     [label, __input-wrapper, form__helper-text].
+
+     Every gate here passes the wrong placement, because a label inside a
+     form-item is attested on a dozen other components. Only the reference for
+     THAT component says where it goes.
+
+     NOT COVERED, and each of these is a real gap rather than an oversight:
+
+       - The date picker's KEYBOARD model. `js/date-picker.js` follows the
+         ARIA grid pattern for arrows, Home/End and PageUp/PageDown; no key was
+         pressed on the running Carbon picker to compare it against, and the
+         module's own header says so.
+       - The dropdown was not OPENED against a running Carbon dropdown. The
+         closed markup is diffed; `js/list-box.js` opens it here and the
+         reference's open state, its scroll behaviour and its
+         `menu-item--highlighted` were not read live.
+       - The number steppers were not driven against a running Carbon number
+         input. `js/form-controls.js` moves them and was exercised in the sink,
+         but no live control was clicked to compare min/max clamping.
+       - `inline-loading` ships FINISHED and static. Nothing in `js/` claims
+         it, no state transition was verified, and the animating and error
+         siblings are in sink/inline-loading.html only.
+       - Nothing was heard with a screen reader.      THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
+     Account action through aria-controls, holding rux's own profile controls
+     (js/profile.js). No Carbon page has a profile to read; the panel itself
+     is the captured --header-w-actions-and-right-panel.
 -->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
+  THE FORM PAGE. A complete page: the app-shell frame with a form in it. Copy
+  this file, replace the marked regions, delete the rest of this comment.
+
+  THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
+  duplicated — see that file for why.
 
   THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
   shells and this is the one with a working hamburger:
@@ -186,7 +223,7 @@
 </svg>
 <!-- SPRITE:END -->
 
-<header class="rux--header" data-theme="g100" aria-label="Rux Apps">
+<header class="rux--header" data-theme="g100" aria-label="Rux DS">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
   <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
@@ -283,10 +320,16 @@
     <rect x="7" y="2" width="1" height="1"/>
     </g>
 </svg>
-    <span class="rux--header__name--prefix">Rux</span>&nbsp;Apps</a>
+    <span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
        --header__menu-item--current and aria-current="page". -->
+  <nav class="rux--header__nav" aria-label="Rux DS">
+    <ul class="rux--header__menu-bar">
+      <li><a class="rux--header__menu-item rux--header__menu-item--current" href="./" aria-current="page"><span class="rux--text-truncate-end">Overview</span></a></li>
+      <li><a class="rux--header__menu-item" href="./"><span class="rux--text-truncate-end">Reports</span></a></li>
+    </ul>
+  </nav>
 
   <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
 
@@ -295,12 +338,12 @@
        products, and anything a product adds of its own goes in the band LEFT
        of them, with search furthest left of all. Right-aligned, no gaps.
 
-       A theme toggle, if a product wants one, is one of those product icons —
-       it is not in the system. No capture has one, Carbon reserves these
-       utilities for "universal, system-level functions", and the sink's own
-       switcher lives in harness.js as a demo convenience that Phase 5 deletes.
-       It would toggle `data-theme` on <html>, which moves the CONTENT only:
-       the shell keeps its own g100 either way. -->
+       A theme control is NOT a header action: Carbon reserves these utilities
+       for "universal, system-level functions" and no capture has one. Since
+       2026-09-02 it lives INSIDE the account panel below, with the profile
+       (js/profile.js); the sink's five buttons stay in harness.js as a demo
+       convenience. It moves `data-theme` on <html>, which is the CONTENT
+       only: the shell keeps its own g100 either way. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
@@ -311,10 +354,11 @@
        here; a divider is an <hr> in an li of its own. -->
   <div class="rux--header-panel" id="rux-switcher-panel">
     <ul class="rux--switcher" aria-label="Applications">
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/" aria-current="page">Home</a></li>
-    <li><hr class="rux--switcher__item--divider"></li>
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ln-notes/">Notes</a></li>
-  </ul>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./" aria-current="page">Rux DS</a></li>
+      <li><hr class="rux--switcher__item--divider"></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Deployments</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Billing</a></li>
+    </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
        through aria-controls (js/ui-shell.js), holding the profile every app
@@ -390,92 +434,344 @@
        standalone link is an <a> on its own. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="./" aria-current="page">
+
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
-          <span class="rux--side-nav__link-text">Home</span>
-        </a>
+          <span class="rux--side-nav__submenu-title">Documents</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./" aria-current="page"><span class="rux--side-nav__link-text">Dashboard</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Trips</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Invoices</span></a></li>
+        </ul>
       </li>
+
+      <li class="rux--side-nav__item rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></div>
+          <span class="rux--side-nav__submenu-title">Reports</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Monthly</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Annual</span></a></li>
+        </ul>
+      </li>
+
       <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="#apps">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></div>
-          <span class="rux--side-nav__link-text">Apps</span>
+        <a class="rux--side-nav__link" href="./">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg></div>
+          <span class="rux--side-nav__link-text">Activity</span>
         </a>
       </li>
+
     </ul>
   </nav>
 </header>
 
 <main id="main-content" class="rux--content">
-  <!-- REPLACE: everything below EXCEPT the stack. The region is already clear
-       of the nav — see the <style> block in the head for why that is a padding
-       rather than a grid offset — so the column runs full width inside it. -->
   <div class="rux--css-grid">
-    <div class="rux--css-grid-column rux--col-span-100">
+    <!-- PER-BREAKPOINT SPANS, NOT col-span-100 PLUS AN OVERRIDE. This carried
+         `col-span-100 lg:col-span-8` and the lg class did NOTHING: both are one
+         class of specificity, a media query adds none, and `.col-span-100` is
+         emitted later in the stylesheet, so `1 / -1` won at every width. The
+         form was full width at 1400 — measured 1016px, the same as
+         table-page's — while the markup said half.
 
-      <!-- KEEP THIS WRAPPER. It is the page's only vertical rhythm, and a copy
-           that drops it gets none: Carbon components carry no margin, because
-           the spacing overview has them "delegate the responsibility of
-           positioning and layout to parent components", so every child of this
-           column would measure margin 0 and gapToNext 0, flush against its
-           neighbour. templates/detail-page.html records the rule and roadmap
-           §4.4 records restoring `stack` on 2026-08-28 to satisfy it.
+         Carbon's own idiom is every breakpoint named:
+         `sm:col-span-4 md:col-span-8 lg:col-span-16` on one element, in
+         preview-pageheader--default. A form wants 8 of 16 at lg, so it says 8. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-8">
 
-           THE FRAME SHIPPED WITHOUT IT UNTIL 2026-08-29, and that is why this
-           comment is here rather than in a doc. detail-page, empty-state and
-           error-state each open their column with this exact wrapper; this
-           file, the one the other five are copied from, opened with a bare h1
-           and p 24px too close together. portal.html was built from this frame
-           and inherited the fault across six sections before anyone looked.
+      <!-- THE H1 NEEDS THE STACK AS MUCH AS THE FIELDS DO. Until 2026-08-30
+           this h1 was a bare child of the grid column and the form began at
+           its exact bottom edge -- measured gap 0px, because an h1 carries
+           margin 0 here and the form's own rhythm lives on a div INSIDE the
+           form, where it cannot reach a sibling above it. It is the same
+           fault app-shell.html records for itself, in the one template that
+           was still carrying it.
 
-           SCALE 6 IS THE SHELL'S DEFAULT, NOT A REQUIREMENT. It is what those
-           three chose. Two files answer differently, and both were corrected
-           on 2026-08-30 — this paragraph described them as they were before.
+           SCALE 7, NOT THE SHELL'S DEFAULT 6. The stack inside the form is
+           scale-7 = 32px, so a 24px gap here would set the title CLOSER to
+           the first field than the fields are to each other and read as if it
+           belonged to that field. Equal is the floor; tighter is wrong. -->
+      <div class="rux--stack-vertical rux--stack-scale-7">
+      <h1>Schedule a booking</h1>
 
-           form-page wraps its h1 AND its form in `stack-scale-7`, matching the
-           32px rhythm of the stack that spaces the fields (that stack sits on
-           a div inside the <form>, not on the form, which takes no class).
-           Until that day the h1 was a bare child of the column and the form
-           opened at its exact bottom edge, 0px — this same fault, in the last
-           template still carrying it.
+      <!-- THE SCHEDULING FORM. Built 2026-08-31 to put four compiled
+           components into a PAGE for the first time: time-picker, dropdown,
+           number-input and inline-loading were all shipped and demoed only as
+           sink specimens. Thirteen of the 37 compiled components were in no
+           template at all; this page takes four of them.
 
-           table-page wraps its h1 and the data-table container, and leaves
-           PAGINATION OUTSIDE the stack on purpose: a stack gaps its children
-           and pagination is meant to sit flush against the table. It had no
-           stack at all until it was given an h1.
+           WHY THIS SHAPE. `docs/inventory.md` admits a component when a named
+           page shape needs it (roadmap 2.1 rule 1), and a booking form is the
+           ordinary shape that needs a date, a time, a quantity and a choice.
+           It also gives `date-picker` -- admission AGREED and staged -- a real
+           target to be admitted against rather than a hypothetical one. -->
+      <form>
+        <div class="rux--stack-vertical rux--stack-scale-7">
 
-           Change the scale to suit the page, and put only the children that
-           should be separated inside it; do not delete the wrapper without
-           knowing which of those cases you are in. -->
-      <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Rux Apps</h1>
-        <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        <h2 id="apps">Apps</h2>
+          <!-- THE LABEL LIVES IN A DIFFERENT PLACE IN EVERY ONE OF THESE
+               THREE COMPONENTS, and that is the trap this page exists to
+               record. Read live on react.carbondesignsystem.com, 2026-08-31:
+
+                 text-input    label in `text-input__label-wrapper`
+                 time-picker   label in the `form-item`, BEFORE the picker
+                 dropdown      label in `list-box__wrapper`, before the root
+                 number-input  label INSIDE `.rux--number`, as its first child
+
+               Every gate passes the wrong one. A label inside a form-item is
+               attested on a dozen components, so check-ancestry sees nothing
+               odd; only the reference for THAT component says where it goes.
+               sink/number.html carries the same warning for itself. -->
+
+          <div class="rux--form-item rux--text-input-wrapper">
+            <div class="rux--text-input__label-wrapper">
+              <label class="rux--label" for="s-ref">Booking reference</label>
+            </div>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper">
+                <input id="s-ref" class="rux--text-input" type="text" value="BK-4417">
+              </div>
+              <div class="rux--form__helper-text">Generated when the booking is created.</div>
+            </div>
+          </div>
+
+          <!-- DROPDOWN. The label's parent is the WRAPPER, verified live:
+               `.cds--label`.parentElement is `cds--dropdown__wrapper
+               cds--list-box__wrapper`, not a form-item.
+
+               ONLY ONE OF THOSE TWO WRAPPER CLASSES IS WRITTEN HERE, and
+               check-classes is what said so: `dropdown__wrapper` is defined in
+               @carbon/styles ONLY in its --inline form, so outside that
+               variant it styles nothing and resolves to no rule. The live
+               story renders both; `list-box__wrapper` is the styled one.
+               sink/dropdown.html adjudicated this before this page existed.
+
+               THE SIZE CLASSES CAME FROM THE SAME MISTAKE. Copied off the
+               running story this read `dropdown--md list-box--md
+               layout--size-md`, and all three failed check-classes: the
+               compiled set carries `dropdown--lg`, `dropdown--sm` and
+               `layout--size-lg`, and no `list-box--*` size at all. A LIVE
+               CARBON PAGE IS A DIFFERENT BUILD FROM THIS ONE. It is the
+               authority on BEHAVIOUR; the compiled CSS is the authority on
+               which classes exist, and this page conflated the two.
+
+               `js/list-box.js` opens it; the markup needs no script. The menu
+               ships `hidden` and the module manages `aria-expanded`. -->
+          <div class="rux--list-box__wrapper">
+            <label class="rux--label" id="s-service-label" for="s-service">Service type</label>
+            <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg">
+              <button type="button" id="s-service" class="rux--list-box__field" role="combobox" aria-labelledby="s-service-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="s-service-menu">
+                <span class="rux--list-box__label">Standard coach</span>
+                <div class="rux--list-box__menu-icon">
+                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </div>
+              </button>
+              <ul id="s-service-menu" class="rux--list-box__menu" role="listbox" hidden>
+                <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+                  <div class="rux--list-box__menu-item__option">Standard coach</div>
+                </li>
+                <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+                  <div class="rux--list-box__menu-item__option">Executive coach</div>
+                </li>
+                <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+                  <div class="rux--list-box__menu-item__option">Minibus</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- DATE PICKER, single with calendar. This was a plain text
+               input until 2026-08-31, because `date-picker` was DEFER: its
+               admission was agreed and staged, and this page is the named page
+               shape rule 1 wanted. Admitted at +3.4 KB.
+
+               IT IS THE `--next` VARIANT AND THAT IS NOT COSMETIC. Carbon's
+               CLASSIC date picker renders its calendar through FLATPICKR --
+               measured, the open calendar matches 4 rules via `flatpickr-*`
+               selectors and ZERO via `cds--`. `--next` uses Carbon's own
+               classes throughout and needs no third-party library, which is
+               the only reason this control could be built here at all.
+
+               THE CALENDAR SHIPS `hidden`. Nothing in Carbon's CSS hides a
+               closed calendar -- React simply does not mount it -- so the
+               attribute is the closed state, the same mechanism
+               sink/dropdown.html uses for its menu. js/date-picker.js clears
+               it on open and generates the 42 day cells. -->
+          <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
+            <div class="rux--date-picker-container rux--date-picker-container--single">
+              <label class="rux--label" for="s-date">Departure date</label>
+              <div class="rux--date-picker-input__wrapper">
+                <span>
+                  <input id="s-date" class="rux--date-picker__input" type="text" value="2026-09-14">
+                  <button class="rux--date-picker__icon" type="button" aria-label="Open calendar" tabindex="-1">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="rux--date-picker__calendar-container" hidden>
+              <div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0">
+                <div class="rux--date-picker__month">
+                  <button class="rux--date-picker__month-nav" type="button" aria-label="Previous month">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>
+                  </button>
+                  <div class="rux--date-picker__current-month"></div>
+                  <button class="rux--date-picker__month-nav" type="button" aria-label="Next month">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+                  </button>
+                </div>
+                <div class="rux--date-picker__weekdays">
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                  <div class="rux--date-picker__weekday"></div>
+                </div>
+                <div class="rux--date-picker__days"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TIME PICKER. Verified live 2026-08-31: `.cds--time-picker`
+               computes `display: flex` with `align-items: flex-end` and NO
+               column gap, over three children -- `__input` and two
+               `select time-picker__select`. The label sits in the form-item
+               ABOVE it, which is where the running story puts it.
+
+               THE SELECTS ARE PLAIN. sink/time-picker.html records that this
+               fragment once wrapped each in `select--inline` plus
+               `select-input--inline__wrapper`, which the reference never
+               emits here; an inline select is a different component. -->
+          <div class="rux--form-item">
+            <label class="rux--label" for="s-time">Departure time</label>
+            <div class="rux--time-picker">
+              <div class="rux--time-picker__input">
+                <input id="s-time" class="rux--text-input rux--time-picker__input-field" type="text" value="09:30" maxlength="5">
+              </div>
+              <div class="rux--select rux--time-picker__select">
+                <select class="rux--select-input" aria-label="Period">
+                  <option class="rux--select-option" value="am">AM</option>
+                  <option class="rux--select-option" value="pm">PM</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+              <div class="rux--select rux--time-picker__select">
+                <select class="rux--select-input" aria-label="Time zone">
+                  <option class="rux--select-option" value="cet">CET</option>
+                  <option class="rux--select-option" value="utc">UTC</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- NUMBER INPUT. The label is the FIRST CHILD of `.rux--number`,
+               not a sibling in the form-item -- verified live: the story's
+               `.cds--label`.parentElement is `cds--number`, whose children are
+               [label, __input-wrapper, form__helper-text].
+
+               `number--helpertext` IS NOT COPIED. The running story puts it on
+               the root when helper text is present, and @carbon/styles defines
+               no rule for it, so check-classes would reject it -- the same
+               call already recorded for `cds--form` and `data-table-header__content`.
+
+               Each stepper is followed by `__rule-divider`, the hairline
+               between the two controls. js/form-controls.js drives them. -->
+          <div class="rux--form-item">
+            <div class="rux--number rux--number--md">
+              <label class="rux--label" for="s-seats">Passengers</label>
+              <div class="rux--number__input-wrapper">
+                <input id="s-seats" type="number" value="12" min="1" max="53">
+                <div class="rux--number__controls">
+                  <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+                  </button>
+                  <div class="rux--number__rule-divider"></div>
+                  <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+                  </button>
+                  <div class="rux--number__rule-divider"></div>
+                </div>
+              </div>
+              <div class="rux--form__helper-text">Between 1 and 53.</div>
+            </div>
+          </div>
+
+          <!-- THE LEGEND CARRIES A TYPE CLASS. composing-pages 3.9: bare, a
+               group name measures 12px/400/rgb(82,82,82) and reads as a label
+               for its own first field. Applied across every template on
+               2026-08-31. The colour stays text-secondary because no type
+               utility carries colour and the build ships no colour utility. -->
+          <fieldset class="rux--checkbox-group">
+            <legend class="rux--label rux--type-heading-compact-01">Extras</legend>
+            <div class="rux--form-item rux--checkbox-wrapper">
+              <input id="s-x1" class="rux--checkbox" type="checkbox" checked>
+              <label class="rux--checkbox-label" for="s-x1"><span class="rux--checkbox-label-text">Wheelchair access</span></label>
+            </div>
+            <div class="rux--form-item rux--checkbox-wrapper">
+              <input id="s-x2" class="rux--checkbox" type="checkbox">
+              <label class="rux--checkbox-label" for="s-x2"><span class="rux--checkbox-label-text">Luggage trailer</span></label>
+            </div>
+          </fieldset>
+
+          <!-- INLINE LOADING IS A SPECIMEN HERE, NOT A LIVE STATE. No module
+               drives it: nothing in js/ claims `.rux--inline-loading`, because
+               a save state belongs to the application and not to the design
+               system. It ships in its FINISHED state so the page shows what a
+               completed submit looks like; the animation and error siblings
+               are in sink/inline-loading.html.
+
+               The checkmark is `__checkmark-container` on the SVG itself --
+               `__checkmark` and `__svg` are dropped, because React emits
+               neither here and the first is stroke-animation styling. -->
+          <div class="rux--inline-loading">
+            <div class="rux--inline-loading__animation">
+              <svg class="rux--inline-loading__checkmark-container" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+            </div>
+            <div class="rux--inline-loading__text">Draft saved a moment ago</div>
+          </div>
+
+          <!-- TWO BUTTONS, ONE SET. `btn-set` caps its children at
+               max-inline-size 196px, which is right for a pair. wizard-page
+               records the failure mode: a btn-set BESIDE a separate button
+               overflows once the panel narrows -- 196 + 196 + 8 + 77 against
+               a 432px panel -- invisibly, because a ghost button has no fill
+               and empty grid to the right means no scrollbar. -->
+          <div class="rux--btn-set">
+            <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
+            <button type="submit" class="rux--btn rux--btn--primary">Schedule</button>
+          </div>
+
+        </div>
+      </form>
       </div>
+
     </div>
-  </div>
-  <div class="rux--css-grid" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
   </div>
 </main>
 
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
-<script src="vendor/rux-ds/js/overlay.js"></script>
-<script src="vendor/rux-ds/js/popover.js"></script>
-<script src="vendor/rux-ds/js/menu.js"></script>
-<script src="vendor/rux-ds/js/list-box.js"></script>
-<script src="vendor/rux-ds/js/date-picker.js"></script>
-<script src="vendor/rux-ds/js/copy-button.js"></script>
-<script src="vendor/rux-ds/js/tabs.js"></script>
-<script src="vendor/rux-ds/js/accordion.js"></script>
-<script src="vendor/rux-ds/js/data-table.js"></script>
-<script src="vendor/rux-ds/js/form-controls.js"></script>
-<script src="vendor/rux-ds/js/ui-shell.js"></script>
-<script src="vendor/rux-ds/js/dismiss.js"></script>
-<script src="vendor/rux-ds/js/tile.js"></script>
-<script src="vendor/rux-ds/js/modal.js"></script>
-<script src="vendor/rux-ds/js/profile.js"></script>
-<script src="switcher.js"></script>
+<script src="../js/overlay.js"></script>
+<script src="../js/popover.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/list-box.js"></script>
+<script src="../js/date-picker.js"></script>
+<script src="../js/copy-button.js"></script>
+<script src="../js/tabs.js"></script>
+<script src="../js/accordion.js"></script>
+<script src="../js/data-table.js"></script>
+<script src="../js/form-controls.js"></script>
+<script src="../js/ui-shell.js"></script>
+<script src="../js/dismiss.js"></script>
+<script src="../js/tile.js"></script>
+<script src="../js/modal.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

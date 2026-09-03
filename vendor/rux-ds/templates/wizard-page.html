@@ -3,16 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rux Apps</title>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<link rel="stylesheet" href="vendor/rux-ds/assets/fonts/plex.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-theme.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<script src="vendor/rux-ds/js/theme.js"></script>
+<title>Wizard page — rux-ds</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
+<link rel="stylesheet" href="../assets/fonts/plex.css">
+<link rel="stylesheet" href="../css/rux.css">
+<link rel="stylesheet" href="../css/rux-theme.css">
+<link rel="stylesheet" href="../css/rux-overrides.css">
+<script src="../js/theme.js"></script>
 <style>
 /* THE ONE PIECE OF LAYOUT CARBON DOES NOT SHIP.
    `.rux--content` is only ever indented by a SIBLING side nav, and the nav in
@@ -35,86 +33,96 @@
 @media (min-width: 66rem) {
   .rux--content { padding-inline-start: 18rem; }
 }
+
 </style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
+<!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
+     vertical progress from components-progressindicator--default@vertical in the
+     states file; invalid text input from components-textinput--default@invalid;
+     modal from components-modal--default; button set from
+     components-button-set-of-buttons--default, 2026-08-31 -->
+<!-- BEHAVIOUR: verified-live · https://react.carbondesignsystem.com/iframe.html?id=components-progressindicator--default&args=vertical:!true
+     read on 2026-08-31. Three claims this page depends on, each read off a
+     running Carbon rather than off css/rux.css:
+
+     1. A VERTICAL PROGRESS INDICATOR NEVER COLLAPSES TO HORIZONTAL. The whole
+        stylesheet was walked for media rules touching `progress`, and the only
+        three are `forced-colors`, `any-hover` and `prefers-reduced-motion`.
+        NO width query touches it at any breakpoint. `--vertical` computes
+        `flex-direction: column` on the list and `row` on each step at every
+        width. So the step column below stays vertical when it stacks, and the
+        open question §4.6 recorded — collapse to horizontal, or stay vertical —
+        is answered STAY, on the grounds that Carbon supplies no other
+        behaviour and inventing one is what CLAUDE.md forbids.
+
+     2. A MODAL'S POSITION IN THE DOM DOES NOT DECIDE WHERE IT RENDERS, which
+        is the other open question §4.6 recorded. Read at
+        ?id=components-modal--default: Carbon does NOT portal it to <body> —
+        its parent was a plain static `div.cds--layout` — and it computes
+        `position: fixed; inset: 0; z-index: 9000`, so the ancestor chain is
+        irrelevant to layout. `<body>` computes `overflow: hidden` while one is
+        open. It therefore lives at the END OF <main> here, next to the control
+        that opens it, where a reader finds it.
+        THE ONE THING THAT WOULD BREAK THAT: an ancestor with `transform`,
+        `filter` or `will-change` creates a containing block for fixed
+        positioning and would trap the modal inside it. Nothing in this shell
+        does; a consumer adding one to `.rux--content` would.
+
+     3. `btn-set` CAPS EACH CHILD AT 196px, `flex: 0 0 auto`. Read at
+        ?id=components-button-set-of-buttons--default. THREE buttons in one set
+        is therefore 588px, which overflows this 512px panel by 76px — and
+        invisibly, because the empty four columns to the right of the panel mean
+        the page never gains a scrollbar. That is why Cancel sits OUTSIDE the
+        set below. §4.6's seventh exit attempt paid for this finding.
+
+     NOT VERIFIED LIVE: the read-only summary tile. It reuses the tile + type
+     idiom `templates/detail-page.html` verified on 2026-08-31 and was not
+     re-read against a running Carbon here. The form controls likewise — they
+     are the ones form-page.html already carries. No step is clickable, so no
+     running wizard NAVIGATION was compared; this template is one step of a
+     flow, not the flow.      THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
+     Account action through aria-controls, holding rux's own profile controls
+     (js/profile.js). No Carbon page has a profile to read; the panel itself
+     is the captured --header-w-actions-and-right-panel.
 -->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
+  THE WIZARD PAGE. A complete page: the app-shell frame with one step of a
+  multi-step flow in it. Copy this file, replace the marked regions, delete the
+  rest of this comment.
 
-  THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
-  shells and this is the one with a working hamburger:
+  THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
+  duplicated — see that file for why. Everything about the header, the side nav
+  and the self-indenting <style> block in the head is documented there and in
+  templates/form-page.html; this comment covers only what is new here.
 
-    rail      nav.--side-nav--ux INSIDE header, 3rem wide, expanded to 16rem
-              over the page by button.--header__menu-toggle. Five captures
-              render it, and they are the ones whose headers also carry
-              __nav and __global. js/ui-shell.js finds the nav with
-              `burger.closest('.rux--header')`, so this nesting is what makes
-              the hamburger work at all.
+  THE SHAPE: a 4-column step list beside an 8-column panel, of 16. That leaves
+  FOUR COLUMNS EMPTY on the right, and that is deliberate rather than an
+  oversight — a form panel wider than about 8 columns runs past the line length
+  a label and field can be read across. The empty gutter is also what hides an
+  overflow, which is why the button note below matters.
 
-    expanded  nav.--side-nav--expanded BESIDE header and main, permanent, no
-              hamburger in any of the 641 captures. Its one advantage is that
-              the content region is offset by a sibling rule
-              (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
-              arrangement cannot satisfy. REJECTED so the shell could have a
-              hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+  `css-grid--with-row-gap` IS LOAD-BEARING AND ONLY BELOW lg. The three columns
+  sit side by side at lg and stack below it, and a plain `css-grid` has NO row
+  gap — so stacked, the step list's last item and the panel's first heading meet
+  flush with nothing between them. The class adds one grid gutter of row-gap.
+  It costs nothing at lg, where the columns are never on separate rows.
 
-  WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
-  that lives inside the header. `.rux--content` is only ever indented by a
-  SIBLING side nav, and this one is not a sibling, so the page indents itself
-  — see the <style> block in the head, which is the only CSS these templates
-  carry and says why it has to exist.
+  THE STEPS ARE NOT LINKS AND NOT CLICKABLE. Every step button carries
+  `--unclickable`, which is what Carbon renders when nothing navigates. Do not
+  add `aria-current="step"`: it appears in no capture of this component, so
+  adding one is an invention rather than a copy. `aria-disabled` belongs to a
+  `--disabled` step ONLY — putting it on every unclickable button made
+  VoiceOver announce the whole indicator as dimmed, heard and fixed on
+  2026-08-30. See sink/progress-indicator.html.
 
-  `--side-nav--ux` is 16rem, NOT a 3rem rail — the rail is `--side-nav--rail`,
-  and the bare `.rux--side-nav` is 3rem before `--ux` widens it. The nav is a
-  full panel sitting below the header, so the content has a fixed 16rem to
-  clear, which is why the indent is a fixed padding and not a share of the
-  grid.
+  THE ICON NAMES DO NOT MATCH THE STATE NAMES. A CURRENT step draws
+  `incomplete` and an INCOMPLETE step draws `circle-dash`. That is Carbon's
+  naming, not a mistake here.
 
-  THE SHELL CARRIES ITS OWN THEME, and `data-theme="g100"` on the header is
-  that. Carbon's UI-shell-header/style.mdx says the shell "can be customized to
-  use any of the four IBM themes by applying an inline theme to the shell
-  zone", and the header's background token is plain `$background` — so a shell
-  left on the page's theme is white on a white page, with the nav, the page and
-  the header separated by one 1px border and nothing else. The shell zone is
-  the header, and the side nav sits inside it, so one attribute themes both.
-  Change it to `white` only if you mean the shell to disappear into the page.
-
-  THE SPRITE IS INLINED, and has to be. Referencing it as
-  `../assets/icons.svg#i-name` was tried and is broken in two ordinary cases:
-  WebKit has never supported a cross-document <use>, so every icon on the page
-  is blank in Safari, and opening the file over file:// blocks the fetch in
-  every engine. Both fail SILENTLY — the CSS and the scripts still load, so the
-  page looks built and simply has no icons in it. A file meant to be copied
-  cannot carry that.
-
-  The block after <body> is generated. `npm run icons` rewrites it in every
-  template from assets/icons.svg, and check-icons fails if one drifts, so
-  neither a stale copy nor a hand-edit survives.
-
-  EVERY BEHAVIOUR MODULE LOADS, not just ui-shell, so a modal or a data table
-  pasted into `main` needs no script of its own. The kernel is first because
-  the others delegate to it.
+  EVERY BEHAVIOUR MODULE LOADS, so the modal at the foot of <main> needs no
+  script of its own: `data-rux-open` opens it, `data-rux-close` closes it, and
+  focus trapping, Escape and backdrop press come from js/overlay.js.
 -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run icons` rewrites this
@@ -186,7 +194,7 @@
 </svg>
 <!-- SPRITE:END -->
 
-<header class="rux--header" data-theme="g100" aria-label="Rux Apps">
+<header class="rux--header" data-theme="g100" aria-label="Rux DS">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
   <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
@@ -283,10 +291,16 @@
     <rect x="7" y="2" width="1" height="1"/>
     </g>
 </svg>
-    <span class="rux--header__name--prefix">Rux</span>&nbsp;Apps</a>
+    <span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
        --header__menu-item--current and aria-current="page". -->
+  <nav class="rux--header__nav" aria-label="Rux DS">
+    <ul class="rux--header__menu-bar">
+      <li><a class="rux--header__menu-item rux--header__menu-item--current" href="./" aria-current="page"><span class="rux--text-truncate-end">Overview</span></a></li>
+      <li><a class="rux--header__menu-item" href="./"><span class="rux--text-truncate-end">Reports</span></a></li>
+    </ul>
+  </nav>
 
   <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
 
@@ -295,12 +309,12 @@
        products, and anything a product adds of its own goes in the band LEFT
        of them, with search furthest left of all. Right-aligned, no gaps.
 
-       A theme toggle, if a product wants one, is one of those product icons —
-       it is not in the system. No capture has one, Carbon reserves these
-       utilities for "universal, system-level functions", and the sink's own
-       switcher lives in harness.js as a demo convenience that Phase 5 deletes.
-       It would toggle `data-theme` on <html>, which moves the CONTENT only:
-       the shell keeps its own g100 either way. -->
+       A theme control is NOT a header action: Carbon reserves these utilities
+       for "universal, system-level functions" and no capture has one. Since
+       2026-09-02 it lives INSIDE the account panel below, with the profile
+       (js/profile.js); the sink's five buttons stay in harness.js as a demo
+       convenience. It moves `data-theme` on <html>, which is the CONTENT
+       only: the shell keeps its own g100 either way. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
@@ -311,10 +325,11 @@
        here; a divider is an <hr> in an li of its own. -->
   <div class="rux--header-panel" id="rux-switcher-panel">
     <ul class="rux--switcher" aria-label="Applications">
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/" aria-current="page">Home</a></li>
-    <li><hr class="rux--switcher__item--divider"></li>
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ln-notes/">Notes</a></li>
-  </ul>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./" aria-current="page">Rux DS</a></li>
+      <li><hr class="rux--switcher__item--divider"></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Deployments</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Billing</a></li>
+    </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
        through aria-controls (js/ui-shell.js), holding the profile every app
@@ -390,92 +405,327 @@
        standalone link is an <a> on its own. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="./" aria-current="page">
+
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
-          <span class="rux--side-nav__link-text">Home</span>
-        </a>
+          <span class="rux--side-nav__submenu-title">Documents</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./" aria-current="page"><span class="rux--side-nav__link-text">Dashboard</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Trips</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Invoices</span></a></li>
+        </ul>
       </li>
+
+      <li class="rux--side-nav__item rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></div>
+          <span class="rux--side-nav__submenu-title">Reports</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Monthly</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Annual</span></a></li>
+        </ul>
+      </li>
+
       <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="#apps">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></div>
-          <span class="rux--side-nav__link-text">Apps</span>
+        <a class="rux--side-nav__link" href="./">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg></div>
+          <span class="rux--side-nav__link-text">Activity</span>
         </a>
       </li>
+
     </ul>
   </nav>
 </header>
 
 <main id="main-content" class="rux--content">
-  <!-- REPLACE: everything below EXCEPT the stack. The region is already clear
-       of the nav — see the <style> block in the head for why that is a padding
-       rather than a grid offset — so the column runs full width inside it. -->
-  <div class="rux--css-grid">
-    <div class="rux--css-grid-column rux--col-span-100">
+  <!-- `--with-row-gap` matters only below lg, where these columns stack. See
+       the head comment; without it the step list and the panel meet flush. -->
+  <div class="rux--css-grid rux--css-grid--with-row-gap">
 
-      <!-- KEEP THIS WRAPPER. It is the page's only vertical rhythm, and a copy
-           that drops it gets none: Carbon components carry no margin, because
-           the spacing overview has them "delegate the responsibility of
-           positioning and layout to parent components", so every child of this
-           column would measure margin 0 and gapToNext 0, flush against its
-           neighbour. templates/detail-page.html records the rule and roadmap
-           §4.4 records restoring `stack` on 2026-08-28 to satisfy it.
+    <!-- REPLACE: the flow's title. Full width, above both columns, because it
+         names the whole flow rather than this step. The stack gives it the
+         same 32px to the row below that the panel uses internally; an h1 here
+         carries margin 0 and would otherwise sit flush on its own bottom edge,
+         which is the fault app-shell.html and form-page.html both record. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+      <div class="rux--stack-vertical rux--stack-scale-7">
+        <h1>New shipment</h1>
+      </div>
+    </div>
 
-           THE FRAME SHIPPED WITHOUT IT UNTIL 2026-08-29, and that is why this
-           comment is here rather than in a doc. detail-page, empty-state and
-           error-state each open their column with this exact wrapper; this
-           file, the one the other five are copied from, opened with a bare h1
-           and p 24px too close together. portal.html was built from this frame
-           and inherited the fault across six sections before anyone looked.
+    <!-- REPLACE: the step list. FOUR columns of sixteen.
 
-           SCALE 6 IS THE SHELL'S DEFAULT, NOT A REQUIREMENT. It is what those
-           three chose. Two files answer differently, and both were corrected
-           on 2026-08-30 — this paragraph described them as they were before.
+         Vertical at every width — Carbon has no width query on this component
+         at all, so it does not collapse to horizontal when this column stacks
+         below lg. Verified live 2026-08-31; see the BEHAVIOUR comment. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4">
+      <ul class="rux--progress rux--progress--vertical">
+        <li class="rux--progress-step rux--progress-step--complete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Origin and destination</span></div>
+            <span class="rux--assistive-text">Complete</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--complete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Vehicle</span></div>
+            <span class="rux--assistive-text">Complete</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--current">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-incomplete"/></svg>
+            <div class="rux--progress-text">
+              <span class="rux--progress-label">Schedule</span>
+              <span class="rux--progress-optional">Step 3 of 4</span>
+            </div>
+            <span class="rux--assistive-text">Current</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--incomplete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-circle-dash"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Review</span></div>
+            <span class="rux--assistive-text">Not started</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+      </ul>
+    </div>
 
-           form-page wraps its h1 AND its form in `stack-scale-7`, matching the
-           32px rhythm of the stack that spaces the fields (that stack sits on
-           a div inside the <form>, not on the form, which takes no class).
-           Until that day the h1 was a bare child of the column and the form
-           opened at its exact bottom edge, 0px — this same fault, in the last
-           template still carrying it.
+    <!-- REPLACE: the panel. EIGHT columns of sixteen; see the head comment on
+         why the remaining four are left empty. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-8">
+      <div class="rux--stack-vertical rux--stack-scale-7">
 
-           table-page wraps its h1 and the data-table container, and leaves
-           PAGINATION OUTSIDE the stack on purpose: a stack gaps its children
-           and pagination is meant to sit flush against the table. It had no
-           stack at all until it was given an h1.
+        <!-- REPLACE: the read-only summary of what the previous steps captured.
+             A WIZARD NEEDS THIS AND A FORM DOES NOT: the answers being built on
+             are off-screen, and a step that cannot show them makes the user go
+             Back to check rather than forward to finish.
 
-           Change the scale to suit the page, and put only the children that
-           should be separated inside it; do not delete the wrapper without
-           knowing which of those cases you are in. -->
-      <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Rux Apps</h1>
-        <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        <h2 id="apps">Apps</h2>
+             IT IS A TILE AND NOT A NESTED GRID, deliberately. A fresh
+             `css-grid` opened inside a `css-grid-column` starts its tracks one
+             16px gutter in from the page grid's, and every gate passes while
+             the rows sit out of step — see the note in
+             templates/detail-page.html, which uses `subgrid` for the case that
+             genuinely needs tracks. This summary is one column of pairs and
+             needs no tracks at all.
+
+             BARE `rux--tile`, NOT INSIDE `layer-two`. On a plain page
+             `layer-two` resolves to the page's own white and the tile is
+             invisible; that shipped once already. Bare tile is
+             rgb(244,244,244) here. -->
+        <div class="rux--tile">
+          <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
+            <!-- THE VALUE IS NOT A SECTION HEADING. `<h3>` here put "Bilbao ->
+                 Toulouse" into the page's heading outline as a bare value with its
+                 label left behind in the <p> above, and skipped h2 to do it. Same
+                 defect and same fix as detail-page.html and dashboard-page.html
+                 (241feaa); it shipped a THIRD time here because no gate read the
+                 outline until check-headings. `type-heading-04` IS WHAT h3 ALREADY
+                 WAS -- Carbon styles the h3 element from the heading-04 tokens, so
+                 the utility emits the identical four declarations. -->
+            <div>
+              <p>Route</p>
+              <p class="rux--type-heading-04">Bilbao → Toulouse</p>
+            </div>
+            <div>
+              <p>Vehicle</p>
+              <p class="rux--type-heading-04">Coach 14 · 53 seats</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPLACE: this step's fields. Structure is components-form--default:
+             a <form> holding `form-item`s, each control in its own item.
+
+             THE <form> TAKES NO CLASS. Carbon's capture puts `cds--form` on it
+             and @carbon/styles defines no rule for that class, so
+             check-classes would reject it. -->
+        <form>
+          <div class="rux--stack-vertical rux--stack-scale-7">
+
+            <div class="rux--form-item rux--text-input-wrapper">
+              <div class="rux--text-input__label-wrapper">
+                <label class="rux--label" for="w-depart">Departure date</label>
+              </div>
+              <div class="rux--text-input__field-outer-wrapper">
+                <div class="rux--text-input__field-wrapper">
+                  <input id="w-depart" class="rux--text-input" type="text" placeholder="DD / MM / YYYY">
+                </div>
+              </div>
+              <!-- `date-picker` IS DEFERRED in docs/inventory.md — it needs a
+                   calendar written in vanilla JS, the largest single behaviour
+                   cost in the catalogue. A text input is the honest stand-in
+                   until that is bought; do not add a calendar glyph to this,
+                   which would promise a picker that is not there. -->
+              <div class="rux--form__helper-text">The day the coach leaves the depot.</div>
+            </div>
+
+            <!-- ONE FIELD IN ITS INVALID STATE, on purpose. A wizard step is
+                 where validation actually lands, and a template that only ever
+                 shows the happy path teaches the happy path. Carbon reveals the
+                 message with `[data-invalid] ~ .rux--form-requirement`, so
+                 `data-invalid` on the FIELD WRAPPER is what makes it visible —
+                 the attribute on the input alone styles the border and leaves
+                 the message hidden. Both are present here, as in the capture. -->
+            <div class="rux--form-item rux--text-input-wrapper">
+              <div class="rux--text-input__label-wrapper">
+                <label class="rux--label" for="w-return">Return date</label>
+              </div>
+              <div class="rux--text-input__field-outer-wrapper">
+                <div class="rux--text-input__field-wrapper" data-invalid>
+                  <svg class="rux--text-input__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+                  <input id="w-return" class="rux--text-input rux--text-input--invalid" type="text" value="03 / 04 / 2026" data-invalid aria-invalid="true">
+                </div>
+                <div class="rux--form-requirement">The return must be after the departure date.</div>
+              </div>
+            </div>
+
+            <!-- THE <fieldset> IS THE GROUP — it carries
+                 `radio-button-group` itself and is not a wrapper around a
+                 <div> that does. That was written the other way here first and
+                 check-tags rejected it: Carbon renders this class on
+                 <fieldset> in every capture. KEEP THE <legend> too; an <h2>
+                 looks identical and loses the fieldset's accessible grouping,
+                 so the radios stop being announced as one named set.
+                 THE form-item WRAPPER IS REQUIRED, not decoration: Carbon puts
+                 one above this group in all 11 captures that render it, and
+                 check-ancestry fails without it. -->
+            <div class="rux--form-item">
+            <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical">
+              <legend class="rux--label rux--type-heading-compact-01">Departure window</legend>
+              <div class="rux--radio-button-wrapper">
+                <input id="w-w1" class="rux--radio-button" type="radio" name="window" checked>
+                <label for="w-w1" class="rux--radio-button__label">
+                  <span class="rux--radio-button__appearance"></span>
+                  <span class="rux--radio-button__label-text">Morning · 06:00–12:00</span>
+                </label>
+              </div>
+              <div class="rux--radio-button-wrapper">
+                <input id="w-w2" class="rux--radio-button" type="radio" name="window">
+                <label for="w-w2" class="rux--radio-button__label">
+                  <span class="rux--radio-button__appearance"></span>
+                  <span class="rux--radio-button__label-text">Afternoon · 12:00–18:00</span>
+                </label>
+              </div>
+            </fieldset>
+            </div>
+
+          </div>
+        </form>
+
+        <!-- REPLACE: the step actions.
+
+             CANCEL IS OUTSIDE THE SET AND MUST STAY OUTSIDE. `btn-set` caps
+             each child at 196px with `flex: 0 0 auto` — measured on a running
+             Carbon, 2026-08-31 — so three buttons in one set is 588px against
+             this panel's 512px. It overflows by 76px and NOTHING SHOWS IT: the
+             four empty columns to the right mean the page never gains a
+             scrollbar, and every gate stays green. §4.6's seventh exit attempt
+             lost time to exactly this.
+
+             CANCEL IS ALSO NOT BESIDE THE SET, and that is a SECOND finding,
+             measured here on 2026-08-31 rather than inherited. Putting the set
+             and Cancel in a `stack-horizontal` looks like the obvious row and
+             is broken: `stack-horizontal` computes `display: GRID` with equal
+             tracks, so the set was handed a 299px track while its two children
+             are 196px each and `flex: 0 0 auto` with `nowrap`. They do not
+             shrink — they overflow the track by 93px, and Continue's box ran
+             85px THROUGH Cancel's. The page never gained a scrollbar and the
+             screenshot looked ordinary, because a ghost button has no fill to
+             show the collision.
+
+             The arithmetic is why it cannot be nudged: 196 + 196 + an 8px gap +
+             Cancel's 77 is 477px against this panel's 432 at md. It fits at lg
+             and breaks below it, which is the worst kind of wrong.
+
+             SO CANCEL GETS ITS OWN LINE, in the panel's stack, where it is
+             correct at every width. Back and Continue are the pair that belongs
+             in a set — they are the step's two directions. Cancel leaves the
+             flow, which is a different kind of action, and `--ghost` is how
+             Carbon says so. -->
+        <div class="rux--btn-set">
+          <button type="button" class="rux--btn rux--btn--secondary">Back</button>
+          <button type="submit" class="rux--btn rux--btn--primary">Continue</button>
+        </div>
+
+        <div>
+          <button type="button" class="rux--btn rux--btn--ghost" data-rux-open="wizard-cancel">Cancel</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- REPLACE or delete: the confirm-cancel dialog.
+
+       WHY IT SITS HERE, at the end of <main> rather than at the end of <body>:
+       Carbon does NOT portal a modal, and it computes
+       `position: fixed; inset: 0; z-index: 9000`, so its place in the DOM has
+       no bearing on where it renders. Read off a running Carbon on 2026-08-31 —
+       the modal's parent there was a plain static wrapper. Putting it beside
+       the control that opens it is therefore free, and it is where the next
+       reader will look for it. THE ONE THING THAT WOULD BREAK IT: an ancestor
+       carrying `transform`, `filter` or `will-change` becomes the containing
+       block for fixed positioning and traps the dialog inside that box.
+
+       A wizard is the shape that wants this: leaving mid-flow discards work,
+       which is the case Carbon's own guidance reserves a modal for.
+
+       `layer-one` on the root is Carbon's and is not decoration — it
+       re-declares the whole --rux-layer-* group at layer-01 so a dialog opened
+       from inside a layered region still renders as layer-one.
+
+       js/modal.js on js/overlay.js drives it: `data-rux-open` opens,
+       `data-rux-close` closes, and focus trapping, Escape and backdrop press
+       come from the kernel. No script on this page. -->
+  <div class="rux--layer-one rux--modal" id="wizard-cancel" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="wizard-cancel-h" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="wizard-cancel-h">Leave without saving?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content"><p>The three steps you have completed will be discarded.</p></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Stay</button>
+        <button type="button" class="rux--btn rux--btn--danger" data-rux-close>Discard</button>
       </div>
     </div>
   </div>
-  <div class="rux--css-grid" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-  </div>
 </main>
 
+
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
-<script src="vendor/rux-ds/js/overlay.js"></script>
-<script src="vendor/rux-ds/js/popover.js"></script>
-<script src="vendor/rux-ds/js/menu.js"></script>
-<script src="vendor/rux-ds/js/list-box.js"></script>
-<script src="vendor/rux-ds/js/date-picker.js"></script>
-<script src="vendor/rux-ds/js/copy-button.js"></script>
-<script src="vendor/rux-ds/js/tabs.js"></script>
-<script src="vendor/rux-ds/js/accordion.js"></script>
-<script src="vendor/rux-ds/js/data-table.js"></script>
-<script src="vendor/rux-ds/js/form-controls.js"></script>
-<script src="vendor/rux-ds/js/ui-shell.js"></script>
-<script src="vendor/rux-ds/js/dismiss.js"></script>
-<script src="vendor/rux-ds/js/tile.js"></script>
-<script src="vendor/rux-ds/js/modal.js"></script>
-<script src="vendor/rux-ds/js/profile.js"></script>
-<script src="switcher.js"></script>
+<script src="../js/overlay.js"></script>
+<script src="../js/popover.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/list-box.js"></script>
+<script src="../js/date-picker.js"></script>
+<script src="../js/copy-button.js"></script>
+<script src="../js/tabs.js"></script>
+<script src="../js/accordion.js"></script>
+<script src="../js/data-table.js"></script>
+<script src="../js/form-controls.js"></script>
+<script src="../js/ui-shell.js"></script>
+<script src="../js/dismiss.js"></script>
+<script src="../js/tile.js"></script>
+<script src="../js/modal.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

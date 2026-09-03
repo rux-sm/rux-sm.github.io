@@ -1,0 +1,44 @@
+/*
+  rux-overrides.css — component-level changes. Roadmap §4.10, 2026-09-02.
+
+  THE ONLY PLACE A COMPONENT'S LOOK IS CHANGED. Link it after css/rux.css and
+  after css/rux-theme.css, so its rules win on equal specificity with no
+  !important. A change that is a colour is not a rule here: it is a token, in
+  css/rux-theme.css, so every component reading that token moves together.
+
+  RULES. Selectors use classes css/rux.css compiles; check-classes fails on one
+  it does not, because a class Carbon never wrote is markup no capture backs.
+  Match Carbon's own specificity rather than beating it — a rule that needs
+  !important is aimed at the wrong selector. No Carbon file is touched, and
+  `git diff css/rux.css` after any edit here is empty.
+
+  ONE RULE IS LIVE, since 2026-09-02 (roadmap §4.13). Nothing else has been
+  decided about rux's look beyond Carbon's, and a rule that moves a captured
+  component away from its capture does not belong here. The example below is
+  the shape of such a rule, commented out:
+
+  .rux--btn { border-radius: 0.25rem; }
+
+  VENDORED, LIKE THE THEME. tools/new-project.sh copies this file under
+  vendor/rux-ds/css/ and overwrites it on every pin move, so the rule below is
+  the same rule in every app; a project's own rux-overrides.css is linked
+  after it and carries only that project's deltas.
+*/
+
+/* THE ACCOUNT PANEL'S CONTENT. Carbon's header panel ships no inner padding —
+   the switcher pads its own items — and the account panel holds a plain
+   stack of form items. Two compiled classes at Carbon's own specificity; the
+   token is the one the shell's other 1rem gaps read. The stack also carries
+   Carbon's own `layer-two`, measured 2026-09-02: on the panel's layer-01 a
+   text input's field-01 is the same #262626 in g100, so the field was its
+   underline and nothing else. Stepping the layer up is Carbon's mechanism
+   for exactly that, and it is a class, not a rule here. */
+.rux--header-panel > .rux--stack-vertical { padding: var(--rux-spacing-05); }
+
+/* A HIDDEN BUTTON MUST NOT RENDER. Found by looking, 2026-09-02, after every
+   gate had passed: the account panel's sign-in button ships `hidden` and was
+   drawn anyway, because Carbon's `.rux--btn { display: inline-flex }` is an
+   author rule and the browser's `[hidden] { display: none }` is not — origin
+   beats specificity, and no gate reads the attribute against the box. One
+   more class on the selector keeps it at Carbon's own specificity. */
+.rux--btn[hidden] { display: none; }

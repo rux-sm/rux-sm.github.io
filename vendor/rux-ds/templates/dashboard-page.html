@@ -3,16 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rux Apps</title>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<link rel="stylesheet" href="vendor/rux-ds/assets/fonts/plex.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-theme.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<script src="vendor/rux-ds/js/theme.js"></script>
+<title>Dashboard page — rux-ds</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
+<link rel="stylesheet" href="../assets/fonts/plex.css">
+<link rel="stylesheet" href="../css/rux.css">
+<link rel="stylesheet" href="../css/rux-theme.css">
+<link rel="stylesheet" href="../css/rux-overrides.css">
+<script src="../js/theme.js"></script>
 <style>
 /* THE ONE PIECE OF LAYOUT CARBON DOES NOT SHIP.
    `.rux--content` is only ever indented by a SIBLING side nav, and the nav in
@@ -38,83 +36,76 @@
 </style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
+<!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
+     metric row from elements-grid--subgrid; table from
+     components-datatable-sorting--default; list from components-list--unordered,
+     2026-08-31 -->
+<!-- BEHAVIOUR: verified-live · https://react.carbondesignsystem.com/iframe.html?id=components-datatable-sorting--default
+     read on 2026-08-31. What was confirmed there rather than assumed here:
+
+     1. A DATA TABLE NEEDS NO TOOLBAR. 14 of the 25 datatable captures render a
+        `data-table-container` with a `data-table-header` and no
+        `table-toolbar` at all, and the running story is one of them. So the
+        compact table below is Carbon's own shape, not table-page.html with
+        parts removed.
+
+     2. THE HEADER'S BOTTOM PADDING IS THE GAP. Measured there:
+        `data-table-header` computes padding 16px block-start, 24px block-end,
+        16px inline-start, and the table's top edge sits at EXACTLY the header's
+        bottom edge — a 0px gap. Nothing needs to space them, and adding a
+        stack between them would double the 24px that is already there.
+
+     3. `data-table-header__content` IS A MARKER AND IS DELIBERATELY ABSENT.
+        Carbon renders that div and it appears in 23 captures, but
+        @carbon/styles defines NO rule for it, so `check-classes` rejects it
+        exactly as it rejects `cds--form` on a <form>. The bare <div> here is
+        the same decision templates/table-page.html already records.
+
+     NOT VERIFIED LIVE, and inherited rather than re-derived: the metric row and
+     the tile-on-a-plain-page rule both come from templates/detail-page.html,
+     which verified them against a running Carbon on 2026-08-31 and states the
+     condition in its own comments. No running Carbon dashboard was opened —
+     there is no such story; a dashboard is a composition, and each part of it
+     was verified where that part lives.      THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
+     Account action through aria-controls, holding rux's own profile controls
+     (js/profile.js). No Carbon page has a profile to read; the panel itself
+     is the captured --header-w-actions-and-right-panel.
 -->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
+  THE DASHBOARD PAGE. A complete page: the app-shell frame with an overview in
+  it. Copy this file, replace the marked regions, delete the rest of this
+  comment.
 
-  THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
-  shells and this is the one with a working hamburger:
+  THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
+  duplicated — see that file for why.
 
-    rail      nav.--side-nav--ux INSIDE header, 3rem wide, expanded to 16rem
-              over the page by button.--header__menu-toggle. Five captures
-              render it, and they are the ones whose headers also carry
-              __nav and __global. js/ui-shell.js finds the nav with
-              `burger.closest('.rux--header')`, so this nesting is what makes
-              the hamburger work at all.
+  THE SHAPE: a metric row across the top, then a wide table beside a narrow
+  activity column. This is the shape §4.6's first exit attempt tried and got
+  wrong, and its failure is the reason for the tile rule below.
 
-    expanded  nav.--side-nav--expanded BESIDE header and main, permanent, no
-              hamburger in any of the 641 captures. Its one advantage is that
-              the content region is offset by a sibling rule
-              (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
-              arrangement cannot satisfy. REJECTED so the shell could have a
-              hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+  BARE `rux--tile`, NEVER `layer-two` HERE. This is the defect that shipped:
+  `layer-two` is correct only INSIDE something already painting `layer`, such
+  as a tab panel. On a plain page it resolves to the page's own white and the
+  tile disappears — measured tile rgb(255,255,255) against body
+  rgb(255,255,255), no border. A bare tile on this page is rgb(244,244,244) and
+  visible. templates/detail-page.html carries BOTH cases and states the
+  condition; read it before wrapping a tile in anything.
 
-  WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
-  that lives inside the header. `.rux--content` is only ever indented by a
-  SIBLING side nav, and this one is not a sibling, so the page indents itself
-  — see the <style> block in the head, which is the only CSS these templates
-  carry and says why it has to exist.
+  TWO SUBGRIDS, AND `subgrid` RATHER THAN A NESTED `css-grid`. Both rows sit
+  inside a `css-grid-column`, and that column carries `margin-inline: 16px`.
+  Opening a fresh `css-grid` inside it starts the new tracks 16px in from the
+  page grid's, so every row is a gutter out of step with the one above and
+  NOTHING reports it. `subgrid` sets `margin-inline: -16px` to cancel the
+  column's gutter and re-declares the same 16 tracks. See detail-page.html,
+  which measured it.
 
-  `--side-nav--ux` is 16rem, NOT a 3rem rail — the rail is `--side-nav--rail`,
-  and the bare `.rux--side-nav` is 3rem before `--ux` widens it. The nav is a
-  full panel sitting below the header, so the content has a fixed 16rem to
-  clear, which is why the indent is a fixed padding and not a share of the
-  grid.
+  THE TABLE HAS NO TOOLBAR, NO BATCH BAR AND NO PAGINATION, and that is the
+  point of it being here rather than in table-page.html: a dashboard shows a
+  recent slice, not a working set. Copy templates/table-page.html instead if the
+  page's job is to manage the rows.
 
-  THE SHELL CARRIES ITS OWN THEME, and `data-theme="g100"` on the header is
-  that. Carbon's UI-shell-header/style.mdx says the shell "can be customized to
-  use any of the four IBM themes by applying an inline theme to the shell
-  zone", and the header's background token is plain `$background` — so a shell
-  left on the page's theme is white on a white page, with the nav, the page and
-  the header separated by one 1px border and nothing else. The shell zone is
-  the header, and the side nav sits inside it, so one attribute themes both.
-  Change it to `white` only if you mean the shell to disappear into the page.
-
-  THE SPRITE IS INLINED, and has to be. Referencing it as
-  `../assets/icons.svg#i-name` was tried and is broken in two ordinary cases:
-  WebKit has never supported a cross-document <use>, so every icon on the page
-  is blank in Safari, and opening the file over file:// blocks the fetch in
-  every engine. Both fail SILENTLY — the CSS and the scripts still load, so the
-  page looks built and simply has no icons in it. A file meant to be copied
-  cannot carry that.
-
-  The block after <body> is generated. `npm run icons` rewrites it in every
-  template from assets/icons.svg, and check-icons fails if one drifts, so
-  neither a stale copy nor a hand-edit survives.
-
-  EVERY BEHAVIOUR MODULE LOADS, not just ui-shell, so a modal or a data table
-  pasted into `main` needs no script of its own. The kernel is first because
-  the others delegate to it.
+  EVERY BEHAVIOUR MODULE LOADS. js/data-table.js drives the sort buttons with no
+  script on this page.
 -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run icons` rewrites this
@@ -186,7 +177,7 @@
 </svg>
 <!-- SPRITE:END -->
 
-<header class="rux--header" data-theme="g100" aria-label="Rux Apps">
+<header class="rux--header" data-theme="g100" aria-label="Rux DS">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
   <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
@@ -283,10 +274,16 @@
     <rect x="7" y="2" width="1" height="1"/>
     </g>
 </svg>
-    <span class="rux--header__name--prefix">Rux</span>&nbsp;Apps</a>
+    <span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
        --header__menu-item--current and aria-current="page". -->
+  <nav class="rux--header__nav" aria-label="Rux DS">
+    <ul class="rux--header__menu-bar">
+      <li><a class="rux--header__menu-item rux--header__menu-item--current" href="./" aria-current="page"><span class="rux--text-truncate-end">Overview</span></a></li>
+      <li><a class="rux--header__menu-item" href="./"><span class="rux--text-truncate-end">Reports</span></a></li>
+    </ul>
+  </nav>
 
   <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
 
@@ -295,12 +292,12 @@
        products, and anything a product adds of its own goes in the band LEFT
        of them, with search furthest left of all. Right-aligned, no gaps.
 
-       A theme toggle, if a product wants one, is one of those product icons —
-       it is not in the system. No capture has one, Carbon reserves these
-       utilities for "universal, system-level functions", and the sink's own
-       switcher lives in harness.js as a demo convenience that Phase 5 deletes.
-       It would toggle `data-theme` on <html>, which moves the CONTENT only:
-       the shell keeps its own g100 either way. -->
+       A theme control is NOT a header action: Carbon reserves these utilities
+       for "universal, system-level functions" and no capture has one. Since
+       2026-09-02 it lives INSIDE the account panel below, with the profile
+       (js/profile.js); the sink's five buttons stay in harness.js as a demo
+       convenience. It moves `data-theme` on <html>, which is the CONTENT
+       only: the shell keeps its own g100 either way. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
@@ -311,10 +308,11 @@
        here; a divider is an <hr> in an li of its own. -->
   <div class="rux--header-panel" id="rux-switcher-panel">
     <ul class="rux--switcher" aria-label="Applications">
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/" aria-current="page">Home</a></li>
-    <li><hr class="rux--switcher__item--divider"></li>
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ln-notes/">Notes</a></li>
-  </ul>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./" aria-current="page">Rux DS</a></li>
+      <li><hr class="rux--switcher__item--divider"></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Deployments</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Billing</a></li>
+    </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
        through aria-controls (js/ui-shell.js), holding the profile every app
@@ -390,92 +388,265 @@
        standalone link is an <a> on its own. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="./" aria-current="page">
+
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
-          <span class="rux--side-nav__link-text">Home</span>
-        </a>
+          <span class="rux--side-nav__submenu-title">Documents</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./" aria-current="page"><span class="rux--side-nav__link-text">Dashboard</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Trips</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Invoices</span></a></li>
+        </ul>
       </li>
+
+      <li class="rux--side-nav__item rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></div>
+          <span class="rux--side-nav__submenu-title">Reports</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Monthly</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Annual</span></a></li>
+        </ul>
+      </li>
+
       <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="#apps">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></div>
-          <span class="rux--side-nav__link-text">Apps</span>
+        <a class="rux--side-nav__link" href="./">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg></div>
+          <span class="rux--side-nav__link-text">Activity</span>
         </a>
       </li>
+
     </ul>
   </nav>
 </header>
 
 <main id="main-content" class="rux--content">
-  <!-- REPLACE: everything below EXCEPT the stack. The region is already clear
-       of the nav — see the <style> block in the head for why that is a padding
-       rather than a grid offset — so the column runs full width inside it. -->
   <div class="rux--css-grid">
+    <!-- ONE col-span-100 COLUMN holding the page, with subgrids inside it for
+         the rows that need tracks. This is detail-page.html's arrangement and
+         the reason is the same: a row that needs to line up with the page grid
+         uses `subgrid`, and everything else just flows down the column. -->
     <div class="rux--css-grid-column rux--col-span-100">
+      <div class="rux--stack-vertical rux--stack-scale-7">
 
-      <!-- KEEP THIS WRAPPER. It is the page's only vertical rhythm, and a copy
-           that drops it gets none: Carbon components carry no margin, because
-           the spacing overview has them "delegate the responsibility of
-           positioning and layout to parent components", so every child of this
-           column would measure margin 0 and gapToNext 0, flush against its
-           neighbour. templates/detail-page.html records the rule and roadmap
-           §4.4 records restoring `stack` on 2026-08-28 to satisfy it.
+        <!-- REPLACE: the page title. It needs the stack as much as the rows do
+             — an h1 carries margin 0 here, so without it the metric row starts
+             on the title's exact bottom edge. -->
+        <h1>Overview</h1>
 
-           THE FRAME SHIPPED WITHOUT IT UNTIL 2026-08-29, and that is why this
-           comment is here rather than in a doc. detail-page, empty-state and
-           error-state each open their column with this exact wrapper; this
-           file, the one the other five are copied from, opened with a bare h1
-           and p 24px too close together. portal.html was built from this frame
-           and inherited the fault across six sections before anyone looked.
+        <!-- REPLACE: the metric row. FOUR ACROSS at lg, two at md, one at sm.
+             THE SPANS ARE PER-BREAKPOINT AND ALL THREE ARE REQUIRED — a bare
+             `col-span-4` plus an `lg:` override does nothing, because both are
+             one class of specificity and `col-span-100` is emitted later in the
+             stylesheet. detail-page.html records that measurement.
 
-           SCALE 6 IS THE SHELL'S DEFAULT, NOT A REQUIREMENT. It is what those
-           three chose. Two files answer differently, and both were corrected
-           on 2026-08-30 — this paragraph described them as they were before.
+             BARE TILES. See the head comment: `layer-two` here would make every
+             one of them invisible. -->
+        <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-4 rux--lg:col-span-4">
+            <!-- THE VALUE IS A <p>, NOT AN <h3>, AND THAT IS THE POINT OF THIS
+                 COMMENT. It was an h3 until 2026-08-31 and the heading outline
+                 read h1 then four h3s -- a screen-reader user navigating by
+                 heading heard bare numbers, "6 / 6" and "12.4k", with the label
+                 left behind in the <p> above. It also skipped h2 entirely, and
+                 on dashboard-page.html it then went BACKWARDS to h2. A metric
+                 is not a section heading.
 
-           form-page wraps its h1 AND its form in `stack-scale-7`, matching the
-           32px rhythm of the stack that spaces the fields (that stack sits on
-           a div inside the <form>, not on the form, which takes no class).
-           Until that day the h1 was a bare child of the column and the form
-           opened at its exact bottom edge, 0px — this same fault, in the last
-           template still carrying it.
+                 check-a11y reads 0 findings on this page and always did; it
+                 does not inspect heading structure. Found by capturing
+                 big-number's real markup, which uses figure/figcaption and NO
+                 heading at all.
 
-           table-page wraps its h1 and the data-table container, and leaves
-           PAGINATION OUTSIDE the stack on purpose: a stack gaps its children
-           and pagination is meant to sit flush against the table. It had no
-           stack at all until it was given an h1.
+                 `type-heading-04` IS WHAT h3 ALREADY WAS. Carbon styles the h3
+                 ELEMENT from the heading-04 tokens, so the utility class emits
+                 the identical four declarations -- measured on the running page
+                 2026-08-31, identical on all nine computed properties and the
+                 same 133x36 box. This change is invisible.
 
-           Change the scale to suit the page, and put only the children that
-           should be separated inside it; do not delete the wrapper without
-           knowing which of those cases you are in. -->
-      <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Rux Apps</h1>
-        <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        <h2 id="apps">Apps</h2>
+                 WHY NOT figure/figcaption, which is what Carbon does: those two
+                 elements appear ONCE in all 667 captured stories, inside
+                 big-number. Composing them here without big-number's classes is
+                 an unattested composition that inherits no spacing, and
+                 `rux--tile` on a <figure> would be a check-tags fault -- Carbon
+                 renders that class on div, a, button and label only. Two new
+                 problems to fix one.
+
+                 WHAT THIS DOES NOT FIX: a screen reader still reads three
+                 sequential paragraphs with no programmatic pairing of label to
+                 value. That pairing is the only thing admitting `big-number`
+                 would buy. See its row in docs/inventory.md for the two
+                 conditions that would reopen it. -->
+            <div class="rux--tile">
+              <p>Departures today</p>
+              <p class="rux--type-heading-04">18</p>
+              <p>3 awaiting a driver</p>
+            </div>
+          </div>
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-4 rux--lg:col-span-4">
+            <div class="rux--tile">
+              <p>Seats sold</p>
+              <p class="rux--type-heading-04">1,204</p>
+              <p>Up 6% on last week</p>
+            </div>
+          </div>
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-4 rux--lg:col-span-4">
+            <div class="rux--tile">
+              <p>Fleet in service</p>
+              <p class="rux--type-heading-04">22 / 24</p>
+              <p>2 in maintenance</p>
+            </div>
+          </div>
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-4 rux--lg:col-span-4">
+            <div class="rux--tile">
+              <p>On-time rate</p>
+              <p class="rux--type-heading-04">96.2%</p>
+              <p>Rolling 30 days</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPLACE: the lower region. A wide table beside a narrow column.
+             TEN AND SIX, not eight and eight: a table needs the room and a
+             list does not, and 10 + 6 is the whole sixteen so nothing is left
+             hanging. Below lg they stack, and `--with-row-gap` is what keeps
+             them from meeting flush when they do. -->
+        <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
+
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
+            <!-- NO TOOLBAR, NO PAGINATION — see the head comment. The header's
+                 own 24px block-end padding is the gap to the table; measured on
+                 a running Carbon at exactly 0px between them, so do not add a
+                 stack here.
+
+                 The <div> inside the header takes NO class. Carbon renders
+                 `data-table-header__content` there and @carbon/styles defines
+                 no rule for it, so check-classes rejects it — the same call
+                 templates/table-page.html and form-page.html already record for
+                 `cds--form`. -->
+            <section class="rux--data-table-container">
+              <div class="rux--data-table-header">
+                <div>
+                  <h2 class="rux--data-table-header__title">Next departures</h2>
+                  <p class="rux--data-table-header__description">The coming six hours.</p>
+                </div>
+              </div>
+
+              <div class="rux--data-table-content">
+                <table class="rux--data-table rux--data-table--lg rux--data-table--sort">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="rux--table-sort__header" aria-sort="ascending">
+                        <div class="rux--table-sort__description rux--visually-hidden">Sort by Time</div>
+                        <button type="button" class="rux--table-sort">
+                          <span class="rux--table-sort__flex">
+                            <div class="rux--table-header-label">Time</div>
+                            <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+                            <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrows--vertical"/></svg>
+                            <div class="rux--table-header-label--decorator-inner"></div>
+                          </span>
+                        </button>
+                      </th>
+                      <th scope="col"><div class="rux--table-header-label">Route<div class="rux--table-header-label--decorator-inner"></div></div></th>
+                      <th scope="col"><div class="rux--table-header-label">Vehicle<div class="rux--table-header-label--decorator-inner"></div></div></th>
+                      <th scope="col"><div class="rux--table-header-label">Status<div class="rux--table-header-label--decorator-inner"></div></div></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>06:15</td>
+                      <td>Bilbao → Toulouse</td>
+                      <td>Coach 14</td>
+                      <td><div class="rux--tag rux--tag--green"><span class="rux--tag__label">Boarding</span></div></td>
+                    </tr>
+                    <tr>
+                      <td>07:40</td>
+                      <td>Bilbao → Zaragoza</td>
+                      <td>Coach 3</td>
+                      <td><div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Scheduled</span></div></td>
+                    </tr>
+                    <tr>
+                      <td>09:05</td>
+                      <td>Santander → Bilbao</td>
+                      <td>Coach 21</td>
+                      <td><div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Awaiting driver</span></div></td>
+                    </tr>
+                    <tr>
+                      <td>11:30</td>
+                      <td>Bilbao → Toulouse</td>
+                      <td>Coach 8</td>
+                      <td><div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Scheduled</span></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <!-- REPLACE: the activity column.
+
+               NO TAG INLINE AFTER THE LIST TEXT. An unattested composition
+               inherits no spacing: a tag dropped after text in a list item gets
+               only the 4px word space, and `stack-horizontal` is NOT the fix —
+               it cannot wrap and truncates the tag in a narrow column. Recorded
+               at docs/composing-pages.md §3. The time goes on its own line
+               instead.
+
+               UNORDERED, NOT ORDERED. An ordered list renders its numbers 24px
+               OUTSIDE its own box, so they escape into the gutter unless the
+               container is padded.
+
+               THE LIST TAKES `list--unordered` ALONE. There is no bare
+               `rux--list` class — @carbon/styles defines `list--unordered`,
+               `list--ordered` and `list--nested`, and nothing named just
+               `list`. It was written the other way here first and
+               check-classes rejected it.
+
+               THE TIME IS AN UNCLASSED <div>, deliberately. It is a block, so
+               it takes its own line inside the item, and it claims no spacing
+               of its own — which is the honest way to compose something Carbon
+               does not demo. `list--nested` is for a nested LIST and a
+               timestamp is not one. -->
+          <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-6">
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
+              <h2>Recent activity</h2>
+              <ul class="rux--list--unordered">
+                <li class="rux--list__item">Coach 14 cleared inspection<div>12 minutes ago</div></li>
+                <li class="rux--list__item">Driver assigned to 07:40 Zaragoza<div>40 minutes ago</div></li>
+                <li class="rux--list__item">Coach 9 moved to maintenance<div>2 hours ago</div></li>
+                <li class="rux--list__item">Timetable published for April<div>Yesterday</div></li>
+              </ul>
+              <p><a class="rux--link" href="./">All activity</a></p>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   </div>
-  <div class="rux--css-grid" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-  </div>
 </main>
 
+
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
-<script src="vendor/rux-ds/js/overlay.js"></script>
-<script src="vendor/rux-ds/js/popover.js"></script>
-<script src="vendor/rux-ds/js/menu.js"></script>
-<script src="vendor/rux-ds/js/list-box.js"></script>
-<script src="vendor/rux-ds/js/date-picker.js"></script>
-<script src="vendor/rux-ds/js/copy-button.js"></script>
-<script src="vendor/rux-ds/js/tabs.js"></script>
-<script src="vendor/rux-ds/js/accordion.js"></script>
-<script src="vendor/rux-ds/js/data-table.js"></script>
-<script src="vendor/rux-ds/js/form-controls.js"></script>
-<script src="vendor/rux-ds/js/ui-shell.js"></script>
-<script src="vendor/rux-ds/js/dismiss.js"></script>
-<script src="vendor/rux-ds/js/tile.js"></script>
-<script src="vendor/rux-ds/js/modal.js"></script>
-<script src="vendor/rux-ds/js/profile.js"></script>
-<script src="switcher.js"></script>
+<script src="../js/overlay.js"></script>
+<script src="../js/popover.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/list-box.js"></script>
+<script src="../js/date-picker.js"></script>
+<script src="../js/copy-button.js"></script>
+<script src="../js/tabs.js"></script>
+<script src="../js/accordion.js"></script>
+<script src="../js/data-table.js"></script>
+<script src="../js/form-controls.js"></script>
+<script src="../js/ui-shell.js"></script>
+<script src="../js/dismiss.js"></script>
+<script src="../js/tile.js"></script>
+<script src="../js/modal.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

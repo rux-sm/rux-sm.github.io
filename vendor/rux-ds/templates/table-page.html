@@ -3,16 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rux Apps</title>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="vendor/rux-ds/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<link rel="stylesheet" href="vendor/rux-ds/assets/fonts/plex.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-theme.css">
-<link rel="stylesheet" href="vendor/rux-ds/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<script src="vendor/rux-ds/js/theme.js"></script>
+<title>Table page — rux-ds</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
+<link rel="stylesheet" href="../assets/fonts/plex.css">
+<link rel="stylesheet" href="../css/rux.css">
+<link rel="stylesheet" href="../css/rux-theme.css">
+<link rel="stylesheet" href="../css/rux-overrides.css">
+<script src="../js/theme.js"></script>
 <style>
 /* THE ONE PIECE OF LAYOUT CARBON DOES NOT SHIP.
    `.rux--content` is only ever indented by a SIBLING side nav, and the nav in
@@ -38,28 +36,43 @@
 </style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
+<!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
+     table from components-datatable-batch-actions--batch-batch-actions, --with-sorting,
+     --with-overflow-menu and components-pagination--default, 2026-08-28 -->
 <!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
+     read at 1280 and 900 on 2026-08-28 — the SHELL half only, as recorded in
+     templates/app-shell.html.
+     THE BATCH BAR is verified-live as of 2026-08-28, against
+     https://react.carbondesignsystem.com/iframe.html?id=components-datatable-batch-actions--default
+     — both states read from the DOM: closed is aria-hidden=true with every
+     button tabindex=-1, open is aria-hidden=false with every button tabindex=0.
+     Attributes were read, not animated properties, so the transition clock does
+     not affect the reading.
+     NOT COVERED there: what Cancel does. Clicking it in that story left all six
+     rows selected and the bar open, which may be the story's action-logger
+     rather than the component, and the question was not settled. Our Cancel is
+     likewise unwired — do not assume it clears the selection.
+     NOT VERIFIED LIVE: the rest of the table's behaviour. Sorting and selection
+     were exercised in this page and behave, but no running Carbon table was
+     opened to compare them against, and no capture in docs/ carries a sorted
+     column — `table-sort--active`, `--descending` and `__icon-inactive` appear
+     in none of the 641. Treat the sorted state as the weakest claim in this
+     file.      THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
+     Account action through aria-controls, holding rux's own profile controls
+     (js/profile.js). No Carbon page has a profile to read; the panel itself
+     is the captured --header-w-actions-and-right-panel.
 -->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
+  THE TABLE PAGE. A complete page: the app-shell frame with a sortable,
+  selectable table in it. Copy this file, replace the marked regions, delete
+  the rest of this comment.
+
+  THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
+  duplicated. Roadmap §4.6 asks for "complete, runnable page skeletons", and a
+  skeleton that only runs once pasted into another file is not one. If the
+  shell changes, it changes in each template — that is the cost of the word
+  "runnable", and it is paid once per template rather than by every page built
+  from them.
 
   THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
   shells and this is the one with a working hamburger:
@@ -186,7 +199,7 @@
 </svg>
 <!-- SPRITE:END -->
 
-<header class="rux--header" data-theme="g100" aria-label="Rux Apps">
+<header class="rux--header" data-theme="g100" aria-label="Rux DS">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
   <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
@@ -283,10 +296,16 @@
     <rect x="7" y="2" width="1" height="1"/>
     </g>
 </svg>
-    <span class="rux--header__name--prefix">Rux</span>&nbsp;Apps</a>
+    <span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
        --header__menu-item--current and aria-current="page". -->
+  <nav class="rux--header__nav" aria-label="Rux DS">
+    <ul class="rux--header__menu-bar">
+      <li><a class="rux--header__menu-item rux--header__menu-item--current" href="./" aria-current="page"><span class="rux--text-truncate-end">Overview</span></a></li>
+      <li><a class="rux--header__menu-item" href="./"><span class="rux--text-truncate-end">Reports</span></a></li>
+    </ul>
+  </nav>
 
   <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
 
@@ -295,12 +314,12 @@
        products, and anything a product adds of its own goes in the band LEFT
        of them, with search furthest left of all. Right-aligned, no gaps.
 
-       A theme toggle, if a product wants one, is one of those product icons —
-       it is not in the system. No capture has one, Carbon reserves these
-       utilities for "universal, system-level functions", and the sink's own
-       switcher lives in harness.js as a demo convenience that Phase 5 deletes.
-       It would toggle `data-theme` on <html>, which moves the CONTENT only:
-       the shell keeps its own g100 either way. -->
+       A theme control is NOT a header action: Carbon reserves these utilities
+       for "universal, system-level functions" and no capture has one. Since
+       2026-09-02 it lives INSIDE the account panel below, with the profile
+       (js/profile.js); the sink's five buttons stay in harness.js as a demo
+       convenience. It moves `data-theme` on <html>, which is the CONTENT
+       only: the shell keeps its own g100 either way. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
@@ -311,10 +330,11 @@
        here; a divider is an <hr> in an li of its own. -->
   <div class="rux--header-panel" id="rux-switcher-panel">
     <ul class="rux--switcher" aria-label="Applications">
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/" aria-current="page">Home</a></li>
-    <li><hr class="rux--switcher__item--divider"></li>
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ln-notes/">Notes</a></li>
-  </ul>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./" aria-current="page">Rux DS</a></li>
+      <li><hr class="rux--switcher__item--divider"></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Deployments</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Billing</a></li>
+    </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
        through aria-controls (js/ui-shell.js), holding the profile every app
@@ -390,92 +410,332 @@
        standalone link is an <a> on its own. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="./" aria-current="page">
+
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
-          <span class="rux--side-nav__link-text">Home</span>
-        </a>
+          <span class="rux--side-nav__submenu-title">Documents</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./" aria-current="page"><span class="rux--side-nav__link-text">Dashboard</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Trips</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Invoices</span></a></li>
+        </ul>
       </li>
+
+      <li class="rux--side-nav__item rux--side-nav__item--icon">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></div>
+          <span class="rux--side-nav__submenu-title">Reports</span>
+          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </button>
+        <ul class="rux--side-nav__menu" hidden>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Monthly</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="./"><span class="rux--side-nav__link-text">Annual</span></a></li>
+        </ul>
+      </li>
+
       <li class="rux--side-nav__item">
-        <a class="rux--side-nav__link" href="#apps">
-          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></div>
-          <span class="rux--side-nav__link-text">Apps</span>
+        <a class="rux--side-nav__link" href="./">
+          <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg></div>
+          <span class="rux--side-nav__link-text">Activity</span>
         </a>
       </li>
+
     </ul>
   </nav>
 </header>
 
 <main id="main-content" class="rux--content">
-  <!-- REPLACE: everything below EXCEPT the stack. The region is already clear
-       of the nav — see the <style> block in the head for why that is a padding
-       rather than a grid offset — so the column runs full width inside it. -->
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
 
-      <!-- KEEP THIS WRAPPER. It is the page's only vertical rhythm, and a copy
-           that drops it gets none: Carbon components carry no margin, because
-           the spacing overview has them "delegate the responsibility of
-           positioning and layout to parent components", so every child of this
-           column would measure margin 0 and gapToNext 0, flush against its
-           neighbour. templates/detail-page.html records the rule and roadmap
-           §4.4 records restoring `stack` on 2026-08-28 to satisfy it.
+      <!-- REPLACE: the table. Everything below is one `data-table-container`
+           holding a header, a toolbar and the table, with pagination after it.
 
-           THE FRAME SHIPPED WITHOUT IT UNTIL 2026-08-29, and that is why this
-           comment is here rather than in a doc. detail-page, empty-state and
-           error-state each open their column with this exact wrapper; this
-           file, the one the other five are copied from, opened with a bare h1
-           and p 24px too close together. portal.html was built from this frame
-           and inherited the fault across six sections before anyone looked.
+           THE TOOLBAR HOLDS TWO SIBLINGS AND SHOWS ONE. `batch-actions` and
+           `toolbar-content` are both in the DOM; `batch-actions--active ~
+           toolbar-content` clips the content away when a row is selected. The
+           bar ships INACTIVE here and js/data-table.js activates it — the sink
+           ships it active instead, because a specimen has to show the state
+           statically for check-coverage to see it. A page skeleton should open
+           with nothing selected.
 
-           SCALE 6 IS THE SHELL'S DEFAULT, NOT A REQUIREMENT. It is what those
-           three chose. Two files answer differently, and both were corrected
-           on 2026-08-30 — this paragraph described them as they were before.
+           A CLOSED BAR'S BUTTONS ARE `tabindex="-1"`, and the attribute is not
+           optional decoration. `clip-path` hides the bar from the eye and
+           `aria-hidden` hides it from the reader, but neither takes a button
+           out of the tab order: without this the page ships three tab stops
+           that are invisible and announce nothing. Carbon pairs the two, read
+           live 2026-08-28. js/data-table.js flips them to 0 as it activates
+           the bar, so a copy of this file needs no script of its own — but if
+           you ship the bar ACTIVE, ship `tabindex="0"` with it, as sink/
+           table.html does.
 
-           form-page wraps its h1 AND its form in `stack-scale-7`, matching the
-           32px rhythm of the stack that spaces the fields (that stack sits on
-           a div inside the <form>, not on the form, which takes no class).
-           Until that day the h1 was a bare child of the column and the form
-           opened at its exact bottom edge, 0px — this same fault, in the last
-           template still carrying it.
+           SORT IS `aria-sort` PLUS THE CLASS THE MODULE DERIVES FROM IT. Ship
+           the column you actually sorted by with aria-sort, and put the rows in
+           that order: the module syncs the classes without reordering, because
+           it presumes the markup is in the order it claims. Both arrows stay in
+           the DOM at all times — `table-sort__icon` for the sorted column and
+           `table-sort__icon-unsorted` for the rest — and CSS reveals one. -->
+      <!-- THE PAGE'S OWN HEADING, and it is not the table's.
+           This page shipped with no h1-h6 at all until 2026-08-30: the only
+           title was the table's, and a template is a COMPLETE page, so the
+           page had nothing an AT user could navigate by. The other five
+           templates each open on an h1.
 
-           table-page wraps its h1 and the data-table container, and leaves
-           PAGINATION OUTSIDE the stack on purpose: a stack gaps its children
-           and pagination is meant to sit flush against the table. It had no
-           stack at all until it was given an h1.
+           IT CANNOT BE THE TABLE TITLE PROMOTED. `data-table-header__title`
+           is rendered by Carbon on div and h2 only -- check-tags was run with
+           h1 on it and fails, "Carbon renders it on <div|h2>" -- so the page
+           heading has to be its own element outside the container. That is
+           empty-state.html's composition too: a bare heading above the
+           container, with the container keeping its own.
 
-           Change the scale to suit the page, and put only the children that
-           should be separated inside it; do not delete the wrapper without
-           knowing which of those cases you are in. -->
-      <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Rux Apps</h1>
-        <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        <h2 id="apps">Apps</h2>
+           THE TWO HEADINGS MUST NOT CARRY THE SAME STRING. h1 names the page,
+           h2 names the table inside it; identical text would announce as
+           "Documents heading level 1, Documents heading level 2" and tell the
+           reader nothing about the nesting. Replace both.
+
+           THE STACK IS WHAT SPACES THEM. stack-vertical puts its gap BETWEEN
+           children, so the h1 and the container must be siblings inside it; an
+           h1 in a stack of its own gets no gap at all and sits on the table. -->
+      <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
+      <h1>Documents</h1>
+      <section class="rux--data-table-container">
+        <div class="rux--data-table-header">
+          <div>
+            <!-- h2, NOT div. Carbon renders this class both ways and the div is
+                 attested, but a template is a COMPLETE page: with the div this
+                 page had no h1-h6 at all, and heading navigation is how an AT
+                 user moves around one. empty-state.html already uses h2 for the
+                 same table title. Swept 2026-08-30; computed type is identical
+                 either way, so nothing moves visually. -->
+            <h2 class="rux--data-table-header__title">All documents</h2>
+            <p class="rux--data-table-header__description">Everything shared with your team.</p>
+          </div>
+        </div>
+
+        <section class="rux--table-toolbar" role="group" aria-label="Table actions">
+          <div class="rux--batch-actions" aria-hidden="true">
+            <div class="rux--batch-summary">
+              <p class="rux--batch-summary__para"><span>0 items selected</span></p>
+            </div>
+            <div class="rux--action-list">
+              <button type="button" class="rux--btn rux--btn--primary" tabindex="-1">Download
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-download"/></svg>
+              </button>
+              <button type="button" class="rux--btn rux--btn--primary" tabindex="-1">Delete
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>
+              </button>
+              <button type="button" class="rux--btn rux--btn--primary rux--batch-summary__cancel" tabindex="-1">Cancel</button>
+            </div>
+          </div>
+          <div class="rux--toolbar-content">
+            <div class="rux--search rux--toolbar-search-container-expandable" role="search">
+              <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+              <label class="rux--label" for="tbl-search">Search documents</label>
+              <input id="tbl-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search…">
+              <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <span class="rux--overflow-menu__wrapper">
+              <button type="button" class="rux--toolbar-action rux--overflow-menu rux--btn rux--btn--ghost rux--btn--icon-only"
+                      aria-expanded="false" aria-haspopup="true" aria-label="Table settings">
+                <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img"><use href="#i-overflow-menu--vertical"/></svg>
+              </button>
+            </span>
+          </div>
+        </section>
+
+        <div class="rux--data-table-content">
+          <table class="rux--data-table rux--data-table--lg rux--data-table--sort rux--data-table--visible-overflow-menu">
+            <thead>
+              <tr>
+                <th scope="col" class="rux--table-column-checkbox">
+                  <div class="rux--checkbox--inline">
+                    <input type="checkbox" id="tbl-all" class="rux--checkbox">
+                    <label for="tbl-all" class="rux--checkbox-label"><span class="rux--visually-hidden">Select all rows</span></label>
+                  </div>
+                </th>
+                <th scope="col" class="rux--table-sort__header" aria-sort="ascending">
+                  <div class="rux--table-sort__description rux--visually-hidden">Sort by Name</div>
+                  <button type="button" class="rux--table-sort">
+                    <span class="rux--table-sort__flex">
+                      <div class="rux--table-header-label">Name</div>
+                      <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+                      <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrows--vertical"/></svg>
+                      <div class="rux--table-header-label--decorator-inner"></div>
+                    </span>
+                  </button>
+                </th>
+                <th scope="col"><div class="rux--table-header-label">Status<div class="rux--table-header-label--decorator-inner"></div></div></th>
+                <th scope="col" class="rux--table-sort__header" aria-sort="none">
+                  <div class="rux--table-sort__description rux--visually-hidden">Sort by Modified</div>
+                  <button type="button" class="rux--table-sort">
+                    <span class="rux--table-sort__flex">
+                      <div class="rux--table-header-label">Modified</div>
+                      <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+                      <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrows--vertical"/></svg>
+                      <div class="rux--table-header-label--decorator-inner"></div>
+                    </span>
+                  </button>
+                </th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rux--table-column-checkbox">
+                  <div class="rux--checkbox--inline">
+                    <input type="checkbox" id="tbl-r1" class="rux--checkbox">
+                    <label for="tbl-r1" class="rux--checkbox-label"><span class="rux--visually-hidden">Select Annual report</span></label>
+                  </div>
+                </td>
+                <td>Annual report</td>
+                <td><div class="rux--tag rux--tag--green"><span class="rux--tag__label">Approved</span></div></td>
+                <td>24 Aug 2026</td>
+                <td class="rux--table-column-menu">
+                  <span class="rux--overflow-menu__wrapper">
+                    <button type="button" class="rux--overflow-menu" aria-expanded="false" aria-haspopup="true" aria-label="Actions for Annual report">
+                      <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="rux--table-column-checkbox">
+                  <div class="rux--checkbox--inline">
+                    <input type="checkbox" id="tbl-r2" class="rux--checkbox">
+                    <label for="tbl-r2" class="rux--checkbox-label"><span class="rux--visually-hidden">Select Budget forecast</span></label>
+                  </div>
+                </td>
+                <td>Budget forecast</td>
+                <td><div class="rux--tag rux--tag--blue"><span class="rux--tag__label">In review</span></div></td>
+                <td>26 Aug 2026</td>
+                <td class="rux--table-column-menu">
+                  <span class="rux--overflow-menu__wrapper">
+                    <button type="button" class="rux--overflow-menu" aria-expanded="false" aria-haspopup="true" aria-label="Actions for Budget forecast">
+                      <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="rux--table-column-checkbox">
+                  <div class="rux--checkbox--inline">
+                    <input type="checkbox" id="tbl-r3" class="rux--checkbox">
+                    <label for="tbl-r3" class="rux--checkbox-label"><span class="rux--visually-hidden">Select Vendor contract</span></label>
+                  </div>
+                </td>
+                <td>Vendor contract</td>
+                <td><div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Draft</span></div></td>
+                <td>27 Aug 2026</td>
+                <td class="rux--table-column-menu">
+                  <span class="rux--overflow-menu__wrapper">
+                    <button type="button" class="rux--overflow-menu" aria-expanded="false" aria-haspopup="true" aria-label="Actions for Vendor contract">
+                      <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
       </div>
+
+      <!-- REPLACE: pagination. It sits OUTSIDE the container, never inside it.
+           It used to be the container's DOM sibling and this comment said so;
+           since 2026-08-30 the container is wrapped in the heading stack and
+           pagination is that stack's sibling instead. What matters is
+           unchanged -- it is not inside `data-table-container` -- and it stays
+           OUT of the stack deliberately: the stack puts a gap between its
+           children, and pagination is meant to sit flush against the table.
+
+           THE BUTTONS ARE BUTTONS. Carbon renders each control as
+           `pagination__button` AND `btn btn--ghost btn--icon-only`, and
+           check-compound rejects them split apart — this template was the first
+           file to hold both classes, which is how the omission surfaced.
+           `pagination__button--backward` and `--forward` are NOT copied:
+           @carbon/styles defines no rule for either, the same omission
+           dropdown--md and tile--md already record. The disabled previous keeps
+           `--no-index`, which does have one. -->
+      <div class="rux--pagination rux--layout--size-md">
+        <div class="rux--pagination__left">
+          <label class="rux--pagination__text" for="tbl-size">Items per page:</label>
+          <div class="rux--form-item rux--select__item-count">
+            <div class="rux--select rux--select--inline">
+              <div class="rux--select-input--inline__wrapper">
+                <div class="rux--select-input__wrapper">
+                  <select id="tbl-size" class="rux--select-input">
+                    <option class="rux--select-option" value="10">10</option>
+                    <option class="rux--select-option" value="20">20</option>
+                  </select>
+                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="rux--pagination__items-count rux--pagination__text">1–10 of 24 items</span>
+        </div>
+        <div class="rux--pagination__right">
+          <!-- THE PAGE-NUMBER SELECT IS PART OF THE SHAPE, not an extra. Carbon
+               renders `pagination__right` two ways and only two: with this select
+               and a plain `pagination__text` reading "of N pages", or — when the
+               count is unknown — no select and a text carrying BOTH
+               `page-text` and `unknown-pages-text`. Shipping `page-text` without
+               the select is neither, and it is what this file did until
+               2026-08-28: the class's `margin-inline: 1rem 0.0625rem` is sized to
+               clear a select that was not there, so the text sat 17px from the
+               divider and 1px from the buttons.
+               `select__page-number`, the class Carbon puts on this wrapper, has no
+               rule in @carbon/styles, so it is dropped and the element kept — the
+               same call `data-table-header__content` records. Do NOT reach for
+               `select__item-count` instead: that one draws a border-inline-end,
+               and Carbon's page-number select has none. -->
+          <div class="rux--form-item">
+            <div class="rux--select rux--select--inline">
+              <label class="rux--label rux--visually-hidden" for="tbl-page">Page of 3 pages</label>
+              <div class="rux--select-input--inline__wrapper">
+                <div class="rux--select-input__wrapper">
+                  <select id="tbl-page" class="rux--select-input">
+                    <option class="rux--select-option" value="1">1</option>
+                    <option class="rux--select-option" value="2">2</option>
+                    <option class="rux--select-option" value="3">3</option>
+                  </select>
+                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="rux--pagination__text">of 3 pages</span>
+          <div class="rux--pagination__control-buttons">
+            <button type="button" class="rux--pagination__button rux--pagination__button--no-index rux--btn rux--btn--ghost rux--btn--disabled rux--btn--icon-only" aria-label="Previous page" disabled><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg></button>
+            <button type="button" class="rux--pagination__button rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Next page"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></button>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
-  <div class="rux--css-grid" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
   </div>
 </main>
 
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
-<script src="vendor/rux-ds/js/overlay.js"></script>
-<script src="vendor/rux-ds/js/popover.js"></script>
-<script src="vendor/rux-ds/js/menu.js"></script>
-<script src="vendor/rux-ds/js/list-box.js"></script>
-<script src="vendor/rux-ds/js/date-picker.js"></script>
-<script src="vendor/rux-ds/js/copy-button.js"></script>
-<script src="vendor/rux-ds/js/tabs.js"></script>
-<script src="vendor/rux-ds/js/accordion.js"></script>
-<script src="vendor/rux-ds/js/data-table.js"></script>
-<script src="vendor/rux-ds/js/form-controls.js"></script>
-<script src="vendor/rux-ds/js/ui-shell.js"></script>
-<script src="vendor/rux-ds/js/dismiss.js"></script>
-<script src="vendor/rux-ds/js/tile.js"></script>
-<script src="vendor/rux-ds/js/modal.js"></script>
-<script src="vendor/rux-ds/js/profile.js"></script>
-<script src="switcher.js"></script>
+<script src="../js/overlay.js"></script>
+<script src="../js/popover.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/list-box.js"></script>
+<script src="../js/date-picker.js"></script>
+<script src="../js/copy-button.js"></script>
+<script src="../js/tabs.js"></script>
+<script src="../js/accordion.js"></script>
+<script src="../js/data-table.js"></script>
+<script src="../js/form-controls.js"></script>
+<script src="../js/ui-shell.js"></script>
+<script src="../js/dismiss.js"></script>
+<script src="../js/tile.js"></script>
+<script src="../js/modal.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

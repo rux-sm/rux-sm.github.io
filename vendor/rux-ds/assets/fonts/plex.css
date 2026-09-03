@@ -1,14 +1,14 @@
 /*
- * IBM Plex Sans, self-hosted. OPT-IN: nothing in css/rux.css references this
- * file, and a consumer who does not link it gets Carbon's own fallback stack
- * exactly as before.
+ * IBM Plex Sans and IBM Plex Mono, self-hosted. OPT-IN: nothing in css/rux.css
+ * references this file, and a consumer who does not link it gets Carbon's own
+ * fallback stack exactly as before.
  *
  * WHY THIS FILE EXISTS RATHER THAN Carbon's. Roadmap 4.1.1 left $css--font-face
  * off and gave the reason: it emits 90 rules across every script, each pointing
  * at url("~@ibm/plex/...woff2"), and the ~ is a bundler convention that 404s in
  * a browser. That objection was to CARBON'S EMITTER, not to the typeface, and
  * the same entry names this as the way out: "a self-hosted woff2 subset".
- * So no Carbon file is edited and no build flag is flipped; these two rules are
+ * So no Carbon file is edited and no build flag is flipped; these rules are
  * written here by hand against files committed beside them.
  *
  * WHY IT IS WORTH LOADING. Carbon's type scale is metric-tuned for Plex --
@@ -22,21 +22,64 @@
  * machine variance check-spacing already suffers from -- see the 2026-09-01
  * entry in docs/gate-coverage.json. Every machine loads the same bytes here.
  *
- * WHAT IS NOT COVERED. Latin1 only, and only weights 400 and 600, because that
- * is everything the sink and the ten templates reach: type-heading-04 (400) and
- * type-heading-compact-01 (600) are the sole type utilities in use, and weight
- * 300 with IBM Plex Mono appear ONLY in token definitions no page hits. Adding
- * display-*, expressive-* or fluid-* type means adding Light; a code-01 face
- * means adding Mono. Glyphs outside the range below -- an arrow, a check --
- * fall through to the stack, which is the designed behaviour and not a gap.
+ * WHY font-display IS optional AND NOT swap (2026-09-02). Under swap every load
+ * painted first in system-ui and then redrew in Plex once the file landed,
+ * because the file is only discovered after this stylesheet has been parsed.
+ * The two faces do not share metrics -- measured 2026-09-02, Plex is 1 to 2%
+ * narrower than system-ui depending on the string, and its normal line box at
+ * 16px is 21px against 19px -- so the redraw re-wrapped lines and pushed every
+ * paragraph down. optional gives the font a short budget at first paint: if it
+ * lands it is used; if it misses, THAT load stays in the fallback and never
+ * swaps, and the file is cached for every later load. One face per load.
  *
- * IBM Plex is licensed OFL-1.1; LICENSE.txt sits beside these files.
+ * The cost is that a cold first visit can render without Plex, which is why
+ * every page PRELOADS the files it reaches, ahead of its stylesheets:
+ *
+ *   <link rel="preload" as="font" type="font/woff2" crossorigin href="...woff2">
+ *
+ * so the fetch starts with the HTML instead of after this file. crossorigin is
+ * required on a same-origin font too: font fetches are always CORS-mode, and a
+ * preload without it does not match the later request, so the file is fetched
+ * twice. Every template preloads the two Sans faces, which each one renders.
+ * Mono is preloaded by the sink and the portal, which set <code>, and by
+ * templates/schedule-page.html, whose date and time inputs Carbon sets in
+ * code-02; the other nine templates render no Mono -- measured 2026-09-02 by
+ * FontFace status in the pane -- and preload none. A consumer page does the
+ * same for the faces it reaches, and nothing else: a preload the page never
+ * uses is a wasted fetch the browser warns about.
+ *
+ * FOR THE BROWSER GATES, which require Plex serving (sink-check, step 2): under
+ * optional a cold-cache load can miss and stay in the fallback. Reload before
+ * measuring; the second load has the cache.
+ *
+ * WHAT IS COVERED. Latin1 only. Sans at 400 and 600, because that is everything
+ * the sink and the ten templates reach: type-heading-04 (400) and
+ * type-heading-compact-01 (600) are the sole type utilities in use, and weight
+ * 300 appears only in token definitions no page hits. Mono at 400, added
+ * 2026-09-02: Carbon's reset sets every <code> in IBM Plex Mono, the sink's
+ * code-snippet and copy-button and the portal all set one, and the date-picker
+ * and time-picker inputs are code-02, so until then all of those rendered in
+ * the machine's monospace. code-01 and code-02 are weight 400, and
+ * the only heavier rule inside a snippet is <strong> at 600, which no page sets
+ * and which would be synthesised. Adding display-*, expressive-* or fluid-*
+ * type means adding Sans Light. Glyphs outside the range below -- an arrow, a
+ * check -- fall through to the stack, which is the designed behaviour and not
+ * a gap.
+ *
+ * WHERE THE FILES COME FROM, all three from packages @carbon/styles depends on.
+ * The two Sans files are the split Latin1 woff2 of @ibm/plex 6.4.1, byte-for-
+ * byte identical to @ibm/plex-sans 1.1.0's, with that package's unicode-range.
+ * The Mono file is @ibm/plex-mono 2.5.0's, which is NOT the same bytes as
+ * @ibm/plex 6.4.1's, so its unicode-range is that package's own, verbatim --
+ * it is the same list minus U+0000, U+000D and U+2074, and a range copied
+ * from the wrong package would claim glyphs the file may not carry. IBM Plex
+ * is licensed OFL-1.1; LICENSE.txt sits beside these files.
  */
 @font-face {
   font-family: 'IBM Plex Sans';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('IBMPlexSans-Regular-Latin1.woff2') format('woff2');
   unicode-range: U+0000,U+000D,U+0020-007E,U+00A0-00A3,U+00A4-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+2074,U+20AC,U+2122,U+2212,U+FB01-FB02;
 }
@@ -44,7 +87,15 @@
   font-family: 'IBM Plex Sans';
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url('IBMPlexSans-SemiBold-Latin1.woff2') format('woff2');
   unicode-range: U+0000,U+000D,U+0020-007E,U+00A0-00A3,U+00A4-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+2074,U+20AC,U+2122,U+2212,U+FB01-FB02;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('IBMPlexMono-Regular-Latin1.woff2') format('woff2');
+  unicode-range: U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2212,U+FB01-FB02;
 }

@@ -1,7 +1,7 @@
-tag     v0.1.1
-commit  a3f25e15846b7b25750e34f0ffe7ddd3c1db34d4
-date    2026-09-02T06:40:42Z
-subject feat(shell): Add the switcher and its behaviour
+tag     v0.1.2
+commit  61657c8ae18b6728d55abbaa18427661736f1ebd
+date    2026-09-03T01:34:48Z
+subject docs: Write the manifest contract, begin step 2
 
 Written by rux-ds tools/new-project.sh from a clean tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

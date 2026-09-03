@@ -453,16 +453,29 @@
            Change the scale to suit the page, and put only the children that
            should be separated inside it; do not delete the wrapper without
            knowing which of those cases you are in. -->
-      <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Rux Apps</h1>
-        <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        <h2 id="apps">Apps</h2>
-      </div>
-    </div>
-  </div>
-  <div class="rux--css-grid" id="apps-grid">
+      <div class="rux--stack-vertical rux--stack-scale-7">
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <h1>Rux Apps</h1>
+          <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
+        </div>
+        <!-- THE HEADING AND THE TILES ARE ONE SECTION, and that is the whole of
+             the fix made 2026-09-03. They used to be siblings of the page grid:
+             the heading ended one .rux--css-grid and the tiles opened the next,
+             so the stack's 24px gap never reached between them and the tiles
+             sat flush against "Apps" at exactly 0px. Measured, not guessed.
+             A nested grid is a SUBGRID in Carbon -- it inherits the page grid's
+             columns rather than starting its own -- and --with-row-gap is what
+             separates two rows of tiles once there are more than three apps.
+             The same shape Notes uses for its guide cards. -->
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="apps">
+          <h2 id="apps">Apps</h2>
+          <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap" id="apps-grid">
     <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
     <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
 </main>
 

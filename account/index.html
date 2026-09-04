@@ -270,6 +270,13 @@
                 <div class="rux--tag rux--tag--gray" id="acct-github-tag"><span class="rux--tag__label">Checking…</span></div>
                 <button type="button" class="rux--btn rux--btn--tertiary" id="acct-github-connect" hidden>Connect GitHub</button>
                 <button type="button" class="rux--btn rux--btn--secondary" id="acct-github-signout" hidden>Sign out</button>
+                <!-- Only true while signOutBtn is visible, so it reads as
+                     the consequence of the action beside it rather than a
+                     standing warning. account.js's own sign-out is silent
+                     about this (immediately re-anonymises on reload); this
+                     is what makes that non-silent, without a native
+                     confirm() this codebase uses nowhere else. -->
+                <div class="rux--form__helper-text" id="acct-github-signout-note" hidden>Starts a new session in this browser. Connect GitHub again to come back to this account.</div>
               </div>
 
             </div>
@@ -371,6 +378,7 @@
   const tag = document.getElementById('acct-github-tag');
   const connectBtn = document.getElementById('acct-github-connect');
   const signOutBtn = document.getElementById('acct-github-signout');
+  const signOutNote = document.getElementById('acct-github-signout-note');
 
   const account = window.Rux?.account;
   if (!account || !tag) return;
@@ -386,11 +394,17 @@
       tag.querySelector('.rux--tag__label').textContent = 'Signed out';
       return;
     }
-    const linked = session.user.identities?.some(i => i.provider === 'github');
-    tag.className = linked ? 'rux--tag rux--tag--green' : 'rux--tag rux--tag--gray';
-    tag.querySelector('.rux--tag__label').textContent = linked ? 'Connected' : 'Not connected';
-    if (linked) { if (signOutBtn) signOutBtn.hidden = false; }
-    else if (session.user.is_anonymous !== false && connectBtn) connectBtn.hidden = false;
+    const identity = session.user.identities?.find(i => i.provider === 'github');
+    tag.className = identity ? 'rux--tag rux--tag--green' : 'rux--tag rux--tag--gray';
+    // GitHub's identity_data carries user_name (the login); email is the
+    // fallback for the rare case Supabase could not read it (a private
+    // GitHub email with no public username scope granted).
+    const who = identity?.identity_data?.user_name ?? identity?.identity_data?.email;
+    tag.querySelector('.rux--tag__label').textContent = identity ? (who ? `Connected as ${who}` : 'Connected') : 'Not connected';
+    if (identity) {
+      if (signOutBtn) signOutBtn.hidden = false;
+      if (signOutNote) signOutNote.hidden = false;
+    } else if (session.user.is_anonymous !== false && connectBtn) connectBtn.hidden = false;
   }, () => {
     tag.querySelector('.rux--tag__label').textContent = 'Unknown';
   });

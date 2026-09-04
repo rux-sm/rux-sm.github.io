@@ -42,6 +42,21 @@
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const profiles = () => sb.schema('platform').from('profiles');
 
+  // A GitHub redirect can come back with an error instead of a session:
+  // linkIdentity redirects to GitHub before it knows whether linking will
+  // succeed, so a conflict — this identity already belongs to a different,
+  // permanent account, not this visit's anonymous one — only surfaces here,
+  // in the URL, never through the linkIdentity() promise itself. Recover by
+  // signing in directly, which authenticates that existing account instead.
+  const authError = new URLSearchParams(location.hash.slice(1));
+  if (authError.has('error')) {
+    history.replaceState(null, '', location.pathname + location.search);
+    if (authError.get('error_code') === 'identity_already_exists') {
+      try { await sb.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin } }); return; }
+      catch { /* falls through to the anonymous flow below */ }
+    }
+  }
+
   // Turnstile loads async and may not be ready yet; poll briefly rather than
   // block first paint on it. No Turnstile after ~10s: skip anonymous sign-in
   // for this visit, same as any other unreachable dependency.

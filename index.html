@@ -27,6 +27,19 @@
      NOT COVERED: anything about a side nav, because this page has had none
      since 2026-09-03; the 2026-08-28 reading of the hamburger against the
      2x-grid usage page left with it.
+
+     account.js (§4.13 step 5, 2026-09-03): scripts load with no console
+     errors and window.supabase / window.turnstile / window.Rux.profile are
+     all present. signInAnonymously() without a token was confirmed to fail
+     with captcha_failed, proving the Turnstile gate is real rather than
+     assumed, and the widget does reach Cloudflare (visible in
+     performance.getEntriesByType('resource')) — but every challenge came
+     back failure_retry and no token was ever issued, from an automated
+     browser pane, which is very likely Turnstile correctly refusing
+     automated traffic rather than a bug here. NOT VERIFIED: a token
+     actually issuing, the profile row being created in platform.profiles,
+     or the GitHub linkIdentity redirect completing — all need a human in a
+     real browser.
 -->
 <!--
   RUX APPS IS HEADER-ONLY, and that is rux-ds roadmap §4.13 step 6: the app
@@ -415,5 +428,13 @@
 <script src="vendor/rux-ds/js/modal.js"></script>
 <script src="vendor/rux-ds/js/profile.js"></script>
 <script src="switcher.js"></script>
+
+<!-- The cloud half of the profile: supabase-js (§4.13 step 5, roadmap.md),
+     pinned to the major version per Supabase's own CDN guidance, and
+     Turnstile loaded async since account.js polls for it rather than
+     blocking on it. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script src="account.js"></script>
 </body>
 </html>

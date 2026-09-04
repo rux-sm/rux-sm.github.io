@@ -9,7 +9,7 @@ const fail = m => { console.log('  FAIL  ' + m); bad++; };
 
 const css = readFileSync('vendor/rux-ds/css/rux.css', 'utf8');
 const defined = new Set([...css.matchAll(/\.(rux--[a-zA-Z0-9_\\:-]+)/g)].map(m => m[1].replace(/\\/g, '')));
-for (const f of ['index.html', 'switcher.js']) {
+for (const f of ['index.html', 'switcher.js', 'account.js', 'account/index.html']) {
   const src = readFileSync(f, 'utf8');
   const used = new Set([...src.matchAll(/\brux--[a-zA-Z0-9_:-]+/g)].map(m => m[0]));
   for (const c of used) if (!defined.has(c)) fail(`${f}: ${c} is not in vendor/rux-ds/css/rux.css`);

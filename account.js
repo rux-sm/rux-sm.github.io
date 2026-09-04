@@ -29,7 +29,15 @@
    inside the account panel below the sign-in button — untested against a
    real challenge, since Managed/interaction-only mode did not trigger one
    in verification.
-   ========================================================================== */
+
+   window.Rux.account IS THE ONE CLIENT for anything that needs Supabase
+   auth beyond the panel — /account/'s own script uses it rather than
+   creating a second createClient(), which supabase-js warns about (two
+   GoTrueClient instances on one storage key is undefined behaviour, seen
+   directly while testing this from the console). getSession() lets a page
+   read identity state (is this anonymous, is GitHub linked) without
+   duplicating the client; signOut() and connectGithub() are the same calls
+   this file already makes. */
 (async () => {
   'use strict';
   const profile = window.Rux?.profile;
@@ -41,6 +49,27 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const profiles = () => sb.schema('platform').from('profiles');
+  const connectGithub = () => sb.auth.linkIdentity({ provider: 'github', options: { redirectTo: window.location.origin } });
+
+  window.Rux.account = {
+    getSession: () => sb.auth.getSession().then(r => r.data.session),
+    signOut: () => sb.auth.signOut(),
+    connectGithub,
+  };
+
+  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in rux-ds's
+  // markup: the switcher panel's own contents are filled by JS too
+  // (switcher.js), so a JS-added link matches how this panel already works
+  // rather than growing the shared template for one hub-specific route.
+  const panel = document.getElementById('rux-account-panel');
+  const signInBtn = panel?.querySelector('#rux-profile-sign-in');
+  if (signInBtn) {
+    const link = document.createElement('a');
+    link.className = 'rux--link rux--link--inline';
+    link.href = '/account/';
+    link.textContent = 'Account settings';
+    signInBtn.insertAdjacentElement('afterend', link);
+  }
 
   // A GitHub redirect can come back with an error instead of a session:
   // linkIdentity redirects to GitHub before it knows whether linking will
@@ -126,7 +155,7 @@
   // since profile.js only reveals it when something registers a handler.
   if (session.user.is_anonymous !== false) {
     profile.onSignIn(async () => {
-      try { await sb.auth.linkIdentity({ provider: 'github', options: { redirectTo: window.location.origin } }); }
+      try { await connectGithub(); }
       catch { /* linking failed or was refused: local profile stands */ }
     });
   }

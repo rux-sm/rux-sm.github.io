@@ -22,6 +22,8 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 |---|---|
 | `switcher.json` | **The one list of apps.** Name, path, description. Adding a module is one entry |
 | `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped |
+| `account.js` | The cloud half of the profile (rux-ds roadmap §4.13 step 5): anonymous sign-in gated on Turnstile, syncs `platform.profiles`, wires GitHub linking. Adds the "Account settings" link into the panel and exposes `window.Rux.account` for `/account/`'s own script |
+| `account/` | The full profile page — avatar, display name, theme, GitHub connection status — not a switcher app, reached only via the panel's link or its own URL |
 | `tools/check.mjs` | The check: every class resolves in the vendored stylesheet, the list parses, the pin names a tag |
 | `tools/serve.mjs` | `node tools/serve.mjs`, port 8643 |
 | `.github/workflows/pages.yml` | Check, then deploy. A failing push is never served |

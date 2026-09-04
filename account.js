@@ -120,8 +120,14 @@
     }, 500);
   });
 
-  profile.onSignIn(async () => {
-    try { await sb.auth.linkIdentity({ provider: 'github', options: { redirectTo: window.location.origin } }); }
-    catch { /* linking failed or was refused: local profile stands */ }
-  });
+  // The one signal this panel can give for "already signed in", short of an
+  // avatar or a name/email swap neither Carbon nor this panel's markup
+  // offers: a permanently-linked session never reveals the Sign in button,
+  // since profile.js only reveals it when something registers a handler.
+  if (session.user.is_anonymous !== false) {
+    profile.onSignIn(async () => {
+      try { await sb.auth.linkIdentity({ provider: 'github', options: { redirectTo: window.location.origin } }); }
+      catch { /* linking failed or was refused: local profile stands */ }
+    });
+  }
 })();

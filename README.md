@@ -40,10 +40,7 @@ rebuilt on rux-ds.
 
 ## Moving the design-system pin
 
-```sh
-git -C ../rux-ds checkout v0.2.0
-sh ../rux-ds/tools/new-project.sh . 
-git diff --stat vendor/
-```
-
-`CHANGES.md` in rux-ds names any class that left between two tags.
+The recipe is rux-ds's — `docs/starting-a-project.md`, "Moving the pin" —
+kept in one place so this copy cannot drift from it. The one fact that is this
+repository's own: `tools/check.mjs` refuses a `PIN` that names no tag, so a pin
+taken between tags never deploys.

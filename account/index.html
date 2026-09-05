@@ -54,44 +54,14 @@
 <header class="rux--header" data-theme="g100" aria-label="Rux Apps">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
-  <a class="rux--header__name" href="/">
-<svg width="33" height="30" viewBox="0 0 11 10" aria-hidden="true"
-         style="margin-right:.5rem;flex:none;color:#c6c6c6;--rux-mark-slab:#0f62fe">
-    <g fill="currentColor">
-    <rect x="2" y="0" width="4" height="1"/>
-    <rect x="9" y="0" width="1" height="1"/>
-    <rect x="2" y="1" width="1" height="1"/>
-    <rect x="4" y="1" width="1" height="1"/>
-    <rect x="10" y="1" width="1" height="1"/>
-    <rect x="2" y="2" width="5" height="1"/>
-    <rect x="10" y="2" width="1" height="1"/>
-    <rect x="2" y="3" width="6" height="1"/>
-    <rect x="10" y="3" width="1" height="1"/>
-    <rect x="2" y="4" width="2" height="1"/>
-    <rect x="10" y="4" width="1" height="1"/>
-    <rect x="2" y="5" width="8" height="1"/>
-    <rect x="1" y="6" width="9" height="1"/>
-    <rect x="1" y="7" width="9" height="1"/>
-    <rect x="2" y="8" width="8" height="1"/>
-    <rect x="2" y="9" width="1" height="1"/>
-    <rect x="4" y="9" width="1" height="1"/>
-    <rect x="7" y="9" width="1" height="1"/>
-    <rect x="9" y="9" width="1" height="1"/>
-    </g>
-    <g fill="var(--rux-mark-slab, currentColor)">
-    <rect x="1" y="0" width="1" height="1"/>
-    <rect x="0" y="1" width="2" height="1"/>
-    <rect x="0" y="2" width="2" height="1"/>
-    <rect x="0" y="3" width="2" height="1"/>
-    <rect x="0" y="4" width="2" height="1"/>
-    <rect x="0" y="5" width="2" height="1"/>
-    </g>
-    <g fill="var(--rux-mark-feature, #0f62fe)">
-    <rect x="3" y="1" width="1" height="1"/>
-    <rect x="5" y="1" width="1" height="1"/>
-    <rect x="7" y="2" width="1" height="1"/>
-    </g>
-</svg>
+  <!-- The logo is brand/logo.svg, one file. Swap it and every page here
+       picks it up on reload: no build step, no markup edit, no re-pin.
+       It is an img, not inline SVG, which is what makes that swap free and
+       costs nothing: the shell header is #161616 with #f4f4f4 text in all
+       four themes, so one colourway serves every theme and currentColor had
+       one value to carry. Sized by HEIGHT so the file's own aspect governs.
+       rux-ds brand/README.md is the contract. -->
+  <a class="rux--header__name" href="/"><img src="../brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Apps</a>
 
   <div class="rux--header__global">

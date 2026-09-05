@@ -1,11 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-<title>Rux logo placeholder</title>
-<!-- PLACEHOLDER, not a mark. A 24x24 dashed box reserving Carbon's icon-scale
-     footprint in the shell header, drawn in the header's own #f4f4f4 at 60%.
-     It carries no ARIA: every page embeds it with an img tag whose alt is
-     empty, beside the product name in text, so it is decorative and the alt
-     is what assistive technology reads.
-     Swap this whole file for the finished logo. No other file changes. -->
-<rect x=".5" y=".5" width="23" height="23" fill="none"
-      stroke="#f4f4f4" stroke-opacity=".6" stroke-dasharray="3 2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="#f4f4f4">
+<title>Rux</title>
+<!-- gray-10 #f4f4f4, the shell header's own text colour: the header is
+     #161616 in all four themes, measured, so one colourway serves every
+     theme and the mark reads level with the wordmark beside it. 16.45:1.
+     Black as exported measured 1.16:1 and was invisible.
+     Drawn on a 16-module grid (every coordinate is a multiple of 64), ink
+     14x12 modules centred in the square canvas. 1.5px per module at the
+     24px header slot, so whole pixels at 16, 32, 48 and 64 but not 20/24. -->
+<path d="M192 576L128 576L128 896L192 896L192 576Z"/>
+<path d="M64 256L128 256L128 576L64 576L64 256Z"/>
+<path d="M320 576L256 576L256 896L320 896L320 576Z"/>
+<path d="M576 576L640 576L640 896L576 896L576 576Z"/>
+<path d="M704 576L768 576L768 896L704 896L704 576Z"/>
+<path d="M128 576L768 576L768 832L128 832L128 576Z"/>
+<path d="M512 384L768 384L768 832L512 832L512 384Z"/>
+<path d="M512 128L832 128L832 192L512 192L512 128Z"/>
+<path d="M384 192L576 192L576 256L384 256L384 192Z"/>
+<path d="M512 128L576 128L576 448L512 448L512 128Z"/>
+<path d="M640 128L704 128L704 448L640 448L640 128Z"/>
+<path d="M768 128L832 128L832 448L768 448L768 128Z"/>
+<path d="M512 320L960 320L960 512L512 512L512 320Z"/>
+<path d="M320 192L448 192L448 512L320 512L320 192Z"/>
 </svg>

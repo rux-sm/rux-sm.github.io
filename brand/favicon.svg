@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Rux">
 <title>Rux</title>
 <style>
-svg{fill:#0f62fe}
-@media (prefers-color-scheme:dark){svg{fill:#78a9ff}}
+svg{fill:#161616}
+@media (prefers-color-scheme:dark){svg{fill:#f4f4f4}}
 </style>
 <path d="M192 576L128 576L128 896L192 896L192 576Z"/>
 <path d="M64 256L128 256L128 576L64 576L64 256Z"/>

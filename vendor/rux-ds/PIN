@@ -1,7 +1,7 @@
-tag     v0.1.5
-commit  38111ecee36356d3c6c5a81a19e94fb9d43b9f0b
-date    2026-09-03T22:53:43Z
-subject docs(gates): Correct portal's self-check cells
+tag     v0.1.6
+commit  5bdaac5bf69c743e07924d4eebd683b360907e3d
+date    2026-09-05T05:11:30Z
+subject docs(gates): Restamp portal, 41 of 41 current
 
 Written by rux-ds tools/new-project.sh from a clean tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

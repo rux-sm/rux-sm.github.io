@@ -240,14 +240,32 @@
                 </div>
                 <div class="rux--tag rux--tag--gray" id="acct-github-tag"><span class="rux--tag__label">Checking…</span></div>
                 <button type="button" class="rux--btn rux--btn--tertiary" id="acct-github-connect" hidden>Connect GitHub</button>
-                <button type="button" class="rux--btn rux--btn--secondary" id="acct-github-signout" hidden>Sign out</button>
+              </div>
+
+              <!-- GOOGLE, added 2026-09-06: the same three elements, because
+                   the script below reads them by a provider-shaped id rather
+                   than knowing either name. A third provider is this block
+                   again and one entry in PROVIDERS. -->
+              <div class="rux--stack-vertical rux--stack-scale-3">
+                <div class="rux--form-item">
+                  <span class="rux--label">Google</span>
+                </div>
+                <div class="rux--tag rux--tag--gray" id="acct-google-tag"><span class="rux--tag__label">Checking…</span></div>
+                <button type="button" class="rux--btn rux--btn--tertiary" id="acct-google-connect" hidden>Connect Google</button>
+              </div>
+
+              <!-- SIGN OUT ENDS THE SESSION, NOT ONE LINK, so since the
+                   second provider landed it sits below both rather than
+                   inside GitHub's group, where it read as GitHub's own. -->
+              <div class="rux--stack-vertical rux--stack-scale-3">
+                <button type="button" class="rux--btn rux--btn--secondary" id="acct-signout" hidden>Sign out</button>
                 <!-- Only true while signOutBtn is visible, so it reads as
                      the consequence of the action beside it rather than a
                      standing warning. account.js's own sign-out is silent
                      about this (immediately re-anonymises on reload); this
                      is what makes that non-silent, without a native
                      confirm() this codebase uses nowhere else. -->
-                <div class="rux--form__helper-text" id="acct-github-signout-note" hidden>Starts a new session in this browser. Connect GitHub again to come back to this account.</div>
+                <div class="rux--form__helper-text" id="acct-signout-note" hidden>Starts a new session in this browser. Connect the same account again to come back to it.</div>
               </div>
 
             </div>
@@ -346,41 +364,59 @@
   // before this block. Absent entirely if account.js bailed out early (no
   // window.supabase, no profile) — the tag then just keeps reading
   // "Checking…", which is honest: this page cannot tell either way.
-  const tag = document.getElementById('acct-github-tag');
-  const connectBtn = document.getElementById('acct-github-connect');
-  const signOutBtn = document.getElementById('acct-github-signout');
-  const signOutNote = document.getElementById('acct-github-signout-note');
+  // ONE ENTRY PER PROVIDER, and nothing below names a provider: `who` is the
+  // only per-provider knowledge left, because GitHub's identity_data carries
+  // a login under user_name and Google's does not.
+  const PROVIDERS = [
+    { id: 'github', who: d => d?.user_name ?? d?.email },
+    { id: 'google', who: d => d?.email ?? d?.name },
+  ];
+  const rows = PROVIDERS.map(p => ({
+    ...p,
+    tag: document.getElementById(`acct-${p.id}-tag`),
+    connectBtn: document.getElementById(`acct-${p.id}-connect`),
+  })).filter(r => r.tag);
+  const signOutBtn = document.getElementById('acct-signout');
+  const signOutNote = document.getElementById('acct-signout-note');
 
   const account = window.Rux?.account;
-  if (!account || !tag) return;
+  if (!account || !rows.length) return;
 
   // NO SESSION IS ITS OWN STATE, not the same as "anonymous, not yet
   // linked" — Turnstile can fail (localhost, an ad blocker, a slow
   // network) and leave account.js never signing in at all. Offering
   // "Connect GitHub" then would try to link an identity onto a session
   // that does not exist.
+  const label = (row, text) => { row.tag.querySelector('.rux--tag__label').textContent = text; };
+
   account.getSession().then(session => {
     if (avatar && session) renderProfile(profile.get(), session.user.id);
     if (!session) {
-      tag.querySelector('.rux--tag__label').textContent = 'Signed out';
+      for (const row of rows) label(row, 'Signed out');
       return;
     }
-    const identity = session.user.identities?.find(i => i.provider === 'github');
-    tag.className = identity ? 'rux--tag rux--tag--green' : 'rux--tag rux--tag--gray';
-    // GitHub's identity_data carries user_name (the login); email is the
-    // fallback for the rare case Supabase could not read it (a private
-    // GitHub email with no public username scope granted).
-    const who = identity?.identity_data?.user_name ?? identity?.identity_data?.email;
-    tag.querySelector('.rux--tag__label').textContent = identity ? (who ? `Connected as ${who}` : 'Connected') : 'Not connected';
-    if (identity) {
+    // SIGN OUT BELONGS TO THE SESSION: it shows when ANY identity is linked,
+    // since that is when signing out can lose something worth warning about.
+    let linked = false;
+    for (const row of rows) {
+      const identity = session.user.identities?.find(i => i.provider === row.id);
+      row.tag.className = identity ? 'rux--tag rux--tag--green' : 'rux--tag rux--tag--gray';
+      const who = row.who(identity?.identity_data);
+      label(row, identity ? (who ? `Connected as ${who}` : 'Connected') : 'Not connected');
+      if (identity) linked = true;
+      // An anonymous session can link any provider it has not linked yet; a
+      // permanent one is left alone here, as it was with one provider.
+      else if (session.user.is_anonymous !== false && row.connectBtn) row.connectBtn.hidden = false;
+    }
+    if (linked) {
       if (signOutBtn) signOutBtn.hidden = false;
       if (signOutNote) signOutNote.hidden = false;
-    } else if (session.user.is_anonymous !== false && connectBtn) connectBtn.hidden = false;
+    }
   }, () => {
-    tag.querySelector('.rux--tag__label').textContent = 'Unknown';
+    for (const row of rows) label(row, 'Unknown');
   });
 
-  connectBtn?.addEventListener('click', () => { account.connectGithub().catch(() => {}); });
+  for (const row of rows) row.connectBtn?.addEventListener('click', () => { account.connect(row.id).catch(() => {}); });
   signOutBtn?.addEventListener('click', async () => {
     await account.signOut().catch(() => {});
     location.reload();

@@ -5,7 +5,8 @@
    which this depends on for window.Rux.profile. Opens an anonymous Supabase
    session on first visit, reads and writes the cloud half of the profile
    js/profile.js already keeps in this browser, and wires the sign-in button
-   js/profile.js reveals to GitHub identity linking.
+   js/profile.js reveals to identity linking -- GitHub since 2026-09-03,
+   Google alongside it since 2026-09-06, whose button this file adds.
 
    THE SAME CONTRACT AS switcher.js: a fetch that fails — no network, the
    backend paused, Turnstile unavailable — leaves the local profile standing
@@ -49,12 +50,30 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const profiles = () => sb.schema('platform').from('profiles');
-  const connectGithub = () => sb.auth.linkIdentity({ provider: 'github', options: { redirectTo: window.location.origin } });
+
+  // TWO PROVIDERS SINCE 2026-09-06, and the provider is REMEMBERED ACROSS THE
+  // REDIRECT. linkIdentity leaves the page before it knows whether linking
+  // will succeed, so the recovery below runs on a fresh load with nothing in
+  // memory; with one provider it could assume GitHub, with two it cannot, and
+  // recovering a Google conflict by signing in with GitHub would land the
+  // visitor in the wrong account. sessionStorage is the right scope: this tab,
+  // this trip through the redirect, gone afterwards.
+  const ATTEMPT = 'rux:auth-provider';
+  const remember = provider => { try { sessionStorage.setItem(ATTEMPT, provider); } catch { /* private mode: recovery just falls back */ } };
+  const recall = () => { try { const v = sessionStorage.getItem(ATTEMPT); sessionStorage.removeItem(ATTEMPT); return v; } catch { return null; } };
+  const connect = provider => {
+    remember(provider);
+    return sb.auth.linkIdentity({ provider, options: { redirectTo: window.location.origin } });
+  };
+  const connectGithub = () => connect('github');
+  const connectGoogle = () => connect('google');
 
   window.Rux.account = {
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),
+    connect,
     connectGithub,
+    connectGoogle,
   };
 
   // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in rux-ds's
@@ -80,8 +99,9 @@
   const authError = new URLSearchParams(location.hash.slice(1));
   if (authError.has('error')) {
     history.replaceState(null, '', location.pathname + location.search);
-    if (authError.get('error_code') === 'identity_already_exists') {
-      try { await sb.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin } }); return; }
+    const attempted = recall();
+    if (authError.get('error_code') === 'identity_already_exists' && attempted) {
+      try { await sb.auth.signInWithOAuth({ provider: attempted, options: { redirectTo: window.location.origin } }); return; }
       catch { /* falls through to the anonymous flow below */ }
     }
   }
@@ -158,5 +178,26 @@
       try { await connectGithub(); }
       catch { /* linking failed or was refused: local profile stands */ }
     });
+    // THE SECOND PROVIDER'S BUTTON IS BUILT HERE, not in rux-ds's markup, for
+    // the reason the Account settings link above gives: this panel is already
+    // filled by JS, and one shared template growing a button per provider is
+    // the wrong shape. rux-ds ships ONE #rux-profile-sign-in and profile.js
+    // reveals it; a second door is the cloud layer's business, so it lives
+    // with the client that knows which providers the project has. The
+    // shipped button is relabelled at the same time, because "Sign in" beside
+    // "Sign in with Google" does not say what it does.
+    if (signInBtn) {
+      signInBtn.textContent = 'Sign in with GitHub';
+      const google = document.createElement('button');
+      google.type = 'button';
+      google.className = signInBtn.className;
+      google.id = 'rux-profile-sign-in-google';
+      google.textContent = 'Sign in with Google';
+      google.addEventListener('click', async () => {
+        try { await connectGoogle(); }
+        catch { /* linking failed or was refused: local profile stands */ }
+      });
+      signInBtn.insertAdjacentElement('beforebegin', google);
+    }
   }
 })();

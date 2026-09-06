@@ -30,15 +30,12 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 
 ## Apps
 
-| App | Path | Repository |
-|---|---|---|
-| Home | `/` | this one |
-| Notes | `/rux-ln-notes/` | rux-ln-notes |
-
-Each module renders its own shell from the same template and links
-`/switcher.js`, so the header and the switcher match everywhere while the
-side nav and the page are the app's own. Older projects join when they are
-rebuilt on rux-ds.
+`switcher.json` is the list, and the only one: a table here was a second
+copy until 2026-09-05, and it is gone so it cannot disagree. Each module
+renders its own shell from the same template and links `/switcher.js`, so
+the header and the switcher match everywhere while the side nav and the
+page are the app's own. Older projects join when they are rebuilt on
+rux-ds.
 
 ## Moving the design-system pin
 

@@ -69,6 +69,14 @@
   const connectGoogle = () => connect('google');
 
   window.Rux.account = {
+    // THE CLIENT ITSELF, exposed 2026-09-06 for the app that needs to READ
+    // as well as authenticate -- the scheduler's grid. The header comment
+    // already called this the one client; an app making a second one would
+    // put two GoTrueClient instances on one storage key, which supabase-js
+    // warns about and which is undefined behaviour. An app served without
+    // this file (a module opened alone, offline) makes its own read-only
+    // client instead and says so; nothing here changes for the panel.
+    client: sb,
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),
     connect,

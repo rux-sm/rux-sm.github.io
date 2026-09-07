@@ -1,7 +1,7 @@
-tag     v0.1.10
-commit  19d7bf176ae902e90510e318a89fc7f758e93ad4
-date    2026-09-07T22:11:11Z
-subject docs(log): Correct the tab strip theming claim
+tag     v0.1.11
+commit  a0196fab6249f5796e9b49db29981117d7fd4328
+date    2026-09-07T22:33:33Z
+subject docs(skill): Add a settling condition to sweeps
 
 Written by rux-ds tools/new-project.sh from the tag, not the tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

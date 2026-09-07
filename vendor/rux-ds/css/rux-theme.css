@@ -1,11 +1,24 @@
 /*
   rux-theme.css — the custom theme. Roadmap §4.10, 2026-09-02.
 
-  ONE BLOCK OF TOKEN OVERRIDES ON TOP OF `white`. Link it after css/rux.css and
-  set data-theme="rux" on <html>, or on any zone, exactly as for g10, g90 and
-  g100. Custom properties inherit, so everything not named here keeps white's
-  value, and a zone inside it that sets its own data-theme keeps Carbon's
-  theme there — the app shell's g100 header stays g100 on a rux page.
+  TOKEN OVERRIDES, LAYERED ON A COMPILED THEME. Link it after css/rux.css.
+  This file ships one such block today: the twenty tokens below, on top of
+  `white`, active with data-theme="rux" on <html> or on any zone, exactly as
+  for g10, g90 and g100. Custom properties inherit, so everything not named
+  here keeps white's value, and a zone inside it that sets its own data-theme
+  keeps Carbon's theme there — the app shell's g100 header stays g100 on a
+  rux page.
+
+  A SECOND SHAPE THE SAME MECHANISM SUPPORTS, added to the theme creator in
+  Phase 15 (roadmap §4.15) but not shipped here: a compound selector,
+  [data-theme="<base>"][data-rux-surface="<name>"], overriding a handful of
+  surface tokens (background, layer-01/02/03) on top of ANY of Carbon's four
+  compiled themes, not just white — the same cascade trick, keyed by a second
+  attribute so it can target g10/g90/g100 too. Carbon's own Sass never sees
+  either shape; both are pure CSS custom-property overrides, which is why a
+  theme map may never simply be edited and re-compiled (roadmap §4.15 records
+  why that broke: Carbon's component tokens are matched against a theme map's
+  complete contents, not looked up by name).
 
   RULES. Every name here is a token css/rux.css already declares; check-tokens
   fails on one it does not, because a new token is a value no component reads.

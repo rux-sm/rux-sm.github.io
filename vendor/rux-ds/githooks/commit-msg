@@ -1,0 +1,84 @@
+#!/bin/bash
+# Enforces docs/commits.md: Conventional Commits header + Tim Pope's seven rules.
+#
+# Where the two conflict — Conventional Commits says the description is lowercase,
+# Pope's rule 3 says capitalise it — this repository capitalises. Decided 2026-08-26.
+#
+# Enabled per clone with:  git config core.hooksPath .githooks
+# Bypassed with:           git commit --no-verify
+
+msg="$1"
+subject=$(sed -n '1p' "$msg")
+line2=$(sed -n '2p' "$msg")
+
+case "$subject" in
+  ''|'#'*|Merge*|Revert*|fixup!*|squash!*) exit 0 ;;
+esac
+
+types='feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert'
+fail() { echo "commit-msg: $1" >&2; shift; for l in "$@"; do echo "    $l" >&2; done; echo "  see docs/commits.md" >&2; exit 1; }
+
+# --- authorship ---------------------------------------------------------
+grep -qiE '^[[:space:]]*co-authored-by:' "$msg" && \
+  fail "Co-Authored-By trailer — commits are authored by rux alone"
+grep -qiE '(generated|created|written|assisted) (with|by).*(claude|anthropic|copilot|chatgpt|gpt|cursor)' "$msg" && \
+  fail "AI attribution line — remove it"
+
+want_name="rux"; want_email="rux.dev@pm.me"
+have_name=$(git config user.name); have_email=$(git config user.email)
+[ "$have_name" = "$want_name" ] && [ "$have_email" = "$want_email" ] || \
+  fail "wrong identity" "got:  $have_name <$have_email>" "want: $want_name <$want_email>"
+
+# --- rule 1: blank line between subject and body ------------------------
+if [ -n "$line2" ]; then
+  fail "rule 1 — separate subject from body with a blank line" "line 2: $line2"
+fi
+
+# --- header shape: type(scope)!: Subject --------------------------------
+if ! printf '%s' "$subject" | grep -qE "^($types)(\([a-z0-9,.\-]+\))?!?: .+"; then
+  fail "header must be type(scope): Subject" \
+       "got:  $subject" \
+       "types: $types"
+fi
+
+# --- rule 2: subject line <= 50 -----------------------------------------
+len=${#subject}
+if [ "$len" -gt 50 ]; then
+  fail "rule 2 — subject is $len chars, limit is 50" "$subject"
+fi
+
+desc=$(printf '%s' "$subject" | sed -E "s/^($types)(\([^)]*\))?!?: //")
+
+# --- rule 3: capitalise the description ---------------------------------
+if ! printf '%s' "$desc" | grep -qE '^[A-Z]'; then
+  want=$(printf '%s' "$subject" | awk -F': ' '{ printf "%s: %s%s", $1, toupper(substr($2,1,1)), substr($2,2) }')
+  fail "rule 3 — capitalise the first letter" "got:  $subject" "want: $want"
+fi
+
+# --- rule 4: no trailing period -----------------------------------------
+printf '%s' "$subject" | grep -qE '\.$' && fail "rule 4 — no trailing period" "$subject"
+
+# --- rule 5: imperative mood --------------------------------------------
+# Catches the common non-imperative openers. Not exhaustive, and cannot be:
+# "Update" is imperative, "Updated" is not, and only the first word is testable.
+verb=$(printf '%s' "$desc" | awk '{print $1}')
+case "$verb" in
+  Added|Fixed|Updated|Removed|Changed|Renamed|Moved|Created|Deleted|Refactored|Wrote|Made)
+    fail "rule 5 — use the imperative: \"${verb%ed}\", not \"$verb\"" "$subject" ;;
+  Adding|Fixing|Updating|Removing|Changing|Renaming|Moving|Creating|Deleting|Refactoring|Making)
+    fail "rule 5 — use the imperative, not the gerund \"$verb\"" "$subject" ;;
+  Adds|Fixes|Updates|Removes|Changes|Renames|Moves|Creates|Deletes)
+    fail "rule 5 — use the imperative: \"${verb%s}\", not \"$verb\"" "$subject" ;;
+esac
+
+# --- rule 6: wrap body at 72 --------------------------------------------
+# Skipped for lines that cannot be wrapped: URLs, code, table rows.
+n=0
+while IFS= read -r line; do
+  n=$((n + 1))
+  [ "$n" -le 2 ] && continue
+  case "$line" in \#*|*http*|*'  '*|*'|'*) continue ;; esac
+  [ "${#line}" -gt 72 ] && fail "rule 6 — body line $n is ${#line} chars, wrap at 72" "$line"
+done < "$msg"
+
+exit 0

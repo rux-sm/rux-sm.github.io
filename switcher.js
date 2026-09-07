@@ -24,7 +24,11 @@
   // The PANEL keeps that entry, marked aria-current: there it is how you know
   // where you are, which is the opposite job. Filtering by current() rather
   // than by path means any site that grows a grid gets the same rule.
+  // NAME ONLY, no description: this is rux's own launcher and the names are
+  // the switcher panel's. The tile stays because a list of links on one
+  // background reads as one block, and the tile edge is what says these are
+  // separate apps.
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
-    `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><p><strong>${esc(a.name)}</strong></p><p>${esc(a.description)}</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>`).join('');
+    `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><p class="rux--type-productive-heading-03">${esc(a.name)}</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>`).join('');
 })();

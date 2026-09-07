@@ -44,8 +44,10 @@
 -->
 <!--
   RUX APPS IS HEADER-ONLY, and that is rux-ds roadmap §4.13 step 6: the app
-  grid from switcher.json, one quiet Foundations link, and nothing else until
-  cross-app data exists. The side nav that rux-ds's app-shell template carries
+  grid from switcher.json and nothing else until cross-app data exists. The
+  quiet Foundations link to the rux-ds repository went on 2026-09-07, rux's
+  call in the same pass that stripped the page: the running system is a card
+  in the grid, and the source is a bookmark away. The side nav that rux-ds's app-shell template carries
   left on 2026-09-03. It held two items, Home and an anchor to the grid on the
   same screen, so it navigated nowhere the page did not already show; the
   switcher in the header is this site's navigation, and it is the same on
@@ -318,51 +320,30 @@
            Change the scale to suit the page, and put only the children that
            should be separated inside it; do not delete the wrapper without
            knowing which of those cases you are in. -->
+      <!-- ONE JOB: GO TO AN APP. Stripped 2026-09-07 to what the page is
+           for. The h1 is visually hidden because the header already reads
+           "Rux Apps" 40px above it and naming it twice is what this pass
+           removed; .rux--visually-hidden is Carbon's own, so a screen reader
+           still gets a titled page. No section heading (the h1 is the only
+           title), no intro (it described how the sites are built, which is
+           README.md's job), no descriptions (rux's own site, and the names
+           are the same ones the switcher panel lists).
+
+           THE TILES STAYED, and that was rux's read of the alternative: a
+           list of large links on one background blends into one block, while
+           a tile draws the edge that says these are separate apps. So the
+           chrome earns its place here and the descriptions did not.
+           switcher.js fills these from switcher.json, minus the page you are
+           on; the markup below is what a visitor gets if that fetch fails. -->
       <div class="rux--stack-vertical rux--stack-scale-7">
-        <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Rux Apps</h1>
-          <p>Every app built on rux-ds, from one door. The header and the app switcher are the same on each; the page and its navigation are each app's own.</p>
-        </div>
-        <!-- THE HEADING AND THE TILES ARE ONE SECTION, and that is the whole of
-             the fix made 2026-09-03. They used to be siblings of the page grid:
-             the heading ended one .rux--css-grid and the tiles opened the next,
-             so the stack's 24px gap never reached between them and the tiles
-             sat flush against "Apps" at exactly 0px. Measured, not guessed.
-             A nested grid is a SUBGRID in Carbon -- it inherits the page grid's
-             columns rather than starting its own -- and --with-row-gap is what
-             separates two rows of tiles once there are more than three apps.
-             The same shape Notes uses for its guide cards. -->
-        <!-- THE GRID NEVER CARRIES HOME. switcher.js filters the app you are
-             on out of the grid, so these shipped tiles — what a visitor gets
-             if the fetch fails — are the panel's list MINUS this page. The
-             panel above keeps Home and marks it aria-current, because saying
-             where you are and offering somewhere to go are different jobs. -->
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="apps">
-          <h2 id="apps">Apps</h2>
+        <h1 class="rux--visually-hidden">Apps</h1>
+        <section aria-label="Apps">
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><p><strong>Scheduler</strong></p><p>Bus and trip dispatch: the week grid, buses, drivers and customers, rebuilt on rux-ds.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><p><strong>Design System</strong></p><p>rux-ds itself, running: the component index, the kitchen sink, the page builder and the theme creator.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p class="rux--type-productive-heading-03">Notes</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><p class="rux--type-productive-heading-03">Scheduler</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><p class="rux--type-productive-heading-03">Design System</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
           </div>
         </section>
-        <!-- THE ONE QUIET LINK OUT, rux-ds roadmap §4.13 step 6. Inline,
-             because it sits in a sentence; a bare link on its own line would
-             be a call to action, and this is a footnote. A sibling of the
-             two sections above inside the scale-7 stack, so it keeps their
-             32px and is not part of the Apps section's own rhythm.
-
-             ITS ORIGINAL REASON EXPIRED ON 2026-09-07 and the link is kept
-             anyway, for a different one. It used to say "rux-ds has no site
-             of its own -- the kitchen sink and the portal are read from the
-             repository -- so this goes to the repository". rux-ds now has a
-             site, published at /rux-ds/, and it is in the grid above like
-             any other app. So the card and this line are no longer the same
-             destination: the card is the system RUNNING, this is its SOURCE
-             -- the roadmap, the gates and the decision log, none of which
-             the site serves as pages. Repointing this at /rux-ds/ would
-             duplicate the card and lose the only way in to the source;
-             deleting it would lose it outright. -->
-        <p><a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-ds">Foundations</a> — the source of rux-ds, the design system every app here is built on. The system itself is in the grid above.</p>
       </div>
     </div>
   </div>

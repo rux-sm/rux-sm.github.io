@@ -8,17 +8,17 @@
     {
       "name": "LN Notes",
       "path": "/rux-ln-notes/",
-      "description": "LN scenario guides"
+      "description": "Step-by-step scenario guides"
     },
     {
       "name": "Scheduler",
       "path": "/rux-scheduler/",
-      "description": "Bus and trip dispatch"
+      "description": "Fleet scheduling and dispatch"
     },
     {
       "name": "Design System",
       "path": "/rux-ds/",
-      "description": "Components and templates"
+      "description": "The system these are built on"
     }
   ]
 }

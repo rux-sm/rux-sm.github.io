@@ -3,22 +3,22 @@
     {
       "name": "Home",
       "path": "/",
-      "description": "The front door: every app built on rux-ds, and the design system shown working."
+      "description": "The front door"
     },
     {
       "name": "Notes",
       "path": "/rux-ln-notes/",
-      "description": "Infor LN scenario guides, rendered from the Atlas export."
+      "description": "LN scenario guides"
     },
     {
       "name": "Scheduler",
       "path": "/rux-scheduler/",
-      "description": "Bus and trip dispatch: the week grid, buses, drivers and customers, rebuilt on rux-ds."
+      "description": "Bus and trip dispatch"
     },
     {
       "name": "Design System",
       "path": "/rux-ds/",
-      "description": "rux-ds itself, running: the component index, the kitchen sink, the page builder and the theme creator."
+      "description": "Components and templates"
     }
   ]
 }

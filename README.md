@@ -20,8 +20,8 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 
 | File | What |
 |---|---|
-| `switcher.json` | **The one list of apps.** Name, path, description. Adding a module is one entry |
-| `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped. **The grid drops the app you are on** — since 2026-09-07, a tile pointing at the page under it is not a destination — while the panel keeps it, marked `aria-current` |
+| `switcher.json` | **The one list of apps.** Name, path, description, and since 2026-09-07 an optional `icon` — an absolute path to an SVG that module serves. Adding a module is one entry |
+| `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped. **The grid drops the app you are on** — since 2026-09-07, a tile pointing at the page under it is not a destination — while the panel keeps it, marked `aria-current`. A grid tile is an icon, the name and three or four words; with no `icon` key it draws a 32px placeholder so a real one costs no layout later |
 | `account.js` | The cloud half of the profile (rux-ds roadmap §4.13 step 5): anonymous sign-in gated on Turnstile, syncs `platform.profiles`, wires GitHub linking. Adds the "Account settings" link into the panel and exposes `window.Rux.account` for `/account/`'s own script |
 | `account/` | The full profile page — avatar, display name, theme, GitHub connection status — not a switcher app, reached only via the panel's link or its own URL |
 | `tools/check.mjs` | The check: every class resolves in the vendored stylesheet, the list parses, the pin names a tag |

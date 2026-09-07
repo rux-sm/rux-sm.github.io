@@ -21,6 +21,11 @@ if (Array.isArray(apps)) {
   for (const a of apps) {
     for (const k of ['name', 'path', 'description']) if (typeof a[k] !== 'string' || !a[k]) fail(`switcher.json: an app is missing ${k}`);
     if (a.path && !(a.path === '/' || /^\/[a-z0-9-]+\/$/.test(a.path))) fail(`switcher.json: ${a.name}: path must be "/" or "/name/", got ${a.path}`);
+    // "icon" is optional and absent everywhere today: the grid draws a 32px
+    // placeholder until an app names one. When it is there it must be an
+    // absolute path to an SVG that app serves, because switcher.js writes it
+    // into a src on every site and a relative one would resolve per origin.
+    if ('icon' in a && !(typeof a.icon === 'string' && /^\/[a-z0-9/-]+\.svg$/.test(a.icon))) fail(`switcher.json: ${a.name}: icon must be an absolute path to an .svg, got ${a.icon}`);
   }
   if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
 }

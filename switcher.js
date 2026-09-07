@@ -24,11 +24,16 @@
   // The PANEL keeps that entry, marked aria-current: there it is how you know
   // where you are, which is the opposite job. Filtering by current() rather
   // than by path means any site that grows a grid gets the same rule.
-  // NAME ONLY, no description: this is rux's own launcher and the names are
-  // the switcher panel's. The tile stays because a list of links on one
-  // background reads as one block, and the tile edge is what says these are
-  // separate apps.
+  // THE TILE: an icon, the name, and a description of three or four words.
+  // An app may name its own icon with an "icon" key in switcher.json — an
+  // absolute path to an SVG that app serves, e.g. "/rux-ds/brand/icon.svg".
+  // Until it does, a 32px outlined square holds exactly the space the icon
+  // will take, so adding one later moves nothing else on the page. That is
+  // the same bargain as the list itself: one entry here, no markup anywhere.
+  const icon = a => a.icon
+    ? `<img src="${esc(a.icon)}" alt="" width="32" height="32" style="display:block;height:32px;width:32px">`
+    : `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg>`;
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
-    `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><p class="rux--type-productive-heading-03">${esc(a.name)}</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>`).join('');
+    `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><span class="rux--stack-vertical rux--stack-scale-3">${icon(a)}<span class="rux--type-productive-heading-03">${esc(a.name)}</span><span class="rux--type-body-01">${esc(a.description)}</span></span></a></div>`).join('');
 })();

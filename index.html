@@ -326,22 +326,31 @@
            removed; .rux--visually-hidden is Carbon's own, so a screen reader
            still gets a titled page. No section heading (the h1 is the only
            title), no intro (it described how the sites are built, which is
-           README.md's job), no descriptions (rux's own site, and the names
-           are the same ones the switcher panel lists).
+           README.md's job).
 
            THE TILES STAYED, and that was rux's read of the alternative: a
            list of large links on one background blends into one block, while
-           a tile draws the edge that says these are separate apps. So the
-           chrome earns its place here and the descriptions did not.
+           a tile draws the edge that says these are separate apps.
+
+           WHAT EACH TILE HOLDS, settled the same day: a 32px icon, the name,
+           and three or four words. The one-word tile that came out of the
+           strip was 304x64 with its label at one end and an arrow at the
+           other — a box still sized for the description it had lost. The
+           arrow went (with a whole clickable tile and no second line to
+           promise, it pointed at nothing) and the space it freed is the
+           icon's. THE ICON IS A PLACEHOLDER: a 32px outlined square holding
+           the space until rux draws one, at which point an "icon" key in
+           switcher.json fills it and nothing here moves.
+
            switcher.js fills these from switcher.json, minus the page you are
            on; the markup below is what a visitor gets if that fetch fails. -->
       <div class="rux--stack-vertical rux--stack-scale-7">
         <h1 class="rux--visually-hidden">Apps</h1>
         <section aria-label="Apps">
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p class="rux--type-productive-heading-03">Notes</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><p class="rux--type-productive-heading-03">Scheduler</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><p class="rux--type-productive-heading-03">Design System</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">Notes</span><span class="rux--type-body-01">LN scenario guides</span></span></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">Scheduler</span><span class="rux--type-body-01">Bus and trip dispatch</span></span></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">Design System</span><span class="rux--type-body-01">Components and templates</span></span></a></div>
           </div>
         </section>
       </div>

@@ -1,22 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Rux">
 <title>Rux</title>
+<!-- The favicon's own drawing, by rux on 2026-09-07: the dachshund, redrawn
+     shorter than the 2026-09-07 morning mark. 139 filled cells, bounds
+     x=0..16 and y=1..15, where brand/logo.svg keeps one cell of air on every
+     side. The tail rises four rows above the back and stops level with the top
+     of the muzzle, both at row 4, so the head owns the highest point.
+     One path, 3 closed loops: the boundary of the filled region rather
+     than abutting rectangles, because abutting rectangles anti-alias their
+     shared edges at 20 and 24 CSS pixels. Measured in Chrome: 84 partly
+     transparent pixels at 24px against 135 for the rectangle form, and none
+     at all at 16, 32 and 48. Filled with the default nonzero rule; the outer
+     loops wind clockwise and the two counters anticlockwise.
+     Not generated from the logo since 2026-09-07; tools/make-marks.mjs reads
+     this file and checks it, and writes nothing here.
+     Self themed because a favicon gets no CSS from the page: gray-100 on
+     a light tab strip, gray-10 on a dark one. -->
 <style>
 svg{fill:#161616}
 @media (prefers-color-scheme:dark){svg{fill:#f4f4f4}}
 </style>
-<path d="M8 1L13 1L13 2L8 2L8 1Z"/>
-<path d="M5 2L9 2L9 3L5 3L5 2Z"/>
-<path d="M8 3L9 3L9 4L8 4L8 3Z"/>
-<path d="M10 2L11 2L11 4L10 4L10 2Z"/>
-<path d="M12 2L13 2L13 4L12 4L12 2Z"/>
-<path d="M5 3L7 3L7 7L5 7L5 3Z"/>
-<path d="M8 4L15 4L15 7L8 7L8 4Z"/>
-<path d="M1 4L2 4L2 8L1 8L1 4Z"/>
-<path d="M8 7L12 7L12 8L8 8L8 7Z"/>
-<path d="M1 8L12 8L12 9L1 9L1 8Z"/>
-<path d="M2 9L12 9L12 13L2 13L2 9Z"/>
-<path d="M2 13L3 13L3 15L2 15L2 13Z"/>
-<path d="M4 13L5 13L5 15L4 15L4 13Z"/>
-<path d="M9 13L10 13L10 15L9 15L9 13Z"/>
-<path d="M11 13L12 13L12 15L11 15L11 13Z"/>
+<path d="M8 1L14 1L14 4L16 4L16 7L13 7L13 15L11 15L11 13L10 13L10 15L8 15L8 13L5 13L5 15L3 15L3 13L2 13L2 15L0 15L0 4L1 4L1 8L8 8L8 3L7 3L7 7L5 7L5 2L8 2ZM11 2L10 2L10 4L11 4ZM13 2L12 2L12 4L13 4Z"/>
 </svg>

@@ -4,7 +4,7 @@ The front door to every app built on [rux-ds](https://github.com/rux-sm/rux-ds),
 published at the root of the account: https://rux-sm.github.io/. Also the
 design system shown working, since the page is rux-ds's app-shell template
 with real content — and without its side nav, since 2026-09-03: the switcher
-is this site's navigation, and a landing page with two cards on one screen
+is this site's navigation, and a landing page whose cards fit on one screen
 has nothing else to navigate to (rux-ds roadmap §4.13 step 6).
 
 ## How it is built
@@ -21,7 +21,7 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 | File | What |
 |---|---|
 | `switcher.json` | **The one list of apps.** Name, path, description. Adding a module is one entry |
-| `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped |
+| `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped. **The grid drops the app you are on** — since 2026-09-07, a tile pointing at the page under it is not a destination — while the panel keeps it, marked `aria-current` |
 | `account.js` | The cloud half of the profile (rux-ds roadmap §4.13 step 5): anonymous sign-in gated on Turnstile, syncs `platform.profiles`, wires GitHub linking. Adds the "Account settings" link into the panel and exposes `window.Rux.account` for `/account/`'s own script |
 | `account/` | The full profile page — avatar, display name, theme, GitHub connection status — not a switcher app, reached only via the panel's link or its own URL |
 | `tools/check.mjs` | The check: every class resolves in the vendored stylesheet, the list parses, the pin names a tag |

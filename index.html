@@ -207,6 +207,8 @@
     <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/" aria-current="page">Home</a></li>
     <li><hr class="rux--switcher__item--divider"></li>
     <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ln-notes/">Notes</a></li>
+    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-scheduler/">Scheduler</a></li>
+    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/rux-ds/">Design System</a></li>
   </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
@@ -330,11 +332,17 @@
              columns rather than starting its own -- and --with-row-gap is what
              separates two rows of tiles once there are more than three apps.
              The same shape Notes uses for its guide cards. -->
+        <!-- THE GRID NEVER CARRIES HOME. switcher.js filters the app you are
+             on out of the grid, so these shipped tiles — what a visitor gets
+             if the fetch fails — are the panel's list MINUS this page. The
+             panel above keeps Home and marks it aria-current, because saying
+             where you are and offering somewhere to go are different jobs. -->
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="apps">
           <h2 id="apps">Apps</h2>
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/"><p><strong>Home</strong></p><p>The front door: every app built on rux-ds, and the design system shown working.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
     <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><p><strong>Notes</strong></p><p>Infor LN scenario guides, rendered from the Atlas export.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><p><strong>Scheduler</strong></p><p>Bus and trip dispatch: the week grid, buses, drivers and customers, rebuilt on rux-ds.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><p><strong>Design System</strong></p><p>rux-ds itself, running: the component index, the kitchen sink, the page builder and the theme creator.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
           </div>
         </section>
         <!-- THE ONE QUIET LINK OUT, rux-ds roadmap §4.13 step 6. Inline,

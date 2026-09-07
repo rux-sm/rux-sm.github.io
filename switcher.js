@@ -19,7 +19,12 @@
     // A collapsed panel's links stay out of the tab order, as js/ui-shell.js leaves them.
     if (!ul.closest('.rux--header-panel--expanded')) for (const a of ul.querySelectorAll('a')) a.tabIndex = -1;
   }
+  // THE GRID DROPS THE APP YOU ARE ON. A tile whose destination is the page
+  // under it is not a destination, and on the hub it was a "Home" card on Home.
+  // The PANEL keeps that entry, marked aria-current: there it is how you know
+  // where you are, which is the opposite job. Filtering by current() rather
+  // than by path means any site that grows a grid gets the same rule.
   const grid = document.getElementById('apps-grid');
-  if (grid) grid.innerHTML = apps.map(a =>
+  if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
     `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><p><strong>${esc(a.name)}</strong></p><p>${esc(a.description)}</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>`).join('');
 })();

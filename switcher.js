@@ -31,13 +31,18 @@
   // because it is the one that moves in BOTH themes - #e0e0e0 on the white
   // theme's #f4f4f4 tile, #393939 on g100's #262626, where layer-02 is
   // #ffffff on white and all but invisible.
-  // An app may name its own icon with an "icon" key in switcher.json — an
-  // absolute path to an SVG that app serves, e.g. "/rux-ds/brand/icon.svg".
-  // Until it does, a 32px outlined square holds exactly the space the icon
-  // will take, so adding one later moves nothing else on the page. That is
-  // the same bargain as the list itself: one entry here, no markup anywhere.
+  //
+  // A REAL ICON IS MASKED, NOT DRAWN. An <img> cannot take colour from the
+  // page - currentColor does not reach inside one - and a tile is #f4f4f4 in
+  // two themes and #262626 in the other two, so one baked colourway would be
+  // wrong in half of them. The file is used as a MASK over the tile's own
+  // text colour instead: the app supplies one monochrome silhouette and the
+  // theme colours it, which is exactly rux's rule for the mark (gray-10 on
+  // dark, gray-100 on light). It also means the file's own fill is ignored.
+  // The logo's <img> in the header is the other case and stays one: that
+  // header is #161616 in all four themes, so it has one colour to carry.
   const icon = a => a.icon
-    ? `<img src="${esc(a.icon)}" alt="" width="32" height="32" style="display:block;height:32px;width:32px">`
+    ? `<span style="display:block;height:32px;width:32px;background:currentColor;-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat"></span>`
     : `<span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span>`;
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>

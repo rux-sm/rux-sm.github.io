@@ -6,7 +6,7 @@
       "description": "The front door"
     },
     {
-      "name": "Notes",
+      "name": "LN Notes",
       "path": "/rux-ln-notes/",
       "description": "LN scenario guides"
     },

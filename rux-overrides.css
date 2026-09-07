@@ -4,3 +4,35 @@
    component rules at Carbon's own specificity with no !important
    (rux-overrides.css). Empty is the normal state. rux-ds AGENTS.md, "Where a
    change goes". */
+
+/* THE LANDING PAGE IS CENTRED IN THE VIEWPORT, 2026-09-07, rux's call. Both
+   rules are scoped to the page that has the app grid — `/account/` links this
+   same file and must keep its normal top-left flow, so neither rule may touch
+   `.rux--content` unqualified.
+
+   HORIZONTAL. rux-ds does not compile Carbon's grid offset classes (checked:
+   zero `.rux--offset-*` in rux.css), so the tiles are centred by moving the
+   FIRST one's column start; the rest follow it. The count is read in the
+   selector rather than written into the markup — with three span-4 tiles on
+   a 16-column grid the block starts at column 3, with two at 5, with one at
+   7, and with four it fills the grid and no rule matches. Five or more wrap
+   and stay left, which is the honest limit of doing this in CSS.
+
+   Only at lg and up (66rem, Carbon's own breakpoint), where the grid has its
+   16 columns. Below that the grid is 8 or 4 columns wide, a span-4 tile is
+   half or all of it, and there is nothing to centre. */
+@media (min-width: 66rem) {
+  #apps-grid > :first-child:nth-last-child(3) { grid-column-start: 3; }
+  #apps-grid > :first-child:nth-last-child(2) { grid-column-start: 5; }
+  #apps-grid > :first-child:nth-last-child(1) { grid-column-start: 7; }
+}
+
+/* VERTICAL. The page holds one row of tiles and nothing else, so left at the
+   top of a 900px viewport it read as content that had failed to load the rest.
+   3rem is the header's own height, Carbon's `$spacing-09`. */
+body:has(#apps-grid) .rux--content {
+  min-block-size: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

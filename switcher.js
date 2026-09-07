@@ -25,6 +25,12 @@
   // where you are, which is the opposite job. Filtering by current() rather
   // than by path means any site that grows a grid gets the same rule.
   // THE TILE: an icon, the name, and a description of three or four words.
+  // The placeholder is a FILLED swatch, not an outline: an empty box on a
+  // page this bare reads as an unchecked control or an image that failed,
+  // which is what the outline did. layer-accent-01 rather than layer-02
+  // because it is the one that moves in BOTH themes - #e0e0e0 on the white
+  // theme's #f4f4f4 tile, #393939 on g100's #262626, where layer-02 is
+  // #ffffff on white and all but invisible.
   // An app may name its own icon with an "icon" key in switcher.json — an
   // absolute path to an SVG that app serves, e.g. "/rux-ds/brand/icon.svg".
   // Until it does, a 32px outlined square holds exactly the space the icon
@@ -32,7 +38,7 @@
   // the same bargain as the list itself: one entry here, no markup anywhere.
   const icon = a => a.icon
     ? `<img src="${esc(a.icon)}" alt="" width="32" height="32" style="display:block;height:32px;width:32px">`
-    : `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg>`;
+    : `<span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span>`;
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
     `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><span class="rux--stack-vertical rux--stack-scale-3">${icon(a)}<span class="rux--type-productive-heading-03">${esc(a.name)}</span><span class="rux--type-body-01">${esc(a.description)}</span></span></a></div>`).join('');

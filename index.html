@@ -340,7 +340,10 @@
            promise, it pointed at nothing) and the space it freed is the
            icon's. THE ICON IS A PLACEHOLDER: a 32px outlined square holding
            the space until rux draws one, at which point an "icon" key in
-           switcher.json fills it and nothing here moves.
+           switcher.json fills it and nothing here moves. FILLED, not
+           outlined: the outline it shipped with read as an unchecked
+           control at 2.56:1 against the tile, and three of them on a page
+           this bare looked like images that had failed to load.
 
            switcher.js fills these from switcher.json, minus the page you are
            on; the markup below is what a visitor gets if that fetch fails. -->
@@ -348,9 +351,9 @@
         <h1 class="rux--visually-hidden">Apps</h1>
         <section aria-label="Apps">
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap" id="apps-grid">
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">LN Notes</span><span class="rux--type-body-01">Step-by-step scenario guides</span></span></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">Scheduler</span><span class="rux--type-body-01">Fleet scheduling and dispatch</span></span></a></div>
-    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" style="display:block"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg><span class="rux--type-productive-heading-03">Design System</span><span class="rux--type-body-01">The system these are built on</span></span></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ln-notes/"><span class="rux--stack-vertical rux--stack-scale-3"><span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span><span class="rux--type-productive-heading-03">LN Notes</span><span class="rux--type-body-01">Step-by-step scenario guides</span></span></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-scheduler/"><span class="rux--stack-vertical rux--stack-scale-3"><span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span><span class="rux--type-productive-heading-03">Scheduler</span><span class="rux--type-body-01">Fleet scheduling and dispatch</span></span></a></div>
+    <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="/rux-ds/"><span class="rux--stack-vertical rux--stack-scale-3"><span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span><span class="rux--type-productive-heading-03">Design System</span><span class="rux--type-body-01">The system these are built on</span></span></a></div>
           </div>
         </section>
       </div>

@@ -36,3 +36,10 @@ body:has(#apps-grid) .rux--content {
   flex-direction: column;
   justify-content: center;
 }
+
+/* THE TILE'S SECOND LINE IS SECONDARY TEXT, 2026-09-07. Both lines shipped at
+   text-primary, so only size separated a 20px name from its 14px line; this is
+   Carbon's own convention for supporting copy and it costs no weight and no
+   space. Selected through classes Carbon compiles, at one class of specificity
+   and with no !important. The only clickable tiles here are the app grid's. */
+.rux--tile--clickable .rux--type-body-01 { color: var(--rux-text-secondary); }

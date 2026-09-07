@@ -1,7 +1,7 @@
-tag     v0.1.9
-commit  4ca03b2f9ac72718d89cb40ecda1d074142e827e
-date    2026-09-07T20:17:37Z
-subject fix(pin): Aim vendored templates at the app mark
+tag     v0.1.10
+commit  19d7bf176ae902e90510e318a89fc7f758e93ad4
+date    2026-09-07T22:11:11Z
+subject docs(log): Correct the tab strip theming claim
 
 Written by rux-ds tools/new-project.sh from the tag, not the tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

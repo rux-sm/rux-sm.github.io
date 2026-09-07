@@ -1,22 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#f4f4f4">
 <title>Rux</title>
 <!-- Official mark, the dachshund drawn by rux on a 16 pixel grid on
-     2026-09-07; supersedes rux-logo-16x16.svg of 2026-09-06. Byte for byte
-     the same geometry as brand/favicon.svg, adopted there first and brought
-     here for consistency: 139 filled cells, bounds x=0..16 and y=1..15.
-     The tail rises four rows above the back and stops level with the top of
-     the muzzle, both at row 4, so the head owns the highest point.
-     THE MARK NOW BLEEDS LEFT AND RIGHT. The 2026-09-06 mark sat in x=1..14
-     with one cell of air on every side; this one fills all 16 columns, so
-     the header logo touches its own box and the generated app icons carry
-     no margin of their own. rux chose this on 2026-09-07 for one mark in
-     every place, and will adapt the drawing to a padded brand size later.
-     One path, three closed loops: the boundary of the filled region rather
-     than abutting rectangles, which anti alias their shared edges at 20 and
-     24 CSS pixels. Default nonzero fill; outer loops wind clockwise and the
-     two counters anticlockwise.
+     2026-09-07, third revision of that day; supersedes the one adopted at
+     3fca166. Byte for byte the same geometry as brand/favicon.svg, adopted
+     there first and brought here for one mark in every place.
+     124 filled cells, bounds x=0..16 and y=1..15. The legs and the
+     tail are ONE cell wide, and that is a considered choice rather than an
+     oversight: rux drew them so and kept them after the cost was measured.
+     The cost, in Chrome, on the two leg rows: at 16 CSS pixels the row is
+     4 solid device pixels alternating with single gaps, against 8 for the
+     two-cell legs it replaces; at 20 pixels it is 2 solid and 14 partly
+     transparent, so the row reads as a grey band rather than as four legs;
+     at 24 pixels, 4 solid and 4 partly transparent. Whole-pixel sizes are
+     unaffected. 17 one-cell-wide strokes against 8.
+     One path, 3 closed loops: the boundary of the filled region rather
+     than abutting rectangles, which anti-alias their shared edges at 20 and
+     24 CSS pixels. Default nonzero fill; the outer loop winds clockwise and
+     the two counters anticlockwise.
+     THE MARK BLEEDS LEFT AND RIGHT. The 2026-09-06 mark sat in x=1..14 with
+     one cell of air on every side; this one fills all 16 columns, so the
+     header logo touches its own box and the generated app icons carry no
+     margin of their own. rux will adapt the drawing to a padded brand size.
      Gray 10 for dark surfaces; generated light icons use gray 100. Whole
      device pixels at sizes divisible by 16. The 24 CSS pixel header has
      1.5px cells at 1x and 3px cells at 2x. -->
-<path d="M8 1L14 1L14 4L16 4L16 7L13 7L13 15L11 15L11 13L10 13L10 15L8 15L8 13L5 13L5 15L3 15L3 13L2 13L2 15L0 15L0 4L1 4L1 8L8 8L8 3L7 3L7 7L5 7L5 2L8 2ZM11 2L10 2L10 4L11 4ZM13 2L12 2L12 4L13 4Z"/>
+<path d="M8 1L13 1L13 4L16 4L16 7L13 7L13 13L12 13L12 15L11 15L11 13L10 13L10 15L9 15L9 13L5 13L5 15L4 15L4 13L3 13L3 15L2 15L2 13L1 13L1 9L0 9L0 4L1 4L1 8L8 8L8 3L7 3L7 7L5 7L5 2L8 2ZM10 2L9 2L9 4L10 4ZM12 2L11 2L11 4L12 4Z"/>
 </svg>

@@ -25,7 +25,10 @@ if (Array.isArray(apps)) {
     // placeholder until an app names one. When it is there it must be an
     // absolute path to an SVG that app serves, because switcher.js writes it
     // into a src on every site and a relative one would resolve per origin.
-    if ('icon' in a && !(typeof a.icon === 'string' && /^\/[a-z0-9/-]+\.svg$/.test(a.icon))) fail(`switcher.json: ${a.name}: icon must be an absolute path to an .svg, got ${a.icon}`);
+    // Either a sprite id the page inlines (#i-name) or an absolute path to an
+    // SVG that app serves. Absolute, because switcher.js writes it into a URL
+    // on every site and a relative path would resolve per origin.
+    if ('icon' in a && !(typeof a.icon === 'string' && (/^#i-[a-z0-9-]+$/.test(a.icon) || /^\/[a-z0-9/-]+\.svg$/.test(a.icon)))) fail(`switcher.json: ${a.name}: icon must be #i-name or an absolute path to an .svg, got ${a.icon}`);
   }
   if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
 }

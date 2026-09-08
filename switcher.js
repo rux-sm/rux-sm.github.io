@@ -32,18 +32,31 @@
   // theme's #f4f4f4 tile, #393939 on g100's #262626, where layer-02 is
   // #ffffff on white and all but invisible.
   //
-  // A REAL ICON IS MASKED, NOT DRAWN. An <img> cannot take colour from the
-  // page - currentColor does not reach inside one - and a tile is #f4f4f4 in
-  // two themes and #262626 in the other two, so one baked colourway would be
-  // wrong in half of them. The file is used as a MASK over the tile's own
-  // text colour instead: the app supplies one monochrome silhouette and the
-  // theme colours it, which is exactly rux's rule for the mark (gray-10 on
-  // dark, gray-100 on light). It also means the file's own fill is ignored.
-  // The logo's <img> in the header is the other case and stays one: that
-  // header is #161616 in all four themes, so it has one colour to carry.
-  const icon = a => a.icon
-    ? `<span style="display:block;height:32px;width:32px;background:currentColor;-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat"></span>`
-    : `<span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span>`;
+  // TWO KINDS OF ICON, AND NEITHER IS AN <img>. currentColor does not reach
+  // inside an <img>, and a tile is #f4f4f4 in two themes and #262626 in the
+  // other two, so a baked colourway would be wrong in half of them.
+  //
+  //   "icon": "#i-document"            a Carbon glyph from the sprite THIS PAGE
+  //                                    already inlines -- <use> inherits the
+  //                                    tile's own text colour, no file, no mask
+  //   "icon": "/rux-ds/brand/icon.svg" the app's own drawn mark, masked over
+  //                                    that same colour (brand/README.md,
+  //                                    "App tile icons")
+  //
+  // A sprite id only works where that symbol is inlined, which is why a path is
+  // the general answer and an id is the shortcut for the hub's own grid. If the
+  // symbol is not on the page the tile falls back to the swatch rather than
+  // rendering an empty box. The header logo stays an <img>: that header is
+  // #161616 in all four themes and has one colour to carry.
+  const swatch = `<span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span>`;
+  const icon = a => {
+    if (a.icon && a.icon.startsWith('#')) {
+      if (!document.querySelector('svg symbol' + a.icon.replace(/[^#\w-]/g, ''))) return swatch;
+      return `<svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" style="display:block"><use href="${esc(a.icon)}"/></svg>`;
+    }
+    if (a.icon) return `<span style="display:block;height:32px;width:32px;background:currentColor;-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat"></span>`;
+    return swatch;
+  };
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
     `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><span class="rux--stack-vertical rux--stack-scale-3">${icon(a)}<span class="rux--type-productive-heading-03">${esc(a.name)}</span><span class="rux--type-body-01">${esc(a.description)}</span></span></a></div>`).join('');

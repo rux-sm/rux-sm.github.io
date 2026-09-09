@@ -38,8 +38,19 @@ rux-ds's "Where a change goes".
 
     node tools/check.mjs
 
-The commit hook and the Pages workflow both run it; the site deploys only
-when it passes.
+**rux-ds's shared check first**, run from the vendored copy at the pin:
+classes, tokens, file references and id references over every page, script and
+stylesheet, plus the pin itself. **Then the one rule that is this repository's
+own**: `switcher.json` parses, and every entry's path and icon are well formed.
+The commit hook and the Pages workflow both run it; the site deploys only when
+it passes.
+
+**The shared check was wired up on 2026-09-09 and should have been at the
+`v0.1.6` pin.** This file was forty lines of its own until then — a class loop
+over four files named by hand, and no token check at all — while the shared
+implementation sat vendored and unrun at every pin since, because a pin move
+rewrites `vendor/` and deliberately leaves `tools/` alone. Nothing the old loop
+did is lost; it read four files where the shared one reads every page.
 
 ## Commits
 

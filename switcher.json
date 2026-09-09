@@ -20,7 +20,8 @@
     {
       "name": "Design System",
       "path": "/rux-ds/",
-      "description": "The system these are built on"
+      "description": "The system these are built on",
+      "icon": "/rux-ds/brand/icon.svg"
     }
   ]
 }

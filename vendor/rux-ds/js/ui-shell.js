@@ -4,17 +4,46 @@
    Requires js/overlay.js. The side nav registers with the kernel; the
    submenus do not — they are inline disclosure, like accordion.
 
-   THE HAMBURGER IS A RESPONSIVE CONTROL, not a desktop one. Carbon hides it
-   above 66rem with `header__menu-toggle__hidden` and widens `--side-nav--ux`
-   to 16rem at the same breakpoint: the panel is persistent at desktop and
-   collapses behind the button below it. A template showing the button at
-   desktop invents a state IBM's design does not have.
+   TWO SHELLS, AND `__menu-toggle__hidden` IS WHAT PICKS ONE. This paragraph
+   used to say the hamburger is a responsive control and that "a template
+   showing the button at desktop invents a state IBM's design does not have".
+   Corrected 2026-09-08: the class is applied by MARKUP -- `css/rux.css` never
+   adds it, it only acts on it under `@media (min-width: 66rem)` -- so it is
+   the consumer's declaration of which shell a page is, not something Carbon
+   does on its own.
 
-   THE HAMBURGER TOGGLES ONE CLASS CARBON ALREADY HAS. `--side-nav--ux` is
-   16rem, 0 below 66rem, and `--expanded` is declared after that rule, so it
-   opens the nav below the breakpoint and changes nothing above it. The sink
-   harness set `style.inlineSize = '0'` by hand; a behaviour layer for a CSS
-   design system should never be writing widths, and it does not need to.
+     persistent   The toggle carries `__hidden`, so it is hidden above 66rem
+                  where `--side-nav--ux` is already 16rem. The nav is always
+                  open at desktop. Every page in `templates/` ships this, and
+                  it is what §3.2 of docs/composing-pages.md indents the
+                  content 18rem for.
+
+     collapsible  The toggle carries no `__hidden` and the nav carries
+                  `--side-nav--hidden`. The button is present at every width
+                  and opens the nav over the page. `--side-nav--hidden` (0) is
+                  declared after `--ux`'s 16rem and `--expanded` (16rem) after
+                  `--hidden`, so that cascade order does no work at all below
+                  66rem -- where `--ux` is already 0 -- and exists for this.
+
+   MEASURED 2026-09-08 at 1440, above the breakpoint, transitions off, on a
+   consumer using the second shell: `ux+hidden` is 0, adding `--expanded` gives
+   256 with `aria-expanded` true and the label at "Close menu", removing it
+   gives 0 again. So `--expanded` DOES change the nav above the breakpoint --
+   the old claim that it "changes nothing above it" is true only of a nav
+   without `--hidden`.
+
+   WHAT THE SECOND SHELL COSTS A CONSUMER, so nobody has to rediscover it:
+   Carbon's `__menu-toggle:not(.__hidden) ~ __header__name` tightens the app
+   name to 8px of inline start, at every width, with no media query. That rule
+   can only ever fire in this shell -- a page that writes `__hidden` carries it
+   below 66rem too, where the button IS on screen, so the selector misses the
+   one case a responsive-only reading would need it for. `check-spacing`
+   therefore reports 8px against a capture taken from the first shell. It is
+   correct, and there is no capture of the second to compare it against.
+
+   THE HAMBURGER TOGGLES ONE CLASS CARBON ALREADY HAS, and that part stands.
+   The sink harness set `style.inlineSize = '0'` by hand; a behaviour layer for
+   a CSS design system should never be writing widths, and it does not need to.
 
    ESCAPE CLOSES THE SIDE NAV; AN OUTSIDE PRESS DOES NOT. This is the second
    place the kernel's default is wrong for a component, and for the opposite

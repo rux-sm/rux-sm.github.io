@@ -47,7 +47,29 @@
     'button-primary-active', 'button-tertiary', 'button-tertiary-hover',
     'button-tertiary-active', 'chat-button', 'chat-button-text-hover', 'chat-avatar-user',
   ]);
-  const SURFACE_TOKENS = new Set(['background', 'layer-01', 'layer-02', 'layer-03']);
+  // Twenty-nine since 2026-09-08, four before it. WIDENING THIS IS SAFE AND
+  // NARROWING IT IS NOT: list() drops any record with a token it does not
+  // recognise, whole and without a word, so a theme saved by a newer theme
+  // creator would simply vanish from an older app's account panel rather
+  // than partially apply. A record saved when this was four still validates
+  // against the twenty-nine, which is why no migration is needed here.
+  //
+  // The four ladders and the one flat token, matching
+  // tools/build-theme-creator.mjs's SURFACE_GROUPS: layers, table headers
+  // (layer-accent), fields, hairlines (border-subtle, offset by one against
+  // the layers), outlines (border-strong), the secondary button, and the
+  // hover/selected/active states Carbon does not derive from the layer.
+  const SURFACE_TOKENS = new Set([
+    'background', 'layer-01', 'layer-02', 'layer-03',
+    'layer-accent-01', 'layer-accent-02', 'layer-accent-03',
+    'field-01', 'field-02', 'field-03',
+    'border-subtle-00', 'border-subtle-01', 'border-subtle-02', 'border-subtle-03',
+    'border-strong-01', 'border-strong-02', 'border-strong-03',
+    'button-secondary', 'button-secondary-hover', 'button-secondary-active',
+    'layer-hover-01', 'layer-hover-02', 'layer-hover-03',
+    'layer-selected-01', 'layer-selected-02', 'layer-selected-03',
+    'layer-active-01', 'layer-active-02', 'layer-active-03',
+  ]);
 
   // Every property either kind could ever have set inline — js/theme.js
   // clears exactly this set on every apply(), regardless of what the

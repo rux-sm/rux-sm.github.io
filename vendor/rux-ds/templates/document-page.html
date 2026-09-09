@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Form page — rux-ds</title>
+<title>Document page — rux-ds</title>
 <link rel="icon" href="../../../brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
@@ -36,91 +36,119 @@
   .rux--content { padding-inline-start: 18rem; }
 }
 
+/* THE READING MEASURE, AND THE SECOND THING CARBON DOES NOT SHIP.
+   A document is read rather than scanned, so line length is part of it. The
+   grid cannot supply one: a column span is PROPORTIONAL, and measured on this
+   page at 2026-09-08 the same `lg:col-span-10` gave 89 characters a line at
+   1280 and 151 at 1920. That is the same shape of error as the offset above --
+   something fixed being expressed as a fraction -- and it is why IBM's own
+   site caps its content region rather than spanning it.
+
+   TWO CAPS, BECAUSE PROSE AND TABLES WANT DIFFERENT WIDTHS. The column is
+   capped so an eleven-table document does not stretch to a 2560 monitor; the
+   paragraphs are capped tighter, at 78 characters measured at both 1280
+   and 1920, which is inside the comfortable band and does not move with the
+   viewport. The tables keep the column's full width: 664px at 1280, 1024 at
+   1920, and 404 at 500 where the route lines wrap to three and four rows with
+   no segment clipped.
+
+   NO CLASS IS INVENTED: both selectors are Carbon's own, and the paragraph
+   rule reaches only the document's prose -- a notification subtitle is a div,
+   and no table cell here holds a p. When Phase 4 makes css/ the source this
+   belongs there as a real class, not here. */
+.rux--content .rux--css-grid-column { max-inline-size: 64rem; }
+.rux--content p { max-inline-size: 30rem; }
 </style>
 </head>
 <body>
 <!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
-     form structure from components-form--default and components-formgroup--default;
-     controls from the sink fragments they were diffed in, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://react.carbondesignsystem.com/iframe.html?id=components-form--default
-     read on 2026-08-28. Confirmed there, not inferred here: Carbon spaces a
-     form with `stack-vertical stack-scale-7`, which computes to
-     `display: grid` with `row-gap: 32px`, and EVERY child reports
-     `margin-block-start: 0`. The rhythm is the container's gap; the controls
-     zero their own margins. The <style> rule here uses that same mechanism
-     because a margin-based stand-in loses to those resets — `.rux--checkbox-group`
-     at (0,1,0) beat `form > * + *` at (0,0,2) and the gap collapsed to 0.
-     NOT VERIFIED LIVE: the individual controls. The toggle, the checkbox
-     indeterminate state and the number steppers are driven by
-     js/form-controls.js and were exercised in the sink, but no running Carbon
-     control was opened to compare them against.      THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
-     Account action through aria-controls, holding rux's own profile controls
-     (js/profile.js). No Carbon page has a profile to read; the panel itself
-     is the captured --header-w-actions-and-right-panel.
+     breadcrumb from components-breadcrumb--default and
+     --breadcrumb-with-overflow-menu; the rest from the sink fragments that carry
+     their own rendered-dom labels — tag, notification, data-table, link,
+     2026-09-08 -->
+<!-- BEHAVIOUR: verified-live · https://react.carbondesignsystem.com/iframe.html?id=components-breadcrumb--default,
+     ?id=components-tag--read-only and ?id=components-breadcrumb--breadcrumb-with-overflow-menu,
+     read 2026-09-08 at viewport 1280 — THE ROUTE LINE only, which is the one
+     decision this template makes that no other template here had to.
+
+     Compared, on the running components with their own text replaced by a
+     four-segment route: `.cds--breadcrumb` computed max-inline-size (none),
+     overflow (visible) and flex-wrap (wrap), against `.cds--tag`'s
+     max-inline-size (208px) and `.cds--tag__label`'s overflow (hidden) and
+     text-overflow (ellipsis). In a 280px track the breadcrumb wrapped onto
+     THREE ROWS with every segment's scrollWidth equal to its clientWidth —
+     nothing cut — while a tag holding the same string reported scrollWidth 278
+     against clientWidth 192, LOSING 86px to the ellipsis. That is the whole
+     reason a route here is a breadcrumb and not a tag, and it is why
+     rux-ln-notes could not set one as a tag without silently truncating it.
+
+     Also read, at 240px, because it decides the segment markup: a bare `<span>`
+     in a `breadcrumb-item` computes color rgb(22,22,22) and cursor auto —
+     it already reads as plain text — while `a.cds--link` in the same place is
+     rgb(15,98,254) with cursor pointer, which would tell the reader a menu name
+     is clickable when it is not. The property a bare span loses is
+     `white-space: nowrap`, which `.cds--breadcrumb .cds--link` supplies.
+
+     NOT VERIFIED LIVE, and this is the larger half:
+       - The shell. It is templates/app-shell.html's markup byte for byte,
+         verified there on 2026-08-28 and NOT re-read here.
+       - The data tables and the inline notifications. Same markup the kitchen
+         sink exercises, driven by the same modules. That is evidence and it is
+         not a live comparison.
+       - The reading measure. How wide a column of prose should be was settled
+         by measuring THIS page in a browser, not against Carbon, because Carbon
+         ships no document page to compare against. Recorded as a design choice,
+         not as a Carbon behaviour.
+       - A bare `<span>` as a NON-current breadcrumb segment is an
+         EXTRAPOLATION. The captures show only `a.cds--link` and, on the current
+         item, `span.cds--link[aria-current=true]`. The span is measured above
+         and invents no class, but no Carbon story renders one.
 -->
 <!--
-  THE FORM PAGE. A complete page: the app-shell frame with a form in it. Copy
-  this file, replace the marked regions, delete the rest of this comment.
+  THE DOCUMENT PAGE. A complete page: the app-shell frame holding ONE record
+  read top to bottom, in order. Copy this file, replace the marked regions,
+  delete the rest of this comment.
+
+  WHAT MAKES IT DIFFERENT FROM templates/detail-page.html, which is the template
+  it was copied from and the one it is most often confused with:
+
+    detail-page    one record seen SEVERAL WAYS, through tabs. The reader picks
+                   a view and the others stay closed. Order does not matter.
+    document-page  one record read ONCE, IN ORDER, top to bottom. Numbered
+                   sections, each with a lead line and a table; callouts inline
+                   where they are relevant; reference tables at the end. Nothing
+                   is hidden behind a control, because a reader working through
+                   a procedure cannot be asked to find the next step.
+
+  It is an article, a runbook, a policy, a manual, a review. Adopted 2026-09-08
+  after rux-ln-notes asked for the shape and showed that detail-page did not
+  carry it; its content there is real and this one is invented, which is the
+  only relationship between the two files.
+
+  THREE THINGS IN HERE ARE DELIBERATE AND LOOK LIKE OVERSIGHTS.
+
+  1. A ROUTE IS A BREADCRUMB, NOT A TAG. See the BEHAVIOUR comment above for the
+     measurement. The short version: `.rux--tag` caps at 13rem and ellipsises,
+     and a route is the one label a reader most needs whole — a truncated one is
+     worse than useless because it still looks complete.
+
+  2. "AT A GLANCE" HAS NO TICK-WHEN-DONE COLUMN, although a runbook obviously
+     wants one. Carbon renders a checkbox in a data table ONLY as the selection
+     column, and a document's checklist is not row selection. Both ways round
+     it were built and both were caught by a gate — the block's own comment
+     carries the two readings. Recorded as a gap rather than solved with an
+     invented composition.
+
+  3. THE TABLES DO NOT CARRY `--static`. That modifier is `inline-size: auto`,
+     which shrinks a table to its content. Eleven tables of different widths down
+     one column reads as ragged; filling the column reads as a document.
 
   THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
-  duplicated — see that file for why.
-
-  THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
-  shells and this is the one with a working hamburger:
-
-    rail      nav.--side-nav--ux INSIDE header, 3rem wide, expanded to 16rem
-              over the page by button.--header__menu-toggle. Five captures
-              render it, and they are the ones whose headers also carry
-              __nav and __global. js/ui-shell.js finds the nav with
-              `burger.closest('.rux--header')`, so this nesting is what makes
-              the hamburger work at all.
-
-    expanded  nav.--side-nav--expanded BESIDE header and main, permanent, no
-              hamburger in any of the 641 captures. Its one advantage is that
-              the content region is offset by a sibling rule
-              (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
-              arrangement cannot satisfy. REJECTED so the shell could have a
-              hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
-
-  WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
-  that lives inside the header. `.rux--content` is only ever indented by a
-  SIBLING side nav, and this one is not a sibling, so the page indents itself
-  — see the <style> block in the head, which is the only CSS these templates
-  carry and says why it has to exist.
-
-  `--side-nav--ux` is 16rem, NOT a 3rem rail — the rail is `--side-nav--rail`,
-  and the bare `.rux--side-nav` is 3rem before `--ux` widens it. The nav is a
-  full panel sitting below the header, so the content has a fixed 16rem to
-  clear, which is why the indent is a fixed padding and not a share of the
-  grid.
-
-  THE SHELL CARRIES ITS OWN THEME, and `data-theme="g100"` on the header is
-  that. Carbon's UI-shell-header/style.mdx says the shell "can be customized to
-  use any of the four IBM themes by applying an inline theme to the shell
-  zone", and the header's background token is plain `$background` — so a shell
-  left on the page's theme is white on a white page, with the nav, the page and
-  the header separated by one 1px border and nothing else. The shell zone is
-  the header, and the side nav sits inside it, so one attribute themes both.
-  Change it to `white` only if you mean the shell to disappear into the page.
-
-  THE SPRITE IS INLINED, and has to be. Referencing it as
-  `../assets/icons.svg#i-name` was tried and is broken in two ordinary cases:
-  WebKit has never supported a cross-document <use>, so every icon on the page
-  is blank in Safari, and opening the file over file:// blocks the fetch in
-  every engine. Both fail SILENTLY — the CSS and the scripts still load, so the
-  page looks built and simply has no icons in it. A file meant to be copied
-  cannot carry that.
-
-  The block after <body> is generated. `npm run icons` rewrites it in every
-  template from assets/icons.svg, and check-icons fails if one drifts, so
-  neither a stale copy nor a hand-edit survives.
-
-  EVERY BEHAVIOUR MODULE LOADS, not just ui-shell, so a modal or a data table
-  pasted into `main` needs no script of its own. The kernel is first because
-  the others delegate to it.
+  duplicated — roadmap §4.6 asks for complete runnable pages, and a skeleton that
+  only runs once pasted into another file is not one. If the shell changes, it
+  changes in each template. The <style> block in the head is the only CSS these
+  templates carry and says why it has to exist.
 -->
-
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run icons` rewrites this
      block in every template from assets/icons.svg. -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
@@ -393,178 +421,437 @@
   </nav>
 </header>
 
+
 <main id="main-content" class="rux--content">
   <div class="rux--css-grid">
-    <!-- PER-BREAKPOINT SPANS, NOT col-span-100 PLUS AN OVERRIDE. This carried
-         `col-span-100 lg:col-span-8` and the lg class did NOTHING: both are one
-         class of specificity, a media query adds none, and `.col-span-100` is
-         emitted later in the stylesheet, so `1 / -1` won at every width. The
-         form was full width at 1400 — measured 1016px, the same as
-         table-page's — while the markup said half.
+    <!-- THE READING COLUMN. 12 of 16, capped in the head — the span alone is
+         NOT the measure, and an earlier draft of this file got that wrong.
+         See the <style> block: a span is proportional, so `lg:col-span-10`
+         measured 89 characters a line at 1280 and 151 at 1920.
 
-         Carbon's own idiom is every breakpoint named:
-         `sm:col-span-4 md:col-span-8 lg:col-span-16` on one element, in
-         preview-pageheader--default. A form wants 8 of 16 at lg, so it says 8. -->
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-8">
+         THE TABLES LIVE IN THE SAME COLUMN and take its full width, while the
+         head caps the paragraphs alone. Splitting prose and tables into two
+         grid columns was considered and dropped: it doubles the markup of
+         every section, and the moment a section has both, its two halves stop
+         sharing the stack's rhythm and have to be re-aligned by hand. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-12">
+      <div class="rux--stack-vertical rux--stack-scale-6">
+        <!-- SLOT:BEGIN name=body -->
 
-      <!-- THE H1 NEEDS THE STACK AS MUCH AS THE FIELDS DO. Until 2026-08-30
-           this h1 was a bare child of the grid column and the form began at
-           its exact bottom edge -- measured gap 0px, because an h1 carries
-           margin 0 here and the form's own rhythm lives on a div INSIDE the
-           form, where it cannot reach a sibling above it. It is the same
-           fault app-shell.html records for itself, in the one template that
-           was still carrying it.
-
-           SCALE 7, NOT THE SHELL'S DEFAULT 6. The stack inside the form is
-           scale-7 = 32px, so a 24px gap here would set the title CLOSER to
-           the first field than the fields are to each other and read as if it
-           belonged to that field. Equal is the floor; tighter is wrong. -->
-      <div class="rux--stack-vertical rux--stack-scale-7">
-      <!-- SLOT:BEGIN name=body -->
-      <!-- BLOCK:BEGIN name=page-title label="Page title" -->
-      <h1>New request</h1>
-      <!-- BLOCK:END page-title -->
-
-      <!-- BLOCK:BEGIN name=form label="Form" -->
-      <!-- REPLACE: the form. Structure is components-form--default: a <form>
-           holding fieldsets and `form-item`s, each control in its own item.
-
-           THE <form> TAKES NO CLASS. Carbon's capture puts `cds--form` on it,
-           but @carbon/styles defines no rule for that class — it is a marker,
-           not a style — so check-classes would reject it. The element stays
-           because it is what makes this a form.
-
-           SPACING COMES FROM THE HEAD, NOT FROM HERE. Carbon's own form wraps
-           its children in `stack-vertical stack-scale-7`; `stack` is commented
-           out in src/app.scss and `form-item` carries no vertical margin of
-           its own, so the rule in the <style> block stands in for it at the
-           same 2rem. See the note there. -->
-      <form>
-        <!-- components-form--default puts a `stack-vertical stack-scale-7`
-             between the form and its items, and that div is where the whole of
-             the form's vertical rhythm comes from. It replaces the <style> rule
-             this file used to carry: `stack` was restored on 2026-08-28,
-             roadmap §4.4. -->
-        <div class="rux--stack-vertical rux--stack-scale-7">
-
-          <div class="rux--form-item rux--text-input-wrapper">
-              <div class="rux--text-input__label-wrapper">
-                <label class="rux--label" for="f-name">Full name</label>
-              </div>
-              <div class="rux--text-input__field-outer-wrapper">
-                <div class="rux--text-input__field-wrapper">
-                  <input id="f-name" class="rux--text-input" type="text" placeholder="Ada Lovelace">
-                </div>
-              </div>
-            </div>
-
-          <div class="rux--form-item rux--text-input-wrapper">
-              <div class="rux--text-input__label-wrapper">
-                <label class="rux--label" for="f-email">Email</label>
-              </div>
-              <div class="rux--text-input__field-outer-wrapper">
-                <div class="rux--text-input__field-wrapper">
-                  <input id="f-email" class="rux--text-input" type="email" placeholder="name@example.com">
-                </div>
-                <div class="rux--form__helper-text">We only use this to reply.</div>
-              </div>
-            </div>
-
-          <div class="rux--form-item">
-            <div class="rux--select rux--layout--size-md">
-              <label class="rux--label" for="f-dept">Department</label>
-              <div class="rux--select-input__wrapper">
-                <select id="f-dept" class="rux--select-input">
-                  <option class="rux--select-option" value="ops">Operations</option>
-                  <option class="rux--select-option" value="fin">Finance</option>
-                  <option class="rux--select-option" value="eng">Engineering</option>
-                </select>
-                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-              </div>
-            </div>
-          </div>
-
-          <div class="rux--form-item">
-            <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical">
-              <legend class="rux--label rux--type-heading-compact-01">Priority</legend>
-              <div class="rux--radio-button-wrapper">
-                <input id="f-p1" class="rux--radio-button" type="radio" name="f-priority" checked>
-                <label for="f-p1" class="rux--radio-button__label">
-                  <span class="rux--radio-button__appearance"></span>
-                  <span class="rux--radio-button__label-text">Standard</span>
-                </label>
-              </div>
-              <div class="rux--radio-button-wrapper">
-                <input id="f-p2" class="rux--radio-button" type="radio" name="f-priority">
-                <label for="f-p2" class="rux--radio-button__label">
-                  <span class="rux--radio-button__appearance"></span>
-                  <span class="rux--radio-button__label-text">Urgent</span>
-                </label>
-              </div>
-            </fieldset>
-          </div>
-
-          <fieldset class="rux--checkbox-group" aria-disabled="false">
-            <legend class="rux--label rux--type-heading-compact-01">Notify me when</legend>
-            <div class="rux--form-item rux--checkbox-wrapper">
-              <input id="f-n1" class="rux--checkbox" type="checkbox" checked>
-              <label for="f-n1" class="rux--checkbox-label"><div class="rux--checkbox-label-text">The request is approved</div></label>
-              <div class="rux--checkbox__validation-msg"></div>
-            </div>
-            <div class="rux--form-item rux--checkbox-wrapper">
-              <input id="f-n2" class="rux--checkbox" type="checkbox">
-              <label for="f-n2" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Someone comments</div></label>
-              <div class="rux--checkbox__validation-msg"></div>
-            </div>
-          </fieldset>
-
-          <div class="rux--form-item">
-            <div class="rux--text-area__label-wrapper">
-              <label class="rux--label" for="f-notes">Notes</label>
-            </div>
-            <div class="rux--text-area__wrapper">
-              <textarea id="f-notes" class="rux--text-area" rows="4" cols="50" maxlength="500" placeholder="Anything else we should know?"></textarea>
-              <span class="rux--text-area__counter-alert" role="alert"></span>
-            </div>
-            <div class="rux--form__helper-text">Optional.</div>
-          </div>
-
-          <!-- js/form-controls.js drives this; the markup needs no script.
-
-               `aria-hidden="true"` ON `toggle__text` IS LOAD-BEARING. Without
-               it a screen reader announces the control's name and then this
-               text again as part of it. That is the defect fixed at a5f95c8 —
-               heard on 2026-08-30 — and the fix went into sink/toggle.html and
-               NOT into this file or detail-page.html, where it was found on
-               2026-08-31 by building a third page with a toggle on it. No gate
-               reads it. -->
-          <div class="rux--toggle">
-            <button id="f-copy" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="f-copy-l"></button>
-            <label class="rux--toggle__label" for="f-copy" id="f-copy-l">
-              <span class="rux--toggle__label-text">Send me a copy</span>
-              <div class="rux--toggle__appearance">
-                <div class="rux--toggle__switch"></div>
-                <span class="rux--toggle__text" aria-hidden="true">Off</span>
-              </div>
-            </label>
-          </div>
-
-          <!-- `btn-set` IS FOR A SET, and it caps its children at
-               max-inline-size 196px so a row of them stays even. Copy it for ONE
-               action and the label wraps — "Add a deployment" came out over three
-               lines in templates/empty-state.html before that was found. A single
-               button goes in a plain container and sizes itself. -->
-          <div class="rux--btn-set">
-            <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
-            <button type="submit" class="rux--btn rux--btn--primary">Submit</button>
-          </div>
-
+        <!-- BLOCK:BEGIN name=document-header label="Document header" -->
+        <!-- REPLACE: the document header. The breadcrumb is the trail TO this
+             document and is the one real `<nav>` on the page; the route lines
+             inside the sections below are content and deliberately are not. -->
+        <nav aria-label="Breadcrumb">
+          <ol class="rux--breadcrumb">
+            <li class="rux--breadcrumb-item"><a class="rux--link" href="#main-content">Runbooks</a></li>
+            <li class="rux--breadcrumb-item"><a class="rux--link" href="#main-content">Recovery</a></li>
+            <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Restore a service from a backup</a></li>
+          </ol>
+        </nav>
+        <h1 class="rux--type-productive-heading-05">Restore a service from a backup</h1>
+        <p class="rux--type-body-long-01">Take a service that has lost its data back to a known-good state: choose a snapshot, restore it into a staging target, check it, then promote it. The procedure ends when the service reports healthy against the restored data.</p>
+        <!-- A PLAIN CONTAINER, NOT A STACK. Both stack axes stretch — a tag in
+             `stack-vertical` fills the column as a bar, and in
+             `stack-horizontal` it is distributed and then squeezed. IBM's own
+             page-header puts its tags in an unclassed box of siblings.
+             composing-pages.md §3.10. -->
+        <div>
+          <div class="rux--tag rux--tag--red rux--tag--sm"><span class="rux--tag__label">Draft</span></div>
+          <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Recovery</span></div>
+          <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Storage</span></div>
+          <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Updated 2026-09-08</span></div>
         </div>
-      </form>
-      <!-- BLOCK:END form -->
-      <!-- SLOT:END body -->
-      </div>
+        <!-- BLOCK:END document-header -->
 
+        <!-- BLOCK:BEGIN name=document-status label="Document status banner" -->
+        <!-- REPLACE, or delete the block. A document that has not been checked
+             end to end says so at the top, where a reader sees it before
+             starting rather than after failing. `role="status"` and not
+             `role="alert"`: it is true of the page, not of something that just
+             happened. -->
+        <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+          <div class="rux--inline-notification__details">
+            <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+            <div class="rux--inline-notification__text-wrapper">
+              <div class="rux--inline-notification__title">Not yet verified</div>
+              <div class="rux--inline-notification__subtitle">This template describes an imaginary product and records nothing that was performed. It exists to demonstrate the shape.</div>
+            </div>
+          </div>
+        </div>
+        <!-- BLOCK:END document-status -->
+
+        <!-- BLOCK:BEGIN name=at-a-glance label="At a glance checklist" -->
+        <!-- REPLACE: the summary of the whole procedure, one row per section,
+             so a reader can see the shape before committing to it.
+
+             IT CARRIES NO TICK-WHEN-DONE COLUMN, AND THAT IS A LOSS, recorded
+             here rather than quietly dropped. Two drafts of this block had one
+             and both were wrong in a way only a gate caught:
+
+               - `checkbox--inline` inside a plain `<td>` failed
+                 check-ancestry. Carbon nests that class inside
+                 `.rux--table-column-checkbox` in ALL SEVEN captures that
+                 render it — it is the selection column's wrapper and nothing
+                 else.
+               - the standalone `form-item checkbox-wrapper` in a `<td>`
+                 passed every class gate and then failed check-spacing:
+                 marginBlockEnd -3px against Carbon's 6px/3px, marginBlockStart
+                 -3px against -2px. Carbon's checkbox margins are written for a
+                 vertical group, and a table cell is not one.
+
+             So Carbon has NO ATTESTED CHECKBOX IN A DATA TABLE except the
+             selection column, and a document's tick-when-done box is not row
+             selection — adopting that column would hand it to js/data-table.js
+             (data-table.js:209), which would mark rows `--selected` and look
+             for a batch-action bar this page has none of. A consumer that wants
+             a checklist should add an attested `rux--checkbox-group` fieldset
+             as its own block, not a column here. -->
+        <section aria-labelledby="doc-glance">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <h2 class="rux--type-productive-heading-03" id="doc-glance">At a glance</h2>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">Phase</th>
+                    <th scope="col">Where</th>
+                    <th scope="col">What it achieves</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0</td>
+                    <td>Choose a snapshot</td>
+                    <td>A snapshot id, and evidence that it completed</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">1</td>
+                    <td>Restore into staging</td>
+                    <td>A staging target holding the restored data</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">2</td>
+                    <td>Promote the target</td>
+                    <td>Live traffic served from the restored data</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END at-a-glance -->
+
+        <!-- BLOCK:BEGIN name=section-plain label="Numbered section" -->
+        <!-- REPLACE: one numbered section. THIS IS THE REPEATING UNIT of the
+             page — copy it as many times as the document has phases, and give
+             each a new id.
+
+             THE ROUTE LINE IS A BREADCRUMB AND CARRIES NO `<nav>`. Two separate
+             decisions, both deliberate:
+
+             `rux--breadcrumb` rather than a row of tags, because a tag caps at
+             13rem and ellipsises and a route is the one label a reader needs
+             whole. Measured — see BEHAVIOUR at the top of this file.
+
+             No `<nav>` wrapper, although the capture has one, because this is
+             not navigation: it describes where to go in ANOTHER product. Four
+             sections would otherwise put four bogus navigation landmarks on the
+             page. The `aria-label` moves to the list, and a visually hidden
+             lead-in makes it read sensibly aloud.
+
+             EVERY SEGMENT IS A BARE `<span>` EXCEPT THE LAST. A bare span
+             inherits text-primary and cursor auto, so it reads as text; an
+             `a.rux--link` here is link-blue with a pointer cursor and would
+             claim a menu name is clickable. The last segment takes the
+             captured `--current` markup because it is the screen the reader
+             ends on. `--no-trailing-slash` stops the route ending in a
+             separator. -->
+        <section aria-labelledby="doc-phase-0">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <!-- THE PHASE TAG IS A SIBLING OF THE HEADING, NOT INSIDE IT. Carbon
+                 renders a read-only tag on a <div> and check-tags fails a <span> —
+                 and a <div> inside an <h2> is invalid, because a heading takes
+                 phrasing content only. A plain wrapper keeps the pair as ONE stack
+                 child, so the kicker sits tight above its heading instead of taking
+                 a full stack step away from it. -->
+            <div>
+              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 0</span></div>
+              <h2 class="rux--type-productive-heading-03" id="doc-phase-0">Choose a snapshot</h2>
+            </div>
+            <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 0 happens">
+              <li class="rux--breadcrumb-item"><span class="rux--visually-hidden">Go to </span><span>Console</span></li>
+              <li class="rux--breadcrumb-item"><span>Backup and Recovery</span></li>
+              <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><span class="rux--link" aria-current="true">Snapshots</span></li>
+            </ol>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Do this</th>
+                    <th scope="col">You should see</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0.1</td>
+                    <td>Open <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Snapshots</span></div> and filter to the affected service</td>
+                    <td>A list ordered newest first, each row carrying a size and a completed time</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0.2</td>
+                    <td>Choose the newest snapshot whose state reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
+                    <td>The row expands to show the byte count and the checksum</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0.3</td>
+                    <td>Copy the snapshot id into the run record below</td>
+                    <td>An id of the form <div class="rux--tag rux--tag--gray rux--tag--sm"><span class="rux--tag__label">snap-0000-0000</span></div></td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0.4</td>
+                    <td>Export the manifest for the record <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Optional</span></div></td>
+                    <td>A file download, named for the snapshot id</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END section-plain -->
+
+        <!-- BLOCK:BEGIN name=section-note label="Numbered section with a note" -->
+        <!-- REPLACE: the same unit with a callout between the route and the
+             table. `role="status"` rather than `role="status"`: it is part of the
+             document, not a report of anything that changed. A callout goes
+             where it is relevant — before the steps it qualifies, never
+             collected at the end where a reader meets it too late. -->
+        <section aria-labelledby="doc-phase-1">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <!-- THE PHASE TAG IS A SIBLING OF THE HEADING, NOT INSIDE IT. Carbon
+                 renders a read-only tag on a <div> and check-tags fails a <span> —
+                 and a <div> inside an <h2> is invalid, because a heading takes
+                 phrasing content only. A plain wrapper keeps the pair as ONE stack
+                 child, so the kicker sits tight above its heading instead of taking
+                 a full stack step away from it. -->
+            <div>
+              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 1</span></div>
+              <h2 class="rux--type-productive-heading-03" id="doc-phase-1">Restore into staging</h2>
+            </div>
+            <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 1 happens">
+              <li class="rux--breadcrumb-item"><span class="rux--visually-hidden">Go to </span><span>Console</span></li>
+              <li class="rux--breadcrumb-item"><span>Backup and Recovery</span></li>
+              <li class="rux--breadcrumb-item"><span>Restore</span></li>
+              <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><span class="rux--link" aria-current="true">New Restore Job</span></li>
+            </ol>
+            <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__title">Note</div>
+                  <div class="rux--inline-notification__subtitle">A restore never writes over the live target. It builds a second one, which is what makes phase 2 a decision rather than a consequence.</div>
+                </div>
+              </div>
+            </div>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Do this</th>
+                    <th scope="col">You should see</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">1.1</td>
+                    <td>Start a restore job against the snapshot id from 0.3</td>
+                    <td>The job appears as <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Running</span></div> with an estimate</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">1.2</td>
+                    <td>Wait for it to finish, then open the new target</td>
+                    <td>A target named for the job, holding the restored data</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">1.3</td>
+                    <td>Run the service's own consistency check against it</td>
+                    <td>Every check passes, and the row count matches the manifest</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END section-note -->
+
+        <!-- BLOCK:BEGIN name=section-warning label="Numbered section with a warning" -->
+        <!-- REPLACE: the same unit again, with a warning rather than a note.
+             The distinction is not decoration — a warning names something that
+             cannot be undone, and it belongs immediately before the step that
+             does it. -->
+        <section aria-labelledby="doc-phase-2">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <!-- THE PHASE TAG IS A SIBLING OF THE HEADING, NOT INSIDE IT. Carbon
+                 renders a read-only tag on a <div> and check-tags fails a <span> —
+                 and a <div> inside an <h2> is invalid, because a heading takes
+                 phrasing content only. A plain wrapper keeps the pair as ONE stack
+                 child, so the kicker sits tight above its heading instead of taking
+                 a full stack step away from it. -->
+            <div>
+              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 2</span></div>
+              <h2 class="rux--type-productive-heading-03" id="doc-phase-2">Promote the target</h2>
+            </div>
+            <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 2 happens">
+              <li class="rux--breadcrumb-item"><span class="rux--visually-hidden">Go to </span><span>Console</span></li>
+              <li class="rux--breadcrumb-item"><span>Services</span></li>
+              <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><span class="rux--link" aria-current="true">Routing and Targets</span></li>
+            </ol>
+            <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__title">This step cannot be undone</div>
+                  <div class="rux--inline-notification__subtitle">Promotion retires the previous target. Anything written to it after the snapshot was taken is not carried across, and there is no second promotion back.</div>
+                </div>
+              </div>
+            </div>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Do this</th>
+                    <th scope="col">You should see</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">2.1</td>
+                    <td>Point the service at the restored target</td>
+                    <td>The routing entry names the new target</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">2.2</td>
+                    <td>Choose <div class="rux--tag rux--tag--purple rux--tag--sm"><span class="rux--tag__label">Promote</span></div> and confirm</td>
+                    <td>The previous target moves to <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Retired</span></div></td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">2.3</td>
+                    <td>Watch the service's health for one full check interval</td>
+                    <td>The service reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Healthy</span></div> against the restored data</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END section-warning -->
+
+        <!-- BLOCK:BEGIN name=run-record label="Run record" -->
+        <!-- REPLACE, or delete the block. A table the reader FILLS IN as they
+             go, so the values a later phase needs are written down when the
+             earlier one produces them. The empty cells are the point. -->
+        <section aria-labelledby="doc-record">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <h2 class="rux--type-productive-heading-03" id="doc-record">Run record</h2>
+            <p>Fill each row in as its step is reached. The <strong>From</strong> column names the step that produces the value.</p>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">Field</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">From</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="rux--data-table--cell-secondary-text">Snapshot id</td><td></td><td>0.3</td></tr>
+                  <tr><td class="rux--data-table--cell-secondary-text">Restore job id</td><td></td><td>1.1</td></tr>
+                  <tr><td class="rux--data-table--cell-secondary-text">Promoted at</td><td></td><td>2.2</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END run-record -->
+
+        <!-- BLOCK:BEGIN name=troubleshooting label="Troubleshooting" -->
+        <!-- REPLACE, or delete the block. Keyed by phase, so a reader who is
+             stuck can find their row without reading the whole table. -->
+        <section aria-labelledby="doc-trouble">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <h2 class="rux--type-productive-heading-03" id="doc-trouble">Troubleshooting</h2>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">Phase</th>
+                    <th scope="col">Symptom</th>
+                    <th scope="col">Cause</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">0</td>
+                    <td>No snapshot reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
+                    <td>The schedule is paused, so every snapshot listed was cancelled part way</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">1</td>
+                    <td>The consistency check fails on a restored target</td>
+                    <td>The snapshot was taken during a write, and only a quiesced one is safe to restore</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">2</td>
+                    <td>Health stays amber after promotion</td>
+                    <td>The service caches its target for one check interval; longer than that is a real fault</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- BLOCK:END troubleshooting -->
+
+        <!-- BLOCK:BEGIN name=downstream label="Downstream" -->
+        <!-- REPLACE, or delete the block. What this document hands to the next
+             one. A document read in order ends by saying where the reader goes
+             next, rather than stopping. -->
+        <section aria-labelledby="doc-downstream">
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <h2 class="rux--type-productive-heading-03" id="doc-downstream">Downstream</h2>
+            <div class="rux--data-table--max-width">
+              <table class="rux--data-table rux--data-table--sm rux--data-table--top-aligned-body">
+                <thead>
+                  <tr>
+                    <th scope="col">Now that…</th>
+                    <th scope="col">Next document</th>
+                    <th scope="col">Start at</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">The service is healthy on restored data</td>
+                    <td>Close a recovery and file the record</td>
+                    <td>Phase 0</td>
+                  </tr>
+                  <tr>
+                    <td class="rux--data-table--cell-secondary-text">A snapshot was found unusable</td>
+                    <td>Re-arm the snapshot schedule</td>
+                    <td>Phase 1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>See also the <a class="rux--link rux--link--inline" href="#main-content">runbook index</a>, which lists every document built from this template.</p>
+          </div>
+        </section>
+        <!-- BLOCK:END downstream -->
+
+        <!-- SLOT:END body -->
+      </div>
     </div>
   </div>
 </main>

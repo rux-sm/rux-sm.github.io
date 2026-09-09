@@ -39,9 +39,53 @@
 
    THE MARKUP IS THE API. A `.rux--date-picker--next` containing a
    `.rux--date-picker__calendar-container` is claimed on load; the module
-   fills the calendar and owns it from there. No attribute to write — the
-   trigger is `.rux--date-picker__icon` inside the same root, so the markup
-   already relates them, which is the rule menu.js settled.
+   fills the calendar and owns it from there. The trigger is
+   `.rux--date-picker__icon` inside the same root, so the markup already
+   relates them and there is nothing to write, which is the rule menu.js
+   settled.
+
+   AND SINCE 2026-09-08 A PAGE MAY OWN THE TRIGGER: `data-rux-open="<id>"`
+   naming the picker's root opens it from anywhere in the document. Asked for
+   by rux-scheduler, whose week label is the control that should jump the
+   calendar and sits in a toolbar far from the picker. THIS IS NOT A NEW
+   CONTRACT — it is the one modal and menu already keep, and popover.js states
+   the test it has to pass: an attribute appears only when trigger and surface
+   are too far apart for the markup to relate them. A toolbar label and a
+   calendar in the page body are exactly that. Each module claims only the
+   `[data-rux-open]` whose id resolves to a surface it recognises, so the three
+   do not collide.
+
+   THE OPENER BECOMES THE ANCHOR AND THE FOCUS DESTINATION. Both matter and
+   neither is decoration: the kernel treats a press on the anchor as INSIDE
+   (`overlay.js:122`), so without this a click on the page's own trigger would
+   read as an outside press, close the calendar, and let the same click reopen
+   it. Focus returns to the opener rather than to the input, which is what
+   makes the next point safe.
+
+   THE INPUT MAY BE `hidden`, AND THAT NEEDS NO CSS — measured, not reasoned.
+   rux-scheduler asked for a picker whose value is read rather than shown,
+   because a toolbar reading "Sep 7 - 13, 2026" beside a `2026-09-07` field is
+   one week displayed twice. Writing `hidden` on `.rux--date-picker__input`
+   computes `display: none` and a 0x0 box on the built page.
+
+   WHICH CONTRADICTS WHAT THIS HEADER SAID BELOW, and the correction is left in
+   the open rather than quietly applied. The note beginning "THE `hidden`
+   ATTRIBUTE DOES NOT WORK HERE" reasons that a `display: block` rule at
+   specificity (0,2,0) beats the UA rule. It does not, in Chrome 152: the UA
+   sheet declares `[hidden] { display: none !important }`, so an author
+   declaration loses unless it is itself `!important`. Proved with a bare
+   `<div hidden>` carrying an INLINE `display: block`, which still computes
+   `none`, and an inline `display: block !important`, which computes `block`.
+   The detach design that note justifies is UNCHANGED and still right for its
+   own reason — React mounts the container only while open, and a detached
+   calendar is absent from the accessibility tree rather than merely invisible.
+   Only the stated reason was wrong.
+
+   A HIDDEN INPUT REQUIRES A PAGE-OWNED TRIGGER, and the module does not
+   enforce it. Focus has to land somewhere on close; with no opener and no
+   visible input there is nowhere, and focus falls to the body. That is the
+   consumer's contract to keep. So is the accessible name: a hidden input is
+   hidden from an AT too, so the trigger must carry the value the input holds.
 
    THE CALENDAR IS NOT PORTALED, matching the reference: it sits inside the
    root as a sibling of the containers, and `__calendar-container` is what
@@ -95,7 +139,16 @@
    TWO containers, --from and --to, sharing ONE calendar.
    NOT VERIFIED LIVE: the keyboard model. No key was pressed on the running
    Carbon picker, so arrow/Home/End/PageUp behaviour here follows the ARIA
-   grid pattern rather than a reading of Carbon's. */
+   grid pattern rather than a reading of Carbon's.
+   NOT CARBON'S AT ALL, added 2026-09-08: the `data-rux-open` trigger and the
+   hidden input. Carbon React has no external trigger and no input-less
+   picker -- it takes an `open` prop and a controlled value, which is not a
+   thing markup can express -- so this is NOT a reimplementation of anything
+   observed there and is not claimed as one. It is this layer's own
+   trigger/surface contract, already kept by modal.js and menu.js, extended to
+   a third surface. What was measured on the built page rather than reasoned:
+   `hidden` on `.rux--date-picker__input` computes `display: none`, box 0x0,
+   in Chrome 152. */
 
 (function () {
   'use strict';
@@ -112,6 +165,11 @@
   // `open` is unprefixed, like every other day-state class here.
   var OPEN = 'open';
   var DAY = 'rux--date-picker__day';
+
+  // ROOT -> ITS CONTROLLER, so the document-level [data-rux-open] listener can
+  // reach a picker claim() has already wired. A Map rather than a property on
+  // the element: nothing outside this module has any business calling these.
+  var pickers = new Map();
 
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
@@ -168,7 +226,7 @@
     var view = parse(inputs[0].value) || today;
     view = new Date(view.getFullYear(), view.getMonth(), 1);
     var cursor = parse(inputs[0].value) || today;
-    var open = false, release = null, active = 0;
+    var open = false, release = null, active = 0, openedBy = null;
 
     function selection() {
       return inputs.map(function (i) { return parse(i.value); });
@@ -205,9 +263,13 @@
 
     // `adopting` is true only for a calendar the MARKUP declared open, which
     // this module renders at load. See the register() call for why it matters.
-    function show(which, adopting) {
+    function show(which, adopting, opener) {
       active = which || 0;
       if (open) { render(); return; }
+      // The element that opened it, when the page owns the trigger. Held for
+      // the whole open, because both the anchor and the focus destination read
+      // it, and the second one is read after the click is long gone.
+      openedBy = opener || null;
       open = true;
       attach();
       container.hidden = false;
@@ -218,7 +280,11 @@
       render();
       release = window.Rux.overlay.register({
         element: container,
-        anchor: icons[active] || inputs[active],
+        // A PRESS ON THE ANCHOR IS INSIDE (overlay.js:122). With the opener
+        // left out, a click on the page's own trigger would read as an outside
+        // press, close the calendar, and be handled again by the listener
+        // below, which would reopen it -- a toggle that never toggles.
+        anchor: openedBy || icons[active] || inputs[active],
         close: hide,
         dismissOn: { outside: true, escape: true },
         // `dismissOthers: false` WHEN ADOPTING, AND ITS ABSENCE COST EXACTLY
@@ -247,7 +313,13 @@
       container.hidden = true;
       detach();
       if (release) { release(); release = null; }
-      if (!opts || opts.restoreFocus !== false) (inputs[active] || inputs[0]).focus();
+      // THE OPENER FIRST, and it is not a preference: a page that hides the
+      // input has nowhere else to put focus, and .focus() on a display:none
+      // element is a silent no-op rather than an error, so getting this wrong
+      // loses focus to the body without saying anything.
+      if (!opts || opts.restoreFocus !== false)
+        (openedBy || inputs[active] || inputs[0]).focus();
+      openedBy = null;
     }
 
     function pick(dateStr) {
@@ -331,7 +403,26 @@
     // built, then take it out of the document.
     if (calendar.classList.contains(OPEN)) { open = false; show(0, true); }
     else { render(); container.hidden = true; detach(); }
+
+    pickers.set(root, {
+      show: show, hide: hide, isOpen: function () { return open; }
+    });
   }
+
+  // THE PAGE-OWNED TRIGGER. Delegated at the document, the way modal.js and
+  // menu.js both do it, so a trigger rendered after load still works.
+  // `pickers.has(root)` is what keeps the three modules out of each other's
+  // way: each claims only the ids that resolve to a surface it recognises.
+  document.addEventListener('click', function (event) {
+    var trigger = event.target.closest('[data-rux-open]');
+    if (!trigger) return;
+    var root = document.getElementById(trigger.getAttribute('data-rux-open'));
+    if (!root) return;
+    var picker = pickers.get(root);
+    if (!picker) return;
+    event.preventDefault();
+    if (picker.isOpen()) picker.hide(); else picker.show(0, false, trigger);
+  });
 
   function init(scope) {
     [].slice.call((scope || document).querySelectorAll(ROOT)).forEach(claim);

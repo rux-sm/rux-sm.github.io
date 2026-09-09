@@ -1,7 +1,8 @@
-tag     v0.1.11
-commit  a0196fab6249f5796e9b49db29981117d7fd4328
-date    2026-09-07T22:33:33Z
-subject docs(skill): Add a settling condition to sweeps
+tag     v0.1.12
+commit  b3eef080a561e71b95f6ff28f241fa2c910107b7
+date    2026-09-09T22:14:31Z
+subject feat(gates): List pages.yml as a control
+sha256  1a43baf6b9c0fd9d13b9f21d84e9f7bdb5a8600fed12e4f28506884a6b683907
 
 Written by rux-ds tools/new-project.sh from the tag, not the tree. Re-run it to move
 the pin; do not edit anything under vendor/, the next run overwrites it.

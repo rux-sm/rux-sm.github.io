@@ -27,13 +27,32 @@
 //
 // It exits 1 on a failure. The commit hook and the Pages workflow both run it.
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 
 // Runs on import, exits 1 on a failure, and RETURNS on a pass -- so everything
-// below it runs only when the shared check is clean. Nothing goes before it.
+// below it runs only when the shared check is clean. Nothing goes before it,
+// because the sprite check right after this line reads
+// vendor/rux-ds/assets/icons.svg, and only a passing app-check has confirmed
+// that tree is actually there.
 await import('../vendor/rux-ds/tools/app-check.mjs');
 
 let bad = 0;
 const fail = m => { console.log('  FAIL  ' + m); bad++; };
+
+// THE SPRITE, PASTED WHOLE, MUST BE CURRENT. Added 2026-09-09, adapted from
+// rux-scheduler's tools/sprite.mjs: a pin move rewrites vendor/rux-ds/ and
+// deliberately leaves pages alone, and the shared check's sprite rule only
+// asks whether every inlined symbol is SOMEWHERE in what rux-ds ships, never
+// whether the paste is CURRENT and complete. Found live on this repository,
+// 2026-09-09: both pages were missing four symbols the pin already carried,
+// index.html since accessibility/hotel joined at v0.1.8 and account/index.html
+// since it was scaffolded holding only the three it happened to use. Neither
+// is wrong markup -- every check before this one passed -- and neither was
+// visible without running `node tools/sprite.mjs --check` by hand, which
+// nothing did.
+if (spawnSync(process.execPath, ['tools/sprite.mjs', '--check'], { stdio: 'inherit' }).status !== 0) {
+  fail('sprite: see node tools/sprite.mjs --check above');
+}
 
 // THE MODULE REGISTRY. Two things can go wrong and both are quiet: a list that
 // does not parse, and a path no site can have.

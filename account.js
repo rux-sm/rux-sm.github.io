@@ -1,7 +1,7 @@
 /* ==========================================================================
    Rux Apps — ACCOUNT                                  roadmap.md §4.13 step 5
    --------------------------------------------------------------------------
-   Loads after rux-ds's vendor/rux-ds/js/profile.js, which must run first and
+   Loads after rux-ds's js/profile.js, which must run first and
    which this depends on for window.Rux.profile. Opens an anonymous Supabase
    session on first visit, reads and writes the cloud half of the profile
    js/profile.js already keeps in this browser, and wires the sign-in button

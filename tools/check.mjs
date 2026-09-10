@@ -11,13 +11,19 @@
 // alone, so the wiring never travelled. rux-scheduler has had it from the day
 // it was scaffolded.
 //
+// SINCE 2026-09-10 THIS REPOSITORY VENDORS NOTHING (rux-ds roadmap §8.4 step
+// 5). Both pages link /rux-ds/… on the shared origin, so the shared check
+// resolves them against the rux-ds checkout beside this repository, or
+// DS=<dir>. Locally that is rux-ds on main; the Pages workflow checks rux-ds
+// out at its newest tag first -- what is live at /rux-ds/ -- and runs this
+// with DS set.
+//
 // WHAT THE OLD LOOP MISSED, and this is why it is replaced rather than kept
 // beside: it read `index.html`, `switcher.js`, `account.js` and
 // `account/index.html` BY NAME, so a page added here was checked by nothing;
 // and it read classes only, so no token was ever checked anywhere in this
 // repository. The shared check walks every page, script and stylesheet, and
-// adds tokens, file references and id references. Its pin rule is the same one
-// this file carried. Nothing the old loop did is lost.
+// adds tokens, file references and id references.
 //
 // THE SWITCHER RULES STAY HERE because they are not shareable: switcher.json is
 // the account's module registry and exists in this repository alone. rux-ds
@@ -26,21 +32,30 @@
 //   node tools/check.mjs
 //
 // It exits 1 on a failure. The commit hook and the Pages workflow both run it.
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 // Runs on import, exits 1 on a failure, and RETURNS on a pass -- so everything
 // below it runs only when the shared check is clean. Nothing goes before it,
-// because the sprite check right after this line reads
-// vendor/rux-ds/assets/icons.svg, and only a passing app-check has confirmed
-// that tree is actually there.
-await import('../vendor/rux-ds/tools/app-check.mjs');
+// because the sprite check right after this line reads rux-ds's
+// assets/icons.svg, and only a passing app-check has confirmed that tree is
+// actually there.
+const root = new URL('..', import.meta.url).pathname;
+process.chdir(root);
+const DS = resolve(root, process.env.DS ?? '../rux-ds');
+if (!existsSync(join(DS, 'tools/app-check.mjs'))) {
+  console.log(`  FAIL  ds: no rux-ds at ${DS} -- clone it beside this repository, or set DS=<dir>`);
+  process.exit(1);
+}
+await import(pathToFileURL(join(DS, 'tools/app-check.mjs')).href);
 
 let bad = 0;
 const fail = m => { console.log('  FAIL  ' + m); bad++; };
 
 // THE SPRITE, PASTED WHOLE, MUST BE CURRENT. Added 2026-09-09, adapted from
-// rux-scheduler's tools/sprite.mjs: a pin move rewrites vendor/rux-ds/ and
+// rux-scheduler's tools/sprite.mjs: a release changes the sprite and
 // deliberately leaves pages alone, and the shared check's sprite rule only
 // asks whether every inlined symbol is SOMEWHERE in what rux-ds ships, never
 // whether the paste is CURRENT and complete. Found live on this repository,
@@ -49,8 +64,8 @@ const fail = m => { console.log('  FAIL  ' + m); bad++; };
 // since it was scaffolded holding only the three it happened to use. Neither
 // is wrong markup -- every check before this one passed -- and neither was
 // visible without running `node tools/sprite.mjs --check` by hand, which
-// nothing did.
-if (spawnSync(process.execPath, ['tools/sprite.mjs', '--check'], { stdio: 'inherit' }).status !== 0) {
+// nothing did. It reads the same rux-ds the check above did.
+if (spawnSync(process.execPath, ['tools/sprite.mjs', '--check'], { stdio: 'inherit', env: { ...process.env, DS } }).status !== 0) {
   fail('sprite: see node tools/sprite.mjs --check above');
 }
 

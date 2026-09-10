@@ -3,6 +3,14 @@ name: pages
 # A push to main publishes the account's root site. The check runs first and
 # the deploy happens only if it passes; a failing push stays in git and the
 # last good deployment keeps serving.
+#
+# THE PAGES LINK /rux-ds/… ON THE SHARED ORIGIN (since 2026-09-10, rux-ds
+# roadmap §8.4 step 5), so the check resolves them against rux-ds at the tag
+# that is live there: the newest one. Locally the same check reads the
+# sibling checkout on main; a class added on main passes there and fails here
+# until it is tagged -- the right failure. The ref column is cut before
+# sort -V, because ls-remote prints the commit first and sorting whole lines
+# orders by commit (rux-ds roadmap §8.4, diff C).
 
 on:
   push:
@@ -23,10 +31,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          path: site
+      - id: tag
+        run: echo "tag=$(git ls-remote --tags --refs https://github.com/rux-sm/rux-ds.git 'v*' | awk -F/ '{print $NF}' | sort -V | tail -1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: rux-sm/rux-ds
+          ref: ${{ steps.tag.outputs.tag }}
+          path: rux-ds
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: node tools/check.mjs
+        working-directory: site
+        env:
+          DS: ../rux-ds
 
   deploy:
     needs: check

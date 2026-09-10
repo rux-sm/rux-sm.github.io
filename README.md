@@ -9,14 +9,15 @@ has nothing else to navigate to (rux-ds roadmap §4.13 step 6).
 
 ## How it is built
 
-Started with one command from a rux-ds checkout at a tag:
+Started with one command from a rux-ds checkout:
 
 ```sh
 sh rux-ds/tools/new-project.sh ~/Developer/rux-sm.github.io --name Apps --title "Rux Apps"
 ```
 
-That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
-`index.html` from the template. Everything else here is this repository's own:
+That wrote the two customization files and `index.html` from the template,
+linking `/rux-ds/…` on the shared account-root origin — nothing of rux-ds is
+copied here. Everything else here is this repository's own:
 
 | File | What |
 |---|---|
@@ -24,9 +25,9 @@ That wrote `vendor/rux-ds/` with a `PIN`, the two customization files, and
 | `switcher.js` | Fetches that list and fills the switcher panel and the landing grid; a module served alone keeps the entries it shipped. **The grid drops the app you are on** — since 2026-09-07, a tile pointing at the page under it is not a destination — while the panel keeps it, marked `aria-current`. A grid tile is an icon, the name and three or four words; with no `icon` key it draws a filled 32px swatch (`layer-accent-01`) so a real one costs no layout later |
 | `account.js` | The cloud half of the profile (rux-ds roadmap §4.13 step 5): anonymous sign-in gated on Turnstile, syncs `platform.profiles`, wires GitHub linking. Adds the "Account settings" link into the panel and exposes `window.Rux.account` for `/account/`'s own script |
 | `account/` | The full profile page — avatar, display name, theme, GitHub connection status — not a switcher app, reached only via the panel's link or its own URL |
-| `tools/check.mjs` | The check: every class resolves in the vendored stylesheet, the list parses, the pin names a tag |
-| `tools/serve.mjs` | `node tools/serve.mjs`, port 8643 |
-| `.github/workflows/pages.yml` | Check, then deploy. A failing push is never served |
+| `tools/check.mjs` | The check: every class resolves against rux-ds (the sibling checkout, or `DS=<dir>`), the list parses |
+| `tools/serve.mjs` | `node tools/serve.mjs` — rux-ds's workspace server on :8640, this hub at `/` |
+| `.github/workflows/pages.yml` | Checks rux-ds out at its newest tag, checks, then deploys. A failing push is never served |
 
 ## Apps
 
@@ -37,9 +38,10 @@ the header and the switcher match everywhere while the side nav and the
 page are the app's own. Older projects join when they are rebuilt on
 rux-ds.
 
-## Moving the design-system pin
+## Which rux-ds this site is on
 
-The recipe is rux-ds's — `docs/starting-a-project.md`, "Moving the pin" —
-kept in one place so this copy cannot drift from it. The one fact that is this
-repository's own: `tools/check.mjs` refuses a `PIN` that names no tag, so a pin
-taken between tags never deploys.
+The one that is live. Since 2026-09-10 there is no pin to move: a rux-ds
+release reaches this site on its next deploy, checked first against every
+served app by rux-ds's own Pages workflow (rux-ds roadmap §8.4 diff B).
+`rux-ds` cloned beside this repository is required to check or serve it
+locally.

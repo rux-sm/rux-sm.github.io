@@ -1,33 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#f4f4f4">
 <title>Rux</title>
-<!-- Official mark, the dachshund drawn by rux on a 16 pixel grid on
-     2026-09-07, fourth and current revision of that day. Byte for byte the
-     same geometry as brand/favicon.svg: one drawing for the header, the tab
-     strip and the app icons, which is what rux asked for after the wide mark
-     and a narrow brand mark would have been two.
-     114 filled cells, bounds x=1..15 and y=1..15: ONE CELL OF AIR ON
-     EVERY SIDE, so the mark is square and inside the 28-of-32 safe area an
-     icon wants. The 16 columns go tail 1, back 2, ear 2, ear gap 1, head 5,
-     muzzle 3, with a column spare on each edge. Measured against the masks a
-     launcher actually applies, it loses NO cells to a circular mask, to an
-     iOS superellipse or to the 28-of-32 area; the edge-to-edge mark it
-     replaces lost 3, 0 and 8.
-     The legs and the tail are ONE cell wide, and that is rux's considered
-     choice: in Chrome, across the two leg rows, 16 CSS pixels give 4 solid
-     device pixels alternating with single gaps, and 20 pixels give 2 solid
-     against 14 partly transparent, which reads as a grey band rather than as
-     four legs. 17 one-cell-wide strokes. Whole-pixel sizes are exact.
-     One path, 3 closed loops: the boundary of the filled region rather
-     than abutting rectangles, which anti alias their shared edges at
-     fractional scales. Default nonzero fill; the outer loop winds clockwise
-     and the two counters anticlockwise. 0 partly transparent pixels at 16,
-     32, 48 and 64; 85 at 20 and 72 at 24, against 88 and 93 for the wider
-     drawing, so the padding costs nothing at a fractional size and gains
-     there.
-     THE AIR IS BACK. The revision this replaces filled all 16 columns, so the
-     header logo touched its own box and the generated icons carried no margin
-     of their own. Gray 10 for dark surfaces; generated light icons use gray
-     100. Whole device pixels at sizes divisible by 16. The 24 CSS pixel
-     header has 1.5px cells at 1x and 3px cells at 2x. -->
-<path d="M7 1L12 1L12 4L15 4L15 7L12 7L12 13L11 13L11 15L10 15L10 13L9 13L9 15L8 15L8 13L6 13L6 15L5 15L5 13L4 13L4 15L3 15L3 13L2 13L2 9L1 9L1 4L2 4L2 8L7 8L7 3L6 3L6 7L4 7L4 2L7 2ZM9 2L8 2L8 4L9 4ZM11 2L10 2L10 4L11 4Z"/>
+<!-- Official mark, the dachshund redrawn by rux on 2026-09-10. Byte for byte
+     the same geometry as brand/favicon.svg: one drawing for the header, the
+     tab strip and the app icons.
+     It replaces the 2026-09-07 revision, which had 114 cells. This one is
+     lighter at 97, keeping the head, the ear and the three cell muzzle and
+     taking the weight out of the back and the legs.
+     PORTED, NOT REDRAWN HERE. rux exported it on a 67 unit artboard whose
+     grid step was 4.1667, so no size rendered on whole pixels. Every
+     coordinate in that export was an exact multiple of the step, so the port
+     is a division: each landed on a whole cell of this 16 grid with nothing
+     rounded away, and the geometry is rux's own, unchanged.
+     97 filled cells, bounds x=1..15 and y=2..14: ONE CELL OF AIR left and
+     right, TWO top and bottom. Measured against the masks a launcher
+     actually applies, it loses NO cells to a circular mask, to an iOS
+     superellipse or to the 28 of 32 safe area, the same as the mark it
+     replaces.
+     One path, 3 closed loops, and the winding is load bearing: the outer
+     loop runs anticlockwise and the two eye counters clockwise, so under the
+     default nonzero fill the eyes stay holes. Checked both ways, even odd
+     and nonzero, and both count 97.
+     Gray 10 for dark surfaces; generated light icons use gray 100. Whole
+     device pixels at sizes divisible by 16. The 24 CSS pixel header has
+     1.5px cells at 1x and 3px cells at 2x. -->
+<path d="M7 2L12 2L12 5L15 5L15 8L11 8L11 13L10 13L10 14L9 14L9 13L8 13L8 14L7 14L7 13L5 13L5 14L4 14L4 13L3 13L3 14L2 14L2 13L1 13L1 6L2 6L2 9L7 9L7 4L6 4L6 8L4 8L4 3L7 3L7 2ZM9 3L8 3L8 5L9 5L9 3ZM11 3L10 3L10 5L11 5L11 3Z"/>
 </svg>

@@ -1,6 +1,7 @@
-/* rux-overrides.css -- this project's own, linked after vendor/rux-ds/css/rux-overrides.css, which is
-   rux-ds's and is overwritten on every pin move. Only what THIS project changes
-   goes here: token values inside a [data-theme] block (rux-theme.css), or
+/* rux-overrides.css -- this project's own, linked after /rux-ds/css/rux-overrides.css, served from
+   rux-ds's own repository and never copied here. Only what THIS project
+   changes goes here: token values inside a [data-theme] block
+   (rux-theme.css), or
    component rules at Carbon's own specificity with no !important
    (rux-overrides.css). Empty is the normal state. rux-ds AGENTS.md, "Where a
    change goes". */

@@ -15,6 +15,12 @@ copy of rux-ds: its pages link `/rux-ds/…` on the shared origin, and what is
 live there is rux-ds's newest release tag.
 
 ## The two things every app shares
+**The shared part of this is one document, not three.** `rux-ds/docs/consumer-policy.md`
+is what every project on rux-ds agrees to — how it is linked rather than
+vendored, what is yours and what is rux-ds's, where a colour and a component
+rule go, the one check, and how to serve the family locally. Read it first;
+what follows is only what is this repository's own. Added 2026-09-11.
+
 
 - **The design system, live.** Every page links `/rux-ds/…`; there is no pin
   to move. `CHANGES.md` in rux-ds names any class that left between two tags.

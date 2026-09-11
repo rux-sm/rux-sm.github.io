@@ -19,8 +19,19 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ds = resolve(root, process.env.DS ?? '../rux-ds');
-if (!existsSync(join(ds, 'tools/app-sprite.mjs'))) {
+if (!existsSync(join(ds, 'tools'))) {
   console.log(`  FAIL  sprite: no rux-ds at ${ds} -- clone it beside this repository, or set DS=<dir>`);
+  process.exit(1);
+}
+// RUX-DS IS THERE BUT PREDATES THE RULE. CI checks rux-ds out at its NEWEST
+// TAG, and tools/app-sprite.mjs landed on main 2026-09-11. Until that is
+// tagged this fails here and passes locally, which is the same right failure
+// a class added on main gives -- but it says so, rather than claiming the
+// checkout is absent, which is what the first message did on 2026-09-11.
+if (!existsSync(join(ds, 'tools/app-sprite.mjs'))) {
+  console.log(`  FAIL  sprite: rux-ds at ${ds} has no tools/app-sprite.mjs.`);
+  console.log('        It is on main and not yet in a release. CI reads the newest tag,');
+  console.log('        so this passes locally and fails there until rux-ds is tagged.');
   process.exit(1);
 }
 const { sprite } = await import(new URL('tools/app-sprite.mjs', `file://${ds}/`).href);

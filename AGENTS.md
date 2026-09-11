@@ -1,3 +1,7 @@
+---
+type: app
+---
+
 # AGENTS.md — the policy
 
 The one instruction file; `CLAUDE.md` imports it. `README.md` is the long

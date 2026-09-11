@@ -1,70 +1,27 @@
 #!/usr/bin/env node
 //
-// Re-inlines rux-ds's sprite into every page this repository serves, read
-// from the checkout beside this repository (or DS=<dir>) since 2026-09-10,
-// when this repository stopped vendoring a copy (rux-ds roadmap §8.4 step 5).
+// Re-inlines rux-ds's sprite into this app's pages. THE RULE IS NOT HERE:
+// rux-ds's tools/app-sprite.mjs holds it, read from the checkout beside this
+// repository (or DS=<dir>), the way tools/check.mjs imports app-check.mjs.
+// This file is the invocation and the page list, nothing else.
 //
-// ADAPTED FROM rux-scheduler's tools/sprite.mjs, 2026-09-09, for the same
-// reason it exists there: WebKit has never supported a cross-document <use>,
-// so every page pastes the sprite rather than pointing at the file, and a
-// release can change the sprite while pages stay as they are. An app that
-// moves to a release carrying new icons keeps the old paste, and nothing
-// notices -- the shared check asks whether every inlined symbol is SOMEWHERE
-// in what rux-ds ships, never that the paste is CURRENT and complete.
+// Until 2026-09-11 this was a full copy, and rux-sm.github.io's was a copy of
+// rux-scheduler's that had already drifted 13 lines from it. The only
+// behavioural difference was which directories were scanned, so that is all
+// that stayed here.
 //
-// FOUND HERE FIRST, 2026-08-31 through 2026-09-09: both pages once carried an
-// unreleased glyph pasted from rux-ds's working tree rather than a tag
-// (fixed at hub 7cfbf43), the mirror image of this tool's problem -- a page
-// can carry a symbol NEWER than the release just as easily as one OLDER than
-// it, and nothing before this file caught either direction by running a
-// command.
+//   node tools/sprite.mjs            rewrite every page that is stale
+//   node tools/sprite.mjs --check    report and exit 1, writing nothing
 //
-// PAGES ARE NAMED, NOT WALKED. index.html at the root, and every .html
-// under account/ -- the two places this repository has ever put a page,
-// confirmed 2026-09-09. A recursive walk would also be correct today; naming
-// the set is what rux-ds's own npm run icons does for templates/, and it
-// means a future private or staging folder is not swept by accident.
-//
-//   node tools/sprite.mjs            rewrite each page's SPRITE block
-//   node tools/sprite.mjs --check    exit 1 if any page is out of date
-//
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const check = process.argv.includes('--check');
-const DS = resolve(root, process.env.DS ?? '../rux-ds');
-
-const sprite = readFileSync(join(DS, 'assets/icons.svg'), 'utf8').trim();
-const BEGIN = /<!-- SPRITE:BEGIN[\s\S]*?-->\n/;
-const END = '<!-- SPRITE:END -->';
-
-const pages = [
-  ...readdirSync(root).filter(f => f.endsWith('.html')),
-  ...(existsSync(join(root, 'account')) ? readdirSync(join(root, 'account')).filter(f => f.endsWith('.html')).map(f => `account/${f}`) : []),
-];
-
-let stale = 0, written = 0;
-for (const file of pages) {
-  const path = join(root, file);
-  const html = readFileSync(path, 'utf8');
-  const begin = html.match(BEGIN);
-  const endAt = html.indexOf(END);
-  if (!begin || endAt < 0) { console.log(`  ${file} — no SPRITE block, left alone`); continue; }
-  const head = html.slice(0, begin.index + begin[0].length);
-  const tail = html.slice(endAt);
-  const next = head + sprite + '\n' + tail;
-  if (next === html) { console.log(`  ${file} — current`); continue; }
-  stale++;
-  if (check) { console.log(`  ${file} — STALE against ${DS}/assets/icons.svg`); continue; }
-  writeFileSync(path, next);
-  written++;
-  console.log(`  ${file} — rewritten`);
-}
-
-if (check && stale) {
-  console.log(`\n  ${stale} page(s) carry a sprite older than rux-ds's. Run: node tools/sprite.mjs`);
+const ds = resolve(root, process.env.DS ?? '../rux-ds');
+if (!existsSync(join(ds, 'tools/app-sprite.mjs'))) {
+  console.log(`  FAIL  sprite: no rux-ds at ${ds} -- clone it beside this repository, or set DS=<dir>`);
   process.exit(1);
 }
-console.log(`\n  ${written} page(s) rewritten from rux-ds's sprite (${(sprite.match(/<symbol/g) ?? []).length} symbols)`);
+const { sprite } = await import(new URL('tools/app-sprite.mjs', `file://${ds}/`).href);
+sprite({ root, ds, dirs: ['.', 'account'], check: process.argv.includes('--check') });

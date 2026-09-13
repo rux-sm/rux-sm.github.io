@@ -4,3 +4,15 @@
    (theme.css), or component rules at Carbon's own specificity with no
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
+
+/* Text on the warning colour: the dark one of text-primary and text-inverse.
+   Light themes use text-primary; dark themes use text-inverse. */
+:root,
+[data-theme="white"],
+[data-theme="g10"] { --scheduler-on-warning: var(--rux-text-primary); }
+[data-theme="g90"],
+[data-theme="g100"],
+[data-theme="geist"],
+[data-theme="linear"],
+[data-theme="ant-dark"],
+[data-theme="spotify"] { --scheduler-on-warning: var(--rux-text-inverse); }

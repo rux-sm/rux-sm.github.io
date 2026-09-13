@@ -84,14 +84,12 @@
   // -- the palette ----------------------------------------------------------
   // rux-ui stores a colour NAME, and its own module maps retired names to live
   // ones (orange and yellow to amber, cyan to teal). Carbon's tag palette has
-  // no amber, so amber is the one colour that cannot be honoured and renders
-  // warm-gray; it is also the most-used one. It is rux's call,
-  // listed in the site's docs/status.md: a neutral amber, or one bar hue
-  // that is not a Carbon tag.
+  // no amber, so amber is the one bar hue that is not a tag: `scheduler-bar--amber`
+  // in app.css paints it with the warning colour.
   const HUES = {
     teal: 'teal', cyan: 'teal', green: 'green', purple: 'purple',
     pink: 'magenta', magenta: 'magenta', blue: 'blue', red: 'red',
-    amber: 'warm-gray', yellow: 'warm-gray', orange: 'warm-gray',
+    amber: 'amber', yellow: 'amber', orange: 'amber',
   };
 
   // THREE LEVELS, WHICH IS RUX-UI'S OWN RULE. Its `--_tone` reads

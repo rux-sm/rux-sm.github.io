@@ -11,7 +11,7 @@
 # WHAT DOES NOT COME ACROSS. evidence/ stays in atlas -- the vendor PDFs, the
 # session help and the screenshots of a licensed environment. A guide that
 # wants to show a screenshot needs a deliberate publication decision and a
-# route, and there is none. See atlas _standards/renderer-brief.md section 6.
+# route, and there is none. See atlas standards/renderer-brief.md section 6.
 #
 #   sh tools/sync-guides.sh
 #

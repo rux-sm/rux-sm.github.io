@@ -47,7 +47,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // while a committed row said so. build.mjs imports it; nothing else defines it.
 // A NAME IS PRESENTATION, NOT CONTRACT -- atlas emits `kind` and never a
 // category. The fold itself is build.mjs's `categories()`, and atlas states
-// what it does in _standards/guide-json.md section 7.4.
+// what it does in standards/guide-json.md section 7.4.
 export const CATEGORY_NAME = { step: 'Step', config: 'Setup', info: 'Inquiry',
   result: 'Result', check: 'Checkpoint' };
 

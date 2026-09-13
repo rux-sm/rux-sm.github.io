@@ -249,7 +249,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "_standards/guide-json.md"
+                      "v": "standards/guide-json.md"
                     },
                     {
                       "t": "text",
@@ -296,7 +296,7 @@
                       "v": " and not on directory; a second reference document would earn a folder"
                     }
                   ],
-                  "text": "Settled — (b), and it publishes. It spans seven guides' worth of sessions, so hanging it off one understates it. The publishing test (_standards/guide-json.md, \"It publishes\") admits it twice over: a person sits down and reads it, and it is consulted while walking a page that publishes. emit.py --references emits it as kind: reference at contract 5. It stays in the source on file because the emitter dispatches on type: and not on directory; a second reference document would earn a folder"
+                  "text": "Settled — (b), and it publishes. It spans seven guides' worth of sessions, so hanging it off one understates it. The publishing test (standards/guide-json.md, \"It publishes\") admits it twice over: a person sits down and reads it, and it is consulted while walking a page that publishes. emit.py --references emits it as kind: reference at contract 5. It stays in the source on file because the emitter dispatches on type: and not on directory; a second reference document would earn a folder"
                 }
               ]
             },
@@ -1544,14 +1544,14 @@
             },
             {
               "t": "strong",
-              "v": "the kinds are enumerated in `_standards/guide-json.md` §7 rather than here"
+              "v": "the kinds are enumerated in `standards/guide-json.md` §7 rather than here"
             },
             {
               "t": "text",
               "v": " — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
             }
           ],
-          "text": "Each tile header carries its coordinates. · stage N · kind after the code is what places the tile when the map is drawn — the lane comes from the section it sits in. kind decides how a tile is drawn and nothing else, and the kinds are enumerated in `_standards/guide-json.md` §7 rather than here — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
+          "text": "Each tile header carries its coordinates. · stage N · kind after the code is what places the tile when the map is drawn — the lane comes from the section it sits in. kind decides how a tile is drawn and nothing else, and the kinds are enumerated in `standards/guide-json.md` §7 rather than here — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
         },
         {
           "kind": "prose",

@@ -26,8 +26,8 @@ learner types stays in their own browser, and the rail exports it as Markdown.
 2. `tools/build.mjs` turns each JSON file into a page. All markup lives there;
    pages link rux-ds at `/rux-ds/`.
 
-The data contract is atlas's `_standards/guide-json.md`, and
-`_standards/renderer-brief.md` §5 lists what bites when rendering it. Both are
+The data contract is atlas's `standards/guide-json.md`, and
+`standards/renderer-brief.md` §5 lists what bites when rendering it. Both are
 read, never re-implemented. `docs/diagram.md` is how the diagram is drawn.
 
 ## Privacy

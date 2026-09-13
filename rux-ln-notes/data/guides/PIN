@@ -1,9 +1,9 @@
-commit   b732e1c21c4cbe853a37fcf808c5ccb469d125a2
-date     2026-09-13T19:10:42Z
-subject  feat(check): Check project documents
+commit   b5d4c8efe5963a794522702ad99e61b0fac34996
+date     2026-09-13T20:46:16Z
+subject  refactor: Rename the standards and inbox folders
 contract 8 
 tier     export
-sha256   6d6b344e092c000185eecacb008734b84c774cb63de22c269181030f73004ecb
+sha256   fda4fa6434278a8f6bbe55f4155e8254799225108eb022cbfcebeaa19cdb0638
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

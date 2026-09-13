@@ -1,9 +1,9 @@
-commit   63d9d536f7f46df3214188de3a8d0c17c2653d00
-date     2026-09-12T18:15:27Z
-subject  docs(diagram): Number the walk, add two inquiries
+commit   2e7468e5e9a4acb695a804a34e738e1616508e2e
+date     2026-09-13T10:20:19Z
+subject  docs: Move open plan steps into issues
 contract 8 
 tier     export
-sha256   827b094b704a460a2bafe04b7ae2e0d7b77e081b40b30a2b8bdd7c470fe210b3
+sha256   08ca0d8603ffb08ca1e651dd41c8d18a81099e56857f9d8dadad74bf6aaab072
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

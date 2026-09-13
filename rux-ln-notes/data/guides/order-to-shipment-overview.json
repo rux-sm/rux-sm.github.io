@@ -42,18 +42,10 @@
         },
         {
           "t": "text",
-          "v": " It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what "
-        },
-        {
-          "t": "literal",
-          "v": "exchange/diagram-as-data.md"
-        },
-        {
-          "t": "text",
-          "v": " §1.2 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
+          "v": " It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what the diagram-as-data proposal of 2026-09-01 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
         }
       ],
-      "text": "This replaces the SVG it was drawn as. It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what exchange/diagram-as-data.md §1.2 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
+      "text": "This replaces the SVG it was drawn as. It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what the diagram-as-data proposal of 2026-09-01 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
     },
     {
       "kind": "prose",
@@ -549,26 +541,10 @@
             },
             {
               "t": "text",
-              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. "
-            },
-            {
-              "t": "literal",
-              "v": "exchange/send-atlas-5-reply.md"
-            },
-            {
-              "t": "text",
-              "v": " §5 settled that a reading is not a step, and "
-            },
-            {
-              "t": "literal",
-              "v": "exchange/send-atlas-4-reply.md"
-            },
-            {
-              "t": "text",
-              "v": " §1 records the five categories these tiles fall into."
+              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. The SEND-ATLAS-5 reply settled that a reading is not a step, and the SEND-ATLAS-4 reply recorded the five categories these tiles fall into; both are in git history, and this paragraph is the record."
             }
           ],
-          "text": "Seven tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. exchange/send-atlas-5-reply.md §5 settled that a reading is not a step, and exchange/send-atlas-4-reply.md §1 records the five categories these tiles fall into."
+          "text": "Seven tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. The SEND-ATLAS-5 reply settled that a reading is not a step, and the SEND-ATLAS-4 reply recorded the five categories these tiles fall into; both are in git history, and this paragraph is the record."
         },
         {
           "kind": "heading",

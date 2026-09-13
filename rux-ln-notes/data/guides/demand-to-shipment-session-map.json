@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "demand-to-shipment-session-map",
   "title": "Demand to shipment — session map",
-  "updated": "2026-09-11",
+  "updated": "2026-09-12",
   "status": "draft",
   "sources": [
     "cppat1210m000",
@@ -46,18 +46,10 @@
         },
         {
           "t": "text",
-          "v": " Sections 3 to 6 are the drawing: lanes, stages, nodes, edges. Editing a cell here and regenerating is the whole loop, and no coordinate, colour or pixel appears anywhere in this document — that split is the one "
-        },
-        {
-          "t": "literal",
-          "v": "exchange/diagram-as-data.md"
-        },
-        {
-          "t": "text",
-          "v": " §3 draws, applied to a second diagram before it becomes a second hand-placed artefact."
+          "v": " Sections 3 to 6 are the drawing: lanes, stages, nodes, edges. Editing a cell here and regenerating is the whole loop, and no coordinate, colour or pixel appears anywhere in this document — that split is the one the diagram-as-data proposal of 2026-09-01 drew, applied to a second diagram before it becomes a second hand-placed artefact."
         }
       ],
-      "text": "This file is the source. The picture is generated from it. Sections 3 to 6 are the drawing: lanes, stages, nodes, edges. Editing a cell here and regenerating is the whole loop, and no coordinate, colour or pixel appears anywhere in this document — that split is the one exchange/diagram-as-data.md §3 draws, applied to a second diagram before it becomes a second hand-placed artefact."
+      "text": "This file is the source. The picture is generated from it. Sections 3 to 6 are the drawing: lanes, stages, nodes, edges. Editing a cell here and regenerating is the whole loop, and no coordinate, colour or pixel appears anywhere in this document — that split is the one the diagram-as-data proposal of 2026-09-01 drew, applied to a second diagram before it becomes a second hand-placed artefact."
     },
     {
       "kind": "prose",
@@ -80,7 +72,7 @@
         },
         {
           "t": "literal",
-          "v": "START-HERE.md"
+          "v": "docs/START-HERE.md"
         },
         {
           "t": "text",
@@ -99,7 +91,7 @@
           "v": "which session, reached how, and what do I actually do in it."
         }
       ],
-      "text": "It is a level-2 companion, not a replacement. the source on file is level 1 — six lanes, five stages, master data through shipment — and START-HERE.md, the source on file and the spine guide all point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: which session, reached how, and what do I actually do in it."
+      "text": "It is a level-2 companion, not a replacement. the source on file is level 1 — six lanes, five stages, master data through shipment — and docs/START-HERE.md, the source on file and the spine guide all point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: which session, reached how, and what do I actually do in it."
     },
     {
       "kind": "prose",
@@ -253,15 +245,15 @@
                     },
                     {
                       "t": "text",
-                      "v": " It spans seven guides' worth of sessions, so hanging it off one understates it. "
+                      "v": " It spans seven guides' worth of sessions, so hanging it off one understates it. The publishing test ("
                     },
                     {
                       "t": "literal",
-                      "v": "exchange/send-back-2-reply.md"
+                      "v": "_standards/guide-json.md"
                     },
                     {
                       "t": "text",
-                      "v": " §5's test admits it twice over: a person sits down and reads it, "
+                      "v": ", \"It publishes\") admits it twice over: a person sits down and reads it, "
                     },
                     {
                       "t": "text",
@@ -304,7 +296,7 @@
                       "v": " and not on directory; a second reference document would earn a folder"
                     }
                   ],
-                  "text": "Settled — (b), and it publishes. It spans seven guides' worth of sessions, so hanging it off one understates it. exchange/send-back-2-reply.md §5's test admits it twice over: a person sits down and reads it, and it is consulted while walking a page that publishes. emit.py --references emits it as kind: reference at contract 5. It stays in the source on file because the emitter dispatches on type: and not on directory; a second reference document would earn a folder"
+                  "text": "Settled — (b), and it publishes. It spans seven guides' worth of sessions, so hanging it off one understates it. The publishing test (_standards/guide-json.md, \"It publishes\") admits it twice over: a person sits down and reads it, and it is consulted while walking a page that publishes. emit.py --references emits it as kind: reference at contract 5. It stays in the source on file because the emitter dispatches on type: and not on directory; a second reference document would earn a folder"
                 }
               ]
             },
@@ -377,18 +369,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " stay off. "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "exchange/send-atlas-3-reply.md"
-                    },
-                    {
-                      "t": "text",
-                      "v": " carries the reasoning"
+                      "v": " stay off. The SEND-ATLAS-3 reply of 2026-09-11 carried the reasoning; this row is the record now that the memo folder is gone"
                     }
                   ],
-                  "text": "Settled, and half of it reversed on 2026-09-11. Both configuration sessions get tiles of their own, as reads rather than numbered steps — the same class as Inventory 360, so the numbered count stays the count of things you change. The rest of this row read Master data stays off; level 1 owns it, and it excluded a class where the thing that earns a tile is narrower than the class: the test is not whether something is setup, it is whether section 7.1 already diagnoses its absence. Two members qualify and now have tiles in lane 1, unnumbered; the other eight groups of the source on file stay off. exchange/send-atlas-3-reply.md carries the reasoning"
+                  "text": "Settled, and half of it reversed on 2026-09-11. Both configuration sessions get tiles of their own, as reads rather than numbered steps — the same class as Inventory 360, so the numbered count stays the count of things you change. The rest of this row read Master data stays off; level 1 owns it, and it excluded a class where the thing that earns a tile is narrower than the class: the test is not whether something is setup, it is whether section 7.1 already diagnoses its absence. Two members qualify and now have tiles in lane 1, unnumbered; the other eight groups of the source on file stay off. The SEND-ATLAS-3 reply of 2026-09-11 carried the reasoning; this row is the record now that the memo folder is gone"
                 }
               ]
             },
@@ -429,18 +413,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ", for the panels in section 7 and for every tile's detail. "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "exchange/diagram-reply.md"
-                    },
-                    {
-                      "t": "text",
-                      "v": " §3.2 asks for exactly this, and it is right: prose inside markup is invisible to every gate in both repositories"
+                      "v": ", for the panels in section 7 and for every tile's detail. The diagram reply of 2026-09-01 asked for exactly this, and it is right: prose inside markup is invisible to every gate in both repositories"
                     }
                   ],
-                  "text": "Settled — (b), for the panels in section 7 and for every tile's detail. exchange/diagram-reply.md §3.2 asks for exactly this, and it is right: prose inside markup is invisible to every gate in both repositories"
+                  "text": "Settled — (b), for the panels in section 7 and for every tile's detail. The diagram reply of 2026-09-01 asked for exactly this, and it is right: prose inside markup is invisible to every gate in both repositories"
                 }
               ]
             },
@@ -541,18 +517,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " cannot be one, and a static stand-in would be a third artefact to maintain for a worse result. "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "PLAN.md"
-                    },
-                    {
-                      "t": "text",
-                      "v": " §8.6 carries the consequences"
+                      "v": " cannot be one, and a static stand-in would be a third artefact to maintain for a worse result."
                     }
                   ],
-                  "text": "Settled — (b). No SVG is drawn for this map at any point. The requirement is an interactive tile, an <img> cannot be one, and a static stand-in would be a third artefact to maintain for a worse result. PLAN.md §8.6 carries the consequences"
+                  "text": "Settled — (b). No SVG is drawn for this map at any point. The requirement is an interactive tile, an <img> cannot be one, and a static stand-in would be a third artefact to maintain for a worse result."
                 }
               ]
             }
@@ -579,7 +547,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The target is the "
+                  "v": ", which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The map is the "
                 },
                 {
                   "t": "literal",
@@ -587,15 +555,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " block of "
-                },
-                {
-                  "t": "literal",
-                  "v": "PLAN.md"
-                },
-                {
-                  "t": "text",
-                  "v": " §8.6, rendered as HTML and CSS from "
+                  "v": " block, rendered as HTML and CSS from "
                 },
                 {
                   "t": "literal",
@@ -603,18 +563,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". "
-                },
-                {
-                  "t": "strong",
-                  "v": "Until that exists this file is the deliverable"
-                },
-                {
-                  "t": "text",
-                  "v": ", and it is written to be read as one rather than as a caption."
+                  "v": ", and this file is written to be read on its own rather than as a caption."
                 }
               ],
-              "text": "This map is never drawn as an SVG. The site renders a diagram as <img class=\"ln-figure\">, which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The target is the diagram block of PLAN.md §8.6, rendered as HTML and CSS from rux-ds. Until that exists this file is the deliverable, and it is written to be read as one rather than as a caption."
+              "text": "This map is never drawn as an SVG. The site renders a diagram as <img class=\"ln-figure\">, which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The map is the diagram block, rendered as HTML and CSS from rux-ds, and this file is written to be read on its own rather than as a caption."
             }
           ]
         },

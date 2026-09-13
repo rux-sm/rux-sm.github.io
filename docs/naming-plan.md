@@ -48,7 +48,7 @@ NOW                                          CLEAN
 │   └── tests/RUN-SHEET-order-quantities.md  │   └── tests/RS_order-quantities.md
 ├── rux-ui/            (old app)             ├── rux-ui/            (unchanged, no collision — see below)
 ├── CLAUDE.md  rux.code-workspace            ├── CLAUDE.md  rux.code-workspace
-~/claude-config/                             ~/dotfiles/
+~/claude-config/                             ~/claude-config/  (unchanged)
 ```
 
 ## One word per app, everything derived
@@ -128,8 +128,8 @@ None left. See "Decisions taken so far".
   bookmarked link to a specific page — atlas's "what a client sees"
   language is about the content a page shows, not about an outside
   audience with existing URLs today. A stub for every renamed path would
-  be permanent upkeep serving no one but rux, whose own bookmarks he
-  updates once. If atlas's export ever reaches a real outside reader with
+  be permanent upkeep serving no one but rux, whose own bookmarks are
+  updated once. If atlas's export ever reaches a real outside reader with
   a link worth honouring, that is the day to add a redirect for that one
   path, not before. Decided 2026-09-13.
 

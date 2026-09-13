@@ -2,7 +2,7 @@
 
 One list, since 2026-09-12. An item is one line and points at the document
 that holds the reasoning; nothing is copied here. When it is done, delete the
-line. `docs/platform-consolidation-plan.md` is the plan this list serves.
+line.
 
 ## rux-ds, from the scheduler — `rux-scheduler/docs/rux-ds-requests.md` has each section
 

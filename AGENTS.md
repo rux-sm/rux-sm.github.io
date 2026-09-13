@@ -6,8 +6,7 @@ type: app
 
 The one instruction file for this repository; `CLAUDE.md` imports it.
 `README.md` is setup and the everyday commands. `docs/status.md` is what is
-unfinished. `docs/platform-consolidation-plan.md` is how this repository
-came to hold everything, and `docs/migration-start.md` what it started from.
+unfinished.
 
 ## What this repository is
 

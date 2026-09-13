@@ -58,6 +58,6 @@ deployment keeps serving. Rollback is `git revert` and push.
 ## Where it came from
 
 Until 2026-09-12 the design system and each app were separate repositories
-with their own release process. `docs/platform-consolidation-plan.md` is the
-plan that folded them in here, and `docs/migration-start.md` the state they
-were in. The old repositories stay on GitHub as history.
+with their own release process. The plan that folded them in here and the
+record of where they started were deleted on 2026-09-13, once the move was
+finished; git history keeps both. The old repositories stay on GitHub as history.

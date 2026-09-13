@@ -8,8 +8,6 @@ type: how-to
 and what goes wrong on the way. `.claude/skills/design-page/` is the ordered
 version for doing the work; the reasons live here, so a rule is written once.
 
----
-
 ## 1. Start from a template, never from scratch
 
 Each is a **complete page**, shell included. Copy the nearest shape and delete
@@ -37,8 +35,6 @@ sandbox, so its header and nav are positioned for a specimen rather than a page.
 that failed. The comment above the thing you are about to change is usually the
 answer to the question you are about to ask.
 
----
-
 ## 2. Check the component is actually compiled
 
 `docs/inventory.md` lists which Carbon components are in `css/rux.css`, with the
@@ -48,8 +44,6 @@ nothing and fails silently: the markup looks right and the page has no styling.
 `npm run verify` catches this (`check-classes` fails on a class that does not
 resolve, or whose component is not compiled). Checking first saves designing
 around something that is not there. `page-header` is cut.
-
----
 
 ## 3. The traps
 
@@ -236,16 +230,12 @@ own responsive behaviour, not a defect.
 
 ### 3.14 A toast has no region, so the app writes one
 
-Design compiles the toast card and nothing about where it sits: `@carbon/styles`
-ships no `position`, `inset`, `z-index` or stacking rule for it, and there can be
-no `rux--toast-region`, because every `rux--` class comes from Carbon. So an app
-that shows toasts writes the region itself, under its own prefix, with every value
-a `--rux-*` token. Keep the shape the same in every app: toasts sit at the top
-right, stack with `--rux-spacing-03` between them, and the newest is on top. The
-corner is a default. The scheduler puts its toasts bottom right, because Carbon's
-corner lands on its toolbar buttons. The fixed position, the gutter, the z-index
-and a narrow-width rule, so an 18rem card does not decide a 375px layout, are the
-app's.
+Carbon ships the toast card but no `position`, `inset`, `z-index` or stacking
+rule, and no `rux--` class can be added for it. An app that shows toasts writes
+the region under its own prefix, every value a `--rux-*` token, in the same
+shape everywhere: top right, `--rux-spacing-03` apart, newest on top. The corner
+is a default; the scheduler uses bottom right because the top corner covers its
+toolbar. Position, gutter, z-index and a narrow-width rule are the app's.
 
 ## 4. Where IBM's own guidance fits
 
@@ -272,8 +262,6 @@ reference, matching the compiled version and needing no network;
 `node tools/diff-fragment.mjs <name>` compares against it. The website says what
 a pattern should do; the captures say what the markup is.
 
----
-
 ## 5. Verify by opening the page
 
 **The gates cannot see everything, so looking is not optional.** Defects that
@@ -295,8 +283,6 @@ as a diagnostic; the required coverage is still the sink's.
 `docs/verifying-templates.md` covers behaviour: a template's behaviour is
 verified against a **running Carbon page**, never derived from `css/rux.css`,
 because the stylesheet gives the mechanism and not the intent.
-
----
 
 ## What this does not cover
 

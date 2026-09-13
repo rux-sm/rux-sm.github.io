@@ -12,8 +12,6 @@ by hand.
 `build-specimen-kinds.mjs` and `build-tile-looks.mjs` cite §-numbers in this file. Add
 anything new at the front without a number, or at the back with the next one.
 
----
-
 ## Purpose
 
 **One map of the order-to-shipment chain: every path and branch that leads to a
@@ -45,22 +43,18 @@ them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
 
 ## Scope — what the overview is missing
 
-**Three gaps, all atlas's to author.** Nodes, edges, lanes, stages and `kind`
+**Two gaps, both atlas's to author.** Nodes, edges, lanes, stages and `kind`
 come from atlas; this side renders them.
 
 1. **Shipping is one tile.** The whole path to shipped is `Advise, pick and
    ship`, a single Result at stage 5. Receipt, stock and outbound share one
    column. The session map carries `Deliver` and `Cash` stages this document
    does not.
-2. **Planning has two steps you perform:** `Generate Order Planning (Item)` and
-   `Transfer Order Planning`.
-3. **Four branches.** On-hand covers it (YES / NO), and supply source Purchase
+2. **Four branches.** On-hand covers it (YES / NO), and supply source Purchase
    or Job Shop off the transfer. Nothing else that can divert a route —
    shortage, partial availability, a failed allocation — is drawn.
 
 The title, `Order to shipment — the overview`, is also atlas's to change.
-
----
 
 ## 0. Five categories
 
@@ -84,25 +78,14 @@ MRP made it; a proposal is not an order, and both halves are Results.
 **A dashed card is not indented.** The dashed border already says *off the
 line*; an indent widens every column (§10) and adds horizontal scroll.
 
-### All five are derivable
-
-| category | derived from |
-|---|---|
-| Checkpoint | `kind` is `gate` or `decision` |
-| **Inquiry** | **`kind` is `read`** |
-| Setup | no `flow` edge, in or out |
-| Result | `planned`, `real`, `outcome` or `terminal`, on the route |
-| Step | everything else |
-
-The distinction that matters: **Setup is configured once and is then ready; an
-Inquiry is opened to find out what is true now.** A session *about*
+All five derive from the data, as the first table shows. The distinction
+that matters: **Setup is configured once and is then ready; an Inquiry is
+opened to find out what is true now.** A session *about*
 configuration, such as `Production Order Parameters`, is an Inquiry.
 
 `read` is tested **before** the path, because an Inquiry need not sit beside
 the route. Mid-sequence it takes the solid border and keeps the italic name:
 the signals stay independent.
-
----
 
 ## 1. What is actually there
 
@@ -110,8 +93,6 @@ Nine `kind` values arrive from atlas; the contract lists them (§6).
 `build.mjs` folds them into the five categories and draws the categories, not
 the kinds. The tile's panel names the kind in full (`.notes-dg-kind`), and the
 legend names the categories (§9).
-
----
 
 ## 2. What the data supports
 
@@ -135,8 +116,6 @@ can be a session on one page and not on the other: `gate` is `cprrp0520m000` on
 the session map, a screen you open, and a bare question with no code on the
 overview. "Can I open this?" is what a reader beside a screen asks, and `code`
 answers it with no new field from atlas.
-
----
 
 ## 3. Route and openability
 
@@ -166,8 +145,6 @@ the page whose content is mostly gates.
 It names all nine kinds in `.notes-dg-kind` and pairs the name with the
 category's accent.
 
----
-
 ## 4. What this does not do
 
 - **Ask atlas for a new field.** `code` is exact; an `openable` boolean would
@@ -176,8 +153,6 @@ category's accent.
   readable tile with its words, as the contract guarantees.
 - **Rely on a key to tell forms apart.** The forms carry the distinctions; the
   legend (§9) supplies only the names.
-
----
 
 ## 5. What a diagram change is checked against
 
@@ -218,16 +193,12 @@ same value in one theme collide on screen and not here. That half is the
 specimen's. It refuses rather than guesses: a selector or value outside its
 grammar throws.
 
----
-
 ## 6. The kind vocabulary
 
 `guide-json.md` §7 lists nine kinds: `step`, `gate`, `planned`, `transfer`,
 `real`, `terminal`, `read`, `decision`, `outcome`. Its §7.4 lists the five
 categories with the derivation above. Read both at the commit in
 `data/guides/PIN`, not from memory of this file.
-
----
 
 ## 7. The specificity trap
 
@@ -238,8 +209,6 @@ depends on, and no collision count reports a colour that is missing.
 
 Do not fix an ordering problem by adding classes either. Fix it by source order
 or a narrower selector.
-
----
 
 ## 8. The lane rule
 
@@ -257,8 +226,6 @@ containing block and the pseudo-element collapses to the label's width.
 **A sticky lane name is declined.** On the session map the lane names scroll
 out of view at the far right. An opaque label painting over tiles as they pass
 under it is a second thing to judge, and the rule already holds the row.
-
----
 
 ## 9. The legend
 
@@ -279,8 +246,6 @@ otherwise their names appear only inside a tile's panel.
 - **Scope any census to `.notes-dg-grid .notes-dg-node`.** A swatch is also an
   `.notes-dg-node`, with no panel.
 
----
-
 ## 10. Each column as wide as its own content
 
 `.notes-dg-grid` is `repeat(var(--dg-cols), max-content) 1fr`. With
@@ -295,8 +260,6 @@ wide as its heading. It is still drawn and labelled.
 **The trailing `1fr` track** takes the slack so lane rules reach the figure's
 right edge. It holds nothing and computes to zero when the figure overflows.
 Delete the ` 1fr` to have the rules end with the content instead.
-
----
 
 ## 11. What 124 tiles does to the canvas
 

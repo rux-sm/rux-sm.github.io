@@ -6333,7 +6333,7 @@
         },
         {
           "t": "text",
-          "v": "`bamboo-test-item-family.md`"
+          "v": "bamboo-test-item-family.md"
         },
         {
           "t": "strong",
@@ -6344,7 +6344,7 @@
           "v": " three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This guide says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it."
         }
       ],
-      "text": "The family this guide builds is `bamboo-test-item-family.md`: three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This guide says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it."
+      "text": "The family this guide builds is bamboo-test-item-family.md: three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This guide says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it."
     },
     {
       "kind": "glance",

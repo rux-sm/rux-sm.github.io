@@ -1,9 +1,9 @@
-commit   73484fa7d6280784c8d1bfcf4e566c60fd82f85c
-date     2026-09-13T23:00:34Z
-subject  docs(plans): Plan the overview's missing branches
+commit   53a7ae38b1adb37db070a9f8faab9e1ea8518897
+date     2026-09-13T23:11:37Z
+subject  docs(guides): Add short-stock placeholder tiles
 contract 8 
 tier     export
-sha256   b4d75ee8ebecabbb41c8c4be176b5a248805fc0484400d02ce77829b64119bd2
+sha256   cec5d134cef0909afac8ecedab799072ba8412bddebacd82e712ab38af5cf1c7
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

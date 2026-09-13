@@ -551,7 +551,7 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "Nine tiles carry no number, for three different reasons."
+              "v": "Thirteen tiles carry no number, for four different reasons."
             },
             {
               "t": "text",
@@ -571,10 +571,10 @@
             },
             {
               "t": "text",
-              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
+              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. Four are checkpoints where a route turns because something is short. They are placeholders: each names what has not been walked, and a walk completes it."
             }
           ],
-          "text": "Nine tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
+          "text": "Thirteen tiles carry no number, for four different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. Four are checkpoints where a route turns because something is short. They are placeholders: each names what has not been walked, and a walk completes it."
         },
         {
           "kind": "heading",
@@ -916,6 +916,43 @@
                 }
               ],
               "text": "Does — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "allocated · Stock promised to other orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · gate"
+            }
+          ],
+          "text": "allocated · Stock promised to other orders · stage 2 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide silently how much of on-hand is free for this order. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Does — decide silently how much of on-hand is free for this order. Not documented for this release."
             }
           ]
         },
@@ -1520,6 +1557,43 @@
           ]
         },
         {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "short-release · Components short at release"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · gate"
+            }
+          ],
+          "text": "short-release · Components short at release · stage 5 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide whether a production order releases while a component is short. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Does — decide whether a production order releases while a component is short. Not documented for this release."
+            }
+          ]
+        },
+        {
           "kind": "heading",
           "level": 3,
           "n": "4.6",
@@ -1813,6 +1887,43 @@
           "kind": "prose",
           "tokens": [
             {
+              "t": "strong",
+              "v": "short-advice · Stock short at advice"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · gate"
+            }
+          ],
+          "text": "short-advice · Stock short at advice · stage 6 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide whether outbound advice is generated when stock is short. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Does — decide whether outbound advice is generated when stock is short. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
               "t": "session",
               "code": "whinh4525m100",
               "name": "12 · Picking List"
@@ -1971,6 +2082,51 @@
                 }
               ],
               "text": "Do - Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "ship-short · Shipped less than picked"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · decision"
+            }
+          ],
+          "text": "ship-short · Shipped less than picked · stage 6 · decision"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — ship less than was picked; the rest becomes "
+                },
+                {
+                  "t": "em",
+                  "v": "Not Shipped Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " on the shipment line. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Does — ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
             }
           ]
         }
@@ -2868,6 +3024,166 @@
                   "text": "—"
                 }
               ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "allocated"
+                    }
+                  ],
+                  "text": "allocated"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "what on-hand leaves free"
+                    }
+                  ],
+                  "text": "what on-hand leaves free"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "9"
+                    }
+                  ],
+                  "text": "9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "short-release"
+                    }
+                  ],
+                  "text": "short-release"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "a component is short"
+                    }
+                  ],
+                  "text": "a component is short"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "11"
+                    }
+                  ],
+                  "text": "11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "short-advice"
+                    }
+                  ],
+                  "text": "short-advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "stock is short"
+                    }
+                  ],
+                  "text": "stock is short"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "13"
+                    }
+                  ],
+                  "text": "13"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "ship-short"
+                    }
+                  ],
+                  "text": "ship-short"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "ships less than picked"
+                    }
+                  ],
+                  "text": "ships less than picked"
+                }
+              ]
             }
           ]
         }
@@ -3253,6 +3569,26 @@
             }
           ],
           "text": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+        }
+      },
+      {
+        "id": "allocated",
+        "session": "Stock promised to other orders",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "gate",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide silently how much of on-hand is free for this order. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "decide silently how much of on-hand is free for this order. Not documented for this release."
         }
       },
       {
@@ -3690,6 +4026,26 @@
         }
       },
       {
+        "id": "short-release",
+        "session": "Components short at release",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "gate",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide whether a production order releases while a component is short. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "decide whether a production order releases while a component is short. Not documented for this release."
+        }
+      },
+      {
         "id": "8",
         "session": "Warehouse Receipt",
         "lane": "Warehousing",
@@ -3940,6 +4296,26 @@
         }
       },
       {
+        "id": "short-advice",
+        "session": "Stock short at advice",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "gate",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide whether outbound advice is generated when stock is short. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "decide whether outbound advice is generated when stock is short. Not documented for this release."
+        }
+      },
+      {
         "id": "12",
         "session": "Picking List",
         "lane": "Warehousing",
@@ -4084,6 +4460,34 @@
             }
           ],
           "text": "Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
+        }
+      },
+      {
+        "id": "ship-short",
+        "session": "Shipped less than picked",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "decision",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "ship less than was picked; the rest becomes "
+            },
+            {
+              "t": "em",
+              "v": "Not Shipped Quantity"
+            },
+            {
+              "t": "text",
+              "v": " on the shipment line. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
         }
       }
     ],
@@ -4292,11 +4696,67 @@
         "from": "12",
         "to": "13",
         "kind": "flow"
+      },
+      {
+        "from": "allocated",
+        "to": "2",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "what on-hand leaves free"
+            }
+          ],
+          "text": "what on-hand leaves free"
+        }
+      },
+      {
+        "from": "9",
+        "to": "short-release",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "a component is short"
+            }
+          ],
+          "text": "a component is short"
+        }
+      },
+      {
+        "from": "11",
+        "to": "short-advice",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "stock is short"
+            }
+          ],
+          "text": "stock is short"
+        }
+      },
+      {
+        "from": "13",
+        "to": "ship-short",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "ships less than picked"
+            }
+          ],
+          "text": "ships less than picked"
+        }
       }
     ],
     "budget": {
       "session": 44
     }
   },
-  "openIssues": 1
+  "openIssues": 5
 }

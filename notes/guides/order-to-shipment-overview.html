@@ -1222,7 +1222,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Reference</span></span>
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-12</span></span>
-            <span class="rux--tag rux--tag--magenta" title="1 open issue recorded against this document"><span class="rux--tag__label">1 open</span></span>
+            <span class="rux--tag rux--tag--magenta" title="5 open issues recorded against this document"><span class="rux--tag__label">5 open</span></span>
           </div>
           <p class="notes-prose-measure"><strong>The shape of the whole chain, in one screen.</strong> Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it.</p>
           <p class="notes-prose-measure"><strong>Level 2 is the detail.</strong> The <a class="rux--link" href="demand-to-shipment-session-map.html">session map</a> starts at sales demand and names every session with its route and action. This page is the shape.</p>
@@ -1337,7 +1337,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--decision notes-dg-cat--check" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">2</span><span class="notes-dg-node-name">Does on-hand cover it?</span><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span>10 · 3</span></summary>
+                <summary><span class="notes-dg-node-n">2</span><span class="notes-dg-node-name">Does on-hand cover it?</span><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span>10 · 3</span><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span></span></summary>
                 <div class="notes-dg-detail">
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">2</span><span class="notes-dg-detail-name">Does on-hand cover it?</span>
                     <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">decision</span></p>
@@ -1346,8 +1346,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</p>
                   </div>
                   <div class="notes-dg-zone notes-dg-zone--leaves">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>10 — YES, and no planned order is generated · 3 — NO</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>10 — YES, and no planned order is generated · 3 — NO</p><p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Stock promised to other orders — what on-hand leaves free</p>
                   </div>
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--gate notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Checkpoint</span><span class="notes-dg-node-name">Stock promised to other orders</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Stock promised to other orders</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide silently how much of on-hand is free for this order. <strong>Not documented for this release.</strong></p>
+                  </div>
+                  
                   
                 </div>
               </details>
@@ -1517,7 +1530,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <div class="notes-dg-cell" style="grid-column:6;grid-row:6">
               <details class="notes-dg-node notes-dg-node--real notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">9</span><span class="notes-dg-node-name">Production Orders</span><code class="notes-dg-node-code">tisfc0501m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span>8</span></summary>
+                <summary><span class="notes-dg-node-n">9</span><span class="notes-dg-node-name">Production Orders</span><code class="notes-dg-node-code">tisfc0501m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span></span><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span>8</span></summary>
                 <div class="notes-dg-detail">
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">9</span><span class="notes-dg-detail-name">Production Orders</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">real</span><code class="notes-dg-detail-code">tisfc0501m000</code></p>
@@ -1532,8 +1545,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   </div>
                   </div>
                   <div class="notes-dg-zone notes-dg-zone--leaves">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Needs</span>8 — components on hand first</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>Components short at release — a component is short</p><p class="notes-dg-field"><span class="notes-dg-key">Needs</span>8 — components on hand first</p>
                   </div>
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--gate notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Checkpoint</span><span class="notes-dg-node-name">Components short at release</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Components short at release</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide whether a production order releases while a component is short. <strong>Not documented for this release.</strong></p>
+                  </div>
+                  
                   
                 </div>
               </details>
@@ -1597,7 +1623,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <div class="notes-dg-cell" style="grid-column:7;grid-row:7">
               <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">11</span><span class="notes-dg-node-name">Warehousing Order</span><code class="notes-dg-node-code">whinh2100m100</code></summary>
+                <summary><span class="notes-dg-node-n">11</span><span class="notes-dg-node-name">Warehousing Order</span><code class="notes-dg-node-code">whinh2100m100</code><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span></span></summary>
                 <div class="notes-dg-detail">
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">11</span><span class="notes-dg-detail-name">Warehousing Order</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh2100m100</code></p>
@@ -1610,6 +1636,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                       <li class="rux--list__item">on the <strong>Outbound Lines</strong> toolbar, <strong>Actions ➔ Advice ➔ Generate Advice</strong>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill</li>
                     </ol>
                   </div>
+                  </div>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>Stock short at advice — stock is short</p>
+                  </div>
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--gate notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Checkpoint</span><span class="notes-dg-node-name">Stock short at advice</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Stock short at advice</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide whether outbound advice is generated when stock is short. <strong>Not documented for this release.</strong></p>
                   </div>
                   
                   
@@ -1635,7 +1676,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--terminal notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">13</span><span class="notes-dg-node-name">Shipment</span><code class="notes-dg-node-code">whinh4630m000</code></summary>
+                <summary><span class="notes-dg-node-n">13</span><span class="notes-dg-node-name">Shipment</span><code class="notes-dg-node-code">whinh4630m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span></span></summary>
                 <div class="notes-dg-detail">
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">13</span><span class="notes-dg-detail-name">Shipment</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">terminal</span><code class="notes-dg-detail-code">whinh4630m000</code></p>
@@ -1649,6 +1690,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                     </ol>
                   </div>
                   </div>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>Shipped less than picked — ships less than picked</p>
+                  </div>
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--decision notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Checkpoint</span><span class="notes-dg-node-name">Shipped less than picked</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Shipped less than picked</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">decision</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></p>
+                  </div>
                   
                   
                 </div>
@@ -1656,8 +1712,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
           </div>
         <p class="notes-dg-note">Reading order runs left to right and down the numbers.</p>
-        <details class="notes-dg-note notes-dg-off"><summary>9 edges run against it</summary>
-          <p><span class="notes-dg-edge"><span class="notes-dg-ends">Items and groups → 1</span>, prerequisite for everything right of it <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Bill of material and routing → 5</span>, what MRP explodes <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Planning cluster row on the item → 3</span>, what the gate looks for <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Item - Purchase → 6</span>, without it the purchase half refuses <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">2 → 10</span>, YES, and no planned order is generated <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">2 → 3</span>, NO <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">6 → 7</span>, supply source Purchase <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">6 → 9</span>, supply source Job Shop <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">8 → 9</span>, components on hand first <em>(feed)</em></span></p>
+        <details class="notes-dg-note notes-dg-off"><summary>13 edges run against it</summary>
+          <p><span class="notes-dg-edge"><span class="notes-dg-ends">Items and groups → 1</span>, prerequisite for everything right of it <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Bill of material and routing → 5</span>, what MRP explodes <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Planning cluster row on the item → 3</span>, what the gate looks for <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Item - Purchase → 6</span>, without it the purchase half refuses <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">2 → 10</span>, YES, and no planned order is generated <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">2 → 3</span>, NO <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">6 → 7</span>, supply source Purchase <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">6 → 9</span>, supply source Job Shop <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">8 → 9</span>, components on hand first <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">Stock promised to other orders → 2</span>, what on-hand leaves free <em>(feed)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">9 → Components short at release</span>, a component is short <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">11 → Stock short at advice</span>, stock is short <em>(branch)</em></span> · <span class="notes-dg-edge"><span class="notes-dg-ends">13 → Shipped less than picked</span>, ships less than picked <em>(branch)</em></span></p>
         </details>
         <figcaption class="notes-dg-legend">
           <span class="notes-dg-legend-label">Key</span>
@@ -1715,7 +1771,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-4">
           <h2 id="t-4">4. Nodes</h2>
           <p class="notes-prose-measure"><strong>A number is a position on the walk.</strong> The thirteen numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so <span class="notes-t-exact">8 · Warehouse Receipt</span> comes before <span class="notes-t-exact">9 · Production Orders</span> because the components have to be on hand before the order can consume them.</p>
-          <p class="notes-prose-measure"><strong>Nine tiles carry no number, for three different reasons.</strong> Four are setup: what must already be true before the walk starts, and they reach the walk by <span class="notes-t-exact">feed</span> rather than by <span class="notes-t-exact">flow</span>. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it.</p>
+          <p class="notes-prose-measure"><strong>Thirteen tiles carry no number, for four different reasons.</strong> Four are setup: what must already be true before the walk starts, and they reach the walk by <span class="notes-t-exact">feed</span> rather than by <span class="notes-t-exact">flow</span>. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. Four are checkpoints where a route turns because something is short. They are placeholders: each names what has not been walked, and a walk completes it.</p>
           <h3>4.1 Master Data</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">items · Items and groups</span> <span class="notes-t-exact">tcibd0501m100</span> · stage 1 · step</p>
           <ul class="rux--list--unordered">
@@ -1747,6 +1803,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>2 · Does on-hand cover it?</strong> · stage 2 · decision</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</li>
+        </ul>
+          <p class="notes-prose-measure"><strong>allocated · Stock promised to other orders</strong> · stage 2 · gate</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — decide silently how much of on-hand is free for this order. <strong>Not documented for this release.</strong></li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">10 · Release Sales Order Lines to Warehousing</span> <span class="notes-t-exact">tdsls4501m140</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
@@ -1804,6 +1864,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — build the item: release, issue the components, report complete</li>
           <li class="rux--list__item"><strong>Do</strong> - open the order the transfer created and release it</li>
         </ul>
+          <p class="notes-prose-measure"><strong>short-release · Components short at release</strong> · stage 5 · gate</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — decide whether a production order releases while a component is short. <strong>Not documented for this release.</strong></li>
+        </ul>
           <h3>4.6 Warehousing</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">8 · Warehouse Receipt</span> <span class="notes-t-exact">whinh3512m000</span> · stage 5 · step</p>
           <ul class="rux--list--unordered">
@@ -1828,6 +1892,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — advise the outbound line, so there is stock to pick</li>
           <li class="rux--list__item"><strong>Do</strong> - on the <strong>Outbound Lines</strong> toolbar, <strong>Actions ➔ Advice ➔ Generate Advice</strong>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill</li>
         </ul>
+          <p class="notes-prose-measure"><strong>short-advice · Stock short at advice</strong> · stage 6 · gate</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — decide whether outbound advice is generated when stock is short. <strong>Not documented for this release.</strong></li>
+        </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">12 · Picking List</span> <span class="notes-t-exact">whinh4525m100</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></li>
@@ -1839,6 +1907,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity</li>
           <li class="rux--list__item"><strong>Do</strong> - <strong>Actions ➔ Freeze</strong>, then <strong>Actions ➔ Confirm</strong>. Confirming cannot be undone; a correction needs a return shipment</li>
+        </ul>
+          <p class="notes-prose-measure"><strong>ship-short · Shipped less than picked</strong> · stage 6 · decision</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></li>
         </ul>
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-5">
@@ -1870,6 +1942,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td>10</td><td>11</td><td>flow</td><td>—</td></tr>
           <tr><td>11</td><td>12</td><td>flow</td><td>—</td></tr>
           <tr><td>12</td><td>13</td><td>flow</td><td>—</td></tr>
+          <tr><td>allocated</td><td>2</td><td>feed</td><td>what on-hand leaves free</td></tr>
+          <tr><td>9</td><td>short-release</td><td>branch</td><td>a component is short</td></tr>
+          <tr><td>11</td><td>short-advice</td><td>branch</td><td>stock is short</td></tr>
+          <tr><td>13</td><td>ship-short</td><td>branch</td><td>ships less than picked</td></tr>
             </tbody>
           </table>
         </div>
@@ -1884,7 +1960,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><span class="notes-t-exact">the source on file</span> — level 2, where the same chain is named session by session.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 73484fa · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 53a7ae3 · contract 8</p>
       </div>
     </div>
   </div>

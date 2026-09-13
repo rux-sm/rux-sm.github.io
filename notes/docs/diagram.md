@@ -41,14 +41,13 @@ them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
 
 `guide`, the SOP link, is a node field and renders in the tile's panel.
 
-## Scope — what the overview is missing
+## Scope — what the overview does not yet know
 
-**One gap, atlas's to author.** Nodes, edges, lanes, stages and `kind` come
-from atlas; this side renders them.
-
-**Four branches.** On-hand covers it (YES / NO), and supply source Purchase or
-Job Shop off the transfer. Nothing else that can divert a route — shortage,
-partial availability, a failed allocation — is drawn.
+**The short-stock branches are placeholders.** Four Checkpoint tiles mark where
+a route turns when something is short: stock promised elsewhere, advice, a
+production release and a short shipment. Each names what is not yet walked,
+and atlas completes them as walks come in. Nodes, edges, lanes, stages and
+`kind` come from atlas; this side renders them.
 
 ## 0. Five categories
 

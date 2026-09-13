@@ -545,7 +545,7 @@
             },
             {
               "t": "quote",
-              "v": "look on the top, in your header level at your Item Order Plan, see how it says Plan Item `NA1`? That's tied to your planning cluster",
+              "v": "look on the top, in your header level at your Item Order Plan, see how it says Plan Item NA1? That's tied to your planning cluster",
               "at": "17:31"
             },
             {
@@ -564,7 +564,7 @@
             },
             {
               "t": "quote",
-              "v": "all I did was add a line which was `NA1`, and I just had to input the site data which was `CSADNA01`, and it has a warehouse tied to that which is `ADNA02`",
+              "v": "all I did was add a line which was NA1, and I just had to input the site data which was CSADNA01, and it has a warehouse tied to that which is ADNA02",
               "at": "18:58"
             },
             {
@@ -1062,7 +1062,23 @@
             },
             {
               "t": "em",
-              "v": "\"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\""
+              "v": "\"You can modify this check box only if the "
+            },
+            {
+              "t": "literal",
+              "v": "Update Pegging Relations during Order Planning"
+            },
+            {
+              "t": "em",
+              "v": " field in the Scenarios (cprpd4100m000) session is "
+            },
+            {
+              "t": "literal",
+              "v": "User Specified"
+            },
+            {
+              "t": "em",
+              "v": "\""
             },
             {
               "t": "text",
@@ -1102,7 +1118,7 @@
               "v": ", and pegging relations are updated on every run whether or not the operator wants them. No one on this call could have turned it off."
             }
           ],
-          "text": "That answers a question the 2026-08-20 review left open. Its §3.6 recorded that multi-level pegging requires pegging relations to have been generated, that this was never discussed on that call, and that the tree resolving anyway \"suggests the environment already has it configured, but that was not shown\". It is shown now — and the greyed-out state says more than a tick would. The help states: \"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information. Disabled and selected therefore means the ACT scenario is not set to User Specified, and pegging relations are updated on every run whether or not the operator wants them. No one on this call could have turned it off."
+          "text": "That answers a question the 2026-08-20 review left open. Its §3.6 recorded that multi-level pegging requires pegging relations to have been generated, that this was never discussed on that call, and that the tree resolving anyway \"suggests the environment already has it configured, but that was not shown\". It is shown now — and the greyed-out state says more than a tick would. The help states: \"You can modify this check box only if the Update Pegging Relations during Order Planning field in the Scenarios (cprpd4100m000) session is User Specified\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information. Disabled and selected therefore means the ACT scenario is not set to User Specified, and pegging relations are updated on every run whether or not the operator wants them. No one on this call could have turned it off."
         },
         {
           "kind": "prose",
@@ -1785,7 +1801,23 @@
             },
             {
               "t": "em",
-              "v": "\"LN always removes all previously generated planned orders with `Planned` order status before it starts a new simulation. Previously generated planned orders with `Confirmed` order status are retained.\""
+              "v": "\"LN always removes all previously generated planned orders with "
+            },
+            {
+              "t": "literal",
+              "v": "Planned"
+            },
+            {
+              "t": "em",
+              "v": " order status before it starts a new simulation. Previously generated planned orders with "
+            },
+            {
+              "t": "literal",
+              "v": "Confirmed"
+            },
+            {
+              "t": "em",
+              "v": " order status are retained.\""
             },
             {
               "t": "text",
@@ -1833,7 +1865,7 @@
               "v": " is swept only when that check box is selected — it was cleared here."
             }
           ],
-          "text": "The vendor states the rule precisely, and it is narrower than the narration: \"LN always removes all previously generated planned orders with `Planned` order status before it starts a new simulation. Previously generated planned orders with `Confirmed` order status are retained.\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information, Remove Firm Planned Orders. Three statuses are in play, not two: Planned is swept every run, Confirmed survives, and Firm Planned is swept only when that check box is selected — it was cleared here."
+          "text": "The vendor states the rule precisely, and it is narrower than the narration: \"LN always removes all previously generated planned orders with Planned order status before it starts a new simulation. Previously generated planned orders with Confirmed order status are retained.\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information, Remove Firm Planned Orders. Three statuses are in play, not two: Planned is swept every run, Confirmed survives, and Firm Planned is swept only when that check box is selected — it was cleared here."
         },
         {
           "kind": "prose",

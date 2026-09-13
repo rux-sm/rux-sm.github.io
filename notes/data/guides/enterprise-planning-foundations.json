@@ -1015,8 +1015,8 @@
                       "v": " on the warehouse record. Selected, the chain reads warehouse ➔ site ➔ global item. A 2026-09-06 capture identifies this record as session "
                     },
                     {
-                      "t": "chip",
-                      "v": "`whwmd2110s000`"
+                      "t": "session",
+                      "code": "whwmd2110s000"
                     },
                     {
                       "t": "text",
@@ -1043,7 +1043,7 @@
                       "v": "Not documented for this release."
                     }
                   ],
-                  "text": "Read Use Item Ordering Data by Site on the warehouse record. Selected, the chain reads warehouse ➔ site ➔ global item. A 2026-09-06 capture identifies this record as session `whwmd2110s000` — item 100200, warehouse ADNA01 — though the box's own help is still not filed, so its meaning is still inferred rather than read. Not documented for this release."
+                  "text": "Read Use Item Ordering Data by Site on the warehouse record. Selected, the chain reads warehouse ➔ site ➔ global item. A 2026-09-06 capture identifies this record as session whwmd2110s000 — item 100200, warehouse ADNA01 — though the box's own help is still not filed, so its meaning is still inferred rather than read. Not documented for this release."
                 },
                 {
                   "col": 2,

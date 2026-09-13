@@ -55,8 +55,6 @@ done and how.
 
 ## Notes owes atlas
 
-- **The overview diagram** draws no shortage, partial availability or failed
-  allocation. Atlas must author them; `notes/docs/diagram.md`, "Scope".
 - Some cross-guide references reach Notes as plain file names instead of
   links. Atlas should send them as links.
 

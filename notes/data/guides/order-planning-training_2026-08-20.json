@@ -1716,7 +1716,23 @@
                 },
                 {
                   "t": "em",
-                  "v": "\"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\""
+                  "v": "\"You can modify this check box only if the "
+                },
+                {
+                  "t": "literal",
+                  "v": "Update Pegging Relations during Order Planning"
+                },
+                {
+                  "t": "em",
+                  "v": " field in the Scenarios (cprpd4100m000) session is "
+                },
+                {
+                  "t": "literal",
+                  "v": "User Specified"
+                },
+                {
+                  "t": "em",
+                  "v": "\""
                 },
                 {
                   "t": "text",
@@ -1755,7 +1771,7 @@
                   "v": " §3.5."
                 }
               ],
-              "text": "Shown 2026-08-25, and the answer is stronger than \"already configured\". The next session in the series captured cprrp1220m000's full option set, where Update Pegging Relations is selected _and_ read-only — the source on file. Its help states \"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\", so the disabled state means the ACT scenario is not set to User Specified and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See planned-order-transfer-training_2026-08-25.md §3.5."
+              "text": "Shown 2026-08-25, and the answer is stronger than \"already configured\". The next session in the series captured cprrp1220m000's full option set, where Update Pegging Relations is selected _and_ read-only — the source on file. Its help states \"You can modify this check box only if the Update Pegging Relations during Order Planning field in the Scenarios (cprpd4100m000) session is User Specified\", so the disabled state means the ACT scenario is not set to User Specified and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See planned-order-transfer-training_2026-08-25.md §3.5."
             }
           ]
         }

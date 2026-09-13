@@ -20,7 +20,7 @@ DS="${DS:-$HERE/../rux-ds}"
 OUT="$HERE/build/internal"
 
 [ -d "$ATLAS/.git" ] || { echo "no atlas checkout at $ATLAS (override with ATLAS=)"; exit 1; }
-[ -d "$DS/.git" ] || { echo "no rux-ds checkout at $DS (override with DS=)"; exit 1; }
+[ -f "$DS/css/rux.css" ] || { echo "no rux-ds at $DS (override with DS=)"; exit 1; }
 
 rm -rf "$OUT"
 mkdir -p "$OUT/data" "$OUT/site"

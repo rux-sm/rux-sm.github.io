@@ -1768,8 +1768,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
        free and costs nothing: the shell header is #161616 with #f4f4f4 text
        in all four themes, so one colourway serves every theme. Sized by
        HEIGHT so the file's own aspect governs. rux-ds brand/README.md is the
-       contract; tools/new-project.sh there seeds this file and, because it
-       only seeds when absent, never overwrites a logo you replaced. -->
+       contract, and nothing overwrites a logo you replaced. -->
   <a class="rux--header__name" href="${up || './'}"><img src="${up}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none">LN Notes</a>
 
   <!-- NO __nav: one product. __global carries the two actions every app has

@@ -19,9 +19,9 @@ landed today**, `search-results-page`, and
 finishing it cost a control change and one real defect — `docs/log.md` has the
 account.
 
-**`main` may be ahead of what is published.** This site deploys on a tag, after
-checking every served app against it (roadmap §8.4 diff B, §8.6).
-`git describe --tags` says how far.
+**`main` is what is published.** Since 2026-09-12 rux-ds is a folder of the
+site repository, and a push to `main` deploys it with every app, after CI runs
+the full check. There are no tags.
 
 **Nothing vendors rux-ds anywhere.** The scheduler, the hub and Notes all link
 `/rux-ds/` live from the same repository; no `vendor/` directory exists, there

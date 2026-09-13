@@ -4,10 +4,7 @@
 // §4.12, creator 3, stage 5.
 //
 // TIER. This is builder state, not a gate: nothing here decides whether a
-// check passes, and check-parity, when it exists, judges rewrites.mjs's
-// export against tools/new-project.sh, not this. So it is not in
-// CONTROL_FILES. Said here so the omission is a decision and not an oversight,
-// and rux's to overrule.
+// check passes.
 //
 // THE MODEL IS A PLAIN VALUE, and every transition returns a new one:
 //

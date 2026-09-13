@@ -21,10 +21,9 @@
 
   .rux--btn { border-radius: 0.25rem; }
 
-  VENDORED, LIKE THE THEME. tools/new-project.sh copies this file under
-  vendor/rux-ds/css/ and overwrites it on every pin move, so the rule below is
-  the same rule in every app; a project's own rux-overrides.css is linked
-  after it and carries only that project's deltas.
+  SHARED, LIKE THE THEME. Every app links this file from /rux-ds/css/, so the
+  rule below is the same rule in every app; an app's own rux-overrides.css is
+  linked after it and carries only that app's deltas.
 */
 
 /* THE ACCOUNT PANEL'S CONTENT. Carbon's header panel ships no inner padding —

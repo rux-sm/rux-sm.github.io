@@ -23,9 +23,9 @@
      stored id through `window.Rux?.customThemes?.get(t)` at load, so the module
      has to exist by then; after it, a custom theme would resolve to undefined
      on the first paint. Added 2026-09-08: this page was scaffolded before
-     rux-ds Phase 16 put the tag in `templates/app-shell.html`, and a pin move
-     refreshes `vendor/` without rewriting a page, so the file has been vendored
-     and unlinked since the v0.1.9 pin. Every read of it is optionally chained
+     rux-ds Phase 16 put the tag in `templates/app-shell.html`, and the pin moves
+     of that time refreshed `vendor/` without rewriting a page, so the file was
+     vendored and unlinked from the v0.1.9 pin on. Every read of it is optionally chained
      -- `profile.js:79` falls back to `[]` -- so the failure was SILENT: the
      account panel simply showed the compiled themes and nothing said why. -->
 <script src="/rux-ds/js/custom-themes.js"></script>

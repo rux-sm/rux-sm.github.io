@@ -1,9 +1,8 @@
 # brand/
 
-**THREE FILES, AND THIS FOLDER IS THE WHOLE BRAND OF AN APP.** Every project
-on rux-ds carries its own `brand/`, seeded once by `tools/new-project.sh` and
-never overwritten by a pin move or a rebuild. Swap a file and the project
-follows it on reload. Nothing else anywhere needs editing.
+**THREE FILES, AND THIS FOLDER IS THE WHOLE BRAND OF AN APP.** Every app on
+rux-ds carries its own `brand/`, and no build or copy ever overwrites it. Swap a
+file and the app follows it on reload. Nothing else anywhere needs editing.
 
 | file | where it shows | how it is coloured |
 |---|---|---|
@@ -190,6 +189,5 @@ and a preview harness. Nothing there ships.
 
 ## Consumers
 
-`tools/new-project.sh` seeds `brand/logo.svg` into a new project only if it is
-absent, the same rule `rux-theme.css` and `rux-overrides.css` follow. A pin move
-never overwrites a logo you have replaced.
+Nothing in the site copies or overwrites an app's `brand/`. The scaffold that
+used to seed it retired on 2026-09-12, so a logo you replace stays replaced.

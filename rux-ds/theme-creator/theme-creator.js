@@ -2,9 +2,8 @@
 // section (§4.15), saved themes (§4.16), and rebuilt as one list 2026-09-10
 // (§4.17).
 //
-// Lives outside js/ for the reason builder/ does: tools/new-project.sh
-// vendors everything under js/ into every consumer project, and this tool
-// belongs only here.
+// Lives outside js/ for the reason builder/ does: js/ holds the behaviours
+// the apps load, and this tool belongs only here.
 //
 // STATE is { name, base, tokens, savedId }. `tokens` holds EVERY colour
 // token css/rux.css declares — 311 of them — keyed by the short name

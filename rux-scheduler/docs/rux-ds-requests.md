@@ -527,8 +527,8 @@ gives 256 and removing it gives 0 -- so the nav does open at desktop, and the
 old claim that `--expanded` changes nothing above the breakpoint holds only for
 a nav without `--hidden`. **The capture half of this request is DECLINED, and
 that is the useful half of the answer:** see `docs/gate-coverage.md`, where it
-makes our 8px adjudication permanent rather than provisional. Stays open here
-until a tag carries it and the pin moves.
+makes our 8px adjudication permanent rather than provisional. Tags and pins
+retired on 2026-09-12, so what rux-ds `main` carries is live.
 
 **Asked for:** correct or qualify the comment in `js/ui-shell.js:7-11` — "A
 template showing the button at desktop invents a state IBM's design does not
@@ -696,8 +696,8 @@ here would be inventing markup, which `AGENTS.md` forbids in both repositories.
 trigger"), IN NO TAG, verified in the clone.** This unblocks
 `screen-inventory.md` §7 -- jumping to a date is the week LABEL's job -- which
 has been undecidable rather than merely unbuilt. Nothing is built here yet: the
-pin is on v0.1.11 and the work sits 42 commits past it on `main`. Stays open
-until a tag carries it and the pin moves.
+pin is on v0.1.11 and the work sits 42 commits past it on `main`. Tags and pins
+retired on 2026-09-12, so what rux-ds `main` carries is live.
 
 **Asked for:** a `--next` date picker that can be opened from an element the
 consuming page supplies, or a variant with no visible input -- an icon-only

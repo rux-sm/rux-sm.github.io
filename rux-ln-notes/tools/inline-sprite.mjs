@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 //
 // Splice rux-ds's icon sprite into every page between its SPRITE markers,
-// read from the checkout beside this repository (or DS=<dir>) since
-// 2026-09-10, when this project stopped vendoring a copy (rux-ds roadmap
-// §8.4 step 5).
+// read from ../rux-ds, the design system's folder beside this one in the site
+// repository (or DS=<dir>). Nothing has been vendored since 2026-09-10 (rux-ds
+// roadmap §8.4 step 5).
 //
 // WHY A PAGE CANNOT JUST LINK THE SPRITE FILE. Referencing
-// `vendor/rux-ds/assets/icons.svg#i-name` from a <use> is broken in two
+// `/rux-ds/assets/icons.svg#i-name` from a <use> is broken in two
 // ordinary cases: WebKit has never supported a cross-document <use>, so every
 // icon is blank in Safari, and opening a page over file:// blocks the fetch in
 // every engine. Both fail SILENTLY -- the CSS and scripts still load, so the

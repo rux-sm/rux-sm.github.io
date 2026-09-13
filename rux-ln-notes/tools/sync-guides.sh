@@ -25,7 +25,7 @@ OUT="$HERE/data/guides"
 
 SHA="$(git -C "$ATLAS" rev-parse HEAD)"
 OLD="$(sed -n 's/^commit  *//p' "$OUT/PIN" 2>/dev/null)"
-# TRACKED CHANGES ONLY (-uno), for sync-ds.sh's reason: an untracked file is
+# TRACKED CHANGES ONLY (-uno): an untracked file is
 # not in the commit the pin names, so it cannot make the pin wrong.
 if [ -n "$(git -C "$ATLAS" status --porcelain -uno)" ]; then
   echo "rux-ln-atlas at $ATLAS has uncommitted changes to tracked files."

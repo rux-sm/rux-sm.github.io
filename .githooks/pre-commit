@@ -36,7 +36,7 @@ if [ -n "$files" ]; then
     all="$all $tmp/$flat"
   done
   # shellcheck disable=SC2086
-  if ! node rux-ln-notes/tools/check-publishable.mjs $all; then
+  if ! node notes/tools/check-publishable.mjs $all; then
     echo "" >&2
     echo "  pre-commit: REFUSED. A staged file carries something that should not" >&2
     echo "  be on the open internet. The fix belongs upstream in atlas." >&2

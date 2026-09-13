@@ -34,11 +34,11 @@ jobs:
       # Every @carbon/* package runs an ibmtelemetry postinstall; nothing in
       # the build needs one.
       - run: npm ci --ignore-scripts
-        working-directory: rux-ds
+        working-directory: design
       - run: npm run check -- --full
         env:
           CI: '1'
-      # Everything derived is committed -- rux-ds's stylesheet and generated
+      # Everything derived is committed -- design's stylesheet and generated
       # pages, Notes' pages, the inlined sprite -- so the site needs no build
       # step to serve. That only holds while the committed copy matches its
       # sources; a clean tree after the check is the proof.

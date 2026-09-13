@@ -37,6 +37,15 @@ carries an owner prefix, because the GitHub account already is one.
 - **Files inside an app** use the same names everywhere: `index.html`,
   `app.js`, `data.js`, `app.css`, `theme.css`, `overrides.css`, `brand/`,
   `docs/`, `README.md`. The design system keeps its library layout.
+- **Headers show `Rux` and the app name,** as Home already does: Rux Home,
+  Rux Design, Rux Notes, Rux Scheduler.
+- **The design system's own style sheets keep their names,** such as
+  `css/rux-theme.css`, because they are its library layout. Each app's
+  theme and overrides files become `theme.css` and `overrides.css`.
+- **Names atlas's rules fix stay:** ledgers are named for the capture they
+  transcribe and walks for the run they record, and both follow evidence
+  names. Review names swap their underscores for hyphens.
+- **Stored browser keys stay,** so nobody loses a saved theme or setting.
 - **Shared site files stay where they are,** at the top of the site, because
   that is simplest.
 - **Notes page addresses** are lowercase with hyphens only, and follow atlas's
@@ -63,9 +72,6 @@ None.
 
 ### Site
 
-- [ ] Rename `rux-ds/` to `design/`, `rux-ln-notes/` to `notes/` and
-      `rux-scheduler/` to `scheduler/`. Update `switcher.json`, every absolute
-      path, the tools, the docs and the skill.
 - [ ] Set menu labels and page titles to the rule above.
 - [ ] Rename app files to the shared names, including every `rux-theme.css`
       and `rux-overrides.css`.

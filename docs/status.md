@@ -14,12 +14,12 @@ done and how.
 ## Design system
 
 - **Published themes.** A theme saved in the Theme Creator should be a tracked
-  record any app's theme picker offers. Today `rux-ds/js/custom-themes.js` saves
+  record any app's theme picker offers. Today `design/js/custom-themes.js` saves
   only to the browser. Required, not built.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet. Four
   problems are open and three controls need hearing again; the list is in
-  `rux-ds/docs/screen-reader-pass.md`.
-- Whether the `col-span-4/8/8` columns in `rux-ds/templates/settings-page.html` are
+  `design/docs/screen-reader-pass.md`.
+- Whether the `col-span-4/8/8` columns in `design/templates/settings-page.html` are
   deliberate.
 - **Builder stage 13, repeated items:** duplicate, remove or reorder a sibling
   block, re-suffixing its ids. The first question is whether it is wanted, or
@@ -42,10 +42,10 @@ done and how.
 - Payment-method glyphs: none of the sprite's 63 symbols means money. Add a
   card, a bank, a note or coin and a cheque from Carbon, or rule that payment
   methods are text-only (2026-09-10).
-- A combo box that filters as typed. `rux-ds/js/list-box.js` is select-only, and the
+- A combo box that filters as typed. `design/js/list-box.js` is select-only, and the
   trip editor picks a contact from about 200 rows with repeated first names
   (2026-09-09).
-- A display format for the date picker. `rux-ds/js/date-picker.js` reads and writes
+- A display format for the date picker. `design/js/date-picker.js` reads and writes
   ISO only, while the app shows mm/dd/yyyy everywhere else (2026-09-09).
 - `setToggle` words a product can choose. It hard-codes On/Off over values that
   are Pending/Signed and Pending/Invoiced (2026-09-09).
@@ -60,11 +60,11 @@ done and how.
   to create a trip, may be unreachable on iOS.
 - Trip search stops at 50 results, newest first, with no ranking by relevance.
 - Below the md width the board shows about two of seven days. A day view was
-  considered and not built, and `rux-scheduler/docs/screen-inventory.md` plans a
+  considered and not built, and `scheduler/docs/screen-inventory.md` plans a
   driver page as the phone surface instead. Rux's decision.
 - The board scrolls behind the full-screen panels below md, because nothing
   locks the page.
-- The trip editor's Files tab waits on rux-ds compiling a file uploader.
+- The trip editor's Files tab waits on Design compiling a file uploader.
 - Weak highlights in some themes: geist's roster tint is 1.14:1 and the keyboard
   highlight 1.2:1, and neither was looked at on screen in all eight themes.
 - Carbon has no amber tag, so an amber trip bar renders warm-gray. Rux's call: a
@@ -86,7 +86,7 @@ closing the database's open access rules wait on it.
 ## Notes owes atlas
 
 - **The overview diagram** leaves out three things atlas must author, and its
-  title is atlas's to change. The list is in `rux-ln-notes/docs/diagram.md`,
+  title is atlas's to change. The list is in `notes/docs/diagram.md`,
   "Scope".
 - Whether session codes with no coverage publish name-only or are omitted. It
   blocks atlas's screen-reference emitter.

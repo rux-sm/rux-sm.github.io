@@ -2,7 +2,7 @@
   "name": "rux-sm.github.io",
   "private": true,
   "license": "Apache-2.0",
-  "description": "Rux Apps: every app built on rux-ds, one repository, served as-is by GitHub Pages",
+  "description": "Rux Apps: every app built on design, one repository, served as-is by GitHub Pages",
   "engines": {
     "node": ">=22.13.0"
   },

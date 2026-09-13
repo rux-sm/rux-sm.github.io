@@ -1,7 +1,7 @@
 /* ==========================================================================
    Rux Apps — ACCOUNT
    --------------------------------------------------------------------------
-   Loads after rux-ds's js/profile.js, which must run first and
+   Loads after Design's js/profile.js, which must run first and
    which this depends on for window.Rux.profile. Opens an anonymous Supabase
    session on first visit, reads and writes the cloud half of the profile
    js/profile.js already keeps in this browser, and wires the sign-in button
@@ -95,7 +95,7 @@
     connectGoogle,
   };
 
-  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in rux-ds's
+  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in Design's
   // markup: the switcher panel's own contents are filled by JS too
   // (switcher.js), so a JS-added link matches how this panel already works
   // rather than growing the shared template for one hub-specific route.
@@ -197,10 +197,10 @@
       try { await connectGithub(); }
       catch { /* linking failed or was refused: local profile stands */ }
     });
-    // THE SECOND PROVIDER'S BUTTON IS BUILT HERE, not in rux-ds's markup, for
+    // THE SECOND PROVIDER'S BUTTON IS BUILT HERE, not in Design's markup, for
     // the reason the Account settings link above gives: this panel is already
     // filled by JS, and one shared template growing a button per provider is
-    // the wrong shape. rux-ds ships ONE #rux-profile-sign-in and profile.js
+    // the wrong shape. Design ships ONE #rux-profile-sign-in and profile.js
     // reveals it; a second door is the cloud layer's business, so it lives
     // with the client that knows which providers the project has. The
     // shipped button is relabelled at the same time, because "Sign in" beside

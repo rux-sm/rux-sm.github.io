@@ -1,4 +1,4 @@
-/* The ecosystem's one shared list. Every app built on rux-ds links this file
+/* The ecosystem's one shared list. Every app built on Design links this file
    and fetches /switcher.json from the account root, so the switcher panel on
    every site names the same apps and marks the one you are on. If the fetch
    fails — a module served alone, offline — the entries the page shipped stay.
@@ -39,7 +39,7 @@
   //   "icon": "#i-document"            a Carbon glyph from the sprite THIS PAGE
   //                                    already inlines -- <use> inherits the
   //                                    tile's own text colour, no file, no mask
-  //   "icon": "/rux-ds/brand/icon.svg" the app's own drawn mark, masked over
+  //   "icon": "/design/brand/icon.svg" the app's own drawn mark, masked over
   //                                    that same colour
   //
   // A sprite id only works where that symbol is inlined, which is why a path is

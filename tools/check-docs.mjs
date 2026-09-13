@@ -214,7 +214,7 @@ function git(args, cwd, clean = false) {
 function main() {
   const listed = (git(['ls-files', '--cached', '--others', '--exclude-standard', '-z'], ROOT) ?? '').split('\0').filter(Boolean);
   const tracked = listed.filter(p => existsSync(resolve(ROOT, p)));
-  const isDoc = p => p.endsWith('.md') && !/(^|\/)node_modules\//.test(p) && !p.startsWith('rux-ln-notes/data/');
+  const isDoc = p => p.endsWith('.md') && !/(^|\/)node_modules\//.test(p) && !p.startsWith('notes/data/');
   const docs = new Map(tracked.filter(isDoc).map(p => [p, readFileSync(resolve(ROOT, p), 'utf8')]));
   const ignored = (git(['ls-files', '--others', '--ignored', '--exclude-standard', '--directory'], ROOT) ?? '').split('\n').filter(Boolean);
   const atlasDir = process.env.ATLAS ?? resolve(ROOT, '..', 'rux-ln-atlas');

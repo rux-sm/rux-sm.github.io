@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # The maintenance instruments — what each one is, and when to reach for it
 
 This is about the *kinds* of instrument this repository runs, not any one of them.

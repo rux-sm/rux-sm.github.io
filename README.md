@@ -6,13 +6,13 @@ https://rux-sm.github.io/. The folders are the site:
 | Folder | Serves | What |
 | :--- | :--- | :--- |
 | `index.html`, `account/`, `switcher.json`, `switcher.js`, `account.js` | `/` | the hub: the front door and the account panel |
-| `rux-ds/` | `/rux-ds/` | the design system — Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
+| `rux-ds/` | `/rux-ds/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `rux-scheduler/` | `/rux-scheduler/` | fleet scheduling and dispatch |
 | `rux-ln-notes/` | `/rux-ln-notes/` | Infor LN scenario guides, rendered from the private `rux-ln-atlas` |
-| `tools/` | — | the four commands below |
-| `docs/` | — | the plan, the backlog, the migration record |
+| `tools/` | — | the commands below |
+| `docs/` | — | `docs/status.md`, what is unfinished, and `docs/plans/`, changes being decided or built |
 
-`AGENTS.md` is the policy. `docs/status.md` is what is unfinished.
+`AGENTS.md` is the policy, including how documents are kept.
 
 ## Setup, once
 
@@ -54,10 +54,3 @@ list, the switcher fills from it, and the next push publishes it.
 refuses a tree whose committed output is stale; a push to `main` then uploads
 the tree and deploys it. A failing push stays in git and the last good
 deployment keeps serving. Rollback is `git revert` and push.
-
-## Where it came from
-
-Until 2026-09-12 the design system and each app were separate repositories
-with their own release process. The plan that folded them in here and the
-record of where they started were deleted on 2026-09-13, once the move was
-finished; git history keeps both. The old repositories stay on GitHub as history.

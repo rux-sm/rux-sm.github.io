@@ -76,22 +76,6 @@ None.
 
 ### Site
 
-- [ ] Rewrite the Documents section of `AGENTS.md` with these decisions.
-- [ ] Link the status list and `docs/plans/` from the root `README.md`, and
-      replace its outdated description of `docs/`.
-- [ ] Move the naming plan and the PO and invoice lists plan into
-      `docs/plans/`, reshape both into the four parts, fix every link to them,
-      and drop plan lines from `docs/status.md`.
-- [ ] Add a `type:` line to every site document that is not known by its name.
-- [ ] Build `tools/check-docs.mjs` and run it from `npm run check`: kinds,
-      reachability from the root README, named files outside plans with atlas paths checked only when
-      atlas is present, lengths, status item length, plan shape and place,
-      ticked or empty plans, stale plans as a local-only warning, and history
-      phrases as a warning.
-- [ ] Test `tools/check-docs.mjs` against fixtures: a valid and an invalid
-      example for each rule, a plan naming a file that does not exist yet, and
-      a run with atlas missing. `npm run check` runs the fixtures too.
-- [ ] Fix everything the new check reports.
 - [ ] Move the design system's JSON data files to `rux-ds/data/` and update
       every tool and document that reads them.
 - [ ] Build, run the full check, commit and push.

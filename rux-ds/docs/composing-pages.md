@@ -1,3 +1,7 @@
+---
+type: how-to
+---
+
 # Composing pages
 
 `sink/*.html` says what each component is. This says how to put them together
@@ -246,7 +250,7 @@ app's.
 ## 4. Where IBM's own guidance fits
 
 `carbon-website/` is gitignored and on disk: *read from, never shipped.* Its
-pattern pages under `src/pages/patterns/` cover empty states, forms, dialogs,
+pattern pages under `carbon-website/src/pages/patterns/` cover empty states, forms, dialogs,
 notifications, filtering, global header, login, loading, search, and disabled and
 read-only states. They are good on anatomy and when-to-use, which the component
 reference cannot answer. `templates/empty-state.html` follows its empty-states

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Builder coverage — what the catalogue holds, and what it does not
 
 The page builder offers a catalogue of **blocks**: regions marked in `sink/` and

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Choices a project makes
 
 What can be picked when a page is started, and where each option comes from.

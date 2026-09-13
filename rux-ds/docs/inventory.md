@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Inventory
 
 Every component Carbon ships, with what it costs, what it drags in, and a

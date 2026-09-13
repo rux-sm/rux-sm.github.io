@@ -49,6 +49,11 @@ for (const f of folders) {
 
 step('sprite', process.execPath, ['tools/sprite.mjs', '--check']);
 
+// THE DOCUMENT RULES from AGENTS.md "Documents", then the fixtures that prove
+// each rule still fires.
+step('docs', process.execPath, ['tools/check-docs.mjs']);
+step('docs fixtures', process.execPath, ['tools/check-docs.test.mjs']);
+
 // THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
 // every tracked file, and only those: the list comes from git, so an ignored
 // quarry or working folder under rux-ds/ is not swept (walking the tree

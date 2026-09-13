@@ -1,3 +1,7 @@
+---
+type: how-to
+---
+
 # The verbs
 
 Everything done to the design system is one of three tasks, and each ends

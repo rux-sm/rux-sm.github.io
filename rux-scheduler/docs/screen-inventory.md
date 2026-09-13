@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Screen inventory
 
 The surfaces of the old `rux-ui` app that this app has not built yet, each
@@ -9,7 +13,7 @@ Verdicts: **keep** builds next, **later** builds after the record tables work,
 **decide** is open, **drop** is not rebuilt. A drop can be reopened; the commit
 that reopens it says why.
 
-A *template* is one of the ten in rux-ds's `templates/`; a *module* is one of
+A *template* is one of the ten in `rux-ds/templates/`; a *module* is one of
 rux-ds's `js/*.js` behaviours; an *app component* is this app's own, prefixed
 `sch-`.
 
@@ -68,21 +72,21 @@ now line.
 
 | Page | Verdict | Becomes |
 |---|---|---|
-| `driver.html`, token in the query | keep | Header-only shell, mobile first, trip legs as tiles with Accept and Decline, through the existing RPCs. |
-| `maintenance.html` | later | Same shell, a read-only bus by day grid; may reuse the week grid. |
-| `request.html` | keep, with Requests | Public `form-page`, submits through the existing RPC. |
-| `intake.html` | later | Needs the Worker's extract route and the itinerary component. |
-| `m.html`, `d.html` | keep | Redirect stubs, unchanged. |
-| `doc.html` | keep | Redirect by document id, unchanged. |
+| `../rux-ui/driver.html`, token in the query | keep | Header-only shell, mobile first, trip legs as tiles with Accept and Decline, through the existing RPCs. |
+| `../rux-ui/maintenance.html` | later | Same shell, a read-only bus by day grid; may reuse the week grid. |
+| `../rux-ui/request.html` | keep, with Requests | Public `form-page`, submits through the existing RPC. |
+| `../rux-ui/intake.html` | later | Needs the Worker's extract route and the itinerary component. |
+| `../rux-ui/m.html`, `../rux-ui/d.html` | keep | Redirect stubs, unchanged. |
+| `../rux-ui/doc.html` | keep | Redirect by document id, unchanged. |
 
-Dropped: `gallery.html` and the four specimen pages.
+Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 ## 5. Order of building
 
 Each step ends with the page opened in every theme.
 
 4. Fleet, Drivers and Customers as tables with their editors.
-5. Print schedule. Requests and `request.html`. Driver page.
+5. Print schedule. Requests and `../rux-ui/request.html`. Driver page.
 6. Everything marked *later*.
 
 ## 6. Not verified

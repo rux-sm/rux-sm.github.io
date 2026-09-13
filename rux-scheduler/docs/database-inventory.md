@@ -1,7 +1,11 @@
+---
+type: reference
+---
+
 # Database inventory
 
 The tables of Supabase project `udnmqhayzhrbltxzzhjw` that this app and the
-old app's data layer (`rux-ui/js/data/*.js`) use. This app is a frontend
+old app's data layer (`../rux-ui/js/data/*.js`) use. This app is a frontend
 replacement: it reads and writes the tables below as they are. Nothing here is
 a schema change.
 
@@ -11,10 +15,10 @@ the schema to match the page.
 
 ## 1. How the old app reaches the database, and what that means here
 
-- **No sign-in.** `rux-ui/js/data/supabase.js` creates one client with the
+- **No sign-in.** `../rux-ui/js/data/supabase.js` creates one client with the
   anon key and never calls any auth method. Every request is anon-role.
 - **Through a proxy.** The client's URL is a Cloudflare Worker
-  (`rux-ui/worker/`), a transparent pass-through to the Supabase host plus
+  (`../rux-ui/worker/`), a transparent pass-through to the Supabase host plus
   one route of its own, `/ai/extract`, used only by the intake page.
 - **The core tables are open to that key.** `trips`, `buses`, `drivers`,
   `trip_assignments`, `trip_drivers` and `trip_stops` each carry one policy
@@ -72,14 +76,14 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_ticket_options` | trip editor, manifest | `trip_id`, `position`, `label`, `price` |
 | `trip_passengers` | manifest | 17 columns: `name`, `phone`, `email`, `seat`, `status`, `ticket_option_id`, `amount_owed`, `amount_paid`, `group_label`, `pickup_location` |
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
-| `trip_documents` | trip editor Files, driver page, `doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. No RLS. Files in bucket `trip-documents`. |
+| `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. No RLS. Files in bucket `trip-documents`. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label`. No RLS. |
-| `trip_requests` | Requests view, `request.html` | `reference` (`REQ-` plus six), `status`, `source`, `contact` jsonb, `payload` jsonb, `trip_id`. RPC only. |
+| `trip_requests` | Requests view, `../rux-ui/request.html` | `reference` (`REQ-` plus six), `status`, `source`, `contact` jsonb, `payload` jsonb, `trip_id`. RPC only. |
 | `trip_history` | History tab | `trip_id`, `trip_ref`, `action` (nine values), `changes` jsonb, `metadata` jsonb. RPC only. |
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`. RPC only. |
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
-| `driver_schedule_shares` | driver editor, `driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
-| `maintenance_schedule_shares` | `maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
+| `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
+| `maintenance_schedule_shares` | `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements and billing defaults live here. No RLS. |
 | `profiles` | old app's local identity | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`. **Not the platform profile.** Unrelated to `platform.profiles` and replaced by it in this app. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
@@ -125,13 +129,13 @@ as in `screen-inventory.md`.
 | `trips` | Schedule, Trips search, driver page | Trip editor |
 | `trip_assignments`, `trip_drivers` | Schedule, Drivers, Fleet | Trip editor; the bus reassignment drag writes `trip_assignments.bus_id` alone |
 | `trip_stops` | Trip editor Itinerary tab, driver page | Trip editor |
-| `buses`, `bus_out_of_service` | Schedule, Fleet, `maintenance.html` | Fleet editor |
+| `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |
 | `contacts` | Trip editor, Customers | Customer editor, trip editor |
 | `trip_payments`, `trip_ticket_options` | Trip editor Billing | Trip editor |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
-| `trip_documents` + bucket | Trip editor Files, driver page, `doc.html` | Trip editor |
-| `trip_requests` (RPC) | Requests, `request.html` | `request.html` submits; Requests changes status and links |
+| `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor |
+| `trip_requests` (RPC) | Requests, `../rux-ui/request.html` | `../rux-ui/request.html` submits; Requests changes status and links |
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Tasks, Drivers | driver page accepts and declines |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
@@ -141,7 +145,7 @@ as in `screen-inventory.md`.
 
 ## 4. Unknowns, to resolve before the write paths
 
-- `rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
+- `../rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
   and `list_trip_request_documents`, and cites a `trip_request_documents`
   table, none of which is listed here. Read the live tables through the
   Supabase connection before building Requests.

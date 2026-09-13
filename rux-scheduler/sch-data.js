@@ -2038,7 +2038,7 @@
 
        ROW ZERO, BECAUSE THERE IS ONE COLUMN FOR EACH. The lists are capped at
        one row apiece until `trip_pos` and `trip_invoices` exist
-       (docs/po-invoice-lists-plan.md), so the first row IS the value. When the
+       (docs/plans/po-invoice-lists.md), so the first row IS the value. When the
        tables land these three keys become the mirror writes of Phase 0.2 --
        `po_amount` a SUM over the rows, `po_ref` the first by position -- and
        the rest of this list does not change.
@@ -2257,7 +2257,7 @@
      that actually cannot store it. Raising this to Infinity, teaching
      `poPending` an `id`, and swapping the two mirror keys in `EDITS` for
      `posPatch()` / `invoicesPatch()` is the whole of the UI half of
-     docs/po-invoice-lists-plan.md; nothing else here is shaped by the cap. */
+     docs/plans/po-invoice-lists.md; nothing else here is shaped by the cap. */
   const LIST_CAP = 1;
   const CAP_NOTE = {
     po: 'One purchase order per trip for now',
@@ -2335,7 +2335,7 @@
      is NOT built: there is nowhere to put it. `trips` has no PO date column,
      and a picker whose value is dropped on save is worse than no picker --
      see the `+` for the same argument about a second row. Phase 1 of
-     docs/po-invoice-lists-plan.md adds `date` to `trip_pos`, and the row's
+     docs/plans/po-invoice-lists.md adds `date` to `trip_pos`, and the row's
      middle column is already the slot it goes in.
 
      TWO FIELDS STILL EARN A DIALOG rather than staying inline. The pair was
@@ -3354,7 +3354,7 @@
 
          THE SWITCH STAYS, AND OPTION 2 WAS THE TEMPTING ONE. With a list,
          "at least one row" could BE the switch (Phase 4 of
-         docs/po-invoice-lists-plan.md lays out both) and the section would
+         docs/plans/po-invoice-lists.md lays out both) and the section would
          lose a control. The data refuses it: 12 of the 55 trips with a PO
          carry `po_received` with no reference and no amount -- a PO promised,
          nothing typed -- and a list alone cannot say that. Switch on with an
@@ -3615,7 +3615,7 @@
         /* THE PO AMOUNT IS A SUM OVER THE ROWS, 2026-09-11, where it used to
            be one field's value. With the list capped at one row the two are
            the same number; written as a sum it is already Phase 6 of
-           docs/po-invoice-lists-plan.md, and the coverage line below --
+           docs/plans/po-invoice-lists.md, and the coverage line below --
            `max(0, (quoted - paid) - poAmount)` -- becomes correct for several
            POs without being touched again. */
         const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);

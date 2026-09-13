@@ -5,9 +5,9 @@ description: Build a page out of rux-ds — a new template, a consumer page, or 
 
 # Building a page
 
-`sink/*.html` says what a component **is**. This is how to put them together.
+`rux-ds/sink/*.html` says what a component **is**. This is how to put them together.
 
-**`docs/composing-pages.md` is the full procedure**, with the reason for every
+**`rux-ds/docs/composing-pages.md` is the full procedure**, with the reason for every
 trap. This skill is the ordered version for doing the work; go to the document
 for why any line here is true.
 
@@ -17,20 +17,20 @@ Twelve exist, each a **complete page**, shell included.
 
 | page | start from |
 | :--- | :--- |
-| nav and header, nothing else | `templates/app-shell.html` |
-| list of records, sortable, selectable | `templates/table-page.html` |
-| create or edit one record | `templates/form-page.html` |
-| view one record | `templates/detail-page.html` |
-| read one record top to bottom | `templates/document-page.html` |
-| a query, facets, and the results | `templates/search-results-page.html` |
-| nothing to show yet | `templates/empty-state.html` |
-| one step of a multi-step flow | `templates/wizard-page.html` |
-| an overview of many things | `templates/dashboard-page.html` |
-| grouped preferences | `templates/settings-page.html` |
-| dates and times | `templates/schedule-page.html` |
-| something went wrong | `templates/error-state.html` |
+| nav and header, nothing else | `rux-ds/templates/app-shell.html` |
+| list of records, sortable, selectable | `rux-ds/templates/table-page.html` |
+| create or edit one record | `rux-ds/templates/form-page.html` |
+| view one record | `rux-ds/templates/detail-page.html` |
+| read one record top to bottom | `rux-ds/templates/document-page.html` |
+| a query, facets, and the results | `rux-ds/templates/search-results-page.html` |
+| nothing to show yet | `rux-ds/templates/empty-state.html` |
+| one step of a multi-step flow | `rux-ds/templates/wizard-page.html` |
+| an overview of many things | `rux-ds/templates/dashboard-page.html` |
+| grouped preferences | `rux-ds/templates/settings-page.html` |
+| dates and times | `rux-ds/templates/schedule-page.html` |
+| something went wrong | `rux-ds/templates/error-state.html` |
 
-**Not `sink/ui-shell.html`**: same shell in a 22rem sandbox, positioned for a
+**Not `rux-ds/sink/ui-shell.html`**: same shell in a 22rem sandbox, positioned for a
 specimen.
 
 **Read the source comments in what you copied.** Most record an approach that
@@ -39,10 +39,10 @@ answer to your question.
 
 ## 2. Compose it — the decision table
 
-**`docs/choices.md` is the catalogue and the only source of options.** Every
+**`rux-ds/docs/choices.md` is the catalogue and the only source of options.** Every
 entry there is attested: a template or a sink fragment renders it, diffed
 against a Carbon capture. So an answer that is not in the table below is not a
-harder version of this job; it is a request to `docs/choices.md` first.
+harder version of this job; it is a request to `rux-ds/docs/choices.md` first.
 
 Ask only what is still undecided. A brief that already names the shape and the
 theme has answered rows 1 and 2; do not re-ask them. When the answer is "your
@@ -57,7 +57,7 @@ call", take the default and say which one you took.
 | 5 | Field style | regular, fluid | the six controls that have both: text input, text area, select, number input, search, date picker | regular |
 | 6 | Button kinds | primary, secondary, tertiary, ghost, danger, danger tertiary, danger ghost | the modifier on each `rux--btn` | one primary per view, secondary beside it, ghost for the quiet action |
 | 7 | Button size | `xs` `sm` `md` `lg` `xl` | the size class | `lg`, which carries no class; every template button is `lg` |
-| 8 | Body blocks | any name in `sink/ORDER` | what goes inside `.rux--content` | the template's own |
+| 8 | Body blocks | any name in `rux-ds/sink/ORDER` | what goes inside `.rux--content` | the template's own |
 
 **Five things are not choices**, and offering them is itself the error:
 
@@ -95,9 +95,9 @@ because a passing check is not the page being right.
 
 ## 3. Confirm the component is compiled
 
-`docs/inventory.md` decides every component and gives the reason for each cut.
+`rux-ds/docs/inventory.md` decides every component and gives the reason for each cut.
 Keep counts out of this file; they go stale. `page-header` is cut, and
-`src/app.scss` carries it commented out.
+`rux-ds/src/app.scss` carries it commented out.
 
 A class for an uncompiled component resolves to nothing and **fails silently**:
 correct-looking markup, no styling. `npm run verify` catches it, so the loop is
@@ -125,7 +125,7 @@ Check these *while writing*, because none of them looks broken.
    rhythm exists. Pair it with a scale; the templates use `stack-scale-3`
    through `-7`, usually `-6`. **No gate catches this.**
 
-The rest are in `docs/composing-pages.md` §3, several of them invisible to every
+The rest are in `rux-ds/docs/composing-pages.md` §3, several of them invisible to every
 gate:
 
 - **An unattested composition inherits no spacing** (§3.10). A tag inline after
@@ -146,7 +146,7 @@ gate:
 
 - **Classes.** Every `rux--*` comes from Carbon. `npm run verify` fails on one
   that does not resolve or whose component is not compiled.
-- **Markup structure.** Diff against `docs/carbon-*.json`, not against a guess
+- **Markup structure.** Diff against `rux-ds/docs/carbon-*.json`, not against a guess
   and not against the live Storybook; the captures match the compiled version
   and need no network. `node tools/diff-fragment.mjs <name>`.
 - **Behaviour Carbon does not have.** Modules make Carbon's components work;
@@ -156,19 +156,19 @@ gate:
 
 ## 6. IBM's own pattern guidance
 
-`carbon-website/` is on disk, gitignored: *read from, never shipped*. Its
-pattern pages under `src/pages/patterns/` cover empty states, forms, dialogs,
+`rux-ds/carbon-website/` is on disk, gitignored: *read from, never shipped*. Its
+pattern pages under `rux-ds/carbon-website/src/pages/patterns/` cover empty states, forms, dialogs,
 notifications, filtering, global header, login, loading, search, and disabled
 and read-only states. Good on anatomy and when-to-use, which the component
 reference cannot answer.
 
 **Two limits.** The patterns assume all of Carbon, so read each against
-`docs/inventory.md` first. And this repository is **public**: record facts and
+`rux-ds/docs/inventory.md` first. And this repository is **public**: record facts and
 decisions with citations, never paste prose. `NOTICE` covers Carbon's
 Apache-2.0 *code*, not website guidance content.
 
 For markup the captures remain authoritative. The website says what a pattern
-should do; `docs/carbon-*.json` says what the markup is.
+should do; `rux-ds/docs/carbon-*.json` says what the markup is.
 
 ## 7. Open the page
 
@@ -188,17 +188,17 @@ coverage is still the sink's.
 
 ## 8. If the page is a template
 
-`docs/verifying-templates.md` is the procedure, and it has one hard rule: a
+`rux-ds/docs/verifying-templates.md` is the procedure, and it has one hard rule: a
 template's behaviour is **verified against a running Carbon page**, never
-derived from `css/rux.css`. The stylesheet gives the mechanism and says nothing
+derived from `rux-ds/css/rux.css`. The stylesheet gives the mechanism and says nothing
 about intent. `check-provenance` requires a `BEHAVIOUR:` comment naming the
 reference page, the date, and what was NOT covered.
 
 ## Using this outside rux-ds
 
 An app is a folder beside `rux-ds/` in the same repository, and its pages link
-`css/`, `assets/` and `js/` live from `/rux-ds/`, **not this skill, not
-`sink/`, not the captures, and not the gates**. Everything in §5 is unenforced
+`rux-ds/css/`, `rux-ds/assets/` and `rux-ds/js/` live from `/rux-ds/`, **not this skill, not
+`rux-ds/sink/`, not the captures, and not the gates**. Everything in §5 is unenforced
 there unless the app adopts it deliberately. The root `npm run check` runs
 rux-ds's shared check over every app `switcher.json` lists, against the
 rux-ds in the same tree, so a page and the stylesheet it is checked against

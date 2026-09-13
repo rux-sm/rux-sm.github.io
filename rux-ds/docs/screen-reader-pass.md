@@ -1,3 +1,7 @@
+---
+type: how-to
+---
+
 # Screen-reader pass
 
 `tools/check-a11y.js` reads attributes. This pass reads what a person hears, and nothing

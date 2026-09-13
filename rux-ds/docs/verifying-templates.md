@@ -1,3 +1,7 @@
+---
+type: how-to
+---
+
 # Verifying a template against Carbon
 
 A fragment is a still. A template RUNS: it carries the behaviour layer, and

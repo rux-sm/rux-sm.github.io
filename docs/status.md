@@ -13,22 +13,20 @@ done and how.
 
 ## Design system
 
-- **Published themes.** A theme saved in the Theme Creator should become a
-  tracked record in rux-ds that any visitor can pick in any app's theme picker
-  once pushed. Today `js/custom-themes.js` saves only to the browser, and
-  nothing writes to the repository. Required, not built.
+- **Published themes.** A theme saved in the Theme Creator should be a tracked
+  record any app's theme picker offers. Today `rux-ds/js/custom-themes.js` saves
+  only to the browser. Required, not built.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet. Four
   problems are open and three controls need hearing again; the list is in
   `rux-ds/docs/screen-reader-pass.md`.
-- Whether `templates/settings-page.html`'s `col-span-4/8/8` is deliberate.
+- Whether the `col-span-4/8/8` columns in `rux-ds/templates/settings-page.html` are
+  deliberate.
 - **Builder stage 13, repeated items:** duplicate, remove or reorder a sibling
   block, re-suffixing its ids. The first question is whether it is wanted, or
   whether more captured compositions serve better.
-- **Border contrast in the brand themes.** On the session map the dashed
-  Prerequisite border reads 3.02 to 3.48 against its background in the four
-  Carbon themes, and 2.11 to 2.63 in geist, linear, ant-dark and spotify. No
-  information rides on the border alone. Whether `--rux-border-strong-01`
-  should keep 3:1 in every theme is rux's call (measured 2026-09-11).
+- **Border contrast.** The session map's dashed Prerequisite border reads 3.02 to
+  3.48 in Carbon's themes and 2.11 to 2.63 in the brand themes. Whether
+  `--rux-border-strong-01` keeps 3:1 everywhere is rux's call (2026-09-11).
 
 ### Asked for by the scheduler
 
@@ -44,10 +42,10 @@ done and how.
 - Payment-method glyphs: none of the sprite's 63 symbols means money. Add a
   card, a bank, a note or coin and a cheque from Carbon, or rule that payment
   methods are text-only (2026-09-10).
-- A combo box that filters as typed. `js/list-box.js` is select-only, and the
+- A combo box that filters as typed. `rux-ds/js/list-box.js` is select-only, and the
   trip editor picks a contact from about 200 rows with repeated first names
   (2026-09-09).
-- A display format for the date picker. `js/date-picker.js` reads and writes
+- A display format for the date picker. `rux-ds/js/date-picker.js` reads and writes
   ISO only, while the app shows mm/dd/yyyy everywhere else (2026-09-09).
 - `setToggle` words a product can choose. It hard-codes On/Off over values that
   are Pending/Signed and Pending/Invoiced (2026-09-09).
@@ -74,23 +72,16 @@ done and how.
 
 ## The database, for the scheduler
 
-- **An overpaid trip reports itself unconfirmed.** `deriveStatus` tests
-  `overpaid` before `paid_full`, and the live `confirmWhen` list doesn't include
-  `overpaid`, so a trip paid past its price shows Not confirmed. Add it, or
-  record that it is deliberate (2026-09-10).
-- **One PO and one invoice per trip is not enough.** Add `trip_pos` and
-  `trip_invoices`, many rows per trip, shaped like `trip_payments`, and keep the
-  old single columns as a mirror written on every save so rux-ui keeps working.
-  The sequence is `rux-scheduler/docs/po-invoice-lists-plan.md` (2026-09-10).
+- **An overpaid trip shows Not confirmed.** `deriveStatus` tests `overpaid`
+  before `paid_full`, and the live `confirmWhen` list lacks `overpaid`. Add it,
+  or record that it is deliberate (2026-09-10).
 
 ## Blocked on one decision
 
-Whether rux-ui is taught the PO and invoice tables:
-`rux-scheduler/docs/po-invoice-lists-plan.md` §0.3, and step 5 of the identity
-plan in the archived `rux-backend`. Rux's answer so far is that rux-ui keeps
-working alongside the scheduler, so replacing it first is off the table; whether
-it learns the new tables is still open. The two database items above wait on it,
-and so does closing the database's open access rules.
+Whether rux-ui is taught the PO and invoice tables, and step 5 of the identity
+plan in the archived `rux-backend`. rux-ui keeps working alongside the
+scheduler, so replacing it first is off the table. The database item above and
+closing the database's open access rules wait on it.
 
 ## Notes owes atlas
 
@@ -103,9 +94,3 @@ and so does closing the database's open access rules.
   have given 58, 91 and 108.
 - Cross-guide references arrive in two shapes, 13 as links and 28 as literal
   file names, and atlas hasn't been told the new figures.
-
-## Naming
-
-- A clean naming system across apps, repositories and atlas, under review:
-  `docs/naming-plan.md`. Applied in four stages once agreed; the file goes when
-  the last stage lands.

@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # The diagram
 
 **What it is for, what it covers, and how a tile is drawn.** Figures come from

@@ -1,9 +1,9 @@
-commit   03259af1b4a0e1e291c9d23058e7e2399ef807f5
-date     2026-09-13T21:13:29Z
-subject  refactor: Drop type prefixes from atlas names
+commit   2ca69048c8bea923f1f659c3daa1135e97b1b656
+date     2026-09-13T22:06:29Z
+subject  fix(guides): Take the map link out of the bold
 contract 8 
 tier     export
-sha256   dadc85121bc82905413fbf7f51d932afccbff4f967d214de71e75ca460c343c7
+sha256   73fc2a5f68143ecfbc0f30a6441ed8b0ba60a05b47078cd79ba38694e5c3bd9d
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

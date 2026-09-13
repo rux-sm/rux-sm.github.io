@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "reference",
   "id": "order-to-shipment-overview",
-  "title": "Order to shipment — the overview",
+  "title": "Demand to shipment",
   "updated": "2026-09-12",
   "status": "draft",
   "sources": [
@@ -38,28 +38,23 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "This replaces the SVG it was drawn as."
+          "v": "Level 2 is the detail."
         },
         {
           "t": "text",
-          "v": " It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what the diagram-as-data proposal of 2026-09-01 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
-        }
-      ],
-      "text": "This replaces the SVG it was drawn as. It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what the diagram-as-data proposal of 2026-09-01 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
+          "v": " The "
+        },
         {
-          "t": "strong",
-          "v": "Level 2 is `demand-to-shipment-session-map.md`"
+          "t": "link",
+          "v": "session map",
+          "href": "demand-to-shipment-session-map.md"
         },
         {
           "t": "text",
-          "v": ", which starts at sales demand and names every session with its route and action. This one is the shape; that one is the detail."
+          "v": " starts at sales demand and names every session with its route and action. This page is the shape."
         }
       ],
-      "text": "Level 2 is `demand-to-shipment-session-map.md`, which starts at sales demand and names every session with its route and action. This one is the shape; that one is the detail."
+      "text": "Level 2 is the detail. The session map starts at sales demand and names every session with its route and action. This page is the shape."
     }
   ],
   "topics": [
@@ -521,7 +516,7 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "Seven tiles carry no number, for three different reasons."
+              "v": "Nine tiles carry no number, for three different reasons."
             },
             {
               "t": "text",
@@ -541,10 +536,10 @@
             },
             {
               "t": "text",
-              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. The SEND-ATLAS-5 reply settled that a reading is not a step, and the SEND-ATLAS-4 reply recorded the five categories these tiles fall into; both are in git history, and this paragraph is the record."
+              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
             }
           ],
-          "text": "Seven tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. The SEND-ATLAS-5 reply settled that a reading is not a step, and the SEND-ATLAS-4 reply recorded the five categories these tiles fall into; both are in git history, and this paragraph is the record."
+          "text": "Nine tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
         },
         {
           "kind": "heading",

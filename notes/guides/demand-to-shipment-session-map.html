@@ -819,6 +819,12 @@
 .notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
 .notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
+/* A dashed tile's fill stops inside its border, so the gaps between dashes show
+   the ground: on a filled dark tile the dash and the fill are 1.24 apart and the
+   card reads solid. After the fills, because their `background` shorthand resets
+   the clip. */
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { background-clip: padding-box; }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
    a `<figcaption>` rather than a loose `<ul>`: it is literally a caption for the
@@ -1186,8 +1192,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu">
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Demand to shipment</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="demand-to-shipment-session-map.html" aria-current="page"><span class="rux--side-nav__link-text">Demand to shipment — session map</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Order to shipment — the overview</span></a></li>
         </ul>
       </li>
 
@@ -2338,7 +2344,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>`the source on file` and `the source on file`</strong> — measured 2026-09-09, and all 23 codes in <span class="notes-t-exact">sources:</span> settle against principle 3&#39;s test. Sixteen appear in one or both extracts. The seven that do not — <span class="notes-t-exact">cprrp1220m000</span>, <span class="notes-t-exact">tdpur4100m900</span>, <span class="notes-t-exact">tdsls4501m140</span>, <span class="notes-t-exact">tisfc0100s000</span>, <span class="notes-t-exact">whinh2100m100</span>, <span class="notes-t-exact">whinh3512m000</span>, <span class="notes-t-exact">whinh4630m000</span> — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: <strong>`cprrp1200m000` is in the extracts and has no help filed here</strong>, so its route is evidenced and its meaning rests on the guide alone.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 03259af · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 2ca6904 · contract 8</p>
       </div>
     </div>
   </div>

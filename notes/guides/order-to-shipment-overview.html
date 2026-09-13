@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Order to shipment — the overview — Notes</title>
+<title>Demand to shipment — Notes</title>
 <!-- PLEX FIRST, THEN rux.css, WHICH IS THE ORDER Design USES IN ITS OWN
      TEMPLATES. rux.css names IBM Plex Sans sixty-seven times and declares no
      @font-face; the faces live here. Linking the stylesheet without this one
@@ -819,6 +819,12 @@
 .notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
 .notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
+/* A dashed tile's fill stops inside its border, so the gaps between dashes show
+   the ground: on a filled dark tile the dash and the fill are 1.24 apart and the
+   card reads solid. After the fills, because their `background` shorthand resets
+   the clip. */
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { background-clip: padding-box; }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
    a `<figcaption>` rather than a loose `<ul>`: it is literally a caption for the
@@ -1186,8 +1192,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu">
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="order-to-shipment-overview.html" aria-current="page"><span class="rux--side-nav__link-text">Demand to shipment</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="demand-to-shipment-session-map.html"><span class="rux--side-nav__link-text">Demand to shipment — session map</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="order-to-shipment-overview.html" aria-current="page"><span class="rux--side-nav__link-text">Order to shipment — the overview</span></a></li>
         </ul>
       </li>
 
@@ -1200,7 +1206,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Order to shipment — the overview</h1>
+          <h1>Demand to shipment</h1>
           <div class="notes-tag-row">
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Reference</span></span>
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
@@ -1208,8 +1214,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--magenta" title="1 open issue recorded against this document"><span class="rux--tag__label">1 open</span></span>
           </div>
           <p class="notes-prose-measure"><strong>The shape of the whole chain, in one screen.</strong> Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it.</p>
-          <p class="notes-prose-measure"><strong>This replaces the SVG it was drawn as.</strong> It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what the diagram-as-data proposal of 2026-09-01 asked for. The picture the reader sees is the renderer&#39;s; nothing here says where anything lands.</p>
-          <p class="notes-prose-measure"><strong>Level 2 is `demand-to-shipment-session-map.md`</strong>, which starts at sales demand and names every session with its route and action. This one is the shape; that one is the detail.</p>
+          <p class="notes-prose-measure"><strong>Level 2 is the detail.</strong> The <a class="rux--link" href="demand-to-shipment-session-map.html">session map</a> starts at sales demand and names every session with its route and action. This page is the shape.</p>
         </div>
         <figure class="rux--tile notes-dg" style="--dg-cols:6">
           <div class="notes-dg-grid">
@@ -1630,7 +1635,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-4">
           <h2 id="t-4">4. Nodes</h2>
           <p class="notes-prose-measure"><strong>A number is a position on the walk.</strong> The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so <span class="notes-t-exact">8 · Warehouse Receipt</span> comes before <span class="notes-t-exact">9 · Production Orders</span> because the components have to be on hand before the order can consume them.</p>
-          <p class="notes-prose-measure"><strong>Seven tiles carry no number, for three different reasons.</strong> Four are setup: what must already be true before the walk starts, and they reach the walk by <span class="notes-t-exact">feed</span> rather than by <span class="notes-t-exact">flow</span>. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. The SEND-ATLAS-5 reply settled that a reading is not a step, and the SEND-ATLAS-4 reply recorded the five categories these tiles fall into; both are in git history, and this paragraph is the record.</p>
+          <p class="notes-prose-measure"><strong>Nine tiles carry no number, for three different reasons.</strong> Four are setup: what must already be true before the walk starts, and they reach the walk by <span class="notes-t-exact">feed</span> rather than by <span class="notes-t-exact">flow</span>. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it.</p>
           <h3>4.1 Master Data</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">items · Items and groups</span> <span class="notes-t-exact">tcibd0501m100</span> · stage 1 · step</p>
           <ul class="rux--list--unordered">
@@ -1775,7 +1780,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>`the source on file`</strong> — level 2, where the same chain is named session by session.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 03259af · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 2ca6904 · contract 8</p>
       </div>
     </div>
   </div>

@@ -51,9 +51,8 @@ done and how.
 
 ## Notes owes atlas
 
-- **The overview diagram** still leaves out two things atlas must author, and
-  its title is atlas's to change. The list is in `notes/docs/diagram.md`,
-  "Scope".
+- **The overview diagram** still leaves out two things atlas must author. The
+  list is in `notes/docs/diagram.md`, "Scope".
 - Some cross-guide references reach Notes as plain file names instead of
   links. Atlas should send them as links.
 

@@ -1651,6 +1651,12 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
 .notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
+/* A dashed tile's fill stops inside its border, so the gaps between dashes show
+   the ground: on a filled dark tile the dash and the fill are 1.24 apart and the
+   card reads solid. After the fills, because their \`background\` shorthand resets
+   the clip. */
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { background-clip: padding-box; }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
    a \`<figcaption>\` rather than a loose \`<ul>\`: it is literally a caption for the
@@ -1973,7 +1979,7 @@ function indexPage(site) {
   // what a tile holds rather than a list entry.
   const lead = home ? `
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-map">
-          <h1 id="h-map">Order to shipment</h1>
+          <h1 id="h-map">Demand to shipment</h1>
           ${diagramFigure(home.diagram, { notes: false,
             link: `<a class="rux--link notes-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` })}
         </section>

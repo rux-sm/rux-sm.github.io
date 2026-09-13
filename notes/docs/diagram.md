@@ -14,7 +14,7 @@ anything new at the front without a number, or at the back with the next one.
 
 ## Purpose
 
-**One map of the order-to-shipment chain: every path and branch that leads to a
+**One map of the demand-to-shipment chain: every path and branch that leads to a
 shipment, and the planning that decides which one runs.** Around the main path
 sit the four other things a reader needs: what must be configured first, what
 the system produced on its own, what you open to find out where things stand,
@@ -53,8 +53,6 @@ come from atlas; this side renders them.
 2. **Four branches.** On-hand covers it (YES / NO), and supply source Purchase
    or Job Shop off the transfer. Nothing else that can divert a route —
    shortage, partial availability, a failed allocation — is drawn.
-
-The title, `Order to shipment — the overview`, is also atlas's to change.
 
 ## 0. Five categories
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   sch-data.js — THE LIVE WEEK
+   data.js — THE LIVE WEEK
    --------------------------------------------------------------------------
    Fills #sch-grid from the tables the rux-ui app also writes, and writes
    back: a drag moves a bus, and the trip panel's Save writes the trip with
@@ -338,7 +338,7 @@
      SAME BUILDER, DIFFERENT ROOM. `note()` makes the element for both; this
      adds Carbon's `--toast` modifier, which is what sizes it to 18rem and gives
      it the shadow a floating card needs. The placement is this app's own, in
-     sch.css: Carbon ships the toast's APPEARANCE and no position at all.
+     app.css: Carbon ships the toast's APPEARANCE and no position at all.
 
      IT REPLACES RATHER THAN STACKS, exactly as `say` does. One slot means the
      last thing you did is the thing on screen, and a second move drops the
@@ -681,7 +681,7 @@
     gridEl.appendChild(corner);
 
     // TODAY IS THE HEADER CELL AND NOTHING ELSE. There was a rule down the
-    // column until 2026-09-06; sch.css says why it went and why nothing
+    // column until 2026-09-06; app.css says why it went and why nothing
     // replaces it.
     const today = iso(new Date());
     let todayCell = null;
@@ -739,7 +739,7 @@
        than by insetting a repeat, so the edges are explicit instead of implied.
 
        STILL A BACKGROUND AND STILL PER TRACK, for the reasons the note on
-       `--sch-day-rule` in sch.css gives: `background-image` sits above the
+       `--sch-day-rule` in app.css gives: `background-image` sits above the
        row's own `background-color` and below every child, and `var()` inside a
        custom property resolves where that property is COMPUTED, so the stops
        have to meet the colour on the element that owns both. Both were learned
@@ -919,7 +919,7 @@
     else say(null);
 
     // The line above just changed what sits ABOVE the grid, which moves the
-    // grid and changes how much height is left for it. sch.js owns that sum;
+    // grid and changes how much height is left for it. app.js owns that sum;
     // this says when to redo it rather than leaving it to an observer.
     window.Rux?.schedule?.fit?.();
   }
@@ -1292,7 +1292,7 @@
      `inset-inline: 0` and `justify-content: flex-end` (`css/rux.css:10752`),
      so it has no height of its own to centre a 24px toggle in beside a 32px
      button. An app element inside it carries the flex row, which keeps the
-     override file out of it -- `rux-overrides.css` already steers around the
+     override file out of it -- `overrides.css` already steers around the
      same absolute-positioning fault for the ROW action, and the note there
      says the header's own action was left alone. It still is.
 
@@ -2975,7 +2975,7 @@
 
          IT ALSO ENDS `.sch-two-up`. Booking contact was its other caller;
          with both stacked the class has no user left, so its rules come out
-         of sch.css rather than sitting there as a shape nothing makes. */
+         of app.css rather than sitting there as a shape nothing makes. */
       /* THE PREFIX IS ON THESE TOO, 2026-09-10, and for the same reason the
          booking three took it: the `Day-of-trip contacts` heading came off,
          so the field is the only thing left to say which contact it means.
@@ -3294,7 +3294,7 @@
          `display: grid` (`css/rux.css:24862`), which beats the user agent's
          `[hidden] { display: none }` -- the fields would have stayed on
          screen with no error anywhere. Hence the app class and its own rule
-         in `sch.css`, on an element this app owns. */
+         in `app.css`, on an element this app owns. */
       const gate = (fields, help) => {
         const box = el('div', 'rux--stack-vertical rux--stack-scale-5 sch-milestone-fields');
         box.append(...fields);
@@ -3846,7 +3846,7 @@
       /* THE RULE, NOT A HEADING, IS WHAT SEPARATES THEM. A heading over each
          group was tried first and cost about 60px of a 320px panel; the border
          costs 1. `.sch-billing-rule` also zeroes the section's own top margin
-         and spends it as padding under the border -- see sch.css. */
+         and spends it as padding under the border -- see app.css. */
       for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
         wrap.classList.replace('sch-panel-section', 'sch-billing-section');
         wrap.classList.add('sch-billing-rule');
@@ -4022,7 +4022,7 @@
     window.Rux?.schedule?.fit?.();
     /* THE ROSTER ONLY STEPS ASIDE ON A PHONE, NARROWED 2026-09-11.
 
-       IT USED TO YIELD WHENEVER THE BOARD WAS `crowded` -- `sch.js`'s name for
+       IT USED TO YIELD WHENEVER THE BOARD WAS `crowded` -- `app.js`'s name for
        the day columns hitting their 8.5rem floor -- which is true at 1440 with
        both companions open, so opening a trip on an ordinary desktop took the
        roster away. rux: "id rather the assigments grid not be force closed".
@@ -4031,7 +4031,7 @@
        which this board is built to do: `.sch-grid` is `max-content` with a
        sticky bus column precisely so seven days can total more than the pane.
 
-       BELOW md IT STILL YIELDS, AND THERE IT IS NOT A PREFERENCE. sch.css puts
+       BELOW md IT STILL YIELDS, AND THERE IT IS NOT A PREFERENCE. app.css puts
        both companions on top of the board at that width -- the editor through
        Carbon's own `position: fixed`, the roster by hand beside it -- so they
        are full-width overlays and one does not sit next to the other, it
@@ -5276,7 +5276,7 @@
          re-reads, and only then does a bar with that trip id exist to click.
 
          IT CLICKS THE BAR for the reason the previous version learned:
-         selection is sch.js's, on a handler this file does not own, so calling
+         selection is app.js's, on a handler this file does not own, so calling
          `openPanel` would open the editor with the board showing nothing
          selected and the roster's day column dark.
 

@@ -7,7 +7,7 @@
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<!-- MONO, FOR THE <code>sch.css</code> IN THE INTRO PARAGRAPH. One word,
+<!-- MONO, FOR THE <code>app.css</code> IN THE INTRO PARAGRAPH. One word,
      but font-display: optional means a cold-cache load that misses the
      preload stays in the browser's fallback monospace for the whole
      visit and never swaps. -->
@@ -16,9 +16,9 @@
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<link rel="stylesheet" href="sch.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="overrides.css">
+<link rel="stylesheet" href="app.css">
 <!-- BEFORE theme.js, AND THE ORDER IS LOAD-BEARING. `theme.js:73` resolves a
      stored id through `window.Rux?.customThemes?.get(t)` at load, so the module
      has to exist by then; after it, a custom theme would resolve to undefined
@@ -398,7 +398,7 @@
 <!-- BEHAVIOUR: static specimen · 2026-09-06 · invented trips on an invented
   week, Mon 7 to Sun 13 September 2026, today drawn on Wednesday for the
   specimen and not read from a clock. The grid and the trip bar are this
-  app's own components (sch.css); the toolbar, side nav, switcher, tags and
+  app's own components (app.css); the toolbar, side nav, switcher, tags and
   overflow menu are Carbon parts as compiled in the pinned rux.css. What it
   shows: a two-day bar, a bar continuing from last week, one continuing into
   next week with a partial-PO border, two bars overlapping into a second
@@ -418,7 +418,7 @@
              stays for the document outline and for anyone arriving by screen
              reader. -->
         <h1 class="rux--visually-hidden">Trip bar specimen</h1>
-        <p>Every state the grid can draw, on invented trips and no network. This page is the design reference for <code>sch.css</code>: the live <a class="rux--link" href="./">Schedule</a> shows only the states this week happens to contain. Not linked from the side nav on purpose.</p>
+        <p>Every state the grid can draw, on invented trips and no network. This page is the design reference for <code>app.css</code>: the live <a class="rux--link" href="./">Schedule</a> shows only the states this week happens to contain. Not linked from the side nav on purpose.</p>
         <!-- THE TOOLBAR AND THE BOARD ARE ONE COMPONENT, joined 2026-09-07.
              Same join as index.html: no gap, and the toolbar takes the grid's
              own surface so the day band is the only accent between them. -->
@@ -589,6 +589,6 @@ bus</div></div>
 <script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
-<script src="sch.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

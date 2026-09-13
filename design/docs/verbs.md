@@ -34,7 +34,7 @@ not authored by rux alone. The root `AGENTS.md` is the policy.
 | A colour, or any value a token names | `css/rux-theme.css`, inside a `[data-theme]` block |
 | How a component looks beyond its tokens | `css/rux-overrides.css`, at Carbon's own specificity |
 | Which components and themes compile, or the prefix | `src/app.scss`, then `npm run build` |
-| In one app only | that app's own `rux-theme.css` / `rux-overrides.css` at its root |
+| In one app only | that app's own `theme.css` / `overrides.css` at its root |
 
 `check-tokens` refuses a token the theme file invents; `check-classes` a
 class either file selects that `rux.css` does not compile. A rule that should

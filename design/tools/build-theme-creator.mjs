@@ -581,7 +581,7 @@ ${WIDTHS.map(([v, l]) => `                <button type="button" class="rux--btn 
               <code class="thc-command" id="thc-export"></code>
               <div class="thc-row-group">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="thc-copy">Copy the CSS block</button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="thc-download">Download rux-theme.css</button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="thc-download">Download theme.css</button>
               </div>
               <p class="thc-status" id="thc-export-status" role="status"></p>
             </div>

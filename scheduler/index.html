@@ -7,7 +7,7 @@
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<!-- MONO, FOR THE TRIP EDITOR'S DATE FIELDS. sch-data.js builds real
+<!-- MONO, FOR THE TRIP EDITOR'S DATE FIELDS. data.js builds real
      rux--date-picker__input elements at runtime (dateOne/dateRange) for
      Start/End date, the pick-up return range and Date paid -- Carbon sets
      that input's font-family to code-02, which resolves to IBM Plex Mono.
@@ -21,9 +21,9 @@
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
-<link rel="stylesheet" href="rux-theme.css">
-<link rel="stylesheet" href="rux-overrides.css">
-<link rel="stylesheet" href="sch.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="overrides.css">
+<link rel="stylesheet" href="app.css">
 <!-- BEFORE theme.js, AND THE ORDER IS LOAD-BEARING. `theme.js:73` resolves a
      stored id through `window.Rux?.customThemes?.get(t)` at load, so the module
      has to exist by then; after it, a custom theme would resolve to undefined
@@ -289,7 +289,7 @@
          not this app's invention: the MAGNIFIER is the trigger, a `role=button`
          with `aria-expanded` and `tabindex=0` rather than a <button>; the INPUT
          is `tabindex=-1` while collapsed, so a tab does not land in a field
-         that is 0px wide; and the container carries `role=search`. sch-data.js
+         that is 0px wide; and the container carries `role=search`. data.js
          moves the `--expanded` class and both of those attributes together.
 
          IT IS NOT A `header__action`, so `js/ui-shell.js` does not wire it --
@@ -311,7 +311,7 @@
              page asks for exactly that behaviour -- "the ARROW keys should cycle
              through displayed suggestions, with ENTER choosing a suggestion" --
              and `aria-activedescendant` is how a screen reader is told, without
-             focus ever leaving the field. sch-data.js keeps `aria-expanded` and
+             focus ever leaving the field. data.js keeps `aria-expanded` and
              `aria-activedescendant` in step with what is drawn. -->
         <input id="sch-search-input" class="rux--search-input" type="text" role="combobox" aria-expanded="false" aria-controls="sch-search-list" aria-autocomplete="list" tabindex="-1" placeholder="Destination, organization or contact…" autocomplete="off">
         <button type="button" class="rux--search-close rux--search-close--hidden" id="sch-search-clear" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
@@ -474,11 +474,11 @@
 </header>
 
 <main id="main-content" class="rux--content">
-<!-- BEHAVIOUR: the live week grid · 2026-09-06 · sch-data.js fills #sch-grid
+<!-- BEHAVIOUR: the live week grid · 2026-09-06 · data.js fills #sch-grid
   from the same Supabase tables the rux-ui app writes -- buses, trips, their
   assignments and drivers, and out-of-service windows -- READ ONLY: nothing on
   this page writes, and no control here edits a trip. The grid and the trip bar
-  are this app's own components (sch.css); the toolbar, shell and notification
+  are this app's own components (app.css); the toolbar, shell and notification
   are Carbon parts from rux.css. Every state the grid CAN draw is on
   specimen.html, which needs no network; this page draws only what the week
   holds. Not covered: no time-aligned mode, no realtime, no conflict marking (day granularity cannot tell a morning trip from an
@@ -493,7 +493,7 @@
     <div class="rux--css-grid-column rux--col-span-100">
       <!-- An app-owned wrapper so the page can make room for the side panel
            without a rule on a rux-- class. `--with-panel` is set by
-           sch-data.js while the panel is open. -->
+           data.js while the panel is open. -->
       <div class="sch-page">
       <div class="rux--stack-vertical rux--stack-scale-5">
         <!-- THE PAGE'S NAME IS IN THE OUTLINE, NOT ON THE SCREEN. Three pieces of
@@ -566,7 +566,7 @@
                  every width now, so the toolbar below it has a single job -- act
                  on the board -- and the row above says which week.
 
-                 THE PICKER ITSELF IS BUILT BY sch-data.js and appended here, the
+                 THE PICKER ITSELF IS BUILT BY data.js and appended here, the
                  same way the trip editor's date fields are. `data-rux-open` is
                  set there too, so this button carries no reference to an id that
                  does not exist until script runs. -->
@@ -682,7 +682,7 @@
                IT STILL OPENS AND CLOSES, on rux's call -- the board keeps its
                full width until a bar is clicked. The `rux--side-panel` classes
                stay because every part INSIDE them is styled from that ancestor;
-               only the fixed positioning is neutralised, in rux-overrides.css,
+               only the fixed positioning is neutralised, in overrides.css,
                which is where a component rule belongs. -->
           <div class="sch-trip" id="sch-trip" hidden>
     <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--condensed-actions" id="sch-panel" aria-label="Trip" hidden>
@@ -728,7 +728,7 @@
              `grid-template-columns: repeat(auto-fit, minmax(0, 1fr))` when
              `--contained` and `--full-width` ride together, which is even
              fill from the component itself -- so the two flex rules that were
-             doing that job by hand come out of rux-overrides.css.
+             doing that job by hand come out of overrides.css.
 
              IT TRUNCATES, KNOWINGLY. Even columns are 72px and `Schedule` is
              60px of word in 56px of room once padding is taken, so it renders
@@ -830,7 +830,7 @@
            THE LABEL IS `Cancel` AND NOT `Cancel trip`, on rux's call. The
            longer one wrapped over two lines in a 48px button and wanted two
            overrides to seat; this one fits with room to spare, and one rule
-           in rux-overrides.css evens the three widths. The word is
+           in overrides.css evens the three widths. The word is
            ambiguous on its own -- in a form beside Save it could be read as
            "cancel my edits" -- and what disambiguates it is the dialog:
            nothing happens on this press except `Cancel this trip?` opening
@@ -854,13 +854,13 @@
 
   <!-- THE BOARD'S CONTEXT MENU. Markup from `components-menu--default`: a
        `ul[role=menu]` of `li[role=menuitem]` with a `__label` div. It is
-       positioned by sch-data.js at the pointer and opened through
+       positioned by data.js at the pointer and opened through
        `Rux.menu.open`, which supplies Escape, outside-press and focus return.
        The module repositions only `position: fixed` surfaces, and this one is
        absolute inside `.sch-page`, so the placement set for it is left alone. -->
   <!-- THE VIEW MENU. `--with-selectable-items` is what makes
        `__selection-icon` display at all; the checkmark itself is put in and
-       taken out by sch-data.js rather than hidden by a rule, because a rule on
+       taken out by data.js rather than hidden by a rule, because a rule on
        a rux-- class does not belong in this app (AGENTS.md).
 
        FLAT, NOT GROUPED. `rux--menu-item-group` is compiled and nests a second
@@ -874,13 +874,13 @@
 
          IT IS NOT REDUNDANT ON THE DESKTOP, WHICH IS WHY IT ONLY MOVES HERE.
          Right-clicking a cell prefills the bus and the day (`cellMenuAt` in
-         sch-data.js) and is the better path when you know both -- but the
-         Unassigned row is HIDDEN when empty (sch-data.js:786 reveals it, :812
+         data.js) and is the better path when you know both -- but the
+         Unassigned row is HIDDEN when empty (data.js:786 reveals it, :812
          hides it again), so on a quiet week there is no cell to right-click for
          a trip that has a date and no bus yet. That is the intake case, and
          this button is its only door.
 
-         AND THE TOUCH PATH IS UNVERIFIED, which is the other half. sch-data.js:733
+         AND THE TOUCH PATH IS UNVERIFIED, which is the other half. data.js:733
          claims only that "Android fires `contextmenu` at about the moment a hold
          completes"; iOS Safari does not, and no long-press handler exists here
          yet. Until one does, this menu item is the ONLY way to create a trip on
@@ -888,7 +888,7 @@
 
          AN ACTION IN A MENU OF CHECKBOXES is why the divider follows it and why
          the trigger is renamed below md: a button labelled "View options" that
-         also creates a trip is mislabelled, so sch.js calls it "More" there. -->
+         also creates a trip is mislabelled, so app.js calls it "More" there. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="sch-menu-new-trip">
       <!-- AN EMPTY SELECTION SLOT, and it is not decoration. This menu is
            `--with-selectable-items`, where Carbon reserves the first column
@@ -1115,7 +1115,7 @@
   </div>
 
   <!-- THE TRIP PANEL. Carbon's own side panel; no Design module claims it, so
-       sch-data.js opens and closes it and says so in its own comment. Slide-in
+       data.js opens and closes it and says so in its own comment. Slide-in
        rather than the default: it drops the shadow, because the page makes
        room beside it instead of letting it float over the grid. -->
 </main>
@@ -1124,7 +1124,7 @@
      ABOVE the board in normal flow, so anything appearing in it pushes the
      grid down and pulls it back up again -- rux saw a move shove the whole
      table. Reserving the space permanently would cost a band above a board
-     whose height sch.js already computes and contests.
+     whose height app.js already computes and contests.
 
      THE SPLIT IS NOT "TRANSIENT VS NOT", IT IS WHAT THE MESSAGE IS ABOUT.
      `#sch-status` keeps the three that describe the BOARD -- loading, "Nothing
@@ -1134,7 +1134,7 @@
      move and its undo, a save, a cancel, a trip taken off its bus -- lands
      here instead, over the page, moving nothing.
 
-     EMPTY AND `hidden` UNTIL SOMETHING IS SAID; sch-data.js fills it. It is
+     EMPTY AND `hidden` UNTIL SOMETHING IS SAID; data.js fills it. It is
      outside `<main>` because it is fixed to the viewport and belongs to no
      region of the page. -->
 <div id="sch-toast" class="sch-toast" role="status" aria-live="polite" hidden></div>
@@ -1156,10 +1156,10 @@
 <script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
-<script src="sch.js"></script>
+<script src="app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="/account.js"></script>
-<script src="sch-data.js"></script>
+<script src="data.js"></script>
 </body>
 </html>

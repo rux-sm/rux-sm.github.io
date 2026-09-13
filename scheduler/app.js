@@ -186,7 +186,7 @@
 
     /* THE ONE PLACE THAT KNOWS THE WEEK DOES NOT FIT. `crowded` is not a new
        measurement -- it is the branch above, named. The day floor binding IS
-       "seven days need more room than the pane has", and sch-data.js needs to
+       "seven days need more room than the pane has", and data.js needs to
        know it to decide which companion yields. Returning it keeps that
        arithmetic in one place: the last function that reserved room for a
        panel by computing it a second time spent an
@@ -257,6 +257,6 @@
 
      KEPT AS A NOTE RATHER THAN DELETED SILENTLY, because "the toolbar has no
      breakpoint behaviour" is a fact worth being able to find. What responds to
-     width here is CSS, in sch.css's one media block. */
+     width here is CSS, in app.css's one media block. */
 
 })();

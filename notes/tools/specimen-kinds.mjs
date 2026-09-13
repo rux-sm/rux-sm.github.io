@@ -469,8 +469,8 @@ const html = `<!doctype html>
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
-<link rel="stylesheet" href="../rux-theme.css">
-<link rel="stylesheet" href="../rux-overrides.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../overrides.css">
 <style>
 ${baseCss}
 /* --- the specimen's own chrome, which is not part of any variant --------- */

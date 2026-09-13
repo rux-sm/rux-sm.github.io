@@ -1,9 +1,9 @@
-/* rux-overrides.css -- this project's own, linked after /design/css/rux-overrides.css, served from
+/* overrides.css -- this project's own, linked after /design/css/rux-overrides.css, served from
    Design's own repository and never copied here. Only what THIS project
    changes goes here: token values inside a [data-theme] block
-   (rux-theme.css), or
+   (theme.css), or
    component rules at Carbon's own specificity with no !important
-   (rux-overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
+   (overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
    change goes". */
 
 /* A CLOSED SIDE PANEL IS NOT IN CARBON'S CSS, because Carbon's React version
@@ -89,7 +89,7 @@
 
    The app's own `.sch-trip` wrapper carries the width and the height; this
    rule deliberately sets neither, so a change to the column's size is a change
-   in sch.css and never here. */
+   in app.css and never here. */
 /* AND ONLY AT md AND UP, SCOPED 2026-09-11. The un-fixing above describes a
    board with three columns on it, and below Carbon's `md` (42rem) there is no
    room for three: `.sch-trip` is a 20rem wrapper, and on a 375px screen it
@@ -147,7 +147,7 @@
    this and the clamp still caps it at 100%, so this asks for a width Carbon
    ships rather than setting one.
 
-   THIS REVERSES A NOTE IN sch.css, which said the hook was "deliberately
+   THIS REVERSES A NOTE IN app.css, which said the hook was "deliberately
    unused: nothing here wants a width Carbon does not already ship". That was
    written about the desktop column and is still right about it -- this is the
    phone, where the panel is an overlay and 100% is what an overlay is. */
@@ -286,7 +286,7 @@
 }
 
 /* 40px SINCE 2026-09-10, the third of the three region heads that moved
-   together -- sch.css's `.sch-corner` carries the reasoning and the two
+   together -- app.css's `.sch-corner` carries the reasoning and the two
    that stayed behind. Worth saying here what this number is NOT: Carbon's
    own side panel header is about 84px, `padding: 1rem` over a `2.5rem`
    min-block-size plus a 1rem transparent border under the title, with the
@@ -302,7 +302,7 @@
   padding-block: 0;
   /* 48px, `size-lg`, 2026-09-11, with the other two heads. The paragraph above
      calls 40 "a step toward Carbon's shape, not an arrival at it"; this is the
-     next step, and it is taken because sch.js's `.sch-toolbar` note found that
+     next step, and it is taken because app.js's `.sch-toolbar` note found that
      `.rux--table-toolbar` is 48 at EVERY density and a bare `.rux--btn` is 48
      by default. The rule that all three heads are one band is unchanged -- it
      is what forced this one to move. The type in it is still `heading-03`,
@@ -687,7 +687,7 @@
    way it is not on a desktop: 64px of a 812px viewport where one bus row is
    95px, so the gap cost two thirds of a row at each end.
 
-   `fitHeight` in sch.js needs no change -- it reads this element's computed
+   `fitHeight` in app.js needs no change -- it reads this element's computed
    `paddingBottom` and subtracts it, so the pane takes the room back on its own.
 
    CORRECTED 2026-09-11, SAME DAY, ON RUX'S QUESTION -- "on mobile should the

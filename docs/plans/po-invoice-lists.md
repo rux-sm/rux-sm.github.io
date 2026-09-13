@@ -8,7 +8,7 @@ type: plan
 
 A trip can carry several POs and a split invoice. The scheduler's Billing tab
 already shows its Purchase order and Invoice sections as lists shaped like
-Payments, capped at one row by `LIST_CAP` in `rux-scheduler/sch-data.js`,
+Payments, capped at one row by `LIST_CAP` in `scheduler/data.js`,
 because `trips` holds one PO and one invoice and the `trip_pos` and
 `trip_invoices` tables do not exist yet.
 

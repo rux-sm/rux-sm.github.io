@@ -906,7 +906,7 @@ function init() {
     const blob = new Blob([cssBlock()], { type: 'text/css' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'rux-theme.css';
+    a.download = 'theme.css';
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   });

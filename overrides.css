@@ -1,9 +1,9 @@
-/* rux-overrides.css -- this project's own, linked after /design/css/rux-overrides.css, served from
+/* overrides.css -- this project's own, linked after /design/css/rux-overrides.css, served from
    Design's own repository and never copied here. Only what THIS project
    changes goes here: token values inside a [data-theme] block
-   (rux-theme.css), or
+   (theme.css), or
    component rules at Carbon's own specificity with no !important
-   (rux-overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
+   (overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
    change goes". */
 
 /* THE LANDING PAGE IS CENTRED IN THE VIEWPORT, 2026-09-07, rux's call. Both

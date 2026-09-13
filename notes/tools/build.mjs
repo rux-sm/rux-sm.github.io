@@ -856,8 +856,8 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
-<link rel="stylesheet" href="${up}rux-theme.css">
-<link rel="stylesheet" href="${up}rux-overrides.css">
+<link rel="stylesheet" href="${up}theme.css">
+<link rel="stylesheet" href="${up}overrides.css">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
 <style>

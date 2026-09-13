@@ -1,4 +1,4 @@
-/* sch.css — this app's two components: the week grid and the trip bar.
+/* app.css — this app's two components: the week grid and the trip bar.
    Carbon has neither. Every colour, size and space below is a --rux-* token
    read from the vendored css, so all five themes hold without a rule here
    per theme. --sch-* variables carry counts and geometry only (days, a
@@ -29,7 +29,7 @@
      the two cells, not here; see `.sch-corner`. Measured in Plex at label-01
      600 with 4px of inline padding: "Bus" 28.5px, "218" 29.6px, "No bus" broken
      28px -- all under 32, so the floor decides and the corner squares. "1234"
-     is the exception at 36.8px and widens the column; see `.sch-corner`. sch.js reads the rendered width rather
+     is the exception at 36.8px and widens the column; see `.sch-corner`. app.js reads the rendered width rather
      than this token. */
   --sch-head-w: max-content;
   /* THE FLOOR A DAY COLUMN WILL NOT GO BELOW, and the grid scrolls rather
@@ -101,7 +101,7 @@
                            scroll port, so it stays on today's column when the
                            week is wider than the viewport and .sch scrolls. */
   display: grid;
-  /* The day track is a variable so sch.js can replace the fluid default with
+  /* The day track is a variable so app.js can replace the fluid default with
      a WHOLE NUMBER OF PIXELS; see its note. Without that script this is what
      renders, and it is what rendered until 2026-09-06. */
   grid-template-columns: var(--sch-head-w) repeat(var(--sch-days), var(--sch-day-track));
@@ -121,7 +121,7 @@
      on a desktop window because the whole overflow is only 136px there, well
      inside the clamp; it is 705px on a phone.
 
-     `max-content` with the 100% floor keeps both cases. sch.js always sets
+     `max-content` with the 100% floor keeps both cases. app.js always sets
      `--sch-day-track` to a whole number of pixels, so max-content is head plus
      seven days exactly; where the week fits, that total is under 100% and the
      floor wins, the `1fr` tracks divide the pane and nothing about the desktop
@@ -142,7 +142,7 @@
    with no bottom edge at all -- it simply stopped after the last bus. Carbon's
    table rules every row including its last, which is what closes it there too.
 
-   `.sch-row--last` is still set by sch-data.js and is now unused by this
+   `.sch-row--last` is still set by data.js and is now unused by this
    stylesheet. It is left in place rather than removed from the JS: it marks
    the last VISIBLE row, which `:last-child` cannot do on the weeks the
    Unassigned row is hidden, and that is worth keeping for whatever next wants
@@ -293,7 +293,7 @@
      square until that bus goes off the board. 8px of padding would break it for
      three digits too, which is why it is 4 again.
 
-     sch.js measures this cell, so the floor reaches its arithmetic untold. */
+     app.js measures this cell, so the floor reaches its arithmetic untold. */
   min-inline-size: 2rem;
   /* The head of a centred column. `.sch-day` keeps its own start alignment --
      a day name and its date read left to right and are not centred. */
@@ -481,7 +481,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-02);
-  /* CENTRED BECAUSE THE COLUMN'S WIDTH IS NOT FIXED. sch.js gives this column
+  /* CENTRED BECAUSE THE COLUMN'S WIDTH IS NOT FIXED. app.js gives this column
      the flooring remainder so the board's right edge meets the toolbar's, so
      it breathes by up to six pixels as the window moves -- and left-aligned
      that showed as a glyph sitting 8px from one edge and up to 13.8 from the
@@ -585,7 +585,7 @@ button.sch-row-head__num {
   grid-column: span var(--sch-days);
   min-block-size: calc(var(--sch-gap-clear) + var(--sch-lanes, 1) * var(--sch-bar-h) + (var(--sch-lanes, 1) - 1) * var(--sch-lane-gap) + var(--sch-gap));
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  /* THE DAY RULES. `--sch-day-rules` is the stop list, written by sch-data.js
+  /* THE DAY RULES. `--sch-day-rules` is the stop list, written by data.js
      once per render, and `--sch-day-rule` is what those 1px stops are drawn in.
 
      A BACKGROUND, SO IT NEEDS NO STACKING ORDER. `background-image` paints
@@ -689,7 +689,7 @@ button.sch-row-head__num {
      `manipulation` keeps panning and pinching -- the board must still scroll
      under a finger that starts on a bar -- and drops only the double-tap zoom,
      which has nothing to do here. The drag suppresses the scroll itself, once
-     the hold is done; see sch-data.js. */
+     the hold is done; see data.js. */
   touch-action: manipulation;
   -webkit-touch-callout: none;
   user-select: none;
@@ -720,7 +720,7 @@ button.sch-row-head__num {
    week has no edge on that side and runs to it.
    UNCONFIRMED IS A COLOUR, NOT A STATE OF THE BAR, 2026-09-13. rux: "no dashed
    border unconfirmed are red . confirmed blue. override over is whatever color
-   is chosen." That is `hueFor` in sch-data.js, and nothing here adds to it. The
+   is chosen." That is `hueFor` in data.js, and nothing here adds to it. The
    bar was hollow with a dashed edge in its hue, then filled with the edge kept
    earlier the same day, and now has neither. Given up on purpose: a trip with a
    picked colour says nothing about confirmation on the board. */
@@ -795,7 +795,7 @@ button.sch-row-head__num {
 /* THE ASIDE STARTS WHERE THE GRID STARTS, NOT WHERE THE TOOLBAR DOES. The
    toolbar is inside `.sch-frame` now, so without this the driver grid would
    begin 48px above the bus grid and its header row would no longer sit on the
-   same line as the day band -- and sch.js gives the availability pane the
+   same line as the day band -- and app.js gives the availability pane the
    SCHEDULE's measured height so the two bottoms meet, which only works if the
    two tops do. The offset is the toolbar's own height and they must move
    together; if one changes, change both.
@@ -885,7 +885,7 @@ button.sch-row-head__num {
   text-overflow: ellipsis;
 }
 
-/* THE TRIP EDITOR'S COLUMN. Sized here, not in rux-overrides.css, so the
+/* THE TRIP EDITOR'S COLUMN. Sized here, not in overrides.css, so the
    column's width is an app decision in an app file; that file only undoes
    Carbon's fixed positioning.
 
@@ -919,7 +919,7 @@ button.sch-row-head__num {
      carries a title block and a close button, so the 2rem that used to push it
      down to the schedule's header line was 32px of nothing above a head that
      wanted to be there. Every region on this board now begins at the board's
-     top; what differs is what each puts in its first 32px. sch.js measures
+     top; what differs is what each puts in its first 32px. app.js measures
      these panels from `.sch-board` rather than from `.sch` for the same
      reason. */
   /* A DEFINITE HEIGHT, AND THIS IS WHAT MAKES THE FORM SCROLL AND THE SAVE BAR
@@ -937,7 +937,7 @@ button.sch-row-head__num {
      word from `max-block-size` to `block-size` is the whole fix.
 
      IT IS THE NO-SCRIPT FALLBACK, NOT THE REAL HEIGHT. `.sch` carries the same
-     expression and sch.js replaces it on both by MEASURING the pane's own top,
+     expression and app.js replaces it on both by MEASURING the pane's own top,
      because this hand-tuned 15rem is exactly the guess that function exists to
      correct -- and left to it the editor stood visibly shorter than the board
      and the driver grid beside it. */
@@ -1014,7 +1014,7 @@ button.sch-row-head__num {
      dense and refuses to let its toolbar follow, which is exactly the
      decoupling this note worried about, answered by Carbon itself.
 
-     THE BREAKPOINT SWAP IN sch.js GOES WITH THIS. One size at every width
+     THE BREAKPOINT SWAP IN app.js GOES WITH THIS. One size at every width
      needs no `matchMedia`; what stays there is the icon-only swap, which is
      about words, not sizes. */
   min-block-size: var(--rux-layout-size-height-md);
@@ -1156,7 +1156,7 @@ button.sch-row-head__num {
    own padding keeps it off the panel's edge. The page is inset from the
    viewport by the shell's gutter, 64px at 1440, so this leaves that same 64
    between the board and the panel -- the inset the board already has from the
-   viewport's left edge. Framed alike on both sides. sch.js sets the measured
+   viewport's left edge. Framed alike on both sides. app.js sets the measured
    width at runtime; this is what renders if it never runs. A version that
    reserved only the overlap put the board flush against the panel, border on
    border, for about an hour on 2026-09-06. */
@@ -1164,7 +1164,7 @@ button.sch-row-head__num {
    move. `.sch-page--with-panel` set `padding-inline-end` to the panel's width
    so a FIXED overlay had somewhere to sit; the editor is a flex child of
    `.sch-board` now, so it takes its own room by existing. The rule, its
-   no-script fallback and `fitPanelRoom()` in sch.js are all gone with it --
+   no-script fallback and `fitPanelRoom()` in app.js are all gone with it --
    three places that had to agree about one number, and at times did
    not. */
 
@@ -1263,7 +1263,7 @@ button.sch-row-head__num {
    a 32px button dropped straight into it would each hang from the top of the
    band. This box gives them a flex row that centres them against each other,
    and it is an element this app owns rather than a second override of a
-   Carbon component whose absolute positioning `rux-overrides.css` already
+   Carbon component whose absolute positioning `overrides.css` already
    steers around once.
 
    THE SWITCH COMES FIRST AND THE `+` IS LAST, so the add button sits at the
@@ -1396,7 +1396,7 @@ button.sch-row-head__num {
    words would touch its left edge. Pulling the list out by the body's own
    padding keeps Carbon's 16px INSIDE the band and lands the text at the same
    left as the fields, with the band running to the panel's edges. Same trick,
-   and the same number, as the sticky tab strip in `rux-overrides.css`.
+   and the same number, as the sticky tab strip in `overrides.css`.
 
    The margin is on this app's wrapper, never on `.rux--contained-list`. */
 .sch-panel-section--bleed {
@@ -1437,7 +1437,7 @@ button.sch-row-head__num {
    and sat behind it. The grid pane inside carries the same zero for the same
    reason. */
 /* THE MENUS' CONTAINING BLOCK, AND IT WAS NEVER DECLARED. `popMenuAt` in
-   sch-data.js appends an absolutely positioned menu to `.sch-page` and offsets
+   data.js appends an absolutely positioned menu to `.sch-page` and offsets
    it by that element's own bounding rect -- which is only correct if
    `.sch-page` is the containing block. It never was: its sole rule was
    `--with-panel`'s padding, and every ancestor up to `.rux--content` is
@@ -1452,7 +1452,7 @@ button.sch-row-head__num {
 .sch-page { position: relative; }
 
 .sch-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
-/* FLEX-GROW IS BOTH THE MEASUREMENT AND THE BUG, so sch.js turns it off at the
+/* FLEX-GROW IS BOTH THE MEASUREMENT AND THE BUG, so app.js turns it off at the
    moment it stops being the first. Growing is what lets the pane fill the
    board, and `fitColumns` reads `clientWidth` off the pane to learn how much
    room there is -- take grow away here and it measures its own content, comes
@@ -1460,7 +1460,7 @@ button.sch-row-head__num {
    once the columns are chosen the pane is deliberately narrowed so the few
    leftover pixels fall OUTSIDE its border, and grow hands them straight back:
    2.805px of daylight to the right of Sunday, measured at 1440 with the driver
-   grid on. So the rule keeps grow for the measuring pass and sch.js pins
+   grid on. So the rule keeps grow for the measuring pass and app.js pins
    `flex-grow: 0` inline for the width it just set. */
 .sch-board > .sch { flex: 1 1 auto; min-inline-size: 0; }
 
@@ -1552,7 +1552,7 @@ button.sch-row-head__num {
    letters exist to prevent only needs TWO: "Tu" and "Th" are as distinct as
    "Tue" and "Thu", and "We" -- the widest of the seven -- is 18.4px, which
    clears a 24px cell with 5.6 to spare. The words moved, so the column could.
-   sch-data.js's head builder is where they are cut.
+   data.js's head builder is where they are cut.
 
    THE 56px DOES NOT GO TO THE BOARD, which is the other thing that changed.
    The aside is a fixed 320 now rather than a `max-content` 331, so every pixel
@@ -1600,7 +1600,7 @@ button.sch-row-head__num {
      this number turned 24, 32, 24, 32, 24. Widening does not re-open it, and
      that is the whole case for doing one axis and not both. */
   --sch-day-track: var(--rux-layout-size-height-sm);
-  /* FILLS WHAT THE HEAD LEAVES. sch.js gives the ASIDE the board's height; this
+  /* FILLS WHAT THE HEAD LEAVES. app.js gives the ASIDE the board's height; this
      takes the remainder under the head. `max-block-size: none` lifts the base
      `.sch` cap, which is a viewport expression and would otherwise re-cap this
      pane at the full board height inside a box already 32px shorter. */
@@ -1958,12 +1958,12 @@ button.sch-row-head__num {
 
    THE TABS DID NOT COME BACK. They keep `--contained`, their sticky pin and
    their edge-to-edge bleed, which never depended on the fields' style --
-   rux-overrides.css holds all three. */
+   overrides.css holds all three. */
 
 
 /* ══ BELOW CARBON'S md, 41.98rem ═══════════════════════════════════════════
    Added 2026-09-11. Until today this stylesheet had NO media query at all --
-   `grep '@media' sch.css rux-overrides.css index.html` returned nothing --
+   `grep '@media' app.css overrides.css index.html` returned nothing --
    while `rux.css` compiles 654 of them at sm 320 / md 672 / lg 1056 / xlg
    1312 / max 1584. Every fault this block answers follows from that: a board
    whose three regions are sized for a desktop row, laid out on a phone.
@@ -2019,7 +2019,7 @@ button.sch-row-head__num {
      `.sch-frame` and `.sch` at 0px wide and pushed the board off the right of
      the screen. The schedule did not shrink, it disappeared.
 
-     The editor is handled where it belongs, in rux-overrides.css: Carbon's own
+     The editor is handled where it belongs, in overrides.css: Carbon's own
      `position: fixed` is restored there by scoping the un-fixing to md and up,
      so the panel floats over the board instead of displacing it. All this
      wrapper has to do is stop reserving room -- and it must give up its
@@ -2043,7 +2043,7 @@ button.sch-row-head__num {
      998, LOWERED FROM 8999 ON 2026-09-11 with the trip panel beside it and for
      the same reason: at 8999 this sat over the shell's header panels, which are
      8000, so pressing Account or the app switcher with the roster open opened a
-     panel nobody could see. rux-overrides.css carries the argument and the
+     panel nobody could see. overrides.css carries the argument and the
      whole scale. */
   .sch-aside {
     position: fixed;
@@ -2123,7 +2123,7 @@ button.sch-row-head__num {
      rules on `.sch-toolbar__weekrow` and `.sch-weekbtn` and hold at every
      width; only the basis is genuinely about this breakpoint. */
 
-  /* ICON-ONLY, AND THE SWAP IS sch.js's. The label and the glyph are both in
+  /* ICON-ONLY, AND THE SWAP IS app.js's. The label and the glyph are both in
      the markup at all widths; which one shows is decided here, and the
      `rux--btn--icon-only` and `rux--layout--size-lg` classes that make the
      button a 48px square are added by `fitToolbar()` there. They are Carbon's
@@ -2223,7 +2223,7 @@ button.sch-row-head__num {
    else.
 
    `:has()` RATHER THAN A CLASS THIS FILE WOULD HAVE TO KEEP IN SYNC. The panel
-   is `#sch-panel` and its open state IS `[hidden]` -- sch-data.js sets nothing
+   is `#sch-panel` and its open state IS `[hidden]` -- data.js sets nothing
    else -- so the stylesheet can read it directly and there is no second source
    of truth to drift. rux.css compiles 221 `:has()` rules of its own, so it is
    already a baseline for any page loading it. */
@@ -2255,7 +2255,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    right-aligns its children, so the collapsed 48px square sits at the far end
    with Account and the Switcher. All that was missing is for this wrapper to
    claim the slack when it is expanded. So there is no rule here on
-   `__global`, and none in rux-overrides.css either.
+   `__global`, and none in overrides.css either.
 
    `min-inline-size: 0` BECAUSE A FLEX ITEM WILL NOT SHRINK BELOW ITS CONTENT
    OTHERWISE, which on a narrow header would push Account and the Switcher off
@@ -2452,13 +2452,13 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    CARBON'S OWN `background: none` WAS WINNING.
    `.rux--contained-list-item--clickable .rux--contained-list-item__content` is
    two classes; `.sch-search__opt--active` is one, so it lost on specificity and
-   never painted. Scoping it to the results makes it two as well, and sch.css
+   never painted. Scoping it to the results makes it two as well, and app.css
    loads after rux.css, so the later of two equal rules wins -- no `!important`.
 
    `--rux-layer-hover`, WHICH IS CARBON'S TOKEN FOR THIS EXACT ROW, read from
    `.rux--contained-list-item--clickable ...:not(:disabled):hover` rather than
    chosen: the keyboard highlight and the mouse hover are then literally the
-   same colour, and the pointermove handler in sch-data.js keeps them from ever
+   same colour, and the pointermove handler in data.js keeps them from ever
    disagreeing about which row is current. */
 .sch-search__results .sch-search__opt--active { background-color: var(--rux-layer-hover); }
 

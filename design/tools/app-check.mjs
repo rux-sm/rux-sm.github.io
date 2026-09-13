@@ -357,14 +357,14 @@ function selfTest() {
     if (away) { rmSync(away, { recursive: true, force: true }); away = null; }
     dsOpt = { ds: elsewhere() };
     delete process.env.DS;
-    w('rux-theme.css', '/* empty */');
-    w('rux-overrides.css', '.rux--btn{color:var(--rux-y)}');
+    w('theme.css', '/* empty */');
+    w('overrides.css', '.rux--btn{color:var(--rux-y)}');
     w('app.js', '// rux--not-a-class in a comment is prose\ndocument.body.classList.add("rux--btn");');
     w('brand/logo.svg', '<svg/>');
     w('index.html', [
       '<!doctype html><html lang="en" data-theme="white"><head>',
       '<link rel="stylesheet" href="/design/css/rux.css">',
-      '<link rel="stylesheet" href="rux-overrides.css">',
+      '<link rel="stylesheet" href="overrides.css">',
       '<style>.x{color:var(--rux-x)}</style></head><body>',
       '<!-- rux--in-a-comment is prose, not a use -->',
       '<img src="brand/logo.svg" alt="">',
@@ -414,7 +414,7 @@ function selfTest() {
     }],
     ['classes', 'classes', () => w('page.html', '<html><body class="rux--invented"></body></html>')],
     ['classes in a local script', 'classes', () => w('more.js', 'el.className = "rux--nope";')],
-    ['tokens', 'tokens', () => w('rux-theme.css', '[data-theme=white]{color:var(--rux-unknown)}')],
+    ['tokens', 'tokens', () => w('theme.css', '[data-theme=white]{color:var(--rux-unknown)}')],
     ['files', 'files', () => w('page.html', '<html><body><img src="missing.svg"></body></html>')],
     ['ids: dangling aria-controls', 'ids', () => w('page.html', '<html><body><button aria-controls="nowhere">x</button></body></html>')],
     ['ids: duplicate', 'ids', () => w('page.html', '<html><body><i id="a"></i><i id="a"></i></body></html>')],

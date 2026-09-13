@@ -88,7 +88,7 @@ export function exportPage(templateHtml, answers = {}) {
   for (const l of lines) {
     out.push(l);
     if (l.includes('href="/design/css/rux-overrides.css"')) {
-      out.push('<link rel="stylesheet" href="rux-theme.css">', '<link rel="stylesheet" href="rux-overrides.css">');
+      out.push('<link rel="stylesheet" href="theme.css">', '<link rel="stylesheet" href="overrides.css">');
     }
   }
   return out.join('\n');

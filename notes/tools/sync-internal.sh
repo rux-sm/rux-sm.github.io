@@ -37,8 +37,8 @@ ln -s "$HERE/js" "$OUT/site/js"
 ln -s "$HERE/brand" "$OUT/site/brand"
 # And this project's own two override hooks at the root, linked after
 # design's own by every page; without them the viewer 404s twice per page.
-ln -s "$HERE/rux-theme.css" "$OUT/site/rux-theme.css"
-ln -s "$HERE/rux-overrides.css" "$OUT/site/rux-overrides.css"
+ln -s "$HERE/theme.css" "$OUT/site/theme.css"
+ln -s "$HERE/overrides.css" "$OUT/site/overrides.css"
 LN_DATA="$OUT/data" LN_OUT="$OUT/site/guides" DS="$DS" node "$HERE/tools/build.mjs"
 
 echo "  private site: $OUT/site  (git-ignored, never published)"

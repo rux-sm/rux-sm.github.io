@@ -72,8 +72,6 @@ None.
 
 ### Site
 
-- [ ] Rename app files to the shared names, including every `rux-theme.css`
-      and `rux-overrides.css`.
 - [ ] Rename class prefixes: `sch-` to `scheduler-`, `ln-` to `notes-`.
 - [ ] Rename tools to start with their action, and merge the sprite tools if
       they do one job.

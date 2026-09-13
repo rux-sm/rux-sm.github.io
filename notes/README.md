@@ -66,6 +66,6 @@ machine has to be able to reproduce.
 
 `data/guides/`, `guides/` and `index.html` are generated, and the next sync or
 build overwrites them. Fix content in atlas, a component in Design, markup in
-`tools/build.mjs`. `rux-theme.css` and `rux-overrides.css` here are this app's
+`tools/build.mjs`. `theme.css` and `overrides.css` here are this app's
 override hooks, linked after Design's own and empty by design. A rule goes
 there only when this app, not Design, has to change something.

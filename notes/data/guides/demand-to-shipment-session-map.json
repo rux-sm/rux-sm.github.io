@@ -1497,15 +1497,19 @@
           "kind": "prose",
           "tokens": [
             {
+              "t": "literal",
+              "v": "Leaves"
+            },
+            {
               "t": "strong",
-              "v": "`Leaves` is the field that earns the map."
+              "v": " is the field that earns the map."
             },
             {
               "t": "text",
               "v": " Every stall in this chain is a handover, not a step, and a diagram that draws only the steps hides exactly the thing that goes wrong."
             }
           ],
-          "text": "`Leaves` is the field that earns the map. Every stall in this chain is a handover, not a step, and a diagram that draws only the steps hides exactly the thing that goes wrong."
+          "text": "Leaves is the field that earns the map. Every stall in this chain is a handover, not a step, and a diagram that draws only the steps hides exactly the thing that goes wrong."
         },
         {
           "kind": "prose",
@@ -1536,14 +1540,22 @@
             },
             {
               "t": "strong",
-              "v": "the kinds are enumerated in `standards/guide-json.md` §7 rather than here"
+              "v": "the kinds are enumerated in "
+            },
+            {
+              "t": "literal",
+              "v": "standards/guide-json.md"
+            },
+            {
+              "t": "strong",
+              "v": " §7 rather than here"
             },
             {
               "t": "text",
               "v": " — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
             }
           ],
-          "text": "Each tile header carries its coordinates. · stage N · kind after the code is what places the tile when the map is drawn — the lane comes from the section it sits in. kind decides how a tile is drawn and nothing else, and the kinds are enumerated in `standards/guide-json.md` §7 rather than here — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
+          "text": "Each tile header carries its coordinates. · stage N · kind after the code is what places the tile when the map is drawn — the lane comes from the section it sits in. kind decides how a tile is drawn and nothing else, and the kinds are enumerated in standards/guide-json.md §7 rather than here — a contract restated in a document that uses it is the duplication rule 5 exists to stop, and this copy had drifted two behind before anyone noticed."
         },
         {
           "kind": "prose",
@@ -5333,14 +5345,22 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "A tile with no `flow` edge at either end is not on the path."
+              "v": "A tile with no "
+            },
+            {
+              "t": "literal",
+              "v": "flow"
+            },
+            {
+              "t": "strong",
+              "v": " edge at either end is not on the path."
             },
             {
               "t": "text",
               "v": " That is the two prerequisites in 5.0 and the three reads in 5.7, and nothing else — every numbered tile from 1 to 21 carries at least one. Nothing has to declare it; the table below already says it."
             }
           ],
-          "text": "A tile with no `flow` edge at either end is not on the path. That is the two prerequisites in 5.0 and the three reads in 5.7, and nothing else — every numbered tile from 1 to 21 carries at least one. Nothing has to declare it; the table below already says it."
+          "text": "A tile with no flow edge at either end is not on the path. That is the two prerequisites in 5.0 and the three reads in 5.7, and nothing else — every numbered tile from 1 to 21 carries at least one. Nothing has to declare it; the table below already says it."
         },
         {
           "kind": "table",
@@ -6339,7 +6359,15 @@
             },
             {
               "t": "strong",
-              "v": "The fix is the `cluster` tile in lane 1"
+              "v": "The fix is the "
+            },
+            {
+              "t": "literal",
+              "v": "cluster"
+            },
+            {
+              "t": "strong",
+              "v": " tile in lane 1"
             },
             {
               "t": "text",
@@ -6354,7 +6382,7 @@
               "v": " before believing the run is fixed."
             }
           ],
-          "text": "The item has no planning data. It is absent from the Item Order Plan — not refused, not flagged, with nothing to explain why. Node 3 searches for it before node 4 runs, because MRP has nothing to say about an item it cannot see. The fix is the `cluster` tile in lane 1, and doing it lands you in the next failure rather than past it — read that tile's Leaves before believing the run is fixed."
+          "text": "The item has no planning data. It is absent from the Item Order Plan — not refused, not flagged, with nothing to explain why. Node 3 searches for it before node 4 runs, because MRP has nothing to say about an item it cannot see. The fix is the cluster tile in lane 1, and doing it lands you in the next failure rather than past it — read that tile's Leaves before believing the run is fixed."
         },
         {
           "kind": "prose",
@@ -6437,10 +6465,18 @@
             },
             {
               "t": "strong",
-              "v": "The row goes on the `buyfrom` tile in lane 1."
+              "v": "The row goes on the "
+            },
+            {
+              "t": "literal",
+              "v": "buyfrom"
+            },
+            {
+              "t": "strong",
+              "v": " tile in lane 1."
             }
           ],
-          "text": "A purchased item has no buy-from business partner. Here the transfer does speak, and this is the one of the four that names itself: \"Buy-from BP cannot be determined for item…\". A failed transfer is non-destructive — the proposal stays a planned order, so fix the data and run it again. The row goes on the `buyfrom` tile in lane 1."
+          "text": "A purchased item has no buy-from business partner. Here the transfer does speak, and this is the one of the four that names itself: \"Buy-from BP cannot be determined for item…\". A failed transfer is non-destructive — the proposal stays a planned order, so fix the data and run it again. The row goes on the buyfrom tile in lane 1."
         },
         {
           "kind": "heading",
@@ -6665,8 +6701,8 @@
             {
               "tokens": [
                 {
-                  "t": "strong",
-                  "v": "`the source on file`"
+                  "t": "literal",
+                  "v": "the source on file"
                 },
                 {
                   "t": "text",
@@ -6681,13 +6717,25 @@
                   "v": " column. It adds nothing of its own."
                 }
               ],
-              "text": "`the source on file` — the spine. Every route, action, status and figure above is carried by one of its phases, named in section 5's Guide step column. It adds nothing of its own."
+              "text": "the source on file — the spine. Every route, action, status and figure above is carried by one of its phases, named in section 5's Guide step column. It adds nothing of its own."
             },
             {
               "tokens": [
                 {
                   "t": "strong",
-                  "v": "The `the source on file` file for each code in `sources:`"
+                  "v": "The "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "strong",
+                  "v": " file for each code in "
+                },
+                {
+                  "t": "literal",
+                  "v": "sources:"
                 },
                 {
                   "t": "text",
@@ -6702,13 +6750,21 @@
                   "v": " for the drill-ins, and the routes checked against the navigation extract by rule 12."
                 }
               ],
-              "text": "The `the source on file` file for each code in `sources:` — session names, reached: for the drill-ins, and the routes checked against the navigation extract by rule 12."
+              "text": "The the source on file file for each code in sources: — session names, reached: for the drill-ins, and the routes checked against the navigation extract by rule 12."
             },
             {
               "tokens": [
                 {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
                   "t": "strong",
-                  "v": "`the source on file` and `the source on file`"
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
                 },
                 {
                   "t": "text",
@@ -6779,15 +6835,19 @@
                   "v": " — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: "
                 },
                 {
+                  "t": "session",
+                  "code": "cprrp1200m000"
+                },
+                {
                   "t": "strong",
-                  "v": "`cprrp1200m000` is in the extracts and has no help filed here"
+                  "v": " is in the extracts and has no help filed here"
                 },
                 {
                   "t": "text",
                   "v": ", so its route is evidenced and its meaning rests on the guide alone."
                 }
               ],
-              "text": "`the source on file` and `the source on file` — measured 2026-09-09, and all 23 codes in sources: settle against principle 3's test. Sixteen appear in one or both extracts. The seven that do not — cprrp1220m000, tdpur4100m900, tdsls4501m140, tisfc0100s000, whinh2100m100, whinh3512m000, whinh4630m000 — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: `cprrp1200m000` is in the extracts and has no help filed here, so its route is evidenced and its meaning rests on the guide alone."
+              "text": "the source on file and the source on file — measured 2026-09-09, and all 23 codes in sources: settle against principle 3's test. Sixteen appear in one or both extracts. The seven that do not — cprrp1220m000, tdpur4100m900, tdsls4501m140, tisfc0100s000, whinh2100m100, whinh3512m000, whinh4630m000 — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: cprrp1200m000 is in the extracts and has no help filed here, so its route is evidenced and its meaning rests on the guide alone."
             }
           ]
         }

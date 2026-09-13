@@ -626,8 +626,8 @@
               "v": " "
             },
             {
-              "t": "strong",
-              "v": "`5.0000 ea`"
+              "t": "literal",
+              "v": "5.0000 ea"
             },
             {
               "t": "text",
@@ -658,7 +658,7 @@
               "v": "."
             }
           ],
-          "text": "the source on file and the source on file — both status bar cprrp0520m000, company 4100, Item Order Plan for plan item NA1 · BAM-CHOP-PAIR, Inventory on Hand `5.0000 ea`, Actual Supply Source Job Shop, scenario ACT."
+          "text": "the source on file and the source on file — both status bar cprrp0520m000, company 4100, Item Order Plan for plan item NA1 · BAM-CHOP-PAIR, Inventory on Hand 5.0000 ea, Actual Supply Source Job Shop, scenario ACT."
         },
         {
           "kind": "prose",
@@ -880,8 +880,8 @@
               "v": " "
             },
             {
-              "t": "strong",
-              "v": "`25.0000 ea`"
+              "t": "literal",
+              "v": "25.0000 ea"
             },
             {
               "t": "text",
@@ -944,7 +944,7 @@
               "v": " cleared."
             }
           ],
-          "text": "The changed variable is captured too. the source on file — status bar tcibd2600m000, Item - Ordering, Lot Sizes tab: Order Increment `25.0000 ea`, Minimum 1.0000, Maximum 99999999.0000, Fixed Order 1.0000, Lot Size Calculation Allowed cleared."
+          "text": "The changed variable is captured too. the source on file — status bar tcibd2600m000, Item - Ordering, Lot Sizes tab: Order Increment 25.0000 ea, Minimum 1.0000, Maximum 99999999.0000, Fixed Order 1.0000, Lot Size Calculation Allowed cleared."
         },
         {
           "kind": "prose",
@@ -1213,8 +1213,8 @@
               "v": " "
             },
             {
-              "t": "strong",
-              "v": "`Lot for Lot`"
+              "t": "literal",
+              "v": "Lot for Lot"
             },
             {
               "t": "text",
@@ -1237,8 +1237,16 @@
               "v": ", "
             },
             {
+              "t": "em",
+              "v": "Safety Stock"
+            },
+            {
               "t": "strong",
-              "v": "_Safety Stock_ `50.0000`"
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "50.0000"
             },
             {
               "t": "text",
@@ -1253,7 +1261,7 @@
               "v": "."
             }
           ],
-          "text": "The same frame that carries the increment carries this. The tcibd2600m000 capture's Sites subtab shows one row — site CSADNA01, PCG CSAD NA Site 1 Manufacturi Houston,TX, Order Method `Lot for Lot`, warehouse ADNA01 FINISHED GOODS, _Safety Stock_ `50.0000`, and _Use Global Item Ordering_ selected."
+          "text": "The same frame that carries the increment carries this. The tcibd2600m000 capture's Sites subtab shows one row — site CSADNA01, PCG CSAD NA Site 1 Manufacturi Houston,TX, Order Method Lot for Lot, warehouse ADNA01 FINISHED GOODS, Safety Stock 50.0000, and _Use Global Item Ordering_ selected."
         },
         {
           "kind": "prose",
@@ -1358,14 +1366,18 @@
             },
             {
               "t": "strong",
-              "v": "the menu was captured expanded at `00:10:13`"
+              "v": "the menu was captured expanded at "
+            },
+            {
+              "t": "literal",
+              "v": "00:10:13"
             },
             {
               "t": "text",
               "v": ", which is the frame AGENTS.md's capture loop asks for by name."
             }
           ],
-          "text": "The trainee could not find the cancel action and had failed to find it on a previous occasion. The consultant's answer at 00:10:14 was \"Go to exception handling… Actions, exception handling\" — and the menu was captured expanded at `00:10:13`, which is the frame AGENTS.md's capture loop asks for by name."
+          "text": "The trainee could not find the cancel action and had failed to find it on a previous occasion. The consultant's answer at 00:10:14 was \"Go to exception handling… Actions, exception handling\" — and the menu was captured expanded at 00:10:13, which is the frame AGENTS.md's capture loop asks for by name."
         },
         {
           "kind": "source",
@@ -1906,7 +1918,15 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "This is the evidence the `BAM-SLEEVE` no-supply case has been missing since 2026-08-25"
+              "v": "This is the evidence the "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "strong",
+              "v": " no-supply case has been missing since 2026-08-25"
             },
             {
               "t": "text",
@@ -1921,7 +1941,7 @@
               "v": "; what it does is move the explanation from assertion to a captured figure on a comparable configuration. "
             }
           ],
-          "text": "This is the evidence the `BAM-SLEEVE` no-supply case has been missing since 2026-08-25, where the same explanation — existing stock — was offered on the call and never shown. It is not the same run, so it is not closed by this; what it does is move the explanation from assertion to a captured figure on a comparable configuration."
+          "text": "This is the evidence the BAM-SLEEVE no-supply case has been missing since 2026-08-25, where the same explanation — existing stock — was offered on the call and never shown. It is not the same run, so it is not closed by this; what it does is move the explanation from assertion to a captured figure on a comparable configuration."
         },
         {
           "kind": "prose",
@@ -1960,7 +1980,19 @@
             },
             {
               "t": "strong",
-              "v": "on hand `5.0000` with blocked `5.0000`"
+              "v": "on hand "
+            },
+            {
+              "t": "literal",
+              "v": "5.0000"
+            },
+            {
+              "t": "strong",
+              "v": " with blocked "
+            },
+            {
+              "t": "literal",
+              "v": "5.0000"
             },
             {
               "t": "text",
@@ -1979,7 +2011,7 @@
               "v": "Not documented for this release."
             }
           ],
-          "text": "Two findings outside the question. BAM-SLEEVE's description is Paper Sleeve, not a bamboo item, which no document in this library records. And BAM-CHOP-PAIR shows on hand `5.0000` with blocked `5.0000` — the whole of it blocked — while the planning frames of §3.3 net that same 5 against safety stock as though it were available. Not documented for this release."
+          "text": "Two findings outside the question. BAM-SLEEVE's description is Paper Sleeve, not a bamboo item, which no document in this library records. And BAM-CHOP-PAIR shows on hand 5.0000 with blocked 5.0000 — the whole of it blocked — while the planning frames of §3.3 net that same 5 against safety stock as though it were available. Not documented for this release."
         }
       ]
     },
@@ -2670,7 +2702,11 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "The first frame in this library of a shipment line actually reaching `Frozen`"
+              "v": "The first frame in this library of a shipment line actually reaching "
+            },
+            {
+              "t": "literal",
+              "v": "Frozen"
             },
             {
               "t": "text",
@@ -2693,7 +2729,7 @@
               "v": " The freeze was refused until performed there, and the sequence needed two attempts and a stoplight control before the line took."
             }
           ],
-          "text": "The first frame in this library of a shipment line actually reaching `Frozen`, and it confirms §3.8 — the control is on the Shipment Lines tab, not the header. The second guide's correction on camera: \"you're on the wrong tab, at the line level.\" The freeze was refused until performed there, and the sequence needed two attempts and a stoplight control before the line took."
+          "text": "The first frame in this library of a shipment line actually reaching Frozen, and it confirms §3.8 — the control is on the Shipment Lines tab, not the header. The second guide's correction on camera: \"you're on the wrong tab, at the line level.\" The freeze was refused until performed there, and the sequence needed two attempts and a stoplight control before the line took."
         }
       ]
     },
@@ -3274,7 +3310,11 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "Pass 1 has no input at all for `tcibd2600m000`"
+              "v": "Pass 1 has no input at all for "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2600m000"
             },
             {
               "t": "text",
@@ -3293,7 +3333,7 @@
               "v": "Not documented for this release."
             }
           ],
-          "text": "Pass 1 has no input at all for `tcibd2600m000` — no help is filed for it, which is also why the fields check reports its labels as unverifiable rather than passed. Not documented for this release."
+          "text": "Pass 1 has no input at all for tcibd2600m000 — no help is filed for it, which is also why the fields check reports its labels as unverifiable rather than passed. Not documented for this release."
         },
         {
           "kind": "prose",
@@ -3881,8 +3921,20 @@
               "v": ", so all four are true here — and one of them, "
             },
             {
+              "t": "em",
+              "v": "Engineering Revisions Active"
+            },
+            {
               "t": "strong",
-              "v": "_Engineering Revisions Active_ selected in Production Order Parameters (`tisfc0100s000`)"
+              "v": " selected in Production Order Parameters ("
+            },
+            {
+              "t": "session",
+              "code": "tisfc0100s000"
+            },
+            {
+              "t": "strong",
+              "v": ")"
             },
             {
               "t": "text",
@@ -3897,7 +3949,7 @@
               "v": " §3."
             }
           ],
-          "text": "The one that settled is worth the whole pass. Item Engineering Revision renders on the production-order frame, and its help gates it on four things simultaneously. A conjunction that renders is one whose every clause holds, so all four are true here — and one of them, _Engineering Revisions Active_ selected in Production Order Parameters (`tisfc0100s000`), appears in no document in this library and has never been read off the form, which nobody has opened. It is now recorded in the source on file §3."
+          "text": "The one that settled is worth the whole pass. Item Engineering Revision renders on the production-order frame, and its help gates it on four things simultaneously. A conjunction that renders is one whose every clause holds, so all four are true here — and one of them, Engineering Revisions Active selected in Production Order Parameters (tisfc0100s000), appears in no document in this library and has never been read off the form, which nobody has opened. It is now recorded in the source on file §3."
         },
         {
           "kind": "prose",

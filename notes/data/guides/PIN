@@ -1,9 +1,9 @@
-commit   13cfaf53359fa3d68e263d5c2a7d68ad4e8aac93
-date     2026-09-13T22:50:54Z
-subject  feat(check): Check the routes on diagram tiles
+commit   73484fa7d6280784c8d1bfcf4e566c60fd82f85c
+date     2026-09-13T23:00:34Z
+subject  docs(plans): Plan the overview's missing branches
 contract 8 
 tier     export
-sha256   3ca30e3a678230c6d41ec8deb9221ad79f1ce9e5b92afb49c603f300f476dc87
+sha256   b4d75ee8ebecabbb41c8c4be176b5a248805fc0484400d02ce77829b64119bd2
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

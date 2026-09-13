@@ -1258,7 +1258,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure">Later in the session a <strong>second revision, `000002`</strong>, was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6.</p></div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure">Later in the session a <strong>second revision, </strong><span class="notes-t-exact">000002</span>, was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6.</p></div>
     </div>
   </div>
 </div>
@@ -1277,7 +1277,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="notes-prose-measure">Route A (purchase) was walked in full, not just proposed:</p>
             <ol class="rux--list--ordered">
           <li class="rux--list__item"><span class="notes-t-named">Purchase Order Intake Workbench</span> <span class="notes-t-exact">tdpur4601m200</span> → <span class="notes-t-named">Purchase Order</span> <span class="notes-t-exact">tdpur4100m900</span>, order <span class="notes-t-exact">100000677</span>.</li>
-          <li class="rux--list__item">Buy-from business partner <strong>`BP4000007` VISTA MACHINES INC.</strong>, selected from the standard test-partner list via the <strong>Buy-from Business Partners</strong> lookup (<span class="notes-t-exact">tccom4520m000</span>). Order Type <span class="notes-t-exact">IPO</span>, Purchase Office <span class="notes-t-exact">401P00</span>.</li>
+          <li class="rux--list__item">Buy-from business partner <span class="notes-t-exact">BP4000007</span><strong> VISTA MACHINES INC.</strong>, selected from the standard test-partner list via the <strong>Buy-from Business Partners</strong> lookup (<span class="notes-t-exact">tccom4520m000</span>). Order Type <span class="notes-t-exact">IPO</span>, Purchase Office <span class="notes-t-exact">401P00</span>.</li>
           <li class="rux--list__item">Order lines booked exactly from the BOM: <span class="notes-t-exact">BAM-ROD</span> qty <span class="notes-t-exact">2.0000 ea</span>, <span class="notes-t-exact">BAM-SLEEVE</span> qty <span class="notes-t-exact">1.0000 ea</span>, both to <span class="notes-t-exact">ADNA02 RAW MATERIALS</span>.</li>
           <li class="rux--list__item">The order generated a <span class="notes-t-named">Warehousing Order</span> <span class="notes-t-exact">whinh2100m100</span>, type <span class="notes-t-exact">PUI</span> &quot;Purchase Receipts&quot;. <strong>Actions ➔ Receive...</strong> opened <span class="notes-t-named">Warehouse Receipt</span> <span class="notes-t-exact">whinh3512m000</span>, receipt <span class="notes-t-exact">100001505</span>.</li>
           <li class="rux--list__item">Receiving hit a real error, <span class="notes-t-exact">whinh0032</span> — &quot;Advise and put away receipt line: 100001505 - 10 Receipt Line Stock Point Details not found,&quot; plus 3 more messages. The receipt nonetheless reached <strong>Confirmed</strong>, All Lines Final and Complete, packing slips <span class="notes-t-exact">123</span>/<span class="notes-t-exact">124</span>. How the error was cleared was not captured. </li>
@@ -1299,7 +1299,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h2 id="s-decisions">Decisions made</h2>
           <ol class="rux--list--ordered">
           <li class="rux--list__item"><strong>Route A (purchase) is the procedure for stocking training-item components</strong>, not Route B (adjustment) — the consultant walked the trainee through the full purchase-to-receipt cycle rather than a stock adjustment.</li>
-          <li class="rux--list__item"><strong>`BP4000007` VISTA MACHINES INC.</strong> is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one.</li>
+          <li class="rux--list__item"><span class="notes-t-exact">BP4000007</span><strong> VISTA MACHINES INC.</strong> is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one.</li>
           <li class="rux--list__item"><strong>Close Production Orders stays out of the two Scenario Guides&#39; documented scope</strong>, even though it was run in this session — the guides continue to end at finished-goods receipt.</li>
         </ol>
         </section>
@@ -1368,7 +1368,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </div>
           <p class="notes-prose-measure"></p>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 13cfaf5 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 73484fa · contract 8</p>
       </div>
     </div>
   </div>

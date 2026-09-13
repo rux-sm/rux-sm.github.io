@@ -2884,34 +2884,46 @@
             {
               "tokens": [
                 {
-                  "t": "strong",
-                  "v": "`the source on file`"
+                  "t": "literal",
+                  "v": "the source on file"
                 },
                 {
                   "t": "text",
                   "v": " — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
                 }
               ],
-              "text": "`the source on file` — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+              "text": "the source on file — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
             },
             {
               "tokens": [
                 {
-                  "t": "strong",
-                  "v": "`the source on file`"
+                  "t": "literal",
+                  "v": "the source on file"
                 },
                 {
                   "t": "text",
                   "v": ", phases 2 to 5 — the walked source of the four Deliver tiles."
                 }
               ],
-              "text": "`the source on file`, phases 2 to 5 — the walked source of the four Deliver tiles."
+              "text": "the source on file, phases 2 to 5 — the walked source of the four Deliver tiles."
             },
             {
               "tokens": [
                 {
                   "t": "strong",
-                  "v": "The `the source on file` file for each code in `sources:`"
+                  "v": "The "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "strong",
+                  "v": " file for each code in "
+                },
+                {
+                  "t": "literal",
+                  "v": "sources:"
                 },
                 {
                   "t": "text",
@@ -2926,20 +2938,20 @@
                   "v": " lines for the drill-ins."
                 }
               ],
-              "text": "The `the source on file` file for each code in `sources:` — names, routes and the reached: lines for the drill-ins."
+              "text": "The the source on file file for each code in sources: — names, routes and the reached: lines for the drill-ins."
             },
             {
               "tokens": [
                 {
-                  "t": "strong",
-                  "v": "`the source on file`"
+                  "t": "literal",
+                  "v": "the source on file"
                 },
                 {
                   "t": "text",
                   "v": " — level 2, where the same chain is named session by session."
                 }
               ],
-              "text": "`the source on file` — level 2, where the same chain is named session by session."
+              "text": "the source on file — level 2, where the same chain is named session by session."
             }
           ]
         }

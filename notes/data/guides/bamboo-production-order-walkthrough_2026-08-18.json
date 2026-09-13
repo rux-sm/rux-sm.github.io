@@ -295,14 +295,18 @@
                 },
                 {
                   "t": "strong",
-                  "v": "second revision, `000002`"
+                  "v": "second revision, "
+                },
+                {
+                  "t": "literal",
+                  "v": "000002"
                 },
                 {
                   "t": "text",
                   "v": ", was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6."
                 }
               ],
-              "text": "Later in the session a second revision, `000002`, was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6."
+              "text": "Later in the session a second revision, 000002, was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6."
             }
           ]
         }
@@ -503,8 +507,12 @@
                   "v": "Buy-from business partner "
                 },
                 {
+                  "t": "literal",
+                  "v": "BP4000007"
+                },
+                {
                   "t": "strong",
-                  "v": "`BP4000007` VISTA MACHINES INC."
+                  "v": " VISTA MACHINES INC."
                 },
                 {
                   "t": "text",
@@ -543,7 +551,7 @@
                   "v": "."
                 }
               ],
-              "text": "Buy-from business partner `BP4000007` VISTA MACHINES INC., selected from the standard test-partner list via the Buy-from Business Partners lookup (tccom4520m000). Order Type IPO, Purchase Office 401P00."
+              "text": "Buy-from business partner BP4000007 VISTA MACHINES INC., selected from the standard test-partner list via the Buy-from Business Partners lookup (tccom4520m000). Order Type IPO, Purchase Office 401P00."
             },
             {
               "tokens": [
@@ -993,15 +1001,19 @@
         {
           "tokens": [
             {
+              "t": "literal",
+              "v": "BP4000007"
+            },
+            {
               "t": "strong",
-              "v": "`BP4000007` VISTA MACHINES INC."
+              "v": " VISTA MACHINES INC."
             },
             {
               "t": "text",
               "v": " is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one."
             }
           ],
-          "text": "`BP4000007` VISTA MACHINES INC. is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one."
+          "text": "BP4000007 VISTA MACHINES INC. is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one."
         },
         {
           "tokens": [

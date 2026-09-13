@@ -330,16 +330,16 @@
               "v": "The environment's planning cluster is "
             },
             {
-              "t": "strong",
-              "v": "`NA1`"
+              "t": "literal",
+              "v": "NA1"
             },
             {
               "t": "text",
               "v": " (\"Cluster NA 1\") and the site is "
             },
             {
-              "t": "strong",
-              "v": "`CSADNA01`"
+              "t": "literal",
+              "v": "CSADNA01"
             },
             {
               "t": "text",
@@ -355,7 +355,7 @@
               "v": "."
             }
           ],
-          "text": "The environment's planning cluster is `NA1` (\"Cluster NA 1\") and the site is `CSADNA01` (\"PCG CSAD NA Site 1 Manufacturi Houston,TX\") — both read from the selection block of Planned Orders (cprrp1100m000)."
+          "text": "The environment's planning cluster is NA1 (\"Cluster NA 1\") and the site is CSADNA01 (\"PCG CSAD NA Site 1 Manufacturi Houston,TX\") — both read from the selection block of Planned Orders (cprrp1100m000)."
         },
         {
           "kind": "source",
@@ -672,14 +672,18 @@
             },
             {
               "t": "strong",
-              "v": "Order Horizon `8/20/2026`"
+              "v": "Order Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "8/20/2026"
             },
             {
               "t": "text",
               "v": " — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid."
             }
           ],
-          "text": "The screen at that moment shows why. The Horizons block of cprrp0520m000 reads Order Horizon `8/20/2026` — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid."
+          "text": "The screen at that moment shows why. The Horizons block of cprrp0520m000 reads Order Horizon 8/20/2026 — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid."
         },
         {
           "kind": "source",
@@ -713,7 +717,11 @@
             },
             {
               "t": "strong",
-              "v": "Order Horizon `8/28/2026`"
+              "v": "Order Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "8/28/2026"
             },
             {
               "t": "text",
@@ -784,7 +792,7 @@
               "v": " — MRP's answer to five short of one on hand."
             }
           ],
-          "text": "The order horizon was then extended in Items - Planning (cprpd1100m000) and the plan refreshed. The same session now shows Order Horizon `8/28/2026` and two rows dated 8/27/2026: the Sales Order 100000667 with Demand 5.0000, and a Planned Production Order 000000061 with Supply 4.0000 and Planned Available 5.0000 — MRP's answer to five short of one on hand."
+          "text": "The order horizon was then extended in Items - Planning (cprpd1100m000) and the plan refreshed. The same session now shows Order Horizon 8/28/2026 and two rows dated 8/27/2026: the Sales Order 100000667 with Demand 5.0000, and a Planned Production Order 000000061 with Supply 4.0000 and Planned Available 5.0000 — MRP's answer to five short of one on hand."
         },
         {
           "kind": "source",
@@ -1515,15 +1523,19 @@
               "v": " at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. "
             },
             {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
               "t": "strong",
-              "v": "`BAM-SLEEVE` does not appear"
+              "v": " does not appear"
             },
             {
               "t": "text",
               "v": ", consistent with only one component having been given planning data during the session."
             }
           ],
-          "text": "The tree reconciles against the BOM recorded on 2026-08-18 — BAM-ROD at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. `BAM-SLEEVE` does not appear, consistent with only one component having been given planning data during the session."
+          "text": "The tree reconciles against the BOM recorded on 2026-08-18 — BAM-ROD at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. BAM-SLEEVE does not appear, consistent with only one component having been given planning data during the session."
         },
         {
           "kind": "prose",
@@ -1925,14 +1937,26 @@
             },
             {
               "t": "strong",
-              "v": "Order Horizon `9/4/2026`, Planning Horizon `7/9/2027`"
+              "v": "Order Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "9/4/2026"
+            },
+            {
+              "t": "strong",
+              "v": ", Planning Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "7/9/2027"
             },
             {
               "t": "text",
               "v": " — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan."
             }
           ],
-          "text": "The captured Item Master Plan shows the two horizons having genuinely diverged — Order Horizon `9/4/2026`, Planning Horizon `7/9/2027` — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan."
+          "text": "The captured Item Master Plan shows the two horizons having genuinely diverged — Order Horizon 9/4/2026, Planning Horizon 7/9/2027 — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan."
         },
         {
           "kind": "source",

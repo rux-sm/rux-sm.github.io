@@ -312,8 +312,8 @@
           "kind": "prose",
           "tokens": [
             {
-              "t": "strong",
-              "v": "`the source on file`"
+              "t": "literal",
+              "v": "the source on file"
             },
             {
               "t": "text",
@@ -384,7 +384,7 @@
               "v": ". This second, independent instance corroborates the earlier finding rather than opening a new question."
             }
           ],
-          "text": "`the source on file` — status bar cprrp0520m000, BAM-SLEEVE, shows the same Combine Orders outcome this library already documented for BAM-ROD on 2026-08-25 (the source on file §9.1): multiple Purchase Order Advice rows against one Purchase Order 100000688. This second, independent instance corroborates the earlier finding rather than opening a new question."
+          "text": "the source on file — status bar cprrp0520m000, BAM-SLEEVE, shows the same Combine Orders outcome this library already documented for BAM-ROD on 2026-08-25 (the source on file §9.1): multiple Purchase Order Advice rows against one Purchase Order 100000688. This second, independent instance corroborates the earlier finding rather than opening a new question."
         }
       ]
     },
@@ -1178,7 +1178,11 @@
                 },
                 {
                   "t": "strong",
-                  "v": "Production Order `020000034`"
+                  "v": "Production Order "
+                },
+                {
+                  "t": "literal",
+                  "v": "020000034"
                 },
                 {
                   "t": "text",
@@ -1205,7 +1209,7 @@
                   "v": "\"That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.\""
                 }
               ],
-              "text": "It carries a _Specification_ / project-pegging field a sales order does not show the same way. the source on file — status bar cprrp0520m000, the full Overview grid for BAM-CHOP-PAIR: the Project Contract row (order 100000011, status Active, demand 50.0000, warehouse ADNA07 — a different warehouse than the item's other rows, all ADNA01) carries a green Specification check mark, as does its dedicated supply row, Production Order `020000034` (supply 50.0000, same date 9/17/2026). The consultant: \"That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.\""
+              "text": "It carries a _Specification_ / project-pegging field a sales order does not show the same way. the source on file — status bar cprrp0520m000, the full Overview grid for BAM-CHOP-PAIR: the Project Contract row (order 100000011, status Active, demand 50.0000, warehouse ADNA07 — a different warehouse than the item's other rows, all ADNA01) carries a green Specification check mark, as does its dedicated supply row, Production Order 020000034 (supply 50.0000, same date 9/17/2026). The consultant: \"That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.\""
             }
           ]
         },

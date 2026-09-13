@@ -681,8 +681,12 @@
               "kind": "prose",
               "tokens": [
                 {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
                   "t": "strong",
-                  "v": "`BAM-SLEEVE` still produced no planned order after the cluster was added and planning was rerun."
+                  "v": " still produced no planned order after the cluster was added and planning was rerun."
                 },
                 {
                   "t": "text",
@@ -734,7 +738,7 @@
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "`BAM-SLEEVE` still produced no planned order after the cluster was added and planning was rerun. The Planned Orders list filtered on bam at 27:20 holds four rows, all of them BAM-CHOP-PAIR or BAM-ROD. The narration offers an explanation in passing — — which is plausible and would be correct behaviour, but no on-hand figure for BAM-SLEEVE was shown at any point, so the explanation is not evidenced. Not documented for this release."
+              "text": "BAM-SLEEVE still produced no planned order after the cluster was added and planning was rerun. The Planned Orders list filtered on bam at 27:20 holds four rows, all of them BAM-CHOP-PAIR or BAM-ROD. The narration offers an explanation in passing — — which is plausible and would be correct behaviour, but no on-hand figure for BAM-SLEEVE was shown at any point, so the explanation is not evidenced. Not documented for this release."
             }
           ]
         }
@@ -1150,8 +1154,12 @@
               "kind": "prose",
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "cprrp1220m000"
+                },
+                {
                   "t": "strong",
-                  "v": "`cprrp1220m000`'s own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets."
+                  "v": "'s own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets."
                 },
                 {
                   "t": "text",
@@ -1199,7 +1207,7 @@
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "`cprrp1220m000`'s own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets. The topic opens \"also generates planned orders for theparent* items (multi-level) of the specified plan item\"* — word for word the Include Parent Items text above it — before the bullet list below correctly gives \"The components of the specified plan item (multi-level) in the item's bill of material.\" The duplication is in the PDF, not in the _text/ cache: two independent extractions of Infor LN help for Generate Order Planning Item (cprrp1220m000) produce it. Rely on the bullets, which match both the field's name and the observed result. Not documented for this release."
+              "text": "cprrp1220m000's own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets. The topic opens \"also generates planned orders for theparent* items (multi-level) of the specified plan item\"* — word for word the Include Parent Items text above it — before the bullet list below correctly gives \"The components of the specified plan item (multi-level) in the item's bill of material.\" The duplication is in the PDF, not in the _text/ cache: two independent extractions of Infor LN help for Generate Order Planning Item (cprrp1220m000) produce it. Rely on the bullets, which match both the field's name and the observed result. Not documented for this release."
             }
           ]
         }
@@ -1528,8 +1536,12 @@
               "v": " field empty, and the newly added line below reading "
             },
             {
+              "t": "literal",
+              "v": "BP4000006"
+            },
+            {
               "t": "strong",
-              "v": "`BP4000006` FAIRFIELD ENGINEERING CO."
+              "v": " FAIRFIELD ENGINEERING CO."
             },
             {
               "t": "text",
@@ -1576,7 +1588,7 @@
               "v": "."
             }
           ],
-          "text": "The message names both places LN looks, and the fix screen shows both. \"Item - BP data\" is the line-level Item - Business Partner tab; \"a BP linked to Item Purchase Data\" is the header-level Buy-from BP field on Item - Purchase. The frame taken during the repair has the two visible at once: the header Buy-from BP field empty, and the newly added line below reading `BP4000006` FAIRFIELD ENGINEERING CO. on the Item - Business Partner tab — which is the third tab, as narrated (\"the third tab at the line level says Item Business Partner\", 30:07), and whose own status bar reads tdipu0601m000 inside an Item - Purchase dialog opened from tcibd0501m100."
+          "text": "The message names both places LN looks, and the fix screen shows both. \"Item - BP data\" is the line-level Item - Business Partner tab; \"a BP linked to Item Purchase Data\" is the header-level Buy-from BP field on Item - Purchase. The frame taken during the repair has the two visible at once: the header Buy-from BP field empty, and the newly added line below reading BP4000006 FAIRFIELD ENGINEERING CO. on the Item - Business Partner tab — which is the third tab, as narrated (\"the third tab at the line level says Item Business Partner\", 30:07), and whose own status bar reads tdipu0601m000 inside an Item - Purchase dialog opened from tcibd0501m100."
         },
         {
           "kind": "source",
@@ -1696,7 +1708,15 @@
               "tokens": [
                 {
                   "t": "strong",
-                  "v": "The two planned production orders were still `Planned` at the end of the recording, and that is correct, not a failure."
+                  "v": "The two planned production orders were still "
+                },
+                {
+                  "t": "literal",
+                  "v": "Planned"
+                },
+                {
+                  "t": "strong",
+                  "v": " at the end of the recording, and that is correct, not a failure."
                 },
                 {
                   "t": "text",
@@ -1727,7 +1747,7 @@
                   "v": ", which reads like a transfer that did nothing. It also leaves the production half of the transfer — the half the unwritten transfer guide actually needs — still unwalked. "
                 }
               ],
-              "text": "The two planned production orders were still `Planned` at the end of the recording, and that is correct, not a failure. Only the two planned purchase orders were ticked for transfer. It is worth stating because the closing frames show 000000061 and 000000062 unchanged in Planned Orders, which reads like a transfer that did nothing. It also leaves the production half of the transfer — the half the unwritten transfer guide actually needs — still unwalked."
+              "text": "The two planned production orders were still Planned at the end of the recording, and that is correct, not a failure. Only the two planned purchase orders were ticked for transfer. It is worth stating because the closing frames show 000000061 and 000000062 unchanged in Planned Orders, which reads like a transfer that did nothing. It also leaves the production half of the transfer — the half the unwritten transfer guide actually needs — still unwalked."
             }
           ]
         }

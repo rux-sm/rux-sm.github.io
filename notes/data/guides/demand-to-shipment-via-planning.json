@@ -3229,8 +3229,13 @@
       "kind": "prose",
       "tokens": [
         {
+          "t": "link",
+          "v": "The overview",
+          "href": "order-to-shipment-overview.md"
+        },
+        {
           "t": "strong",
-          "v": "[The overview](order-to-shipment-overview.md) is the level-1 view of this guide"
+          "v": " is the level-1 view of this guide"
         },
         {
           "t": "text",
@@ -3245,7 +3250,7 @@
           "v": " rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this guide walks. Its sessions and their routes are stated per phase below, not on the diagram."
         }
       ],
-      "text": "[The overview](order-to-shipment-overview.md) is the level-1 view of this guide — five stages across six module lanes, master data through confirmed shipment. The YES rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this guide walks. Its sessions and their routes are stated per phase below, not on the diagram."
+      "text": "The overview is the level-1 view of this guide — five stages across six module lanes, master data through confirmed shipment. The YES rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this guide walks. Its sessions and their routes are stated per phase below, not on the diagram."
     },
     {
       "kind": "prose",
@@ -3502,7 +3507,11 @@
         },
         {
           "t": "strong",
-          "v": "revision `000002`"
+          "v": "revision "
+        },
+        {
+          "t": "literal",
+          "v": "000002"
         },
         {
           "t": "text",
@@ -3573,7 +3582,7 @@
           "v": "."
         }
       ],
-      "text": "BOM JB0000242 — revision `000002`; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01."
+      "text": "BOM JB0000242 — revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01."
     },
     {
       "kind": "prose",
@@ -3591,8 +3600,20 @@
           "v": " > "
         },
         {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
           "t": "strong",
-          "v": "`BAM-ROD` has a buy-from business partner and `BAM-SLEEVE` has not been checked."
+          "v": " has a buy-from business partner and "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "strong",
+          "v": " has not been checked."
         },
         {
           "t": "text",
@@ -3635,7 +3656,7 @@
           "v": "Not documented for this release."
         }
       ],
-      "text": "> Warning > `BAM-ROD` has a buy-from business partner and `BAM-SLEEVE` has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release."
+      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release."
     },
     {
       "kind": "troubleshooting",

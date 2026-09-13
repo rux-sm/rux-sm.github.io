@@ -316,13 +316,14 @@
     return b;
   }
 
-  /* ABOVE THE BOARD, IN FLOW. Three call sites only, and all three describe the
-     BOARD rather than something a person did: loading, nothing this week, and a
-     week that would not load. Those stand in for the grid, so pushing it is
-     honest. Everything else goes to `toast`. */
+  /* ABOVE THE BOARD, IN FLOW, for the notices that stand in for the grid:
+     nothing this week, and a week that would not load. Loading is the grid's
+     own skeleton, and the status starts as screen-reader text for it; a notice
+     makes it visible. Everything else goes to `toast`. */
   function say(kind, title, subtitle, action) {
     statusEl.replaceChildren();
     if (!kind) { statusEl.hidden = true; return; }
+    statusEl.classList.remove('rux--visually-hidden');
     statusEl.hidden = false;
     statusEl.appendChild(note(kind, title, subtitle, action, false));
   }
@@ -5384,6 +5385,7 @@
 
   async function show() {
     if (!client) {
+      schEl.hidden = true;
       say('error', 'Not connected', 'The account script did not load, so this page has no way to reach the schedule. It is served from the site root and is missing here.');
       return;
     }
@@ -5400,7 +5402,9 @@
     const asked = cursor;
     setRange(asked, addDays(asked, 6));
     schEl.setAttribute('aria-busy', 'true');
-    gridEl.classList.add('scheduler-grid--busy');
+    // Only a week already on screen dims; before the first one, the grid is
+    // the skeleton and stays at full strength.
+    if (shown) gridEl.classList.add('scheduler-grid--busy');
 
     try {
       render(await read(asked));

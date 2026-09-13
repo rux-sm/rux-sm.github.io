@@ -504,23 +504,10 @@
              stays for the document outline and for anyone arriving by screen
              reader. -->
         <h1 class="rux--visually-hidden">Schedule</h1>
-        <!-- One live region for both states the loader can be in. It ships
-             saying "Loading", so a page whose script never runs says something
-             true rather than showing an empty grid that looks like an empty
-             week. -->
-        <div id="scheduler-status" role="status" aria-live="polite">
-          <div class="rux--inline-loading">
-            <div class="rux--inline-loading__animation">
-              <div class="rux--loading rux--loading--small">
-                <svg class="rux--loading__svg" viewBox="0 0 100 100">
-                  <circle class="rux--loading__background" cx="50%" cy="50%" r="42"></circle>
-                  <circle class="rux--loading__stroke" cx="50%" cy="50%" r="42"></circle>
-                </svg>
-              </div>
-            </div>
-            <div class="rux--inline-loading__text">Loading the week…</div>
-          </div>
-        </div>
+        <!-- The board's live region. It starts as screen-reader text while the
+             grid shows its loading skeleton, so nothing above the board takes
+             space until data.js has a notice to show. -->
+        <div id="scheduler-status" class="rux--visually-hidden" role="status" aria-live="polite">Loading the week…</div>
 
         <div class="scheduler-board">
         <!-- THE TOOLBAR BELONGS TO THE CALENDAR, NOT TO THE BOARD, corrected
@@ -645,8 +632,84 @@
                  and iOS Safari opens no menu on a long press, so on an iPhone
                  this item may be the only way to create a trip. -->
           </div>
-            <div class="sch" id="sch" role="region" aria-label="Week schedule" hidden>
-              <div class="scheduler-grid" id="scheduler-grid"></div>
+            <!-- The loading skeleton: the corner, seven day cells and ten rows of
+                 grey placeholders in the real grid's classes, so the first paint
+                 is already the board. render() in data.js replaces all of it. -->
+            <div class="sch" id="sch" role="region" aria-label="Week schedule" aria-busy="true">
+              <div class="scheduler-grid" id="scheduler-grid">
+                <div class="scheduler-corner" title="Bus number">#</div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:1;--scheduler-span:2"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:4;--scheduler-span:1"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:3"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:2;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:5;--scheduler-span:1"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:3;--scheduler-span:2"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:4;--scheduler-span:2"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:5;--scheduler-span:2"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:1;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:3;--scheduler-span:1"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:2;--scheduler-span:3"></div>
+                  </div>
+                </div>
+                <div class="scheduler-row">
+                  <div class="scheduler-row-head"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                  <div class="scheduler-track scheduler-track--skeleton">
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:6;--scheduler-span:1"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <!-- LEFT OF THE BOARD, decided 2026-09-06 after trying it below and to

@@ -612,6 +612,32 @@ button.scheduler-row-head__num {
    and the last commit carrying it is 47d3903. */
 .scheduler-track { --scheduler-day-rule: var(--rux-border-subtle-01); }
 
+/* THE LOADING SKELETON. index.html ships it inside the grid and render()
+   replaces it, so it uses the real row, head and track rules and the week
+   arrives without anything moving. The grey and the shimmer are Carbon's
+   skeleton classes; these rules only size and place them. */
+.scheduler-skeleton-label { inline-size: 2.5rem; block-size: 1rem; }
+.scheduler-row-head .scheduler-skeleton-label { inline-size: 1.5rem; }
+/* The six day rules data.js writes on a real track. */
+.scheduler-track--skeleton {
+  --scheduler-day-rules:
+    transparent 0 calc(100% / 7 - 1px), var(--scheduler-day-rule) calc(100% / 7 - 1px) calc(100% / 7),
+    transparent calc(100% / 7) calc(200% / 7 - 1px), var(--scheduler-day-rule) calc(200% / 7 - 1px) calc(200% / 7),
+    transparent calc(200% / 7) calc(300% / 7 - 1px), var(--scheduler-day-rule) calc(300% / 7 - 1px) calc(300% / 7),
+    transparent calc(300% / 7) calc(400% / 7 - 1px), var(--scheduler-day-rule) calc(400% / 7 - 1px) calc(400% / 7),
+    transparent calc(400% / 7) calc(500% / 7 - 1px), var(--scheduler-day-rule) calc(500% / 7 - 1px) calc(500% / 7),
+    transparent calc(500% / 7) calc(600% / 7 - 1px), var(--scheduler-day-rule) calc(600% / 7 - 1px) calc(600% / 7),
+    transparent calc(600% / 7) 100%;
+}
+/* Placed and sized like a trip bar in the first lane. */
+.scheduler-skeleton-bar {
+  position: absolute;
+  inset-block-start: var(--scheduler-gap-clear);
+  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap));
+  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
+  block-size: var(--scheduler-bar-h);
+}
+
 /* NO DAY RULES IN THE BODY, TRIED 2026-09-07 AT RUX'S ASK. Carbon's data
    table draws horizontal rules and no vertical ones, because there a column is
    a FIELD and the reader travels along the row. rux asked to see this board on
@@ -717,13 +743,9 @@ button.scheduler-row-head__num {
 .scheduler-bar--warm-gray { --scheduler-bg: var(--rux-tag-background-warm-gray); --scheduler-fg: var(--rux-tag-color-warm-gray); --scheduler-hover: var(--rux-tag-hover-warm-gray); --scheduler-border: var(--rux-tag-border-warm-gray); }
 
 /* States. A partial PO has the warning border; a leg that continues past the
-   week has no edge on that side and runs to it.
-   UNCONFIRMED IS A COLOUR, NOT A STATE OF THE BAR, 2026-09-13. rux: "no dashed
-   border unconfirmed are red . confirmed blue. override over is whatever color
-   is chosen." That is `hueFor` in data.js, and nothing here adds to it. The
-   bar was hollow with a dashed edge in its hue, then filled with the edge kept
-   earlier the same day, and now has neither. Given up on purpose: a trip with a
-   picked colour says nothing about confirmation on the board. */
+   week has no edge on that side and runs to it. Confirmation is not a state
+   here: it is the bar's colour, chosen by `hueFor` in data.js, so a trip with a
+   picked colour does not show whether it is confirmed. */
 .scheduler-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
 /* A CONTINUING EDGE TAKES NO GAP, because there is nothing on that side of it
    to be separated from -- the trip runs off the week. Only the gap it keeps is

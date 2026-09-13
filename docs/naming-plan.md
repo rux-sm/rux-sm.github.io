@@ -93,9 +93,7 @@ system's page file names. `docs/` and `tools/`. The old rux-ui app.
 
 ## Open questions
 
-- "Notes" alone, or keep "LN" somewhere for when a second notes app exists.
-- Whether old URLs get a redirect stub or are simply gone.
-- Whether `claude-config` becomes `dotfiles` or stays.
+None left. See "Decisions taken so far".
 
 ## Order of work, once agreed
 
@@ -116,3 +114,30 @@ system's page file names. `docs/` and `tools/`. The old rux-ui app.
   prefix stays `rux--`, since that names the product, not the folder. No
   collision with the old `rux-ui` app; that name is untouched. Decided
   2026-09-12.
+
+- **Notes, not LN Notes.** Checked first: the switcher's own description
+  already reads "Step-by-step scenario guides" with no "LN" in it, no
+  second notes app is planned or mentioned anywhere in the repositories,
+  and the rule applied to every other app is to name it for what it does
+  today, not to reserve room for a hypothetical one — Scheduler is not
+  "Bus Scheduler", Design is not "Rux Carbon Design System". If a second
+  notes app is ever built, it earns its own distinct word, the same way
+  Design and Scheduler would. Decided 2026-09-13.
+
+- **No redirect stubs for the renamed URLs.** Checked first: no
+  `robots.txt` or sitemap, zero stars on the public repository, and
+  nothing in either repository's docs describes a client holding a
+  bookmarked link to a specific page — atlas's "what a client sees"
+  language is about the content a page shows, not about an outside
+  audience with existing URLs today. A stub for every renamed path would
+  be permanent upkeep serving no one but rux, whose own bookmarks he
+  updates once. If atlas's export ever reaches a real outside reader with
+  a link worth honouring, that is the day to add a redirect for that one
+  path, not before. Decided 2026-09-13.
+
+- **`claude-config` keeps its name.** Checked first: its own README opens
+  with "Private, cross-machine Claude Code configuration and memory for
+  both Macs" — it holds no shell, editor or git configuration, so it is
+  not a dotfiles repository in the sense the word usually means, and
+  renaming it to `dotfiles` would describe it less accurately than its
+  current name already does. Decided 2026-09-13.

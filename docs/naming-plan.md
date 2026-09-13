@@ -49,7 +49,7 @@ carries an owner prefix, because the GitHub account already is one.
 - **Kept on purpose:** `.js` for browser code and `.mjs` for tools on the Mac;
   atlas's Python helpers with a leading underscore; the `rux--` prefix; the
   `claude-config` name; and the old `rux-ui` app.
-- **No redirects** from old addresses. rux updates his own bookmarks once.
+- **No redirects** from old addresses. Bookmarks get updated once.
 - **Later, not in this plan:** buying a domain, which would allow renaming the
   site repository.
 - **Order:** this plan starts after the document standard plan is finished.

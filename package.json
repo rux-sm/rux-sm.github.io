@@ -1,0 +1,12 @@
+{
+  "name": "rux-sm.github.io",
+  "private": true,
+  "description": "Rux Apps: every app built on rux-ds, one repository, served as-is by GitHub Pages",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "build": "node tools/build.mjs",
+    "check": "node tools/check.mjs",
+    "export": "sh tools/export.sh"
+  }
+}

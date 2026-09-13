@@ -291,10 +291,12 @@ runtime deployment without requiring its source to move to another repository.
 ### Local offline styling
 
 Reuse `rux-ds/tools/serve.mjs` from the public repository root. Its plain mode
-already serves the current working directory as the site root and answers a
-directory with its `index.html`. The one change is binding it to loopback; it
-listens on every interface today. Do not create a second server
-implementation. The root serve command wraps it.
+serves the current working directory as the site root. Two changes, both made
+in stage 2: it answered a directory with its `index.html` only in workspace
+mode, so `/account/` was a 404 in plain mode (the review of 2026-09-12 said
+otherwise and was wrong, found by opening the page); and it listened on every
+interface, now loopback. Do not create a second server implementation. The
+root serve command wraps it.
 
 The layout already satisfies the offline requirement: compiled CSS is
 committed, the Plex fonts are files under `rux-ds/assets/fonts/` linked

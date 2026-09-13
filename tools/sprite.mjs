@@ -18,7 +18,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ds = resolve(root, process.env.DS ?? '../rux-ds');
+const ds = resolve(root, process.env.DS ?? 'rux-ds');
 if (!existsSync(join(ds, 'tools'))) {
   console.log(`  FAIL  sprite: no rux-ds at ${ds} -- clone it beside this repository, or set DS=<dir>`);
   process.exit(1);
@@ -35,4 +35,4 @@ if (!existsSync(join(ds, 'tools/app-sprite.mjs'))) {
   process.exit(1);
 }
 const { sprite } = await import(new URL('tools/app-sprite.mjs', `file://${ds}/`).href);
-sprite({ root, ds, dirs: ['.', 'account'], check: process.argv.includes('--check') });
+sprite({ root, ds, dirs: ['.', 'account', 'rux-scheduler'], check: process.argv.includes('--check') });

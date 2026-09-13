@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Refuse a commit that would publish something that must not be public.
+# This repository is public and a push deploys it, so the question is asked
+# here, over the STAGED bytes of every staged text file, before the commit
+# exists. Then the fast checks. Install once per clone:
+#
+#   git config core.hooksPath .githooks
+#
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+
+command -v node >/dev/null 2>&1 || {
+  echo "pre-commit: node not found, so staged files were NOT checked. A refusal, not a pass." >&2
+  exit 1
+}
+
+# Every staged text file, as staged. Repository-wide, every text format:
+# a public repository publishes every tracked file, not just the rendered site.
+files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(html|md|js|mjs|json|css|svg|yml|yaml|toml|sh|txt)$' || true)
+if [ -n "$files" ]; then
+  tmp=.git/precommit-tmp
+  rm -rf "$tmp"; mkdir -p "$tmp"
+  trap 'rm -rf "$tmp"' EXIT
+  all=""
+  for p in $files; do
+    flat=$(printf '%s' "$p" | tr '/' '_')
+    git show ":$p" > "$tmp/$flat"
+    all="$all $tmp/$flat"
+  done
+  # shellcheck disable=SC2086
+  if ! node rux-ln-notes/tools/check-publishable.mjs $all; then
+    echo "" >&2
+    echo "  pre-commit: REFUSED. A staged file carries something that should not" >&2
+    echo "  be on the open internet. The fix belongs upstream in atlas." >&2
+    exit 1
+  fi
+fi
+
+exec node tools/check.mjs

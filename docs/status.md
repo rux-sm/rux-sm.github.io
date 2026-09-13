@@ -26,7 +26,7 @@ region's shape recorded in `rux-ds/docs/consumer-policy.md` §3.2.
 ## rux-ds, from Notes
 
 - Whether `--rux-border-strong-01` keeps 3:1 in the four brand themes; five of
-  twelve combinations sit below it — `rux-ln-notes/exchange/SEND-DS-2.md`.
+  twelve combinations sit below it — `SEND-DS-2.md` in the old rux-ln-notes repository (github.com/rux-sm/rux-ln-notes/blob/main/exchange/).
   A decision, rux's.
 
 ## rux-ds's own — `rux-ds/README.md` "Open decisions"
@@ -59,6 +59,6 @@ schema items above wait on it.
 
 ## The consolidation itself
 
-- `docs/platform-consolidation-plan.md` stage 1: remove the SessionStart hook
-  in `rux-ds/.claude/settings.json` (rux's, a tracked settings file); demonstrate
-  the Atlas-to-Notes-to-DS scenario on a real task before stage 2.
+- Stage 2 is assembled on branch `codex/consolidate`; stage 3, the cutover, is
+  not started. The first real Atlas-to-Notes-to-DS task under the one-session
+  agreement has not happened yet.

@@ -44,6 +44,17 @@
   const profile = window.Rux?.profile;
   if (!profile || !window.supabase) return;
 
+  // A LOCAL PREVIEW NEVER TOUCHES THE CLOUD. Loading this page signs in
+  // anonymously and writes a profile row, so every `npm run serve` visit
+  // would create a production auth user. On localhost the local profile
+  // stands alone, as it does offline; `?cloud` on the URL opts back in for
+  // the one time the sign-in itself is what is being tested. Since 2026-09-12.
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  if (local && !new URLSearchParams(location.search).has('cloud')) {
+    console.info('account: local preview, cloud sync off (add ?cloud to the URL to enable)');
+    return;
+  }
+
   const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
   const TURNSTILE_SITE_KEY = '0x4AAAAAAEmfPE09UcbC-aRI';

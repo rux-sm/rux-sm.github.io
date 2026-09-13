@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "portal", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs"], "port": 8640 }
+    { "name": "serve", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs"], "port": 8640, "autoPort": true }
   ]
 }

@@ -1,2 +1,17 @@
 .DS_Store
 node_modules/
+
+# rux-ds build scratch and its Carbon quarry (carries its own .git)
+rux-ds/carbon-website/
+rux-ds/.sass-cache/
+rux-ds/**/*.css.map
+rux-ds/m/
+rux-ds/.brand/
+
+# Private preview of Atlas's internal tier, rendered by `npm run serve -- --private`.
+# Never committed, never uploaded: the deploy job uploads a fresh checkout.
+rux-ln-notes/build/
+
+# Claude Code's per-machine permission allowlist and agent worktrees.
+.claude/settings.local.json
+.claude/worktrees/

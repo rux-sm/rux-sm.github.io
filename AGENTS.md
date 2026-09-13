@@ -4,65 +4,70 @@ type: app
 
 # AGENTS.md — the policy
 
-The one instruction file; `CLAUDE.md` imports it. `README.md` is the long
-version. `docs/status.md` is what is unfinished, across every app.
-`docs/platform-consolidation-plan.md` is where the family is going;
-`docs/migration-start.md` is the state it started from.
+The one instruction file for this repository; `CLAUDE.md` imports it.
+`README.md` is setup and the everyday commands. `docs/status.md` is what is
+unfinished. `docs/platform-consolidation-plan.md` is how this repository
+came to hold everything, and `docs/migration-start.md` what it started from.
 
 ## What this repository is
 
-**Public, and the root of the account.** It publishes at rux-sm.github.io, so
-every other project site sits under it by path. It is Rux Apps: the front
-door to every app built on rux-ds, and the design system shown working. Its
-pages link `/rux-ds/…` on the shared origin; what is live there is rux-ds's
-newest release tag.
+**Public, and the whole website.** GitHub Pages serves this tree as-is at
+rux-sm.github.io: `/` is `index.html` here, and every folder named like a
+URL path is that app — `rux-ds/` at `/rux-ds/`, `rux-scheduler/` at
+`/rux-scheduler/`, `rux-ln-notes/` at `/rux-ln-notes/`. **A push to `main`
+publishes**, after CI runs the check. There is no release, no tag and no
+separate publish step.
+
+Two things stay outside it, for privacy, cloned beside it: `rux-ln-atlas`,
+the LN knowledge library the Notes pages are rendered from, and
+`rux-backend`, the database configuration and migrations. A task that needs
+them edits them in the same session, after reading their own `AGENTS.md`.
 
 ## One session
 
-Since 2026-09-12 a task edits every folder it touches — this one, an app,
-rux-ds, atlas, backend — in one session, after reading that folder's own
-`AGENTS.md`. No memo, no request to another repository, no second session
-or second authorization for the same task. What does not relax: atlas's
-private material leaves only through its export; rux-ds is authored with
-invented content; a database change is applied to production as its own
-deliberate step.
+A task edits every folder it touches in one session. No memo, no request to
+another folder, no second authorization for the same task. What does not
+relax: atlas content leaves atlas only through `npm run export`; rux-ds is
+authored with invented, generic content, and nothing from atlas or a client
+goes under `rux-ds/`; a database change is applied to production as its own
+deliberate step, never by a website deploy.
 
-## The two things every app shares
+## The four commands
 
-`rux-ds/docs/consumer-policy.md` is what every project on rux-ds agrees to.
-What follows is this repository's own.
+    npm run serve               the site at http://localhost:8640/, loopback only
+    npm run serve -- --private  atlas's internal tier, rendered and served on :8644, never published
+    npm run build               regenerate what is committed but derived
+    npm run check               every app through the shared check, Notes' gates, the names sweep
+    npm run check -- --full     the same plus rux-ds's own verify; what CI runs
+    npm run export              atlas's export tier into rux-ln-notes/data/guides/, rebuilt and checked
 
-- **The design system, live.** Every page links `/rux-ds/…`; there is no pin.
-- **The list of apps, by URL.** `switcher.json` here is the one list. Every
-  app's shell links `/switcher.js`, which fetches it and fills the switcher,
-  marking the app you are on. Adding an app is one entry here.
-
-The header and the switcher are therefore identical on every site. The side
-nav and the page are each app's own. **No frames**: an app renders its own
-shell, and wrapping it would show two.
+Publishing is `git push`. The pre-commit hook sweeps the staged bytes of
+every text file for names before the commit exists, then runs the fast
+check; arm it once per clone: `git config core.hooksPath .githooks`.
 
 ## What must not be invented
 
-Every `rux--*` class comes from rux-ds's `css/rux.css`; `tools/check.mjs`
-fails on one that does not, and on a module list that does not parse or names
-a path no site can have. A class the design system does not compile is added
-to rux-ds with invented content, never a local rule. Colours go in
-`rux-theme.css`, component rules in `rux-overrides.css`.
+Every `rux--*` class comes from `rux-ds/css/rux.css`, compiled from Carbon;
+the check fails on one that does not. A class or rule an app needs is added
+to rux-ds with invented content, never as a local rule on a `rux--*` class.
+A colour goes in the app's `rux-theme.css` inside a `[data-theme]` block; a
+component rule in its `rux-overrides.css` at Carbon's specificity; a
+component Carbon lacks is the app's own, under its own prefix, every colour
+a `--rux-*` token. No Carbon file is ever edited.
 
-## The one check
+## Where things are
 
-    node tools/check.mjs
-
-rux-ds's shared check first, from the checkout beside this repository
-(`../rux-ds`, or `DS=<dir>`): classes, tokens, file and id references, the
-inlined sprite. Locally that is rux-ds on `main`; the Pages workflow checks
-rux-ds out at its newest tag. Then this repository's own rule:
-`switcher.json` parses and every entry is well formed. The commit hook and
-the Pages workflow both run it; the site deploys only when it passes.
-`rux-ds` cloned beside this repository is required to check or serve it.
+| | |
+| :--- | :--- |
+| the app list | `switcher.json` — one entry per app; the check reads it, the switcher fills from it |
+| a new app | a folder named for its URL, an `index.html` started from a `rux-ds/templates/` page, one entry in `switcher.json`; nothing else |
+| rux-ds | `rux-ds/README.md` for its build, gates and pages; `rux-ds/docs/` for its decisions |
+| Notes | pages are generated by `rux-ln-notes/tools/build.mjs` from `data/guides/`, both committed and never hand-edited. Nothing on a page may identify a person, an environment, a client or a vendor document; the fix is upstream in atlas, never a filter here |
+| the scheduler | `rux-scheduler/docs/` — status, log and plans; `sch-*` is its own prefix |
+| the database | `../rux-backend`; the publishable key in `account.js` and `sch-data.js` is not a secret |
 
 ## Commits
 
-`type(scope): Subject`, subject ≤50 chars, body wrapped at 72 bytes, authored
-by rux alone with no AI attribution. `.githooks/commit-msg` refuses anything
-else; arm it once per clone: `git config core.hooksPath .githooks`.
+`type(scope): Subject`, imperative, authored by rux alone with no AI
+attribution. No hook checks the typography any more; the pre-commit hook
+checks what matters.

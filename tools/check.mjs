@@ -1,92 +1,87 @@
 #!/usr/bin/env node
 //
-// The hub's one check: rux-ds's SHARED app check first, then the one rule that
-// is genuinely this repository's own.
-//
-// WIRED UP 2026-09-09, AND IT SHOULD HAVE BEEN AT THE v0.1.6 PIN. This file
-// used to be forty lines of its own: a class loop over four named files, the
-// switcher rules below, and a pin check. rux-ds has shipped tools/app-check.mjs
-// since 2026-09-05 and this repository has vendored it at every pin since, and
-// never ran it -- a pin move rewrites vendor/ and deliberately leaves tools/
-// alone, so the wiring never travelled. rux-scheduler has had it from the day
-// it was scaffolded.
-//
-// SINCE 2026-09-10 THIS REPOSITORY VENDORS NOTHING (rux-ds roadmap §8.4 step
-// 5). Both pages link /rux-ds/… on the shared origin, so the shared check
-// resolves them against the rux-ds checkout beside this repository, or
-// DS=<dir>. Locally that is rux-ds on main; the Pages workflow checks rux-ds
-// out at its newest tag first -- what is live at /rux-ds/ -- and runs this
-// with DS set.
-//
-// WHAT THE OLD LOOP MISSED, and this is why it is replaced rather than kept
-// beside: it read `index.html`, `switcher.js`, `account.js` and
-// `account/index.html` BY NAME, so a page added here was checked by nothing;
-// and it read classes only, so no token was ever checked anywhere in this
-// repository. The shared check walks every page, script and stylesheet, and
-// adds tokens, file references and id references.
-//
-// THE SWITCHER RULES STAY HERE because they are not shareable: switcher.json is
-// the account's module registry and exists in this repository alone. rux-ds
-// cannot check it and should not know about it.
+// The one check. Reads switcher.json -- the one list of apps -- and runs
+// rux-ds's shared check on every app except rux-ds, which has its own; an app
+// with a tools/check.mjs of its own (Notes) runs that instead, and it includes
+// the shared check. Then the sprite currency rule for the pages that paste the
+// sprite by hand, the names sweep over every text file in the repository, and
+// the switcher rule. `--full` adds rux-ds's `npm run verify`. Exits 1 on any
+// failure. The pre-commit hook runs the fast form; CI runs --full.
 //
 //   node tools/check.mjs
+//   node tools/check.mjs --full
 //
-// It exits 1 on a failure. The commit hook and the Pages workflow both run it.
-import { readFileSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { extname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-// Runs on import, exits 1 on a failure, and RETURNS on a pass -- so everything
-// below it runs only when the shared check is clean. Nothing goes before it,
-// because the sprite check right after this line reads rux-ds's
-// assets/icons.svg, and only a passing app-check has confirmed that tree is
-// actually there.
-const root = new URL('..', import.meta.url).pathname;
-process.chdir(root);
-const DS = resolve(root, process.env.DS ?? '../rux-ds');
-if (!existsSync(join(DS, 'tools/app-check.mjs'))) {
-  console.log(`  FAIL  ds: no rux-ds at ${DS} -- clone it beside this repository, or set DS=<dir>`);
-  process.exit(1);
+const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
+const DS = join(ROOT, 'rux-ds');
+const APP_CHECK = join(DS, 'tools', 'app-check.mjs');
+const FULL = process.argv.includes('--full');
+const failed = [];
+const step = (name, cmd, args, opts = {}) => {
+  console.log(`\n── ${name}`);
+  const r = spawnSync(cmd, args, { cwd: ROOT, stdio: 'inherit', ...opts, env: { ...process.env, DS, ...(opts.env ?? {}) } });
+  if (r.status !== 0) failed.push(name);
+};
+
+if (!existsSync(APP_CHECK)) { console.log(`  FAIL  no rux-ds/tools/app-check.mjs in this repository`); process.exit(1); }
+
+// THE APP LIST IS THE CHECK'S LIST. An app is checked because switcher.json
+// names it, which it must to appear in the switcher; no folder scan, no
+// exclusion list. Measured 2026-09-12: the shared check pointed at rux-ds's own
+// tree fails in every class, so the root is never walked as one app.
+let apps = [];
+try { apps = JSON.parse(readFileSync(join(ROOT, 'switcher.json'), 'utf8')).apps; }
+catch (e) { console.log(`  FAIL  switcher.json: ${e.message}`); failed.push('switcher'); }
+const folders = apps.filter(a => a.path !== '/' && a.path !== '/rux-ds/').map(a => a.path.replace(/\//g, ''));
+
+step('hub', process.execPath, [APP_CHECK, ROOT, '--ds', DS, '--hub', ROOT],
+  { env: { APP_CHECK_SKIP: ['rux-ds', ...folders].join(',') } });
+for (const f of folders) {
+  const dir = join(ROOT, f);
+  if (!existsSync(join(dir, 'index.html'))) { console.log(`\n  FAIL  ${f}: switcher.json lists /${f}/ and there is no ${f}/index.html`); failed.push(f); continue; }
+  if (existsSync(join(dir, 'tools', 'check.mjs'))) step(f, process.execPath, ['tools/check.mjs'], { cwd: dir });
+  else step(f, process.execPath, [APP_CHECK, dir, '--ds', DS, '--hub', ROOT]);
 }
-await import(pathToFileURL(join(DS, 'tools/app-check.mjs')).href);
 
+step('sprite', process.execPath, ['tools/sprite.mjs', '--check']);
+
+// THE NAMES SWEEP, REPOSITORY-WIDE, EVERY TEXT FILE. A public repository
+// publishes every tracked file. The rule and the private list it reads live
+// with Notes; this passes it everything. Measured 2026-09-12: 12 entries,
+// 0.08 s over the whole family.
+const SKIP = new Set(['node_modules', '.git', 'build']);
+const EXT = new Set(['.html', '.md', '.js', '.mjs', '.json', '.css', '.svg', '.yml', '.yaml', '.toml', '.sh', '.txt']);
+const walk = (d, out = []) => {
+  for (const e of readdirSync(d, { withFileTypes: true })) {
+    const p = join(d, e.name);
+    if (e.isDirectory()) { if (!SKIP.has(e.name)) walk(p, out); }
+    else if (EXT.has(extname(e.name))) out.push(relative(ROOT, p));
+  }
+  return out;
+};
+const text = walk(ROOT);
+step(`names (${text.length} text files)`, process.execPath, ['rux-ln-notes/tools/check-publishable.mjs', ...text]);
+
+// THE SWITCHER RULE. Two things can go wrong and both are quiet: a list that
+// does not parse, and a path no site can have.
+console.log('\n── switcher');
 let bad = 0;
 const fail = m => { console.log('  FAIL  ' + m); bad++; };
-
-// THE SPRITE, PASTED WHOLE, MUST BE CURRENT. Added 2026-09-09, adapted from
-// rux-scheduler's tools/sprite.mjs: a release changes the sprite and
-// deliberately leaves pages alone, and the shared check's sprite rule only
-// asks whether every inlined symbol is SOMEWHERE in what rux-ds ships, never
-// whether the paste is CURRENT and complete. Found live on this repository,
-// 2026-09-09: both pages were missing four symbols the pin already carried,
-// index.html since accessibility/hotel joined at v0.1.8 and account/index.html
-// since it was scaffolded holding only the three it happened to use. Neither
-// is wrong markup -- every check before this one passed -- and neither was
-// visible without running `node tools/sprite.mjs --check` by hand, which
-// nothing did. It reads the same rux-ds the check above did.
-if (spawnSync(process.execPath, ['tools/sprite.mjs', '--check'], { stdio: 'inherit', env: { ...process.env, DS } }).status !== 0) {
-  fail('sprite: see node tools/sprite.mjs --check above');
+for (const a of apps) {
+  for (const k of ['name', 'path', 'description']) if (typeof a[k] !== 'string' || !a[k]) fail(`switcher.json: an app is missing ${k}`);
+  if (a.path && !(a.path === '/' || /^\/[a-z0-9-]+\/$/.test(a.path))) fail(`switcher.json: ${a.name}: path must be "/" or "/name/", got ${a.path}`);
+  if ('icon' in a && !(typeof a.icon === 'string' && (/^#i-[a-z0-9-]+$/.test(a.icon) || /^\/[a-z0-9/-]+\.svg$/.test(a.icon)))) fail(`switcher.json: ${a.name}: icon must be #i-name or an absolute path to an .svg, got ${a.icon}`);
 }
+if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
+console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps.length} in switcher.json${bad ? '' : ', every path and icon well formed'}`);
+if (bad) failed.push('switcher');
 
-// THE MODULE REGISTRY. Two things can go wrong and both are quiet: a list that
-// does not parse, and a path no site can have.
-let apps;
-try { apps = JSON.parse(readFileSync('switcher.json', 'utf8')).apps; } catch (e) { fail('switcher.json: ' + e.message); }
-if (Array.isArray(apps)) {
-  for (const a of apps) {
-    for (const k of ['name', 'path', 'description']) if (typeof a[k] !== 'string' || !a[k]) fail(`switcher.json: an app is missing ${k}`);
-    if (a.path && !(a.path === '/' || /^\/[a-z0-9-]+\/$/.test(a.path))) fail(`switcher.json: ${a.name}: path must be "/" or "/name/", got ${a.path}`);
-    // "icon" is optional; the grid draws a 32px swatch without one, which
-    // brand/README.md in rux-ds names as the correct state until an app draws
-    // its own mark. Either a sprite id the page inlines (#i-name) or an
-    // absolute path to an SVG that app serves -- absolute, because switcher.js
-    // writes it into a URL on every site and a relative path would resolve per
-    // origin.
-    if ('icon' in a && !(typeof a.icon === 'string' && (/^#i-[a-z0-9-]+$/.test(a.icon) || /^\/[a-z0-9/-]+\.svg$/.test(a.icon)))) fail(`switcher.json: ${a.name}: icon must be #i-name or an absolute path to an .svg, got ${a.icon}`);
-  }
-  if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
-}
+if (FULL) step('rux-ds verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
 
-console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps?.length ?? 0} in switcher.json${bad ? '' : ', every path and icon well formed'}`);
-process.exit(bad ? 1 : 0);
+console.log('');
+if (failed.length) { console.log(`  FAILED: ${failed.join(', ')}`); process.exit(1); }
+console.log(`  check passed${FULL ? ' (full)' : ''}: ${apps.length} apps in switcher.json, ${text.length} text files swept.`);

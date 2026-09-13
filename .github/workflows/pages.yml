@@ -1,20 +1,17 @@
 name: pages
 
-# A push to main publishes the account's root site. The check runs first and
+# A push to main publishes the whole site: the hub at /, and every app folder
+# at its own path, the design system included. The check job runs first and
 # the deploy happens only if it passes; a failing push stays in git and the
-# last good deployment keeps serving.
+# last good deployment keeps serving. Any other branch runs the check alone.
 #
-# THE PAGES LINK /rux-ds/… ON THE SHARED ORIGIN (since 2026-09-10, rux-ds
-# roadmap §8.4 step 5), so the check resolves them against rux-ds at the tag
-# that is live there: the newest one. Locally the same check reads the
-# sibling checkout on main; a class added on main passes there and fails here
-# until it is tagged -- the right failure. The ref column is cut before
-# sort -V, because ls-remote prints the commit first and sorting whole lines
-# orders by commit (rux-ds roadmap §8.4, diff C).
+# What this cannot check: Notes' names sweep needs the private atlas checkout,
+# which CI never has, so check-publishable reports that class unavailable
+# here; it ran in the pre-commit hook on the staged bytes, and check-data
+# refuses guide data that did not come through atlas's own filter.
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -23,7 +20,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -31,31 +28,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          path: site
-      - id: tag
-        run: echo "tag=$(git ls-remote --tags --refs https://github.com/rux-sm/rux-ds.git 'v*' | awk -F/ '{print $NF}' | sort -V | tail -1)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v7
-        with:
-          repository: rux-sm/rux-ds
-          ref: ${{ steps.tag.outputs.tag }}
-          path: rux-ds
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - run: node tools/check.mjs
-        working-directory: site
+      # Every @carbon/* package runs an ibmtelemetry postinstall; nothing in
+      # the build needs one.
+      - run: npm ci --ignore-scripts
+        working-directory: rux-ds
+      - run: npm run check -- --full
         env:
-          DS: ../rux-ds
+          CI: '1'
+      # Everything derived is committed -- rux-ds's stylesheet and generated
+      # pages, Notes' pages, the inlined sprite -- so the site needs no build
+      # step to serve. That only holds while the committed copy matches its
+      # sources; a clean tree after the check is the proof.
+      - name: Committed output is current
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::Committed output is stale -- run 'npm run build' and commit the result."
+            git diff --stat
+            exit 1
+          fi
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: check
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # A fresh checkout: no node_modules, no build scratch. The site is the
+      # committed tree minus what is not the site.
       - uses: actions/checkout@v7
+      - run: rm -rf .git .github .githooks .claude
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

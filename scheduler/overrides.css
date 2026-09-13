@@ -196,33 +196,19 @@
 
 
 /* ── THE PAGE GRID'S OUTER MARGIN ───────────────────────────────────────────
-   Added 2026-09-07. The board's inset was two things stacked and neither was
-   16px on its own:
+   The board's outer inset is `.rux--content`'s padding alone: 32px on a
+   desktop and 0 on a phone. The grid adds nothing, because both of Carbon's
+   grid spacings have nothing to do on this page. `--rux-grid-margin` is the
+   grid's own padding, and `--rux-grid-gutter` is the space between columns,
+   which a page of one full-width column has nothing to put between.
 
-     --rux-grid-margin    the grid's own padding-inline    16px
-     --rux-grid-gutter/2  the column's margin-inline       16px
-                                                           ----
-                                                           32px a side
-
-   Measured on the page as 1337 outside against 1273 inside. And it was not
-   even constant: `--rux-grid-margin` is 0 below 42rem, 1rem to 99rem and 1.5rem
-   above it, so the inset stepped to 40px on a wide window.
-
-   ZEROING THE GRID'S OWN MARGIN LEAVES THE COLUMN GUTTER AS THE INSET, which is
-   already exactly 16px and, unlike the margin, has no breakpoints -- Carbon's
-   `--rux-grid-gutter` is a flat 2rem at every width. So the page gets one
-   inset, 16px, at every size, matching the 16px `.scheduler-board` already puts
-   between its three regions. One number across the whole page.
-
-   THE ALTERNATIVE WAS `--rux-grid-gutter: 0`, keeping the margin. It reaches
-   16px too, but by removing the gutter BETWEEN columns -- harmless on a page
-   with one full-span column, wrong the moment there are two. This way the
-   gutter keeps doing its job and only the outer margin, which had nothing to
-   separate the page from, goes.
-
-   It hands 32px back to the board. */
+   The 16px between the driver grid, the board and the editor is
+   `.scheduler-board`'s own gap, not this gutter, so it stays when this is
+   zero. A page that grows a second column needs the gutter back, scoped to
+   that grid. */
 .rux--css-grid {
   --rux-grid-margin: 0;
+  --rux-grid-gutter: 0;
 }
 
 
@@ -726,28 +712,13 @@
    no prose on this page whose measure a margin would protect. A page that
    grows one wants this scoped to the board rather than widened.
 
-   SO THIS HALF IS NOT A DIVERGENCE AFTER ALL: it is `.rux--content`, which
-   Carbon declares as a flat `padding: 2rem` with no breakpoint, being brought
-   into line with the grid margin Carbon itself declares at this width. The
-   rule below it is the divergence. */
+   SO THIS IS NOT A DIVERGENCE: it is `.rux--content`, which Carbon declares as
+   a flat `padding: 2rem` with no breakpoint, brought into line with the grid
+   margin Carbon itself declares at this width. The grid's own spacing is zero
+   at every width; see the page grid's note above. */
 @media (max-width: 41.98rem) {
   .rux--content {
     padding: 0;
-  }
-  /* AND THE SECOND INSET, WHICH IS THE ONE A SINGLE MEASUREMENT FINDS AND
-     READING THE PAGE DOES NOT. Zeroing the content padding alone moved the
-     board 16px, not 32: `.rux--css-grid-column` carries
-     `margin-inline: var(--rux-grid-gutter-start) var(--rux-grid-gutter-end)`,
-     each `calc(var(--rux-grid-gutter) / 2)` = 1rem. That margin is the gutter
-     BETWEEN columns, and this grid has one column spanning all of them --
-     there is nothing on either side of it to be separated from.
-
-     `--rux-grid-gutter` is the single knob Carbon gives for it; `--narrow`
-     zeroes only the start and `--condensed` takes it to 1px, so neither says
-     what is meant here. THIS HALF IS A DIVERGENCE: Carbon holds the gutter at
-     2rem at every width. The half above is not -- see the note. */
-  .rux--css-grid {
-    --rux-grid-gutter: 0;
   }
 }
 

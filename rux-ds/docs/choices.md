@@ -11,9 +11,9 @@ Three layers offer them, cheapest first:
 
 | Layer | Offers | Status |
 |---|---|---|
-| **Script** `tools/new-project.sh` | what a text substitution on a template can do: shape, theme, grid width, name, title, file | Done; grid width added 2026-09-06 |
+| **Script** `tools/new-project.sh` | what a text substitution on a template can do: shape, theme, grid width, name, title, file | Retired 2026-09-12 with the consolidation; the builder's download is the page an app starts from |
 | **Skill** `rux-ds-page` | composition: which shell parts, which fields, which buttons, which blocks; then the gates | Done 2026-09-02, its §2 |
-| **Builder** `builder.html`, here | a page builder: a template, its answers, marked blocks from `sink/` and `templates/`, a live preview, the HTML to take away | Done 2026-09-06 — a guided mode (purpose, sections and content, add sections, review, take it away) and a free mode on one draft; every marked block added, moved or removed; text, links, sizes and densities edited in place; undo, a draft that survives a reload, and export held to `new-project.sh` by `check-parity` (roadmap §4.12 item 3) |
+| **Builder** `builder.html`, here | a page builder: a template, its answers, marked blocks from `sink/` and `templates/`, a live preview, the HTML to take away | Done 2026-09-06 — a guided mode (purpose, sections and content, add sections, review, take it away) and a free mode on one draft; every marked block added, moved or removed; text, links, sizes and densities edited in place; undo, a draft that survives a reload (roadmap §4.12 item 3); its export was held to `new-project.sh` by `check-parity` until both retired 2026-09-12 |
 
 ## Page shape — pick one
 

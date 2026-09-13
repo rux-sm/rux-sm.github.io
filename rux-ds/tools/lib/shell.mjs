@@ -48,9 +48,8 @@
 // check-spacing reports 8px against a capture taken from the persistent shell.
 // It is correct and there is no capture of this shell to compare against.
 //
-// NOT USED BY templates/. Those are worked examples a consumer copies, they
-// ship the persistent shell deliberately, and check-parity compares them
-// against tools/new-project.sh. Nothing here should reach them.
+// NOT USED BY templates/. Those are worked examples an app copies, and they
+// ship the persistent shell deliberately. Nothing here should reach them.
 //
 
 // THE SHELL'S OWN SCRIPTS, because a panel nobody wired is an affordance that

@@ -33,16 +33,6 @@
    here — the same shape as .rux--btn[hidden] in css/rux-overrides.css. */
 .bld-step { min-inline-size: 0; }
 .bld-step[hidden] { display: none; }
-/* The command is a <code>, not a code-snippet: that component's copy button is
-   the icon-tooltip one, and stage 7's call was a plain button the builder owns
-   (js/copy-button.js: "A page that needs neither owns the click"). So this is
-   a scroller, and it carries no rux-- class for check-classes to resolve. */
-/* WRAPPED, NOT SCROLLED. This column is five of sixteen, and the command is
-   long: at white-space:pre the reader saw "./tools/new-project.sh --template"
-   and had to scroll a code block to read what they were about to run. pre-wrap
-   breaks at the spaces between flags, which is where a shell command reads
-   naturally; overflow-x stays for a single token longer than the column. */
-.bld-command { display: block; background: var(--rux-layer-01); border: 1px solid var(--rux-border-subtle-01); padding: var(--rux-spacing-03); overflow-x: auto; white-space: pre-wrap; overflow-wrap: break-word; }
 </style>
 </head>
 <body>
@@ -417,7 +407,7 @@
                           <select id="bld-template" class="rux--select-input"></select>
                           <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                         </div>
-                        <div class="rux--form__helper-text">One of the ten in <code>templates/</code>, as <code>new-project.sh</code> offers them.</div>
+                        <div class="rux--form__helper-text">One of the ten in <code>templates/</code>.</div>
                       </div>
                     </div>
                   </div>
@@ -698,12 +688,8 @@
                       <div class="rux--form__helper-text">The download goes beside the project's <code>index.html</code>, and its paths already point at <code>/rux-ds/</code>. The copy is the whole <code>&lt;main&gt;</code> element, so it REPLACES a page's main region rather than filling it.</div>
                     </div>
                     <div class="rux--stack-vertical rux--stack-scale-3">
-                      <h3 class="rux--type-heading-compact-01">A new project</h3>
-                      <code class="bld-command" id="bld-command"></code>
-                      <div>
-                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="bld-copy-command">Copy the command</button>
-                      </div>
-                      <div class="rux--form__helper-text">Run it from your <code>rux-ds</code> clone. It carries every answer above and asks only where to put the project — the builder does not know your folders, and a path you might run without reading is worse than a question. <code>tools/new-project.sh</code> stays the one project creator; the downloaded page then replaces the one it wrote.</div>
+                      <h3 class="rux--type-heading-compact-01">A new app</h3>
+                      <div class="rux--form__helper-text">Make a folder named for its URL beside <code>rux-ds/</code> in the site repository, save the download there as <code>index.html</code>, and add one entry to <code>switcher.json</code>. The next push publishes it. Nothing else to run: the scaffold script that used to do this left on 2026-09-12.</div>
                     </div>
                   </div>
                 </div>

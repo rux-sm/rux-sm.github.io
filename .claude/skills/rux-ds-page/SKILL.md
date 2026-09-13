@@ -78,21 +78,15 @@ do not attest.
 Everything the table offers is already compiled — that is what "attested" buys.
 §3 is for anything you reach for beyond it.
 
-### Where the script stops and you start
+### Where the template stops and you start
 
-`tools/new-project.sh` answers rows 1 and 2, plus name, title and file: what a
-text substitution on a template can honestly change. It writes the page with its
-five paths pointed at `vendor/`. Its own header hands the rest over — rows 3 to 8
-are composition, and composition is this skill. Run it first for a new project,
-then compose into what it wrote.
-
-```
-sh tools/new-project.sh <dir> --template table-page --theme g10 \
-                        --name "Orders" --title "Orders" --page orders
-```
-
-Re-run bare on a project that already has a `PIN` and it moves the pin, asks
-nothing and writes no page.
+A template, or `builder.html`'s download of one with its answers filled in,
+settles rows 1 and 2 plus name, title and file: what a text substitution on a
+template can honestly change. Rows 3 to 8 are composition, and composition is
+this skill. Start from the copy, then compose into it. A new app is that page
+saved as `index.html` in a folder named for its URL beside `rux-ds/`, plus one
+entry in the repository's `switcher.json`; the scaffold script that used to
+write it left on 2026-09-12.
 
 ### Gate the result through this root
 
@@ -216,11 +210,10 @@ a URL, the date, and what was NOT covered.
 
 ## Using this outside rux-ds
 
-A consumer links `css/`, `assets/` and `js/` live from `/rux-ds/` on the
-shared origin (roadmap §8.4, done 2026-09-10) — **not this skill, not
+An app is a folder beside `rux-ds/` in the same repository, and its pages link
+`css/`, `assets/` and `js/` live from `/rux-ds/` — **not this skill, not
 `sink/`, not the captures, and not the gates**. Everything in §5 is unenforced
-there unless the consumer adopts it deliberately. `rux-ln-notes` is the first
-such project; its `tools/check.mjs` reads rux-ds from the checkout beside it
-(or `DS=<dir>`) — locally the sibling on `main`, in CI the checkout at
-rux-ds's newest tag — so a page and the stylesheet it is checked against are
-never more than a release apart.
+there unless the app adopts it deliberately. The root `npm run check` runs
+rux-ds's shared check over every app `switcher.json` lists, against the
+rux-ds in the same tree, so a page and the stylesheet it is checked against
+are always the same revision.

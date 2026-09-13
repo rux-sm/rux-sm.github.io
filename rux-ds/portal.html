@@ -907,7 +907,7 @@
 
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h2 id="gates">Gates</h2>
-          <p>26 gates. 21 run in <code>npm run verify</code>; 5 need a browser and run from the served page's console — <code>docs/verbs.md</code> says how.</p>
+          <p>25 gates. 20 run in <code>npm run verify</code>; 5 need a browser and run from the served page's console — <code>docs/verbs.md</code> says how.</p>
           <section class="rux--data-table-container">
             <div class="rux--data-table-header">
               <div>
@@ -1052,13 +1052,6 @@
                   <td><span class="rux--tag rux--tag--green rux--tag--sm"><span class="rux--tag__label">in verify</span></span></td>
                   <td>a BLOCK or SLOT marker that does not pair, sits above PROVENANCE, encloses a ks- class or an inline style, uses a glyph the sprite lacks, or references an id outside its own region · a slot carrying markup outside any block, or a template with no slot · a builder/blocks.json disagreeing with its sources in ANY field, in order, or by a duplicate or a missing template record, and slot records that do not rebuild the file · a docs/builder-coverage.md whose generated table has drifted, or whose eligibility notes name a fragment that is gone, is already marked, or is named twice · a builder/guide.json naming a block or slot that does not exist, suggesting the same block into one slot twice, leaving a template with no purpose line, recommending a variant value the group does not offer, or making a suggestion whose recorded layout does not match the slot WITHOUT saying what is unverified</td>
                   <td>whether the marked region is the RIGHT part of the fragment, and whether an unmarked fragment SHOULD be marked — both are readings. The coverage table counts candidates; it does not rank them. AND WHETHER A SUGGESTION IS GOOD: it checks the map is consistent with the catalogue, never that the advice is sound, and a matching container is evidence about a placement and not a verdict on one — layer, siblings, the frame and the 13 hazards in composing-pages.md are all invisible to it</td>
-                </tr>
-                <tr>
-                  <td>check-parity</td>
-                  <td><span class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">node</span></span></td>
-                  <td><span class="rux--tag rux--tag--green rux--tag--sm"><span class="rux--tag__label">in verify</span></span></td>
-                  <td>builder/rewrites.mjs exportPage disagreeing with the page-writing lines of tools/new-project.sh, for any of the ten templates and any of four answer sets — the fourth is the only one that asks for `--grid full`, so a fault there names that one substitution · a substitution added to or removed from the script, which moves the `-e` count · the extracted region no longer being findable, which faults rather than passing</td>
-                  <td>everything the script does outside those lines — the vendored tree, the PIN, the seeded brand and CSS files, the questions, the drift report · any answer it is not given · and WHETHER EITHER SIDE PRODUCES VALID HTML: neither escapes the answers, so a name carrying " &lt; &gt; or &amp; makes markup both sides agree on byte for byte and no browser reads as intended</td>
                 </tr>
                 <tr>
                   <td>build-theme-creator-icons</td>

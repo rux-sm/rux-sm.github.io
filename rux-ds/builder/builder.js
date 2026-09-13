@@ -8,7 +8,7 @@
    repository.
 
    WHAT IT DOES, this stage: fetches builder/blocks.json, offers the ten
-   templates and the answers new-project.sh asks, and keeps ONE PAGE MODEL
+   templates and their answers, and keeps ONE PAGE MODEL
    PER TEMPLATE (builder/page.mjs) — the template's own blocks to begin with,
    then whatever the reader adds from the catalogue, moves or removes. The
    model is composed into the page by composePage, which puts every instance
@@ -44,12 +44,12 @@
    and the two notices. Real component markup is authored in the generator
    and cloned here, never assembled out of class-name strings.
 
-   AND IT CAN BE TAKEN AWAY. Two delivery paths, no third: download the page
-   for a project that exists, or copy the whole <main> to replace one; or, for
-   a project that does not exist yet, copy the exact new-project.sh command
-   built from the answers. THE SCRIPT STAYS THE ONE PROJECT CREATOR — the
-   builder writes a page, never a project — and tools/check-parity.mjs holds
-   exportPage to the script's own page-writing lines, run per template.
+   AND IT CAN BE TAKEN AWAY. Two delivery paths, no third: download the page,
+   or copy the whole <main> to replace one. A new app is the download saved as
+   index.html in a folder beside rux-ds/ plus one switcher.json entry; until
+   2026-09-12 a third path composed a new-project.sh command from the answers,
+   and check-parity held exportPage to that script's own page-writing lines.
+   Both left with the consolidation; the builder is the one page-writer now.
 
    TWO MODES, ONE PAGE (stage 12). The guided mode shows the five sections
    one at a time behind a vertical progress indicator, with Back and Next;
@@ -1141,10 +1141,9 @@ let pending = null;
 let openUrl = null;
 async function render() {
   const my = pending = {};
-  // BEFORE THE TRY, because neither depends on the composition: the command is
-  // built from the answers and the template alone, and it must still be right
-  // on a page whose preview failed to build.
-  $('#bld-command').textContent = command();
+  // BEFORE THE TRY, because it does not depend on the composition: the warning
+  // is built from the answers alone, and it must still be right on a page
+  // whose preview failed to build.
   exportWarning();
   try {
     const { page, roundTrip, integrity: ig } = await composed();
@@ -1263,40 +1262,24 @@ function removeBlock() {
 
 // ── taking it away ─────────────────────────────────────────────────────────
 //
-// ONE DEFINITION OF THE FILE NAME, used by the download and by the command,
-// because the two would otherwise disagree in a way nobody sees until the
-// script dies. `page` is a FILE NAME, never a path: new-project.sh writes
-// `> "$DIR/$PAGE.html"` and creates no parent directory, so `reports/orders`
-// kills it under `set -e`, while a browser's download attribute quietly
-// flattens the separator and writes the file anyway. A trailing `.html` is
-// stripped rather than rejected — the field says "without .html", and typing
-// it is the obvious slip, not an error worth a lecture.
+// ONE DEFINITION OF THE FILE NAME, used by the download. `page` is a FILE
+// NAME, never a path: a browser's download attribute quietly flattens a
+// separator and writes the file anyway, so `reports/orders` is refused here
+// rather than silently renamed. A trailing `.html` is stripped rather than
+// rejected — the field says "without .html", and typing it is the obvious
+// slip, not an error worth a lecture. (The scaffold script this once also fed
+// left on 2026-09-12.)
 function normalisePage() {
   const raw = state.page.trim().replace(/\.html$/i, '');
-  if (!raw || /[/\\]/.test(raw)) return { name: 'index', why: raw ? `“${raw}” has a path separator; the script writes one file beside the project's own index.html` : '' };
+  if (!raw || /[/\\]/.test(raw)) return { name: 'index', why: raw ? `“${raw}” has a path separator; the download is one file, saved beside the app's own index.html` : '' };
   return { name: raw, why: '' };
 }
 
-// Every answer single-quoted, so nothing in it is read by the shell. The
-// FOLDER IS DELIBERATELY ABSENT: supplying every other flag leaves the script
-// asking exactly one question, first, with its own default. The builder does
-// not know the reader's folders, and a placeholder path they might run without
-// reading is the trap this avoids.
-const sq = s => `'${String(s).split("'").join("'\\''")}'`;
-function command() {
-  const a = answers();
-  return ['./tools/new-project.sh',
-    '--template', sq(state.template), '--theme', sq(a.theme), '--grid', sq(a.grid),
-    '--prefix', sq(a.prefix), '--name', sq(a.name),
-    '--title', sq(a.title), '--page', sq(normalisePage().name)].join(' ');
-}
-
-// NEITHER SIDE ESCAPES HTML, and check-parity says so in its own words: an
-// answer carrying " < > or & lands unescaped in element text and in an
-// aria-label, so it can make markup both sides agree on byte for byte and no
-// browser reads as intended. The builder will not escape unilaterally — that
-// would break the parity contract it just earned — so it says so instead.
-// Whether to escape in both, reject in both, or leave it is rux's: §4.12.
+// THE EXPORT DOES NOT ESCAPE HTML: an answer carrying " < > or & lands
+// unescaped in element text and in an aria-label, so it can make markup no
+// browser reads as intended. Recorded rather than fixed unilaterally while a
+// second page-writer had to agree byte for byte; that writer is gone, and
+// whether to escape or reject is still rux's call: §4.12. It says so instead.
 function exportWarning() {
   const a = answers();
   const bad = [['product prefix', a.prefix], ['product name', a.name], ['browser tab title', a.title]]
@@ -1305,7 +1288,7 @@ function exportWarning() {
   const line = $('#bld-export-warn');
   const page = normalisePage();
   const notes = [
-    bad.length ? `${bad.map(([l, c]) => `the ${l} carries ${c}`).join(', ')} — neither the export nor new-project.sh escapes these, so the page may not read as you intend.` : '',
+    bad.length ? `${bad.map(([l, c]) => `the ${l} carries ${c}`).join(', ')} — the export does not escape these, so the page may not read as you intend.` : '',
     page.why,
   ].filter(Boolean);
   line.textContent = notes.join(' ');
@@ -1396,8 +1379,6 @@ async function init() {
       await copyText('Main region', main, 'It is the whole <main> element, so it REPLACES the main region of the page you paste it into.');
     } catch (e) { exportAlert('Could not build the page', e.message); }
   });
-  $('#bld-copy-command').addEventListener('click', () =>
-    copyText('Command', command(), 'Run it from your rux-ds clone; it will ask where to put the project.'));
   const picker = $('#bld-block');
   picker.addEventListener('change', () => { endRun(); state.block = picker.value; showBlock(); });
   $('#bld-reset').addEventListener('click', () => {

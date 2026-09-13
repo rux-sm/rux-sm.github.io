@@ -64,6 +64,6 @@ schema items above wait on it.
   workflows disabled, the repositories archived and their checkouts removed
   from the working folder. The first real Atlas-to-Notes-to-DS task under the
   one-session agreement has not happened yet; the next one is the proof.
-- Retired 2026-09-12: rux-ds's browser-reading ledger and its control list.
-  Still there, its own small diff when wanted: the scaffold
-  `tools/new-project.sh` with `app-skeleton/`, which `check-parity` reads.
+- Retired 2026-09-12: rux-ds's browser-reading ledger, its control list, and
+  the app scaffold with the gate that read it. Nothing of the migration is
+  left to do.

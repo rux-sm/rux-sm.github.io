@@ -11,7 +11,7 @@ the authority on everything this does not name — what that project publishes,
 what it must never publish, which components it owns. Where the two disagree
 about rux-ds, this wins; about anything else, the project wins.
 
-`tools/new-project.sh` starts a project that already satisfies this.
+A new app is a folder named for its URL beside `rux-ds/` in the site repository, an `index.html` started from a template, and one entry in `switcher.json`; it satisfies this by construction.
 
 ## 1. Nothing vendors rux-ds
 

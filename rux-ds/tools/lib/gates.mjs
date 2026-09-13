@@ -393,26 +393,11 @@ export const GATES = [
     baseline: '33 blocks in 18 files · 12 slots · 68 fragments, 8 marked, 334 candidate regions · 10 templates mapped, 20 suggestions, 14 variant groups, 0 reviewed',
   },
 
-  {
-    // THE ONLY GATE THAT RUNS ANOTHER TOOL'S OWN BYTES. It extracts the
-    // page-writing region from tools/new-project.sh and executes it, rather
-    // than reimplementing it: a second implementation would only prove the two
-    // copies here agree. It does not run the WHOLE script, which refuses a
-    // dirty tree and unpushed commits by design -- a gate that did would fail
-    // on every uncommitted change and be routed around.
-    id: 'check-parity',
-    tool: 'tools/check-parity.mjs',
-    kind: 'node',
-    inVerify: true,
-    catches: "builder/rewrites.mjs exportPage disagreeing with the page-writing lines of tools/new-project.sh, for any of the ten templates and any of four answer sets — the fourth is the only one that asks for `--grid full`, so a fault there names that one substitution · a substitution added to or removed from the script, which moves the `-e` count · the extracted region no longer being findable, which faults rather than passing",
-    blindTo: "everything the script does outside those lines — the vendored tree, the PIN, the seeded brand and CSS files, the questions, the drift report · any answer it is not given · and WHETHER EITHER SIDE PRODUCES VALID HTML: neither escapes the answers, so a name carrying \" < > or & makes markup both sides agree on byte for byte and no browser reads as intended",
-    reads: "the script's own extracted lines, run per template per answer set, against exportPage",
-    fileTargets: ['tools/new-project.sh', 'builder/rewrites.mjs', 'templates'],
-    inputs: ['tools/new-project.sh', 'builder/rewrites.mjs', 'templates'],
-    redRun: "revert content() in builder/rewrites.mjs to a string replacement and the awkward answer set fails on all ten templates · comment out the grid rewrite in content() and the full-width set fails on all ten and nothing else (run 2026-09-06: 10 faults, all `full width`) · change one `-e` expression in the script · delete the `> \"$DIR/$PAGE.html\"` line and expect ANCHORS, not a pass",
-    sideEffects: 'writes into a scratch directory under os.tmpdir() and removes it',
-    baseline: '10 templates × 4 answer sets · 40 of 40 byte-identical',
-  },
+  // check-parity, which held builder/rewrites.mjs exportPage byte-identical
+  // to the page-writing lines of tools/new-project.sh, left with the script
+  // on 2026-09-12: an app is a folder beside rux-ds/ now, started from a
+  // template or the builder's download, and there is no second writer to
+  // agree with.
 
   {
     // The same shape as build-builder-icons, one page over. Phase 14,

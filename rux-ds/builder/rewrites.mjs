@@ -1,17 +1,17 @@
 // The page builder's transformations — the ONE place a template becomes a
 // page. Pure ES module, no imports, so the browser (builder/builder.js) and
-// node (tools/check-parity.mjs) run the same code. Roadmap §4.12, creator 3.
+// node run the same code. Roadmap §4.12, creator 3.
 //
-// exportPage() MUST REPRODUCE the page-writing region tools/new-project.sh
-// itself carries — tools/check-parity.mjs extracts it by anchor rather than
-// by line number, because a line number written here would go stale the
-// first time either file grew a line above it, which is exactly what
-// happened once (roadmap §8.6) — BYTE FOR BYTE, including sed's semantics: an
+// UNTIL 2026-09-12 exportPage() had to reproduce the page-writing region of
+// tools/new-project.sh byte for byte, and tools/check-parity.mjs held it to
+// that. The script and the gate left with the consolidation; this is the one
+// page-writer now, and the sed-shaped semantics below are kept as they were
+// because ten templates were verified against them: an
 // expression without /g replaces the FIRST match on each line, one with /g
 // replaces every match, and `^` anchors a line. The awk step prints the two
 // project stylesheet links after EVERY line matching rux-ds's own overrides
 // link — templates carry one, so one pair is inserted; the loop mirrors awk
-// rather than assuming. check-parity runs the script and diffs; when the two
+// rather than assuming. check-parity ran the script and diffed; when the two
 // disagree, someone decides which is right, and that is the point of having
 // the check rather than a promise.
 //
@@ -69,7 +69,7 @@ function content(lines, a) {
   });
 }
 
-// What tools/new-project.sh writes for a template and these answers.
+// The page for a template and these answers.
 export function exportPage(templateHtml, answers = {}) {
   let lines = templateHtml.split('\n');
   lines = firstPerLine(lines, '"../css/rux.css"', '"/rux-ds/css/rux.css"');

@@ -5,8 +5,8 @@
 // BLOCKS NOTHING: a page is the project's own, and this is the report that
 // says a shell change upstream has not reached it, which nothing said before.
 //
-//   node tools/drift.mjs <project-dir>     run by tools/new-project.sh after
-//                                          every pin move; runnable alone
+//   node tools/drift.mjs <app-dir>         by hand, when a shell change here
+//                                          should reach an app's pages
 //
 // WHY IT EXISTS. The pin move of 2026-09-02 (v0.1.1 → v0.1.2) changed no css
 // or js byte and still needed a hand edit on every module: Plex had gone to

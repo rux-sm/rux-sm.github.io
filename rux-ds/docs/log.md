@@ -9,6 +9,20 @@ not be. A new pass or an answered decision goes at the top of the block below.
 
 ---
 
+**2026-09-12 — the app scaffold is retired.** Gone: `tools/new-project.sh`,
+`tools/app-skeleton/` (eleven files: a check, a server, a sprite tool, a
+hook, a workflow, a policy and the settings a new repository needed), and
+`tools/check-parity.mjs` with its registry entry, which held the builder's
+`exportPage` byte-identical to the script's page-writing lines across ten
+templates and four answer sets. Why: an app is a folder beside `rux-ds/` in
+`rux-sm.github.io` now, started from a template or the builder's download,
+with one entry in `switcher.json`; it needs no repository, so there is
+nothing to scaffold and no second page-writer for parity to compare. The
+builder's "A new project" panel, which composed the script's command line,
+is replaced by the three-step note. `docs/starting-a-project.md` says the
+same in one page. The script stays readable in the archived rux-ds
+repository at `fdab509`.
+
 **2026-09-12 — the browser-reading ledger and the control list are retired.**
 Gone: `docs/gate-coverage.json`, the readings; `tools/lib/staleness.mjs`,
 which aged them by resolving the commit each was taken at; `tools/check-gates.mjs`

@@ -23,10 +23,10 @@ account.
 checking every served app against it (roadmap §8.4 diff B, §8.6).
 `git describe --tags` says how far.
 
-**Nothing vendors rux-ds anywhere.** The scheduler, the hub, Notes and every
-page `tools/new-project.sh` writes all link `/rux-ds/` live; no `vendor/`
-directory exists in the family, there is no pin to move, and §8.4 has no step
-left. The dated account of how that happened is in the log, not here.
+**Nothing vendors rux-ds anywhere.** The scheduler, the hub and Notes all link
+`/rux-ds/` live from the same repository; no `vendor/` directory exists, there
+is no pin to move, and §8.4 has no step left. The dated account of how that
+happened is in the log, not here.
 
 Where the phases stand — the long form is in the log:
 
@@ -35,7 +35,8 @@ Where the phases stand — the long form is in the log:
 | Carbon compiled under `rux`, stripped to the keep-set (Phase 3) | done |
 | Devendoring Carbon (Phase 4) | declined while admissions are open — roadmap §4.4 |
 | Behaviour modules in `js/` (Phase 5) | all written; the exit criterion is a screen-reader pass by a person, `docs/screen-reader-pass.md` |
-| Templates (6), the component index (7), the app scaffold (9–11) | done — `portal.html` counts them |
+| Templates (6), the component index (7) | done — `portal.html` counts them |
+| The app scaffold (9–11) | done, then retired 2026-09-12: an app is a folder beside this one, `docs/starting-a-project.md` |
 | The page builder, `builder.html` (12) | stage 12 of 13; stage 13, repeated items, is marked v2 |
 | Theme Creator, surface overlays, saved themes (14–16) | landed 2026-09-06 |
 | The Theme Creator rebuilt as one list (Phase 17) | landed 2026-09-10 — all 311 colour tokens, three detail levels, a theme file to download and load back |
@@ -145,7 +146,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `assets/fonts/` | IBM Plex, self-hosted and opt-in via `plex.css`; OFL-1.1 |
 | `brand/` | `logo.svg` and `favicon.svg`, hand-owned; swap the file and every shell follows. `brand/README.md` has the sizes |
 | `assets/brand/` | two app icons generated from the logo by `npm run marks`, never hand-edited |
-| `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site. `new-project.sh` and `app-skeleton/` stay because `check-parity` reads them; a new app is a folder beside this one, not a new repository |
+| `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site |
 | `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
 | `docs/*.md` | `roadmap.md` decisions · `log.md` the record · `verbs.md` the routine · `choices.md` what an app may choose · `starting-a-project.md` · `verifying-templates.md` · `composing-pages.md` · `screen-reader-pass.md` · `inventory.md` every component's disposition · `audits.md` · `commits.md` |
 | `docs/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `gate-coverage.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
@@ -186,7 +187,6 @@ None is sufficient alone — roadmap §4.1.2 has the bug that proved it. `portal
 | `check-headings.mjs` | a page with no heading at all · more than one `h1` · an outline that skips a level. Pages only — `sink/*.html` fragments are specimens, not documents | whether a heading says anything useful · a heading that looks like one and is marked up as a `div` |
 | `check-aria-roles.mjs` | a `role` on a `rux--` class Carbon never renders that role on — the first gate to read the captures' attribute data | a role on an unclassed element · a MISSING role · whether required child roles exist · anything turning on `aria-live`, which the extractor does not record |
 | `check-blocks.mjs` | a BLOCK or SLOT marker that does not pair, sits above PROVENANCE, encloses a `ks-` class or an inline style, or references an id outside its own region · a `builder/blocks.json` disagreeing with its sources in ANY field, in order, or by a duplicate or a missing template record · a `docs/builder-coverage.md` whose table has drifted, or whose eligibility notes name a fragment that is gone, is already marked, or is named twice · a `builder/guide.json` naming a block or slot that does not exist, leaving a template with no purpose line, recommending a variant value the group refuses, or suggesting a placement whose recorded layout does not match the slot **without saying what is unverified** | whether the marked region is the RIGHT part of the fragment, and whether an unmarked fragment SHOULD be marked — both are readings · **whether a suggestion is good**: it checks the map agrees with the catalogue, never that the advice is sound |
-| `check-parity.mjs` | `builder/rewrites.mjs`'s `exportPage` disagreeing with the page-writing lines of `tools/new-project.sh`, for any of the ten templates and any of four answer sets, the fourth being the only one that asks for `--grid full` · a substitution added to or removed from the script · the extracted region no longer being findable, which faults rather than passing | everything the script does outside those lines — the vendored tree, the PIN, the questions, the drift report · and **whether either side produces valid HTML**: neither escapes the answers, so a name carrying `" < > &` makes markup both sides agree on byte for byte and no browser reads as intended |
 | `check-provenance.mjs` | a fragment that does not say where its markup came from · a template that does not say what its BEHAVIOUR was verified against, with a URL and a date | whether either label is true |
 | `check-rendered.js` | default browser chrome · collapsed · escaped elements | anything it has no rule for · a section it has nothing to measure in |
 | `check-runtime-classes.js` | a class in the markup that no longer exists once the modules have run — what `check-coverage` counts and nobody sees | anything behind an interaction; it is load-time only |

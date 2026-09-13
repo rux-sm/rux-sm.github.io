@@ -150,7 +150,6 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
 | `docs/*.md` | `roadmap.md` decisions · `log.md` the record · `verbs.md` the routine · `choices.md` what an app may choose · `starting-a-project.md` · `verifying-templates.md` · `composing-pages.md` · `screen-reader-pass.md` · `inventory.md` every component's disposition · `audits.md` · `commits.md` |
 | `docs/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `gate-coverage.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
-| `docs/operating-card.html` · `docs/rux.code-workspace` | the printable card for rux, and the VS Code workspace seed it tells you to copy to `~/Developer` |
 | `reference/` · `docs/adoption-audit.md` | material about agent tooling, not about the kit; nothing reads it |
 | `CHANGES.md` | a class or component that left, one line each — the only thing a pin cannot tell a consumer |
 | `LICENSE` · `NOTICE` | Apache-2.0; `NOTICE` names each artefact carrying Carbon-derived material |

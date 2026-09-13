@@ -67,8 +67,8 @@ Refs docs/roadmap.md 4.3
 ## Identity
 
 Always `rux <rux.dev@pm.me>`, lowercase. Set once per machine with
-`git config --global`, as `docs/operating-card.html` says; every hook in the
-family refuses any other name or address. A conditional include was described
+`git config --global`. Atlas's commit hook refuses any other name or address;
+the site's hooks do not check it. A conditional include was described
 here until 2026-09-02 and existed on no machine.
 
 **No AI authorship credit.** No `Co-Authored-By:`, no "Generated with" line, no

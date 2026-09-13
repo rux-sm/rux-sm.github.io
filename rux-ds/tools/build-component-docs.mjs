@@ -5,7 +5,7 @@
 //
 // WHY THIS IS A COMMITTED FILE AND NOT A LOOKUP AT BUILD TIME. It is derived
 // from carbon-website/, which is a QUARRY: gitignored, cloned on no machine by
-// default, and the operating card is explicit that nothing in `npm run verify`
+// default, and nothing in `npm run verify`
 // reads it. A generator that needed it would fail on every clone that had not
 // cloned IBM's docs site. So this runs where the quarry is, the OUTPUT is
 // committed, and everything downstream reads the output -- the same shape as

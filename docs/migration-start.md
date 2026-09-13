@@ -86,7 +86,17 @@ repository.
 a tracked-files copy of the four sites with cloud sync disabled in the copy's
 `account.js`, so nothing wrote to production. Body, header, h1 and button
 values, element and class counts, fonts loaded, failed resources (none).
-Re-run the same collection after the move and diff.
+
+Re-run on 2026-09-12 after the move, at `1938912`, into
+`computed-values-after.json` beside it; the snapshot in `site/` was re-served
+by its own server in workspace mode and measured with the same script, as the
+control. Every value on all nine pages is identical before and after: theme,
+colours, fonts, element, class, stylesheet and script counts, and no failed
+resource. Two exceptions, neither the move's. The builder has three fewer
+elements because `cbaecb7` retired the scaffold's command block after the
+snapshot was taken. The resource count is timing-sensitive: it differed from
+the snapshot's on every page in both reruns, and between the two reruns on
+one page, so it measures the load, not the tree.
 
 ## Moved out of `AGENTS.md` today
 

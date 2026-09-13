@@ -385,7 +385,7 @@ export const GATES = [
     // fragment's behaviour modules and compiled components through
     // lib/ownership.mjs, which reads the inventory and the compiled stylesheet.
     inputs: ['sink', 'templates', 'assets/icons.svg', 'builder/blocks.json', 'docs/builder-coverage.md', 'builder/guide.json', 'builder/rewrites.mjs', 'builder/placement.mjs', 'js', 'src/app.scss', 'data/inventory.json'],
-    redRun: 'swap two BLOCK:END names in sink/structured-list.html; change one byte inside a marked region without `npm run blocks`; hand-edit a block\'s `deps`, `label` or `grid`; delete a whole template record; hand-edit one cell of the coverage table; point an eligibility note at a fragment that does not exist; in builder/guide.json name a block or slot that does not exist, duplicate a block+slot, clear the `evidence` on an unmatched suggestion, add `evidence` to a matched one, put a recommendation on an ordinal the block does not have, or recommend a value the group refuses',
+    redRun: 'swap two BLOCK:END names in sink/structured-list.html; change one byte inside a marked region without `npm run generate`; hand-edit a block\'s `deps`, `label` or `grid`; delete a whole template record; hand-edit one cell of the coverage table; point an eligibility note at a fragment that does not exist; in builder/guide.json name a block or slot that does not exist, duplicate a block+slot, clear the `evidence` on an unmatched suggestion, add `evidence` to a matched one, put a recommendation on an ordinal the block does not have, or recommend a value the group refuses',
     sideEffects: null,
     baseline: '33 blocks in 18 files · 12 slots · 68 fragments, 8 marked, 334 candidate regions · 10 templates mapped, 20 suggestions, 14 variant groups, 0 reviewed',
   },
@@ -407,7 +407,7 @@ export const GATES = [
     reads: 'the emitted theme-creator markup against assets/icons.svg',
     fileTargets: ['tools/build-theme-creator.mjs'],
     inputs: ['assets/icons.svg'],
-    redRun: 'reference #i-nothing from the generator and run npm run theme-creator',
+    redRun: 'reference #i-nothing from the generator and run npm run generate',
     sideEffects: 'writes theme-creator.html',
     baseline: '0 unresolved sprite references',
   },
@@ -425,7 +425,7 @@ export const GATES = [
     reads: 'the emitted builder markup against assets/icons.svg',
     fileTargets: ['tools/build-builder.mjs'],
     inputs: ['assets/icons.svg'],
-    redRun: 'reference #i-nothing from the generator and run npm run builder',
+    redRun: 'reference #i-nothing from the generator and run npm run generate',
     sideEffects: 'writes builder.html',
     baseline: '0 unresolved sprite references',
   },

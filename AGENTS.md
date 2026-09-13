@@ -133,5 +133,6 @@ name plans, because the plans folder is the list.
 ## Commits
 
 `type(scope): Subject`, imperative, authored by rux alone with no AI
-attribution. No hook checks the typography any more; the pre-commit hook
+attribution. The scope is the app the change is in: `home`, `design`,
+`notes` or `scheduler`, or `site` for shared files. No hook checks the typography any more; the pre-commit hook
 checks what matters.

@@ -10,7 +10,7 @@ which of the sink's fragments are in it and which are not, so growing the
 catalogue is a choice made from numbers rather than from memory.
 
 **Only the table is generated.** `tools/build-blocks.mjs` rewrites what sits
-between `COVERAGE:BEGIN` and `COVERAGE:END` on every `npm run blocks`, and
+between `COVERAGE:BEGIN` and `COVERAGE:END` on every `npm run generate`, and
 touches nothing else on this page — the arrangement `tools/build-readme.mjs`
 already uses on README, and for the same reason: the table is current state, and
 the eligibility notes beside it are decisions. `tools/check-blocks.mjs` fails if

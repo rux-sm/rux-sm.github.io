@@ -18,6 +18,7 @@ const run = (cmd, args, cwd) => {
   if (r.status !== 0) process.exit(r.status ?? 1);
 };
 run('npm', ['run', 'build', '--silent'], join(ROOT, 'design'));
+run('npm', ['run', 'generate', '--silent'], join(ROOT, 'design'));
 run(process.execPath, ['tools/build.mjs'], join(ROOT, 'notes'));
 run(process.execPath, ['tools/inline-sprite.mjs'], ROOT);
 console.log('\n  built. `npm run check` says whether it is right.');

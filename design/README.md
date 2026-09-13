@@ -45,15 +45,13 @@ rewrites the committed stylesheet from the old Carbon and still exits 0.
 | | |
 |---|---|
 | `npm run build` | `src/app.scss` → `css/rux.css` + `.min.css`, verifies zero `cds` |
-| `npm run sink` | assembles `sink/*.html` → `kitchen-sink.html` |
+| `npm run generate` | rebuilds every generated page and file: the kitchen sink, portal, README figures, builder, Theme Creator and shell |
 | `npm run icons` | quarries `assets/icons.svg` from `@carbon/icons` |
 | `npm run inventory` | per-component classes and size → `data/inventory.json` |
 | `tools/extract/` | quarries Carbon's rendered markup → `data/carbon-co-classes.json`, `data/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `data/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
 | `tools/check-icons.mjs --unused` | the sprite's symbols nothing in the shipped sink references; `--deferred` is the ones `sink/deferred/` would need back |
 | `tools/check-provenance.mjs --inferred` | the fragments whose markup was never diffed against a reference |
 | `tools/diff-fragment.mjs <name> --omissions` | where a fragment's nesting disagrees with Carbon, and what Carbon renders that it omits |
-| `npm run serve` | kitchen sink at `http://localhost:8642` |
-| `npm run serve:workspace` | every site on one origin at `http://localhost:8640`, laid out as the live sites are: `/` the hub, `/design/`, `/scheduler/`, `/notes/` |
 | `npm run watch` | rebuild CSS on change |
 
 ## Figures

@@ -247,7 +247,9 @@
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   line-height: var(--rux-heading-compact-01-line-height);
-  color: var(--rux-text-primary);
+  /* Secondary text, as Carbon's unselected tabs are, so the 16px section
+     titles above are the only bright text in their rows. */
+  color: var(--rux-text-secondary);
 }
 /* The corner takes the ROW HEAD's inline padding, not the day cells', so the
    word Bus starts on the same pixel as the numbers under it. */
@@ -1697,7 +1699,8 @@ button.scheduler-row-head__num {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
-  color: var(--rux-text-primary);
+  /* Secondary text, the same as the board's day band beside it. */
+  color: var(--rux-text-secondary);
   /* NO RULE UNDER THIS HEADER EITHER, 2026-09-07, for the same reason the
      schedule's band lost its own: Carbon's table header draws no border and the
      surface change is what separates it from the first row. The two grids sit
@@ -1883,12 +1886,9 @@ button.scheduler-row-head__num {
    the board marks today with -- and rux asked for it off once the tint was
    doing the work: "want to remove the accented line on date selected".
 
-   AND THE `color: var(--rux-text-primary)` THAT WENT WITH IT IS GONE TOO,
-   because measuring showed it had never changed anything: the band already
-   sets `text-primary` on every label through
-   `.scheduler-avail__days > .scheduler-avail__day`, so lifting a selected one to the same
-   value is a rule that computes to what was already there. Keeping it would
-   have been a line of CSS asserting a distinction that does not exist.
+   The band sets one colour on every label through
+   `.scheduler-avail__days > .scheduler-avail__day`, and a selected day takes no
+   colour of its own.
 
    `.scheduler-avail__day--on-day` IS STILL APPLIED and now draws nothing. It stays
    because it is the honest record of which days are selected -- the hook for a

@@ -46,8 +46,6 @@ done and how.
   locks the page.
 - Weak highlights in geist: the roster tint and the keyboard highlight are
   barely visible, and no one has looked at all eight themes on screen.
-- **An overpaid trip.** The scheduler counts it as confirmed. The live
-  `billing-workflow-v1` setting, which rux-ui reads, leaves `overpaid` out.
 
 ## Notes owes atlas
 

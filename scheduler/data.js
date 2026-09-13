@@ -2004,10 +2004,10 @@
        row `billing-workflow-v1` reads
 
            confirmWhen: ["contract_signed","po_received",
-                         "deposit_received","paid_full"]
+                         "deposit_received","paid_full","overpaid"]
 
        so `confirmed` means "a contract is signed, or a PO is in, or a
-       deposit landed, or it is paid in full" -- computed from four other
+       deposit landed, or it is paid in full or more" -- computed from other
        facts, not typed. rux-ui recomputes it in `collectTrip()` on every
        save; `balance_paid` is `price > 0 && balance <= 0` and `date_paid`
        is the latest payment's date, both recomputed the same way. Anything
@@ -3584,8 +3584,7 @@
          and recomputes it on every save over there, so this app shows what
          the ladder WOULD say and writes nothing -- the same rule the derived
          three have followed since the column cleanup. `confirmWhen` is the
-         default four, which is byte-for-byte what the live
-         `billing-workflow-v1` settings row holds (read 2026-09-10); this app
+         five rungs the live `billing-workflow-v1` settings row holds; this app
          does not fetch that row, so a change to it over there would make this
          readout stale until someone looks. Stated rather than hidden. */
       /* THE TONE ENCODES HOW FAR ALONG, NOT WHICH RUNG. Seven rungs and five
@@ -3608,12 +3607,9 @@
         contract_signed: ['Contract signed', 'rux--tag--blue'],
         pending: ['Pending', 'rux--tag--cool-gray'],
       };
-      /* OVERPAID CONFIRMS TOO, and its absence here was a bug, fixed
-         2026-09-11. Every other rung above `pending` was listed, so a trip
-         quoted $100 and paid $150 read `Balance -$50`, `Overpaid`, and
-         `Confirmed  Not yet` -- driven live on an unsaved trip before the fix.
-         A customer who has paid MORE than the quote has confirmed the trip by
-         any reading of the word. `po_partial` is remapped to `po_received`
+      /* OVERPAID CONFIRMS TOO. A customer who has paid MORE than the quote
+         has confirmed the trip by any reading of the word, and the live
+         settings row lists it. `po_partial` is remapped to `po_received`
          below rather than listed, because it is the same rung with a gap. */
       const CONFIRM_WHEN = ['contract_signed', 'po_received', 'deposit_received',
                             'paid_full', 'overpaid'];

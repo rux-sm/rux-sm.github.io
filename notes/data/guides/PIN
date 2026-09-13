@@ -1,9 +1,9 @@
-commit   4f4da624e3db6c05d19af4213a084904fcd64922
-date     2026-09-13T22:28:20Z
-subject  docs(diagram): Call the Inquiry category Lookup
+commit   7caa756cedce8adc9fb0387f3aa9296caf2f707a
+date     2026-09-13T22:35:52Z
+subject  docs(guides): Count six stages on the level-1 map
 contract 8 
 tier     export
-sha256   e44a93795b69714f9daf5dbf2cbdb91236f9c2c5b90834005fb447c2c3d66b5f
+sha256   ad734e26c4cf87ac02bb7370c27e47fe692367ace605733f3175fe9ca654481e
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

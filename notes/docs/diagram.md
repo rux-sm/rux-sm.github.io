@@ -43,16 +43,12 @@ them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
 
 ## Scope — what the overview is missing
 
-**Two gaps, both atlas's to author.** Nodes, edges, lanes, stages and `kind`
-come from atlas; this side renders them.
+**One gap, atlas's to author.** Nodes, edges, lanes, stages and `kind` come
+from atlas; this side renders them.
 
-1. **Shipping is one tile.** The whole path to shipped is `Advise, pick and
-   ship`, a single Result at stage 5. Receipt, stock and outbound share one
-   column. The session map carries `Deliver` and `Cash` stages this document
-   does not.
-2. **Four branches.** On-hand covers it (YES / NO), and supply source Purchase
-   or Job Shop off the transfer. Nothing else that can divert a route —
-   shortage, partial availability, a failed allocation — is drawn.
+**Four branches.** On-hand covers it (YES / NO), and supply source Purchase or
+Job Shop off the transfer. Nothing else that can divert a route — shortage,
+partial availability, a failed allocation — is drawn.
 
 ## 0. Five categories
 

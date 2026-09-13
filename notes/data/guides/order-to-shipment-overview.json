@@ -13,9 +13,13 @@
     "tcibd0501m100",
     "tdipu0601m000",
     "tdpur4100m900",
+    "tdsls4501m140",
     "tdsls4601m200",
     "tisfc0501m000",
+    "whinh2100m100",
     "whinh3512m000",
+    "whinh4525m100",
+    "whinh4630m000",
     "whwmd4300m000"
   ],
   "intro": [
@@ -28,10 +32,10 @@
         },
         {
           "t": "text",
-          "v": " Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
+          "v": " Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
         }
       ],
-      "text": "The shape of the whole chain, in one screen. Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
+      "text": "The shape of the whole chain, in one screen. Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
     },
     {
       "kind": "prose",
@@ -71,32 +75,32 @@
             },
             {
               "t": "text",
-              "v": " If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to picking and shipping — "
+              "v": " If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to release and shipping — "
             },
             {
               "t": "strong",
-              "v": "stages 3 and 4 never happen."
+              "v": "stages 3, 4 and 5 never happen."
             },
             {
               "t": "text",
               "v": " If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing."
             }
           ],
-          "text": "Two orders for the same item can take completely different routes, and the difference is decided before anything is created. If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to picking and shipping — stages 3 and 4 never happen. If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing."
+          "text": "Two orders for the same item can take completely different routes, and the difference is decided before anything is created. If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to release and shipping — stages 3, 4 and 5 never happen. If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing."
         },
         {
           "kind": "prose",
           "tokens": [
             {
               "t": "strong",
-              "v": "That branch is the edge marked `SKIPS 3, 4` in section 5"
+              "v": "That branch is the edge marked SKIPS 3, 4, 5 in section 5"
             },
             {
               "t": "text",
               "v": ", and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not."
             }
           ],
-          "text": "That branch is the edge marked `SKIPS 3, 4` in section 5, and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not."
+          "text": "That branch is the edge marked SKIPS 3, 4, 5 in section 5, and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not."
         }
       ]
     },
@@ -167,10 +171,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The demand, and the branch"
+                      "v": "The demand, the branch, and the release to Warehousing"
                     }
                   ],
-                  "text": "The demand, and the branch"
+                  "text": "The demand, the branch, and the release to Warehousing"
                 }
               ]
             },
@@ -466,10 +470,41 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Components received, the item built, the order shipped"
+                      "v": "Components received and the item built"
                     }
                   ],
-                  "text": "Components received, the item built, the order shipped"
+                  "text": "Components received and the item built"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Deliver"
+                    }
+                  ],
+                  "text": "Deliver"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The sales order released, advised, picked, frozen and confirmed"
+                    }
+                  ],
+                  "text": "The sales order released, advised, picked, frozen and confirmed"
                 }
               ]
             }
@@ -490,7 +525,7 @@
             },
             {
               "t": "text",
-              "v": " The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so "
+              "v": " The thirteen numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so "
             },
             {
               "t": "literal",
@@ -509,7 +544,7 @@
               "v": " because the components have to be on hand before the order can consume them."
             }
           ],
-          "text": "A number is a position on the walk. The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so 8 · Warehouse Receipt comes before 9 · Production Orders because the components have to be on hand before the order can consume them."
+          "text": "A number is a position on the walk. The thirteen numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so 8 · Warehouse Receipt comes before 9 · Production Orders because the components have to be on hand before the order can consume them."
         },
         {
           "kind": "prose",
@@ -881,6 +916,116 @@
                 }
               ],
               "text": "Does — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdsls4501m140",
+              "name": "10 · Release Sales Order Lines to Warehousing"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · step"
+            }
+          ],
+          "text": "10 · Release Sales Order Lines to Warehousing (tdsls4501m140) · stage 6 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Release to Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls4100m900",
+                  "name": "Sales Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", opened from "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls4601m200",
+                  "name": "Sales Order Intake Workbench"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+                }
+              ],
+              "text": "Route — no menu entry; the Release to Warehousing tab of Sales Order (tdsls4100m900), opened from Sales Order Intake Workbench (tdsls4601m200), Sales ➔ Orders ➔ Order Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number"
+                }
+              ],
+              "text": "Does — hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Release ➔ Release to Warehousing…"
+                },
+                {
+                  "t": "text",
+                  "v": ", set "
+                },
+                {
+                  "t": "em",
+                  "v": "Upto Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " on or after the line's release date, then "
+                },
+                {
+                  "t": "button",
+                  "label": "RELEASE"
+                }
+              ],
+              "text": "Do - Actions ➔ Release ➔ Release to Warehousing…, set Upto Release Date on or after the line's release date, then RELEASE"
             }
           ]
         },
@@ -1563,15 +1708,16 @@
           "kind": "prose",
           "tokens": [
             {
-              "t": "strong",
-              "v": "10 · Advise, pick and ship"
+              "t": "session",
+              "code": "whinh2100m100",
+              "name": "11 · Warehousing Order"
             },
             {
               "t": "text",
-              "v": " · stage 5 · terminal"
+              "v": " · stage 6 · step"
             }
           ],
-          "text": "10 · Advise, pick and ship · stage 5 · terminal"
+          "text": "11 · Warehousing Order (whinh2100m100) · stage 6 · step"
         },
         {
           "kind": "list",
@@ -1581,14 +1727,250 @@
               "tokens": [
                 {
                   "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; drill in from "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2300m000",
+                  "name": "Warehouse Manager Dashboard"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Manager Dashboard"
+                }
+              ],
+              "text": "Route — no menu entry; drill in from Warehouse Manager Dashboard (whinh2300m000), Warehousing ➔ Manager Dashboard"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
                   "v": "Does"
                 },
                 {
                   "t": "text",
-                  "v": " — take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+                  "v": " — advise the outbound line, so there is stock to pick"
                 }
               ],
-              "text": "Does — take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+              "text": "Does — advise the outbound line, so there is stock to pick"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - on the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar, "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Advice ➔ Generate Advice"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "status",
+                  "v": "Advised"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " both fill"
+                }
+              ],
+              "text": "Do - on the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. Advised and Released both fill"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh4525m100",
+              "name": "12 · Picking List"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · step"
+            }
+          ],
+          "text": "12 · Picking List (whinh4525m100) · stage 6 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Outbound/Inspections ➔ Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — confirm the advised quantity as picked. The line reaches "
+                },
+                {
+                  "t": "status",
+                  "v": "Staged"
+                },
+                {
+                  "t": "text",
+                  "v": " and a shipment is created"
+                }
+              ],
+              "text": "Does — confirm the advised quantity as picked. The line reaches Staged and a shipment is created"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - tick the line, then "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Pick Run"
+                }
+              ],
+              "text": "Do - tick the line, then Actions ➔ Pick Run"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh4630m000",
+              "name": "13 · Shipment"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · terminal"
+            }
+          ],
+          "text": "13 · Shipment (whinh4630m000) · stage 6 · terminal"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; drill in from "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4130m000",
+                  "name": "Shipments"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Shipments ➔ Shipments"
+                }
+              ],
+              "text": "Route — no menu entry; drill in from Shipments (whinh4130m000), Warehousing ➔ Shipments ➔ Shipments"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity"
+                }
+              ],
+              "text": "Does — freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Freeze"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Confirm"
+                },
+                {
+                  "t": "text",
+                  "v": ". Confirming cannot be undone; a correction needs a return shipment"
+                }
+              ],
+              "text": "Do - Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
             }
           ]
         }
@@ -1840,10 +2222,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "SKIPS 3, 4 — YES, and no planned order is generated"
+                      "v": "SKIPS 3, 4, 5 — YES, and no planned order is generated"
                     }
                   ],
-                  "text": "SKIPS 3, 4 — YES, and no planned order is generated"
+                  "text": "SKIPS 3, 4, 5 — YES, and no planned order is generated"
                 }
               ]
             },
@@ -2366,6 +2748,126 @@
                   "text": "—"
                 }
               ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "10"
+                    }
+                  ],
+                  "text": "10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "11"
+                    }
+                  ],
+                  "text": "11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "11"
+                    }
+                  ],
+                  "text": "11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "12"
+                    }
+                  ],
+                  "text": "12"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "12"
+                    }
+                  ],
+                  "text": "12"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "13"
+                    }
+                  ],
+                  "text": "13"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
             }
           ]
         }
@@ -2391,6 +2893,19 @@
                 }
               ],
               "text": "`the source on file` — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "`the source on file`"
+                },
+                {
+                  "t": "text",
+                  "v": ", phases 2 to 5 — the walked source of the four Deliver tiles."
+                }
+              ],
+              "text": "`the source on file`, phases 2 to 5 — the walked source of the four Deliver tiles."
             },
             {
               "tokens": [
@@ -2479,6 +2994,10 @@
       {
         "n": 5,
         "name": "Execute"
+      },
+      {
+        "n": 6,
+        "name": "Deliver"
       }
     ],
     "nodes": [
@@ -2722,6 +3241,115 @@
             }
           ],
           "text": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+        }
+      },
+      {
+        "id": "10",
+        "session": "Release Sales Order Lines to Warehousing",
+        "lane": "Sales",
+        "stage": 6,
+        "kind": "step",
+        "code": "tdsls4501m140",
+        "n": 10,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; the "
+            },
+            {
+              "t": "strong",
+              "v": "Release to Warehousing"
+            },
+            {
+              "t": "text",
+              "v": " tab of "
+            },
+            {
+              "t": "session",
+              "code": "tdsls4100m900",
+              "name": "Sales Order"
+            },
+            {
+              "t": "text",
+              "v": ", opened from "
+            },
+            {
+              "t": "session",
+              "code": "tdsls4601m200",
+              "name": "Sales Order Intake Workbench"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+            }
+          ],
+          "text": "no menu entry; the Release to Warehousing tab of Sales Order (tdsls4100m900), opened from Sales Order Intake Workbench (tdsls4601m200), Sales ➔ Orders ➔ Order Intake Workbench"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number"
+            }
+          ],
+          "text": "hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Actions ➔ Release ➔ Release to Warehousing…"
+              },
+              {
+                "t": "text",
+                "v": ", set "
+              },
+              {
+                "t": "em",
+                "v": "Upto Release Date"
+              },
+              {
+                "t": "text",
+                "v": " on or after the line's release date, then "
+              },
+              {
+                "t": "button",
+                "label": "RELEASE"
+              }
+            ],
+            "text": "Actions ➔ Release ➔ Release to Warehousing…, set Upto Release Date on or after the line's release date, then RELEASE"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Actions ➔ Release ➔ Release to Warehousing…"
+            },
+            {
+              "t": "text",
+              "v": ", set "
+            },
+            {
+              "t": "em",
+              "v": "Upto Release Date"
+            },
+            {
+              "t": "text",
+              "v": " on or after the line's release date, then "
+            },
+            {
+              "t": "button",
+              "label": "RELEASE"
+            }
+          ],
+          "text": "Actions ➔ Release ➔ Release to Warehousing…, set Upto Release Date on or after the line's release date, then RELEASE"
         }
       },
       {
@@ -3176,20 +3804,274 @@
         }
       },
       {
-        "id": "10",
-        "session": "Advise, pick and ship",
+        "id": "11",
+        "session": "Warehousing Order",
         "lane": "Warehousing",
-        "stage": 5,
-        "kind": "terminal",
-        "n": 10,
+        "stage": 6,
+        "kind": "step",
+        "code": "whinh2100m100",
+        "n": 11,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; drill in from "
+            },
+            {
+              "t": "session",
+              "code": "whinh2300m000",
+              "name": "Warehouse Manager Dashboard"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Manager Dashboard"
+            }
+          ],
+          "text": "no menu entry; drill in from Warehouse Manager Dashboard (whinh2300m000), Warehousing ➔ Manager Dashboard"
+        },
         "does": {
           "tokens": [
             {
               "t": "text",
-              "v": "take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+              "v": "advise the outbound line, so there is stock to pick"
             }
           ],
-          "text": "take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+          "text": "advise the outbound line, so there is stock to pick"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "on the "
+              },
+              {
+                "t": "strong",
+                "v": "Outbound Lines"
+              },
+              {
+                "t": "text",
+                "v": " toolbar, "
+              },
+              {
+                "t": "strong",
+                "v": "Actions ➔ Advice ➔ Generate Advice"
+              },
+              {
+                "t": "text",
+                "v": ". "
+              },
+              {
+                "t": "status",
+                "v": "Advised"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "status",
+                "v": "Released"
+              },
+              {
+                "t": "text",
+                "v": " both fill"
+              }
+            ],
+            "text": "on the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. Advised and Released both fill"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "on the "
+            },
+            {
+              "t": "strong",
+              "v": "Outbound Lines"
+            },
+            {
+              "t": "text",
+              "v": " toolbar, "
+            },
+            {
+              "t": "strong",
+              "v": "Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "status",
+              "v": "Advised"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "status",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": " both fill"
+            }
+          ],
+          "text": "on the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. Advised and Released both fill"
+        }
+      },
+      {
+        "id": "12",
+        "session": "Picking List",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "step",
+        "code": "whinh4525m100",
+        "n": 12,
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
+            }
+          ],
+          "text": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "confirm the advised quantity as picked. The line reaches "
+            },
+            {
+              "t": "status",
+              "v": "Staged"
+            },
+            {
+              "t": "text",
+              "v": " and a shipment is created"
+            }
+          ],
+          "text": "confirm the advised quantity as picked. The line reaches Staged and a shipment is created"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "tick the line, then "
+              },
+              {
+                "t": "strong",
+                "v": "Actions ➔ Pick Run"
+              }
+            ],
+            "text": "tick the line, then Actions ➔ Pick Run"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "tick the line, then "
+            },
+            {
+              "t": "strong",
+              "v": "Actions ➔ Pick Run"
+            }
+          ],
+          "text": "tick the line, then Actions ➔ Pick Run"
+        }
+      },
+      {
+        "id": "13",
+        "session": "Shipment",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "terminal",
+        "code": "whinh4630m000",
+        "n": 13,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; drill in from "
+            },
+            {
+              "t": "session",
+              "code": "whinh4130m000",
+              "name": "Shipments"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Shipments ➔ Shipments"
+            }
+          ],
+          "text": "no menu entry; drill in from Shipments (whinh4130m000), Warehousing ➔ Shipments ➔ Shipments"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity"
+            }
+          ],
+          "text": "freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Actions ➔ Freeze"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "strong",
+                "v": "Actions ➔ Confirm"
+              },
+              {
+                "t": "text",
+                "v": ". Confirming cannot be undone; a correction needs a return shipment"
+              }
+            ],
+            "text": "Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Actions ➔ Freeze"
+            },
+            {
+              "t": "text",
+              "v": ", then "
+            },
+            {
+              "t": "strong",
+              "v": "Actions ➔ Confirm"
+            },
+            {
+              "t": "text",
+              "v": ". Confirming cannot be undone; a correction needs a return shipment"
+            }
+          ],
+          "text": "Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
         }
       }
     ],
@@ -3261,7 +4143,8 @@
         "kind": "branch",
         "skips": [
           3,
-          4
+          4,
+          5
         ],
         "label": {
           "tokens": [
@@ -3381,6 +4264,21 @@
       {
         "from": "stock",
         "to": "10",
+        "kind": "flow"
+      },
+      {
+        "from": "10",
+        "to": "11",
+        "kind": "flow"
+      },
+      {
+        "from": "11",
+        "to": "12",
+        "kind": "flow"
+      },
+      {
+        "from": "12",
+        "to": "13",
         "kind": "flow"
       }
     ],

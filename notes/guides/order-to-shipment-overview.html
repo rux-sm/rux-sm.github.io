@@ -1224,10 +1224,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-12</span></span>
             <span class="rux--tag rux--tag--magenta" title="1 open issue recorded against this document"><span class="rux--tag__label">1 open</span></span>
           </div>
-          <p class="notes-prose-measure"><strong>The shape of the whole chain, in one screen.</strong> Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it.</p>
+          <p class="notes-prose-measure"><strong>The shape of the whole chain, in one screen.</strong> Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it.</p>
           <p class="notes-prose-measure"><strong>Level 2 is the detail.</strong> The <a class="rux--link" href="demand-to-shipment-session-map.html">session map</a> starts at sales demand and names every session with its route and action. This page is the shape.</p>
         </div>
-        <figure class="rux--tile notes-dg" style="--dg-cols:6">
+        <figure class="rux--tile notes-dg" style="--dg-cols:7">
           <div class="notes-dg-grid">
             <div class="notes-dg-band" style="grid-column:5;grid-row:1/span 7" aria-hidden="true"></div>
             <div class="notes-dg-head"></div>
@@ -1241,6 +1241,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="notes-dg-stage" style="grid-column:4">3 · Plan</div>
           <div class="notes-dg-stage notes-dg-stage--boundary" style="grid-column:5">4 · Transfer</div>
           <div class="notes-dg-stage" style="grid-column:6">5 · Execute</div>
+          <div class="notes-dg-stage" style="grid-column:7">6 · Deliver</div>
             <div class="notes-dg-lane" style="grid-row:2">Master Data</div>
           <div class="notes-dg-lane" style="grid-row:3">Sales</div>
           <div class="notes-dg-lane" style="grid-row:4">Enterprise Planning</div>
@@ -1347,6 +1348,27 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <div class="notes-dg-zone notes-dg-zone--leaves">
                   <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>10 — YES, and no planned order is generated · 3 — NO</p>
                   </div>
+                  
+                </div>
+              </details>
+            </div>
+            <div class="notes-dg-cell" style="grid-column:7;grid-row:3">
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">10</span><span class="notes-dg-node-name">Release Sales Order Lines to Warehousing</span><code class="notes-dg-node-code">tdsls4501m140</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">10</span><span class="notes-dg-detail-name">Release Sales Order Lines to Warehousing</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tdsls4501m140</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; the <strong>Release to Warehousing</strong> tab of <span class="notes-t-named">Sales Order</span> <span class="notes-t-exact">tdsls4100m900</span>, opened from <span class="notes-t-named">Sales Order Intake Workbench</span> <span class="notes-t-exact">tdsls4601m200</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></p>
+                  </div>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item"><strong>Actions ➔ Release ➔ Release to Warehousing…</strong>, set <em>Upto Release Date</em> on or after the line&#39;s release date, then <span class="notes-t-press">RELEASE</span></li>
+                    </ol>
+                  </div>
+                  </div>
+                  
                   
                 </div>
               </details>
@@ -1572,14 +1594,60 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   
                 </div>
               </details>
-              <details class="notes-dg-node notes-dg-node--terminal notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">10</span><span class="notes-dg-node-name">Advise, pick and ship</span></summary>
+            </div>
+            <div class="notes-dg-cell" style="grid-column:7;grid-row:7">
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">11</span><span class="notes-dg-node-name">Warehousing Order</span><code class="notes-dg-node-code">whinh2100m100</code></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">10</span><span class="notes-dg-detail-name">Advise, pick and ship</span>
-                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">terminal</span></p>
-                  
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">11</span><span class="notes-dg-detail-name">Warehousing Order</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh2100m100</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>take the sales order to a confirmed shipment, with on-hand down by the shipped quantity</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; drill in from <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></p>
+                  </div>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>advise the outbound line, so there is stock to pick</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">on the <strong>Outbound Lines</strong> toolbar, <strong>Actions ➔ Advice ➔ Generate Advice</strong>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill</li>
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">12</span><span class="notes-dg-node-name">Picking List</span><code class="notes-dg-node-code">whinh4525m100</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">12</span><span class="notes-dg-detail-name">Picking List</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh4525m100</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></p>
+                  </div>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>confirm the advised quantity as picked. The line reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> and a shipment is created</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">tick the line, then <strong>Actions ➔ Pick Run</strong></li>
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--terminal notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">13</span><span class="notes-dg-node-name">Shipment</span><code class="notes-dg-node-code">whinh4630m000</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">13</span><span class="notes-dg-detail-name">Shipment</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">terminal</span><code class="notes-dg-detail-code">whinh4630m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></p>
+                  </div>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item"><strong>Actions ➔ Freeze</strong>, then <strong>Actions ➔ Confirm</strong>. Confirming cannot be undone; a correction needs a return shipment</li>
+                    </ol>
+                  </div>
                   </div>
                   
                   
@@ -1605,8 +1673,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </figure>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-1">
           <h2 id="t-1">1. The branch that is the whole point</h2>
-          <p class="notes-prose-measure"><strong>Two orders for the same item can take completely different routes, and the difference is decided before anything is created.</strong> If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to picking and shipping — <strong>stages 3 and 4 never happen.</strong> If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing.</p>
-          <p class="notes-prose-measure"><strong>That branch is the edge marked `SKIPS 3, 4` in section 5</strong>, and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not.</p>
+          <p class="notes-prose-measure"><strong>Two orders for the same item can take completely different routes, and the difference is decided before anything is created.</strong> If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to release and shipping — <strong>stages 3, 4 and 5 never happen.</strong> If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing.</p>
+          <p class="notes-prose-measure"><strong>That branch is the edge marked SKIPS 3, 4, 5 in section 5</strong>, and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not.</p>
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-2">
           <h2 id="t-2">2. Lanes</h2>
@@ -1616,7 +1684,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Lane</div></th><th scope="col"><div class="rux--table-header-label">Carries</div></th></tr></thead>
             <tbody>
           <tr><td>1</td><td>Master Data</td><td>What must exist before any of it runs</td></tr>
-          <tr><td>2</td><td>Sales</td><td>The demand, and the branch</td></tr>
+          <tr><td>2</td><td>Sales</td><td>The demand, the branch, and the release to Warehousing</td></tr>
           <tr><td>3</td><td>Enterprise Planning</td><td>Proposals, and the two gates that decide whether there are any</td></tr>
           <tr><td>4</td><td>Procurement</td><td>The purchase order the transfer created</td></tr>
           <tr><td>5</td><td>Manufacturing</td><td>The production order the transfer created</td></tr>
@@ -1637,7 +1705,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td>2</td><td>Demand</td><td>A sales order exists, and the branch is decided</td></tr>
           <tr><td>3</td><td>Plan</td><td>MRP nets and explodes; proposals appear</td></tr>
           <tr><td>4</td><td><span class="notes-t-named">Transfer</span></td><td><span class="notes-t-named">The boundary.</span> Proposals become real orders. Planning ends here</td></tr>
-          <tr><td>5</td><td>Execute</td><td>Components received, the item built, the order shipped</td></tr>
+          <tr><td>5</td><td>Execute</td><td>Components received and the item built</td></tr>
+          <tr><td>6</td><td>Deliver</td><td>The sales order released, advised, picked, frozen and confirmed</td></tr>
             </tbody>
           </table>
         </div>
@@ -1645,7 +1714,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-4">
           <h2 id="t-4">4. Nodes</h2>
-          <p class="notes-prose-measure"><strong>A number is a position on the walk.</strong> The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so <span class="notes-t-exact">8 · Warehouse Receipt</span> comes before <span class="notes-t-exact">9 · Production Orders</span> because the components have to be on hand before the order can consume them.</p>
+          <p class="notes-prose-measure"><strong>A number is a position on the walk.</strong> The thirteen numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so <span class="notes-t-exact">8 · Warehouse Receipt</span> comes before <span class="notes-t-exact">9 · Production Orders</span> because the components have to be on hand before the order can consume them.</p>
           <p class="notes-prose-measure"><strong>Nine tiles carry no number, for three different reasons.</strong> Four are setup: what must already be true before the walk starts, and they reach the walk by <span class="notes-t-exact">feed</span> rather than by <span class="notes-t-exact">flow</span>. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it.</p>
           <h3>4.1 Master Data</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">items · Items and groups</span> <span class="notes-t-exact">tcibd0501m100</span> · stage 1 · step</p>
@@ -1678,6 +1747,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>2 · Does on-hand cover it?</strong> · stage 2 · decision</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</li>
+        </ul>
+          <p class="notes-prose-measure"><span class="notes-t-named">10 · Release Sales Order Lines to Warehousing</span> <span class="notes-t-exact">tdsls4501m140</span> · stage 6 · step</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Route</strong> — no menu entry; the <strong>Release to Warehousing</strong> tab of <span class="notes-t-named">Sales Order</span> <span class="notes-t-exact">tdsls4100m900</span>, opened from <span class="notes-t-named">Sales Order Intake Workbench</span> <span class="notes-t-exact">tdsls4601m200</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></li>
+          <li class="rux--list__item"><strong>Does</strong> — hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number</li>
+          <li class="rux--list__item"><strong>Do</strong> - <strong>Actions ➔ Release ➔ Release to Warehousing…</strong>, set <em>Upto Release Date</em> on or after the line&#39;s release date, then <span class="notes-t-press">RELEASE</span></li>
         </ul>
           <h3>4.3 Enterprise Planning</h3>
           <p class="notes-prose-measure"><strong>3 · Planning data exists</strong> · stage 3 · gate</p>
@@ -1747,9 +1822,23 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — hold the built item, which is only now sellable</li>
         </ul>
-          <p class="notes-prose-measure"><strong>10 · Advise, pick and ship</strong> · stage 5 · terminal</p>
+          <p class="notes-prose-measure"><span class="notes-t-named">11 · Warehousing Order</span> <span class="notes-t-exact">whinh2100m100</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Does</strong> — take the sales order to a confirmed shipment, with on-hand down by the shipped quantity</li>
+          <li class="rux--list__item"><strong>Route</strong> — no menu entry; drill in from <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></li>
+          <li class="rux--list__item"><strong>Does</strong> — advise the outbound line, so there is stock to pick</li>
+          <li class="rux--list__item"><strong>Do</strong> - on the <strong>Outbound Lines</strong> toolbar, <strong>Actions ➔ Advice ➔ Generate Advice</strong>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill</li>
+        </ul>
+          <p class="notes-prose-measure"><span class="notes-t-named">12 · Picking List</span> <span class="notes-t-exact">whinh4525m100</span> · stage 6 · step</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></li>
+          <li class="rux--list__item"><strong>Does</strong> — confirm the advised quantity as picked. The line reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> and a shipment is created</li>
+          <li class="rux--list__item"><strong>Do</strong> - tick the line, then <strong>Actions ➔ Pick Run</strong></li>
+        </ul>
+          <p class="notes-prose-measure"><span class="notes-t-named">13 · Shipment</span> <span class="notes-t-exact">whinh4630m000</span> · stage 6 · terminal</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Route</strong> — no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
+          <li class="rux--list__item"><strong>Does</strong> — freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity</li>
+          <li class="rux--list__item"><strong>Do</strong> - <strong>Actions ➔ Freeze</strong>, then <strong>Actions ➔ Confirm</strong>. Confirming cannot be undone; a correction needs a return shipment</li>
         </ul>
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-5">
@@ -1764,7 +1853,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td>cluster</td><td>3</td><td>feed</td><td>what the gate looks for</td></tr>
           <tr><td>buyfrom</td><td>6</td><td>feed</td><td>without it the purchase half refuses</td></tr>
           <tr><td>1</td><td>2</td><td>flow</td><td>—</td></tr>
-          <tr><td>2</td><td>10</td><td>branch</td><td>SKIPS 3, 4 — YES, and no planned order is generated</td></tr>
+          <tr><td>2</td><td>10</td><td>branch</td><td>SKIPS 3, 4, 5 — YES, and no planned order is generated</td></tr>
           <tr><td>2</td><td>3</td><td>branch</td><td>NO</td></tr>
           <tr><td>3</td><td>4</td><td>flow</td><td>—</td></tr>
           <tr><td>4</td><td>5</td><td>flow</td><td>—</td></tr>
@@ -1778,6 +1867,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td>8</td><td>9</td><td>feed</td><td>components on hand first</td></tr>
           <tr><td>9</td><td>stock</td><td>flow</td><td>—</td></tr>
           <tr><td>stock</td><td>10</td><td>flow</td><td>—</td></tr>
+          <tr><td>10</td><td>11</td><td>flow</td><td>—</td></tr>
+          <tr><td>11</td><td>12</td><td>flow</td><td>—</td></tr>
+          <tr><td>12</td><td>13</td><td>flow</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
@@ -1787,11 +1879,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h2 id="t-6">6. Sources</h2>
           <ol class="rux--list--ordered">
           <li class="rux--list__item"><strong>`the source on file`</strong> — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there.</li>
+          <li class="rux--list__item"><strong>`the source on file`</strong>, phases 2 to 5 — the walked source of the four Deliver tiles.</li>
           <li class="rux--list__item"><strong>The `the source on file` file for each code in `sources:`</strong> — names, routes and the <span class="notes-t-exact">reached:</span> lines for the drill-ins.</li>
           <li class="rux--list__item"><strong>`the source on file`</strong> — level 2, where the same chain is named session by session.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 4f4da62 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 7caa756 · contract 8</p>
       </div>
     </div>
   </div>

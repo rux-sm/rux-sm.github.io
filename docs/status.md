@@ -59,6 +59,13 @@ schema items above wait on it.
 
 ## The consolidation itself
 
-- Stage 2 is assembled on branch `codex/consolidate`; stage 3, the cutover, is
-  not started. The first real Atlas-to-Notes-to-DS task under the one-session
-  agreement has not happened yet.
+- Done 2026-09-12: one repository, one deploy, the three project sites off,
+  every sampled live route byte-identical to `main`, the old repositories'
+  workflows disabled. Archiving those three repositories is the one step
+  left, rux's to run. The first real Atlas-to-Notes-to-DS task under the
+  one-session agreement has not happened yet; the next one is the proof.
+- Not yet retired, each its own small diff when wanted: rux-ds's
+  browser-reading ledger (`portal.html` stamps, `tools/lib/staleness.mjs`,
+  `check-gates`), its `CONTROL_FILES` and `check-controls.mjs`, and the
+  scaffold `tools/new-project.sh` with `app-skeleton/` that `check-parity`
+  reads.

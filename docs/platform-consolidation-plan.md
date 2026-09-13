@@ -2,9 +2,14 @@
 
 Date: 2026-09-12
 
-Status: finalized implementation plan following the user's decisions. Execution
-has not started. This document changes no operating policy, check, repository
-setting, deployment, or database.
+Status: executed 2026-09-12. Stage 1 landed on `main` in all six repositories;
+stage 2 was assembled on `codex/consolidate` and proven from a fresh clone;
+stage 3 cut over the same evening — the hub deployed from `main`, the three
+project sites were turned off, every sampled live route matched `main` byte
+for byte, the old workflows were disabled; archiving the old repositories is
+the one step still to run.
+`docs/migration-start.md` is the state before; `docs/status.md` names what is
+deliberately left for later.
 
 ## Goal and decisions
 

@@ -63,8 +63,11 @@ categories (the table above). They are drawn by independent signals:
 |---|---|---|
 | **border** | on the route or beside it | solid · dashed (Setup, Inquiry) |
 | **fill** | a screen you can open | filled when the node has a session `code` · outline when it has none |
-| **colour** | which category | grey Step and Setup · blue Inquiry · green Result · yellow Checkpoint |
+| **colour** | which category | grey Step · magenta Setup · blue Inquiry · green Result · yellow Checkpoint |
 | **name style** | act on it, or take it in | upright (Step, Setup) · italic (Inquiry, Result, Checkpoint) |
+
+Setup is magenta rather than purple, because purple and the Inquiry blue merge
+under red-green colour blindness and the two share the dashed border.
 
 Italic means the same thing wherever it appears: a state you take in rather
 than an action you perform. Checkpoint keeps its yellow wherever it stands,

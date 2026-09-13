@@ -1574,6 +1574,11 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-dg-node.notes-dg-cat--config,
 .notes-dg-node.notes-dg-cat--info { border-style: dashed; }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+/* Setup is magenta, not purple: purple and the Inquiry blue merge under
+   red-green colour blindness, and the two share the dashed border. */
+.notes-dg-node.notes-dg-cat--config { --dg-accent: var(--rux-tag-color-magenta, #9f1853); }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-code { color: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
 .notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
 .notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
@@ -1644,6 +1649,11 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
 .notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
 .notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--config:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--config {
+  background: var(--rux-tag-background-magenta, #ffd6e8); }
+.notes-dg-cat--config:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--config:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--config .notes-dg-node-name { color: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
 .notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,

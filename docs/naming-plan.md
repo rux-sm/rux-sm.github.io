@@ -26,8 +26,9 @@ carries an owner prefix, because the GitHub account already is one.
   GitHub serves that address only from a repository with that name. Atlas is
   renamed `atlas`.
 - **Names the computer reads are lowercase,** with hyphens: folders, files,
-  addresses and prefixes. `README.md`, `AGENTS.md`, `CLAUDE.md` and `LICENSE`
-  stay uppercase, because tools look for those exact names.
+  addresses and prefixes. A name a tool or a convention fixes stays as it
+  expects: `README.md`, `AGENTS.md`, `CLAUDE.md`, `LICENSE`, `NOTICE`,
+  `SKILL.md`, `ORDER` and `PIN`.
 - **Names people read are sentence case:** Home, Design, Notes, Scheduler.
 - **Page titles** put the page first and the app second, as `Page — App`. An
   app's front page is just the app name, and the site's front page is `Home`.

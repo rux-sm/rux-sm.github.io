@@ -10,7 +10,7 @@ A trip can carry several POs and several invoices, edited in either app. The
 scheduler and rux-ui both stay live and in use throughout, so every step leaves
 both working. Today the scheduler's Billing tab shows Purchase order and
 Invoice as lists capped at one row by `LIST_CAP` in `scheduler/data.js`, and
-rux-ui edits one PO and one invoice on the `trips` row.
+rux-ui edits PO and invoice lists and writes them by id.
 
 ## Decisions
 
@@ -67,21 +67,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux-ui load: `fetchTrips` in `js/data/trip-db.js` loads both tables beside
-      `trip_payments`, grouped per trip and sorted by `position`.
-- [ ] rux-ui editor: PO and Invoice lists in their billing steps in `index.html`
-      and `js/panels/trip-panel.js`. The PO coverage output reads the sum, and
-      each step's switch is on when it has rows.
-- [ ] rux-ui save: after the `trips` upsert, write both lists by `id`; the
-      `trips` payload carries the mirror columns; `trip-history-db.js` records
-      a list change the way it records payments.
-- [ ] rux-ui readers: `trip-bar.js` and `print-schedule.js` show the first PO or
-      invoice and a count; the status ladder, finder, notifications and tasks
-      keep reading the mirror columns.
-- [ ] rux-ui realtime: add both tables to the `scheduler-trips-db` channel.
-- [ ] rux-ui verify: tests for the sum and the row diff, `npm test`,
-      `tools/check-cache-busters.sh`, every `?v=` bumped, the editor opened on
-      a trip with a PO without saving; push, then Force refresh all users.
 - [ ] Scheduler read: add `trip_pos(id,position,ref,amount,date)` and
       `trip_invoices(id,position,number,amount,date)` beside `trip_payments` in
       the embedded select, loaded by `position` with their `id`.
@@ -93,6 +78,8 @@ None open.
 - [ ] Scheduler verify: `npm run check`; two POs of $10,000 against a $25,000
       balance read `$5,000 not authorized`, and a third of $5,000 reads
       `Covers the balance`, without saving.
+- [ ] rux uses rux-ui's Settings, "Force refresh all users", at least ten
+      minutes after rux-ui's deploy, so no open tab keeps the old editor.
 - [ ] Both apps, on rux's real trip: two POs added in the scheduler survive a
       save in rux-ui; one deleted in rux-ui is gone in the scheduler after a
       reload; `po_amount` equals the sum and `po_ref` the first row.

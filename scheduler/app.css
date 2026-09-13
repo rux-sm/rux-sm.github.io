@@ -782,6 +782,9 @@ button.scheduler-row-head__num {
 .scheduler-bar__dest { font-weight: 600; }
 .scheduler-bar__ref, .scheduler-bar__time { font-variant-numeric: tabular-nums; }
 .scheduler-bar__ref { opacity: .75; flex: none; }
+/* The pencil on each bar of the trip open in the editor. That trip is locked on
+   the board, and the mark says why its bars do not drag. */
+.scheduler-bar__editing { vertical-align: -0.125rem; margin-inline-start: var(--rux-spacing-02); }
 .scheduler-bar__client, .scheduler-bar__reqs { opacity: .85; }
 
 /* A double booking: a strip over the last row, in the error tokens. */

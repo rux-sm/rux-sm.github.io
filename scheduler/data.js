@@ -356,7 +356,7 @@
     'id', 'destination', 'customer', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
-    'req_sleeper', 'req_ada', 'req_56pax', 'notes',
+    'req_sleeper', 'req_ada', 'req_56pax', 'notes', 'updated_at',
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
     // THE TIMES ARE HERE, NOT ON THE TRIP. `trips.departure_time`,
     // `return_time` and `spot_time` are null on all 743 rows -- counted
@@ -1065,6 +1065,8 @@
     if (!bar.dataset.assignmentId) return;   // an unfilled slot owns no row to move
     bar.addEventListener('pointerdown', down => {
       if (down.button !== 0) return;
+      // The trip open in the editor is locked on the board.
+      if (isEditorTrip(bar)) return;
       const touch = down.pointerType === 'touch';
       const startX = down.clientX, startY = down.clientY;
       const start = +bar.dataset.start, span = +bar.dataset.span;
@@ -2702,7 +2704,7 @@
       trip.req_56pax ? '56 pax' : null,
     ].filter(Boolean).join(', ');
 
-    editing = { id: trip.id, creating, before: {
+    editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       trip_type: trip.trip_type ?? null,
@@ -4327,12 +4329,56 @@
       && (bar.dataset.leg || 'outbound') === ref.leg && (bar.dataset.assignmentId || null) === ref.assignmentId;
   }
 
+  // Any bar of the trip open in the editor. Those are locked on the board.
+  function isEditorTrip(bar) {
+    return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
+  }
+
   function syncSelection() {
     const bar = selectedBar();
     const hide = !bar?.dataset.tripId || isEditorBar(bar);
     for (const b of openTripBtns) b.hidden = hide;
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
+    // A pencil on each locked bar says why it does not drag.
+    for (const b of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
+      const mark = b.querySelector('.scheduler-bar__editing');
+      if (!isEditorTrip(b)) { mark?.remove(); continue; }
+      if (mark) continue;
+      const icon = svgUse('#i-edit', '12', '0 0 32 32');
+      icon.setAttribute('class', 'scheduler-bar__editing');
+      b.querySelector('.scheduler-bar__ref')?.appendChild(icon);
+    }
+  }
+
+  /* THE TRIP CHANGED UNDER THE EDITOR. Reload trip drops the editor's changes
+     and opens the trip as it is now; Save anyway saves over it and then runs
+     what the save was for; closing the box keeps editing. */
+  const conflictModal = document.getElementById('scheduler-conflict-modal');
+  let conflictAfter = null;
+  document.getElementById('scheduler-conflict-save')?.addEventListener('click', async () => {
+    const next = conflictAfter;
+    conflictAfter = null;
+    window.Rux?.modal?.close?.(conflictModal);
+    if (await saveEditor(next, true)) next?.();
+  });
+  document.getElementById('scheduler-conflict-reload')?.addEventListener('click', async () => {
+    conflictAfter = null;
+    window.Rux?.modal?.close?.(conflictModal);
+    await reloadEditorTrip();
+  });
+  conflictModal?.addEventListener('rux:modal-closed', () => { conflictAfter = null; });
+
+  // Opens the editor's trip afresh on the week of its leg, dropping unsaved changes.
+  async function reloadEditorTrip() {
+    const { ref, trip } = panelArgs || {};
+    if (!ref || !trip) return;
+    const from = legsOf(trip).find(l => l.leg === ref.leg)?.from ?? trip.start_date;
+    if (from) cursor = mondayOf(parseISO(from));
+    await show();
+    const bar = findBar(ref);
+    if (bar) { selectBar(bar); openPanel(bar); }
+    else { closePanel(false); toast('info', 'That trip is not on its week any more'); }
   }
 
   function selectBar(bar) {
@@ -4381,7 +4427,7 @@
     const next = afterPrompt;
     afterPrompt = null;
     window.Rux?.modal?.close?.(unsavedModal);
-    if (await saveEditor()) next?.();
+    if (await saveEditor(next)) next?.();
   });
   unsavedModal?.addEventListener('rux:modal-closed', () => { afterPrompt = null; });
 
@@ -4632,18 +4678,36 @@
 
   // Save closes the editor once the week has been read back.
   panelSave?.addEventListener('click', async () => {
-    if (await saveEditor()) closePanel(false);
+    const after = () => closePanel(false);
+    if (await saveEditor(after)) after();
   });
 
   /* SAVE AS A STEP OTHER ACTIONS CAN WAIT ON. True once everything is written;
-     false when there is nothing to write or a write fails, which leaves the
-     editor as it was with the error in a toast. Work is anything `changed`
-     sees, so a time, contact or payment edit alone saves too. */
-  async function saveEditor() {
+     false when there is nothing to write, a write fails, or the trip changed
+     under the editor, which leaves the editor as it was. Work is anything
+     `changed` sees, so a time, contact or payment edit alone saves too.
+
+     THE TRIP IS READ BACK FIRST. When its `updated_at` is not the one the
+     editor opened with, someone saved it in between, and the conflict box asks
+     before replacing that, holding `after` to run if the save goes through.
+     `force` is the box's Save anyway. A failed read does not block the save,
+     which reports its own errors. */
+  async function saveEditor(after, force = false) {
     if (!editing || (!editing.creating && !changed())) return false;
     const patch = patchOf() || {};
     const id = editing.id;
     const creating = editing.creating;
+    if (!creating && !force && editing.updatedAt) {
+      let now = null;
+      try {
+        ({ data: now } = await withTimeout(client.from('trips').select('updated_at').eq('id', id).single().then(r => r)));
+      } catch { now = null; }
+      if (now?.updated_at && Date.parse(now.updated_at) !== Date.parse(editing.updatedAt)) {
+        conflictAfter = after ?? null;
+        window.Rux?.modal?.open?.(conflictModal);
+        return false;
+      }
+    }
     panelSave.disabled = true;
     toast('info', creating ? 'Creating the trip…' : 'Saving the trip…');
     try {
@@ -4923,7 +4987,7 @@
     if (touchDragging) return;
     barMenuFor = bar;
     document.getElementById('scheduler-bar-menu-unassign').hidden =
-      !bar.dataset.assignmentId || !bar.dataset.busId;
+      !bar.dataset.assignmentId || !bar.dataset.busId || isEditorTrip(bar);
     popMenuAt(barMenu, e);
   });
 

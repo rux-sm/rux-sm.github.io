@@ -1203,6 +1203,29 @@
     </div>
   </div>
 
+  <!-- Asked when Save finds the trip was saved by someone else after the editor
+       opened it. data.js reloads the trip or saves anyway; closing the box keeps
+       editing. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-conflict-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-conflict-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-conflict-h">This trip changed since you opened it</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Keep editing" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>Someone saved it after you opened it. Saving now can replace what they changed.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-conflict-reload">Reload trip</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-conflict-save">Save anyway</button>
+      </div>
+    </div>
+  </div>
+
   <!-- THE TRIP PANEL. Carbon's own side panel; no Design module claims it, so
        data.js opens and closes it and says so in its own comment. Slide-in
        rather than the default: it drops the shadow, because the page makes

@@ -57,6 +57,10 @@ schema items above wait on it.
 - The session-code count, scope agreed first, then the number.
 - Cross-guide references arriving in two shapes; the new figures.
 
+## Naming
+
+- A clean naming system across apps, repositories and atlas, under review: `docs/naming-plan.md`. Applied in four stages once agreed; the file goes when the last stage lands.
+
 ## The consolidation itself
 
 - Done 2026-09-12: one repository, one deploy, the three project sites off,

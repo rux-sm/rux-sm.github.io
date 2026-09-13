@@ -20,11 +20,11 @@ NOW                                          CLEAN
 │   ├── index.html   "Rux Home"              │   ├── index.html   "Rux"
 │   ├── account/     "Account settings —     │   ├── account/     "Account — Rux"
 │   │                 Rux Home"              │   │
-│   ├── rux-ds/      /rux-ds/                │   ├── design/      /design/
-│   │   ├── index.html "rux-ds — home"       │   │   ├── index.html "Design"
-│   │   ├── builder.html "rux-ds — builder"  │   │   ├── builder.html "Builder — Design"
-│   │   ├── kitchen-sink.html                │   │   ├── kitchen-sink.html "Kitchen sink — Design"
-│   │   ├── theme-creator.html               │   │   ├── theme-creator.html "Theme creator — Design"
+│   ├── rux-ds/      /rux-ds/                │   ├── ui/          /ui/
+│   │   ├── index.html "rux-ds — home"       │   │   ├── index.html "Rux UI"
+│   │   ├── builder.html "rux-ds — builder"  │   │   ├── builder.html "Builder — Rux UI"
+│   │   ├── kitchen-sink.html                │   │   ├── kitchen-sink.html "Kitchen sink — Rux UI"
+│   │   ├── theme-creator.html               │   │   ├── theme-creator.html "Theme creator — Rux UI"
 │   │   └── css/rux.css  classes rux--*      │   │   └── css/rux.css  classes rux--*   (unchanged)
 │   ├── rux-scheduler/  /rux-scheduler/      │   ├── scheduler/   /scheduler/
 │   │   ├── index.html "Scheduler"           │   │   ├── index.html "Scheduler"
@@ -39,7 +39,7 @@ NOW                                          CLEAN
 │   │   └── classes ln-*                     │   │   └── classes notes-*
 │   ├── docs/  tools/  AGENTS.md             │   ├── docs/  tools/  AGENTS.md  (unchanged)
 │   └── switcher.json  Home · LN Notes ·     │   └── switcher.json  Home · Notes ·
-│                      Scheduler · Design    │                      Scheduler · Design
+│                      Scheduler · Design    │                      Scheduler · UI
 │                      System                │
 ├── rux-ln-atlas/                            ├── atlas/
 │   ├── _inbox/  _standards/                 │   ├── inbox/  standards/
@@ -47,7 +47,7 @@ NOW                                          CLEAN
 │   ├── exercises/HOMEWORK-production-...md  │   ├── exercises/EX_production-...md
 │   └── tests/RUN-SHEET-order-quantities.md  │   └── tests/RS_order-quantities.md
 ├── rux-backend/                             ├── backend/
-├── rux-ui/            (old app)             ├── rux-ui/            (archived, untouched)
+├── rux-ui/            (old app)             ├── trips-legacy/      (the old app, renamed to free the name)
 ├── CLAUDE.md  rux.code-workspace            ├── CLAUDE.md  rux.code-workspace
 ~/claude-config/                             ~/dotfiles/
 ```
@@ -57,7 +57,7 @@ NOW                                          CLEAN
 | App word | Folder / URL | Title suffix | Class prefix | Commit scope |
 | :--- | :--- | :--- | :--- | :--- |
 | Rux | `/` | `— Rux` | `rux--` | `site` |
-| Design | `/design/` | `— Design` | `design-` (the DS itself stays `rux--`) | `design` |
+| UI (Rux UI) | `/ui/` | `— Rux UI` | `rux--` | `ui` |
 | Scheduler | `/scheduler/` | `— Scheduler` | `scheduler-` | `scheduler` |
 | Notes | `/notes/` | `— Notes` | `notes-` | `notes` |
 | Atlas | `../atlas` | | | `atlas` |
@@ -89,11 +89,18 @@ NOW                                          CLEAN
 ## Unchanged on purpose
 
 The site repository's name. `rux--` classes and `rux.css`. The design
-system's page file names. `docs/` and `tools/`. The old rux-ui app.
+system's page file names. `docs/` and `tools/`. The old trips app's contents.
 
 ## Open questions
 
-- "Design" or "Design System" as the display name; `/design/` or `/ds/`.
+- The design system's name. Discussed 2026-09-12: it is Carbon underneath
+  today and meant to diverge into its own system, so it is named as a brand,
+  not a category. **Recommended: Rux UI** — the original name, matching the
+  `rux--` prefix and `rux.css`. Word `ui`, folder `/ui/`, shown as "UI" in the
+  switcher, titles `Page — Rux UI`, scope `ui`; "design system" becomes the
+  description. Collision: the old trips app is also `rux-ui` on GitHub and at
+  `~/Developer/rux-ui`; rename it to `trips-legacy` to free the name.
+  Alternatives considered and set aside: Design, Design System, DS, Kit.
 - "Notes" alone, or keep "LN" somewhere for when a second notes app exists.
 - Whether old URLs get a redirect stub or are simply gone.
 - Whether `claude-config` becomes `dotfiles` or stays.

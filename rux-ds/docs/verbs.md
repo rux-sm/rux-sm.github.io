@@ -22,7 +22,7 @@ not authored by rux alone. The root `AGENTS.md` is the policy.
 
 | | |
 |---|---|
-| How | Skill `rux-ds-page`. Copy the nearest `rux-ds/templates/*.html`; never start from scratch or from a guess. Markup is diffed against `docs/carbon-*.json` (`node tools/diff-fragment.mjs <name>` in `rux-ds/`). |
+| How | Skill `rux-ds-page`. Copy the nearest `rux-ds/templates/*.html`; never start from scratch or from a guess. Markup is diffed against `data/carbon-*.json` (`node tools/diff-fragment.mjs <name>` in `rux-ds/`). |
 | Serve | `npm run serve` → `http://localhost:8640/rux-ds/` — every app on one origin, the switcher filled from the hub's list. |
 | Check | `npm run check -- --full` at the root, or `npm run verify` in `rux-ds/`. Then the browser gates, below. |
 | Look | The page, in every theme, from the account panel. A template's `BEHAVIOUR:` comment says what was verified and what was not. |

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "generated": "2026-09-02",
-    "from": "carbon-website/src/data/nav-items.yaml, carbon-website/src/pages/components/, and docs/carbon-*.json",
+    "from": "carbon-website/src/data/nav-items.yaml, carbon-website/src/pages/components/, and data/carbon-*.json",
     "pagesInNav": 42,
     "note": "Generated where the quarry is and committed, because carbon-website/ is gitignored and no gate reads it. Re-run tools/build-component-docs.mjs after a carbon-website pull."
   },

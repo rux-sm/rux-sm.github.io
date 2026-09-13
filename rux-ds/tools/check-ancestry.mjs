@@ -68,10 +68,10 @@ import { markupFiles } from './lib/sources.mjs';
 import { owner, compiled } from './lib/ownership.mjs';
 
 const REF_PATHS = [
-  'docs/carbon-react-dom.json',
-  'docs/carbon-ibm-products-dom.json',
-  'docs/carbon-react-states.json',
-  'docs/carbon-ibm-products-states.json',
+  'data/carbon-react-dom.json',
+  'data/carbon-ibm-products-dom.json',
+  'data/carbon-react-states.json',
+  'data/carbon-ibm-products-states.json',
 ];
 const PREFIX = /^(?:cds|c4p)--/;
 const CHROME = /^(layout|layout-constraint--.*|sb-.*)$/;

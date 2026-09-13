@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //
-// Write docs/token-values.json: every --rux-* value css/rux.css DECLARES, keyed
+// Write data/token-values.json: every --rux-* value css/rux.css DECLARES, keyed
 // by the context that declares it.
 //
 // WHY THIS GATE EXISTS AND WHY IT IS THE ONE MOST LIKELY TO BE SKIPPED. Every
@@ -39,7 +39,7 @@
 import fs from 'node:fs';
 import { extract, SRC } from './lib/token-values.mjs';
 
-const OUT = process.argv[2] ?? 'docs/token-values.json';
+const OUT = process.argv[2] ?? 'data/token-values.json';
 const { values, declarations, duplicates } = extract();
 
 const out = {

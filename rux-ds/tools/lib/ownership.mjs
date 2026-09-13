@@ -8,7 +8,7 @@
 // is where it lives now, because check-classes needs the same table and a
 // second copy of it is a second thing to forget.
 //
-// The component universe comes from docs/inventory.json rather than from
+// The component universe comes from data/inventory.json rather than from
 // node_modules, so the gates read a tracked file and do not depend on an
 // install having happened.
 //
@@ -45,7 +45,7 @@ export const ALIAS = {
 
 export function stems(name) { return ALIAS[name] ?? [name]; }
 
-const inv = JSON.parse(readFileSync('docs/inventory.json', 'utf8'));
+const inv = JSON.parse(readFileSync('data/inventory.json', 'utf8'));
 
 // Longest stem first, so `list-box` claims `rux--list-box__field` before `list`
 // can, and `data-table` claims `rux--data-table--zebra` before `table`.

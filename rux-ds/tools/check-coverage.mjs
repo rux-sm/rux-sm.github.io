@@ -22,7 +22,7 @@
 // WHY THIS RATCHETS RATHER THAN SETTING A THRESHOLD. A percentage floor high enough
 // to mean anything would be red today with no action available, which is the failure
 // this file already warns about for stripped components. So the baseline is the
-// coverage actually achieved, recorded in docs/coverage.json, and the gate fails when
+// coverage actually achieved, recorded in data/coverage.json, and the gate fails when
 // a component exercises FEWER classes than it did — never for standing still. Raising
 // a number is then a deliberate act (`--update`), and it can only go up.
 //
@@ -31,9 +31,9 @@ import { join, extname } from 'node:path';
 import { stems, compiled, classNames } from './lib/ownership.mjs';
 import { pageFiles } from './lib/sources.mjs';
 
-const inv = JSON.parse(readFileSync('docs/inventory.json', 'utf8'));
+const inv = JSON.parse(readFileSync('data/inventory.json', 'utf8'));
 const ROOTS = pageFiles();
-const BASELINE = 'docs/coverage.json';
+const BASELINE = 'data/coverage.json';
 
 // The fluid-* components define no stem of their own — each is a `--fluid`
 // modifier on a base component. Ownership for them is an exact class, not a prefix.

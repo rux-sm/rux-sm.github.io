@@ -220,7 +220,7 @@ gutter. Nothing is red.
 
 `templates/dashboard-page.html` carries a four-tile metric row, but it is
 fixed-width. No template or sink fragment shows one that reflows; the source for
-that shape is `elements-grid--subgrid` in `docs/carbon-react-dom.json`.
+that shape is `elements-grid--subgrid` in `data/carbon-react-dom.json`.
 
 ### 3.13 Pagination silently drops half its controls below 42rem
 
@@ -267,7 +267,7 @@ is not here.
 data. Website guidance is under a different licence. Record what it establishes
 and cite it; do not paste paragraphs.
 
-**It does not replace the captures.** For *markup*, `docs/carbon-*.json` is the
+**It does not replace the captures.** For *markup*, `data/carbon-*.json` is the
 reference, matching the compiled version and needing no network;
 `node tools/diff-fragment.mjs <name>` compares against it. The website says what
 a pattern should do; the captures say what the markup is.

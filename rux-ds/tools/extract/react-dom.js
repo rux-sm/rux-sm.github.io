@@ -26,7 +26,7 @@
 // carbon-react-states.json. Both files are check-tags references.
 //
 // A THIRD MODE, 'spacing', answers what the other two cannot. The tree records
-// structure and drops everything else on purpose, so `docs/carbon-*.json` says
+// structure and drops everything else on purpose, so `data/carbon-*.json` says
 // which classes Carbon puts where and NOTHING about the space between them. That
 // gap has cost this project real defects: a page whose components sat flush
 // because Carbon zeroes their margins by design, and a Stack used as a row that

@@ -47,8 +47,8 @@ rewrites the committed stylesheet from the old Carbon and still exits 0.
 | `npm run build` | `src/app.scss` → `css/rux.css` + `.min.css`, verifies zero `cds` |
 | `npm run sink` | assembles `sink/*.html` → `kitchen-sink.html` |
 | `npm run icons` | quarries `assets/icons.svg` from `@carbon/icons` |
-| `npm run inventory` | per-component classes and size → `docs/inventory.json` |
-| `tools/extract/` | quarries Carbon's rendered markup → `docs/carbon-co-classes.json`, `docs/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `docs/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
+| `npm run inventory` | per-component classes and size → `data/inventory.json` |
+| `tools/extract/` | quarries Carbon's rendered markup → `data/carbon-co-classes.json`, `data/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `data/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
 | `tools/check-icons.mjs --unused` | the sprite's symbols nothing in the shipped sink references; `--deferred` is the ones `sink/deferred/` would need back |
 | `tools/check-provenance.mjs --inferred` | the fragments whose markup was never diffed against a reference |
 | `tools/diff-fragment.mjs <name> --omissions` | where a fragment's nesting disagrees with Carbon, and what Carbon renders that it omits |
@@ -67,7 +67,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Themes | 4 — white, g10, g90, g100 — plus `geist`, `linear`, `ant-dark` and `spotify`, token override blocks in `css/rux-theme.css`, not a compile |
 | Tokens · classes | **626** `--rux-*` defined, 10 more read through a fallback · **1,798** `.rux--*` |
 | Kitchen sink | **68** sections · **992** classes with `templates/` and `js/` |
-| Class coverage | **948 / 1,356 (70%)** — ratcheted in `docs/coverage.json` |
+| Class coverage | **948 / 1,356 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **74 `rendered-dom` · 6 `source` · 0 `inferred`** across 80 files |
 | Icons | 63 symbols in a 17.7 KB sprite — 51 referenced, 12 nothing points at |
@@ -96,7 +96,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `js/` | the behaviour layer; `overlay.js` is the kernel and loads first. |
 | `templates/` | complete pages, shell included; copy the nearest one. |
 | `sink/` | one markup fragment per component, plus `ORDER`, `harness.css`, `harness.js` |
-| `kitchen-sink.html` · `portal.html` · `builder.html` · `theme-creator.html` | generated — edit `sink/`, `docs/component-docs.json`, `builder/` or `theme-creator/` and rebuild |
+| `kitchen-sink.html` · `portal.html` · `builder.html` · `theme-creator.html` | generated — edit `sink/`, `data/component-docs.json`, `builder/` or `theme-creator/` and rebuild |
 | `index.html` | the site's home page, hand-authored — the only root page that is not generated |
 | `builder/` | the page builder's behaviour and data; `rewrites.mjs` is the one place a template becomes a page. |
 | `theme-creator/` | the Theme Creator's behaviour, contrast maths and hue families. |
@@ -106,7 +106,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site |
 | `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
 | `docs/*.md` | `verbs.md` the routine · `choices.md` what an app may choose · `verifying-templates.md` · `composing-pages.md` · `screen-reader-pass.md` · `inventory.md` every component's disposition · `builder-coverage.md` the builder's catalogue · `agent-tooling.md` the maintenance instruments |
-| `docs/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
+| `data/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
 | `LICENSE` · `NOTICE` | Apache-2.0; `NOTICE` names each artefact carrying Carbon-derived material |
 | `carbon-website/` | gitignored quarry of Carbon's docs; read from, never shipped |
 

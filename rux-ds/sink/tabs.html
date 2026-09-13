@@ -31,7 +31,7 @@
       doubled edge.
 
       This is why tabs had no "extracted from cds-tabs" provenance note and no
-      entry in docs/carbon-co-classes.json: it was inferred from the CSS rather
+      entry in data/carbon-co-classes.json: it was inferred from the CSS rather
       than quarried, and inferring nesting from a descendant selector is exactly
       the mistake to avoid. Note also that the WEB
       COMPONENT is not the reference here — cds-tab renders an <a> in shadow DOM
@@ -52,7 +52,7 @@
       where components-tabs--default puts them.
     -->
     <!-- The overflow nav buttons and the close scaffolding are not decoration:
-         EVERY tabs story in docs/carbon-react-dom.json emits a --previous and a
+         EVERY tabs story in data/carbon-react-dom.json emits a --previous and a
          --next button flanking the tablist, both --hidden until the list
          actually overflows, and a --close--hidden div after each tab. They were
          missing here, which no gate could see: check-ancestry reads ancestors,

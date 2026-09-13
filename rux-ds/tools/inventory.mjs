@@ -5,7 +5,7 @@
 // over that baseline.
 //
 // Serves Phase 1 (markup needs the real class vocabulary) and Phase 2 (the
-// KEEP/CUT/DEFER inventory). Writes docs/inventory.json.
+// KEEP/CUT/DEFER inventory). Writes data/inventory.json.
 //
 // Phase 2 wants three things per component: size, the `@use` graph, and the
 // tokens it consumes. Size alone is famously misleading here, because
@@ -111,5 +111,5 @@ for (const r of rows) {
 // from a Carbon that is no longer installed. Until 2026-09-02 nothing could say
 // which Carbon this was compiled against, and nothing in verify regenerates it.
 const carbon = JSON.parse(readFileSync('node_modules/@carbon/styles/package.json', 'utf8')).version;
-writeFileSync('docs/inventory.json', JSON.stringify({ generated: new Date().toISOString().slice(0, 10), carbon, baselineClasses: [...baseClasses].sort(), components: rows }, null, 1));
-console.log(`\n  ${rows.filter(r => !r.error).length}/${comps.length} components -> docs/inventory.json`);
+writeFileSync('data/inventory.json', JSON.stringify({ generated: new Date().toISOString().slice(0, 10), carbon, baselineClasses: [...baseClasses].sort(), components: rows }, null, 1));
+console.log(`\n  ${rows.filter(r => !r.error).length}/${comps.length} components -> data/inventory.json`);

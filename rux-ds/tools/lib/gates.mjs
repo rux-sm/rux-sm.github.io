@@ -73,7 +73,7 @@ export const GATES = [
     blindTo: 'every page it does not generate — its unit is portal.html alone',
     reads: 'the emitted portal markup against assets/icons.svg',
     fileTargets: ['tools/build-portal.mjs'],
-    inputs: ['assets/icons.svg', 'docs/inventory.json', 'docs/coverage.json'],
+    inputs: ['assets/icons.svg', 'data/inventory.json', 'data/coverage.json'],
     redRun: '#i-katex on its first run — a symbol name nothing defines',
     sideEffects: 'writes portal.html',
     baseline: '0 unresolved sprite references',
@@ -127,7 +127,7 @@ export const GATES = [
     //
     // ITS BASELINE IS REGENERABLE, WHICH IS ITS WEAKNESS, and the honest way to
     // state it: the gate is as strong as the discipline of reading the diff
-    // before running tokens:snapshot. docs/coverage.json makes the same bargain
+    // before running tokens:snapshot. data/coverage.json makes the same bargain
     // and can at least ratchet; a token value has no better direction to move
     // in, so this one cannot.
     id: 'check-token-values',
@@ -138,7 +138,7 @@ export const GATES = [
     blindTo: 'a value that changes only through the CASCADE — this reads what css/rux.css declares, not what a browser computes. Also anything in css/rux-theme.css: that file is the project\'s own and is meant to move',
     reads: 'assembled',
     fileTargets: ['css/rux.css'],
-    inputs: ['css/rux.css', 'docs/token-values.json'],
+    inputs: ['css/rux.css', 'data/token-values.json'],
     redRun: 'change one --rux-* value in css/rux.css — the gate names the context, the token, and both values',
     sideEffects: null,
     baseline: '2756 declarations · 231 contexts · 0 moved · 0 added · 0 removed',
@@ -178,7 +178,7 @@ export const GATES = [
       + 'shipped defects · anything about a glyph nothing in the sprite claims',
     reads: 'per-file',
     fileTargets: ['assets/icons.svg'],
-    inputs: ['assets/icons.svg', 'docs/carbon-glyphs.json'],
+    inputs: ['assets/icons.svg', 'data/carbon-glyphs.json'],
     redRun: 'move one coordinate in any symbol\'s path, or swap two symbols\' '
       + 'drawings, or add a symbol under an invented name — all three verified '
       + '2026-08-29, exit 1 each',
@@ -197,7 +197,7 @@ export const GATES = [
     // enforced where Carbon drew one glyph in 3+ distinct stories. That excludes
     // the `__invalid-icon` family, which Carbon renders once or twice in the
     // default stories — so the seven-site invalid-icon defect fixed on
-    // 2026-08-29 was found by READING docs/carbon-slots.json, not by this gate,
+    // 2026-08-29 was found by READING data/carbon-slots.json, not by this gate,
     // and reverting it does NOT turn this red. `states` recipes for the invalid
     // and warning states would raise those slots over the bar; until then the
     // reference is worth more than the check.
@@ -207,7 +207,7 @@ export const GATES = [
       + 'from a prop, where there is no right answer · size, position and visibility',
     reads: 'per-file',
     fileTargets: ROOTS,
-    inputs: [...ROOTS, 'docs/carbon-slots.json'],
+    inputs: [...ROOTS, 'data/carbon-slots.json'],
     redRun: 'point `table-sort__icon` at `#i-arrow--down` (4 findings), '
       + '`accordion__arrow` at `#i-chevron--down` (3), or revert the invalid-icon '
       + 'fix to `#i-error--filled` (7) — all verified 2026-08-29. That last one did '
@@ -224,7 +224,7 @@ export const GATES = [
     blindTo: 'a base class Carbon never pairs',
     reads: 'assembled',
     fileTargets: pageFiles(),
-    inputs: [...pageFiles(), 'docs/carbon-co-classes.json'],
+    inputs: [...pageFiles(), 'data/carbon-co-classes.json'],
     redRun: 'use a modifier without its base class in any fragment',
     // Recorded as a gap, not a style note: a finding on a template cannot be
     // located, because the violation block prints the class attribute and no path.
@@ -255,8 +255,8 @@ export const GATES = [
     blindTo: 'classes no story emits (81 today)',
     reads: 'per-file',
     fileTargets: ROOTS,
-    inputs: [...ROOTS, 'docs/carbon-react-dom.json', 'docs/carbon-ibm-products-dom.json',
-      'docs/carbon-react-states.json', 'docs/carbon-ibm-products-states.json'],
+    inputs: [...ROOTS, 'data/carbon-react-dom.json', 'data/carbon-ibm-products-dom.json',
+      'data/carbon-react-states.json', 'data/carbon-ibm-products-states.json'],
     redRun: 'move a class onto an element type no story renders it on',
     sideEffects: null,
     baseline: '10 known divergences · 81 classes with no reference · 0 on a different element',
@@ -270,8 +270,8 @@ export const GATES = [
     blindTo: 'a wrapper Carbon only sometimes renders',
     reads: 'per-file',
     fileTargets: ROOTS,
-    inputs: [...ROOTS, 'docs/carbon-react-dom.json', 'docs/carbon-ibm-products-dom.json',
-      'docs/carbon-react-states.json', 'docs/carbon-ibm-products-states.json'],
+    inputs: [...ROOTS, 'data/carbon-react-dom.json', 'data/carbon-ibm-products-dom.json',
+      'data/carbon-react-states.json', 'data/carbon-ibm-products-states.json'],
     redRun: 'delete a required wrapper — modal-close-button is the one it was written for',
     sideEffects: null,
     // KNOWN is keyed `fragment:class`, so a template entry is separate from the
@@ -284,12 +284,12 @@ export const GATES = [
     tool: 'tools/check-coverage.mjs',
     kind: 'node',
     inVerify: true,
-    catches: 'a component exercising fewer classes than `docs/coverage.json` records',
+    catches: 'a component exercising fewer classes than `data/coverage.json` records',
     blindTo: 'standing still — it ratchets, it does not set a floor',
     reads: 'assembled',
     fileTargets: pageFiles(),
     inputs: [...pageFiles(), 'css/rux.css',
-      'docs/inventory.json', 'docs/coverage.json'],
+      'data/inventory.json', 'data/coverage.json'],
     redRun: 'remove a class from a fragment so its component drops below the recorded figure',
     sideEffects: null,
     baseline: '501 / 735 (68%) across 32 components',
@@ -303,12 +303,12 @@ export const GATES = [
     tool: 'tools/check-inventory.mjs',
     kind: 'node',
     inVerify: true,
-    catches: 'a component Carbon ships that docs/inventory.md has no row for · a row carrying no disposition · a row Carbon no longer ships · a component src/app.scss does not list at all · a disposition the manifest contradicts · a docs/inventory.json compiled from a Carbon that is not the one installed',
+    catches: 'a component Carbon ships that docs/inventory.md has no row for · a row carrying no disposition · a row Carbon no longer ships · a component src/app.scss does not list at all · a disposition the manifest contradicts · a data/inventory.json compiled from a Carbon that is not the one installed',
     blindTo: 'whether a disposition is RIGHT — it insists one was made, not that it was wise',
     reads: 'the manifest, the inventory and Carbon\'s own component directory',
     fileTargets: ['src/app.scss', 'docs/inventory.md'],
-    inputs: ['src/app.scss', 'docs/inventory.md', 'docs/inventory.json', 'node_modules/@carbon/styles'],
-    redRun: 'change any row\'s disposition to UNDECIDED, or comment out a KEEP component\'s @use, or set the `carbon` field in docs/inventory.json to another version — the stale fault, verified 2026-09-02 on the unstamped file',
+    inputs: ['src/app.scss', 'docs/inventory.md', 'data/inventory.json', 'node_modules/@carbon/styles'],
+    redRun: 'change any row\'s disposition to UNDECIDED, or comment out a KEEP component\'s @use, or set the `carbon` field in data/inventory.json to another version — the stale fault, verified 2026-09-02 on the unstamped file',
     sideEffects: null,
     baseline: '83 carbon · 83 rows · 77 KEEP · 2 DEFER · 4 CUT · 83 listed · 77 compiling',
     // A RENAME arrives as one phantom and one unrowed with nothing tying them
@@ -353,7 +353,7 @@ export const GATES = [
     blindTo: 'a role on an unclassed element · a MISSING role · whether required child roles are present · anything turning on `aria-live`, which the extractor does not record',
     reads: 'sink/, templates/ and the root pages against every capture',
     fileTargets: ['sink', ...pageFiles()],
-    inputs: ['sink', 'templates', 'docs/carbon-react-dom.json'],
+    inputs: ['sink', 'templates', 'data/carbon-react-dom.json'],
     redRun: 'role="menu" on side-nav__items reproduces as 1 invented; 332 corroborated when clean',
     sideEffects: null,
     baseline: '332 corroborated · 4 declined · 0 uncovered · 0 invented',
@@ -384,7 +384,7 @@ export const GATES = [
     // js/ and src/app.scss are inputs because lib/coverage.mjs resolves each
     // fragment's behaviour modules and compiled components through
     // lib/ownership.mjs, which reads the inventory and the compiled stylesheet.
-    inputs: ['sink', 'templates', 'assets/icons.svg', 'builder/blocks.json', 'docs/builder-coverage.md', 'builder/guide.json', 'builder/rewrites.mjs', 'builder/placement.mjs', 'js', 'src/app.scss', 'docs/inventory.json'],
+    inputs: ['sink', 'templates', 'assets/icons.svg', 'builder/blocks.json', 'docs/builder-coverage.md', 'builder/guide.json', 'builder/rewrites.mjs', 'builder/placement.mjs', 'js', 'src/app.scss', 'data/inventory.json'],
     redRun: 'swap two BLOCK:END names in sink/structured-list.html; change one byte inside a marked region without `npm run blocks`; hand-edit a block\'s `deps`, `label` or `grid`; delete a whole template record; hand-edit one cell of the coverage table; point an eligibility note at a fragment that does not exist; in builder/guide.json name a block or slot that does not exist, duplicate a block+slot, clear the `evidence` on an unmatched suggestion, add `evidence` to a matched one, put a recommendation on an ordinal the block does not have, or recommend a value the group refuses',
     sideEffects: null,
     baseline: '33 blocks in 18 files · 12 slots · 68 fragments, 8 marked, 334 candidate regions · 10 templates mapped, 20 suggestions, 14 variant groups, 0 reviewed',
@@ -498,7 +498,7 @@ export const GATES = [
     tool: 'tools/check-spacing.js',
     kind: 'browser',
     inVerify: false,
-    catches: 'a box property that disagrees with what Carbon computes for the same class set, read from `docs/carbon-react-spacing.json`',
+    catches: 'a box property that disagrees with what Carbon computes for the same class set, read from `data/carbon-react-spacing.json`',
     blindTo: 'whether the value is RIGHT — only whether it matches Carbon; a class set neither side renders',
     reads: 'page',
     fileTargets: [],

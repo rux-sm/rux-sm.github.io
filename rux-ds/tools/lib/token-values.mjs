@@ -1,6 +1,6 @@
 //
 // ONE DEFINITION OF WHAT css/rux.css DECLARES, imported by the tool that writes
-// docs/token-values.json and by the gate that checks it. They must never
+// data/token-values.json and by the gate that checks it. They must never
 // disagree: a baseline written by one parser and checked by another is a gate
 // that reports on a file it did not read, which is the drift tools/lib/
 // staleness.mjs was extracted to end after portal.html and npm run gates

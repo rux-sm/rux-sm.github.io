@@ -146,7 +146,7 @@ gate:
 
 - **Classes.** Every `rux--*` comes from Carbon. `npm run verify` fails on one
   that does not resolve or whose component is not compiled.
-- **Markup structure.** Diff against `rux-ds/docs/carbon-*.json`, not against a guess
+- **Markup structure.** Diff against `rux-ds/data/carbon-*.json`, not against a guess
   and not against the live Storybook; the captures match the compiled version
   and need no network. `node tools/diff-fragment.mjs <name>`.
 - **Behaviour Carbon does not have.** Modules make Carbon's components work;
@@ -168,7 +168,7 @@ decisions with citations, never paste prose. `NOTICE` covers Carbon's
 Apache-2.0 *code*, not website guidance content.
 
 For markup the captures remain authoritative. The website says what a pattern
-should do; `rux-ds/docs/carbon-*.json` says what the markup is.
+should do; `rux-ds/data/carbon-*.json` says what the markup is.
 
 ## 7. Open the page
 

@@ -12,7 +12,7 @@ for it as a `BEHAVIOUR:` comment.
 ## The rule
 
 **A claim about how Carbon behaves is only as good as the running page it was
-read from.** `docs/carbon-*.json` records structure. `css/rux.css` records
+read from.** `data/carbon-*.json` records structure. `css/rux.css` records
 mechanism. Neither records intent, and a template is mostly intent.
 
 ## Why this document exists

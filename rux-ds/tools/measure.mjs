@@ -36,7 +36,7 @@ import { classNames, compiledModules } from './lib/ownership.mjs';
 const COMP_INDEX = 'node_modules/@carbon/styles/scss/components/_index.scss';
 const ALL = [...readFileSync(COMP_INDEX, 'utf8').matchAll(/^@use '([^']+)'/gm)]
   .map(m => m[1]).filter(m => !m.startsWith('.')).sort();
-const inv = JSON.parse(readFileSync('docs/inventory.json', 'utf8'));
+const inv = JSON.parse(readFileSync('data/inventory.json', 'utf8'));
 const DEPS = Object.fromEntries(inv.components.filter(c => !c.error).map(c => [c.component, c.depsAll ?? []]));
 
 // READ FROM THE MANIFEST, not mirrored. src/app.scss is the strip, and it now

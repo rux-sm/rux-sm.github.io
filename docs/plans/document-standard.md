@@ -74,12 +74,6 @@ None.
 
 ## Tasks
 
-### Site
-
-- [ ] Move the design system's JSON data files to `rux-ds/data/` and update
-      every tool and document that reads them.
-- [ ] Build, run the full check, commit and push.
-
 ### Atlas
 
 - [ ] Remove the rule that a control change is judged by another session.

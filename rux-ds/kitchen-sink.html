@@ -1100,7 +1100,7 @@
        --single-with-calendar and --range-with-calendar, the last two captured
        with the calendar OPEN as
        `preview-preview-datepicker--*-with-calendar@open` in
-       docs/carbon-react-states.json, 2026-08-31 -->
+       data/carbon-react-states.json, 2026-08-31 -->
   <!--
     THIS IS THE `--next` VARIANT, AND THAT IS THE WHOLE REASON THIS FRAGMENT
     EXISTS. Carbon ships two date pickers. Measured 2026-08-31 on the running
@@ -1168,7 +1168,7 @@
          classic-variant markup and carried two classes no capture renders.
 
          WHAT BACKS THEM. `components-datepicker--simple@invalid` and `@warn`
-         in docs/carbon-react-states.json give the structure, and css/rux.css
+         in data/carbon-react-states.json give the structure, and css/rux.css
          scopes the pair to exactly what is written here --
          `.rux--date-picker--next .rux--date-picker-container--simple
          .rux--date-picker__input--invalid` and its `--warn` sibling, plus
@@ -1416,7 +1416,7 @@
   <h2>Checkbox</h2><p>group · checked · indeterminate · disabled · invalid</p>
   <!-- PROVENANCE: rendered-dom · components-checkbox--default with its invalid,
        warn and readonly state recipes, plus --horizontal and --single, read from
-       docs/carbon-react-dom.json and docs/carbon-react-states.json, 2026-08-27 -->
+       data/carbon-react-dom.json and data/carbon-react-states.json, 2026-08-27 -->
   <!--
     The tick and the indeterminate dash are drawn in CSS (::before/::after), so no
     icon is needed. `indeterminate` is a JS property, not an attribute — the harness
@@ -3279,7 +3279,7 @@
       doubled edge.
 
       This is why tabs had no "extracted from cds-tabs" provenance note and no
-      entry in docs/carbon-co-classes.json: it was inferred from the CSS rather
+      entry in data/carbon-co-classes.json: it was inferred from the CSS rather
       than quarried, and inferring nesting from a descendant selector is exactly
       the mistake to avoid. Note also that the WEB
       COMPONENT is not the reference here — cds-tab renders an <a> in shadow DOM
@@ -3300,7 +3300,7 @@
       where components-tabs--default puts them.
     -->
     <!-- The overflow nav buttons and the close scaffolding are not decoration:
-         EVERY tabs story in docs/carbon-react-dom.json emits a --previous and a
+         EVERY tabs story in data/carbon-react-dom.json emits a --previous and a
          --next button flanking the tablist, both --hidden until the list
          actually overflows, and a --close--hidden div after each tab. They were
          missing here, which no gate could see: check-ancestry reads ancestors,
@@ -4363,7 +4363,7 @@
   <h2>Dropdown</h2><p>closed · expanded · invalid · read-only · inline · disabled</p>
   <!-- PROVENANCE: rendered-dom · components-dropdown--default and its state
        recipes (open, disabled, readonly, sm, lg, warn) in
-       docs/carbon-react-states.json, harvested 2026-08-27 -->
+       data/carbon-react-states.json, harvested 2026-08-27 -->
   <!--
     Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
     extraction this fragment used to carry (the web components
@@ -6154,7 +6154,7 @@
 <section class="ks-sec" id="combo-box">
   <h2>Combo box</h2><p>filterable input over a list box</p>
   <!-- PROVENANCE: rendered-dom · components-combobox--default and its state
-       recipes (open, readonly) in docs/carbon-react-states.json, harvested
+       recipes (open, readonly) in data/carbon-react-states.json, harvested
        2026-08-27 -->
   <!--
     Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
@@ -7572,7 +7572,7 @@
   <h2>Side panel</h2><p>left and right placement — `--open` is Carbon's show hook</p>
   <!-- PROVENANCE: rendered-dom · ibm-products.carbondesignsystem.com, 2026-08-27
      components-sidepanel--slide-in (labelled), --slide-over (unlabelled) and
-     --with-static-title. Harvest: docs/carbon-ibm-products-dom.json.
+     --with-static-title. Harvest: data/carbon-ibm-products-dom.json.
 
      @carbon/react has no side-panel. @carbon/styles ships the ibm-products one
      under the cds prefix, and all 19 classes those stories emit are defined in

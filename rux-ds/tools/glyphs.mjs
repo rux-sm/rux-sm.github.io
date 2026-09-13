@@ -30,14 +30,14 @@
 // not a special case to work around — they are simply where Carbon keeps a
 // glyph it draws once, and the lookup tries the sized path first and falls back.
 //
-//   node tools/glyphs.mjs          write docs/carbon-glyphs.json
+//   node tools/glyphs.mjs          write data/carbon-glyphs.json
 //   node tools/glyphs.mjs --check  exit 1 if the snapshot is out of date
 //
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const SPRITE = 'assets/icons.svg';
-const OUT = 'docs/carbon-glyphs.json';
+const OUT = 'data/carbon-glyphs.json';
 const PKG = 'node_modules/@carbon/icons';
 
 // The elements that DRAW. Anything else in an icon file — <title>, <defs>, a
@@ -114,7 +114,7 @@ if (process.argv.includes('--check')) {
   const current = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
   const fresh = JSON.stringify(snapshot, null, 2) + '\n';
   if (current !== fresh) {
-    console.error('\n  docs/carbon-glyphs.json is out of date — run `node tools/glyphs.mjs`\n');
+    console.error('\n  data/carbon-glyphs.json is out of date — run `node tools/glyphs.mjs`\n');
     process.exit(1);
   }
   console.log(`\n  glyph snapshot current · ${Object.keys(glyphs).length} glyphs\n`);

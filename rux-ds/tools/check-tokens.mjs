@@ -31,7 +31,7 @@ const ROOTS = pageFiles(['css/rux.css', 'sink/harness.css', ...CUSTOM_CSS]);
 // never declares. Each is unreachable from the markup we ship, and declaring a value
 // here would be authoring a Carbon default Carbon does not ship — §1.1 forbids it.
 // Same treatment as --action-set--stacking and --pageheader-title-grid-width (§4.1.9),
-// and as the _ignored map in docs/carbon-co-classes.json: recorded, not faked.
+// and as the _ignored map in data/carbon-co-classes.json: recorded, not faked.
 const KNOWN = {
   '--rux--card--label-line-clamp': 'card __label--truncate; set by the consumer',
   '--rux--card--title-line-clamp': 'card __title--truncate; set by the consumer',

@@ -16,7 +16,7 @@
 //
 // THE REFERENCE, and why it is two hops. Carbon's React inlines its icons, so
 // the DOM has a path and no name — there is nothing to compare a `<use href>`
-// against directly. docs/carbon-slots.json closes that: the icons mode of
+// against directly. data/carbon-slots.json closes that: the icons mode of
 // tools/extract/react-dom.js records slot → drawing across all 505 stories, and
 // the drawing is resolved to a NAME against @carbon/icons, whose 2,828 files
 // hash to 2,823 distinct size+geometry keys. All 69 drawings in our slots
@@ -66,7 +66,7 @@
 import { readFileSync } from 'node:fs';
 import { markupFiles } from './lib/sources.mjs';
 
-const REF = JSON.parse(readFileSync('docs/carbon-slots.json', 'utf8'));
+const REF = JSON.parse(readFileSync('data/carbon-slots.json', 'utf8'));
 const { slots, _declined: DECLINED } = REF;
 const showAll = process.argv.includes('--all');
 

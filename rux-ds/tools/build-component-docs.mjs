@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //
-// Write docs/component-docs.json: one reference per compiled component, for the
+// Write data/component-docs.json: one reference per compiled component, for the
 // component index Phase 7 asks for.
 //
 // WHY THIS IS A COMMITTED FILE AND NOT A LOOKUP AT BUILD TIME. It is derived
@@ -9,7 +9,7 @@
 // reads it. A generator that needed it would fail on every clone that had not
 // cloned IBM's docs site. So this runs where the quarry is, the OUTPUT is
 // committed, and everything downstream reads the output -- the same shape as
-// docs/carbon-*.json, which are captures for the same reason.
+// data/carbon-*.json, which are captures for the same reason.
 //
 // WHY A COMPONENT CAN POINT AT ANOTHER COMPONENT'S PAGE. Carbon's docs are per
 // PAGE, not per compiled component, and the two sets are not the same size:
@@ -26,7 +26,7 @@
 // components out of ibm-products (src/app.scss records the same event), and
 // carbondesignsystem.com documents none of them. For those the honest reference
 // is the Storybook story the repository already captured, on the site AGENTS.md
-// already names as the provenance for docs/carbon-ibm-products-*.json. A story
+// already names as the provenance for data/carbon-ibm-products-*.json. A story
 // is not usage guidance and this file says so in `kind`, so a reader is never
 // told a specimen is documentation.
 //
@@ -39,7 +39,7 @@ import { compiled } from './lib/ownership.mjs';
 const QUARRY = 'carbon-website';
 const NAV = `${QUARRY}/src/data/nav-items.yaml`;
 const PAGES = `${QUARRY}/src/pages/components`;
-const OUT = 'docs/component-docs.json';
+const OUT = 'data/component-docs.json';
 
 if (!fs.existsSync(NAV)) {
   console.error(`no quarry at ${QUARRY}/ -- this tool reads IBM's docs site and`);
@@ -105,8 +105,8 @@ const humanise = n => n.replace(/^fluid-/, '').replace(/([a-z])([A-Z])/g, '$1 $2
 
 // Captured stories, for what has no page at all.
 const captures = {
-  react: ['docs/carbon-react-dom.json', 'docs/carbon-react-states.json'],
-  'ibm-products': ['docs/carbon-ibm-products-dom.json', 'docs/carbon-ibm-products-states.json'],
+  react: ['data/carbon-react-dom.json', 'data/carbon-react-states.json'],
+  'ibm-products': ['data/carbon-ibm-products-dom.json', 'data/carbon-ibm-products-states.json'],
 };
 const stories = {};
 for (const [site, files] of Object.entries(captures)) {
@@ -140,7 +140,7 @@ const SITE = {
   'ibm-products': 'https://ibm-products.carbondesignsystem.com',
 };
 
-const inventory = JSON.parse(fs.readFileSync('docs/inventory.json', 'utf8'));
+const inventory = JSON.parse(fs.readFileSync('data/inventory.json', 'utf8'));
 const all = Object.values(inventory.components).map(c => c.component).sort();
 const on = compiled();
 
@@ -186,7 +186,7 @@ for (const name of all) {
 
 const meta = {
   generated: new Date().toISOString().slice(0, 10),
-  from: `${NAV}, ${PAGES}/, and docs/carbon-*.json`,
+  from: `${NAV}, ${PAGES}/, and data/carbon-*.json`,
   pagesInNav: nav.size,
   note: 'Generated where the quarry is and committed, because carbon-website/ is gitignored and no gate reads it. Re-run tools/build-component-docs.mjs after a carbon-website pull.',
 };

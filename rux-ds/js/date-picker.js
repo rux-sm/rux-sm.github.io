@@ -26,7 +26,7 @@
    classes to the `cds--`/`c4p--` prefix, so the committed classic capture
    shows clean Carbon markup with its flatpickr dependency invisible. The two
    `preview-preview-datepicker--*@open` entries in
-   `docs/carbon-react-states.json` are the reference this file was built
+   `data/carbon-react-states.json` are the reference this file was built
    against; the recipes that produce them are in the RECIPES table.
 
    THE SAME FILTER HIDES THE DAY STATE CLASSES. `selected`, `today`,

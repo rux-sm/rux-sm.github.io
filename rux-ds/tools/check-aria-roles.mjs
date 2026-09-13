@@ -40,8 +40,8 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { markupFiles, pageFiles } from './lib/sources.mjs';
 
-const CAPTURES = ['docs/carbon-react-dom.json', 'docs/carbon-react-states.json',
-                  'docs/carbon-ibm-products-dom.json', 'docs/carbon-ibm-products-states.json'];
+const CAPTURES = ['data/carbon-react-dom.json', 'data/carbon-react-states.json',
+                  'data/carbon-ibm-products-dom.json', 'data/carbon-ibm-products-states.json'];
 
 // Adjudicated divergences. `class:role` -> reason. Kept SMALL on purpose; if this
 // grows past a handful the rule is not ready and should be reported unenforced.

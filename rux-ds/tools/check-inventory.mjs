@@ -35,7 +35,7 @@
 //              out, or CUT/DEFER is compiling
 //   shadowed   a stub in sink/deferred/ has the same name as a fragment that
 //              ships, so two files answer for one component and one is dead
-//   stale      docs/inventory.json was compiled from a Carbon that is not the
+//   stale      data/inventory.json was compiled from a Carbon that is not the
 //              one installed, or says nothing about which. Added 2026-09-02:
 //              ownership.mjs, check-coverage, build-portal and stats all read
 //              that file, nothing in verify regenerates it, and until now it
@@ -144,13 +144,13 @@ for (const f of htmlIn(DEFERRED_DIR).sort()) {
   }
 }
 
-// STALE. docs/inventory.json is a baseline four tools read and only
+// STALE. data/inventory.json is a baseline four tools read and only
 // `npm run inventory` writes. A Carbon bump that nobody follows with that
 // command leaves every reader on the old class vocabulary with the gates green.
 const installed = JSON.parse(readFileSync('node_modules/@carbon/styles/package.json', 'utf8')).version;
-const inventory = JSON.parse(readFileSync('docs/inventory.json', 'utf8'));
+const inventory = JSON.parse(readFileSync('data/inventory.json', 'utf8'));
 if (inventory.carbon !== installed) {
-  faults.push(['stale', 'docs/inventory.json',
+  faults.push(['stale', 'data/inventory.json',
     `compiled from @carbon/styles ${inventory.carbon ?? '(unrecorded)'}, installed ${installed} — run npm run inventory`]);
 }
 

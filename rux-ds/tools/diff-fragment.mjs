@@ -68,10 +68,10 @@
 import { readFileSync, readdirSync } from 'node:fs';
 
 const REF_PATHS = [
-  'docs/carbon-react-dom.json',
-  'docs/carbon-ibm-products-dom.json',
-  'docs/carbon-react-states.json',
-  'docs/carbon-ibm-products-states.json',
+  'data/carbon-react-dom.json',
+  'data/carbon-ibm-products-dom.json',
+  'data/carbon-react-states.json',
+  'data/carbon-ibm-products-states.json',
 ];
 const PREFIX = /^(?:cds|c4p)--/;
 // Storybook's own wrapper, present in every capture and meaningless to us.

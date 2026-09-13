@@ -739,7 +739,7 @@ ${concepts}
   // NO LEADING ICONS, AND THAT IS WHAT SETS THE CHILD INDENT. Carbon binds
   // `__link`'s padding-inline-start to the icon: 72px with
   // `__item--icon`, 32px without. Both are real variants -- rux-ds records
-  // both in docs/carbon-react-spacing.json under `cds--side-nav__link` --
+  // both in data/carbon-react-spacing.json under `cds--side-nav__link` --
   // so the indent is not independently adjustable without leaving Carbon.
   // Measured 2026-09-01 on carbondesignsystem.com, which runs the component
   // itself: 14 `__item`s, 0 carrying `__item--icon`, submenu buttons holding

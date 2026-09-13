@@ -6,7 +6,7 @@ type: reference
 
 Every component Carbon ships, with what it costs, what it drags in, and a
 disposition: **KEEP**, **DEFER** or **CUT**. This is a decision document, kept by
-hand. Regenerating it from `docs/inventory.json` would overwrite the decisions.
+hand. Regenerating it from `data/inventory.json` would overwrite the decisions.
 
 The rules that hold it together:
 
@@ -183,7 +183,7 @@ has one height, 64px, so there are no size variants to demo.
 
 ## Components absorbed from ibm-products
 
-These arrived in `@carbon/styles` 1.114. `docs/carbon-react-dom.json` renders none of
+These arrived in `@carbon/styles` 1.114. `data/carbon-react-dom.json` renders none of
 them; their markup comes from the ibm-products captures, and the status indicators'
 from the React preview. Marginal is the cost compiled on top of the shipped set.
 

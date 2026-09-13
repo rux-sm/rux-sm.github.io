@@ -37,7 +37,7 @@
 
 /* BEHAVIOUR: verified-live · read 2026-08-31 on
    https://react.carbondesignsystem.com/iframe.html?id=components-copybutton--default
-   and its `@copied` state recipe in docs/carbon-react-states.json.
+   and its `@copied` state recipe in data/carbon-react-states.json.
    Confirmed there, not inferred here: the copied state adds exactly
    `cds--copy-btn--animating` and `cds--copy-btn--fade-in` to the button, the
    DOM is otherwise identical, and no `copy-btn__feedback` element exists in

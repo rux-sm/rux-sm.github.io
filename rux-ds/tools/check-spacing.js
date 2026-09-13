@@ -7,7 +7,7 @@
 // wrappers are there. None of them can see a gap that is missing, because the
 // markup captures record structure and drop everything else on purpose.
 //
-// It reads `docs/carbon-react-spacing.json` — 800 class signatures harvested from
+// It reads `data/carbon-react-spacing.json` — 800 class signatures harvested from
 // react.carbondesignsystem.com — and for every classed element on this page asks
 // whether our computed box properties match what Carbon computed for the same
 // class set.
@@ -170,7 +170,7 @@
 // behind an interaction: this reads the page as it settled.
 //
 (() => {
-  const REFERENCE = '/docs/carbon-react-spacing.json';
+  const REFERENCE = '/data/carbon-react-spacing.json';
   const request = new XMLHttpRequest();
   request.open('GET', REFERENCE + '?v=' + Date.now(), false);
   request.send();

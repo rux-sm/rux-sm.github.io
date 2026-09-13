@@ -35,9 +35,9 @@
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const inv = JSON.parse(readFileSync('docs/inventory.json', 'utf8'));
+const inv = JSON.parse(readFileSync('data/inventory.json', 'utf8'));
 const ROOTS = ['kitchen-sink.html', 'templates'];
-const OUT = 'docs/states.json';
+const OUT = 'data/states.json';
 
 // Verbatim from check-coverage.mjs. If these drift, the two tools disagree.
 const ALIAS = {

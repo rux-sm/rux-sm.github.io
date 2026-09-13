@@ -81,10 +81,10 @@ const KNOWN = {
 // `c4p--` prefix. The class NAMES are identical, so normalising the prefix away
 // makes it a valid reference for exactly the same check.
 const REF_PATHS = [
-  'docs/carbon-react-dom.json',           // @carbon/react, 505 stories
-  'docs/carbon-ibm-products-dom.json',    // @carbon/ibm-products: side-panel, page-header, create pattern
-  'docs/carbon-react-states.json',        // configured states, from the RECIPES harvest
-  'docs/carbon-ibm-products-states.json', // same, run against the ibm-products origin
+  'data/carbon-react-dom.json',           // @carbon/react, 505 stories
+  'data/carbon-ibm-products-dom.json',    // @carbon/ibm-products: side-panel, page-header, create pattern
+  'data/carbon-react-states.json',        // configured states, from the RECIPES harvest
+  'data/carbon-ibm-products-states.json', // same, run against the ibm-products origin
 ];
 const PREFIX = /^(?:cds|c4p)--/;
 

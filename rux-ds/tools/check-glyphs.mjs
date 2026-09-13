@@ -55,7 +55,7 @@
 // mismatches for glyphs that are correct, so the snapshot is keyed name@size and
 // a symbol is only ever compared with Carbon's drawing at its own viewBox.
 //
-// THE REFERENCE IS docs/carbon-glyphs.json, NOT node_modules. Phase 4 removes
+// THE REFERENCE IS data/carbon-glyphs.json, NOT node_modules. Phase 4 removes
 // @carbon/icons, and a gate that dies at devendor is one that gets deleted at
 // devendor. tools/glyphs.mjs regenerates the snapshot; this only ever reads it,
 // and treats a symbol with no entry as a finding rather than a skip — a name
@@ -66,7 +66,7 @@
 import { readFileSync } from 'node:fs';
 import { geometry, spriteSymbols } from './glyphs.mjs';
 
-const SNAPSHOT = 'docs/carbon-glyphs.json';
+const SNAPSHOT = 'data/carbon-glyphs.json';
 const { glyphs } = JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
 
 const wrong = [], unknown = [];

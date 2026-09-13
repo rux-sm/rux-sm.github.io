@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
 // Fail when a --rux-* value css/rux.css declares is not the value
-// docs/token-values.json recorded.
+// data/token-values.json recorded.
 //
 // THE ONLY GATE HERE THAT IS NOT NAME-BASED, which is the whole reason for it.
 // A Carbon bump that moves --rux-layer-01 from one grey to another changes no
@@ -19,7 +19,7 @@
 // WHICH IS ALSO THIS GATE'S WEAKNESS, and it is worth naming plainly: the
 // baseline is regenerable at will, so the gate is exactly as strong as the
 // discipline of reading the diff before regenerating. It is the same bargain
-// docs/coverage.json makes, except that coverage.json ratchets and this cannot
+// data/coverage.json makes, except that coverage.json ratchets and this cannot
 // -- there is no direction a token value can move that is inherently better.
 //
 //   node tools/check-token-values.mjs
@@ -27,7 +27,7 @@
 import fs from 'node:fs';
 import { extract, SRC } from './lib/token-values.mjs';
 
-const BASELINE = 'docs/token-values.json';
+const BASELINE = 'data/token-values.json';
 
 if (!fs.existsSync(BASELINE)) {
   console.error(`  no ${BASELINE}. Write it with: node tools/build-token-values.mjs`);

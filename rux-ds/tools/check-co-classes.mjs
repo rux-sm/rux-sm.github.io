@@ -4,7 +4,7 @@
 // invisible to every other gate: the class resolves, the component is "covered",
 // and the element silently renders with the browser's default chrome.
 //
-// docs/carbon-co-classes.json records which classes @carbon/web-components ALWAYS
+// data/carbon-co-classes.json records which classes @carbon/web-components ALWAYS
 // emits together, extracted once from 219 rendered components. This checker is
 // plain Node: the browser was needed to produce the map, not to use it.
 //
@@ -12,7 +12,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { pageFiles } from './lib/sources.mjs';
 
-const map = JSON.parse(readFileSync('docs/carbon-co-classes.json', 'utf8'));
+const map = JSON.parse(readFileSync('data/carbon-co-classes.json', 'utf8'));
 const ROOTS = pageFiles();
 
 function walk(p, out = []) {

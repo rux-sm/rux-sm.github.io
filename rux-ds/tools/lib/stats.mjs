@@ -74,8 +74,8 @@ export function stats() {
   const tokensAll = new Set(css.match(/--rux-[a-z0-9-]+/g) ?? []);
   const tokensDefined = new Set(css.match(/--rux-[a-z0-9-]+(?=\s*:)/g) ?? []);
   const scss = read('src/app.scss');
-  const inventory = json('docs/inventory.json');
-  const coverage = json('docs/coverage.json');
+  const inventory = json('data/inventory.json');
+  const coverage = json('data/coverage.json');
 
   // Components: what compiles, out of what Carbon ships. `compiled()` and the
   // inventory are the same two sources check-inventory insists must agree, so a

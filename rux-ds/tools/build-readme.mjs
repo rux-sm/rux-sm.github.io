@@ -47,7 +47,7 @@ const rows = [
   ['Kitchen sink',
    `**${s.sink.sections}** sections · **${n(s.sink.classesUsed)}** classes with \`templates/\` and \`js/\``],
   ['Class coverage',
-   `**${n(s.coverage.hit)} / ${n(s.coverage.own)} (${s.coverage.pct}%)** — ratcheted in \`docs/coverage.json\``],
+   `**${n(s.coverage.hit)} / ${n(s.coverage.own)} (${s.coverage.pct}%)** — ratcheted in \`data/coverage.json\``],
   ['Spacing scale',
    `${s.spacingTokens} \`--rux-spacing-*\` tokens, demoed in the \`spacing\` section`],
   ['Markup provenance',

@@ -10,6 +10,13 @@
 set -eu
 cd "$(git rev-parse --show-toplevel)"
 
+# In a linked worktree git hands this hook an absolute GIT_DIR. It outranks
+# discovery and -C, so a check that runs git from a subfolder, or `git -C`
+# into atlas, would read the wrong place. From the top, discovery finds the
+# same repository without it. GIT_INDEX_FILE stays: it names the index being
+# committed.
+unset GIT_DIR
+
 command -v node >/dev/null 2>&1 || {
   echo "pre-commit: node not found, so staged files were NOT checked. A refusal, not a pass." >&2
   exit 1
@@ -19,7 +26,7 @@ command -v node >/dev/null 2>&1 || {
 # a public repository publishes every tracked file, not just the rendered site.
 files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(html|md|js|mjs|json|css|svg|yml|yaml|toml|sh|txt)$' || true)
 if [ -n "$files" ]; then
-  tmp=.git/precommit-tmp
+  tmp="$(git rev-parse --git-dir)/precommit-tmp"
   rm -rf "$tmp"; mkdir -p "$tmp"
   trap 'rm -rf "$tmp"' EXIT
   all=""

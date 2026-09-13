@@ -19,5 +19,5 @@ const run = (cmd, args, cwd) => {
 };
 run('npm', ['run', 'build', '--silent'], join(ROOT, 'design'));
 run(process.execPath, ['tools/build.mjs'], join(ROOT, 'notes'));
-run(process.execPath, ['tools/sprite.mjs'], ROOT);
+run(process.execPath, ['tools/inline-sprite.mjs'], ROOT);
 console.log('\n  built. `npm run check` says whether it is right.');

@@ -4,9 +4,9 @@
 // once carried a vendored copy of. Standard library only; no npm install, no
 // sibling checkout required to load this file (one is required to run it).
 //
-//   node tools/app-check.mjs [app-dir]     from anywhere; app-dir defaults to
+//   node tools/check-app.mjs [app-dir]     from anywhere; app-dir defaults to
 //                                          the working directory
-//   node tools/app-check.mjs --ds <dir>    where Design is. DS=<dir> is the
+//   node tools/check-app.mjs --ds <dir>    where Design is. DS=<dir> is the
 //                                          same thing; a sibling ../design is
 //                                          the default. A RELATIVE VALUE IS
 //                                          RESOLVED AGAINST THE APP, not the
@@ -14,10 +14,10 @@
 //                                          means the same thing wherever it
 //                                          is run from, and matches the
 //                                          default.
-//   node tools/app-check.mjs --hub <dir>   where the account-root site is, so
+//   node tools/check-app.mjs --hub <dir>   where the account-root site is, so
 //                                          /switcher.js and its siblings
 //                                          resolve instead of being counted
-//   node tools/app-check.mjs --self-test   drive every rule red in a scratch
+//   node tools/check-app.mjs --self-test   drive every rule red in a scratch
 //                                          app, then remove it
 //
 // EVERY APP IS SERVED, NOT VENDORED. A page
@@ -459,7 +459,7 @@ else {
   //
   // EXCLUDED BY POSITION, NOT BY VALUE -- found live, 2026-09-10, cutting
   // v0.1.16. A Set of the flags' VALUES meant that checking the hub against
-  // itself, `app-check.mjs <hub> --ds <Design> --hub <hub>` -- the shape
+  // itself, `check-app.mjs <hub> --ds <Design> --hub <hub>` -- the shape
   // Design's own consumers job always uses, since a served app's own entry
   // in the loop passes --hub pointing at itself -- excluded the positional
   // app path too, because it read identical to the --hub value. `find`
@@ -467,7 +467,7 @@ else {
   // checked THIS repository's own sink/deferred/ fragments against
   // themselves and failed on every uncompiled class in them: a confident
   // wrong answer, not a crash. Reproduced locally before this was written:
-  // `node tools/app-check.mjs <hub> --ds <Design> --hub <hub>` failed on
+  // `node tools/check-app.mjs <hub> --ds <Design> --hub <hub>` failed on
   // sink/deferred/page-header.html, which the hub does not even carry.
   const takenAt = new Set();
   const flag = (name) => {

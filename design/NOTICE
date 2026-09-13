@@ -17,7 +17,7 @@ Specifically:
 
   css/base/ carries the same origin.
 
-  assets/icons.svg is assembled by tools/icons.mjs from individual SVG
+  assets/icons.svg is assembled by tools/build-icons.mjs from individual SVG
     sources in @carbon/icons. The path data is IBM's; the sprite
     wrapper and the `i-` symbol naming are not.
 

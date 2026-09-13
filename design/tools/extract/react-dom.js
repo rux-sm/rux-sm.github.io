@@ -532,7 +532,7 @@
         }
       }
       if (!slot) continue;
-      // Same normalisation as tools/glyphs.mjs, and it has to stay the same or
+      // Same normalisation as tools/build-glyphs.mjs, and it has to stay the same or
       // the two sides of the comparison stop meeting: geometry children in
       // order, attributes sorted, whitespace collapsed, xmlns dropped.
       const geometry = [...svg.querySelectorAll('path,circle,rect,polygon,polyline,ellipse,line')]

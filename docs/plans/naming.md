@@ -72,8 +72,6 @@ None.
 
 ### Site
 
-- [ ] Rename tools to start with their action, and merge the sprite tools if
-      they do one job.
 - [ ] Cut the design system's npm commands to what the root cannot do.
 - [ ] Set the commit scopes in `AGENTS.md`.
 - [ ] Build, run the full check, open every app in the browser, commit and

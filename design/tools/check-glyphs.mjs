@@ -57,14 +57,14 @@
 //
 // THE REFERENCE IS data/carbon-glyphs.json, NOT node_modules. Phase 4 removes
 // @carbon/icons, and a gate that dies at devendor is one that gets deleted at
-// devendor. tools/glyphs.mjs regenerates the snapshot; this only ever reads it,
+// devendor. tools/build-glyphs.mjs regenerates the snapshot; this only ever reads it,
 // and treats a symbol with no entry as a finding rather than a skip — a name
 // Carbon has no file for is a name we invented.
 //
 //   node tools/check-glyphs.mjs
 //
 import { readFileSync } from 'node:fs';
-import { geometry, spriteSymbols } from './glyphs.mjs';
+import { geometry, spriteSymbols } from './build-glyphs.mjs';
 
 const SNAPSHOT = 'data/carbon-glyphs.json';
 const { glyphs } = JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
@@ -89,7 +89,7 @@ for (const { key, ours, theirs, source } of wrong) {
 }
 for (const key of unknown) {
   console.log(`\n  ${key}`);
-  console.log('     no entry in the snapshot — regenerate with `node tools/glyphs.mjs`,');
+  console.log('     no entry in the snapshot — regenerate with `node tools/build-glyphs.mjs`,');
   console.log('     and if Carbon still has no file for it, the name is invented');
 }
 

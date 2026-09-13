@@ -29,7 +29,7 @@ const idOf = html => (html.match(/id="([^"]+)"/) ?? [, '?'])[1];
 const sections = seq.map(n => readFileSync(`sink/${n}.html`, 'utf8').trim());
 const sprite = existsSync('assets/icons.svg')
   ? readFileSync('assets/icons.svg', 'utf8').trim()
-  : '<!-- no assets/icons.svg; run tools/icons.mjs -->';
+  : '<!-- no assets/icons.svg; run tools/build-icons.mjs -->';
 // THE NAV IS SORTED AND THE PAGE IS NOT, and the split is the point.
 // sink/ORDER groups the page by kind, so the form controls sit together and
 // the overlays sit together and a reader comparing two of a kind has them side

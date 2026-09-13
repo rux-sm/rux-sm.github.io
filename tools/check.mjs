@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 const DS = join(ROOT, 'design');
-const APP_CHECK = join(DS, 'tools', 'app-check.mjs');
+const APP_CHECK = join(DS, 'tools', 'check-app.mjs');
 const FULL = process.argv.includes('--full');
 const failed = [];
 const step = (name, cmd, args, opts = {}) => {
@@ -27,7 +27,7 @@ const step = (name, cmd, args, opts = {}) => {
   if (r.status !== 0) failed.push(name);
 };
 
-if (!existsSync(APP_CHECK)) { console.log(`  FAIL  no design/tools/app-check.mjs in this repository`); process.exit(1); }
+if (!existsSync(APP_CHECK)) { console.log(`  FAIL  no design/tools/check-app.mjs in this repository`); process.exit(1); }
 
 // THE APP LIST IS THE CHECK'S LIST. An app is checked because switcher.json
 // names it, which it must to appear in the switcher; no folder scan, no
@@ -47,7 +47,7 @@ for (const f of folders) {
   else step(f, process.execPath, [APP_CHECK, dir, '--ds', DS, '--hub', ROOT]);
 }
 
-step('sprite', process.execPath, ['tools/sprite.mjs', '--check']);
+step('sprite', process.execPath, ['tools/inline-sprite.mjs', '--check']);
 
 // THE DOCUMENT RULES from AGENTS.md "Documents", then the fixtures that prove
 // each rule still fires.

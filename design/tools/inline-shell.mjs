@@ -8,7 +8,7 @@
 // therefore the one page left with a shell of its own. Pasting the shared one
 // into it would have recreated the fifth copy the shared file exists to
 // remove, so it is spliced instead, between two markers, the same way
-// tools/icons.mjs splices the sprite into templates/.
+// tools/build-icons.mjs splices the sprite into templates/.
 //
 // A FILE OPTS IN BY CARRYING THE MARKERS. Nothing is scanned for, nothing is
 // guessed: the page declares where its shell goes and which page it is.

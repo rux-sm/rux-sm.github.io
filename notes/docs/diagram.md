@@ -9,7 +9,7 @@ the rendered page or the synced data at `data/guides/PIN`, never from a count
 by hand.
 
 **The section numbers are load-bearing and do not move.** `build.mjs`,
-`specimen-kinds.mjs` and `tile-looks.mjs` cite §-numbers in this file. Add
+`build-specimen-kinds.mjs` and `build-tile-looks.mjs` cite §-numbers in this file. Add
 anything new at the front without a number, or at the back with the next one.
 
 ---
@@ -39,7 +39,7 @@ is not extended; whether it is retired is atlas's call.
 
 The internal classes read `config` for Setup and `info` for Inquiry; renaming
 them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
-`tools/tile-looks.mjs`.
+`tools/build-tile-looks.mjs`.
 
 `guide`, the SOP link, is a node field and renders in the tile's panel.
 
@@ -196,7 +196,7 @@ Both documents, every theme:
 
 ### 5.1 The specimen
 
-`node tools/specimen-kinds.mjs` writes `build/specimen-kinds.html`: the real
+`node tools/build-specimen-kinds.mjs` writes `build/specimen-kinds.html`: the real
 diagrams lifted whole from the built pages, drawn as shipped and once per
 proposal variant, differing by CSS alone, with the figures above computed live
 in whichever theme is on. `build/` is git-ignored and skipped by
@@ -207,9 +207,9 @@ shipped page and keeps printing numbers that mean nothing. Do not
 rebuild a "before" variant by overriding the shipped CSS; the reconstruction
 misreports what it reconstructs.
 
-### 5.2 `tile-looks.mjs`
+### 5.2 `build-tile-looks.mjs`
 
-`node tools/tile-looks.mjs [page]` reads the diagram's rules out of a built
+`node tools/build-tile-looks.mjs [page]` reads the diagram's rules out of a built
 page, resolves which land on which tile (specificity included), and prints the
 look of every tile, so a category drawn two ways shows without a browser.
 

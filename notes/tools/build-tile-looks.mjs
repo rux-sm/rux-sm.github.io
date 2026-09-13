@@ -1,8 +1,8 @@
-// tools/tile-looks.mjs -- what a diagram tile is DRAWN as, read out of the page.
+// tools/build-tile-looks.mjs -- what a diagram tile is DRAWN as, read out of the page.
 //
 // WHY IT EXISTS. The diagram draws five categories, and the figure that says
 // whether each one is drawn exactly ONE way lived only in
-// `tools/specimen-kinds.mjs` -- in a browser, on a page under `build/`, which is
+// `tools/build-specimen-kinds.mjs` -- in a browser, on a page under `build/`, which is
 // git-ignored. So it existed while a person was looking at it and not otherwise.
 // This writes the figures to a file, so a diff catches them.
 //
@@ -24,7 +24,7 @@
 // grammar below; anything else throws. A measurement that quietly returns "all
 // fine" on markup it did not understand is worse than no measurement.
 //
-//   node tools/tile-looks.mjs [page]    # the tiles of one built page, with
+//   node tools/build-tile-looks.mjs [page]    # the tiles of one built page, with
 //                                      # the resolved look of each
 //
 // WHAT IT CANNOT SEE, AND WHY THE SPECIMEN STAYS. It compares TOKEN NAMES, not
@@ -32,7 +32,7 @@
 // are two looks here, in every theme, because nothing in Node resolves a token.
 // If two tokens paint the same value in one theme, two tiles would collide on
 // screen and not here. That comparison is per-theme and belongs in a browser,
-// which is what `specimen-kinds.mjs` is for. This answers the theme-independent
+// which is what `build-specimen-kinds.mjs` is for. This answers the theme-independent
 // half: is one category drawn by one set of rules.
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';

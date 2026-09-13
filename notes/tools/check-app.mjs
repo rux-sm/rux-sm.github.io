@@ -27,8 +27,8 @@ import { pathToFileURL } from 'node:url';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const DS = resolve(ROOT, process.env.DS ?? '../design');
-if (!existsSync(join(DS, 'tools/app-check.mjs'))) {
+if (!existsSync(join(DS, 'tools/check-app.mjs'))) {
   console.log(`  FAIL  ds: no Design at ${DS} -- clone it beside this repository, or set DS=<dir>`);
   process.exit(1);
 }
-await import(pathToFileURL(join(DS, 'tools/app-check.mjs')).href);
+await import(pathToFileURL(join(DS, 'tools/check-app.mjs')).href);

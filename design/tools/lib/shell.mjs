@@ -14,7 +14,7 @@
 // FOUR PAGES CALL shell() DIRECTLY FROM THEIR GENERATORS. index.html is
 // hand-written -- prose and a tile grid nobody wants inside a template literal
 // -- so tools/inline-shell.mjs splices the same output between two markers in
-// it, the way tools/icons.mjs splices the sprite into templates/. Same bytes,
+// it, the way tools/build-icons.mjs splices the sprite into templates/. Same bytes,
 // two delivery routes, no fifth copy.
 //
 // THE SHAPE, and why each part is the way it is:

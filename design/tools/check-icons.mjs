@@ -9,7 +9,7 @@
 // just an empty box the size of the icon that should be there.
 //
 // THIS IS THE HOLE df5273f FELL INTO. sink/table.html pointed both data-table
-// row expanders at #i-chevron--left, a name that had never been in icons.mjs's
+// row expanders at #i-chevron--left, a name that had never been in build-icons.mjs's
 // list, so the sprite carried no such symbol. Expandable rows shipped with a
 // blank expander cell for as long as the fragment had existed, and all ten
 // gates passed the whole time: check-classes reads class attributes, and an
@@ -21,7 +21,7 @@
 //   external    a <use> pointing outside this document, which the committed
 //               sprite exists specifically to avoid needing
 //   malformed   a <use> carrying no href at all
-//   stale       assets/icons.svg disagreeing with icons.mjs's ICONS list — a
+//   stale       assets/icons.svg disagreeing with build-icons.mjs's ICONS list — a
 //               name added or removed without re-running the quarry, which
 //               leaves the committed sprite lying about what it holds
 //
@@ -76,7 +76,7 @@ import { markupFiles, spritePages } from './lib/sources.mjs';
 const SINK = 'sink';
 const DEFERRED = join(SINK, 'deferred');
 const SPRITE = 'assets/icons.svg';
-const QUARRY = 'tools/icons.mjs';
+const QUARRY = 'tools/build-icons.mjs';
 
 const strip = html => html.replace(/<!--[\s\S]*?-->/g, '');
 
@@ -105,7 +105,7 @@ const sprite = readFileSync(SPRITE, 'utf8');
 const symbols = [...sprite.matchAll(/<symbol\s+id="([^"]+)"/g)].map(m => m[1]);
 const defined = new Set(symbols);
 
-// icons.mjs is a script that writes the sprite on import, so its list is read
+// build-icons.mjs is a script that writes the sprite on import, so its list is read
 // as text rather than imported. It is also the only readable source of truth on
 // a fresh clone: @carbon/icons is a gitignored quarry that may not be present.
 const quarry = readFileSync(QUARRY, 'utf8');

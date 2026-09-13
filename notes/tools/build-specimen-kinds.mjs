@@ -1,4 +1,4 @@
-// tools/specimen-kinds.mjs -- the kind vocabulary, three ways, side by side.
+// tools/build-specimen-kinds.mjs -- the kind vocabulary, three ways, side by side.
 //
 // WHY IT EXISTS. docs/diagram.md proposes replacing five unkeyed hues
 // with three forms and one accent, and a plan about how something LOOKS cannot
@@ -18,14 +18,14 @@
 // tile, which is exactly what a mock-up gets wrong.
 //
 // SINCE 2026-09-11 IT IS HALF THE INSTRUMENT, AND THE HALF ONLY A BROWSER CAN
-// BE. `tools/tile-looks.mjs` resolves the same five properties out of the page's
+// BE. `tools/build-tile-looks.mjs` resolves the same five properties out of the page's
 // own CSS in Node, so the figures reach `MEASURED` and survive a diff -- but it
 // compares TOKEN NAMES, and two tokens that paint the same value in one theme
 // are a collision it cannot see. That is this page: the painted colour, per
 // theme, switchable. Neither replaces the other, and the tile-looks header says
 // the same thing from its side.
 //
-//   node tools/specimen-kinds.mjs && open the URL it prints
+//   node tools/build-specimen-kinds.mjs && open the URL it prints
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

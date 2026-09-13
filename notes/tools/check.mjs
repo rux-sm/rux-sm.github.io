@@ -28,7 +28,7 @@ const GATES = [
   // only pages.yml's own build-and-diff step did, on push.
   ['check-build',       []],
   // Design's shared check next, and app-specific gates after it: the
-  // convention tools/app-check.mjs states, and the one Scheduler follows.
+  // convention tools/check-app.mjs states, and the one Scheduler follows.
   // Added 2026-09-09 after an undeclared token shipped in 28 pages with all
   // seven gates below green -- none of them reads a token.
   ['check-app',         []],

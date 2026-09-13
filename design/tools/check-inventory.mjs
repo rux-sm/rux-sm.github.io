@@ -12,7 +12,7 @@
 // That is the same shape as the two drift bugs already recorded: a second copy
 // of the manifest going stale (`measure.mjs`'s theme pair, then its emit
 // includes). Both were fixed by reading from the source of truth. The inventory
-// had no such fix, because `tools/inventory.mjs` GENERATES and never asserts —
+// had no such fix, because `tools/build-inventory.mjs` GENERATES and never asserts —
 // it reads the same directory this gate reads, writes JSON, and exits 0 whether
 // or not the decisions kept up.
 //

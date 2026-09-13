@@ -17,7 +17,7 @@ URL path is that app — `design/` at `/design/`, `scheduler/` at
 publishes**, after CI runs the check. There is no release, no tag and no
 separate publish step.
 
-One thing stays outside it, for privacy, cloned beside it: `rux-ln-atlas`,
+One thing stays outside it, for privacy, cloned beside it: `atlas`,
 the LN knowledge library the Notes pages are rendered from. A task that
 needs it edits it in the same session, after reading its own `AGENTS.md`.
 

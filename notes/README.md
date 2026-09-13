@@ -35,7 +35,7 @@ read, never re-implemented. `docs/diagram.md` is how the diagram is drawn.
 Atlas holds evidence, session help and screenshots of a licensed environment,
 and none of it comes across. Atlas's `emit.py` refuses to write the export tier
 if a name, an issue id or an evidence path survives. `check-publishable` sweeps
-for names using atlas's list, from `../../rux-ln-atlas` or `ATLAS=<dir>`. CI
+for names using atlas's list, from `../../atlas` or `ATLAS=<dir>`. CI
 cannot read atlas, so that sweep runs in the pre-commit hook.
 
 Nothing on a page may identify a person, an environment, a client or a vendor
@@ -50,7 +50,7 @@ From the repository root:
 
 ```sh
 npm run serve -- --private   # atlas's working tree, internal tier, into build/ on :8644; never published
-npm run export               # sync-guides.sh from ../../rux-ln-atlas, then build and check
+npm run export               # sync-guides.sh from ../../atlas, then build and check
 npm run serve                # the whole site on :8640, this app at /notes/
 npm run check                # every gate here, plus the rest of the site
 ```

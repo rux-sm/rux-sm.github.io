@@ -8,9 +8,9 @@
 #
 set -eu
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ATLAS="${ATLAS:-$ROOT/../rux-ln-atlas}"
-[ -d "$ATLAS/.git" ] || { echo "no rux-ln-atlas at $ATLAS -- clone it beside this repository, or set ATLAS=<dir>"; exit 1; }
+ATLAS="${ATLAS:-$ROOT/../atlas}"
+[ -d "$ATLAS/.git" ] || { echo "no atlas at $ATLAS -- clone it beside this repository, or set ATLAS=<dir>"; exit 1; }
 cd "$ROOT/notes" && ATLAS="$ATLAS" sh tools/sync-guides.sh
 cd "$ROOT" && node tools/build.mjs && node tools/check.mjs
 echo
-echo "  exported from rux-ln-atlas $(git -C "$ATLAS" rev-parse --short HEAD). Commit and push to publish."
+echo "  exported from atlas $(git -C "$ATLAS" rev-parse --short HEAD). Commit and push to publish."

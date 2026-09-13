@@ -818,7 +818,7 @@ const REVISION = (() => {
   const commit = /^commit\s+([0-9a-f]{7,40})/m.exec(text)?.[1];
   const contract = /^contract\s+(\d+)/m.exec(text)?.[1];
   if (!commit) throw new Error('data/guides/PIN names no commit -- run sh tools/sync-guides.sh');
-  return `rux-ln-atlas ${commit.slice(0, 7)}${contract ? ` · contract ${contract}` : ''}`;
+  return `atlas ${commit.slice(0, 7)}${contract ? ` · contract ${contract}` : ''}`;
 })();
 const revisionLine = () => REVISION
   ? `<p class="rux--type-caption-01 notes-revision">Built from ${esc(REVISION)}</p>`

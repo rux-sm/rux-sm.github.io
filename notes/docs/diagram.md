@@ -117,7 +117,7 @@ legend names the categories (§9).
 
 ### 2.1 The contract rules on the axis
 
-`../rux-ln-atlas/standards/guide-json.md` §5, addressed to renderers:
+`../atlas/standards/guide-json.md` §5, addressed to renderers:
 
 > colour says what to do with a thing, form says what kind of thing it is
 

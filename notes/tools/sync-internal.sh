@@ -15,7 +15,7 @@
 set -e
 
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-ATLAS="${ATLAS:-$HERE/../../rux-ln-atlas}"
+ATLAS="${ATLAS:-$HERE/../../atlas}"
 DS="${DS:-$HERE/../design}"
 OUT="$HERE/build/internal"
 

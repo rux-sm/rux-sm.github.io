@@ -80,15 +80,7 @@ carries an owner prefix, because the GitHub account already is one.
 ### Atlas
 
 - [ ] Once question 1 is answered, rename reviews and their summaries to match.
-- [ ] Rename the GitHub repository to `atlas`, or hand rux the command if
-      GitHub refuses it. Rename the local folder, relink its memory, and update
-      the site's default atlas path.
 - [ ] Export into the site, commit and push.
-
-### Claude settings
-
-- [ ] Rename `memory/rux-ln-atlas/` to `memory/atlas/` and update the setup
-      guide, the instruction map and the workspace file.
 
 ### Finish
 

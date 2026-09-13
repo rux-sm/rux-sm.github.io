@@ -21,9 +21,9 @@ const env = { ...process.env, HOST: process.env.HOST ?? 'localhost' };
 
 if (process.argv.includes('--private')) {
   const notes = join(ROOT, 'notes');
-  const atlas = process.env.ATLAS ?? resolve(ROOT, '..', 'rux-ln-atlas');
+  const atlas = process.env.ATLAS ?? resolve(ROOT, '..', 'atlas');
   if (!existsSync(join(atlas, 'tools', 'emit.py'))) {
-    console.error(`  no rux-ln-atlas at ${atlas} -- clone it beside this repository, or set ATLAS=<dir>`);
+    console.error(`  no atlas at ${atlas} -- clone it beside this repository, or set ATLAS=<dir>`);
     process.exit(1);
   }
   const sync = spawnSync('sh', ['tools/sync-internal.sh'], { cwd: notes, stdio: 'inherit', env: { ...env, ATLAS: atlas, DS: join(ROOT, 'design') } });

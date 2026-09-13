@@ -71,7 +71,7 @@ function pages(dir) {
 // are never shipped here in any form: a list of who must not be named, in a
 // public repository, would publish them.
 function peoplePattern() {
-  const atlas = process.env.ATLAS ?? join(ROOT, '..', '..', 'rux-ln-atlas');
+  const atlas = process.env.ATLAS ?? join(ROOT, '..', '..', 'atlas');
   if (!existsSync(join(atlas, 'tools', 'export.py'))) return null;
   const pinFile = join(ROOT, 'data', 'guides', 'PIN');
   const pin = existsSync(pinFile)
@@ -173,7 +173,7 @@ for (const [what, n] of [...totals].sort((a, b) => (b[1] === 'unavailable' ? -1 
   console.log(`  ${String(n).padStart(6)}  ${what}`);
 }
 if (!PEOPLE) {
-  console.log('\n  NAMES WERE NOT CHECKED: ../../rux-ln-atlas is missing, or the commit');
+  console.log('\n  NAMES WERE NOT CHECKED: ../../atlas is missing, or the commit');
   console.log('  data/guides/PIN names is not in it, so PEOPLE could not be read.');
   console.log('  Nothing else re-checks names: the sync route is held by atlas emit.py,');
   console.log('  and a hand edit to data, the generator or a page is not.');
@@ -183,7 +183,7 @@ if (!PEOPLE) {
 // so a half-set-up machine read as healthy. CI is the one place the names
 // cannot be read by design -- pages.yml says why -- and GitHub sets CI there.
 const gap = !PEOPLE && !process.env.CI;
-if (gap) console.log('  Outside CI that is a refusal: clone rux-ln-atlas beside this repository, or set ATLAS=<dir>.');
+if (gap) console.log('  Outside CI that is a refusal: clone atlas beside this repository, or set ATLAS=<dir>.');
 console.log('\n  A clean run says a regex found nothing, and nothing about whether a');
 console.log('  paraphrase is close enough to still be a copy. See the header.\n');
 

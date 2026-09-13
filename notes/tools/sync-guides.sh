@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Pull the guide data from rux-ln-atlas, and record which commit produced it.
+# Pull the guide data from atlas, and record which commit produced it.
 #
 # THE EXPORT TIER, NEVER THE INTERNAL ONE. `emit.py --internal` keeps gap
 # markers, issue ids, evidence stamps and internal paths. This script never
@@ -18,7 +18,7 @@
 set -e
 
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-ATLAS="${ATLAS:-$HERE/../../rux-ln-atlas}"
+ATLAS="${ATLAS:-$HERE/../../atlas}"
 OUT="$HERE/data/guides"
 
 [ -d "$ATLAS/.git" ] || { echo "no atlas checkout at $ATLAS (override with ATLAS=)"; exit 1; }
@@ -28,7 +28,7 @@ OLD="$(sed -n 's/^commit  *//p' "$OUT/PIN" 2>/dev/null)"
 # TRACKED CHANGES ONLY (-uno): an untracked file is
 # not in the commit the pin names, so it cannot make the pin wrong.
 if [ -n "$(git -C "$ATLAS" status --porcelain -uno)" ]; then
-  echo "rux-ln-atlas at $ATLAS has uncommitted changes to tracked files."
+  echo "atlas at $ATLAS has uncommitted changes to tracked files."
   echo "Commit them first -- data pinned to a dirty tree cannot be reproduced."
   exit 1
 fi
@@ -39,9 +39,9 @@ fi
 # at it. Compared against the last fetch, which is the best a local check has.
 UP="$(git -C "$ATLAS" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
 if [ -z "$UP" ]; then
-  echo "note: rux-ln-atlas has no upstream branch; pushed-ness not checked"
+  echo "note: atlas has no upstream branch; pushed-ness not checked"
 elif [ "$(git -C "$ATLAS" rev-list --count "$UP..HEAD")" != "0" ]; then
-  echo "rux-ln-atlas has commits not on $UP. Push them first -- a pin that names an"
+  echo "atlas has commits not on $UP. Push them first -- a pin that names an"
   echo "unpushed commit names nothing on the other machine."
   exit 1
 fi

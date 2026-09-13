@@ -33,6 +33,7 @@ npm run serve                  # http://localhost:8640/ — the whole site, loop
 npm run serve -- --private     # atlas's internal tier on :8644, never published
 npm run build                  # regenerate what is committed but derived
 npm run check                  # every app, Notes' gates, the names sweep; --full adds rux-ds verify
+npm test                       # the same check, under the name every tool expects
 npm run export                 # pull atlas's export tier into Notes, rebuild, check
 git push                       # publishes, after CI runs the full check
 ```

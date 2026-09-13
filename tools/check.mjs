@@ -12,8 +12,8 @@
 //   node tools/check.mjs --full
 //
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { extname, join, relative, resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
@@ -49,21 +49,15 @@ for (const f of folders) {
 
 step('sprite', process.execPath, ['tools/sprite.mjs', '--check']);
 
-// THE NAMES SWEEP, REPOSITORY-WIDE, EVERY TEXT FILE. A public repository
-// publishes every tracked file. The rule and the private list it reads live
-// with Notes; this passes it everything. Measured 2026-09-12: 12 entries,
-// 0.08 s over the whole family.
-const SKIP = new Set(['node_modules', '.git', 'build']);
+// THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
+// every tracked file, and only those: the list comes from git, so an ignored
+// quarry or working folder under rux-ds/ is not swept (walking the tree
+// swept 949 files where git tracks 372, the day the quarry moved in). The
+// rule and the private list it reads live with Notes; this passes it
+// everything. Measured 2026-09-12: 12 entries, 0.08 s over the whole family.
 const EXT = new Set(['.html', '.md', '.js', '.mjs', '.json', '.css', '.svg', '.yml', '.yaml', '.toml', '.sh', '.txt']);
-const walk = (d, out = []) => {
-  for (const e of readdirSync(d, { withFileTypes: true })) {
-    const p = join(d, e.name);
-    if (e.isDirectory()) { if (!SKIP.has(e.name)) walk(p, out); }
-    else if (EXT.has(extname(e.name))) out.push(relative(ROOT, p));
-  }
-  return out;
-};
-const text = walk(ROOT);
+const tracked = spawnSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).stdout ?? '';
+const text = tracked.split('\0').filter(p => p && EXT.has(extname(p)));
 step(`names (${text.length} text files)`, process.execPath, ['rux-ln-notes/tools/check-publishable.mjs', ...text]);
 
 // THE SWITCHER RULE. Two things can go wrong and both are quiet: a list that

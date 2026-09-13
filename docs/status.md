@@ -61,8 +61,8 @@ schema items above wait on it.
 
 - Done 2026-09-12: one repository, one deploy, the three project sites off,
   every sampled live route byte-identical to `main`, the old repositories'
-  workflows disabled. Archiving those three repositories is the one step
-  left, rux's to run. The first real Atlas-to-Notes-to-DS task under the
+  workflows disabled, the repositories archived and their checkouts removed
+  from the working folder. The first real Atlas-to-Notes-to-DS task under the
   one-session agreement has not happened yet; the next one is the proof.
 - Not yet retired, each its own small diff when wanted: rux-ds's
   browser-reading ledger (`portal.html` stamps, `tools/lib/staleness.mjs`,

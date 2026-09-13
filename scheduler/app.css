@@ -1543,10 +1543,8 @@ button.scheduler-row-head__num {
    three. A driver's name and a form field have no equivalent. */
 /* 256px, CARBON'S XS SIDE PANEL WIDTH. The roster is a fixed width rather than
    its content's, so it does not move when the driver list does, and 16rem is the
-   `rux--side-panel--xs` number rather than a local one. The seven 32px day
-   columns take 224px of it and the names get the remaining 32px, cut with an
-   ellipsis, on rux's call: short names that fit are coming, and the full name is
-   on each name's hover. */
+   `rux--side-panel--xs` number rather than a local one. How the width divides
+   between the days and the names is on `.scheduler-aside .sch--avail`. */
 .scheduler-aside { flex: 0 0 16rem; inline-size: 16rem; order: -1; }
 
 /* XS ROWS UNDER AN SM HEAD, 2026-09-08, AND THE FLIP-FLOP ENDS ON AN ARGUMENT
@@ -1606,30 +1604,15 @@ button.scheduler-row-head__num {
    rule be what it always claimed to be. */
 .scheduler-aside .sch--avail {
   --scheduler-head-w: minmax(0, 1fr);
-  /* THE TWO AXES SPLIT AGAIN, 2026-09-11, FOR A REASON THE OLD SPLIT DID NOT
-     HAVE. This was 24x24 and rejoined on 2026-09-08 with: "The split existed so
-     the head could hold three letters; the head holds two now and fits, so the
-     cell is a 24x24 square and the two axes of this grid are one number again."
-     That is still true of the HEAD -- "We" is 18.4px and clears 24 -- so
-     nothing here is reverting it. The new reason is the mark itself: a 24px
-     column is a thin mark to read a week off, and rux asked whether there was
-     room for the next size.
-
-     THERE IS, AND THE MEASUREMENT IS WHY IT IS WIDTH ONLY. The aside is a fixed
-     16rem = 256px, and `--scheduler-head-w: minmax(0, 1fr)` above makes the name
-     column the remainder -- so every pixel the days take comes off the names.
-     At 32 the days take 224 and the names get 32, which cuts them with an
-     ellipsis until short names that fit exist; each carries its full name as a
-     hover title. `.scheduler-avail__grid` keeps the grid pinned to the pane, so
-     a long name ellipses instead of pushing the squares out.
-
-     HEIGHT IS THE EXPENSIVE AXIS AND IS DELIBERATELY UNTOUCHED. `--scheduler-avail-h`
-     stays xs. Measured at 1440x950: all 40 drivers fit at 24px tall and 35 of
-     40 at 32px, so a square would have cost five drivers below the fold --
-     which is the exact currency the 2026-09-08 decision was settled in, after
-     this number turned 24, 32, 24, 32, 24. Widening does not re-open it, and
-     that is the whole case for doing one axis and not both. */
-  --scheduler-day-track: var(--rux-layout-size-height-sm);
+  /* 24px SQUARES. Each day is a 24px column over the 24px row, so a day reads as
+     a mark, and the two-letter day head ("We" is 18.4px) fits inside it. The
+     aside is a fixed 16rem = 256px and `--scheduler-head-w: minmax(0, 1fr)`
+     above makes the name column the remainder, so the seven days take 168px and
+     the names get 88px: a longer name ellipses, with the full name on its hover
+     title. `.scheduler-avail__grid` keeps the grid pinned to the pane, so a long
+     name ellipses instead of pushing the squares out. The 24px row is what fits
+     all 40 drivers on a 950px-tall window. */
+  --scheduler-day-track: var(--rux-layout-size-height-xs);
   /* FILLS WHAT THE HEAD LEAVES. app.js gives the ASIDE the board's height; this
      takes the remainder under the head. `max-block-size: none` lifts the base
      `.sch` cap, which is a viewport expression and would otherwise re-cap this

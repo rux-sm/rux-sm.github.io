@@ -568,9 +568,12 @@
                 <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
               </h2>
             </div>
-            <!-- New trip sits after the spacer, below. It was absent rather than
-                 disabled until 2026-09-06, because a disabled primary button was
-                 the most prominent thing on the page and did nothing. -->
+            <!-- Shown while a selected trip bar is not the one in the editor.
+                 data.js opens that trip, asking first about unsaved changes.
+                 The words fit a desktop toolbar; a phone's row has room for the
+                 icon alone, so exactly one of the pair shows at each width. -->
+            <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-open-trip" data-scheduler-open-trip hidden>Open trip<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--tertiary rux--btn--icon-only rux--layout--size-md scheduler-toolbar__sm-only" id="scheduler-open-trip-sm" data-scheduler-open-trip aria-label="Open trip" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
             <div class="scheduler-toolbar__spacer"></div>
             <!-- MOVE, THEN ACT. The two arrows are neighbours because paging
                  back and forth is the most repeated gesture here and Today
@@ -743,7 +746,7 @@
                page now has one pattern for companions instead of two.
 
                IT STILL OPENS AND CLOSES, on rux's call -- the board keeps its
-               full width until a bar is clicked. The `rux--side-panel` classes
+               full width until a trip is opened. The `rux--side-panel` classes
                stay because every part INSIDE them is styled from that ancestor;
                only the fixed positioning is neutralised, in overrides.css,
                which is where a component rule belongs. -->
@@ -1173,6 +1176,29 @@
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep it</button>
         <button type="button" class="rux--btn rux--btn--danger" id="scheduler-cancel-confirm">Cancel trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked before an action would lose the editor's unsaved changes. data.js
+       names the trip and runs the action after Save or Discard; closing the box
+       keeps editing. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-unsaved-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-unsaved-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-unsaved-h">Save changes?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Keep editing" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>If you discard them, they are lost.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-unsaved-discard">Discard</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-unsaved-save">Save</button>
       </div>
     </div>
   </div>

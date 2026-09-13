@@ -1156,6 +1156,12 @@ button.scheduler-row-head__num {
    since the gate resolves `<use href>` and knows nothing about masks. Every
    other glyph here comes from the inlined sprite and so does this one. */
 .scheduler-weekbtn__caret { flex: 0 0 auto; }
+/* The pencil that starts the trip editor's title, sitting on the text's
+   baseline with the same gap the week button keeps before its caret. */
+.scheduler-panel-title__icon {
+  vertical-align: -0.1875rem;
+  margin-inline-end: var(--rux-spacing-03);
+}
 /* Everything before this sits left, everything after it right. */
 .scheduler-toolbar__spacer { flex: 1; }
 
@@ -2031,6 +2037,7 @@ button.scheduler-row-head__num {
    display untouched at the width the row is actually used. */
 @media (min-width: 42rem) {
   .scheduler-menu-item--sm-only { display: none; }
+  .scheduler-toolbar__sm-only { display: none; }
 }
 
 /* `.scheduler-toolbar__glyph` IS GONE, 2026-09-11. It existed so `Today` and

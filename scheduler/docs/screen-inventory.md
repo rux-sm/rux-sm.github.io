@@ -100,7 +100,7 @@ Three homes, and one rule for choosing.
 
 | Home | What goes there |
 |---|---|
-| **The panel** | The detail of the thing you selected. One region right of the board, one open at a time. |
+| **The panel** | The detail of the thing you opened. One region right of the board, one open at a time. |
 | **A page** | A list, a feed or a workspace: something you navigate to. |
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
@@ -135,3 +135,11 @@ The grid and the panel can both be open. Only the panel is one at a time.
 A bar growing on click re-stacks the lanes beside it. Its information is the
 panel's job; its actions go in the panel header and on the bar's right-click
 menu.
+
+### Selecting is not opening
+
+A click selects a trip bar: its outline, and its days in the driver grid. Open
+trip in the toolbar, Enter or the bar's right-click menu loads it into the
+panel. The panel keeps its trip through week changes and other selections, so
+a call about another trip does not cost an edit in progress, and it asks
+before unsaved changes are lost.

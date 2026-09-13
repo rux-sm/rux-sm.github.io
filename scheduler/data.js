@@ -886,13 +886,14 @@
     const shownRows = [...gridEl.querySelectorAll('.scheduler-row')].filter(r => !r.hidden);
     shownRows[shownRows.length - 1]?.classList.add('scheduler-row--last');
 
-    // Every bar is replaced on a render, so the panel's opener is gone. Close
-    // rather than leave a panel pointing at an element no longer in the page.
-    closePanel(false);
+    // The editor keeps its trip across a render. Its opener becomes the new bar
+    // for that trip when this week has one, so focus can go back to it.
+    if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
 
     schEl.hidden = false;
     drawAvailability(availabilityRows(data), weekStart);
     placeAvailability();
+    syncSelection();
 
     // THE ONLY MARK FOR TODAY IS ITS HEADER CELL, so the grid brings that cell
     // into view rather than leaving it past the right edge -- which is where a
@@ -1046,9 +1047,18 @@
           gridEl.classList.remove('scheduler-grid--busy');
         }
         await show();
+        refreshEditor(assignmentId);
         toast('success', 'Move undone', `The trip is back on ${label}.`);
       },
     });
+  }
+
+  // A move of the trip in the editor rebuilds the editor from the week just
+  // read, so its bus is current. Unsaved work is left alone.
+  function refreshEditor(assignmentId) {
+    if (panelEl.hidden || !panelArgs?.ref || panelArgs.ref.assignmentId !== String(assignmentId) || unsavedWork()) return;
+    const bar = findBar(panelArgs.ref);
+    if (bar) openPanel(bar);
   }
 
   function installDrag(bar) {
@@ -1139,6 +1149,7 @@
            that threw may still have landed, and the only honest thing on screen
            is what the server says. */
         await show();   // read it back, rather than trusting the move landed
+        refreshEditor(assignmentId);
         if (failed) toast('error', 'Could not move that trip', failed);
         else offerUndo(assignmentId, backTo, label);
       };
@@ -1229,6 +1240,9 @@
   const panelTitle = document.getElementById('scheduler-panel-title');
   const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
   const pageEl = document.querySelector('.scheduler-page');
+  // Open trip: the words on a desktop, the icon alone on a phone.
+  const openTripBtns = [...document.querySelectorAll('[data-scheduler-open-trip]')];
+  const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   const def = (rows) => {
     const dl = el('dl', 'scheduler-def');
@@ -1503,10 +1517,13 @@
      cannot flash on the way out. */
   function closePanel(returnFocus = true) {
     if (panelEl.hidden) return;
+    // Closing puts the editor's own trip down; a different trip selected
+    // meanwhile stays selected.
+    const picked = selectedBar();
+    if (picked && isEditorBar(picked)) picked.setAttribute('aria-pressed', 'false');
     panelEl.hidden = true;
     if (tripEl) tripEl.hidden = true;
-    markAvailDays(null);
-    for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
+    syncSelection();
     const opener = panelOpener;
     panelOpener = null;
     // THE ROSTER COMES BACK FIRST, so the fit below measures a board that
@@ -1535,8 +1552,9 @@
      second is not ours to invent (AGENTS.md). Close discards.
 
      SAVE READS BACK rather than trusting the write, the same rule the drag
-     follows: `show()` refetches the week. A render replaces every bar, so the
-     panel closes with it -- reopening on the new bar is not done yet. */
+     follows: `show()` refetches the week, and the Save button closes the
+     editor after it. Any other render leaves the editor open on its trip,
+     whatever week it draws. */
   const FIELD = (id, label, control, cls = 'rux--form-item') => {
     const item = el('div', cls);
     const lw = el('div', 'rux--text-input__label-wrapper');
@@ -2524,8 +2542,34 @@
      field is marked invalid. The same is not true of the end date, which
      falls back to the start, or of the pick-up pair, which only a split
      reads. */
-  function refreshDirty() {
+  // Whether the form differs from the trip it opened on, in any part Save writes.
+  function changed() {
+    if (!editing) return false;
     const patch = patchOf();
+    return stopsPatch().length > 0 || !!contactPatch() || !!paymentsPatch()?.work
+      || (!!patch && Object.keys(patch).length > 0);
+  }
+
+  // Unsaved work is a change in an editor that is open.
+  function unsavedWork() { return !panelEl.hidden && changed(); }
+
+  /* The title names the trip being edited, from the destination as typed, since
+     the selected bar can be a different trip: a pencil and the destination on
+     one line, the whole name on hover, and "Edit trip" for a screen reader in
+     place of the pencil. A new trip is titled in words. */
+  function setTitle() {
+    if (!editing) return;
+    const dest = document.getElementById('scheduler-f-destination')?.value.trim();
+    for (const [h, size] of [[panelTitle, '20'], [panelTitleCollapsed, '16']]) {
+      if (editing.creating) { h.textContent = 'New trip'; h.removeAttribute('title'); continue; }
+      const icon = svgUse('#i-edit', size, '0 0 32 32');
+      icon.setAttribute('class', 'scheduler-panel-title__icon');
+      h.replaceChildren(icon, el('span', 'rux--visually-hidden', 'Edit trip: '), document.createTextNode(dest || 'No destination'));
+      if (dest) h.title = dest; else h.removeAttribute('title');
+    }
+  }
+
+  function refreshDirty() {
     const startEl = document.getElementById('scheduler-f-start');
     const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
@@ -2544,17 +2588,14 @@
     // A SCHEDULE EDIT IS A REAL EDIT. Save is armed by the trip patch OR by a
     // stop patch; asking only the first left a panel where changing the spot
     // time did nothing and Save stayed grey.
-    const stopWork = stopsPatch().length > 0;
-    const contactWork = !!contactPatch();
-    const payWork = !!paymentsPatch()?.work;
     /* NOTHING TOUCHED is the honest question, and it is not the same one Save
        asks. `patchOf` diffs the form against `editing.before`, which is filled
        from the DRAFT on a new trip just as it is from the row on an existing
        one, so this is true of an untouched panel either way. */
-    const nothingChanged = !stopWork && !contactWork && !payWork
-      && (!patch || Object.keys(patch).length === 0);
+    const nothingChanged = !changed();
     const nothingToDo = !editing?.creating && nothingChanged;
     panelSave.disabled = !startOk || !destOk || nothingToDo;
+    setTitle();
     /* RESET ANSWERS TO `nothingChanged`, NOT `nothingToDo`, corrected
        2026-09-10. `nothingToDo` carries `!editing?.creating` because a NEW
        trip is saveable with nothing changed -- its defaults are already a
@@ -2615,37 +2656,29 @@
     });
   }
 
-  /* WHAT BUILT THE PANEL, so Reset can build it again. `openPanel` already
-     reads every field out of `trip`, and in edit mode `trip` comes from
-     `panelIndex.trips` -- the SAVED row, not anything the form has touched.
-     So replaying the same call IS the reset, and there is no second copy of
-     the before-state to drift from `editing.before`. In create mode the same
+  /* WHAT BUILT THE PANEL, so Reset can build it again and a render can find
+     the trip's bar. `ref` names the bar by its values, and `trip` is the saved
+     row the editor opened on, kept because the week on screen may no longer
+     hold it. Replaying `openPanel` with these IS the reset; in create mode the
      replay hands back the untouched draft. */
   let panelArgs = null;
 
-  function openPanel(bar, draft) {
-    panelArgs = { bar, draft };
+  // `bar` opens a trip from the board; `again` replays an earlier `panelArgs`.
+  function openPanel(bar, draft, again) {
     const creating = !!draft;
-    const trip = draft ?? panelIndex.trips.get(bar.dataset.tripId);
+    const ref = creating ? null : (again?.ref ?? (bar ? barRef(bar) : null));
+    const trip = draft ?? again?.trip ?? (ref ? panelIndex.trips.get(ref.tripId) : null);
     if (!trip) return;
-    const legName = bar?.dataset.leg || 'outbound';
+    panelArgs = { ref, draft, trip: creating ? null : trip };
+    const legName = ref?.leg || 'outbound';
     const leg = legsOf(trip).find(l => l.leg === legName) ?? legsOf(trip)[0];
-    const bus = bar ? panelIndex.buses.get(bar.dataset.busId) : null;
-    const assign = bar ? (trip.trip_assignments || []).find(a => a.id === bar.dataset.assignmentId) : null;
+    const bus = ref ? panelIndex.buses.get(ref.busId) : null;
+    const assign = ref ? (trip.trip_assignments || []).find(a => a.id === ref.assignmentId) : null;
 
-    /* THE TITLE STATES THE VERB, NOT THE TRIP. It was a "Create"/"Trip" label
-       over the DESTINATION with the CUSTOMER as a subtitle -- three lines, two
-       of which the form repeats as its first two fields, and one of which would
-       go stale the moment the destination was edited.
-
-       WHAT MADE IDENTITY REDUNDANT IS THE MOVE TO A COLUMN. While this was an
-       overlay it covered the board, so the header was the only thing saying
-       which trip was open. Beside the board, the bar you clicked is still on
-       screen and still `aria-pressed` -- selection is the state of record and
-       it is two inches to the left. The header does not have to say it again.
-
-       "New trip" and "Edit trip" say what Save will do, which is the panel's
-       whole contract and its only action. */
+    /* THE TITLE SAYS WHICH TRIP: "New trip", or a pencil and the destination,
+       because the selected bar can be a different trip from the one in the
+       editor. `setTitle` builds it and keeps it in step as the destination is
+       typed. */
     const heading = creating ? 'New trip' : 'Edit trip';
     panelTitle.textContent = heading;
     panelTitleCollapsed.textContent = heading;
@@ -4007,17 +4040,13 @@
 
     refreshDirty();
 
-    panelOpener = bar;
-    /* THE WHOLE SPAN, NOT THE FIRST DAY. The bar carries both numbers and the
-       roster brackets all of them; reading only `--scheduler-start` here is what made
-       a five-day trip light one column. */
-    markAvailDays(
-      bar ? Number(bar.style.getPropertyValue('--scheduler-start')) : null,
-      bar ? Number(bar.style.getPropertyValue('--scheduler-span')) : 1,
-    );
+    if (!again) panelOpener = bar;
     const wasOpen = !panelEl.hidden;
     panelEl.hidden = false;
     if (tripEl) tripEl.hidden = false;
+    // Once the panel shows, so Open trip and the driver grid treat this trip
+    // as the one in the editor.
+    syncSelection();
     window.Rux?.schedule?.fit?.();
     /* THE ROSTER ONLY STEPS ASIDE ON A PHONE, NARROWED 2026-09-11.
 
@@ -4038,7 +4067,7 @@
        decides what happens during the frame between", because this line is
        what stops both being up at once.
 
-       STILL ONLY ON THE WAY IN. Clicking a second bar while the editor is open
+       STILL ONLY ON THE WAY IN. Opening a second trip while the editor is open
        calls this again, and re-taking the yield would undo a `Drivers` press
        made in between. */
     if (!wasOpen && availOn && !availYielded && matchMedia('(max-width: 41.98rem)').matches) {
@@ -4258,13 +4287,119 @@
     }
   }
 
+  // The driver grid's days: the selected bar's, or with nothing selected the
+  // editor's own trip when this week has a bar for it.
   const currentTripDay = () => {
-    const bar = document.querySelector('.scheduler-bar[aria-pressed="true"]');
+    const bar = selectedBar() ?? (!panelEl.hidden && panelArgs?.ref ? findBar(panelArgs.ref) : null);
     if (!bar) return null;
     const start = Number(bar.style.getPropertyValue('--scheduler-start'));
     const span = Number(bar.style.getPropertyValue('--scheduler-span'));
     return Number.isFinite(start) ? { start, span: Number.isFinite(span) ? span : 1 } : null;
   };
+
+  /* ── SELECTING IS NOT OPENING ────────────────────────────────────────────────
+     A click selects a bar (app.js owns the toggle) and leaves the editor alone:
+     the selection lights its days in the driver grid, and Open trip shows when
+     the selected bar is not the one being edited. Opening goes through
+     `whenSafe`, which asks before unsaved changes would be lost. A bar is named
+     by `barRef` values rather than held, because every render replaces the
+     elements. */
+  function selectedBar() { return gridEl.querySelector('.scheduler-bar[aria-pressed="true"]'); }
+
+  function barRef(bar) {
+    return {
+      tripId: bar.dataset.tripId,
+      leg: bar.dataset.leg || 'outbound',
+      busId: bar.dataset.busId || null,
+      assignmentId: bar.dataset.assignmentId || null,
+    };
+  }
+
+  function findBar(ref) {
+    if (!ref?.tripId) return null;
+    return [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(ref.tripId)}"]`)]
+      .find(b => (b.dataset.leg || 'outbound') === ref.leg && (b.dataset.assignmentId || null) === ref.assignmentId) ?? null;
+  }
+
+  function isEditorBar(bar) {
+    const ref = panelArgs?.ref;
+    return !panelEl.hidden && !!ref && !panelArgs.draft && bar.dataset.tripId === ref.tripId
+      && (bar.dataset.leg || 'outbound') === ref.leg && (bar.dataset.assignmentId || null) === ref.assignmentId;
+  }
+
+  function syncSelection() {
+    const bar = selectedBar();
+    const hide = !bar?.dataset.tripId || isEditorBar(bar);
+    for (const b of openTripBtns) b.hidden = hide;
+    const on = currentTripDay();
+    markAvailDays(on ? on.start : null, on ? on.span : 1);
+  }
+
+  function selectBar(bar) {
+    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) if (b !== bar) b.setAttribute('aria-pressed', 'false');
+    bar.setAttribute('aria-pressed', 'true');
+  }
+
+  function clearSelection() {
+    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
+  }
+
+  // Opens the trip a ref names, finding its bar again after a save's render.
+  function openRef(ref) {
+    const bar = findBar(ref);
+    if (!bar) { toast('info', 'That trip is not on this week'); return; }
+    selectBar(bar);
+    openPanel(bar);
+  }
+
+  function openSelected() {
+    const bar = selectedBar();
+    if (!bar?.dataset.tripId || isEditorBar(bar)) return;
+    const ref = barRef(bar);
+    whenSafe(() => openRef(ref));
+  }
+
+  /* ASK BEFORE LOSING WORK. With nothing unsaved the action runs at once.
+     Otherwise the box names the trip: Save runs the action only when the save
+     succeeds, Discard runs it straight away, and closing the box drops it. */
+  let afterPrompt = null;
+  function whenSafe(action) {
+    if (!unsavedWork()) { action(); return; }
+    afterPrompt = action;
+    const name = document.getElementById('scheduler-f-destination')?.value.trim() || panelArgs?.trip?.destination;
+    const heading = document.getElementById('scheduler-unsaved-h');
+    if (heading) heading.textContent = name ? `Save changes to ${name}?` : 'Save changes?';
+    window.Rux?.modal?.open?.(unsavedModal);
+  }
+  document.getElementById('scheduler-unsaved-discard')?.addEventListener('click', () => {
+    const next = afterPrompt;
+    afterPrompt = null;
+    window.Rux?.modal?.close?.(unsavedModal);
+    next?.();
+  });
+  document.getElementById('scheduler-unsaved-save')?.addEventListener('click', async () => {
+    const next = afterPrompt;
+    afterPrompt = null;
+    window.Rux?.modal?.close?.(unsavedModal);
+    if (await saveEditor()) next?.();
+  });
+  unsavedModal?.addEventListener('rux:modal-closed', () => { afterPrompt = null; });
+
+  // The browser's own warning covers a reload or a closed tab.
+  window.addEventListener('beforeunload', e => {
+    if (unsavedWork()) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  for (const b of openTripBtns) b.addEventListener('click', openSelected);
+
+  // Enter on a selected bar opens it. This runs before app.js's handler, so the
+  // first Enter on an unselected bar only selects it.
+  gridEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar')) openSelected();
+  });
+
+  // Every selection change, from a click, a key or a script, lands here.
+  new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
   function placeAvailability() {
     /* THE TOGGLE REPORTS WHAT IS ON SCREEN, NOT WHAT WAS WANTED. It was written
@@ -4479,14 +4614,11 @@
      appended, the disabled schedule inputs. It also re-runs `refreshDirty`,
      so the bar disarms itself the moment there is nothing left to discard.
 
-     NO CONFIRM ON IT, which is a judgement and not an oversight: what it
-     discards is unsaved typing in a panel that already discards the same
-     thing when closed, and the button is dead unless there IS something to
-     discard. A confirm on the smaller of two ways to lose the same edits
-     would be theatre. */
+     NO CONFIRM ON IT: pressing Reset is itself the ask to discard, and the
+     button is dead unless there is something to discard. */
   panelReset?.addEventListener('click', () => {
     if (!panelArgs) return;
-    openPanel(panelArgs.bar, panelArgs.draft);
+    openPanel(null, panelArgs.draft, panelArgs);
   });
 
   /* THE BUTTON ASKS; THE MODAL DECIDES. This opens `scheduler-cancel-modal` and
@@ -4498,10 +4630,18 @@
     if (editing?.id) openCancelModal(editing.id);
   });
 
+  // Save closes the editor once the week has been read back.
   panelSave?.addEventListener('click', async () => {
-    if (!editing) return;
-    const patch = patchOf();
-    if (!editing.creating && (!patch || !Object.keys(patch).length)) return;
+    if (await saveEditor()) closePanel(false);
+  });
+
+  /* SAVE AS A STEP OTHER ACTIONS CAN WAIT ON. True once everything is written;
+     false when there is nothing to write or a write fails, which leaves the
+     editor as it was with the error in a toast. Work is anything `changed`
+     sees, so a time, contact or payment edit alone saves too. */
+  async function saveEditor() {
+    if (!editing || (!editing.creating && !changed())) return false;
+    const patch = patchOf() || {};
     const id = editing.id;
     const creating = editing.creating;
     panelSave.disabled = true;
@@ -4661,19 +4801,21 @@
           await show();
           toast('warning', 'The trip was created without its bus.',
             `It is in the Unassigned row and can be dragged onto one. ${aErr.message}`);
-          return;
+          return true;
         }
       }
-      // READ IT BACK rather than trusting the write, as the drag does. The
-      // render replaces every bar, so the panel closes with it.
+      // READ IT BACK rather than trusting the write, as the drag does.
       await show();
+      const fields = Object.keys(patch).length;
       if (creating) toast('success', wantBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
-      else toast('success', `Saved ${Object.keys(patch).length} change${Object.keys(patch).length === 1 ? '' : 's'}.`);
+      else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
+      return true;
     } catch (e) {
       toast('error', `The trip was not ${creating ? 'created' : 'saved'}. ${e.message}`);
       panelSave.disabled = false;
+      return false;
     }
-  });
+  }
 
   /* ── RIGHT-CLICK AN EMPTY CELL ─────────────────────────────────────────────
      The old board's gesture, and the reason it is worth keeping: the two
@@ -4792,7 +4934,12 @@
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
 
-    if (item.id === 'scheduler-bar-menu-open') { openPanel(bar); return; }
+    if (item.id === 'scheduler-bar-menu-open') {
+      const ref = barRef(bar);
+      selectBar(bar);
+      whenSafe(() => openRef(ref));
+      return;
+    }
 
     if (item.id === 'scheduler-bar-menu-cancel') {
       openCancelModal(bar.dataset.tripId);
@@ -4809,6 +4956,7 @@
           client.from('trip_assignments').update({ bus_id: null }).eq('id', assignmentId).then(r => r));
         if (error) throw new Error(error.message);
         await show();
+        refreshEditor(assignmentId);
         toast('success', 'Taken off its bus. It is in the Unassigned row.');
       } catch (err) {
         toast('error', `The trip was not moved. ${err.message}`);
@@ -4833,7 +4981,8 @@
      declaration rather than a const because both callers are wired above
      where `cancelling` is declared. */
   function openCancelModal(tripId) {
-    const trip = panelIndex.trips.get(tripId);
+    // The editor's own trip may be on another week than the one on screen.
+    const trip = panelIndex.trips.get(tripId) ?? (panelArgs?.trip?.id === tripId ? panelArgs.trip : null);
     cancelling = tripId;
     document.getElementById('scheduler-cancel-what').textContent =
       `${trip?.destination || 'This trip'}${trip?.customer ? ` for ${trip.customer}` : ''}.`;
@@ -4856,6 +5005,8 @@
       const { error } = await withTimeout(client.from('trips').update(patch).eq('id', id).then(r => r));
       if (error) throw new Error(error.message);
       await show();
+      // A cancelled trip leaves the board, and the editor with it.
+      if (editing?.id === id && !panelEl.hidden) closePanel(false);
       toast('success', 'Trip cancelled. It is off the schedule and still on the trips list.');
     } catch (e) {
       toast('error', `The trip was not cancelled. ${e.message}`);
@@ -4866,7 +5017,7 @@
     if (!e.target.closest('#scheduler-cell-menu-new')) return;
     window.Rux?.menu?.close?.(cellMenu);
     cellMenu.hidden = true;
-    if (cellMenuAt) openCreate(cellMenuAt);
+    if (cellMenuAt) { const at = cellMenuAt; whenSafe(() => openCreate(at)); }
   });
   cellMenu?.addEventListener('rux:menu-closed', () => { cellMenu.hidden = true; });
 
@@ -4897,11 +5048,18 @@
   document.getElementById('scheduler-menu-new-trip')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
-    openCreate();
+    whenSafe(() => openCreate());
   });
-  document.getElementById('scheduler-panel-close')?.addEventListener('click', () => closePanel());
+  document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
+  /* ESCAPE ACTS WHERE FOCUS IS. Inside the editor it closes the editor; on the
+     board it clears a selection first. An open dialog or search keeps the key
+     for itself. */
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && !panelEl.hidden) { e.preventDefault(); closePanel(); }
+    if (e.key !== 'Escape') return;
+    if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
+    const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);
+    if (!inEditor && selectedBar()) { e.preventDefault(); clearSelection(); return; }
+    if (!panelEl.hidden) { e.preventDefault(); whenSafe(() => closePanel()); }
   });
 
   /* ── SEARCHING THE WEEK ON SCREEN ─────────────────────────────────────────
@@ -5269,19 +5427,14 @@
         mark([trip.customer, trip.booking_contact_name].filter(Boolean).join(' · ') || 'No organization',
           'scheduler-search__meta', safe),
       );
-      /* GOING TO A RESULT IS A WEEK CHANGE FIRST AND A SELECTION SECOND, and
-         both halves have to wait on the read. The trip may be on any week, so
-         the cursor moves to the Monday (or Sunday) of its start date, `show()`
-         re-reads, and only then does a bar with that trip id exist to click.
-
-         IT CLICKS THE BAR for the reason the previous version learned:
-         selection is app.js's, on a handler this file does not own, so calling
-         `openPanel` would open the editor with the board showing nothing
-         selected and the roster's day column dark.
+      /* GOING TO A RESULT IS A WEEK CHANGE FIRST AND AN OPEN SECOND, and both
+         halves wait on the read. The cursor moves to the week of the trip's
+         start date, `show()` re-reads, and then the trip's bar is selected and
+         opened through `whenSafe`, so an edit in progress is asked about first.
 
          A TRIP CAN BE ON THE WEEK AND STILL HAVE NO BAR -- it is unassigned and
          off the Unassigned row, or its leg falls outside the seven days. The
-         week still moves, which is the useful half, and the panel says so
+         week still moves, which is the useful half, and a toast says so
          rather than failing silently. */
       btn.addEventListener('click', async () => {
         collapseSearch();
@@ -5291,8 +5444,9 @@
         const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(trip.id)}"]`);
         if (!bar) { toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.'); return; }
         bar.scrollIntoView({ block: 'center', inline: 'center' });
-        if (bar.getAttribute('aria-pressed') === 'true') openPanel(bar);
-        else bar.click();
+        const ref = barRef(bar);
+        selectBar(bar);
+        if (!isEditorBar(bar)) whenSafe(() => openRef(ref));
       });
       row.appendChild(btn);
       list.appendChild(row);
@@ -5371,9 +5525,11 @@
     }
     if (e.key === 'Escape' && searchOpen()) { e.preventDefault(); collapseSearch(); }
   });
+  // A click on empty board space puts the selection down. A click on a bar is
+  // app.js's toggle and opens nothing.
   gridEl.addEventListener('click', e => {
-    const bar = e.target.closest('.scheduler-bar');
-    if (bar && bar.dataset.tripId) openPanel(bar);
+    if (e.target.closest('.scheduler-bar') || !e.target.closest('.scheduler-track')) return;
+    clearSelection();
   });
 
   // -- the week, and moving between them ------------------------------------

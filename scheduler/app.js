@@ -1,10 +1,10 @@
 // BEHAVIOUR: selecting a trip bar, and sizing the day columns to whole pixels.
-// No network, no drag, no editing yet.
+// No network, no drag and no editing here.
 //
 // A bar is a role=button whose pressed state IS the selection -- aria-pressed
-// is the state of record and no class mirrors it -- and the browser pane
-// delivers Enter and Space as keydown without a click, so this turns those
-// into one.
+// is the state of record and no class mirrors it. A click or Space toggles it.
+// Enter only selects, because on the schedule page data.js takes Enter on a
+// selected bar as "open this trip".
 (() => {
   'use strict';
 
@@ -17,7 +17,9 @@
   });
 
   document.addEventListener('keydown', e => {
-    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.scheduler-bar')) { e.preventDefault(); e.target.click(); }
+    if (!e.target.matches('.scheduler-bar')) return;
+    if (e.key === ' ') { e.preventDefault(); e.target.click(); }
+    if (e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-pressed') !== 'true') e.target.click(); }
   });
 
   /* ── WHOLE-PIXEL DAY COLUMNS ──────────────────────────────────────────────

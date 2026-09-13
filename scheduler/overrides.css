@@ -327,6 +327,20 @@
 /* The collapsed title is absolutely positioned, so it is held to the title's
    width here; otherwise it grows with its text and widens the page unseen. */
 .rux--side-panel .rux--side-panel__collapsed-title-text { inset-inline: 0; }
+
+/* 32px HEAD ON A DESKTOP, with the toolbar and the driver panel's head in
+   app.css. The header reads the 32px token where it asks for the 40px one, and
+   Carbon's close button, which `rux--btn--md` fixes at 2.5rem, is set to the same
+   32px at Carbon's own selector. A phone keeps the 40px head. */
+@media (min-width: 42rem) {
+  .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+    --rux-layout-size-height-md: var(--rux-layout-size-height-sm);
+  }
+  .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+    block-size: var(--rux-layout-size-height-sm);
+    inline-size: var(--rux-layout-size-height-sm);
+  }
+}
 /* THE TITLE IS CARBON'S OWN `heading-03` AGAIN, 2026-09-10 on rux's call,
    and the way to say that is to STOP SAYING ANYTHING -- the four
    declarations that were here forced `heading-compact-02`, 16px at 600, and

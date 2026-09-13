@@ -1168,6 +1168,19 @@ button.scheduler-row-head__num {
 /* Everything before this sits left, everything after it right. */
 .scheduler-toolbar__spacer { flex: 1; }
 
+/* 32px REGION HEADS ON A DESKTOP. The toolbar and the driver panel's head take
+   the 32px size token wherever they and their controls ask for the 40px one,
+   so the heads match the 32px day and tab bands beneath them. This is how
+   Carbon's own table toolbar resizes its controls: it redefines the size
+   token in its scope. A phone keeps 40px heads for touch. The trip editor's
+   head does the same in overrides.css. */
+@media (min-width: 42rem) {
+  .scheduler-toolbar,
+  .scheduler-aside__head {
+    --rux-layout-size-height-md: var(--rux-layout-size-height-sm);
+  }
+}
+
 
 /* ── THE PAGE BESIDE THE PANEL ──────────────────────────────────────────────
    Carbon's side panel is `position: fixed` at z-index 9000, so it floats over

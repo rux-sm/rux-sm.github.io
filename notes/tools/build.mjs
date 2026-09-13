@@ -1301,8 +1301,9 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    per row, and the name gets the whole width back. */
 .notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
 .notes-dg-node > summary::marker { content: ""; }
+/* A tile off the walk has no number, so the row names its category instead. */
 .notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
-  color: var(--rux-text-secondary, #525252); }
+  color: var(--rux-text-secondary, #525252); text-transform: uppercase; letter-spacing: .06em; }
 .notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
 .notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
@@ -1574,7 +1575,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-dg-node.notes-dg-cat--config,
 .notes-dg-node.notes-dg-cat--info { border-style: dashed; }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
-/* Setup is magenta, not purple: purple and the Inquiry blue merge under
+/* Setup is magenta, not purple: purple and the Lookup blue merge under
    red-green colour blindness, and the two share the dashed border. */
 .notes-dg-node.notes-dg-cat--config { --dg-accent: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name,
@@ -2550,11 +2551,11 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
       // behaviour this had all along.
       const tiles = here.map(n => `<details class="notes-dg-node notes-dg-node--${esc(n.kind)} notes-dg-cat--${
         esc(cat.get(n.id) ?? 'step')}" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">${esc(n.n != null ? String(n.n) : '·')}</span><span class="notes-dg-node-name">${
+                <summary><span class="notes-dg-node-n">${esc(n.n != null ? String(n.n) : CATEGORY_NAME[cat.get(n.id) ?? 'step'])}</span><span class="notes-dg-node-name">${
                   esc(n.session)}</span>${n.code ? `<code class="notes-dg-node-code">${esc(n.code)}</code>` : ''}${strip(n)}</summary>
                 <div class="notes-dg-detail">
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">${
-                    esc(n.n != null ? String(n.n) : '·')}</span><span class="notes-dg-detail-name">${esc(n.session)}</span>
+                    esc(n.n != null ? String(n.n) : '')}</span><span class="notes-dg-detail-name">${esc(n.session)}</span>
                     <span class="notes-dg-kind">${esc(CATEGORY_NAME[cat.get(n.id)] ?? 'Step')}</span><span class="notes-dg-kind-fine">${esc(n.kind)}</span>${
                     n.code ? `<code class="notes-dg-detail-code">${esc(n.code)}</code>` : ''}</p>
                   ${zone('notes-dg-zone', field(n, 'route', 'Route'))}

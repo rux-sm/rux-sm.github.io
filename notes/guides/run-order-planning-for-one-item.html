@@ -469,8 +469,9 @@
    per row, and the name gets the whole width back. */
 .notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
 .notes-dg-node > summary::marker { content: ""; }
+/* A tile off the walk has no number, so the row names its category instead. */
 .notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
-  color: var(--rux-text-secondary, #525252); }
+  color: var(--rux-text-secondary, #525252); text-transform: uppercase; letter-spacing: .06em; }
 .notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
 .notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
@@ -742,7 +743,7 @@
 .notes-dg-node.notes-dg-cat--config,
 .notes-dg-node.notes-dg-cat--info { border-style: dashed; }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
-/* Setup is magenta, not purple: purple and the Inquiry blue merge under
+/* Setup is magenta, not purple: purple and the Lookup blue merge under
    red-green colour blindness, and the two share the dashed border. */
 .notes-dg-node.notes-dg-cat--config { --dg-accent: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name,
@@ -1516,7 +1517,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 2ca6904 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 4f4da62 · contract 8</p>
       </div>
     </div>
   </div>

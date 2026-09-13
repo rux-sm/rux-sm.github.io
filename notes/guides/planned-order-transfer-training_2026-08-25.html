@@ -469,8 +469,9 @@
    per row, and the name gets the whole width back. */
 .notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
 .notes-dg-node > summary::marker { content: ""; }
+/* A tile off the walk has no number, so the row names its category instead. */
 .notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
-  color: var(--rux-text-secondary, #525252); }
+  color: var(--rux-text-secondary, #525252); text-transform: uppercase; letter-spacing: .06em; }
 .notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
 .notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
@@ -742,7 +743,7 @@
 .notes-dg-node.notes-dg-cat--config,
 .notes-dg-node.notes-dg-cat--info { border-style: dashed; }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
-/* Setup is magenta, not purple: purple and the Inquiry blue merge under
+/* Setup is magenta, not purple: purple and the Lookup blue merge under
    red-green colour blindness, and the two share the dashed border. */
 .notes-dg-node.notes-dg-cat--config { --dg-accent: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name,
@@ -1456,7 +1457,7 @@ Planned Purchase Order    000000347   NA1   BAM-ROD      10.0000 ea    Purchase 
           <p class="notes-prose-measure"><strong>Three of the codes above are drill-in only and are not gaps</strong> per §4.1. <span class="notes-t-exact">cprrp0521s000</span> is the Find selection form of the Item Order Plan; <span class="notes-t-exact">tdipu0601m000</span> is the Item - Business Partner tab inside an Item - Purchase dialog; <span class="notes-t-exact">ttstpsplopen</span> is LN&#39;s shared Select Device dialog. None appears in <span class="notes-t-exact">the source on file</span>, which is the expected result for a form reached from inside another session.</p>
           <p class="notes-prose-measure"><strong>Session help is filed for four of the thirteen</strong> — <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-exact">cprrp1220m000</span>, <span class="notes-t-exact">cprrp1100m000</span> and <span class="notes-t-exact">cppat1210m000</span> — which is why this review&#39;s load-bearing claims could be verified rather than left as leads. The <span class="notes-t-exact">cprpd</span> and <span class="notes-t-exact">cprmp</span> prefixes remain entirely unexported, and neither <span class="notes-t-exact">tdipu0101m000</span> nor <span class="notes-t-exact">tdipu0601m000</span> has help. </p>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 2ca6904 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 4f4da62 · contract 8</p>
       </div>
     </div>
   </div>

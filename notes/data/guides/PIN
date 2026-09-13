@@ -1,9 +1,9 @@
-commit   2ca69048c8bea923f1f659c3daa1135e97b1b656
-date     2026-09-13T22:06:29Z
-subject  fix(guides): Take the map link out of the bold
+commit   4f4da624e3db6c05d19af4213a084904fcd64922
+date     2026-09-13T22:28:20Z
+subject  docs(diagram): Call the Inquiry category Lookup
 contract 8 
 tier     export
-sha256   73fc2a5f68143ecfbc0f30a6441ed8b0ba60a05b47078cd79ba38694e5c3bd9d
+sha256   e44a93795b69714f9daf5dbf2cbdb91236f9c2c5b90834005fb447c2c3d66b5f
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

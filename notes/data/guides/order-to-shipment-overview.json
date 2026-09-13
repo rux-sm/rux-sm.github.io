@@ -536,10 +536,10 @@
             },
             {
               "t": "text",
-              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
+              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
             }
           ],
-          "text": "Nine tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
+          "text": "Nine tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are lookups, and a lookup carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it."
         },
         {
           "kind": "heading",

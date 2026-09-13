@@ -469,8 +469,9 @@
    per row, and the name gets the whole width back. */
 .notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
 .notes-dg-node > summary::marker { content: ""; }
+/* A tile off the walk has no number, so the row names its category instead. */
 .notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
-  color: var(--rux-text-secondary, #525252); }
+  color: var(--rux-text-secondary, #525252); text-transform: uppercase; letter-spacing: .06em; }
 .notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
 .notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
@@ -742,7 +743,7 @@
 .notes-dg-node.notes-dg-cat--config,
 .notes-dg-node.notes-dg-cat--info { border-style: dashed; }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
-/* Setup is magenta, not purple: purple and the Inquiry blue merge under
+/* Setup is magenta, not purple: purple and the Lookup blue merge under
    red-green colour blindness, and the two share the dashed border. */
 .notes-dg-node.notes-dg-cat--config { --dg-accent: var(--rux-tag-color-magenta, #9f1853); }
 .notes-dg-node.notes-dg-cat--config .notes-dg-node-name,
@@ -1240,9 +1241,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="notes-dg-lane" style="grid-row:7">Warehousing</div>
             <div class="notes-dg-cell" style="grid-column:2;grid-row:2">
               <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Items and groups</span><code class="notes-dg-node-code">tcibd0501m100</code></summary>
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Items and groups</span><code class="notes-dg-node-code">tcibd0501m100</code></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Items and groups</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Items and groups</span>
                     <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tcibd0501m100</code></p>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; tick a row in <span class="notes-t-named">Items</span> <span class="notes-t-exact">tcibd0501m000</span>, <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span>, and drill in</p>
@@ -1259,9 +1260,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Item - Purchase</span><code class="notes-dg-node-code">tdipu0601m000</code></summary>
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Item - Purchase</span><code class="notes-dg-node-code">tdipu0601m000</code></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Item - Purchase</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Item - Purchase</span>
                     <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tdipu0601m000</code></p>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; <strong>Go to Details</strong> from <span class="notes-t-named">Items - Purchase</span> <span class="notes-t-exact">tdipu0101m000</span>, <span class="notes-t-route"><span>Procurement</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Purchase</span></span></p>
@@ -1278,9 +1279,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--config" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Bill of material and routing</span></summary>
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Bill of material and routing</span></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Bill of material and routing</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Bill of material and routing</span>
                     <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
                   <div class="notes-dg-zone">
@@ -1291,9 +1292,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--config" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planning cluster row on the item</span></summary>
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Planning cluster row on the item</span></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planning cluster row on the item</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Planning cluster row on the item</span>
                     <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
                   <div class="notes-dg-zone">
@@ -1372,10 +1373,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--read notes-dg-cat--info" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Item Order Plan</span><code class="notes-dg-node-code">cprrp0520m000</code></summary>
+                <summary><span class="notes-dg-node-n">Lookup</span><span class="notes-dg-node-name">Item Order Plan</span><code class="notes-dg-node-code">cprrp0520m000</code></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Item Order Plan</span>
-                    <span class="notes-dg-kind">Inquiry</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">cprrp0520m000</code></p>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Item Order Plan</span>
+                    <span class="notes-dg-kind">Lookup</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">cprrp0520m000</code></p>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></p>
                   </div>
@@ -1414,9 +1415,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--planned notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planned production order</span></summary>
+                <summary><span class="notes-dg-node-n">Result</span><span class="notes-dg-node-name">Planned production order</span></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planned production order</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Planned production order</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">planned</span></p>
                   
                   <div class="notes-dg-zone">
@@ -1427,9 +1428,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--planned notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planned purchase order</span></summary>
+                <summary><span class="notes-dg-node-n">Result</span><span class="notes-dg-node-name">Planned purchase order</span></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planned purchase order</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Planned purchase order</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">planned</span></p>
                   
                   <div class="notes-dg-zone">
@@ -1509,10 +1510,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <div class="notes-dg-cell" style="grid-column:3;grid-row:7">
               <details class="notes-dg-node notes-dg-node--read notes-dg-cat--info" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Inventory 360</span><code class="notes-dg-node-code">whwmd4300m000</code></summary>
+                <summary><span class="notes-dg-node-n">Lookup</span><span class="notes-dg-node-name">Inventory 360</span><code class="notes-dg-node-code">whwmd4300m000</code></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Inventory 360</span>
-                    <span class="notes-dg-kind">Inquiry</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">whwmd4300m000</code></p>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Inventory 360</span>
+                    <span class="notes-dg-kind">Lookup</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">whwmd4300m000</code></p>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></p>
                   </div>
@@ -1551,9 +1552,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
               <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--result" name="notes-dg-node">
-                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Finished item into stock</span></summary>
+                <summary><span class="notes-dg-node-n">Result</span><span class="notes-dg-node-name">Finished item into stock</span></summary>
                 <div class="notes-dg-detail">
-                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Finished item into stock</span>
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Finished item into stock</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
                   <div class="notes-dg-zone">
@@ -1583,7 +1584,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <ul class="notes-dg-legend-list">
             <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--step"><span class="notes-dg-node-name">Step</span></span></li>
             <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--config"><span class="notes-dg-node-name">Setup</span></span></li>
-            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--info"><span class="notes-dg-node-name">Inquiry</span></span></li>
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--info"><span class="notes-dg-node-name">Lookup</span></span></li>
             <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--result"><span class="notes-dg-node-name">Result</span></span></li>
             <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--check"><span class="notes-dg-node-name">Checkpoint</span></span><span class="notes-dg-legend-gloss">decides on its own, and can stop without saying so</span></li>
           </ul>
@@ -1592,7 +1593,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </figure>
         </section>
 
-<p class="rux--type-caption-01 notes-revision">Built from atlas 2ca6904 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 4f4da62 · contract 8</p>
       </div>
     </div>
   </div>

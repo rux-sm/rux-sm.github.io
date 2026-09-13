@@ -31,11 +31,11 @@ is not extended; whether it is retired is atlas's call.
 | :--- | :--- | :--- |
 | **Step** | what do I do here | everything else on the route |
 | **Setup** | what has to be configured before any of this runs | no `flow` edge, in or out |
-| **Inquiry** | what is true right now — opened, never changed | `kind` is `read` |
+| **Lookup** | what is true right now — opened, never changed | `kind` is `read` |
 | **Result** | what now exists, that nobody performed | `planned`, `real`, `outcome`, `terminal`, on the route |
 | **Checkpoint** | what decides on its own, and how would I know | `kind` is `gate` or `decision` |
 
-The internal classes read `config` for Setup and `info` for Inquiry; renaming
+The internal classes read `config` for Setup and `info` for Lookup; renaming
 them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
 `tools/build-tile-looks.mjs`.
 
@@ -61,13 +61,16 @@ categories (the table above). They are drawn by independent signals:
 
 | signal | says | values |
 |---|---|---|
-| **border** | on the route or beside it | solid · dashed (Setup, Inquiry) |
+| **border** | on the route or beside it | solid · dashed (Setup, Lookup) |
 | **fill** | a screen you can open | filled when the node has a session `code` · outline when it has none |
-| **colour** | which category | grey Step · magenta Setup · blue Inquiry · green Result · yellow Checkpoint |
-| **name style** | act on it, or take it in | upright (Step, Setup) · italic (Inquiry, Result, Checkpoint) |
+| **colour** | which category | grey Step · magenta Setup · blue Lookup · green Result · yellow Checkpoint |
+| **name style** | act on it, or take it in | upright (Step, Setup) · italic (Lookup, Result, Checkpoint) |
 
-Setup is magenta rather than purple, because purple and the Inquiry blue merge
+Setup is magenta rather than purple, because purple and the Lookup blue merge
 under red-green colour blindness and the two share the dashed border.
+
+A tile off the walk has no number, so its top row names its category instead,
+and no category rests on colour alone.
 
 Italic means the same thing wherever it appears: a state you take in rather
 than an action you perform. Checkpoint keeps its yellow wherever it stands,
@@ -80,11 +83,11 @@ MRP made it; a proposal is not an order, and both halves are Results.
 line*; an indent widens every column (§10) and adds horizontal scroll.
 
 All five derive from the data, as the first table shows. The distinction
-that matters: **Setup is configured once and is then ready; an Inquiry is
+that matters: **Setup is configured once and is then ready; a Lookup is
 opened to find out what is true now.** A session *about*
-configuration, such as `Production Order Parameters`, is an Inquiry.
+configuration, such as `Production Order Parameters`, is a Lookup.
 
-`read` is tested **before** the path, because an Inquiry need not sit beside
+`read` is tested **before** the path, because a Lookup need not sit beside
 the route. Mid-sequence it takes the solid border and keeps the italic name:
 the signals stay independent.
 
@@ -123,7 +126,7 @@ answers it with no new field from atlas.
 ### 3.0 On the route, or beside it
 
 A node with no `flow` edge, in or out, is one the sequence never enters or
-leaves: Setup, or an Inquiry beside the route. It needs no new field.
+leaves: Setup, or a Lookup beside the route. It needs no new field.
 
 **It cuts across `kind`.** `Items and groups` is a `step` beside the path; `Bill
 of material and routing` is an `outcome` beside it; `Finished item into stock`

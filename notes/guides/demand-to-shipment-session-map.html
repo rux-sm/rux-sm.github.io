@@ -1307,7 +1307,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">1</span><span class="notes-dg-detail-name">Sales Order Intake Workbench</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tdsls4601m200</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>create the demand, and approve it</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1360,7 +1360,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">2</span><span class="notes-dg-detail-name">Items - Planning</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">cprpd1100m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>put the delivery date inside the item&#39;s order horizon</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1384,7 +1384,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">3</span><span class="notes-dg-detail-name">Item Order Plan</span>
                     <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span><code class="notes-dg-detail-code">cprrp0520m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>prove planning can actually see the demand</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1409,7 +1409,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">4</span><span class="notes-dg-detail-name">Generate Order Planning (Item)</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">cprrp1220m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; reached by drilling in. The range variant <span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span> sits at <span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Generate Order Planning</span></span>. <strong>Not documented for this release.</strong></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; reached by drilling in. The range variant <span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Generate Order Planning</span></span>. <strong>Not documented for this release.</strong></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>run MRP for this item and everything beneath it</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1432,7 +1432,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">5</span><span class="notes-dg-detail-name">Planned Orders</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">planned</span><code class="notes-dg-detail-code">cprrp1100m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>read what MRP proposed, and check that it adds up</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1458,7 +1458,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">6</span><span class="notes-dg-detail-name">Confirm Order Planning</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">transfer</span><code class="notes-dg-detail-code">cprrp1200m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>mark the proposals you intend to transfer</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1481,7 +1481,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">7</span><span class="notes-dg-detail-name">Transfer Order Planning</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">transfer</span><code class="notes-dg-detail-code">cppat1210m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>turn confirmed proposals into real orders in their owning modules</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1532,7 +1532,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">12</span><span class="notes-dg-detail-name">Production Orders</span>
                     <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">real</span><code class="notes-dg-detail-code">tisfc0501m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>hold the order the transfer created, and start it moving</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1581,7 +1581,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">13</span><span class="notes-dg-detail-name">Release Production Orders</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tisfc0204m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Control</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Release Production Orders</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>release the order so material can be issued and hours booked</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1604,7 +1604,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">14</span><span class="notes-dg-detail-name">Material to Issue for Production Orders</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">ticst0101m100</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Materials</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>move the components from the warehouse to the work centre</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1627,7 +1627,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">15</span><span class="notes-dg-detail-name">Report Operations Completed</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tisfc0130m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>report the build, and post the finished item</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1658,7 +1658,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Inventory 360</span>
                     <span class="notes-dg-kind">Lookup</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">whwmd4300m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-exact">Inventory 360</span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>record on-hand before anything moves</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1684,7 +1684,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">9</span><span class="notes-dg-detail-name">Warehousing Orders</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh2100m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>find the inbound order the purchase order raised</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1760,7 +1760,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Warehousing Order Types</span>
                     <span class="notes-dg-kind">Lookup</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">whinh0110m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>explain why the outbound tiles are shaped the way they are</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1785,7 +1785,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">17</span><span class="notes-dg-detail-name">Warehouse Manager Dashboard</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh2300m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-exact">Manager Dashboard</span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>find the outbound order the release created</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1831,7 +1831,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">19</span><span class="notes-dg-detail-name">Picking List</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh4525m100</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>confirm the advised quantity as picked</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1854,7 +1854,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">20</span><span class="notes-dg-detail-name">Shipments</span>
                     <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh4130m000</code></p>
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></p>
                   </div>
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>find the shipment tile 19 created</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
@@ -1967,7 +1967,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3">
           <h2 id="t-3">3. Lanes</h2>
-          <p class="notes-prose-measure">Ordered top to bottom. <strong>Lanes 2 to 6 name the module</strong>, so a route in section 5 never repeats it. <strong>Lane 1 is the exception and is declared as one:</strong> a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live, and their routes carry their own module.</p>
+          <p class="notes-prose-measure">Ordered top to bottom. <strong>Lanes 2 to 6 name the module. Lane 1 is the exception:</strong> a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live. Every route spells out its module, because the lane names scroll out of view.</p>
           <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
@@ -2066,7 +2066,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h3>5.2 Sales</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">1 · Sales Order Intake Workbench</span> <span class="notes-t-exact">tdsls4601m200</span> · stage 1 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — create the demand, and approve it</li>
           <li class="rux--list__item"><strong>Do</strong> - <span class="notes-t-press" title="New (header)">New</span>, then <em>Sold-to Business Partner</em>, <em>Order Type</em>, <em>Planned Delivery Date</em>, <em>Sales Office</em>, <em>Currency</em>, <em>Site</em> and <em>Warehouse</em>, then <span class="notes-t-press">Save</span> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span> - <span class="notes-t-press" title="New (line)">New</span>, then <em>Item</em> and <em>Ordered Quantity</em>, then <span class="notes-t-press">Save</span> - <strong>Actions ➔ Approve</strong> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">In Process</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — an approved order. Approval is not what makes planning see it — tile 3 is — but tile 16 will not release without it</li>
@@ -2083,7 +2083,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h3>5.3 Enterprise Planning</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">2 · Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span> · stage 2 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — put the delivery date inside the item&#39;s order horizon</li>
           <li class="rux--list__item"><strong>Do</strong> - open the item, <strong>Horizons</strong> tab, read the <em>Order Horizon</em> date - If your delivery date is beyond it, raise the <em>Order Horizon</em> days until it is not</li>
           <li class="rux--list__item"><strong>Leaves</strong> — a horizon that covers your date. Enter days, then trust the date LN shows — it counts workdays on the warehouse&#39;s calendar, so it is never today plus your number</li>
@@ -2091,7 +2091,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">3 · Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> · stage 2 · gate</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — prove planning can actually see the demand</li>
           <li class="rux--list__item"><strong>Do</strong> - open the item and look for a <strong>Sales Order</strong> row carrying your order number and quantity under <em>Demand</em></li>
           <li class="rux--list__item"><strong>Leaves</strong> — nothing; this is a read. But an absent row means tile 4 will run, report success and produce nothing</li>
@@ -2099,7 +2099,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">4 · Generate Order Planning (Item)</span> <span class="notes-t-exact">cprrp1220m000</span> · stage 3 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — no menu entry; reached by drilling in. The range variant <span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span> sits at <span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Generate Order Planning</span></span>. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Route</strong> — no menu entry; reached by drilling in. The range variant <span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Generate Order Planning</span></span>. <strong>Not documented for this release.</strong></li>
           <li class="rux--list__item"><strong>Does</strong> — run MRP for this item and everything beneath it</li>
           <li class="rux--list__item"><strong>Do</strong> - open it for the item, confirm <em>Scenario</em> <span class="notes-t-exact">ACT</span> and <em>Plan Item</em>, select <em>Include Child Items</em>, then run</li>
           <li class="rux--list__item"><strong>Leaves</strong> — planned orders wherever there is a shortfall. Nothing is real yet, and nothing outside Planning can see any of it</li>
@@ -2107,7 +2107,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">5 · Planned Orders</span> <span class="notes-t-exact">cprrp1100m000</span> · stage 3 · planned</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — read what MRP proposed, and check that it adds up</li>
           <li class="rux--list__item"><strong>Do</strong> - filter on the cluster and site; every row should read <em>Order Status</em> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> - Select the planned production order, then <strong>Pegging - Upstream</strong></li>
           <li class="rux--list__item"><strong>Leaves</strong> — proposals you have actually looked at. Each level&#39;s children must sum to its requirement; one planned order is <em>Supply</em> on one item&#39;s plan and <em>Demand</em> on another&#39;s</li>
@@ -2115,7 +2115,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">6 · Confirm Order Planning</span> <span class="notes-t-exact">cprrp1200m000</span> · stage 4 · transfer</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — mark the proposals you intend to transfer</li>
           <li class="rux--list__item"><strong>Do</strong> - select the planned orders and confirm them. <em>Order Status</em> moves <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — orders the transfer will match. Skip this and tile 7 does nothing and says nothing — there is no message for &quot;nothing matched&quot;</li>
@@ -2123,7 +2123,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">7 · Transfer Order Planning</span> <span class="notes-t-exact">cppat1210m000</span> · stage 4 · transfer</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — turn confirmed proposals into real orders in their owning modules</li>
           <li class="rux--list__item"><strong>Do</strong> - select <em>Purchase</em>, tick <strong>Error Report</strong> and <strong>Process Report</strong>, run it, read the report - repeat with <em>Job Shop</em></li>
           <li class="rux--list__item"><strong>Leaves</strong> — a real purchase order and a real production order. Where each lands is decided by the item&#39;s supply source, not by you. A failed transfer is non-destructive: the proposal stays a planned order</li>
@@ -2141,7 +2141,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h3>5.5 Manufacturing</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">12 · Production Orders</span> <span class="notes-t-exact">tisfc0501m000</span> · stage 5 · real</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — hold the order the transfer created, and start it moving</li>
           <li class="rux--list__item"><strong>Do</strong> - open the order from tile 7 at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span>, check its BOM, routing and estimated materials, then <strong>Actions ➔ Release Orders</strong></li>
           <li class="rux--list__item"><strong>Leaves</strong> — <strong>Release Production Orders</strong> open. <strong>Not documented for this release.</strong></li>
@@ -2157,7 +2157,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">13 · Release Production Orders</span> <span class="notes-t-exact">tisfc0204m000</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Control</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Release Production Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — release the order so material can be issued and hours booked</li>
           <li class="rux--list__item"><strong>Do</strong> - run the release for this order only. <em>Order Status</em> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — warehousing issue and receipt orders now exist. If the release refuses, check whether <em>Printing Production Order Documents Mandatory</em> requires <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Printed</span></span> first</li>
@@ -2165,7 +2165,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">14 · Material to Issue for Production Orders</span> <span class="notes-t-exact">ticst0101m100</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Materials</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — move the components from the warehouse to the work centre</li>
           <li class="rux--list__item"><strong>Do</strong> - issue the materials for the order until <em>Actual Quantity</em> equals the estimated quantity. <em>Order Status</em> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — materials issued. How much of this you do by hand is configuration — <em>Direct Initiate Inventory Issue</em> and <em>Direct Process Warehouse Order Line</em> can do the unblocking for you, so their absence is not an error</li>
@@ -2173,7 +2173,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">15 · Report Operations Completed</span> <span class="notes-t-exact">tisfc0130m000</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — report the build, and post the finished item</li>
           <li class="rux--list__item"><strong>Do</strong> - enter the built quantity in <em>Completed</em> and save - LN may ask whether to confirm the receipt automatically; record which way you answer, then re-read <em>Order Status</em> on tile 12</li>
           <li class="rux--list__item"><strong>Leaves</strong> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span>, which becomes <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Completed</span></span> once Warehousing finishes the inbound procedure. <strong>Production Completed is a handoff, not a failed Completed.</strong> Whether stock is posted at all is a parameter on <span class="notes-t-named">Production Order Parameters</span> <span class="notes-t-exact">tisfc0100s000</span>, reached from the Job Shop Control parameters list</li>
@@ -2182,7 +2182,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h3>5.6 Warehousing</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">— · Inventory 360</span> <span class="notes-t-exact">whwmd4300m000</span> · stage 1 · read</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-exact">Inventory 360</span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — record on-hand before anything moves</li>
           <li class="rux--list__item"><strong>Do</strong> - read the finished item at the shipping warehouse and each component at the raw-material warehouse - Write the figures down</li>
           <li class="rux--list__item"><strong>Leaves</strong> — the only baseline the last tile can be measured against. On-hand is not availability — <em>Allocated</em> may already commit most of it</li>
@@ -2190,7 +2190,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">9 · Warehousing Orders</span> <span class="notes-t-exact">whinh2100m000</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — find the inbound order the purchase order raised</li>
           <li class="rux--list__item"><strong>Do</strong> - filter for your order; it should read order type <span class="notes-t-exact">PUI</span> with the raw-material warehouse as ship-to - <span class="notes-t-press" title="Drill In (line)">Drill In</span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — the warehousing order open. <strong>You never create this one.</strong> If it is absent, read the purchase order&#39;s <strong>Release to Warehousing</strong> tab before hunting in Warehousing</li>
@@ -2214,7 +2214,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">— · Warehousing Order Types</span> <span class="notes-t-exact">whinh0110m000</span> · stage 6 · read</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Order Types</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Order Types</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — explain why the outbound tiles are shaped the way they are</li>
           <li class="rux--list__item"><strong>Do</strong> - read <em>Freeze Mandatory</em> on the order type your shipment carries, and read the outbound procedure&#39;s activities and which of them are Automatic</li>
           <li class="rux--list__item"><strong>Leaves</strong> — the reason tile 19 exists and tile 21 cannot be skipped. Change an activity to Automatic and a tile disappears; change it back and one returns. <strong>Not documented for this release.</strong></li>
@@ -2222,7 +2222,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">17 · Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span> · stage 7 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-exact">Manager Dashboard</span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — find the outbound order the release created</li>
           <li class="rux--list__item"><strong>Do</strong> - filter on your sales order number, then <span class="notes-t-press" title="Drill In (line)">Drill In</span>. It should read <strong>Origin Sales</strong>, <strong>Type 20- SO/SC Out</strong></li>
           <li class="rux--list__item"><strong>Leaves</strong> — the warehousing order open, on its <strong>Outbound Lines</strong> tab</li>
@@ -2238,7 +2238,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">19 · Picking List</span> <span class="notes-t-exact">whinh4525m100</span> · stage 7 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — confirm the advised quantity as picked</li>
           <li class="rux--list__item"><strong>Do</strong> - tick the line, <strong>Actions ➔ Pick Run</strong>, then read <em>Shipment</em> on the order&#39;s <strong>Shipment Lines</strong> tab</li>
           <li class="rux--list__item"><strong>Leaves</strong> — the line <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> and a shipment number. This tile is mandatory here because the picking activity is not Automatic and the warehouse is location-controlled; change either and the chain loses a step</li>
@@ -2246,7 +2246,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">20 · Shipments</span> <span class="notes-t-exact">whinh4130m000</span> · stage 7 · step</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
+          <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — find the shipment tile 19 created</li>
           <li class="rux--list__item"><strong>Do</strong> - find it by the number from tile 19, then <span class="notes-t-press" title="Drill In (line)">Drill In</span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — the shipment open</li>
@@ -2355,7 +2355,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>`the source on file` and `the source on file`</strong> — measured 2026-09-09, and all 23 codes in <span class="notes-t-exact">sources:</span> settle against principle 3&#39;s test. Sixteen appear in one or both extracts. The seven that do not — <span class="notes-t-exact">cprrp1220m000</span>, <span class="notes-t-exact">tdpur4100m900</span>, <span class="notes-t-exact">tdsls4501m140</span>, <span class="notes-t-exact">tisfc0100s000</span>, <span class="notes-t-exact">whinh2100m100</span>, <span class="notes-t-exact">whinh3512m000</span>, <span class="notes-t-exact">whinh4630m000</span> — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: <strong>`cprrp1200m000` is in the extracts and has no help filed here</strong>, so its route is evidenced and its meaning rests on the guide alone.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 7caa756 · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 13cfaf5 · contract 8</p>
       </div>
     </div>
   </div>

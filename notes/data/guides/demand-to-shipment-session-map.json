@@ -752,22 +752,14 @@
             },
             {
               "t": "strong",
-              "v": "Lanes 2 to 6 name the module"
+              "v": "Lanes 2 to 6 name the module. Lane 1 is the exception:"
             },
             {
               "t": "text",
-              "v": ", so a route in section 5 never repeats it. "
-            },
-            {
-              "t": "strong",
-              "v": "Lane 1 is the exception and is declared as one:"
-            },
-            {
-              "t": "text",
-              "v": " a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live, and their routes carry their own module."
+              "v": " a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live. Every route spells out its module, because the lane names scroll out of view."
             }
           ],
-          "text": "Ordered top to bottom. Lanes 2 to 6 name the module, so a route in section 5 never repeats it. Lane 1 is the exception and is declared as one: a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live, and their routes carry their own module."
+          "text": "Ordered top to bottom. Lanes 2 to 6 name the module. Lane 1 is the exception: a prerequisite is not owned by the module that suffers its absence — the planning cluster row is Common, the buy-from partner is Procurement — so the two are collected by what they are rather than by where they live. Every route spells out its module, because the lane names scroll out of view."
         },
         {
           "kind": "table",
@@ -2157,10 +2149,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Orders ➔ Order Intake Workbench"
+                  "route": "Sales ➔ Orders ➔ Order Intake Workbench"
                 }
               ],
-              "text": "Route — Orders ➔ Order Intake Workbench"
+              "text": "Route — Sales ➔ Orders ➔ Order Intake Workbench"
             },
             {
               "tokens": [
@@ -2510,10 +2502,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Master Data ➔ Items ➔ Items - Planning"
+                  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
                 }
               ],
-              "text": "Route — Master Data ➔ Items ➔ Items - Planning"
+              "text": "Route — Planning ➔ Master Data ➔ Items ➔ Items - Planning"
             },
             {
               "tokens": [
@@ -2632,10 +2624,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Order Planning ➔ Item Order Plan"
+                  "route": "Planning ➔ Order Planning ➔ Item Order Plan"
                 }
               ],
-              "text": "Route — Order Planning ➔ Item Order Plan"
+              "text": "Route — Planning ➔ Order Planning ➔ Item Order Plan"
             },
             {
               "tokens": [
@@ -2739,11 +2731,11 @@
                 },
                 {
                   "t": "text",
-                  "v": " sits at "
+                  "v": ", "
                 },
                 {
                   "t": "path",
-                  "route": "Order Planning ➔ Generate Order Planning"
+                  "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
                 },
                 {
                   "t": "text",
@@ -2754,7 +2746,7 @@
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Route — no menu entry; reached by drilling in. The range variant Generate Order Planning (cprrp1210m000) sits at Order Planning ➔ Generate Order Planning. Not documented for this release."
+              "text": "Route — no menu entry; reached by drilling in. The range variant Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning. Not documented for this release."
             },
             {
               "tokens": [
@@ -2873,10 +2865,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Order Planning ➔ Planned Orders"
+                  "route": "Planning ➔ Order Planning ➔ Planned Orders"
                 }
               ],
-              "text": "Route — Order Planning ➔ Planned Orders"
+              "text": "Route — Planning ➔ Order Planning ➔ Planned Orders"
             },
             {
               "tokens": [
@@ -2999,10 +2991,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Order Planning ➔ Confirm Order Planning"
+                  "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
                 }
               ],
-              "text": "Route — Order Planning ➔ Confirm Order Planning"
+              "text": "Route — Planning ➔ Order Planning ➔ Confirm Order Planning"
             },
             {
               "tokens": [
@@ -3109,10 +3101,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Plan Transfer ➔ Transfer Order Planning"
+                  "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
                 }
               ],
-              "text": "Route — Plan Transfer ➔ Transfer Order Planning"
+              "text": "Route — Planning ➔ Plan Transfer ➔ Transfer Order Planning"
             },
             {
               "tokens": [
@@ -3348,10 +3340,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Job Shop ➔ Production Orders"
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
                 }
               ],
-              "text": "Route — Job Shop ➔ Production Orders"
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Orders"
             },
             {
               "tokens": [
@@ -3592,10 +3584,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Job Shop ➔ Production Control"
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
                 }
               ],
-              "text": "Route — Job Shop ➔ Production Control"
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
             },
             {
               "tokens": [
@@ -3710,10 +3702,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Job Shop ➔ Production Materials"
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
                 }
               ],
-              "text": "Route — Job Shop ➔ Production Materials"
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
             },
             {
               "tokens": [
@@ -3844,10 +3836,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Job Shop ➔ Production Control ➔ Report Operations"
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
                 }
               ],
-              "text": "Route — Job Shop ➔ Production Control ➔ Report Operations"
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
             },
             {
               "tokens": [
@@ -3989,11 +3981,11 @@
                   "v": " — "
                 },
                 {
-                  "t": "literal",
-                  "v": "Inventory 360"
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory 360"
                 }
               ],
-              "text": "Route — Inventory 360"
+              "text": "Route — Warehousing ➔ Inventory 360"
             },
             {
               "tokens": [
@@ -4088,10 +4080,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Orders ➔ Orders"
+                  "route": "Warehousing ➔ Orders ➔ Orders"
                 }
               ],
-              "text": "Route — Orders ➔ Orders"
+              "text": "Route — Warehousing ➔ Orders ➔ Orders"
             },
             {
               "tokens": [
@@ -4451,10 +4443,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Master Data ➔ Order Procedures ➔ Order Types"
+                  "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Order Types"
                 }
               ],
-              "text": "Route — Master Data ➔ Order Procedures ➔ Order Types"
+              "text": "Route — Warehousing ➔ Master Data ➔ Order Procedures ➔ Order Types"
             },
             {
               "tokens": [
@@ -4552,11 +4544,11 @@
                   "v": " — "
                 },
                 {
-                  "t": "literal",
-                  "v": "Manager Dashboard"
+                  "t": "path",
+                  "route": "Warehousing ➔ Manager Dashboard"
                 }
               ],
-              "text": "Route — Manager Dashboard"
+              "text": "Route — Warehousing ➔ Manager Dashboard"
             },
             {
               "tokens": [
@@ -4806,10 +4798,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Outbound/Inspections ➔ Picking List"
+                  "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
                 }
               ],
-              "text": "Route — Outbound/Inspections ➔ Picking List"
+              "text": "Route — Warehousing ➔ Outbound/Inspections ➔ Picking List"
             },
             {
               "tokens": [
@@ -4928,10 +4920,10 @@
                 },
                 {
                   "t": "path",
-                  "route": "Shipments ➔ Shipments"
+                  "route": "Warehousing ➔ Shipments ➔ Shipments"
                 }
               ],
-              "text": "Route — Shipments ➔ Shipments"
+              "text": "Route — Warehousing ➔ Shipments ➔ Shipments"
             },
             {
               "tokens": [
@@ -7144,10 +7136,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Orders ➔ Order Intake Workbench"
+              "route": "Sales ➔ Orders ➔ Order Intake Workbench"
             }
           ],
-          "text": "Orders ➔ Order Intake Workbench"
+          "text": "Sales ➔ Orders ➔ Order Intake Workbench"
         },
         "does": {
           "tokens": [
@@ -7589,10 +7581,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Master Data ➔ Items ➔ Items - Planning"
+              "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
             }
           ],
-          "text": "Master Data ➔ Items ➔ Items - Planning"
+          "text": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
         },
         "does": {
           "tokens": [
@@ -7719,10 +7711,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Order Planning ➔ Item Order Plan"
+              "route": "Planning ➔ Order Planning ➔ Item Order Plan"
             }
           ],
-          "text": "Order Planning ➔ Item Order Plan"
+          "text": "Planning ➔ Order Planning ➔ Item Order Plan"
         },
         "does": {
           "tokens": [
@@ -7817,11 +7809,11 @@
             },
             {
               "t": "text",
-              "v": " sits at "
+              "v": ", "
             },
             {
               "t": "path",
-              "route": "Order Planning ➔ Generate Order Planning"
+              "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
             },
             {
               "t": "text",
@@ -7832,7 +7824,7 @@
               "v": "Not documented for this release."
             }
           ],
-          "text": "no menu entry; reached by drilling in. The range variant Generate Order Planning (cprrp1210m000) sits at Order Planning ➔ Generate Order Planning. Not documented for this release."
+          "text": "no menu entry; reached by drilling in. The range variant Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning. Not documented for this release."
         },
         "does": {
           "tokens": [
@@ -7958,10 +7950,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Order Planning ➔ Planned Orders"
+              "route": "Planning ➔ Order Planning ➔ Planned Orders"
             }
           ],
-          "text": "Order Planning ➔ Planned Orders"
+          "text": "Planning ➔ Order Planning ➔ Planned Orders"
         },
         "does": {
           "tokens": [
@@ -8084,10 +8076,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Order Planning ➔ Confirm Order Planning"
+              "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
             }
           ],
-          "text": "Order Planning ➔ Confirm Order Planning"
+          "text": "Planning ➔ Order Planning ➔ Confirm Order Planning"
         },
         "does": {
           "tokens": [
@@ -8189,10 +8181,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Plan Transfer ➔ Transfer Order Planning"
+              "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
             }
           ],
-          "text": "Plan Transfer ➔ Transfer Order Planning"
+          "text": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
         },
         "does": {
           "tokens": [
@@ -8405,10 +8397,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Job Shop ➔ Production Orders"
+              "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
             }
           ],
-          "text": "Job Shop ➔ Production Orders"
+          "text": "Manufacturing ➔ Job Shop ➔ Production Orders"
         },
         "does": {
           "tokens": [
@@ -8659,10 +8651,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Job Shop ➔ Production Control"
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
             }
           ],
-          "text": "Job Shop ➔ Production Control"
+          "text": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
         },
         "does": {
           "tokens": [
@@ -8764,10 +8756,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Job Shop ➔ Production Materials"
+              "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
             }
           ],
-          "text": "Job Shop ➔ Production Materials"
+          "text": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
         },
         "does": {
           "tokens": [
@@ -8893,10 +8885,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Job Shop ➔ Production Control ➔ Report Operations"
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
             }
           ],
-          "text": "Job Shop ➔ Production Control ➔ Report Operations"
+          "text": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
         },
         "does": {
           "tokens": [
@@ -9059,11 +9051,11 @@
         "route": {
           "tokens": [
             {
-              "t": "literal",
-              "v": "Inventory 360"
+              "t": "path",
+              "route": "Warehousing ➔ Inventory 360"
             }
           ],
-          "text": "Inventory 360"
+          "text": "Warehousing ➔ Inventory 360"
         },
         "does": {
           "tokens": [
@@ -9142,10 +9134,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Orders ➔ Orders"
+              "route": "Warehousing ➔ Orders ➔ Orders"
             }
           ],
-          "text": "Orders ➔ Orders"
+          "text": "Warehousing ➔ Orders ➔ Orders"
         },
         "does": {
           "tokens": [
@@ -9533,10 +9525,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Master Data ➔ Order Procedures ➔ Order Types"
+              "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Order Types"
             }
           ],
-          "text": "Master Data ➔ Order Procedures ➔ Order Types"
+          "text": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Order Types"
         },
         "does": {
           "tokens": [
@@ -9617,11 +9609,11 @@
         "route": {
           "tokens": [
             {
-              "t": "literal",
-              "v": "Manager Dashboard"
+              "t": "path",
+              "route": "Warehousing ➔ Manager Dashboard"
             }
           ],
-          "text": "Manager Dashboard"
+          "text": "Warehousing ➔ Manager Dashboard"
         },
         "does": {
           "tokens": [
@@ -9870,10 +9862,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Outbound/Inspections ➔ Picking List"
+              "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
             }
           ],
-          "text": "Outbound/Inspections ➔ Picking List"
+          "text": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
         },
         "does": {
           "tokens": [
@@ -9991,10 +9983,10 @@
           "tokens": [
             {
               "t": "path",
-              "route": "Shipments ➔ Shipments"
+              "route": "Warehousing ➔ Shipments ➔ Shipments"
             }
           ],
-          "text": "Shipments ➔ Shipments"
+          "text": "Warehousing ➔ Shipments ➔ Shipments"
         },
         "does": {
           "tokens": [

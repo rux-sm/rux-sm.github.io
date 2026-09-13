@@ -1,9 +1,9 @@
-commit   7caa756cedce8adc9fb0387f3aa9296caf2f707a
-date     2026-09-13T22:35:52Z
-subject  docs(guides): Count six stages on the level-1 map
+commit   13cfaf53359fa3d68e263d5c2a7d68ad4e8aac93
+date     2026-09-13T22:50:54Z
+subject  feat(check): Check the routes on diagram tiles
 contract 8 
 tier     export
-sha256   ad734e26c4cf87ac02bb7370c27e47fe692367ace605733f3175fe9ca654481e
+sha256   3ca30e3a678230c6d41ec8deb9221ad79f1ce9e5b92afb49c603f300f476dc87
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

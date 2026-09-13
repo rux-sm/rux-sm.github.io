@@ -6,7 +6,7 @@
       "description": "The front door"
     },
     {
-      "name": "LN Notes",
+      "name": "Notes",
       "path": "/notes/",
       "description": "Step-by-step scenario guides",
       "icon": "#i-document"
@@ -18,9 +18,9 @@
       "icon": "#i-calendar"
     },
     {
-      "name": "Design System",
+      "name": "Design",
       "path": "/design/",
-      "description": "The system these are built on",
+      "description": "Rux Design System, the system these are built on",
       "icon": "/design/brand/icon.svg"
     }
   ]

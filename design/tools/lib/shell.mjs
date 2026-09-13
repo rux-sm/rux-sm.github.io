@@ -123,10 +123,10 @@ const navItems = current => PAGES.map(p => {
 export function shell(current) {
   if (!PAGES.some(p => p.id === current))
     throw new Error(`shell(): unknown page "${current}" — expected one of ${PAGES.map(p => p.id).join(', ')}`);
-  return `<header class="rux--header" data-theme="g100" aria-label="design">
+  return `<header class="rux--header" data-theme="g100" aria-label="Rux Design">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
-  <a class="rux--header__name" href="portal.html"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
+  <a class="rux--header__name" href="portal.html"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
@@ -139,7 +139,7 @@ export function shell(current) {
 
        THEY MATCH switcher.json's ORDER AND NAMES AS OF 2026-09-12, deliberately
        rather than approximately. The hardcoded list this replaces said
-       "Notes" where the hub says "LN Notes" and put Design System first where
+       "Notes" where the hub says "Notes" and put Design System first where
        the hub puts it last, so a page whose fetch failed showed a different
        ecosystem from one whose fetch worked. A fallback that disagrees with
        the thing it stands in for is worse than no fallback. -->
@@ -147,9 +147,9 @@ export function shell(current) {
     <ul class="rux--switcher" aria-label="Applications">
       <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
       <li><hr class="rux--switcher__item--divider"></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/notes/">LN Notes</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/notes/">Notes</a></li>
       <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/scheduler/">Scheduler</a></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/design/" aria-current="page">Design System</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/design/" aria-current="page">Design</a></li>
     </ul>
   </div>
   <div class="rux--header-panel" id="rux-account-panel">

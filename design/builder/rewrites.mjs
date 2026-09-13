@@ -57,7 +57,7 @@ function content(lines, a) {
   return lines.map(l => {
     if (l.startsWith('<html lang="en" data-theme="white">')) l = l.replace('<html lang="en" data-theme="white">', () => `<html lang="en" data-theme="${theme}">`);
     l = l.replace(/<title>[^<]*<\/title>/, () => `<title>${T}</title>`);
-    l = l.replace('name--prefix">Rux</span>&nbsp;DS', () => `name--prefix">${P}</span>&nbsp;${N}`);
+    l = l.replace('name--prefix">Rux</span>&nbsp;Design', () => `name--prefix">${P}</span>&nbsp;${N}`);
     l = l.split('aria-label="Rux DS"').join(`aria-label="${P} ${N}"`);
     // The grid's width. Anchored on the two-space indent every template's
     // outer grid opens at, so a nested `rux--css-grid-column` is never touched;

@@ -1745,7 +1745,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 <!-- SPRITE:BEGIN -->
 <!-- SPRITE:END -->
 
-<header class="rux--header" data-theme="g100" aria-label="LN Notes">
+<header class="rux--header" data-theme="g100" aria-label="Rux Notes">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
   <!-- THE COLLAPSIBLE SHELL, matching Scheduler's: no __hidden on this
@@ -1765,7 +1765,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
        in all four themes, so one colourway serves every theme. Sized by
        HEIGHT so the file's own aspect governs, and nothing overwrites a logo
        you replaced. -->
-  <a class="rux--header__name" href="${up || './'}"><img src="${up}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none">LN Notes</a>
+  <a class="rux--header__name" href="${up || './'}"><img src="${up}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Notes</a>
 
   <!-- NO __nav: one product. __global carries the two actions every app has
        since Design v0.1.3 (§4.13): the Account action and the switcher, each
@@ -1792,7 +1792,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
     <ul class="rux--switcher" aria-label="Applications">
     <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
     <li><hr class="rux--switcher__item--divider"></li>
-    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/notes/" aria-current="page">LN Notes</a></li>
+    <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/notes/" aria-current="page">Notes</a></li>
   </ul>
   </div>
   <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
@@ -1979,13 +1979,13 @@ function indexPage(site) {
         </section>
 ` : `
         <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>LN Notes</h1>
+          <h1>Notes</h1>
           <p class="rux--type-body-02">The map is not in this build. Every document is
              in the navigation.</p>
         </div>
 `;
 
-  return page({ title: 'LN Notes', site, activeId: null, body: lead, depth: 0,
+  return page({ title: 'Notes', site, activeId: null, body: lead, depth: 0,
     scripts: home ? ['js/diagram.js'] : [] });
 }
 
@@ -2062,7 +2062,7 @@ function reviewPage(r, site) {
         ? topicsSection(r)
         : rsection(`s-${slot}`, heading, r[slot])).filter(Boolean).join('\n\n      ')}`;
 
-  return page({ title: `${r.title} — LN Notes`, site, activeId: r.id, body, depth: 1 });
+  return page({ title: `${r.title} — Notes`, site, activeId: r.id, body, depth: 1 });
 }
 
 // AN EXERCISE IS ORDERED PRACTICE, not guide phases. The prose block vocabulary
@@ -2209,7 +2209,7 @@ function exercisePage(e, site) {
         ${rail}
         </div>`;
 
-  return page({ title: `${e.title} — LN Notes`, site, activeId: e.id, body, depth: 1, scripts: ['js/exercise.js'] });
+  return page({ title: `${e.title} — Notes`, site, activeId: e.id, body, depth: 1, scripts: ['js/exercise.js'] });
 }
 
 function conceptPage(c, site) {
@@ -2235,7 +2235,7 @@ function conceptPage(c, site) {
           ${(c.intro ?? []).map(rblock).join('\n          ')}
         </div>
         ${topics}`;
-  return page({ title: `${c.title} — LN Notes`, site, activeId: c.id, body, depth: 1 });
+  return page({ title: `${c.title} — Notes`, site, activeId: c.id, body, depth: 1 });
 }
 
 
@@ -2640,7 +2640,7 @@ function referencePage(r, site) {
   // js/diagram.js ONLY WHERE THERE IS A DIAGRAM, the same way js/exercise.js
   // is linked only by a worksheet. It adds the close button and Escape to the
   // panel; without it the panel still opens and closes from its own tile.
-  return page({ title: `${r.title} — LN Notes`, site, activeId: r.id, body, depth: 1,
+  return page({ title: `${r.title} — Notes`, site, activeId: r.id, body, depth: 1,
     scripts: r.diagram ? ['js/diagram.js'] : [] });
 }
 
@@ -2731,7 +2731,7 @@ function guidePage(g, site) {
       ${notepad()}
       ${stepKey()}`;
 
-  return page({ title: `${g.title} — LN Notes`, site, activeId: g.id,
+  return page({ title: `${g.title} — Notes`, site, activeId: g.id,
     body: `<div data-ln-doc="${esc(g.id)}">${body}
       </div>`, depth: 1,
     scripts: ['js/guide.js'] });

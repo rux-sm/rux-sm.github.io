@@ -44,7 +44,10 @@ carries an owner prefix, because the GitHub account already is one.
   theme and overrides files become `theme.css` and `overrides.css`.
 - **Names atlas's rules fix stay:** ledgers are named for the capture they
   transcribe and walks for the run they record, and both follow evidence
-  names. Review names swap their underscores for hyphens.
+  names.
+- **Scenario guides are found by their `type: guide`,** so atlas's tools no
+  longer need the `SG-` prefix; the session map and overview in the same
+  folder are references.
 - **Stored browser keys stay,** so nobody loses a saved theme or setting.
 - **Shared site files stay where they are,** at the top of the site, because
   that is simplest.
@@ -66,20 +69,21 @@ carries an owner prefix, because the GitHub account already is one.
 
 ## Questions
 
-None.
+1. **Review names and their recordings.** A review is named like its
+   recording, `order-planning-training_2026-08-20`, and the recording's
+   evidence files keep that underscore date forever. Hyphens would make every
+   Notes address hyphen-only but break that visible match. Keep the underscore
+   dates in review names, or switch to hyphens?
 
 ## Tasks
 
-### Site
-
-- [ ] Build, run the full check, open every app in the browser, commit and
-      push.
-
 ### Atlas
 
-- [ ] Drop type prefixes from authored file names and ids, lowercase with
-      hyphens. If two documents would end up with the same name, stop and ask.
-      Fix every reference, run the check and self-test, commit and push.
+- [ ] Drop the `SG-`, `HOMEWORK-`, `RUN-SHEET-` and `LC-` prefixes from file
+      names and ids, teach atlas's tools to find scenario guides by type, and
+      fix every reference. If two documents would end up with the same name,
+      stop and ask. Run the check and self-test, commit and push.
+- [ ] Once question 1 is answered, rename reviews and their summaries to match.
 - [ ] Rename the GitHub repository to `atlas`, or hand rux the command if
       GitHub refuses it. Rename the local folder, relink its memory, and update
       the site's default atlas path.

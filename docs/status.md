@@ -19,6 +19,8 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet. Four
   problems are open and three controls need hearing again; the list is in
   `design/docs/screen-reader-pass.md`.
+- The kitchen sink asks for `/design//switcher.js`, a doubled slash that is not
+  found; the shared shell links `/switcher.js`, so something rewrites the path.
 - Whether the `col-span-4/8/8` columns in `design/templates/settings-page.html` are
   deliberate.
 - **Builder stage 13, repeated items:** duplicate, remove or reorder a sibling

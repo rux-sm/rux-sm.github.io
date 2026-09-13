@@ -1092,28 +1092,13 @@
     </div>
   </div>
 
-  <!-- A PO AND AN INVOICE ARE ENTERED THE SAME WAY AS A PAYMENT, added
-       2026-09-11. Both sections became `contained-list`s so a trip can carry
-       rows rather than one pair of boxes, and a list's fields live behind a
-       dialog for the reason the payment list's do: a 320px column cannot hold
-       a labelled form per row.
-
-       CAPPED AT ONE ROW EACH, AND THE CAP IS THE SCHEMA'S. `trips` holds one
-       `po_ref`, one `po_amount` and one `invoice_number`; `trip_pos` and
-       `trip_invoices` do not exist -- probed live, both 404; the migration
-       that adds them is planned in
-       docs/plans/po-invoice-lists.md. So the layout is the one the lists will
-       have and the `+` disables at the row the database can store, which is
-       the honest version of a control that would otherwise promise a second
-       row and lose it on save.
-
-       NO DATE FIELD ON EITHER, for the same reason and it is the one thing
-       rux asked for that is missing here: neither table exists, so there is
-       no column to put a PO date or an invoice date in. Phase 1 of the plan
-       adds `date` to both; the row's middle column is where it lands.
+  <!-- A PO AND AN INVOICE ARE ENTERED THE SAME WAY AS A PAYMENT: a
+       `contained-list` of rows with each row's fields behind a dialog,
+       because a 320px column cannot hold a labelled form per row. The rows
+       are `trip_pos` and `trip_invoices`, written by id.
 
        `Done`, NOT `Save`, exactly as the payment dialog: this writes nothing
-       and the panel's own Save is what reaches `trips`. -->
+       and the panel's own Save is what reaches the database. -->
   <div class="rux--layer-one rux--modal" id="scheduler-po-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-po-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">

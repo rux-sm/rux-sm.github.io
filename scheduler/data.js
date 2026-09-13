@@ -398,6 +398,9 @@
     // 34 rows across the table today. The old app REWRITES every row of a
     // trip on save; Save here inserts, updates and deletes one row at a time.
     'trip_payments(id,position,amount,method,date,ref)',
+    // POs and invoices, one row each, written by id like the payments.
+    'trip_pos(id,position,ref,amount,date)',
+    'trip_invoices(id,position,number,amount,date)',
     'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot)',
   ].join(',');
 
@@ -1358,8 +1361,7 @@
 
   /* ── ONE MENU FOR EVERY ROW ─────────────────────────────────────────────────
      Added 2026-09-11. Each row carried a permanent `✕`: a destructive control
-     on screen at all times, in a 320px row that has to grow a date and a
-     second line once `trip_pos` and `trip_invoices` exist. Edit and Remove go
+     on screen at all times, in a 320px row. Edit and Remove go
      behind the row's own overflow trigger, which is where Carbon puts row
      actions and where `rux--menu-item--danger` already exists to mark one.
 
@@ -2048,33 +2050,18 @@
     { key: 'contract_status', get: f => on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
     { key: 'contract_note',
       get: f => on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
-    /* THE PO AND THE INVOICE COME OFF THEIR PENDING ROW, NOT OFF A FIELD,
-       2026-09-11. Both sections became `contained-list`s, so there is no
-       `scheduler-f-poref` or `scheduler-f-invnum` on the panel to read -- the values live
-       in `poPending` / `invPending` and the inputs exist only inside a dialog
-       while it is open, the same arrangement `payPending` has had since
-       2026-09-10.
-
-       ROW ZERO, BECAUSE THERE IS ONE COLUMN FOR EACH. The lists are capped at
-       one row apiece until `trip_pos` and `trip_invoices` exist
-       (docs/plans/po-invoice-lists.md), so the first row IS the value. When the
-       tables land these three keys become the mirror writes of Phase 0.2 --
-       `po_amount` a SUM over the rows, `po_ref` the first by position -- and
-       the rest of this list does not change.
-
-       NO ROW IS A NULL, AND THE SWITCH STILL NULLS BOTH. `po_received` with
-       an empty list is the state 12 of the 55 existing PO trips are in: a PO
-       expected, nothing typed. That is why the switch is not merely
-       `count > 0`. */
+    /* THE PO AND INVOICE COLUMNS ARE FILLED FROM THE ROWS. A trip's POs live in
+       `trip_pos` and its invoices in `trip_invoices`; `po_ref` is the first
+       PO's reference, `po_amount` the sum of the PO amounts and
+       `invoice_number` the first invoice's number, because rux-ui's status
+       ladder and every other reader still use them. `listRowsToSave` is the
+       same list Save writes, so the columns and the rows cannot disagree. */
     { key: 'po_received', get: f => on(f['scheduler-f-poreceived']) },
-    { key: 'po_ref',
-      get: f => on(f['scheduler-f-poreceived']) ? (poPending[0]?.ref ?? null) : null },
-    { key: 'po_amount',
-      get: f => on(f['scheduler-f-poreceived']) ? money(String(poPending[0]?.amount ?? '')) : null },
+    { key: 'po_ref', get: () => listRowsToSave('po')[0]?.ref ?? null },
+    { key: 'po_amount', get: () => sumOrNull(listRowsToSave('po')) },
     { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
     { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
-    { key: 'invoice_number',
-      get: f => on(f['scheduler-f-invoice']) ? (invPending[0]?.number ?? null) : null },
+    { key: 'invoice_number', get: () => listRowsToSave('invoice')[0]?.number ?? null },
     /* THE CONTACT LINKS ARE TRIP COLUMNS, so they diff here rather than with
        the contact's own fields. Read straight from the DOM and not through
        `f`: these controls exist only when a trip is open, and `readForm`
@@ -2264,24 +2251,11 @@
   let redrawPayments = () => {};
   let payEditing = null;   // index being edited, or null for a new row
 
-  /* THE PO AND THE INVOICE ARE PENDING ROWS TOO, 2026-09-11, for the reason
-     the payments are: the list is a render of the array and the array is what
-     Save reads. Module scope because the dialogs live outside the panel's
-     build closure.
-
-     ONE ROW EACH, AND THE CAP IS THE SCHEMA'S RATHER THAN THE LAYOUT'S.
-     `trips` holds one `po_ref`, one `po_amount` and one `invoice_number`;
-     `trip_pos` and `trip_invoices` do not exist -- probed live, both 404. So
-     the `+` disables at `LIST_CAP` and the second row is refused by the thing
-     that actually cannot store it. Raising this to Infinity, teaching
-     `poPending` an `id`, and swapping the two mirror keys in `EDITS` for
-     `posPatch()` / `invoicesPatch()` is the whole of the UI half of
-     docs/plans/po-invoice-lists.md; nothing else here is shaped by the cap. */
-  const LIST_CAP = 1;
-  const CAP_NOTE = {
-    po: 'One purchase order per trip for now',
-    inv: 'One invoice per trip for now',
-  };
+  /* THE PO AND THE INVOICE ARE PENDING ROWS TOO, for the reason the payments
+     are: the list is a render of the array and the array is what Save reads.
+     Each row keeps its `trip_pos` or `trip_invoices` id, so Save updates it
+     rather than replacing it. Module scope because the dialogs live outside
+     the panel's build closure. */
   let poPending = [];
   let invPending = [];
   let redrawPos = () => {};
@@ -2349,24 +2323,10 @@
     refreshDirty();
   });
 
-  /* THE PO DIALOG: A REFERENCE AND AN AMOUNT, and no date, 2026-09-11. rux
-     asked for `mm/dd/yyyy` on this section and it is the one thing here that
-     is NOT built: there is nowhere to put it. `trips` has no PO date column,
-     and a picker whose value is dropped on save is worse than no picker --
-     see the `+` for the same argument about a second row. Phase 1 of
-     docs/plans/po-invoice-lists.md adds `date` to `trip_pos`, and the row's
-     middle column is already the slot it goes in.
-
-     TWO FIELDS STILL EARN A DIALOG rather than staying inline. The pair was
-     inline until today and cost the tab about 120px whenever a PO existed;
-     behind a dialog the section is a header and a row at 44px, which is what
-     let all three milestones and the receipts fit a 320px column at once.
-
-     BOTH FIELDS KEEP A REAL LABEL HERE, unlike the inline version they
-     replace. In the panel the heading said "Purchase order" directly above
-     them and the labels were dropped for placeholders (rux asked); a modal
-     headed "Add purchase order" has the room, and a labelled field is the
-     better default whenever the space is there. */
+  /* THE PO DIALOG: a date, a reference and an amount. Date leads for the
+     reason it leads in the payment dialog: its calendar needs the room below
+     it. The fields keep real labels, because a modal headed "Add purchase
+     order" has the room. */
   function openPoDialog(index) {
     const host = document.getElementById('scheduler-po-fields');
     if (!host) return;
@@ -2376,39 +2336,38 @@
       index === null ? 'Add purchase order' : 'Edit purchase order';
     const grid = el('div', 'scheduler-dialog-grid');
     grid.append(
+      dateOne('scheduler-f-odate', 'Date', p.date),
       textField('scheduler-f-oref', 'Reference', p.ref),
       moneyField('scheduler-f-oamount', 'Amount', p.amount),
     );
     host.replaceChildren(grid);
+    window.Rux?.datePicker?.init?.(host);
     window.Rux?.modal?.open?.('scheduler-po-modal');
   }
 
   document.getElementById('scheduler-po-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')) };
+    const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')),
+                  date: isoOrNull(val('scheduler-f-odate')) };
     /* AN EMPTY DIALOG ADDS NOTHING, the same rule the payment dialog follows.
        `Done` on a blank form is the same intention as `Cancel`, and a PO with
        no reference and no amount is not a PO -- it is the state the switch
        already expresses on its own, which 12 of the 55 existing PO trips are
        in. An EXISTING row emptied this way is left alone rather than blanked;
        removing it is Remove on the row's own menu. */
-    if (row.ref === null && row.amount === null) {
+    if (row.ref === null && row.amount === null && row.date === null) {
       window.Rux?.modal?.close?.('scheduler-po-modal');
       return;
     }
-    if (poEditing === null) { if (poPending.length < LIST_CAP) poPending.push(row); }
+    if (poEditing === null) poPending.push(row);
     else Object.assign(poPending[poEditing], row);
     window.Rux?.modal?.close?.('scheduler-po-modal');
     redrawPos();
     refreshDirty();
   });
 
-  /* THE INVOICE DIALOG IS ONE FIELD, and it is still a dialog rather than an
-     inline box. The section has to look like the other two -- rux asked for
-     all three to read the same way -- and an invoice AMOUNT and DATE are the
-     next two fields to land in it the moment `trip_invoices` exists. A
-     one-field dialog today is the same layout as a three-field one then;
-     an inline box would have to be torn out again. */
+  /* THE INVOICE DIALOG mirrors the PO's: a date, the invoice number and an
+     amount. */
   function openInvoiceDialog(index) {
     const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
@@ -2417,23 +2376,80 @@
     document.getElementById('scheduler-inv-h').textContent =
       index === null ? 'Add invoice' : 'Edit invoice';
     const grid = el('div', 'scheduler-dialog-grid');
-    grid.append(textField('scheduler-f-inum', 'Invoice number', v.number));
+    grid.append(
+      dateOne('scheduler-f-idate', 'Date', v.date),
+      textField('scheduler-f-inum', 'Invoice number', v.number),
+      moneyField('scheduler-f-iamount', 'Amount', v.amount),
+    );
     host.replaceChildren(grid);
+    window.Rux?.datePicker?.init?.(host);
     window.Rux?.modal?.open?.('scheduler-inv-modal');
   }
 
   document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
-    const number = document.getElementById('scheduler-f-inum')?.value.trim() || null;
-    if (number === null) {
+    const val = id => document.getElementById(id)?.value.trim() ?? '';
+    const row = { number: val('scheduler-f-inum') || null, amount: money(val('scheduler-f-iamount')),
+                  date: isoOrNull(val('scheduler-f-idate')) };
+    // An empty dialog adds nothing, the rule the other two dialogs follow.
+    if (row.number === null && row.amount === null && row.date === null) {
       window.Rux?.modal?.close?.('scheduler-inv-modal');
       return;
     }
-    if (invEditing === null) { if (invPending.length < LIST_CAP) invPending.push({ number }); }
-    else Object.assign(invPending[invEditing], { number });
+    if (invEditing === null) invPending.push(row);
+    else Object.assign(invPending[invEditing], row);
     window.Rux?.modal?.close?.('scheduler-inv-modal');
     redrawInvoices();
     refreshDirty();
   });
+
+  /* THE ROWS SAVE WRITES FOR ONE LIST. Off means none. On means the pending
+     rows in order, and at least one: a PO expected with nothing typed is one
+     empty row, so `po_received` always agrees with whether rows exist, the
+     rule rux-ui follows too. */
+  function listRowsToSave(kind) {
+    const po = kind === 'po';
+    if (!on(document.getElementById(po ? 'scheduler-f-poreceived' : 'scheduler-f-invoice'))) return [];
+    const refKey = po ? 'ref' : 'number';
+    const rows = (po ? poPending : invPending).map((p, position) => ({
+      id: p.id ?? null, position, [refKey]: p[refKey] ?? null,
+      amount: money(String(p.amount ?? '')), date: p.date ?? null,
+    }));
+    return rows.length ? rows : [{ id: null, position: 0, [refKey]: null, amount: null, date: null }];
+  }
+
+  // The sum of the rows' amounts, or null when no row has one.
+  function sumOrNull(rows) {
+    const amounts = rows.map(r => r.amount).filter(a => a !== null && a !== undefined && a !== '');
+    return amounts.length
+      ? money(String(Math.round(amounts.reduce((n, a) => n + Number(a), 0) * 100) / 100))
+      : null;
+  }
+
+  /* A PO OR INVOICE LIST AS WRITES, by id like `paymentsPatch`: new rows
+     insert, changed rows update, removed rows delete. `was` is the list as the
+     trip opened, so a row saved in rux-ui after that is neither updated nor
+     deleted here. A trip opened without its rows writes none. */
+  function listPatch(kind) {
+    if (!editing || editing.listsLoaded === false) return null;
+    const po = kind === 'po';
+    const was = (po ? editing.pos : editing.invoices) || [];
+    const keys = [po ? 'ref' : 'number', 'amount', 'date', 'position'];
+    const seen = new Set();
+    const inserts = [];
+    const updates = [];
+    listRowsToSave(kind).forEach(({ id, ...row }) => {
+      const before = id ? was.find(w => String(w.id) === String(id)) : null;
+      if (!before) { inserts.push(row); return; }
+      seen.add(String(id));
+      const moved = keys.some(k => !same(row[k],
+        k === 'amount' ? money(String(before.amount ?? '')) : (before[k] ?? null)));
+      if (moved) updates.push({ id: String(id), patch: row });
+    });
+    const deletes = was.filter(w => !seen.has(String(w.id))).map(w => String(w.id));
+    return { inserts, updates, deletes, work: !!(inserts.length || updates.length || deletes.length) };
+  }
+  const posPatch = () => listPatch('po');
+  const invoicesPatch = () => listPatch('invoice');
 
   /* IT RUNS ON A NEW TRIP TOO, fixed 2026-09-10 after rux asked. This used to
      bail on `editing.creating`, so a deposit typed while booking was drawn in
@@ -2549,6 +2565,7 @@
     if (!editing) return false;
     const patch = patchOf();
     return stopsPatch().length > 0 || !!contactPatch() || !!paymentsPatch()?.work
+      || !!posPatch()?.work || !!invoicesPatch()?.work
       || (!!patch && Object.keys(patch).length > 0);
   }
 
@@ -2761,6 +2778,14 @@
        form knows what is on screen, not what was there when it opened. */
     editing.payments = creating ? [] : ((trip.trip_payments || [])
       .slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
+
+    /* THE PO AND INVOICE ROWS AS THEY WERE, for `listPatch` to diff against.
+       A trip object that never came through the embedded select has neither
+       list, cannot be diffed, and so Save leaves its rows alone. */
+    editing.listsLoaded = creating || (Array.isArray(trip.trip_pos) && Array.isArray(trip.trip_invoices));
+    const byPosition = rows => (rows || []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    editing.pos = creating ? [] : byPosition(trip.trip_pos);
+    editing.invoices = creating ? [] : byPosition(trip.trip_invoices);
 
     editing.stops = creating ? null : (() => {
       const { pickup, back } = stopsOfLeg(trip, legName);
@@ -3357,26 +3382,15 @@
          requirement that is easy to miss -- "cover the rest with another PO
          or payment". A deposit shrinks the shortfall exactly as a larger PO
          does, because what is uncovered is measured against the REMAINING
-         balance rather than against the quoted price. There is one
-         `po_amount` column and no second PO row, so "another PO" in practice
-         means raising this number. */
+         balance rather than against the quoted price. Several POs add
+         up, so another PO closes the gap the same way. */
       const poCoverage = el('p', 'rux--form__helper-text scheduler-po-coverage');
       const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
         !!trip.po_received);
       const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
         trip.invoice_status === 'Invoiced');
 
-      /* PO AND INVOICE BECAME LISTS, 2026-09-11, and the `+` that was refused
-         on 2026-09-10 is here -- capped rather than absent.
-
-         WHAT CHANGED SINCE THAT REFUSAL, because it was the right call and
-         this is not a reversal of it: the note here said a `+` would be a
-         control that can never add a second row, which is still true of the
-         DATABASE and no longer true of the BUTTON. rux asked for the layout
-         to be finalised now and for the cap to hold the compatibility, so the
-         button exists, disables at the row `trips` can store, and says why in
-         its tooltip. A control that stops at a limit is honest; one that
-         accepts a row and loses it on save is not.
+      /* PO AND INVOICE ARE LISTS, one row per PO or invoice, with no limit.
 
          THE ROWS ARE THE FIELDS THAT WERE HERE. `scheduler-f-poref` and
          `scheduler-f-poamount` were a labelless pair under this heading and
@@ -3386,13 +3400,8 @@
          plus 120px of form -- and it is the same shape as Payments below,
          built from the same `rowList`.
 
-         THE SWITCH STAYS, AND OPTION 2 WAS THE TEMPTING ONE. With a list,
-         "at least one row" could BE the switch (Phase 4 of
-         docs/plans/po-invoice-lists.md lays out both) and the section would
-         lose a control. The data refuses it: 12 of the 55 trips with a PO
-         carry `po_received` with no reference and no amount -- a PO promised,
-         nothing typed -- and a list alone cannot say that. Switch on with an
-         empty list is exactly those 12 rows.
+         THE SWITCH STAYS. A PO expected with nothing typed is the switch on and
+         one empty row, so the switch and the rows always agree.
 
          WHAT THE SWITCH DOES TO A LIST is what it did to the fields: off
          hides the rows and clears them, so hidden still means empty means
@@ -3400,42 +3409,19 @@
       const poList = rowList();
       const invList = rowList();
 
-      /* THE ADD ROW CARRIES THE CAP, and only the cap. With the switch off
-         the whole list is hidden, so there is no longer a dead `+` sitting in
-         a header to explain -- the control is simply not on screen. What is
-         left is the case the cap makes: the section is full, and the tooltip
-         says so in the product's words rather than the schema's. A dispatcher
-         does not need to hear about `trip_pos`.
+      const redrawLists = () => { drawPos(); drawInvoices(); };
 
-         `aria-disabled` IS NOT USED HERE. The button does nothing at that
-         point, so `disabled` is the honest attribute -- it takes the control
-         out of the tab order instead of letting a keyboard user land on
-         something that will not respond.
-
-         IT IS APPLIED WHERE THE ROW IS BUILT, because the body is replaced on
-         every draw: a reference held from one draw is detached by the next.
-         The switch redraws both lists rather than reaching for a button. */
-      const capRow = ({ li, btn }, count, note) => {
-        const full = count >= LIST_CAP;
-        btn.disabled = full;
-        btn.title = full ? note : '';
-        return li;
-      };
-      const syncCap = () => { drawPos(); drawInvoices(); };
-
-      /* A ROW EXISTS WHEN THERE IS SOMETHING IN IT, which is the only reading
-         of one column that survives the cap. A trip with a `po_ref` or a
-         `po_amount` has a PO row; one with `po_received` and neither has the
-         switch on and no row, which is the state those 12 trips are in and
-         the state this panel must be able to re-save unchanged.
-
-         `?? null` ON THE AMOUNT, BECAUSE 0 IS A NUMBER. `trip.po_amount` of 0
-         is falsy and would have dropped the row -- no trip carries one today,
-         and a truthiness test here is the kind of thing that is true until it
-         is not. */
-      poPending = (trip.po_ref || (trip.po_amount ?? null) !== null)
-        ? [{ ref: trip.po_ref ?? null, amount: trip.po_amount ?? null }] : [];
-      invPending = trip.invoice_number ? [{ number: trip.invoice_number }] : [];
+      /* THE ROWS ARE THE TABLES' OWN, with their ids. A trip object that
+         never carried them shows its single columns as one unsaved row, and
+         Save leaves its tables alone (`editing.listsLoaded`). */
+      const fromTables = editing.listsLoaded && !editing.creating;
+      poPending = fromTables
+        ? editing.pos.map(p => ({ id: String(p.id), ref: p.ref ?? null, amount: p.amount ?? null, date: p.date ?? null }))
+        : ((trip.po_ref || (trip.po_amount ?? null) !== null)
+          ? [{ ref: trip.po_ref ?? null, amount: trip.po_amount ?? null, date: null }] : []);
+      invPending = fromTables
+        ? editing.invoices.map(v => ({ id: String(v.id), number: v.number ?? null, amount: v.amount ?? null, date: v.date ?? null }))
+        : (trip.invoice_number ? [{ number: trip.invoice_number, amount: null, date: null }] : []);
 
       const drawPos = () => {
         poList.body.replaceChildren();
@@ -3444,8 +3430,8 @@
           const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
           const ref = p.ref || 'No reference';
           poList.body.appendChild(listRow({
-            when: ref, much,
-            title: ['Purchase order', ref, much || 'No amount'].join(' · '),
+            when: p.date ? `${ref} · ${mdy(p.date)}` : ref, much,
+            title: ['Purchase order', ref, p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openPoDialog(i),
             removeLabel: `Remove purchase order ${ref}`,
             remove: () => { poPending.splice(i, 1); drawPos(); refreshDirty(); },
@@ -3455,10 +3441,10 @@
            purchase order recorded." and then an add button below it -- two
            rows saying one thing in a panel that is already long. The add row
            alone says both: there is nothing here, and this is how one starts. */
-        poList.body.appendChild(capRow(listAddRow({
+        poList.body.appendChild(listAddRow({
           label: 'Add purchase order', id: 'scheduler-f-poadd',
           onClick: () => openPoDialog(null),
-        }), poPending.length, CAP_NOTE.po));
+        }).li);
         drawSummary();
       };
 
@@ -3467,25 +3453,19 @@
 
         invPending.forEach((v, i) => {
           const num = v.number || 'No number';
+          const much = (v.amount ?? null) === null ? '' : usd(Number(v.amount) || 0);
           invList.body.appendChild(listRow({
-            /* NO AMOUNT COLUMN FOR AN INVOICE, and the slot is left empty
-               rather than filled with the quoted price. There is no
-               `invoice_amount` anywhere in the schema -- the invoice is for
-               the trip's own money, and showing `quoted_price` on this row
-               would be this app inventing a fact. The empty third column
-               keeps the number aligned with the PO's reference above it,
-               which is what makes the two sections read as one system. */
-            when: num, much: '',
-            title: ['Invoice', num].join(' · '),
+            when: v.date ? `${num} · ${mdy(v.date)}` : num, much,
+            title: ['Invoice', num, v.date ? mdy(v.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openInvoiceDialog(i),
             removeLabel: `Remove invoice ${num}`,
             remove: () => { invPending.splice(i, 1); drawInvoices(); refreshDirty(); },
           }));
         });
-        invList.body.appendChild(capRow(listAddRow({
+        invList.body.appendChild(listAddRow({
           label: 'Add invoice', id: 'scheduler-f-invadd',
           onClick: () => openInvoiceDialog(null),
-        }), invPending.length, CAP_NOTE.inv));
+        }).li);
       };
       redrawPos = drawPos;
       redrawInvoices = drawInvoices;
@@ -3642,12 +3622,8 @@
         const paid = pending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
         const price = quoted ?? 0;
         const poOn = on(document.getElementById('scheduler-f-poreceived'));
-        /* THE PO AMOUNT IS A SUM OVER THE ROWS, 2026-09-11, where it used to
-           be one field's value. With the list capped at one row the two are
-           the same number; written as a sum it is already Phase 6 of
-           docs/plans/po-invoice-lists.md, and the coverage line below --
-           `max(0, (quoted - paid) - poAmount)` -- becomes correct for several
-           POs without being touched again. */
+        /* THE PO AMOUNT IS THE SUM OF THE PO ROWS, so the coverage line below --
+           `max(0, (quoted - paid) - poAmount)` -- covers several POs. */
         const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
         const remaining = Math.max(0, price - paid);
         const shortfall = Math.max(0, remaining - poAmount);
@@ -3940,7 +3916,7 @@
           box.body.hidden = !open;
           if (!open && clear && pending.length) { pending.length = 0; redraw(); }
         }
-        syncCap();
+        redrawLists();
       };
 
       syncGates(false);
@@ -4841,6 +4817,28 @@
         const { error: daErr } = await withTimeout(
           client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', payTripId).then(r => r));
         if (daErr) throw daErr;
+      }
+
+      /* POS AND INVOICES, by id like the payments above. Their single columns
+         went out with the trip patch, computed from the same rows (`EDITS`). */
+      for (const [table, listWork] of [['trip_pos', payTripId ? posPatch() : null],
+                                       ['trip_invoices', payTripId ? invoicesPatch() : null]]) {
+        if (!listWork?.work) continue;
+        for (const row of listWork.inserts) {
+          const { error: liErr } = await withTimeout(
+            client.from(table).insert({ trip_id: payTripId, ...row }).then(r => r));
+          if (liErr) throw liErr;
+        }
+        for (const u of listWork.updates) {
+          const { error: luErr } = await withTimeout(
+            client.from(table).update(u.patch).eq('trip_id', payTripId).eq('id', u.id).then(r => r));
+          if (luErr) throw luErr;
+        }
+        for (const delId of listWork.deletes) {
+          const { error: ldErr } = await withTimeout(
+            client.from(table).delete().eq('trip_id', payTripId).eq('id', delId).then(r => r));
+          if (ldErr) throw ldErr;
+        }
       }
 
       for (const w of stopWork) {

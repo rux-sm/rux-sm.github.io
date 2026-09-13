@@ -8,9 +8,9 @@ type: plan
 
 A trip can carry several POs and several invoices, edited in either app. The
 scheduler and rux-ui both stay live and in use throughout, so every step leaves
-both working. Today the scheduler's Billing tab shows Purchase order and
-Invoice as lists capped at one row by `LIST_CAP` in `scheduler/data.js`, and
-rux-ui edits PO and invoice lists and writes them by id.
+both working. Both apps now edit PO and invoice lists and write them by id;
+the scheduler's change waits on a branch until rux-ui's old tabs are
+refreshed.
 
 ## Decisions
 
@@ -33,9 +33,9 @@ rux-ui edits PO and invoice lists and writes them by id.
 - **The old single columns stay, and both apps keep them true on every save**,
   from the rows. An old copy of either app in an open browser tab
   still reads and writes them until it reloads.
-- **Order:** tables and backfill, then rux-ui, then the scheduler raises
-  `LIST_CAP`. Until rux-ui ships, no app can hold a second row, so no save can
-  collapse a list.
+- **Order:** tables and backfill, then rux-ui, then the scheduler. Until
+  rux-ui's open tabs run the new editor, the scheduler holds one row of each,
+  so no save can collapse a list.
 - rux-ui reloads trips on realtime changes, so both tables join the
   `supabase_realtime` publication and its `scheduler-trips-db` channel.
 - rux-ui bumps the `?v=` of every file it changes, including versioned imports
@@ -45,8 +45,9 @@ rux-ui edits PO and invoice lists and writes them by id.
   Contract stays one switch and one note.
 - Each app step reverts with its own commit, and the old columns are never
   dropped, so stopping between steps is safe.
-- The scheduler step works in a worktree, because another session is editing
-  `scheduler/`.
+- The scheduler's change is built on the `po-invoice-lists` branch in a
+  worktree, because another session is editing `scheduler/`, and merges to
+  `main` after rux's refresh.
 - **Access:** both tables have row level security on, with one `dev_all`
   policy matching `trips`, so closing access later is one change across every
   trip table.
@@ -67,19 +68,10 @@ None open.
 
 ## Tasks
 
-- [ ] Scheduler read: add `trip_pos(id,position,ref,amount,date)` and
-      `trip_invoices(id,position,number,amount,date)` beside `trip_payments` in
-      the embedded select, loaded by `position` with their `id`.
-- [ ] Scheduler editor: raise `LIST_CAP`; add a Date to both dialogs and an
-      Amount to the invoice dialog.
-- [ ] Scheduler save: `posPatch()` and `invoicesPatch()` beside
-      `paymentsPatch()`, replacing the single-column writes, with the mirror
-      columns in the same save; on create both hang off `made.id`.
-- [ ] Scheduler verify: `npm run check`; two POs of $10,000 against a $25,000
-      balance read `$5,000 not authorized`, and a third of $5,000 reads
-      `Covers the balance`, without saving.
 - [ ] rux uses rux-ui's Settings, "Force refresh all users", at least ten
       minutes after rux-ui's deploy, so no open tab keeps the old editor.
+- [ ] Merge `po-invoice-lists` into `main` and push, which publishes the
+      scheduler's lists, then remove the worktree.
 - [ ] Both apps, on rux's real trip: two POs added in the scheduler survive a
       save in rux-ui; one deleted in rux-ui is gone in the scheduler after a
       reload; `po_amount` equals the sum and `po_ref` the first row.

@@ -4,6 +4,33 @@ Every dated pass and answered decision, newest first. `AGENTS.md` is the
 policy; `docs/backend-inventory.md` and `docs/screen-inventory.md` are the
 two inventories the rebuild starts from.
 
+**2026-09-13 (second pass) - the dashed edge goes too; colour alone says
+unconfirmed.** rux, after seeing the filled bars on the live board: "no dashed
+border unconfirmed are red . confirmed blue. override over is whatever color is
+chosen."
+
+That is the rule `hueFor` already had, so that function is untouched: a picked
+colour wins, otherwise red when `confirmed` is false and blue when it is not.
+What goes is the bar's own mark for the state, the `sch-bar--unconfirmed` rule
+in `sch.css` and the line in `sch-data.js` that added the class. The entry below
+left the edge as rux's to decide on seeing it; this is the answer. The
+screen-reader label still says unconfirmed.
+
+**WHAT IT GIVES UP, COUNTED.** Read from `trips` with `cancelled_at` null: 472
+confirmed, 265 unconfirmed, 0 with `confirmed` null (the column allows null and
+defaults to false), so `=== false` is all of unconfirmed today. 43 of the
+unconfirmed trips carry a picked colour, against 19 confirmed ones. Those 43 now
+look like a confirmed trip of their colour, which is the rule as rux stated it.
+
+Measured on the specimen before and after, 11 bars in 8 themes: no dashed edge
+left, and changes on exactly the two bars that had one. Each lost its 1px edge
+and got its 4px padding back, so its first character moved from 9px in to 8px,
+where every other bar's sits. In the markup Mystic Aquarium went from blue to
+red, so the specimen draws an unconfirmed trip with no picked colour the way the
+board does; Newport stays purple, as a picked colour. The other nine bars
+computed identical values. rux's screenshot of the week of 7 September also
+shows the entry below landed on the live board, which it could only predict.
+
 **2026-09-13 - an unconfirmed trip is filled like every other bar.** rux: "i
 want the trips bars to have solid color background insted of only confirmed
 trips."

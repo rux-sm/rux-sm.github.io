@@ -578,7 +578,6 @@
       bar.dataset.start = place.start;
       bar.dataset.span = place.span;
     }
-    if (trip.confirmed === false) bar.classList.add('sch-bar--unconfirmed');
     if (place.fromPrev) bar.classList.add('sch-bar--from-prev');
     if (place.toNext) bar.classList.add('sch-bar--to-next');
     bar.style.setProperty('--sch-start', place.start);

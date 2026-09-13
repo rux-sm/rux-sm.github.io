@@ -716,14 +716,14 @@ button.sch-row-head__num {
 .sch-bar--cool-gray { --sch-bg: var(--rux-tag-background-cool-gray); --sch-fg: var(--rux-tag-color-cool-gray); --sch-hover: var(--rux-tag-hover-cool-gray); --sch-border: var(--rux-tag-border-cool-gray); }
 .sch-bar--warm-gray { --sch-bg: var(--rux-tag-background-warm-gray); --sch-fg: var(--rux-tag-color-warm-gray); --sch-hover: var(--rux-tag-hover-warm-gray); --sch-border: var(--rux-tag-border-warm-gray); }
 
-/* States. Unconfirmed has a dashed edge in its hue's border colour; a partial
-   PO has the warning border; a leg that continues past the week has no edge
-   on that side and runs to it.
-   UNCONFIRMED IS FILLED, 2026-09-13, at rux's request. It was hollow -- the
-   layer's own surface inside the dashed edge. The edge stays because a picked
-   colour outranks status in sch-data.js's `hueFor`: on a trip coloured teal,
-   the edge is the only thing that still says unconfirmed. */
-.sch-bar--unconfirmed { border: 1px dashed var(--sch-border); padding-block: calc(var(--rux-spacing-02) - 1px); }
+/* States. A partial PO has the warning border; a leg that continues past the
+   week has no edge on that side and runs to it.
+   UNCONFIRMED IS A COLOUR, NOT A STATE OF THE BAR, 2026-09-13. rux: "no dashed
+   border unconfirmed are red . confirmed blue. override over is whatever color
+   is chosen." That is `hueFor` in sch-data.js, and nothing here adds to it. The
+   bar was hollow with a dashed edge in its hue, then filled with the edge kept
+   earlier the same day, and now has neither. Given up on purpose: a trip with a
+   picked colour says nothing about confirmation on the board. */
 .sch-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
 /* A CONTINUING EDGE TAKES NO GAP, because there is nothing on that side of it
    to be separated from -- the trip runs off the week. Only the gap it keeps is

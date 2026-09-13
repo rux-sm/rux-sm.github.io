@@ -403,7 +403,7 @@
   overflow menu are Carbon parts as compiled in the pinned rux.css. What it
   shows: a two-day bar, a bar continuing from last week, one continuing into
   next week with a partial-PO border, two bars overlapping into a second
-  lane, a dashed unconfirmed bar, a double booking, an out-of-service
+  lane, an unconfirmed trip in red, a double booking, an out-of-service
   stripe with its row icon, and the Unassigned row. What it does: a click
   selects a bar (aria-pressed), the switcher changes the size tier. Not
   covered: no data, no drag, no editor, no week navigation, no time-aligned
@@ -471,7 +471,7 @@
           <div class="sch-bar__row sch-bar__reqs"><span>44 pax · ADA lift</span></div>
           <div class="sch-bar__row sch-bar__drivers"><span>Ortiz</span></div>
         </article>
-        <article class="sch-bar sch-bar--purple sch-bar--unconfirmed" role="button" tabindex="0" aria-pressed="false" style="--sch-start:3;--sch-span:2;--sch-lane:1" aria-label="Newport, RI, Harbor Rotary · D. Reyes">
+        <article class="sch-bar sch-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--sch-start:3;--sch-span:2;--sch-lane:1" aria-label="Newport, RI, Harbor Rotary · D. Reyes, unconfirmed">
           <div class="sch-bar__row sch-bar__dest"><span>Newport, RI</span><span class="sch-bar__ref"></span></div>
           <div class="sch-bar__row sch-bar__client"><span>Harbor Rotary · D. Reyes</span></div>
           <div class="sch-bar__row sch-bar__time"><span>07:00 – 22:00</span><span>spot 06:30</span></div>
@@ -556,7 +556,7 @@
         <div class="sch-row-head" title="Trips with no bus yet"><div class="sch-row-head__num">No
 bus</div></div>
         <div class="sch-track" style="--sch-lanes:1">
-        <article class="sch-bar sch-bar--blue sch-bar--unconfirmed" role="button" tabindex="0" aria-pressed="false" style="--sch-start:2;--sch-span:1;--sch-lane:0" aria-label="Mystic Aquarium, Bayview Elementary · K. Lee">
+        <article class="sch-bar sch-bar--red" role="button" tabindex="0" aria-pressed="false" style="--sch-start:2;--sch-span:1;--sch-lane:0" aria-label="Mystic Aquarium, Bayview Elementary · K. Lee, unconfirmed">
           <div class="sch-bar__row sch-bar__dest"><span>Mystic Aquarium</span><span class="sch-bar__ref"></span></div>
           <div class="sch-bar__row sch-bar__client"><span>Bayview Elementary · K. Lee</span></div>
           <div class="sch-bar__row sch-bar__time"><span>08:00 – 15:30</span><span>spot 07:30</span></div>

@@ -603,10 +603,12 @@ const ROOT = new URL('.', location.href).href;
 // root-relative, then ROOT makes the result absolute — builder/rewrites.mjs's
 // firstPerLine/everywhere helpers target the literal "../" prefix alone and
 // do not apply to a page that has none, which is why this is its own
-// function rather than a shared import.
+// function rather than a shared import. A path that starts with "/", such as
+// the shared /switcher.js, belongs to the site root and resolves against it.
 function rebase(html) {
   return html.replace(/((?:href|src)=")(\.\.\/)?([^"#][^"]*)"/g, (_, attr, dots, path) => {
     if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(path)) return `${attr}${dots || ''}${path}"`; // absolute or scheme-relative — leave alone
+    if (path.startsWith('/')) return `${attr}${new URL(path, location.href).href}"`; // site-root path — resolve against the site, not this folder
     return `${attr}${ROOT}${path}"`;
   });
 }

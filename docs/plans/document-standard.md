@@ -70,31 +70,19 @@ says its kind in a `type:` header line. Atlas content keeps its own types.
 
 ## Questions
 
-None.
+1. **Evidence files name the old atlas folders.** Six recording manifests name
+   `_standards/tools/transcribe.py`, a tool path from the predecessor library,
+   and three recording records name `_inbox/` as where the recording sat before
+   filing. Evidence never changes and nothing reads those lines. Rename the two
+   folders anyway, leaving those mentions as they are?
 
 ## Tasks
 
 ### Atlas
 
-- [ ] Remove the rule that a control change is judged by another session.
-- [ ] Add the testable document rules to `AGENTS.md`, each naming its check,
-      and keep the rest in principle 10.
-- [ ] Rename `docs/HANDOFF.md` to `docs/handoff.md`, `docs/START-HERE.md` to
-      `docs/start-here.md`, `_standards/` to `standards/`, its template file to
-      lowercase, and `_inbox/` to `inbox/`. Fix every reference in both
-      repositories. If a file in `evidence/` names an old path, stop and ask,
-      because evidence never changes.
-- [ ] Give atlas's project documents their kind, extending the frontmatter
-      schema where it needs the new kinds.
-- [ ] Extend `tools/check.py` with a `docs` check matching the site's, with
-      fixtures in `tools/selftest.py`.
-- [ ] Run the check and the self-test, fix what they report, commit and push.
-- [ ] If published text changed, run the export in the site, commit and push.
-
-### Claude settings
-
-- [ ] Add plans to the documents rule in `CLAUDE.md`: reviewed before
-      building, kept in `docs/plans/`, deleted when done.
+- [ ] Once question 1 is answered, rename `_standards/` to `standards/` and
+      `_inbox/` to `inbox/`, and fix every reference in both repositories.
+- [ ] Export into the site, commit and push.
 
 ### Finish
 

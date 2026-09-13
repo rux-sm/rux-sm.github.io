@@ -1,9 +1,9 @@
-commit   2e7468e5e9a4acb695a804a34e738e1616508e2e
-date     2026-09-13T10:20:19Z
-subject  docs: Move open plan steps into issues
+commit   b732e1c21c4cbe853a37fcf808c5ccb469d125a2
+date     2026-09-13T19:10:42Z
+subject  feat(check): Check project documents
 contract 8 
 tier     export
-sha256   08ca0d8603ffb08ca1e651dd41c8d18a81099e56857f9d8dadad74bf6aaab072
+sha256   6d6b344e092c000185eecacb008734b84c774cb63de22c269181030f73004ecb
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

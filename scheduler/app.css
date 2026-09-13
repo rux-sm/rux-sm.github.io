@@ -885,33 +885,15 @@ button.scheduler-row-head__num {
    outranks its own column headings; 16px at 600 does that without leaving the
    32px bar, and it is the same type the trip editor's title now carries so the
    two regions' heads match each other rather than their own subordinates. */
-/* `heading-03`, THE SAME TYPE THE TRIP EDITOR'S TITLE TAKES, 2026-09-12. This
-   was `heading-compact-02` -- 16px at 600 against the panel's 20px at 400 --
-   and rux read the two side by side as different kinds of thing: "the
-   inconsistent header bother me a bit".
-
-   THE PANEL IS THE MODEL AND NOT THE OTHER WAY ROUND, which is what settled
-   which one moves. `.rux--side-panel__title-text` is `heading-03` because
-   Carbon says a side panel's title is; this head is this app's own markup
-   imitating that panel, so it is the one free to change. Overriding the
-   component to match the imitation would have been the app overruling the
-   design system on a component Carbon ships complete.
-
-   AND CARBON ALREADY USES BOTH TOKENS IN ONE PANEL, which is the detail that
-   makes this a mismatch rather than a preference: the side panel carries a
-   SECOND title, `__collapsed-title-text`, at `heading-compact-02` -- exactly
-   what this rule used to be -- and swaps to it as the panel scrolls. So the
-   roster's head was wearing the panel's COLLAPSED type beside the panel's
-   expanded one, permanently.
-
-   THE TOOLBAR IS NOT IN THIS COMPARISON. It has no title: the week is a BUTTON
-   that opens the date picker, and Carbon's data table toolbar carries no
-   heading either. Three regions, two headers and a control row. */
+/* THE TITLE IS `heading-compact-02`, 16px at 600: the same style as the week
+   name in the toolbar and the trip editor's title, so the three section heads
+   read as one set in their 32px row. The column headings beneath are 14px on
+   the lighter band. */
 .scheduler-aside__title {
-  font-size: var(--rux-heading-03-font-size);
-  font-weight: var(--rux-heading-03-font-weight);
-  line-height: var(--rux-heading-03-line-height);
-  letter-spacing: var(--rux-heading-03-letter-spacing);
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
   color: var(--rux-text-primary);
   white-space: nowrap;
   overflow: hidden;

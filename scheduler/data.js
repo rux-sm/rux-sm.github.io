@@ -2562,7 +2562,7 @@
   function setTitle() {
     if (!editing) return;
     const dest = document.getElementById('scheduler-f-destination')?.value.trim();
-    for (const [h, size] of [[panelTitle, '20'], [panelTitleCollapsed, '16']]) {
+    for (const [h, size] of [[panelTitle, '16'], [panelTitleCollapsed, '16']]) {
       if (editing.creating) { h.textContent = 'New trip'; h.removeAttribute('title'); continue; }
       const icon = svgUse('#i-edit', size, '0 0 32 32');
       icon.setAttribute('class', 'scheduler-panel-title__icon');

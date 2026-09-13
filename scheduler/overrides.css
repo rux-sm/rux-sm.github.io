@@ -341,25 +341,16 @@
     inline-size: var(--rux-layout-size-height-sm);
   }
 }
-/* THE TITLE IS CARBON'S OWN `heading-03` AGAIN, 2026-09-10 on rux's call,
-   and the way to say that is to STOP SAYING ANYTHING -- the four
-   declarations that were here forced `heading-compact-02`, 16px at 600, and
-   deleting them lets rux.css's own rule land: 20px at 400, the size Carbon
-   draws a side panel title at. An override that restates the default is
-   worse than no override, so this is a comment where a rule was.
-
-   IT UNPICKS HALF OF 2026-09-09, and the half is worth naming. That entry
-   matched all three region titles at `heading-compact-02` so none of them
-   matched its own subordinate. Two still do; this one no longer matches its
-   siblings -- and that is the point rather than a cost, because it is not
-   their kind of thing. The toolbar's date and the roster's title are table
-   chrome, labelling grids whose column headers sit 14px beneath them. This
-   labels a form. Carbon gives the two different components different specs
-   and the earlier entry had flattened that.
-
-   WHAT STILL HOLDS from that entry: the three heads are one BAND, 40px, so
-   the regions still start on one line. What changed is only what sits in
-   this one. */
+/* THE TITLE IS `heading-compact-02`, 16px at 600, in place of Carbon's
+   `heading-03`: the same style as the toolbar's week name and the driver
+   panel's title, so the three section heads read as one set in their 32px row.
+   Carbon's own collapsed title already uses this style. */
+.rux--side-panel .rux--side-panel__title-text {
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
+}
 
 /* THE TRIP PANEL'S TABS FILL THE STRIP WITHOUT `--contained`. Carbon only
    grid-fits nav items when `--contained` rides along with `--full-width`,

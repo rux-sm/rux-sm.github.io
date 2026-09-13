@@ -35,7 +35,7 @@ record of what was asked and why.
   and invoice tables, or the scheduler replaces it first. Phase 1 waits on it,
   `LIST_CAP` stays 1, and `posPatch()` / `invoicesPatch()` stay unwritten until
   it is answered.
-- **Step 5 of `rux-backend/docs/identity-plan.md`** — the same question wearing
+- **Step 5 of the identity plan**, in the archived `rux-backend` — the same question wearing
   different clothes. Dropping the permissive RLS policies breaks rux-ui, so it
   waits on rux-ui being retired rather than retrofitted.
 

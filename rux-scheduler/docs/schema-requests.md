@@ -1,7 +1,3 @@
----
-exchange: {kind: requests, from: rux-scheduler, to: rux-backend}
----
-
 # Requests to the shared schema
 
 What this app has asked the **database** for, and why. Distinct from
@@ -17,8 +13,8 @@ this is the list of what it is missing.
 Open requests are listed first.
 
 **Since 2026-09-12 this is a record, not a queue.** A schema change is
-prepared in rux-backend as a new migration in the same session as the app
-change; applying it to the live project stays a separate, deliberate step.
+written in the same session as the app change and applied to the live project
+through the Supabase connection, as a separate, deliberate step on rux's yes.
 What is still open is listed in the hub's `docs/status.md`.
 
 ---

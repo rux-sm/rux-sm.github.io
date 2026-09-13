@@ -24,7 +24,7 @@ git config core.hooksPath .githooks        # the privacy sweep and the fast chec
 ```
 
 Notes work also needs the private library cloned beside this repository:
-`../rux-ln-atlas`. Database work needs `../rux-backend`.
+`../rux-ln-atlas`. Database work needs no checkout; `AGENTS.md` says how.
 
 ## Every day
 

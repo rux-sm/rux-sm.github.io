@@ -315,7 +315,7 @@ node 15 has never fired and every tag so far has been an addition or a fix.
 | The 26 gates one by one | `tools/lib/gates.mjs` is the registry and `npm run gates` is the reading. Drawing them here makes a second list to go stale |
 | The build steps inside `npm run verify` | `build`, `sink`, `portal`, `readme`, `blocks`, `builder`, the two theme builders — they are one node because you never run them singly |
 | Carbon's own compile and the strip | Roadmap §1 owns it. It happens once per Carbon version, not once per change |
-| `rux-backend` | It has no page and never vendored anything. Its own decisions live in roadmap §4.13 |
+| The database | It has no page and, since 2026-09-13, no repository. Roadmap §4.13 has its decisions |
 | `rux-ln-atlas` | Private. Nothing from it appears here, by the rule at the top of `AGENTS.md` |
 | The screen-reader pass | It has no command and no gate. `docs/screen-reader-pass.md` owns it, and it is the one thing on this chain a person must do with an assistive technology running |
 | The `consumers` job's own internals — which apps it checks, in what order, how `--hub` and `--ds` resolve | Node 17 states the act. `tools/app-check.mjs` and `.github/workflows/pages.yml` in rux-ds own the mechanism, and 7.1 already names the one defect that mattered |

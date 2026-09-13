@@ -22,7 +22,7 @@
 
    THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS — both are
    meant to sit in client code the browser can read; the paired secret keys
-   stay in rux-backend's Supabase project settings, never here.
+   stay in the Supabase project's settings, never here.
 
    NOT DONE: an interrupted anonymous sign-in (Turnstile times out, the
    network drops) is not retried until the next page load. A Turnstile

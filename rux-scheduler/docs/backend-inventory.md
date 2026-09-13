@@ -1,13 +1,14 @@
 # Backend inventory
 
-Written 2026-09-06 from the schema snapshot in `rux-backend`
+Written 2026-09-06 from the schema snapshot in `rux-backend`, archived 2026-09-13,
 (`supabase/migrations/20260903160350_remote_schema.sql`, pulled 2026-09-03
 from project `udnmqhayzhrbltxzzhjw`) and the old app's data layer
 (`rux-ui/js/data/*.js`). This app is a frontend replacement: it reads and
 writes the tables below as they are. Nothing here is a schema change.
 
-The snapshot is the contract. When it and this page disagree, re-pull and
-fix this page; do not fix the schema to match the page.
+The live project is the contract. When it and this page disagree, read the
+live tables through the Supabase connection and fix this page; do not fix
+the schema to match the page.
 
 ## 1. How the old app reaches the backend, and what that means here
 
@@ -36,7 +37,7 @@ anon role does. The new app can therefore sign in through the platform
 commit without breaking the old app, which keeps running unauthenticated
 against the same rows. Tightening any policy to `authenticated` or to an
 owner is a cutover step, taken only when the old app is retired, and it is a
-`rux-backend` migration, never a change from here.
+migration applied through the Supabase connection, never a change from here.
 
 The new app should talk to the Supabase host directly. Supabase serves CORS
 itself; the Worker earns its place only for `/ai/extract`, which belongs to
@@ -147,8 +148,8 @@ as in `screen-inventory.md`.
 - `rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
   and `list_trip_request_documents`, and cites a `trip_request_documents`
   table. None of that is in the snapshot. Either the live project moved past
-  2026-09-03 or a migration is missing from `rux-backend`. Re-pull before
-  building Requests.
+  2026-09-03 or the snapshot missed it. Read the live tables through the
+  Supabase connection before building Requests.
 - No `grant` or `revoke` on the RPCs appears in the snapshot, so the execute
   rights of `anon` on the security-definer functions are the Postgres
   default, not a decision. Confirm in the dashboard before the driver page.

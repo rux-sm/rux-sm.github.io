@@ -4631,6 +4631,16 @@ account panel is untested against one; and the panel still has no positive
 "signed in as X" indicator — only the negative signal of the button's
 absence, which answers "are you signed in" but not "as whom."
 
+**`rux-backend` archived, 2026-09-13.** Every app has been a folder of one
+repository since 2026-09-12, and step 8's own schema was struck on
+2026-09-06, so the one table this repository authored was
+`platform.profiles`. It is archived on GitHub, private, with its snapshot,
+its `config.toml` and `docs/identity-plan.md`. A change to the project is now
+applied through the Supabase connection as a named migration, which the
+project lists, and sign-in settings are changed in the dashboard. That
+supersedes "migrations only in `rux-backend`" above; the decision to keep one
+project stands.
+
 ### 4.14 Phase 14 — Theme Creator
 
 **Added 2026-09-06**, from a conversation the same day. `css/rux-theme.css`

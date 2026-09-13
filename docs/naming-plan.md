@@ -46,7 +46,6 @@ NOW                                          CLEAN
 │   ├── guides/SG-ship-from-stock.md         │   ├── guides/SG_ship-from-stock.md
 │   ├── exercises/HOMEWORK-production-...md  │   ├── exercises/EX_production-...md
 │   └── tests/RUN-SHEET-order-quantities.md  │   └── tests/RS_order-quantities.md
-├── rux-backend/                             ├── backend/
 ├── rux-ui/            (old app)             ├── rux-ui/            (unchanged, no collision — see below)
 ├── CLAUDE.md  rux.code-workspace            ├── CLAUDE.md  rux.code-workspace
 ~/claude-config/                             ~/dotfiles/
@@ -61,7 +60,6 @@ NOW                                          CLEAN
 | Scheduler | `/scheduler/` | `— Scheduler` | `scheduler-` | `scheduler` |
 | Notes | `/notes/` | `— Notes` | `notes-` | `notes` |
 | Atlas | `../atlas` | | | `atlas` |
-| Backend | `../backend` | | | `backend` |
 
 ## The rules, one per layer
 
@@ -101,7 +99,7 @@ None left. See "Decisions taken so far".
 2. App folders and URLs, with redirect stubs if wanted. Search-and-replace
    the absolute paths, run the check, push.
 3. Repositories and local folders. GitHub redirects old names. Relink the
-   three memory folders afterwards.
+   two memory folders afterwards.
 4. Atlas ids and folders. Its own session; the gate is the judge.
 
 ## Decisions taken so far
@@ -141,3 +139,8 @@ None left. See "Decisions taken so far".
   not a dotfiles repository in the sense the word usually means, and
   renaming it to `dotfiles` would describe it less accurately than its
   current name already does. Decided 2026-09-13.
+
+- **The backend repository is gone, not renamed.** Nothing ran from it,
+  and with every app in one repository a shared database no longer needs a
+  repository of its own. Archived on GitHub, private, on 2026-09-13; database
+  changes go through the Supabase connection. Decided 2026-09-13.

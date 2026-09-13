@@ -45,7 +45,7 @@ region's shape recorded in `rux-ds/docs/consumer-policy.md` §3.2.
 
 Whether rux-ui is taught the PO and invoice tables —
 `rux-scheduler/docs/po-invoice-lists-plan.md` §0.3 and
-`rux-backend/docs/identity-plan.md` step 5. The plan records rux's answer
+step 5 of the identity plan in the archived `rux-backend`. The plan records rux's answer
 that rux-ui keeps working alongside the scheduler, so replacing it first is
 off the table; whether it is taught the new tables is still open. The two
 schema items above wait on it.

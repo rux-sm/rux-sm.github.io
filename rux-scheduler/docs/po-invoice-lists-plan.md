@@ -29,9 +29,9 @@ one `po_amount` and one `invoice_number`, and there is no `trip_pos` or
 migration would be a control that cannot add a second row.
 
 The migration is a change to a **production database shared with rux-ui**, on
-a project this repository does not own. It belongs in `rux-backend`
-(`supabase/migrations/`), applied by rux. Nothing in this plan writes to the
-database from this app's tooling.
+a project this repository does not own. It is applied through the Supabase
+connection as a named migration, on rux's yes. Nothing in this plan writes to
+the database from this app's tooling.
 
 ---
 
@@ -73,9 +73,10 @@ POs are edited only in this app.
 
 ---
 
-## Phase 1 — the migration (`rux-backend`)
+## Phase 1 — the migration
 
-Modelled on `trip_payments` exactly (`20260903160350_remote_schema.sql:476`),
+Modelled on `trip_payments` exactly (`20260903160350_remote_schema.sql:476`
+in the archived `rux-backend`),
 including the `ON DELETE CASCADE` and the `trip_id` index.
 
 ```sql

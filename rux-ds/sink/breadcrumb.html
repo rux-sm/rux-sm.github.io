@@ -1,0 +1,37 @@
+<section class="ks-sec" id="breadcrumb">
+  <h2>Breadcrumb</h2><p>trailing slash · no trailing slash · small</p>
+  <!-- PROVENANCE: rendered-dom · components-breadcrumb--default, 2026-08-28
+       · every class that story emits is present, and nothing here is absent
+       from it except the story's own `layout` chrome -->
+  <!--
+    The omissions report lists the overflow-menu breadcrumb: a long trail
+    collapses its middle items into an overflow menu, which is a real variant
+    this fragment does not demo. Its classes belong to the overflow-menu
+    fragment, which owns them.
+  -->
+  <!-- The separator is ::after on every item; --no-trailing-slash suppresses the last. -->
+  <div style="display:grid;gap:1rem">
+    <!-- BLOCK:BEGIN name=default label="Breadcrumb" -->
+    <nav aria-label="Breadcrumb">
+      <ol class="rux--breadcrumb">
+        <li class="rux--breadcrumb-item"><a class="rux--link" href="#breadcrumb">Home</a></li>
+        <li class="rux--breadcrumb-item"><a class="rux--link" href="#breadcrumb">Section</a></li>
+        <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#breadcrumb" aria-current="page">Current</a></li>
+      </ol>
+    </nav>
+    <!-- BLOCK:END default -->
+    <nav aria-label="Breadcrumb, no trailing slash">
+      <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">
+        <li class="rux--breadcrumb-item"><a class="rux--link" href="#breadcrumb">Home</a></li>
+        <li class="rux--breadcrumb-item"><a class="rux--link" href="#breadcrumb">Section</a></li>
+        <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#breadcrumb" aria-current="page">Current</a></li>
+      </ol>
+    </nav>
+    <nav aria-label="Breadcrumb, small">
+      <ol class="rux--breadcrumb rux--breadcrumb--sm rux--breadcrumb--no-trailing-slash">
+        <li class="rux--breadcrumb-item"><a class="rux--link" href="#breadcrumb">Home</a></li>
+        <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#breadcrumb" aria-current="page">Current</a></li>
+      </ol>
+    </nav>
+  </div>
+</section>

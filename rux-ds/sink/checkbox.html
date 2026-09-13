@@ -1,0 +1,133 @@
+<section class="ks-sec" id="checkbox">
+  <h2>Checkbox</h2><p>group · checked · indeterminate · disabled · invalid</p>
+  <!-- PROVENANCE: rendered-dom · components-checkbox--default with its invalid,
+       warn and readonly state recipes, plus --horizontal and --single, read from
+       docs/carbon-react-dom.json and docs/carbon-react-states.json, 2026-08-27 -->
+  <!--
+    The tick and the indeterminate dash are drawn in CSS (::before/::after), so no
+    icon is needed. `indeterminate` is a JS property, not an attribute — the harness
+    script sets it on [data-rux-indeterminate].
+
+    Each row MUST be `form-item checkbox-wrapper`: that pair is what carries
+    position:relative (css/rux.css:6569). The input is position:absolute, so with
+    form-item alone it escapes to the document origin and clicking the label scrolls
+    the page to the top.
+
+    Corrected against the reference 2026-08-27, four ways:
+      - the group IS the fieldset and carries `checkbox-group`. This fragment had
+        `rux--fieldset` there, which Carbon never emits on a checkbox group, and
+        the first group carried no group class at all.
+      - EVERY wrapper renders `checkbox__validation-msg`, and every group renders
+        `checkbox-group__validation-msg`, whether or not there is a message. They
+        are the slots validation fills; a consumer wiring it up needs them to
+        exist, so the empty ones are kept rather than trimmed as noise.
+      - a group-level message goes INSIDE `checkbox-group__validation-msg` with
+        its icon. This fragment had `form-requirement` bare inside the fieldset,
+        where css/rux.css:6783 cannot reach it.
+      - `checkbox-label-text` is a div.
+  -->
+  <div class="ks-row" style="gap:4rem">
+    <!-- BLOCK:BEGIN name=group label="Checkbox group" -->
+    <fieldset class="rux--checkbox-group" aria-disabled="false">
+      <legend class="rux--label">Group label</legend>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-1" class="rux--checkbox" type="checkbox">
+        <label for="cb-1" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Unchecked</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-2" class="rux--checkbox" type="checkbox" checked>
+        <label for="cb-2" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Checked</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-3" class="rux--checkbox" type="checkbox" data-rux-indeterminate>
+        <label for="cb-3" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Indeterminate</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-4" class="rux--checkbox" type="checkbox" disabled>
+        <label for="cb-4" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Disabled</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-5" class="rux--checkbox" type="checkbox" checked disabled>
+        <label for="cb-5" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Disabled checked</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--checkbox-group__validation-msg"></div>
+    </fieldset>
+    <!-- BLOCK:END group -->
+
+    <fieldset class="rux--checkbox-group rux--checkbox-group--invalid" aria-disabled="false">
+      <legend class="rux--label">Invalid group</legend>
+      <div class="rux--form-item rux--checkbox-wrapper rux--checkbox-wrapper--invalid">
+        <input id="cb-6" class="rux--checkbox" type="checkbox">
+        <label for="cb-6" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Pick at least one</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--checkbox-group__validation-msg">
+        <svg class="rux--checkbox__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <div class="rux--form-requirement">A selection is required</div>
+      </div>
+    </fieldset>
+
+    <!--
+      --checkbox-wrapper--warning is scoped: the rule is
+      `.rux--checkbox-group .rux--checkbox-wrapper--warning > .rux--checkbox__validation-msg`,
+      so the wrapper needs a group above it and a validation message inside it
+      before either class does anything.
+    -->
+    <fieldset class="rux--checkbox-group rux--checkbox-group--warning" aria-disabled="false">
+      <legend class="rux--label">Warning group</legend>
+      <div class="rux--form-item rux--checkbox-wrapper rux--checkbox-wrapper--warning">
+        <input id="cb-9" class="rux--checkbox" type="checkbox" checked>
+        <label for="cb-9" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Sends email to everyone</div></label>
+        <div class="rux--checkbox__validation-msg">
+          <svg class="rux--checkbox__invalid-icon rux--checkbox__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+          <div class="rux--form-requirement">This notifies 4,000 people</div>
+        </div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper rux--checkbox-wrapper--invalid">
+        <input id="cb-10" class="rux--checkbox" type="checkbox" data-invalid aria-invalid="true">
+        <label for="cb-10" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Required</div></label>
+        <div class="rux--checkbox__validation-msg">
+          <svg class="rux--checkbox__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <div class="rux--form-requirement">This field is required</div>
+        </div>
+      </div>
+      <div class="rux--checkbox-group__validation-msg"></div>
+    </fieldset>
+
+    <fieldset class="rux--checkbox-group rux--checkbox-group--readonly" aria-disabled="false">
+      <legend class="rux--label">Read-only group</legend>
+      <div class="rux--form-item rux--checkbox-wrapper rux--checkbox-wrapper--readonly">
+        <input id="cb-11" class="rux--checkbox" type="checkbox" checked aria-readonly="true">
+        <label for="cb-11" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Fixed on</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper rux--checkbox-wrapper--readonly">
+        <input id="cb-12" class="rux--checkbox" type="checkbox" aria-readonly="true">
+        <label for="cb-12" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Fixed off</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--checkbox-group__validation-msg"></div>
+      <div class="rux--form__helper-text">Set by your administrator</div>
+    </fieldset>
+
+    <fieldset class="rux--checkbox-group rux--checkbox-group--horizontal" aria-disabled="false">
+      <legend class="rux--label">Horizontal</legend>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-7" class="rux--checkbox" type="checkbox" checked>
+        <label for="cb-7" class="rux--checkbox-label"><div class="rux--checkbox-label-text">One</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--form-item rux--checkbox-wrapper">
+        <input id="cb-8" class="rux--checkbox" type="checkbox">
+        <label for="cb-8" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Two</div></label>
+        <div class="rux--checkbox__validation-msg"></div>
+      </div>
+      <div class="rux--checkbox-group__validation-msg"></div>
+    </fieldset>
+  </div>
+</section>

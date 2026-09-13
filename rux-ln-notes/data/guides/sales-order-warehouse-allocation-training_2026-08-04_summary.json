@@ -1,0 +1,949 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "sales-order-warehouse-allocation-training_2026-08-04_summary",
+  "title": "Sales Order and Warehouse Allocation Training — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "cprrp0520m000",
+    "tdpcg0131m000",
+    "tdpcg0611m000",
+    "tdsls4100m100",
+    "tdsls4100m900",
+    "ticpr3501m000",
+    "whinh2129m000",
+    "whinh3122m000",
+    "whinh3525m000",
+    "whwmd2515m000"
+  ],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An exploratory session: entering a sales order, looking into how pricing and standard cost work, releasing an order to the warehouse, comparing two different \"how much stock is there\" views, and a shortage that came up during outbound processing and was never fully explained."
+        }
+      ],
+      "text": "An exploratory session: entering a sales order, looking into how pricing and standard cost work, releasing an order to the warehouse, comparing two different \"how much stock is there\" views, and a shortage that came up during outbound processing and was never fully explained."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "This was an exploration, not a controlled end-to-end run — it stopped partway through, without reaching a confirmed shipment."
+        }
+      ],
+      "text": "This was an exploration, not a controlled end-to-end run — it stopped partway through, without reaching a confirmed shipment."
+    }
+  ],
+  "topics": [
+    {
+      "title": "Entering and approving a sales order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Sales ➔ Orders ➔ Order Intake Workbench"
+                },
+                {
+                  "t": "text",
+                  "v": ", opening the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Sales Order"
+                },
+                {
+                  "t": "text",
+                  "v": " screen ("
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls4100m900"
+                },
+                {
+                  "t": "text",
+                  "v": ")."
+                }
+              ],
+              "text": "Sales ➔ Orders ➔ Order Intake Workbench, opening the Sales Order screen (tdsls4100m900)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Entered: business partner "
+                },
+                {
+                  "t": "literal",
+                  "v": "BP4000040"
+                },
+                {
+                  "t": "text",
+                  "v": " (FedEx Chino), order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "N10"
+                },
+                {
+                  "t": "text",
+                  "v": ", sales office "
+                },
+                {
+                  "t": "literal",
+                  "v": "SL1001"
+                },
+                {
+                  "t": "text",
+                  "v": ", site "
+                },
+                {
+                  "t": "literal",
+                  "v": "CSADNA01"
+                },
+                {
+                  "t": "text",
+                  "v": ", warehouse "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02"
+                },
+                {
+                  "t": "text",
+                  "v": ", item "
+                },
+                {
+                  "t": "literal",
+                  "v": "100200"
+                },
+                {
+                  "t": "text",
+                  "v": ", quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "20"
+                },
+                {
+                  "t": "text",
+                  "v": ", price "
+                },
+                {
+                  "t": "literal",
+                  "v": "200 USD"
+                },
+                {
+                  "t": "text",
+                  "v": " per unit."
+                }
+              ],
+              "text": "Entered: business partner BP4000040 (FedEx Chino), order type N10, sales office SL1001, site CSADNA01, warehouse ADNA02, item 100200, quantity 20, price 200 USD per unit."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order status moved from "
+                },
+                {
+                  "t": "strong",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "strong",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Order status moved from Free to In Process."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "These are demonstration values from this session, not defaults to reuse elsewhere. Where the "
+            },
+            {
+              "t": "strong",
+              "v": "order type"
+            },
+            {
+              "t": "text",
+              "v": " itself defaults from, in general: the customer record first, and if the customer has none set, the current user's sales profile."
+            }
+          ],
+          "text": "These are demonstration values from this session, not defaults to reuse elsewhere. Where the order type itself defaults from, in general: the customer record first, and if the customer has none set, the current user's sales profile."
+        }
+      ]
+    },
+    {
+      "title": "Pricing and cost — two different things",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Personalization on Sales Orders Intake, exposing hidden fields (status bar named "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls4100m100"
+                },
+                {
+                  "t": "text",
+                  "v": ")."
+                }
+              ],
+              "text": "Personalization on Sales Orders Intake, exposing hidden fields (status bar named tdsls4100m100)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Common ➔ Pricing ➔ Prices ➔ Price Books"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpcg0611m000",
+                  "name": "Price Book"
+                },
+                {
+                  "t": "text",
+                  "v": " with effective/expiry-dated records."
+                }
+              ],
+              "text": "Common ➔ Pricing ➔ Prices ➔ Price Books — Price Book (tdpcg0611m000) with effective/expiry-dated records."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ticpr3501m000",
+                  "name": "Item Standard Costs"
+                },
+                {
+                  "t": "text",
+                  "v": " — effective-dated cost records for the item."
+                }
+              ],
+              "text": "Item Standard Costs (ticpr3501m000) — effective-dated cost records for the item."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The discussion connected a sales-order line's price to "
+            },
+            {
+              "t": "session",
+              "code": "tdpcg0131m000",
+              "name": "Price Book Lines"
+            },
+            {
+              "t": "text",
+              "v": " and distinguished sales price from standard cost — related but separate figures. The exact rule for which price-book record wins at a given order timestamp wasn't pinned down in this session."
+            }
+          ],
+          "text": "The discussion connected a sales-order line's price to Price Book Lines (tdpcg0131m000) and distinguished sales price from standard cost — related but separate figures. The exact rule for which price-book record wins at a given order timestamp wasn't pinned down in this session."
+        }
+      ]
+    },
+    {
+      "title": "Planning availability vs. actual warehouse stock",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " — item "
+                },
+                {
+                  "t": "literal",
+                  "v": "100200"
+                },
+                {
+                  "t": "text",
+                  "v": ": inventory on hand, demand/supply transactions, "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planned Available"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "strong",
+                  "v": "ATP"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Item Order Plan (cprrp0520m000) — item 100200: inventory on hand, demand/supply transactions, Planned Available, and ATP."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " — the same item broken out by warehouse row, each with its own on-hand, on-order, allocated, blocked, and economic-stock figures."
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) — the same item broken out by warehouse row, each with its own on-hand, on-order, allocated, blocked, and economic-stock figures."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The point: a healthy "
+            },
+            {
+              "t": "strong",
+              "v": "planning-level"
+            },
+            {
+              "t": "text",
+              "v": " number does "
+            },
+            {
+              "t": "strong",
+              "v": "not"
+            },
+            {
+              "t": "text",
+              "v": " guarantee the "
+            },
+            {
+              "t": "em",
+              "v": "specific"
+            },
+            {
+              "t": "text",
+              "v": " ship-from warehouse on the order actually has the stock. Always check both — planning tells you the forecast picture, the warehouse screen tells you what's physically there."
+            }
+          ],
+          "text": "The point: a healthy planning-level number does not guarantee the specific ship-from warehouse on the order actually has the stock. Always check both — planning tells you the forecast picture, the warehouse screen tells you what's physically there."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What "
+            },
+            {
+              "t": "strong",
+              "v": "ATP"
+            },
+            {
+              "t": "text",
+              "v": " actually is, precisely: for any given period, it's the smaller of two numbers — Planned Available, and total demand — looked at across that period "
+            },
+            {
+              "t": "em",
+              "v": "and every period after it"
+            },
+            {
+              "t": "text",
+              "v": ". A shortage three months out can pull today's ATP down. It's also worth knowing that this planning-screen ATP figure is explicitly not guaranteed to match the number a real sales order gets checked against at entry — that's a different, separate calculation."
+            }
+          ],
+          "text": "What ATP actually is, precisely: for any given period, it's the smaller of two numbers — Planned Available, and total demand — looked at across that period and every period after it. A shortage three months out can pull today's ATP down. It's also worth knowing that this planning-screen ATP figure is explicitly not guaranteed to match the number a real sales order gets checked against at entry — that's a different, separate calculation."
+        }
+      ]
+    },
+    {
+      "title": "Which warehousing steps are automatic (recap)",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh2129m000",
+              "name": "Outbound Line Status Overview"
+            },
+            {
+              "t": "text",
+              "v": " — order type "
+            },
+            {
+              "t": "literal",
+              "v": "20-"
+            },
+            {
+              "t": "text",
+              "v": ", line status "
+            },
+            {
+              "t": "strong",
+              "v": "Open"
+            },
+            {
+              "t": "text",
+              "v": ", ordered quantity "
+            },
+            {
+              "t": "literal",
+              "v": "20"
+            },
+            {
+              "t": "text",
+              "v": ". Activity configuration confirmed:"
+            }
+          ],
+          "text": "Outbound Line Status Overview (whinh2129m000) — order type 20-, line status Open, ordered quantity 20. Activity configuration confirmed:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Activity",
+            "Manual or automatic"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Generate Outbound Advice"
+                    }
+                  ],
+                  "text": "Generate Outbound Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Manual"
+                    }
+                  ],
+                  "text": "Manual"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Release Outbound Advice"
+                    }
+                  ],
+                  "text": "Release Outbound Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Automatic"
+                    }
+                  ],
+                  "text": "Automatic"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Generate Picking List"
+                    }
+                  ],
+                  "text": "Generate Picking List"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Automatic"
+                    }
+                  ],
+                  "text": "Automatic"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Picking List"
+                    }
+                  ],
+                  "text": "Picking List"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Manual"
+                    }
+                  ],
+                  "text": "Manual"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Freeze/Confirm"
+                    }
+                  ],
+                  "text": "Freeze/Confirm"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Manual"
+                    }
+                  ],
+                  "text": "Manual"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "An unresolved shortage",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A purchase receipt's inbound line displayed "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3122m000",
+                  "name": "Warehouse Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": " as its required activity."
+                }
+              ],
+              "text": "A purchase receipt's inbound line displayed Warehouse Inspections (whinh3122m000) as its required activity."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3525m000",
+                  "name": "Inbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " and the expanded "
+                },
+                {
+                  "t": "strong",
+                  "v": "Warehousing ➔ Inbound"
+                },
+                {
+                  "t": "text",
+                  "v": " submenu."
+                }
+              ],
+              "text": "Inbound Advice (whinh3525m000) and the expanded Warehousing ➔ Inbound submenu."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales warehouse order "
+                },
+                {
+                  "t": "literal",
+                  "v": "100000636"
+                },
+                {
+                  "t": "text",
+                  "v": ", item "
+                },
+                {
+                  "t": "literal",
+                  "v": "100200"
+                },
+                {
+                  "t": "text",
+                  "v": ": "
+                },
+                {
+                  "t": "strong",
+                  "v": "ordered"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "20"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "advised"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "released"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "picked"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Sales warehouse order 100000636, item 100200: ordered 20, advised 5, released 0, picked 0."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The screen proves these numbers existed, but "
+            },
+            {
+              "t": "strong",
+              "v": "why"
+            },
+            {
+              "t": "text",
+              "v": " advice stopped at 5 of 20 was never determined — the session ended there, before picking, shipping, or an explanation."
+            }
+          ],
+          "text": "The screen proves these numbers existed, but why advice stopped at 5 of 20 was never determined — the session ended there, before picking, shipping, or an explanation."
+        }
+      ]
+    },
+    {
+      "title": "An existing draft write-up isn't reliable as-is",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A previously drafted guide covering this same scenario was reviewed and judged not safe to follow directly — it treats spoken claims as established fact, references images that don't exist, includes steps outside the current scope, and describes shipping steps that never actually happened in this recording."
+            }
+          ],
+          "text": "A previously drafted guide covering this same scenario was reviewed and judged not safe to follow directly — it treats spoken claims as established fact, references images that don't exist, includes steps outside the current scope, and describes shipping steps that never actually happened in this recording."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Nothing was formally decided about configuration. The one real outcome: keep this recording as background material for a future \"what happens when there's a shortage\" scenario — it is not a substitute for the standard, verified Ship from stock procedure."
+        }
+      ],
+      "text": "Nothing was formally decided about configuration. The one real outcome: keep this recording as background material for a future \"what happens when there's a shortage\" scenario — it is not a substitute for the standard, verified Ship from stock procedure."
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Planning availability and warehouse stock are different questions."
+            },
+            {
+              "t": "text",
+              "v": " Check the item's actual on-hand at the specific ship-from warehouse, not just its planning balance."
+            }
+          ],
+          "text": "Planning availability and warehouse stock are different questions. Check the item's actual on-hand at the specific ship-from warehouse, not just its planning balance."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "ATP looks forward, not just at today."
+            },
+            {
+              "t": "text",
+              "v": " It's the minimum available quantity across the current period and every future one — a future shortage can drag it down now."
+            }
+          ],
+          "text": "ATP looks forward, not just at today. It's the minimum available quantity across the current period and every future one — a future shortage can drag it down now."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Order type on a sales order defaults from the customer, then the user's sales profile"
+            },
+            {
+              "t": "text",
+              "v": " — trace it there if a default looks wrong."
+            }
+          ],
+          "text": "Order type on a sales order defaults from the customer, then the user's sales profile — trace it there if a default looks wrong."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The 5-of-20 partial-advice shortage on order "
+            },
+            {
+              "t": "literal",
+              "v": "100000636"
+            },
+            {
+              "t": "text",
+              "v": " was "
+            },
+            {
+              "t": "strong",
+              "v": "never explained"
+            },
+            {
+              "t": "text",
+              "v": " — treat it as an open question, not a demonstrated cause, until it's rerun properly."
+            }
+          ],
+          "text": "The 5-of-20 partial-advice shortage on order 100000636 was never explained — treat it as an open question, not a demonstrated cause, until it's rerun properly."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This order type's manual steps are "
+            },
+            {
+              "t": "strong",
+              "v": "Generate Outbound Advice"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Picking List"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Freeze/Confirm"
+            },
+            {
+              "t": "text",
+              "v": "; the rest run automatically."
+            }
+          ],
+          "text": "This order type's manual steps are Generate Outbound Advice, Picking List, and Freeze/Confirm; the rest run automatically."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Don't trust an existing draft guide just because it exists — this one mixed fact with narration and described steps that never happened."
+            }
+          ],
+          "text": "Don't trust an existing draft guide just because it exists — this one mixed fact with narration and described steps that never happened."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Closing advice from the presenter: "
+            },
+            {
+              "t": "strong",
+              "v": "start broad, then rerun and refine"
+            },
+            {
+              "t": "text",
+              "v": " once you understand the process — don't try to nail every detail on the first pass."
+            }
+          ],
+          "text": "Closing advice from the presenter: start broad, then rerun and refine once you understand the process — don't try to nail every detail on the first pass."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`sales-order-warehouse-allocation-training_2026-08-04.md`",
+          "href": "sales-order-warehouse-allocation-training_2026-08-04.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `sales-order-warehouse-allocation-training_2026-08-04.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

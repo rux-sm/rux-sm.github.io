@@ -1,0 +1,2472 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-purchase-order-to-warehouse-receipt",
+  "title": "Purchase to receipt",
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "updated": "2026-09-02",
+  "status": "draft",
+  "summary": "buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received.",
+  "order": 2,
+  "sources": [
+    "tccom4120s000",
+    "tccom4520m000",
+    "tdipu0102m000",
+    "tdpur0143m000",
+    "tdpur4100m900",
+    "tdpur4101m000",
+    "tdpur4106m000",
+    "tdpur4501m140",
+    "tdpur4534m000",
+    "tdpur4601m200",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh3112s000",
+    "whinh3122m000",
+    "whinh3512m000",
+    "whinh3530m000",
+    "whwmd1140s000",
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Read the baseline",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> "
+            },
+            {
+              "t": "strong",
+              "v": "Prerequisite"
+            },
+            {
+              "t": "text",
+              "v": " > The materials exist as items with purchase defaults, and the receiving warehouse exists. "
+            },
+            {
+              "t": "literal",
+              "v": "SG-create-basic-test-items-and-defaults.md"
+            },
+            {
+              "t": "text",
+              "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this guide selects one, it does not create one."
+            }
+          ],
+          "text": "> Prerequisite > The materials exist as items with purchase defaults, and the receiving warehouse exists. SG-create-basic-test-items-and-defaults.md phases 2 and 5 build both. A buy-from business partner must also exist — this guide selects one, it does not create one."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+            }
+          ],
+          "text": "What LN is doing. Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000",
+                      "name": "Inventory 360"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and identify the raw-material warehouse you are buying into"
+                    }
+                  ],
+                  "text": "Open Inventory 360 (whwmd4300m000) and identify the raw-material warehouse you are buying into"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "receiving warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run used "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "RAW MATERIALS"
+                    }
+                  ],
+                  "text": "receiving warehouse — the walked run used ADNA02 RAW MATERIALS"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Filter for the first material and read its on-hand at that warehouse"
+                    }
+                  ],
+                  "text": "Filter for the first material and read its on-hand at that warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 1 code"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 1 on-hand before"
+                    }
+                  ],
+                  "text": "material 1 code and material 1 on-hand before"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Repeat for the second material"
+                    }
+                  ],
+                  "text": "Repeat for the second material"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 2 code"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 2 on-hand before"
+                    }
+                  ],
+                  "text": "material 2 code and material 2 on-hand before"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Record both figures before booking anything"
+                    }
+                  ],
+                  "text": "Record both figures before booking anything"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both baselines are written down, not remembered"
+                    }
+                  ],
+                  "text": "Both baselines are written down, not remembered"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create the purchase order",
+      "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+      "session": "Purchase Order Intake Workbench",
+      "sessionCode": "tdpur4601m200",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The buy-from business partner decides most of the header: LN defaults the "
+            },
+            {
+              "t": "em",
+              "v": "Purchase Order Type"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Purchase Office"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "em",
+              "v": "Buyer"
+            },
+            {
+              "t": "text",
+              "v": " from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+            }
+          ],
+          "text": "What LN is doing. The buy-from business partner decides most of the header: LN defaults the Purchase Order Type, Purchase Office and Buyer from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tdpur4601m200",
+                      "name": "Purchase Order Intake Workbench"
+                    }
+                  ],
+                  "text": "Open Purchase Order Intake Workbench (tdpur4601m200)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The intake workbench opens"
+                    }
+                  ],
+                  "text": "The intake workbench opens"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Start a new order"
+                    }
+                  ],
+                  "text": "Start a new order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A blank "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tdpur4100m900",
+                      "name": "Purchase Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "A blank Purchase Order (tdpur4100m900) opens"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Buy-from Business Partner"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", using the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Buy-from Business Partners"
+                    },
+                    {
+                      "t": "text",
+                      "v": " lookup ("
+                    },
+                    {
+                      "t": "session",
+                      "code": "tccom4520m000"
+                    },
+                    {
+                      "t": "text",
+                      "v": ")"
+                    }
+                  ],
+                  "text": "Set Buy-from Business Partner, using the Buy-from Business Partners lookup (tccom4520m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "buy-from business partner"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run used "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BP4000007"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "VISTA MACHINES INC."
+                    }
+                  ],
+                  "text": "buy-from business partner — the walked run used BP4000007 VISTA MACHINES INC."
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Purchase Order Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Purchase Office"
+                    },
+                    {
+                      "t": "text",
+                      "v": " that LN defaulted from the partner selected at 1.3"
+                    }
+                  ],
+                  "text": "Confirm the Purchase Order Type and Purchase Office that LN defaulted from the partner selected at 1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The walked run showed "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "IPO"
+                    },
+                    {
+                      "t": "text",
+                      "v": " (Inventory Purchase Order) and purchase office "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "401P00"
+                    }
+                  ],
+                  "text": "The walked run showed IPO (Inventory Purchase Order) and purchase office 401P00"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.5"
+                    }
+                  ],
+                  "text": "1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save the header"
+                    }
+                  ],
+                  "text": "Save the header"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "purchase order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run produced order "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "100000677"
+                    }
+                  ],
+                  "text": "purchase order number and order type — the walked run produced order 100000677"
+                }
+              ],
+              "id": "1.5",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Book the lines",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in phase 3. A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+            }
+          ],
+          "text": "What LN is doing. Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in phase 3. A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the order's lines"
+                    }
+                  ],
+                  "text": "Open the order's lines"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The line grid is empty"
+                    }
+                  ],
+                  "text": "The line grid is empty"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add a line for the first material, with the quantity your downstream demand requires"
+                    }
+                  ],
+                  "text": "Add a line for the first material, with the quantity your downstream demand requires"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 1 quantity ordered"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run booked line "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "10"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "2.0000"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ea"
+                    }
+                  ],
+                  "text": "material 1 quantity ordered — the walked run booked line 10, BAM-ROD, 2.0000 ea"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add a line for the second material"
+                    }
+                  ],
+                  "text": "Add a line for the second material"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 2 quantity ordered"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run booked line "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "20"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "1.0000"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ea"
+                    }
+                  ],
+                  "text": "material 2 quantity ordered — the walked run booked line 20, BAM-SLEEVE, 1.0000 ea"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set the warehouse on every line to the receiving warehouse from 0.1"
+                    }
+                  ],
+                  "text": "Set the warehouse on every line to the receiving warehouse from 0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both lines point at "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the walked run — this is what decides where the goods land"
+                    }
+                  ],
+                  "text": "Both lines point at ADNA02 in the walked run — this is what decides where the goods land"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.5"
+                    }
+                  ],
+                  "text": "2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save the lines"
+                    }
+                  ],
+                  "text": "Save the lines"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both lines are stored against the order from 1.5"
+                    }
+                  ],
+                  "text": "Both lines are stored against the order from 1.5"
+                }
+              ],
+              "id": "2.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Receive against the order",
+      "route": "Warehousing ➔ Orders ➔ Orders",
+      "session": "Warehousing Orders",
+      "sessionCode": "whinh2100m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own "
+            },
+            {
+              "t": "strong",
+              "v": "Release to Warehousing"
+            },
+            {
+              "t": "text",
+              "v": " tab shows which lines are still waiting, and its line status session says which activity has to happen first."
+            }
+          ],
+          "text": "What LN is doing. You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own Release to Warehousing tab shows which lines are still waiting, and its line status session says which activity has to happen first."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2100m000",
+                      "name": "Warehousing Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", find the order LN generated from the purchase order, and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Open Warehousing Orders (whinh2100m000), find the order LN generated from the purchase order, and click Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "An inbound order exists that you did not create by hand"
+                    }
+                  ],
+                  "text": "An inbound order exists that you did not create by hand"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm its "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and ship-from"
+                    }
+                  ],
+                  "text": "Confirm its Order Type and ship-from"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "warehousing order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run showed order type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "PUI"
+                    },
+                    {
+                      "t": "text",
+                      "v": " \"Purchase Receipts\", ship-from "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BP4000007"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", ship-to "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    }
+                  ],
+                  "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from BP4000007, ship-to ADNA02"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the inbound lines"
+                    }
+                  ],
+                  "text": "Select the inbound lines"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The lines correspond to the purchase order lines from phase 2"
+                    }
+                  ],
+                  "text": "The lines correspond to the purchase order lines from phase 2"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Receive"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the selected inbound lines"
+                    }
+                  ],
+                  "text": "Run Actions ➔ Receive on the selected inbound lines"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh3512m000",
+                      "name": "Warehouse Receipt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Warehouse Receipt (whinh3512m000) opens"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Confirm the receipt",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so "
+            },
+            {
+              "t": "em",
+              "v": "Confirmed"
+            },
+            {
+              "t": "text",
+              "v": " is cleared both when a line is unconfirmed and when there are no lines at all."
+            }
+          ],
+          "text": "What LN is doing. The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so Confirmed is cleared both when a line is unconfirmed and when there are no lines at all."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the receipt number LN assigned"
+                    }
+                  ],
+                  "text": "Read the receipt number LN assigned"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "receipt number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the walked run produced receipt "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "100001505"
+                    }
+                  ],
+                  "text": "receipt number — the walked run produced receipt 100001505"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the packing-slip reference for each line as delivered"
+                    }
+                  ],
+                  "text": "Enter the packing-slip reference for each line as delivered"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The walked run recorded packing slips "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "123"
+                    },
+                    {
+                      "t": "text",
+                      "v": " (rod) and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "124"
+                    },
+                    {
+                      "t": "text",
+                      "v": " (sleeve)"
+                    }
+                  ],
+                  "text": "The walked run recorded packing slips 123 (rod) and 124 (sleeve)"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm the receipt"
+                    }
+                  ],
+                  "text": "Confirm the receipt"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and the header's "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " check box is set once every receipt line is confirmed"
+                    }
+                  ],
+                  "text": "Status = Confirmed, and the header's Confirmed check box is set once every receipt line is confirmed"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Check "
+                    },
+                    {
+                      "t": "field",
+                      "v": "All Lines Final"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "All Lines Complete"
+                    }
+                  ],
+                  "text": "Check All Lines Final and All Lines Complete"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both are set — a receipt confirmed with either clear has left something behind"
+                    }
+                  ],
+                  "text": "Both are set — a receipt confirmed with either clear has left something behind"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.5"
+                    }
+                  ],
+                  "text": "4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Errors Logged"
+                    },
+                    {
+                      "t": "text",
+                      "v": " before leaving the session"
+                    }
+                  ],
+                  "text": "Read Errors Logged before leaving the session"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Clear means the receipt logged nothing. Set means it did, whatever the status says"
+                    }
+                  ],
+                  "text": "Clear means the receipt logged nothing. Set means it did, whatever the status says"
+                }
+              ],
+              "id": "4.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.6"
+                    }
+                  ],
+                  "text": "4.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Errors Logged"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is set, read the messages in "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh3530m000",
+                      "name": "Receipt Message Log"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", or on the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Message Log"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab in this session's lines pane, and capture them"
+                    }
+                  ],
+                  "text": "If Errors Logged is set, read the messages in Receipt Message Log (whinh3530m000), or on the Message Log tab in this session's lines pane, and capture them"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The messages behind the confirmation are on record. "
+                    }
+                  ],
+                  "text": "The messages behind the confirmation are on record."
+                }
+              ],
+              "id": "4.6",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Verify the inventory increase",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing new. This phase re-reads the figure from phase 0, because the receipt reaching "
+            },
+            {
+              "t": "strong",
+              "v": "Confirmed"
+            },
+            {
+              "t": "text",
+              "v": " is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+            }
+          ],
+          "text": "What LN is doing. Nothing new. This phase re-reads the figure from phase 0, because the receipt reaching Confirmed is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Re-read the first material at the receiving warehouse"
+                    }
+                  ],
+                  "text": "Re-read the first material at the receiving warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 1 on-hand after"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — up by exactly the quantity from 2.2"
+                    }
+                  ],
+                  "text": "material 1 on-hand after — up by exactly the quantity from 2.2"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Re-read the second material"
+                    }
+                  ],
+                  "text": "Re-read the second material"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material 2 on-hand after"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — up by exactly the quantity from 2.3"
+                    }
+                  ],
+                  "text": "material 2 on-hand after — up by exactly the quantity from 2.3"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Compare both against the baselines from 0.2 and 0.3"
+                    }
+                  ],
+                  "text": "Compare both against the baselines from 0.2 and 0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each difference equals what was ordered and received, with nothing unexplained"
+                    }
+                  ],
+                  "text": "Each difference equals what was ordered and received, with nothing unexplained"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. "
+        },
+        {
+          "t": "strong",
+          "v": "Base guide"
+        },
+        {
+          "t": "text",
+          "v": " — this is the atomic \"buy it in\" process. It was extracted from phase 9 of "
+        },
+        {
+          "t": "literal",
+          "v": "SG-create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": ", which walked it inside a master-data guide. "
+        }
+      ],
+      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base guide — this is the atomic \"buy it in\" process. It was extracted from phase 9 of SG-create-basic-test-items-and-defaults.md, which walked it inside a master-data guide."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Read the baseline"
+                }
+              ],
+              "text": "0 Read the baseline"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand at the receiving warehouse is recorded before anything is booked"
+                }
+              ],
+              "text": "On-hand at the receiving warehouse is recorded before anything is booked"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create the purchase order"
+                }
+              ],
+              "text": "1 Create the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order Intake Workbench; Purchase Order"
+                }
+              ],
+              "text": "Purchase Order Intake Workbench; Purchase Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An order exists against a buy-from business partner"
+                }
+              ],
+              "text": "An order exists against a buy-from business partner"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Book the lines"
+                }
+              ],
+              "text": "2 Book the lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order"
+                }
+              ],
+              "text": "Purchase Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each material is ordered in the right quantity, to the right warehouse"
+                }
+              ],
+              "text": "Each material is ordered in the right quantity, to the right warehouse"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Receive against the order"
+                }
+              ],
+              "text": "3 Receive against the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order"
+                }
+              ],
+              "text": "Warehousing Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN's generated inbound order is found and receiving is started"
+                }
+              ],
+              "text": "LN's generated inbound order is found and receiving is started"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Confirm the receipt"
+                }
+              ],
+              "text": "4 Confirm the receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Receipt"
+                }
+              ],
+              "text": "Warehouse Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt reaches "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": " with all lines final and complete"
+                }
+              ],
+              "text": "The receipt reaches Confirmed with all lines final and complete"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Verify"
+                }
+              ],
+              "text": "5 Verify"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand rose by exactly the quantity received"
+                }
+              ],
+              "text": "On-hand rose by exactly the quantity received"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The receipt number is the progress indicator."
+        },
+        {
+          "t": "text",
+          "v": " Until phase 4 produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock."
+        }
+      ],
+      "text": "The receipt number is the progress indicator. Until phase 4 produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order type is not "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                }
+              ],
+              "text": "Order type is not IPO"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Nothing. "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                },
+                {
+                  "t": "text",
+                  "v": " is what this environment defaulted on one dated run, not a required value"
+                }
+              ],
+              "text": "Nothing. IPO is what this environment defaulted on one dated run, not a required value"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No warehousing order appears after saving the purchase order"
+                }
+              ],
+              "text": "No warehousing order appears after saving the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse on the order lines (2.4). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release to Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": " tab: a line still sitting there has not been released, and "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4534m000",
+                  "name": "Purchase Order Line Status"
+                },
+                {
+                  "t": "text",
+                  "v": " names the activity it is waiting on"
+                }
+              ],
+              "text": "The warehouse on the order lines (2.4). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's Release to Warehousing tab: a line still sitting there has not been released, and Purchase Order Line Status (tdpur4534m000) names the activity it is waiting on"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Actions menu offers no receive command"
+                }
+              ],
+              "text": "The Actions menu offers no receive command"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from 3.1, not the purchase order"
+                }
+              ],
+              "text": "The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from 3.1, not the purchase order"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "whinh0032"
+                },
+                {
+                  "t": "text",
+                  "v": " at the receipt"
+                }
+              ],
+              "text": "whinh0032 at the receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's "
+                },
+                {
+                  "t": "field",
+                  "v": "Errors Logged"
+                },
+                {
+                  "t": "text",
+                  "v": " flag and "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3530m000",
+                  "name": "Receipt Message Log"
+                },
+                {
+                  "t": "text",
+                  "v": ", which hold the messages once the dialog is gone "
+                }
+              ],
+              "text": "The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's Errors Logged flag and Receipt Message Log (whinh3530m000), which hold the messages once the dialog is gone"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt looks confirmed but nothing was received"
+                }
+              ],
+              "text": "The receipt looks confirmed but nothing was received"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Whether the receipt has any lines at all. "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3512m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s help states "
+                },
+                {
+                  "t": "field",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": " is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed"
+                }
+              ],
+              "text": "Whether the receipt has any lines at all. whinh3512m000's help states Confirmed is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt confirms but on-hand does not move"
+                }
+              ],
+              "text": "The receipt confirms but on-hand does not move"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Whether "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Final"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " were both set (4.4), and whether the receiving warehouse in phase 5 is the one from 0.1"
+                }
+              ],
+              "text": "Whether All Lines Final and All Lines Complete were both set (4.4), and whether the receiving warehouse in phase 5 is the one from 0.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Purchase with inspection"
+                }
+              ],
+              "text": "Purchase with inspection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An inspection activity sits between receipt and put-away. "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3122m000",
+                  "name": "Warehouse Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": " runs against a receipt in this environment. This adds a phase and would earn its own guide. "
+                }
+              ],
+              "text": "An inspection activity sits between receipt and put-away. Warehouse Inspections (whinh3122m000) runs against a receipt in this environment. This adds a phase and would earn its own guide."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Direct-delivery purchase"
+                }
+              ],
+              "text": "Direct-delivery purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Goods ship from the supplier to a customer without entering your warehouse. That removes phases 3–5 entirely, so it is a different process, not a variant of this one"
+                }
+              ],
+              "text": "Goods ship from the supplier to a customer without entering your warehouse. That removes phases 3–5 entirely, so it is a different process, not a variant of this one"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Booking opening stock instead of buying"
+                }
+              ],
+              "text": "Booking opening stock instead of buying"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The adjustment route the notes of "
+                },
+                {
+                  "t": "literal",
+                  "v": "SG-create-basic-test-items-and-defaults.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
+                }
+              ],
+              "text": "The adjustment route the notes of SG-create-basic-test-items-and-defaults.md phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The raw materials are on hand at the receiving warehouse"
+                }
+              ],
+              "text": "The raw materials are on hand at the receiving warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "SG-manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " — consume them into a build"
+                }
+              ],
+              "text": "Production order — consume them into a build"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0"
+                }
+              ],
+              "text": "Phase 0"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The materials are on hand but in the wrong warehouse"
+                }
+              ],
+              "text": "The materials are on hand but in the wrong warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "SG-transfer-item-between-warehouses.md"
+                }
+              ],
+              "text": "Warehouse transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0"
+                }
+              ],
+              "text": "Phase 0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Warning Partly verified. Phases 1, 2, 3, 4 have been performed against a live system and confirmed. Phases 0, 5 have not. Follow those as a plan, not as a record.",
+  "openIssues": 5
+}

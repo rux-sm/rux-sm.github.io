@@ -1,0 +1,44 @@
+<section class="ks-sec" id="full-page-error">
+  <h2>Full-page error</h2><p>page-level error composition</p>
+  <!-- PROVENANCE: rendered-dom · components-fullpageerror--full-page-error on
+       the ibm-products origin, 2026-08-31 -->
+  <!-- The illustration slot: Carbon ships a decorative SVG per error kind and
+       classes it `__404`, `__403` or `__custom` — attested, unstyled, not written
+       (§4.1.12). No illustration is vendored,
+       so the slot carries a sprite glyph — check-rendered refuses an empty svg,
+       and an empty element exercised the class while drawing nothing. -->
+  <!--
+    The captured c4p-- component is absorbed and compiles as rux--. Its root is
+    role=main and its title is h1 on the real page. A page using this component
+    alone keeps Carbon's h1. Only this sink specimen omits the duplicate
+    landmark and lowers the title to h2 because it is embedded inside the
+    kitchen sink's existing main and heading outline; copying it as a page must
+    restore both captured semantics. check-tags records that one deliberate
+    h1-to-h2 divergence rather than teaching the component a second contract.
+
+    The DOM capture records the story's custom illustration paths but not their
+    geometry. The __svg slot is therefore deliberately empty: stretching a
+    generic 32px glyph into this full-width illustration slot is visibly wrong,
+    and reconstructing the missing paths would be invention. The captured
+    __custom/403/404 modifiers have no compiled rules and are not written under
+    §4.1.12.
+  -->
+  <!-- BLOCK:BEGIN name=default label="Full-page error" -->
+  <div class="rux--full-page-error">
+    <div class="rux--full-page-error__container">
+      <div class="rux--full-page-error__grid rux--css-grid">
+        <div class="rux--full-page-error__column rux--sm:col-span-4 rux--md:col-span-3 rux--lg:col-span-6 rux--css-grid-column">
+          <h2 class="rux--full-page-error__title"><span class="rux--full-page-error__label">404</span>Page not found</h2>
+          <p class="rux--full-page-error__description">The address may have changed or the page may no longer exist.</p>
+          <div class="rux--full-page-error__body"><a class="rux--link rux--link--lg" href="#full-page-error">Return to the component index</a></div>
+        </div>
+        <div class="rux--sm:col-span-4 rux--md:col-span-5 rux--lg:col-span-10 rux--css-grid-column">
+          <div class="rux--full-page-error__svg-container">
+            <svg class="rux--full-page-error__svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- BLOCK:END default -->
+</section>

@@ -1,0 +1,77 @@
+<section class="ks-sec" id="overflow-menu">
+  <h2>Overflow menu</h2><p>trigger · open options list · open at rest — click the trigger</p>
+  <!-- PROVENANCE: rendered-dom · react.carbondesignsystem.com
+     components-breadcrumb--breadcrumb-with-overflow-visual-snapshots, 2026-08-27
+     · the only harvested story that renders this list open. -->
+  <!--
+    STRUCTURE FROM THE RENDERED REACT DOM — the only story that renders this list
+    open is components-breadcrumb--breadcrumb-with-overflow-visual-snapshots, where
+    it is a `ul.--overflow-menu-options[role=menu]` of `li.--option` holding a
+    `button.--btn[role=menuitem]` around a `div.--option-content`.
+
+    --overflow-menu-options__content is NOT copied. @carbon/styles defines it
+    (inline-size:100%) so check-classes would accept it, but React does not emit it
+    in any of the 505 harvested stories, and §4.1.11 makes React authoritative for
+    structure.
+  -->
+  <div class="ks-row" style="padding-block:1rem;min-height:11rem;align-items:flex-start">
+    <!-- The list is a SIBLING of the trigger, which is how React renders it — see
+         the breadcrumb overflow story. It cannot be a child: __btn is a real
+         <button>, and a button inside a button is invalid. The wrapper is what
+         establishes the containing block the absolutely positioned list needs. -->
+    <div style="position:relative">
+      <button type="button" class="rux--overflow-menu"
+              aria-expanded="false" aria-haspopup="true" aria-label="More actions">
+        <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+      </button>
+      <ul class="rux--overflow-menu-options" role="menu">
+        <li class="rux--overflow-menu-options__option" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="0">
+            <div class="rux--overflow-menu-options__option-content">Rename</div>
+          </button>
+        </li>
+        <li class="rux--overflow-menu-options__option" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1">
+            <div class="rux--overflow-menu-options__option-content">Export</div>
+          </button>
+        </li>
+        <li class="rux--overflow-menu-options__option rux--overflow-menu-options__option--disabled" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1" disabled aria-disabled="true">
+            <div class="rux--overflow-menu-options__option-content">Archive (unavailable)</div>
+          </button>
+        </li>
+        <li class="rux--overflow-menu--divider rux--overflow-menu-options__option rux--overflow-menu-options__option--danger" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1">
+            <div class="rux--overflow-menu-options__option-content">Delete</div>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- OPEN AT REST · components-overflowmenu--default@open. The trigger takes
+         `--open` with aria-expanded=true and the list takes
+         `overflow-menu-options--open`; they are always set together, because one
+         is the button's state and the other is the surface's. This specimen has
+         no trigger behaviour of its own — js/menu.js drives the one above. It is
+         here because coverage reads static markup, and a class only a runtime
+         click ever applies is a class the sink cannot show. -->
+    <div style="position:relative">
+      <button type="button" class="rux--overflow-menu rux--overflow-menu--open"
+              aria-expanded="true" aria-haspopup="true" aria-label="More actions, open">
+        <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+      </button>
+      <ul class="rux--overflow-menu-options rux--overflow-menu-options--open" role="menu" aria-label="More actions">
+        <li class="rux--overflow-menu-options__option" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1">
+            <div class="rux--overflow-menu-options__option-content">Rename</div>
+          </button>
+        </li>
+        <li class="rux--overflow-menu-options__option" role="none">
+          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1">
+            <div class="rux--overflow-menu-options__option-content">Export</div>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

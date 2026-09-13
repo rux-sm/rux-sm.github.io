@@ -1,0 +1,1190 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "order-planning-training_2026-08-20_summary",
+  "title": "Order Planning Training — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "cprmp2101m000",
+    "cprpd1100m000",
+    "cprrp0520m000",
+    "cprrp0740m200",
+    "cprrp1100m000",
+    "tcibd0501m100",
+    "tcibd2100m000"
+  ],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An introduction to "
+        },
+        {
+          "t": "strong",
+          "v": "order planning"
+        },
+        {
+          "t": "text",
+          "v": " — MRP — in Infor LN, using the bamboo training items ("
+        },
+        {
+          "t": "literal",
+          "v": "BAM-CHOP-PAIR"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": ") built in earlier sessions. It works forward from what an item needs before LN will plan it at all, through where demand comes from, to the single setting that decides which demand planning is willing to act on. It closes with a short look at master planning."
+        }
+      ],
+      "text": "An introduction to order planning — MRP — in Infor LN, using the bamboo training items (BAM-CHOP-PAIR, BAM-ROD, BAM-SLEEVE) built in earlier sessions. It works forward from what an item needs before LN will plan it at all, through where demand comes from, to the single setting that decides which demand planning is willing to act on. It closes with a short look at master planning."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Everything before this session created supply by hand — sales orders, production orders, purchase orders. This is the first session where the system proposes supply for you."
+        }
+      ],
+      "text": "Everything before this session created supply by hand — sales orders, production orders, purchase orders. This is the first session where the system proposes supply for you."
+    }
+  ],
+  "topics": [
+    {
+      "title": "An item needs planning data before it can be planned",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Planning runs off a separate set of item data. If an item has no record there, it simply does not appear on the planning screens — there is nothing to plan and no error explaining why."
+            }
+          ],
+          "text": "Planning runs off a separate set of item data. If an item has no record there, it simply does not appear on the planning screens — there is nothing to plan and no error explaining why."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " — searched for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " and found nothing. "
+                },
+                {
+                  "t": "em",
+                  "v": "\"It's not set up for planning yet.\""
+                }
+              ],
+              "text": "Item Order Plan (cprrp0520m000) — searched for BAM-CHOP-PAIR and found nothing. \"It's not set up for planning yet.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The link between an item and its planning data is the "
+                },
+                {
+                  "t": "strong",
+                  "v": "cluster"
+                },
+                {
+                  "t": "text",
+                  "v": ", maintained on the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Clusters"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ". Because "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " was created under a brand-new item group, "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-FG"
+                },
+                {
+                  "t": "text",
+                  "v": ", the item-defaults template carried no cluster and no planning record was generated."
+                }
+              ],
+              "text": "The link between an item and its planning data is the cluster, maintained on the Clusters tab of Item (tcibd0501m100). Because BAM-CHOP-PAIR was created under a brand-new item group, BAM-FG, the item-defaults template carried no cluster and no planning record was generated."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The planning record was created manually. The item then appeared in the Item Order Plan."
+                }
+              ],
+              "text": "The planning record was created manually. The item then appeared in the Item Order Plan."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This environment's planning cluster is "
+            },
+            {
+              "t": "literal",
+              "v": "NA1"
+            },
+            {
+              "t": "text",
+              "v": " and its site is "
+            },
+            {
+              "t": "literal",
+              "v": "CSADNA01"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "This environment's planning cluster is NA1 and its site is CSADNA01."
+        }
+      ]
+    },
+    {
+      "title": "Demand comes from orders — and the item has to be sellable first",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "No demand means nothing to plan. Neither does demand that is already covered by supply."
+            }
+          ],
+          "text": "No demand means nothing to plan. Neither does demand that is already covered by supply."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A sales order was duplicated to create demand, and LN refused the item: "
+                },
+                {
+                  "t": "em",
+                  "v": "\"item sales by sales office not present.\""
+                }
+              ],
+              "text": "A sales order was duplicated to create demand, and LN refused the item: \"item sales by sales office not present.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Fixed by adding a row on the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Sales Offices"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", using the sales office from the order header."
+                }
+              ],
+              "text": "Fixed by adding a row on the Sales Offices tab of Item (tcibd0501m100), using the sales office from the order header."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "After a master-data change, close the session and reopen it."
+                },
+                {
+                  "t": "text",
+                  "v": " LN will not pick the change up otherwise."
+                }
+              ],
+              "text": "After a master-data change, close the session and reopen it. LN will not pick the change up otherwise."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order was booked for "
+                },
+                {
+                  "t": "strong",
+                  "v": "5 ea"
+                },
+                {
+                  "t": "text",
+                  "v": " against "
+                },
+                {
+                  "t": "strong",
+                  "v": "1 ea"
+                },
+                {
+                  "t": "text",
+                  "v": " on hand — four short."
+                }
+              ],
+              "text": "The order was booked for 5 ea against 1 ea on hand — four short."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The order horizon decides which demand planning sees",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is the heart of the session, and it was shown as an experiment rather than explained."
+            }
+          ],
+          "text": "This is the heart of the session, and it was shown as an experiment rather than explained."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "With the sales order's delivery date set to "
+                },
+                {
+                  "t": "strong",
+                  "v": "today"
+                },
+                {
+                  "t": "text",
+                  "v": ", the demand appeared in the Item Order Plan."
+                }
+              ],
+              "text": "With the sales order's delivery date set to today, the demand appeared in the Item Order Plan."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Moved out to "
+                },
+                {
+                  "t": "strong",
+                  "v": "a week from now"
+                },
+                {
+                  "t": "text",
+                  "v": " and refreshed — the demand "
+                },
+                {
+                  "t": "strong",
+                  "v": "disappeared"
+                },
+                {
+                  "t": "text",
+                  "v": ". The Horizons block explains it: "
+                },
+                {
+                  "t": "strong",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " was "
+                },
+                {
+                  "t": "literal",
+                  "v": "8/20/2026"
+                },
+                {
+                  "t": "text",
+                  "v": ", the day of the session. Anything beyond that date is invisible to planning."
+                }
+              ],
+              "text": "Moved out to a week from now and refreshed — the demand disappeared. The Horizons block explains it: Order Horizon was 8/20/2026, the day of the session. Anything beyond that date is invisible to planning."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order horizon was extended in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ". The demand came back, and MRP added a "
+                },
+                {
+                  "t": "strong",
+                  "v": "planned production order"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " — five demanded, one on hand."
+                }
+              ],
+              "text": "The order horizon was extended in Items - Planning (cprpd1100m000). The demand came back, and MRP added a planned production order for 4 — five demanded, one on hand."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The definition worth keeping: "
+            },
+            {
+              "t": "strong",
+              "v": "the order horizon is how far out you want planning to consider demand."
+            },
+            {
+              "t": "text",
+              "v": " One trainee's summary was accepted as correct — "
+            },
+            {
+              "t": "em",
+              "v": "\"it's like a window where they ignore everything outside of it.\""
+            }
+          ],
+          "text": "The definition worth keeping: the order horizon is how far out you want planning to consider demand. One trainee's summary was accepted as correct — \"it's like a window where they ignore everything outside of it.\""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Why it exists: with an unlimited horizon, planning would tell you to start supplying demand a year or two out. A business often does not want that — the demand may still change, and the capacity may not be there."
+            }
+          ],
+          "text": "Why it exists: with an unlimited horizon, planning would tell you to start supplying demand a year or two out. A business often does not want that — the demand may still change, and the capacity may not be there."
+        }
+      ]
+    },
+    {
+      "title": "Horizons are entered in days",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "On the "
+            },
+            {
+              "t": "strong",
+              "v": "Horizons"
+            },
+            {
+              "t": "text",
+              "v": " tab of "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": " you type a "
+            },
+            {
+              "t": "strong",
+              "v": "number of days"
+            },
+            {
+              "t": "text",
+              "v": " and LN shows the resulting date beside it. The values captured for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ": Order Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "10"
+            },
+            {
+              "t": "text",
+              "v": " days, Planning Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "365"
+            },
+            {
+              "t": "text",
+              "v": " days, Operations Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "9999"
+            },
+            {
+              "t": "text",
+              "v": " days."
+            }
+          ],
+          "text": "On the Horizons tab of Items - Planning (cprpd1100m000) you type a number of days and LN shows the resulting date beside it. The values captured for BAM-CHOP-PAIR: Order Horizon 10 days, Planning Horizon 365 days, Operations Horizon 9999 days."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The dates the plan displays are also shaped by the "
+            },
+            {
+              "t": "strong",
+              "v": "scenario's"
+            },
+            {
+              "t": "text",
+              "v": " period settings — the session used scenario "
+            },
+            {
+              "t": "literal",
+              "v": "ACT"
+            },
+            {
+              "t": "text",
+              "v": ", \"Actual Plan (Day, Weekly basis)\". After changing period settings, run "
+            },
+            {
+              "t": "strong",
+              "v": "Initialize, Roll, and Update Scenario"
+            },
+            {
+              "t": "text",
+              "v": " or the change will not take effect."
+            }
+          ],
+          "text": "The dates the plan displays are also shaped by the scenario's period settings — the session used scenario ACT, \"Actual Plan (Day, Weekly basis)\". After changing period settings, run Initialize, Roll, and Update Scenario or the change will not take effect."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "One caution from the session: the date LN produced from an eight-day horizon did not match a simple count on the calendar. Horizons are counted in "
+            },
+            {
+              "t": "strong",
+              "v": "workdays"
+            },
+            {
+              "t": "text",
+              "v": ", and the display is also bounded by the scenario's periods, so do not expect the date to be today plus your number."
+            }
+          ],
+          "text": "One caution from the session: the date LN produced from an eight-day horizon did not match a simple count on the calendar. Horizons are counted in workdays, and the display is also bounded by the scenario's periods, so do not expect the date to be today plus your number.",
+          "quoted": true
+        }
+      ]
+    },
+    {
+      "title": "Running MRP, and why components get missed",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "MRP was run for the item and produced a planned order covering the shortfall."
+                }
+              ],
+              "text": "MRP was run for the item and produced a planned order covering the shortfall."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "MRP also plans the "
+                },
+                {
+                  "t": "strong",
+                  "v": "components from the BOM"
+                },
+                {
+                  "t": "text",
+                  "v": " — but only components that have planning data of their own. "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " had none and was skipped."
+                }
+              ],
+              "text": "MRP also plans the components from the BOM — but only components that have planning data of their own. BAM-ROD had none and was skipped."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Plan data was created for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " and planning rerun. It then planned "
+                },
+                {
+                  "t": "strong",
+                  "v": "two"
+                },
+                {
+                  "t": "text",
+                  "v": " items instead of one."
+                }
+              ],
+              "text": "Plan data was created for BAM-ROD and planning rerun. It then planned two items instead of one."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the parent's plan the planned production order is "
+                },
+                {
+                  "t": "strong",
+                  "v": "supply"
+                },
+                {
+                  "t": "text",
+                  "v": ". Open the component's own Item Order Plan and the same order is "
+                },
+                {
+                  "t": "strong",
+                  "v": "demand"
+                },
+                {
+                  "t": "text",
+                  "v": ", covered by a planned purchase order."
+                }
+              ],
+              "text": "On the parent's plan the planned production order is supply. Open the component's own Item Order Plan and the same order is demand, covered by a planned purchase order."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1100m000",
+              "name": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": " is where results are actually reviewed, because you would normally run MRP for every plannable item, not one."
+            }
+          ],
+          "text": "Planned Orders (cprrp1100m000) is where results are actually reviewed, because you would normally run MRP for every plannable item, not one."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two things to remember about what comes out:"
+            }
+          ],
+          "text": "Two things to remember about what comes out:"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Planned orders are suggestions."
+                },
+                {
+                  "t": "text",
+                  "v": " A planner who knows the supplier will override them — a suggestion to buy 101 makes no sense when the supplier ships in batches of 100, so you buy 200. LN can enforce that as an order-quantity rule on "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000",
+                  "name": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Planned orders are suggestions. A planner who knows the supplier will override them — a suggestion to buy 101 makes no sense when the supplier ships in batches of 100, so you buy 200. LN can enforce that as an order-quantity rule on Items - Ordering (tcibd2100m000)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "A planned order becomes real when you transfer it"
+                },
+                {
+                  "t": "text",
+                  "v": ", which passes it to Job Shop Control or Purchase Control as an actual order."
+                }
+              ],
+              "text": "A planned order becomes real when you transfer it, which passes it to Job Shop Control or Purchase Control as an actual order."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Order pegging — following the chain",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Pegging traces a requirement back to what caused it, which is what makes a deep BOM manageable after an MRP run."
+            }
+          ],
+          "text": "Pegging traces a requirement back to what caused it, which is what makes a deep BOM manageable after an MRP run."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown"
+            },
+            {
+              "t": "text",
+              "v": " — the "
+            },
+            {
+              "t": "strong",
+              "v": "Pegging - Upstream"
+            },
+            {
+              "t": "text",
+              "v": " tree from "
+            },
+            {
+              "t": "strong",
+              "v": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": ", opening "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0740m200",
+              "name": "Order Pegging"
+            },
+            {
+              "t": "text",
+              "v": ":"
+            }
+          ],
+          "text": "What was shown — the Pegging - Upstream tree from Planned Orders, opening Order Pegging (cprrp0740m200):"
+        },
+        {
+          "kind": "code",
+          "text": "Sales Order 100000667 | BAM-CHOP-PAIR | 5 ea | 08-27-2026\n├─ Stock at ADNA01 | BAM-CHOP-PAIR | 1 ea\n└─ Planned Production Order 000000061 | BAM-CHOP-PAIR | 4 ea\n   └─ Planned Production Order 000000061-1 | BAM-ROD | 8 ea\n      ├─ Stock at ADNA02 | BAM-ROD | 2 ea\n      └─ Planned Purchase Order 000000346 | BAM-ROD | 6 ea"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Read it as: five needed, one in stock, four to be made; making four pairs takes eight rods, two are in stock, six must be bought."
+            }
+          ],
+          "text": "Read it as: five needed, one in stock, four to be made; making four pairs takes eight rods, two are in stock, six must be bought."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Upstream"
+            },
+            {
+              "t": "text",
+              "v": " shows what will supply a demand. "
+            },
+            {
+              "t": "strong",
+              "v": "Downstream"
+            },
+            {
+              "t": "text",
+              "v": " goes the other way — the demand that drove an order. In the tree, red marks demand and green marks supply."
+            }
+          ],
+          "text": "Upstream shows what will supply a demand. Downstream goes the other way — the demand that drove an order. In the tree, red marks demand and green marks supply."
+        }
+      ]
+    },
+    {
+      "title": "Master planning",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Covered briefly and explicitly as secondary — "
+            },
+            {
+              "t": "strong",
+              "v": "learn MRP first."
+            }
+          ],
+          "text": "Covered briefly and explicitly as secondary — learn MRP first."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " is a check box on "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ". Until it is selected, the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planning Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " field is disabled."
+                }
+              ],
+              "text": "Master Plan is a check box on Items - Planning (cprpd1100m000). Until it is selected, the Planning Horizon field is disabled."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Selected, the planning horizon becomes separately maintainable — "
+                },
+                {
+                  "t": "literal",
+                  "v": "365"
+                },
+                {
+                  "t": "text",
+                  "v": " days against the order horizon's "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": ". That is the point: planning further out than MRP looks."
+                }
+              ],
+              "text": "Selected, the planning horizon becomes separately maintainable — 365 days against the order horizon's 10. That is the point: planning further out than MRP looks."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item master plan has to be "
+                },
+                {
+                  "t": "strong",
+                  "v": "initialized"
+                },
+                {
+                  "t": "text",
+                  "v": " before it exists, using "
+                },
+                {
+                  "t": "strong",
+                  "v": "Initialize, Roll, and Update Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " on "
+                },
+                {
+                  "t": "session",
+                  "code": "cprmp2101m000",
+                  "name": "Item Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "The item master plan has to be initialized before it exists, using Initialize, Roll, and Update Scenario on Item Master Plan (cprmp2101m000)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generating then produces a "
+                },
+                {
+                  "t": "strong",
+                  "v": "production plan"
+                },
+                {
+                  "t": "text",
+                  "v": " inside the item master plan, laid out in the scenario's "
+                },
+                {
+                  "t": "strong",
+                  "v": "time buckets"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Generating then produces a production plan inside the item master plan, laid out in the scenario's time buckets."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A production plan is not a planned order and is not transferred the same way."
+            }
+          ],
+          "text": "A production plan is not a planned order and is not transferred the same way."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What it is for: long-range capacity and materials planning — whether the factory could handle demand that far out, whether lead times and storage allow it, and whether sales can safely promise those delivery dates."
+            }
+          ],
+          "text": "What it is for: long-range capacity and materials planning — whether the factory could handle demand that far out, whether lead times and storage allow it, and whether sales can safely promise those delivery dates."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "MRP is the priority to learn; master planning is background"
+            },
+            {
+              "t": "text",
+              "v": " — stated twice and repeated in the closing instructions."
+            }
+          ],
+          "text": "MRP is the priority to learn; master planning is background — stated twice and repeated in the closing instructions."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The bamboo items stay the training vehicle"
+            },
+            {
+              "t": "text",
+              "v": " for planning, continuing from the earlier BOM and production-order work."
+            }
+          ],
+          "text": "The bamboo items stay the training vehicle for planning, continuing from the earlier BOM and production-order work."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Practice assignment:"
+            },
+            {
+              "t": "text",
+              "v": " create plan data for the remaining bamboo items, rerun planning, review the results under Planned Orders, and experiment with the scenario, the BOM, the ordering settings and the horizons."
+            }
+          ],
+          "text": "Practice assignment: create plan data for the remaining bamboo items, rerun planning, review the results under Planned Orders, and experiment with the scenario, the BOM, the ordering settings and the horizons."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "An item with no planning data is invisible to planning"
+            },
+            {
+              "t": "text",
+              "v": " — not an error, just absent. Check the Item Order Plan first when MRP ignores something."
+            }
+          ],
+          "text": "An item with no planning data is invisible to planning — not an error, just absent. Check the Item Order Plan first when MRP ignores something."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The order horizon is the single setting that decides whether planning sees a demand at all."
+            },
+            {
+              "t": "text",
+              "v": " If MRP is ignoring a real order, check the horizon before anything else."
+            }
+          ],
+          "text": "The order horizon is the single setting that decides whether planning sees a demand at all. If MRP is ignoring a real order, check the horizon before anything else."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "MRP only plans components that have their own planning data."
+            },
+            {
+              "t": "text",
+              "v": " A parent can plan cleanly while its components are silently skipped."
+            }
+          ],
+          "text": "MRP only plans components that have their own planning data. A parent can plan cleanly while its components are silently skipped."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Planned orders are suggestions, not instructions."
+            },
+            {
+              "t": "text",
+              "v": " The planner's knowledge of suppliers and lead times is expected to override them."
+            }
+          ],
+          "text": "Planned orders are suggestions, not instructions. The planner's knowledge of suppliers and lead times is expected to override them."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Pegging is how you make sense of a multi-level result"
+            },
+            {
+              "t": "text",
+              "v": " — upstream for what will supply a demand, downstream for what caused an order."
+            }
+          ],
+          "text": "Pegging is how you make sense of a multi-level result — upstream for what will supply a demand, downstream for what caused an order."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "After any master-data change, close and reopen the session"
+            },
+            {
+              "t": "text",
+              "v": " before expecting LN to see it."
+            }
+          ],
+          "text": "After any master-data change, close and reopen the session before expecting LN to see it."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`order-planning-training_2026-08-20.md`",
+          "href": "order-planning-training_2026-08-20.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `order-planning-training_2026-08-20.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

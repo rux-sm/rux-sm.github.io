@@ -1,0 +1,93 @@
+<section class="ks-sec" id="number">
+  <h2>Number input</h2><p>sizes · steppers · invalid · readonly</p>
+  <!-- PROVENANCE: rendered-dom · components-numberinput--default with its
+       invalid, warn, readonly, sm and lg recipes, 2026-08-28 -->
+  <!--
+    Corrected against the reference 2026-08-28. The LABEL BELONGS INSIDE
+    .rux--number, not beside it in the form-item — and so does the helper text
+    or requirement that follows the field, with `--helpertext` on the root when
+    one is present. Every gate passed the old shape because a label inside a
+    form-item is attested on a dozen other components; only the reference for
+    THIS component says where it goes.
+
+    Each stepper button is also followed by `__rule-divider`, the hairline
+    between the two controls, which this fragment never had.
+
+    `number-input--invalid` went the same way in the Phase 3 strip: it is
+    defined only in the fluid-number-input partial, so with that family cut it
+    has no rule. `number__invalid` is the plain input's own class and stays.
+
+    The reference also puts `number--helpertext` on the root when helper text
+    is present; @carbon/styles defines no rule for it, so it is dropped on the
+    §4.1.12 precedent. The helper text still moves inside .rux--number, which
+    is where the reference puts it and where the spacing rules expect it.
+  -->
+  <div class="ks-grid">
+    <div class="rux--form-item">
+      <div class="rux--number rux--number--lg">
+        <label class="rux--label" for="ni-1">Quantity</label>
+        <div class="rux--number__input-wrapper">
+          <input id="ni-1" type="number" value="4">
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <div class="rux--form__helper-text">Between 1 and 99</div>
+      </div>
+    </div>
+    <div class="rux--form-item">
+      <div class="rux--number rux--number--sm" data-invalid>
+        <label class="rux--label" for="ni-2">Small · invalid</label>
+        <div class="rux--number__input-wrapper">
+          <input id="ni-2" type="number" value="0" data-invalid aria-invalid="true">
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <div class="rux--form-requirement">Must be at least 1</div>
+      </div>
+    </div>
+    <div class="rux--form-item">
+      <div class="rux--number rux--number--md">
+        <label class="rux--label" for="ni-4">Warning</label>
+        <div class="rux--number__input-wrapper rux--number__input-wrapper--warning">
+          <input id="ni-4" type="number" value="99">
+          <svg class="rux--number__invalid rux--number__invalid--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <div class="rux--form-requirement">Close to the maximum</div>
+      </div>
+    </div>
+    <div class="rux--form-item">
+      <div class="rux--number rux--number--md rux--number--readonly">
+        <label class="rux--label" for="ni-3">Readonly</label>
+        <div class="rux--number__input-wrapper">
+          <input id="ni-3" type="number" value="12" readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,101 @@
+<section class="ks-sec" id="toggle">
+  <h2>Toggle</h2><p>on · off · small (the only size with a checkmark) · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-toggle--default with its disabled
+       and readonly recipes, plus --small-toggle and --with-accessible-labels,
+       2026-08-28 · diffed clean: no tag, nesting or omission difference -->
+  <!--
+    Carbon's _renderCheckmark() returns early unless size === "sm"
+    (web-components/toggle/toggle.js). The checkmark belongs to the SMALL toggle
+    only; .rux--toggle__check is positioned for that variant, so putting it on the
+    default size lands it off-centre. SVG is Carbon's own: 6x5, viewBox 0 0 6 5.
+
+    `toggle__text` IS aria-hidden, AND THAT IS WHAT STOPS THE NAME DOUBLING.
+    `aria-labelledby` on the switch points at the whole <label>, which holds the
+    label text AND this state span, so without the attribute the accessible name
+    computes to both and VoiceOver says "On On, on, switch" -- heard on
+    2026-08-30, fixed on 2026-08-31. Carbon renders
+    `span.cds--toggle__text{aria-hidden=true}`, which the captures could not show
+    until the extractor's aria allowlist widened from four attributes to
+    thirteen; the finding sat open for a day for exactly that reason. Roadmap
+    4.8.
+  -->
+  <div class="ks-row" style="gap:3rem">
+    <div class="rux--toggle">
+      <button id="tg-1" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-labelledby="tg-1-l"></button>
+      <label class="rux--toggle__label" for="tg-1" id="tg-1-l">
+        <span class="rux--toggle__label-text">On</span>
+        <div class="rux--toggle__appearance">
+          <div class="rux--toggle__switch rux--toggle__switch--checked"></div>
+          <span class="rux--toggle__text" aria-hidden="true">On</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="rux--toggle">
+      <button id="tg-2" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="tg-2-l"></button>
+      <label class="rux--toggle__label" for="tg-2" id="tg-2-l">
+        <span class="rux--toggle__label-text">Off</span>
+        <div class="rux--toggle__appearance">
+          <div class="rux--toggle__switch"></div>
+          <span class="rux--toggle__text" aria-hidden="true">Off</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="rux--toggle">
+      <button id="tg-3" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-labelledby="tg-3-l"></button>
+      <label class="rux--toggle__label" for="tg-3" id="tg-3-l">
+        <span class="rux--toggle__label-text">Small · checked</span>
+        <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+          <div class="rux--toggle__switch rux--toggle__switch--checked">
+            <svg class="rux--toggle__check" width="6px" height="5px" viewBox="0 0 6 5"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <div class="rux--toggle">
+      <button id="tg-5" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="tg-5-l"></button>
+      <label class="rux--toggle__label" for="tg-5" id="tg-5-l">
+        <span class="rux--toggle__label-text">Small · off</span>
+        <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+          <div class="rux--toggle__switch"></div>
+        </div>
+      </label>
+    </div>
+
+    <div class="rux--toggle rux--toggle--disabled">
+      <button id="tg-4" class="rux--toggle__button" role="switch" type="button" aria-checked="false" disabled aria-labelledby="tg-4-l"></button>
+      <label class="rux--toggle__label" for="tg-4" id="tg-4-l">
+        <span class="rux--toggle__label-text">Disabled</span>
+        <div class="rux--toggle__appearance">
+          <div class="rux--toggle__switch"></div>
+          <span class="rux--toggle__text" aria-hidden="true">Off</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="rux--toggle rux--toggle--readonly">
+      <button id="tg-6" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-readonly="true" aria-labelledby="tg-6-l"></button>
+      <label class="rux--toggle__label" for="tg-6" id="tg-6-l">
+        <span class="rux--toggle__label-text">Read-only</span>
+        <div class="rux--toggle__appearance">
+          <div class="rux--toggle__switch rux--toggle__switch--checked"></div>
+          <span class="rux--toggle__text" aria-hidden="true">On</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!--
+    The skeleton is its own markup, not a modifier on the real toggle: the switch
+    and text are replaced by two shapes the skeleton rules size directly
+    (_toggle.scss:223 and :231).
+  -->
+  <div class="ks-row">
+    <div class="rux--toggle rux--toggle--skeleton">
+      <div class="rux--toggle__skeleton-circle"></div>
+      <div class="rux--toggle__skeleton-rectangle"></div>
+    </div>
+  </div>
+</section>

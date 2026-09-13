@@ -1,0 +1,1785 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "exercise",
+  "id": "HOMEWORK-production-and-planning",
+  "title": "Homework — understand a production result",
+  "updated": "2026-09-06",
+  "status": "draft",
+  "summary": "finish one production run, explain which master data produced the result, change one condition and predict the difference, then connect planning to production.",
+  "sources": [
+    "cppat1210m000",
+    "cprrp1100m000",
+    "cprrp1220m000",
+    "tcibd0501m100",
+    "tcibd1550m000",
+    "tibom3100m000",
+    "ticpr0107m000",
+    "ticst0101m100",
+    "tirou4600m000",
+    "tisfc0101m100",
+    "tisfc0501m000",
+    "whinh2100m000",
+    "whwmd4300m000"
+  ],
+  "keyed": false,
+  "intro": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Goal:"
+        },
+        {
+          "t": "text",
+          "v": " finish one production run, explain which master data produced the result, change one condition and predict the difference, then connect planning to production."
+        }
+      ],
+      "text": "Goal: finish one production run, explain which master data produced the result, change one condition and predict the difference, then connect planning to production."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Use the bamboo test family in Company "
+        },
+        {
+          "t": "literal",
+          "v": "4100"
+        },
+        {
+          "t": "text",
+          "v": ". Work in order and stop after any result you cannot explain. A surprising result is useful evidence; do not click through it or repair several values at once."
+        }
+      ],
+      "text": "Use the bamboo test family in Company 4100. Work in order and stop after any result you cannot explain. A surprising result is useful evidence; do not click through it or repair several values at once."
+    },
+    {
+      "kind": "callout",
+      "variant": "warning",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Change only test-item data. Do not change the shared "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-RM"
+            },
+            {
+              "t": "text",
+              "v": " or "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-FG"
+            },
+            {
+              "t": "text",
+              "v": " item groups or their defaults."
+            }
+          ],
+          "text": "Change only test-item data. Do not change the shared BAM-RM or BAM-FG item groups or their defaults."
+        }
+      ]
+    }
+  ],
+  "assignments": [
+    {
+      "n": 1,
+      "title": "Before you start",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "Write this down",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Your name"
+                    }
+                  ],
+                  "text": "Your name"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Date"
+                    }
+                  ],
+                  "text": "Date"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Company"
+                    }
+                  ],
+                  "text": "Company"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "4100"
+                    }
+                  ],
+                  "text": "4100"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Site"
+                    }
+                  ],
+                  "text": "Site"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished item"
+                    }
+                  ],
+                  "text": "Finished item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    }
+                  ],
+                  "text": "BAM-CHOP-PAIR"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Raw-material warehouse"
+                    }
+                  ],
+                  "text": "Raw-material warehouse"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished-goods warehouse"
+                    }
+                  ],
+                  "text": "Finished-goods warehouse"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Create one folder for the screenshots from this run. Every screenshot must show the whole LN window and a readable status bar."
+            }
+          ],
+          "text": "Create one folder for the screenshots from this run. Every screenshot must show the whole LN window and a readable status bar."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Homework 1 — map the production foundation",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Follow phases 6–10 of "
+            },
+            {
+              "t": "link",
+              "v": "Create basic test items and defaults",
+              "href": "SG-create-basic-test-items-and-defaults.md"
+            },
+            {
+              "t": "text",
+              "v": ". Read the records; do not rebuild them."
+            }
+          ],
+          "text": "Follow phases 6–10 of Create basic test items and defaults. Read the records; do not rebuild them."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Question",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What is the finished item's supply source?"
+                    }
+                  ],
+                  "text": "What is the finished item's supply source?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which BOM and revision should the order use?"
+                    }
+                  ],
+                  "text": "Which BOM and revision should the order use?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which components and quantities make one finished item?"
+                    }
+                  ],
+                  "text": "Which components and quantities make one finished item?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which routing and revision should the order use?"
+                    }
+                  ],
+                  "text": "Which routing and revision should the order use?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which operation and work center should appear?"
+                    }
+                  ],
+                  "text": "Which operation and work center should appear?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Has the standard cost been actualized? What proves it?"
+                    }
+                  ],
+                  "text": "Has the standard cost been actualized? What proves it?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "How much of each component is on hand before production?"
+                    }
+                  ],
+                  "text": "How much of each component is on hand before production?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2
+          ],
+          "check": 0
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Your prediction",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If you create an order for one finished item, what components, quantities, routing and operation should LN generate?"
+                    }
+                  ],
+                  "text": "If you create an order for one finished item, what components, quantities, routing and operation should LN generate?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Homework 2 — run one clean production order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Follow "
+            },
+            {
+              "t": "link",
+              "v": "Manual production order from existing master data",
+              "href": "SG-manual-production-order-existing-master-data.md"
+            },
+            {
+              "t": "text",
+              "v": " through finished-goods receipt. Do not run "
+            },
+            {
+              "t": "session",
+              "code": "ticst0201m000",
+              "name": "Close Production Orders"
+            },
+            {
+              "t": "text",
+              "v": "; closing and its financial postings are outside that guide."
+            }
+          ],
+          "text": "Follow Manual production order from existing master data through finished-goods receipt. Do not run Close Production Orders (ticst0201m000); closing and its financial postings are outside that guide."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Checkpoint",
+            "Record the result"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Production order number"
+                    }
+                  ],
+                  "text": "Production order number"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Quantity ordered"
+                    }
+                  ],
+                  "text": "Quantity ordered"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status immediately after save"
+                    }
+                  ],
+                  "text": "Status immediately after save"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "BOM and revision LN selected"
+                    }
+                  ],
+                  "text": "BOM and revision LN selected"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Routing and revision LN selected"
+                    }
+                  ],
+                  "text": "Routing and revision LN selected"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Generated operation and work center"
+                    }
+                  ],
+                  "text": "Generated operation and work center"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Estimated material quantities"
+                    }
+                  ],
+                  "text": "Estimated material quantities"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status after release"
+                    }
+                  ],
+                  "text": "Status after release"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Production issue warehousing-order number"
+                    }
+                  ],
+                  "text": "Production issue warehousing-order number"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished-item receipt warehousing-order number"
+                    }
+                  ],
+                  "text": "Finished-item receipt warehousing-order number"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Actual material quantities after issue"
+                    }
+                  ],
+                  "text": "Actual material quantities after issue"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status after the first real transaction"
+                    }
+                  ],
+                  "text": "Status after the first real transaction"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Operation quantity completed"
+                    }
+                  ],
+                  "text": "Operation quantity completed"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Quantity delivered"
+                    }
+                  ],
+                  "text": "Quantity delivered"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Final production-order status"
+                    }
+                  ],
+                  "text": "Final production-order status"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished-item on-hand before"
+                    }
+                  ],
+                  "text": "Finished-item on-hand before"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished-item on-hand after"
+                    }
+                  ],
+                  "text": "Finished-item on-hand after"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Does the on-hand change equal the delivered quantity?"
+                    }
+                  ],
+                  "text": "Does the on-hand change equal the delivered quantity?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2
+          ],
+          "check": 0
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A complete, readable set of the last six answers above may improve the production guide. "
+            }
+          ],
+          "text": "A complete, readable set of the last six answers above may improve the production guide."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Homework 3 — explain the result",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Answer without describing which buttons you clicked."
+            }
+          ],
+          "text": "Answer without describing which buttons you clicked."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Question",
+            "Your explanation"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Why did LN select this BOM?"
+                    }
+                  ],
+                  "text": "Why did LN select this BOM?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Why did LN select this routing and operation?"
+                    }
+                  ],
+                  "text": "Why did LN select this routing and operation?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "How did you calculate the expected component quantities?"
+                    }
+                  ],
+                  "text": "How did you calculate the expected component quantities?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What event moved the order into each status you observed?"
+                    }
+                  ],
+                  "text": "What event moved the order into each status you observed?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What proves that production affected inventory?"
+                    }
+                  ],
+                  "text": "What proves that production affected inventory?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Homework 4 — change one condition",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Create a second production order for the same item with a different "
+            },
+            {
+              "t": "em",
+              "v": "Quantity Ordered"
+            },
+            {
+              "t": "text",
+              "v": ". Change nothing else."
+            }
+          ],
+          "text": "Create a second production order for the same item with a different Quantity Ordered. Change nothing else."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Question",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "New production quantity"
+                    }
+                  ],
+                  "text": "New production quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Predicted "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    },
+                    {
+                      "t": "text",
+                      "v": " quantity"
+                    }
+                  ],
+                  "text": "Predicted BAM-ROD quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Predicted "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": " quantity"
+                    }
+                  ],
+                  "text": "Predicted BAM-SLEEVE quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Actual estimated rod quantity"
+                    }
+                  ],
+                  "text": "Actual estimated rod quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Actual estimated sleeve quantity"
+                    }
+                  ],
+                  "text": "Actual estimated sleeve quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Did the same BOM and routing appear?"
+                    }
+                  ],
+                  "text": "Did the same BOM and routing appear?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Did LN match your prediction?"
+                    }
+                  ],
+                  "text": "Did LN match your prediction?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If not, what differed?"
+                    }
+                  ],
+                  "text": "If not, what differed?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Stop after verifying the generated foundation unless you have a reason to complete the second order. The purpose of this run is to prove that you can predict the result of one controlled change."
+            }
+          ],
+          "text": "Stop after verifying the generated foundation unless you have a reason to complete the second order. The purpose of this run is to prove that you can predict the result of one controlled change."
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Homework 5 — connect planning to production",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "First follow "
+            },
+            {
+              "t": "link",
+              "v": "Run order planning for one item",
+              "href": "SG-run-order-planning-for-one-item.md"
+            },
+            {
+              "t": "text",
+              "v": " to create uncovered demand, run MRP and reconcile the pegging tree. Then use phase 3 of "
+            },
+            {
+              "t": "link",
+              "v": "Demand to shipment via planning",
+              "href": "SG-demand-to-shipment-via-planning.md"
+            },
+            {
+              "t": "text",
+              "v": " to attempt the production half of the transfer."
+            }
+          ],
+          "text": "First follow Run order planning for one item to create uncovered demand, run MRP and reconcile the pegging tree. Then use phase 3 of Demand to shipment via planning to attempt the production half of the transfer."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The production-order transfer has not been walked in this environment. You are running a test, not following an established procedure. Capture every prompt, report, error and resulting order before continuing."
+                }
+              ],
+              "text": "The production-order transfer has not been walked in this environment. You are running a test, not following an established procedure. Capture every prompt, report, error and resulting order before continuing."
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Checkpoint",
+            "Record the result"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Sales-order demand"
+                    }
+                  ],
+                  "text": "Sales-order demand"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Finished-item on-hand"
+                    }
+                  ],
+                  "text": "Finished-item on-hand"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Expected production shortfall"
+                    }
+                  ],
+                  "text": "Expected production shortfall"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Planned production-order number and quantity"
+                    }
+                  ],
+                  "text": "Planned production-order number and quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Does the pegging arithmetic reconcile?"
+                    }
+                  ],
+                  "text": "Does the pegging arithmetic reconcile?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer options used"
+                    }
+                  ],
+                  "text": "Transfer options used"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer report or exact error"
+                    }
+                  ],
+                  "text": "Transfer report or exact error"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Real production-order number, if created"
+                    }
+                  ],
+                  "text": "Real production-order number, if created"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Does its item and quantity match the planned order?"
+                    }
+                  ],
+                  "text": "Does its item and quantity match the planned order?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Does it contain the expected BOM, routing and materials?"
+                    }
+                  ],
+                  "text": "Does it contain the expected BOM, routing and materials?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2
+          ],
+          "check": 0
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A complete transfer capture, including the resulting order or exact failure, may improve the planning guide. "
+            }
+          ],
+          "text": "A complete transfer capture, including the resulting order or exact failure, may improve the planning guide."
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "title": "Optional investigation — `BAM-SLEEVE`",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Do this only after Homework 1–5. The earlier run added planning data for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": ", reran planning, and still produced no planned supply. The authored records disagree about whether the cause was its order horizon or stock covering the requirement."
+            }
+          ],
+          "text": "Do this only after Homework 1–5. The earlier run added planning data for BAM-SLEEVE, reran planning, and still produced no planned supply. The authored records disagree about whether the cause was its order horizon or stock covering the requirement."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Record all four values in one sitting before changing anything:"
+            }
+          ],
+          "text": "Record all four values in one sitting before changing anything:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Read this",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Cluster and site on the item's planning row"
+                    }
+                  ],
+                  "text": "Cluster and site on the item's planning row"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order-horizon days and displayed horizon date"
+                    }
+                  ],
+                  "text": "Order-horizon days and displayed horizon date"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On-hand and existing supply"
+                    }
+                  ],
+                  "text": "On-hand and existing supply"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Demand date and quantity"
+                    }
+                  ],
+                  "text": "Demand date and quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2
+          ],
+          "check": 0
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Then run MRP once and capture the "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " result or its absence in "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1100m000",
+              "name": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Then run MRP once and capture the BAM-SLEEVE result or its absence in Planned Orders (cprrp1100m000), Planning ➔ Order Planning ➔ Planned Orders."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The four baseline readings plus the MRP result can establish the cause. "
+            }
+          ],
+          "text": "The four baseline readings plus the MRP result can establish the cause."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "title": "Report back",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Send back:"
+            }
+          ],
+          "text": "Send back:"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "This completed worksheet."
+                }
+              ],
+              "text": "This completed worksheet."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screenshots, with the date and session code in each filename."
+                }
+              ],
+              "text": "The screenshots, with the date and session code in each filename."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Any process or error report produced by planning or transfer."
+                }
+              ],
+              "text": "Any process or error report produced by planning or transfer."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A short answer to the question below."
+                }
+              ],
+              "text": "A short answer to the question below."
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Question",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which master-data value had the greatest effect on your result, and how did you prove it?"
+                    }
+                  ],
+                  "text": "Which master-data value had the greatest effect on your result, and how did you prove it?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "For each unexpected result, report it without guessing:"
+            }
+          ],
+          "text": "For each unexpected result, report it without guessing:"
+        },
+        {
+          "kind": "code",
+          "text": "Question I was testing:\nBaseline value:\nOne value changed:\nExpected result and source:\nObserved result:\nOrder number(s):\nScreenshot filename(s):\nBaseline restored and confirmed: Yes / No / Not applicable\nWhat remains unexplained:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Reporting a result does not automatically close an issue. The capture must show the relevant value, result and LN status bar; it can then be mined into the owning session or guide and the issue can be evaluated against its exact wording."
+            }
+          ],
+          "text": "Reporting a result does not automatically close an issue. The capture must show the relevant value, result and LN status bar; it can then be mined into the owning session or guide and the issue can be evaluated against its exact wording."
+        }
+      ]
+    }
+  ]
+}

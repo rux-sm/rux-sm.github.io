@@ -1,0 +1,46 @@
+<section class="ks-sec" id="options-tile">
+  <h2>Options tile</h2><p>expandable with toggle · static</p>
+  <!-- PROVENANCE: rendered-dom · components-optionstile--options-tile and
+       --static-options-tile on the ibm-products origin, 2026-08-31 -->
+  <!--
+    The captured c4p-- component is absorbed and compiles as rux--. Native
+    details/summary supplies disclosure; js/form-controls.js already owns the
+    nested Carbon toggle. React-only transition classes and uncaptured lg/xl
+    variants are not inferred.
+  -->
+  <div class="ks-stack">
+    <!-- BLOCK:BEGIN name=default label="Options tile" -->
+    <section class="rux--options-tile rux--options-tile--lg">
+      <details class="rux--options-tile__details" open>
+        <summary class="rux--options-tile__header rux--options-tile__header--has-toggle">
+          <div class="rux--options-tile__toggle-container">
+            <div class="rux--toggle rux--options-tile__toggle">
+              <button class="rux--toggle__button" type="button" role="switch" aria-checked="true" aria-labelledby="ot-title"></button>
+              <div class="rux--toggle__label">
+                <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+                  <div class="rux--toggle__switch rux--toggle__switch--checked"><svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <svg class="rux--options-tile__chevron" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          <div class="rux--options-tile__heading">
+            <h2 class="rux--options-tile__title" id="ot-title">Automatic updates</h2>
+            <span class="rux--options-tile__summary" aria-hidden="false"><span class="rux--options-tile__summary-text">Updates install outside working hours</span></span>
+          </div>
+        </summary>
+        <div class="rux--options-tile__content"><p>Choose the maintenance window in the deployment settings.</p></div>
+      </details>
+    </section>
+    <!-- BLOCK:END default -->
+
+    <section class="rux--options-tile rux--options-tile--lg">
+      <div class="rux--options-tile__static-content">
+        <div class="rux--options-tile__heading">
+          <h2 class="rux--options-tile__title">Audit logging</h2>
+          <span class="rux--options-tile__summary" aria-hidden="false"><span class="rux--options-tile__summary-text">Required for this workspace</span></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

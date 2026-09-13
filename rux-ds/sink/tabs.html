@@ -1,0 +1,285 @@
+<section class="ks-sec" id="tabs">
+    <h2>Tabs</h2><p>line · dismissible · icon only · contained · full width · vertical</p>
+    <!-- PROVENANCE: source · @carbon/react Tabs.tsx, 2026-08-26
+         · the label stays `source` because the COMPOUND on the nav item — both
+           classes on one button — comes from Tabs.tsx and from no capture; the
+           rendered DOM confirms it but did not supply it.
+         · 2026-08-27: tablist element corrected against components-tabs--default
+           (rendered DOM) — v11 renders div.tab--list, and tabs__nav survives only
+           in the skeleton, as a UL; the label is a SPAN inside its wrapper.
+         · 2026-08-28: tab-content panels added from the same story, where they
+           are SIBLINGS of .cds--tabs rather than children. -->
+    <!--
+      STRUCTURE CORRECTED 2026-08-26 — the stacked underline was our bug, not
+      Carbon's. This fragment previously nested the parts:
+
+        div.rux--tabs__nav-item            <- carried --selected
+          button.rux--tabs__nav-link       <- carried the idle underline
+
+      Carbon puts BOTH classes on ONE button. From @carbon/react Tabs.tsx:
+
+        cx(`${prefix}--tabs__nav-item`, `${prefix}--tabs__nav-link`, {
+          [`${prefix}--tabs__nav-item--selected`]: selectedIndex === index, ... })
+
+      Why it mattered. `.rux--tabs__nav-link` sets border-block-end: 2px solid
+      border-subtle (css/rux.css:23901). `--nav-item--selected` sets 2px solid
+      border-interactive (:23976) and the hover rule sets 2px solid border-strong
+      (:23964) — both LATER in the cascade. On one element they override the
+      subtle border and you get a single 2px line that changes colour. Split
+      across two nested boxes they cannot override anything, so the item's border
+      painted BELOW the link's and every hovered or selected tab rendered 4px of
+      doubled edge.
+
+      This is why tabs had no "extracted from cds-tabs" provenance note and no
+      entry in docs/carbon-co-classes.json: it was inferred from the CSS rather
+      than quarried, and inferring nesting from a descendant selector is exactly
+      the mistake roadmap §4.1.7 exists to prevent. Note also that the WEB
+      COMPONENT is not the reference here — cds-tab renders an <a> in shadow DOM
+      and never emits --nav-item at all. For tabs, @carbon/react is the structure
+      @carbon/styles is written against.
+
+      __nav-item-label-wrapper is load-bearing, not decoration: for line tabs it
+      is position:relative with inset-block-start:0.0625rem (:23704), the 1px
+      nudge that optically centres the label above the underline.
+
+      ADDED IN PHASE 5, and this note is why it waited. Roving tabindex is
+      `tabIndex={selected ? '0' : '-1'}` in Carbon React, and it only works
+      alongside arrow-key movement: the tabindex half alone would drop every
+      unselected tab out of the Tab order with nothing able to reach them, which
+      is worse than plain buttons. js/tabs.js lands both halves together, and
+      the `tab-content` panels below are what make `aria-controls` mean
+      something. Panels are SIBLINGS of `.rux--tabs`, not children, which is
+      where components-tabs--default puts them.
+    -->
+    <!-- The overflow nav buttons and the close scaffolding are not decoration:
+         EVERY tabs story in docs/carbon-react-dom.json emits a --previous and a
+         --next button flanking the tablist, both --hidden until the list
+         actually overflows, and a --close--hidden div after each tab. They were
+         missing here, which no gate could see: check-ancestry reads ancestors,
+         and these are SIBLINGS. -->
+    <!-- BLOCK:BEGIN name=default label="Tabs" -->
+    <div class="rux--tabs">
+        <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+      <div class="rux--tab--list" role="tablist" aria-label="Tabs example">
+        <button id="tab-overview" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="panel-overview" tabindex="0">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Overview</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden rux--tabs__nav-item--close-icon--selected" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+        <button id="tab-details" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="panel-details" tabindex="-1">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Details</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+        <button id="tab-activity" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="panel-activity" tabindex="-1">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Activity</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+        <button id="tab-disabled" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--disabled" role="tab" type="button" aria-selected="false" aria-disabled="true" disabled tabindex="-1">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Disabled</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+      </div>
+        <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+    </div>
+    <div class="rux--tab-content" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" tabindex="0">
+      <p>Overview panel. Arrow keys move between tabs; the panel follows.</p>
+    </div>
+    <div class="rux--tab-content" role="tabpanel" id="panel-details" aria-labelledby="tab-details" tabindex="0" hidden>
+      <p>Details panel.</p>
+    </div>
+    <div class="rux--tab-content" role="tabpanel" id="panel-activity" aria-labelledby="tab-activity" tabindex="0" hidden>
+      <p>Activity panel.</p>
+    </div>
+    <div class="rux--tab-content" role="tabpanel" id="panel-disabled" aria-labelledby="tab-disabled" tabindex="0" hidden>
+      <p>Never reachable — its tab is disabled.</p>
+    </div>
+    <!-- BLOCK:END default -->
+
+    <!--
+      Dismissible tabs. The close control is a sibling of the tab, not a child:
+      Carbon's hover rule reaches it as
+      `.rux--tabs__nav-item:hover + .rux--tabs__nav-item--close`, so nesting it
+      inside the button would put it out of the selector's reach entirely.
+    -->
+    <div class="ks-label" style="margin-block-start:1.5rem">dismissible</div>
+    <div class="rux--tabs rux--tabs--dismissable">
+      <div class="rux--tab--list" role="tablist" aria-label="Dismissible tabs">
+        <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Report A</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close">
+          <button type="button" class="rux--tabs__nav-item--close-icon" aria-label="Close Report A">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Report B</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close">
+          <button type="button" class="rux--tabs__nav-item--close-icon rux--tabs__nav-item--close-icon--disabled" aria-label="Close Report B" disabled>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      --tabs--tall has no rule of its own. Every selector is
+      `.rux--tabs.rux--tabs--contained.rux--tabs--tall`, or the `:not(--tall)`
+      form, so contained is a prerequisite rather than a companion.
+    -->
+    <div class="ks-label" style="margin-block-start:1.5rem">contained · tall</div>
+    <div class="rux--tabs rux--tabs--contained rux--tabs--tall">
+      <div class="rux--tab--list" role="tablist" aria-label="Tall contained tabs">
+        <!--
+          The secondary label is a SIBLING of __nav-item-label-wrapper, both
+          direct children of the button — not nested inside it. The wrapper is
+          `display:flex; flex-direction:row`, so a secondary label placed inside
+          it becomes a second flex item on the same line and the two labels run
+          together ("OverviewEverything at once"). Corrected 2026-08-27 against
+          components-tabs--contained-with-secondary-labels (rendered DOM).
+          No gate catches this: the class sits on the element type Carbon uses,
+          so check-tags passes, and Carbon writes no compound for the pair.
+          Only looking at the page found it.
+        -->
+        <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Overview</span>
+          </div>
+          <div class="rux--tabs__nav-item-secondary-label">Everything at once</div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Details</span>
+          </div>
+          <div class="rux--tabs__nav-item-secondary-label">One record</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Icon-only tabs, restructured 2026-08-28 against components-tabs--icon-20-only.
+         The glyph is not a child of the button: it sits inside
+         __nav-item-label-wrapper > __nav-item-label, the same wrapper a text tab
+         uses, and the button carries --icon-only with --icon-only__20 for a 20px
+         glyph. This fragment had the svg directly in the button. -->
+    <div class="ks-label" style="margin-block-start:1.5rem">icon only · lg · 20px glyph</div>
+    <div class="rux--tabs rux--tabs__icon--lg">
+      <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
+        <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
+          <div class="rux--tooltip-trigger__wrapper">
+            <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected rux--tabs__nav-item--icon-only rux--tabs__nav-item--icon-only__20" role="tab" type="button" aria-selected="true" aria-label="Documents">
+              <div class="rux--tabs__nav-item-label-wrapper">
+                <span class="rux--tabs__nav-item-label"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></span>
+              </div>
+            </button>
+          </div>
+          <span class="rux--popover" role="tooltip" id="tt-tab-docs">
+            <span class="rux--popover-content rux--tooltip-content">Documents</span>
+            <span class="rux--popover-caret"></span>
+          </span>
+        </span>
+        <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
+          <div class="rux--tooltip-trigger__wrapper">
+            <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--icon-only rux--tabs__nav-item--icon-only__20" role="tab" type="button" aria-selected="false" aria-label="Folders">
+              <div class="rux--tabs__nav-item-label-wrapper">
+                <span class="rux--tabs__nav-item-label"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></span>
+              </div>
+            </button>
+          </div>
+          <span class="rux--popover" role="tooltip" id="tt-tab-folders">
+            <span class="rux--popover-content rux--tooltip-content">Folders</span>
+            <span class="rux--popover-caret"></span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <!-- CONTAINED WITH ICONS · components-tabs--contained-with-icons puts
+         __nav-item--icon as a DIV inside the label wrapper, after the label. -->
+    <div class="ks-label" style="margin-block-start:1.5rem">contained · with icons</div>
+    <div class="rux--tabs rux--tabs--contained rux--layout--size-lg">
+      <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+      <div class="rux--tab--list" role="tablist" aria-label="Contained tabs with icons">
+        <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Overview</span>
+            <div class="rux--tabs__nav-item--icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
+          </div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Details</span>
+            <div class="rux--tabs__nav-item--icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></div>
+          </div>
+        </button>
+      </div>
+      <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+    </div>
+
+    <!-- FULL WIDTH · components-tabs--contained-full-width. Carbon renders it
+         inside a css-grid column; the modifier itself is on the tabs root. -->
+    <div class="ks-label" style="margin-block-start:1.5rem">contained · full width</div>
+    <div class="rux--tabs rux--tabs--contained rux--tabs--full-width rux--layout--size-lg">
+      <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+      <div class="rux--tab--list" role="tablist" aria-label="Full width tabs">
+        <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">One</span>
+          </div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Two</span>
+          </div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Three</span>
+          </div>
+        </button>
+      </div>
+      <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+    </div>
+
+    <!-- VERTICAL · components-tabs--vertical, which is always --contained too
+         and renders no overflow nav buttons: the list scrolls down, not across. -->
+    <div class="ks-label" style="margin-block-start:1.5rem">vertical</div>
+    <div class="rux--tabs rux--tabs--vertical rux--tabs--contained rux--layout--size-lg">
+      <div class="rux--tab--list" role="tablist" aria-label="Vertical tabs">
+        <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Overview</span>
+          </div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Details</span>
+          </div>
+        </button>
+        <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Activity</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>

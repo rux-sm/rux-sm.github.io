@@ -1,0 +1,17 @@
+<section class="ks-sec" id="chat-button">
+  <h2>Chat button</h2><p>quick actions · with icon</p>
+  <!-- PROVENANCE: rendered-dom · preview-chatbutton--default, 2026-08-28 -->
+  <!--
+    A chat button is a Button with `chat-btn` over it, and the reference always
+    gives it a SIZE PAIR — `btn--<size>` + `layout--size-<size>` — which this
+    fragment omitted, leaving every one at the unclassed default. The reference
+    also emits `chat-btn--sm` / `--md`; both are dropped for having no rule in
+    @carbon/styles (§4.1.12).
+  -->
+  <div class="ks-row">
+    <button type="button" class="rux--chat-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary">Send</button>
+    <button type="button" class="rux--chat-btn rux--chat-btn--with-icon rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary">With icon</button>
+    <button type="button" class="rux--chat-btn rux--chat-btn--quick-action rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost">Quick action</button>
+    <button type="button" class="rux--chat-btn rux--chat-btn--quick-action rux--chat-btn--quick-action--selected rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost">Selected</button>
+  </div>
+</section>

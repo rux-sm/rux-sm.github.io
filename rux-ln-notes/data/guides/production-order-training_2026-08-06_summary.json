@@ -1,0 +1,598 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "production-order-training_2026-08-06_summary",
+  "title": "Production Order Training — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "tcibd0501m100",
+    "tibom3100m000",
+    "ticpr0107m000",
+    "ticst0101m100",
+    "tirou4600m000",
+    "tisfc0101m100",
+    "tisfc0120s000",
+    "tisfc0130m000",
+    "tisfc0501m000"
+  ],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A walkthrough of a full job-shop production order: setting up the item data, building an order, releasing it, issuing material, reporting it complete, and closing it."
+        }
+      ],
+      "text": "A walkthrough of a full job-shop production order: setting up the item data, building an order, releasing it, issuing material, reporting it complete, and closing it."
+    }
+  ],
+  "topics": [
+    {
+      "title": "The production data chain",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The demo built or reviewed a manufactured item, a component item, a job-shop bill of material, a job-shop routing, and costing data, then created a production order from them. This is the dependency order that matters: item, then BOM and routing, then costing, then the order itself — each step needs the one before it to exist first."
+            }
+          ],
+          "text": "The demo built or reviewed a manufactured item, a component item, a job-shop bill of material, a job-shop routing, and costing data, then created a production order from them. This is the dependency order that matters: item, then BOM and routing, then costing, then the order itself — each step needs the one before it to exist first."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown, in order:"
+            }
+          ],
+          "text": "What was shown, in order:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " — manufactured item "
+                },
+                {
+                  "t": "literal",
+                  "v": "ITEM-A"
+                },
+                {
+                  "t": "text",
+                  "v": " with component "
+                },
+                {
+                  "t": "literal",
+                  "v": "ITEM-A.1"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Item (tcibd0501m100) — manufactured item ITEM-A with component ITEM-A.1."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3100m000",
+                  "name": "Job Shop BOM"
+                },
+                {
+                  "t": "text",
+                  "v": " — bill of material "
+                },
+                {
+                  "t": "literal",
+                  "v": "JB0000236"
+                },
+                {
+                  "t": "text",
+                  "v": ", status "
+                },
+                {
+                  "t": "strong",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "strong",
+                  "v": "Approve Revision"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Use for Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " actions available on the record. Only one BOM per item and site can actually be used for planning at a time (same rule for costing) — that's what \"Use for Planning\" / \"Use for Costing\" mean: which one wins, not just a label."
+                }
+              ],
+              "text": "Job Shop BOM (tibom3100m000) — bill of material JB0000236, status Approved, with Approve Revision and Use for Planning actions available on the record. Only one BOM per item and site can actually be used for planning at a time (same rule for costing) — that's what \"Use for Planning\" / \"Use for Costing\" mean: which one wins, not just a label."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tirou4600m000",
+                  "name": "Job Shop Routing"
+                },
+                {
+                  "t": "text",
+                  "v": " — routing "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ", operation "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": ", reference operation "
+                },
+                {
+                  "t": "literal",
+                  "v": "ASM-01"
+                },
+                {
+                  "t": "text",
+                  "v": ", work center "
+                },
+                {
+                  "t": "literal",
+                  "v": "10A1A1"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a 60-minute cycle time. That cycle time is defined against a specific batch size (the routing's own \"quantity\" setting) — it isn't automatically \"60 minutes per single unit\" unless that batch size is 1."
+                }
+              ],
+              "text": "Job Shop Routing (tirou4600m000) — routing 0, operation 10, reference operation ASM-01, work center 10A1A1, and a 60-minute cycle time. That cycle time is defined against a specific batch size (the routing's own \"quantity\" setting) — it isn't automatically \"60 minutes per single unit\" unless that batch size is 1."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ticpr0107m000",
+                  "name": "Item - Costing"
+                },
+                {
+                  "t": "text",
+                  "v": " — costing data for the item."
+                }
+              ],
+              "text": "Item - Costing (ticpr0107m000) — costing data for the item."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0101m100",
+                  "name": "Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " — the order itself, built from the item/BOM/routing/costing above."
+                }
+              ],
+              "text": "Production Order (tisfc0101m100) — the order itself, built from the item/BOM/routing/costing above."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Order statuses, start to finish",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Across the session the order moved through a clear sequence of states: "
+            },
+            {
+              "t": "strong",
+              "v": "Created"
+            },
+            {
+              "t": "text",
+              "v": ", then "
+            },
+            {
+              "t": "strong",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": ", then "
+            },
+            {
+              "t": "strong",
+              "v": "Active"
+            },
+            {
+              "t": "text",
+              "v": ", then "
+            },
+            {
+              "t": "strong",
+              "v": "Completed"
+            },
+            {
+              "t": "text",
+              "v": ". Recognizing these five words on a production order tells you where it is in its life without needing to know every step that produced them."
+            }
+          ],
+          "text": "Across the session the order moved through a clear sequence of states: Created, then Released, then Active, then Completed. Recognizing these five words on a production order tells you where it is in its life without needing to know every step that produced them."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two of these are precise, not just labels: "
+            },
+            {
+              "t": "strong",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": " happens specifically when someone releases the order to the job shop — that's literally what the Release action does. "
+            },
+            {
+              "t": "strong",
+              "v": "Active"
+            },
+            {
+              "t": "text",
+              "v": " happens the moment any real transaction occurs against the order, such as issuing material — it isn't triggered by Release alone."
+            }
+          ],
+          "text": "Two of these are precise, not just labels: Released happens specifically when someone releases the order to the job shop — that's literally what the Release action does. Active happens the moment any real transaction occurs against the order, such as issuing material — it isn't triggered by Release alone."
+        }
+      ]
+    },
+    {
+      "title": "Reporting progress and closing the order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Once the order was released and active, the presenter reported the operation complete and walked the order through to closing:"
+            }
+          ],
+          "text": "Once the order was released and active, the presenter reported the operation complete and walked the order through to closing:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "(56:20)"
+                },
+                {
+                  "t": "text",
+                  "v": " In "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0130m000",
+                  "name": "Report Operations Completed"
+                },
+                {
+                  "t": "text",
+                  "v": ", entered "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " as "
+                },
+                {
+                  "t": "strong",
+                  "v": "Additional Completed"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "(56:20) In Report Operations Completed (tisfc0130m000), entered 1 as Additional Completed."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "(57:20)"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0120s000",
+                  "name": "Report Orders Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " showed "
+                },
+                {
+                  "t": "strong",
+                  "v": "Quantity Delivered"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " — this is the finished-goods quantity that gets posted into inventory. After saving, "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000",
+                  "name": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " showed the order as "
+                },
+                {
+                  "t": "strong",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "(57:20) Report Orders Completed (tisfc0120s000) showed Quantity Delivered 1 — this is the finished-goods quantity that gets posted into inventory. After saving, Production Orders (tisfc0501m000) showed the order as Completed."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Close Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " opened next, as the final step once nothing is left open on the order."
+                }
+              ],
+              "text": "Close Production Orders opened next, as the final step once nothing is left open on the order."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The material-issue segment had a mistake — don't copy it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "(54:48–55:28)"
+            },
+            {
+              "t": "text",
+              "v": " In "
+            },
+            {
+              "t": "session",
+              "code": "ticst0101m100",
+              "name": "Material to Issue for Production Orders"
+            },
+            {
+              "t": "text",
+              "v": ", the presenter used the "
+            },
+            {
+              "t": "strong",
+              "v": "Initiate"
+            },
+            {
+              "t": "text",
+              "v": " action and the warehouse quantity changed to "
+            },
+            {
+              "t": "literal",
+              "v": "1"
+            },
+            {
+              "t": "text",
+              "v": " — but picked the wrong warehouse/shop-floor path while doing it, and said so on camera. That segment proves the screen and the action exist, but it is "
+            },
+            {
+              "t": "strong",
+              "v": "not"
+            },
+            {
+              "t": "text",
+              "v": " a clean procedure to follow step-by-step. A corrected, clean run of the same process was completed later, in the 2026-08-11 session."
+            }
+          ],
+          "text": "(54:48–55:28) In Material to Issue for Production Orders (ticst0101m100), the presenter used the Initiate action and the warehouse quantity changed to 1 — but picked the wrong warehouse/shop-floor path while doing it, and said so on camera. That segment proves the screen and the action exist, but it is not a clean procedure to follow step-by-step. A corrected, clean run of the same process was completed later, in the 2026-08-11 session."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What "
+            },
+            {
+              "t": "strong",
+              "v": "Initiate"
+            },
+            {
+              "t": "text",
+              "v": " actually does: it unblocks the material's warehouse order line so the warehouse can start moving that material toward the job shop. Depending on two settings, this can happen automatically the moment the order is released, or it can require running this action by hand — which setting applies here wasn't confirmed."
+            }
+          ],
+          "text": "What Initiate actually does: it unblocks the material's warehouse order line so the warehouse can start moving that material toward the job shop. Depending on two settings, this can happen automatically the moment the order is released, or it can require running this action by hand — which setting applies here wasn't confirmed."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Nothing was formally decided — this was a training demonstration, not a planning meeting. The useful output is the flow itself and a list of things worth double-checking before treating any of it as a fixed procedure."
+        }
+      ],
+      "text": "Nothing was formally decided — this was a training demonstration, not a planning meeting. The useful output is the flow itself and a list of things worth double-checking before treating any of it as a fixed procedure."
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The core chain to learn is: "
+            },
+            {
+              "t": "strong",
+              "v": "item → BOM → routing → costing → order → release → material issue → report complete → close"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The core chain to learn is: item → BOM → routing → costing → order → release → material issue → report complete → close."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The five statuses to recognize on a production order are "
+            },
+            {
+              "t": "strong",
+              "v": "Created, Released, Active, Completed"
+            },
+            {
+              "t": "text",
+              "v": " (and later, closed) — Released comes from the Release action specifically, Active from the first real transaction (like a material issue)."
+            }
+          ],
+          "text": "The five statuses to recognize on a production order are Created, Released, Active, Completed (and later, closed) — Released comes from the Release action specifically, Active from the first real transaction (like a material issue)."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Only one BOM (and one routing) per item/site can actually be \"used for planning\" or \"used for costing\" at a time — the check box picks the winner."
+            }
+          ],
+          "text": "Only one BOM (and one routing) per item/site can actually be \"used for planning\" or \"used for costing\" at a time — the check box picks the winner."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A cycle time is tied to a batch size, not automatically \"per unit\" — check the routing's basis quantity before doing simple multiplication."
+            }
+          ],
+          "text": "A cycle time is tied to a batch size, not automatically \"per unit\" — check the routing's basis quantity before doing simple multiplication."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Don't reuse the material-issue steps from this session directly (54:48–55:28) — that segment had a known warehouse-selection mistake."
+            }
+          ],
+          "text": "Don't reuse the material-issue steps from this session directly (54:48–55:28) — that segment had a known warehouse-selection mistake."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A later session (2026-08-11) redid material issue cleanly, start to finish."
+            }
+          ],
+          "text": "A later session (2026-08-11) redid material issue cleanly, start to finish."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`production-order-training_2026-08-06.md`",
+          "href": "production-order-training_2026-08-06.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `production-order-training_2026-08-06.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

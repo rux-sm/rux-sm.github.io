@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app tile icon, generated from brand/logo.svg by tools/make-marks.mjs.
+     Edit that file, not this one. Drawn as a CSS mask over the tile's text
+     colour, so this file's own colours are discarded and only its alpha is
+     read; that is why it carries no fill and no title. brand/README.md,
+     "App tile icons", is the spec. -->
+<path d="M7 2L12 2L12 5L15 5L15 8L11 8L11 13L10 13L10 14L9 14L9 13L8 13L8 14L7 14L7 13L5 13L5 14L4 14L4 13L3 13L3 14L2 14L2 13L1 13L1 6L2 6L2 9L7 9L7 4L6 4L6 8L4 8L4 3L7 3L7 2ZM9 3L8 3L8 5L9 5L9 3ZM11 3L10 3L10 5L11 5L11 3Z"/>
+</svg>

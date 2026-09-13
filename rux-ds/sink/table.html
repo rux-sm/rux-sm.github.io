@@ -1,0 +1,351 @@
+<section class="ks-sec" id="table">
+    <h2>Data table</h2><p>default</p>
+    <!-- PROVENANCE: rendered-dom · components-datatable-basic--default with its
+         xs and md recipes, components-datatable-selection--default and
+         --with-radio-selection, components-datatable-toolbar--with-overflow-menu,
+         components-datatable-sorting--default, components-datatable-batch-actions--default
+         and components-datatable-expansion--default, 2026-08-28 -->
+    <!--
+      The <table> is not a direct child of the container: Carbon wraps it in
+      `data-table-content`, which is the element that scrolls a wide table.
+      This fragment had none, so every size modifier reported against the
+      container instead of the content wrapper.
+
+      One finding recorded: the status Tags in the cells. No sampled table
+      contains one — the reference's tags live in cards, contained lists and
+      page headers — but a status column of tags is the ordinary use, and the
+      tag markup itself is the same either way.
+    -->
+    <!-- BLOCK:BEGIN name=basic label="Data table" -->
+    <div class="rux--data-table-container">
+      <div class="rux--data-table-content">
+        <table class="rux--data-table">
+        <thead>
+          <tr>
+            <th scope="col"><div class="rux--table-header-label">Name<div class="rux--table-header-label--decorator-inner"></div></div></th>
+            <th scope="col"><div class="rux--table-header-label">Status<div class="rux--table-header-label--decorator-inner"></div></div></th>
+            <th scope="col"><div class="rux--table-header-label">Updated<div class="rux--table-header-label--decorator-inner"></div></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Alpha</td><td><div class="rux--tag rux--tag--green"><span class="rux--tag__label">Active</span></div></td><td>2 hours ago</td></tr>
+          <tr><td>Bravo</td><td><div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Idle</span></div></td><td>Yesterday</td></tr>
+          <tr><td>Charlie</td><td><div class="rux--tag rux--tag--red"><span class="rux--tag__label">Failed</span></div></td><td>3 days ago</td></tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- BLOCK:END basic -->
+
+    <div class="ks-label" style="margin-block-start:1.5rem">the five row densities</div>
+    <div class="rux--data-table-container" style="display:grid;gap:1.5rem">
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--xs">
+        <thead><tr><th scope="col"><div class="rux--table-header-label">xs</div></th><th scope="col"><div class="rux--table-header-label">Rows</div></th></tr></thead>
+        <tbody><tr><td>Alpha</td><td>12</td></tr><tr><td>Bravo</td><td>8</td></tr></tbody>
+        </table>
+      </div>
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--sm">
+        <thead><tr><th scope="col"><div class="rux--table-header-label">sm</div></th><th scope="col"><div class="rux--table-header-label">Rows</div></th></tr></thead>
+        <tbody><tr><td>Alpha</td><td>12</td></tr><tr><td>Bravo</td><td>8</td></tr></tbody>
+        </table>
+      </div>
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--md">
+        <thead><tr><th scope="col"><div class="rux--table-header-label">md</div></th><th scope="col"><div class="rux--table-header-label">Rows</div></th></tr></thead>
+        <tbody><tr><td>Alpha</td><td>12</td></tr><tr><td>Bravo</td><td>8</td></tr></tbody>
+        </table>
+      </div>
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--lg">
+        <thead><tr><th scope="col"><div class="rux--table-header-label">lg</div></th><th scope="col"><div class="rux--table-header-label">Rows</div></th></tr></thead>
+        <tbody><tr><td>Alpha</td><td>12</td></tr><tr><td>Bravo</td><td>8</td></tr></tbody>
+        </table>
+      </div>
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--xl">
+        <thead><tr><th scope="col"><div class="rux--table-header-label">xl</div></th><th scope="col"><div class="rux--table-header-label">Rows</div></th></tr></thead>
+        <tbody><tr><td>Alpha</td><td>12</td></tr><tr><td>Bravo</td><td>8</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PERSISTENT SEARCH. The table above demos the EXPANDABLE search, which
+         collapses to a magnifier. components-datatable-pagination--default
+         renders the other variant — --toolbar-search-container-persistent, a
+         field that is always open — on the same search structure. It is a
+         toolbar on its own here rather than a second whole table: one modifier
+         does not need forty rows behind it to be shown. -->
+    <div class="ks-label" style="margin-block-start:1.5rem">toolbar · persistent search</div>
+    <section class="rux--data-table-container">
+      <section class="rux--table-toolbar" role="group" aria-label="Persistent search toolbar">
+      <div class="rux--toolbar-content">
+        <div class="rux--search rux--toolbar-search-container-persistent" role="search">
+          <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+          <label class="rux--label" for="ks-tbl-search-persistent">Search records</label>
+          <input id="ks-tbl-search-persistent" class="rux--search-input" type="text" role="searchbox" placeholder="Search…">
+          <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      </section>
+    </section>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">header, toolbar, batch actions, sorting and row actions</div>
+    <!--
+      `data-table-header__content` is NOT copied. React wraps the title and
+      description in it, but @carbon/styles defines no rule for the class, so
+      check-classes would reject it. The wrapper element is kept so the two stay
+      grouped, which is the only thing it does here.
+
+      The overflow trigger is the bare `overflow-menu` button, not React's
+      tooltip-wrapped one. The reference nests it in a popover/icon-tooltip
+      container whose positioning is floating-ui JS — Phase 5 — and the
+      overflow-menu fragment records the same divergence for the same reason.
+      diff-fragment reports it as `overflow-menu` inside `overflow-menu__wrapper`
+      where Carbon has `tooltip-trigger__wrapper`; that is this decision, not a
+      defect. Its other findings are the status Tags noted above.
+
+      The toolbar holds TWO siblings and shows one at a time: the batch bar, and
+      `toolbar-content` with the search and the settings action. That is what
+      `batch-actions--active ~ toolbar-content` selects — activating the bar
+      clips the content away. Both are in the DOM together, as in the reference.
+
+      `batch-actions--active` STAYS IN THE MARKUP, and the module maintains it
+      from there. The bar is `clip-path: polygon(0 0, 100% 0, 100% 0, 0 0)` at
+      rest — zero height — and the second row ships checked, so `--active` is the
+      state this table is genuinely in at load; js/data-table.js recomputes it on
+      every selection change and agrees with the markup on the first pass.
+
+      IT WAS BRIEFLY REMOVED, on the theory that a derived state should not be
+      asserted, and check-coverage's ratchet caught the cost: a class applied only
+      at runtime is invisible to a gate that reads static HTML, so data-table fell
+      40 to 39. The markup declaring an initial state the module then maintains is
+      the same arrangement accordion and list-box already use.
+
+      SORT DIRECTION IS THE `aria-sort` ATTRIBUTE plus which icon CSS reveals.
+      Both icons are always in the DOM: `table-sort__icon` for a sorted column,
+      `table-sort__icon-unsorted` for the rest. The decorator-inner slot sits
+      AFTER the icons here, as a sibling inside `table-sort__flex` — in a plain
+      header it is nested inside `table-header-label` instead. Both placements
+      are the reference's, in their respective stories.
+    -->
+    <section class="rux--data-table-container">
+      <div class="rux--data-table-header">
+        <div>
+          <div class="rux--data-table-header__title">Deployments</div>
+          <p class="rux--data-table-header__description">Every service in the current namespace.</p>
+        </div>
+      </div>
+      <section class="rux--table-toolbar" role="group" aria-label="Table actions">
+        <div class="rux--batch-actions rux--batch-actions--active" aria-hidden="false">
+          <div class="rux--batch-summary">
+            <p class="rux--batch-summary__para"><span>1 item selected</span></p>
+          </div>
+          <div class="rux--action-list">
+            <button type="button" class="rux--btn rux--btn--primary" tabindex="0">Download
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-download"/></svg>
+            </button>
+            <button type="button" class="rux--btn rux--btn--primary" tabindex="0">Delete
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>
+            </button>
+            <button type="button" class="rux--btn rux--btn--primary rux--batch-summary__cancel" tabindex="0">Cancel</button>
+          </div>
+        </div>
+        <div class="rux--toolbar-content">
+          <div class="rux--search rux--toolbar-search-container-expandable" role="search">
+            <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+            <label class="rux--label" for="ks-tbl-search">Search deployments</label>
+            <input id="ks-tbl-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search…">
+            <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <span class="rux--overflow-menu__wrapper">
+            <button type="button" class="rux--toolbar-action rux--overflow-menu rux--btn rux--btn--ghost rux--btn--icon-only"
+                    aria-expanded="false" aria-haspopup="true" aria-label="Table settings">
+              <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img"><use href="#i-overflow-menu--vertical"/></svg>
+            </button>
+          </span>
+        </div>
+      </section>
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--lg rux--data-table--sort rux--data-table--visible-overflow-menu">
+          <thead>
+            <tr>
+              <th scope="col" class="rux--table-column-checkbox">
+                <div class="rux--checkbox--inline">
+                  <input type="checkbox" id="ks-tbl-all" class="rux--checkbox">
+                  <label for="ks-tbl-all" class="rux--checkbox-label"><span class="rux--visually-hidden">Select all rows</span></label>
+                </div>
+              </th>
+              <th scope="col" class="rux--table-sort__header" aria-sort="ascending">
+                <div class="rux--table-sort__description rux--visually-hidden">Sort by Service</div>
+                <button type="button" class="rux--table-sort">
+                  <span class="rux--table-sort__flex">
+                    <div class="rux--table-header-label">Service</div>
+                    <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+                    <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrows--vertical"/></svg>
+                    <div class="rux--table-header-label--decorator-inner"></div>
+                  </span>
+                </button>
+              </th>
+              <th scope="col" class="rux--table-sort__header" aria-sort="none">
+                <div class="rux--table-sort__description rux--visually-hidden">Sort by Status</div>
+                <button type="button" class="rux--table-sort">
+                  <span class="rux--table-sort__flex">
+                    <div class="rux--table-header-label">Status</div>
+                    <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+                    <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrows--vertical"/></svg>
+                    <div class="rux--table-header-label--decorator-inner"></div>
+                  </span>
+                </button>
+              </th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rux--table-column-checkbox">
+                <div class="rux--checkbox--inline">
+                  <input type="checkbox" id="ks-tbl-r1" class="rux--checkbox">
+                  <label for="ks-tbl-r1" class="rux--checkbox-label"><span class="rux--visually-hidden">Select gateway</span></label>
+                </div>
+              </td>
+              <td>gateway</td>
+              <td><div class="rux--tag rux--tag--green"><span class="rux--tag__label">Running</span></div></td>
+              <td class="rux--table-column-menu">
+                <span class="rux--overflow-menu__wrapper">
+                  <button type="button" class="rux--overflow-menu" aria-expanded="false" aria-haspopup="true" aria-label="Actions for gateway">
+                    <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+                  </button>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="rux--table-column-checkbox">
+                <div class="rux--checkbox--inline">
+                  <input type="checkbox" id="ks-tbl-r2" class="rux--checkbox" checked>
+                  <label for="ks-tbl-r2" class="rux--checkbox-label"><span class="rux--visually-hidden">Select scheduler</span></label>
+                </div>
+              </td>
+              <td>scheduler</td>
+              <td><div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Paused</span></div></td>
+              <td class="rux--table-column-menu">
+                <span class="rux--overflow-menu__wrapper">
+                  <button type="button" class="rux--overflow-menu" aria-expanded="false" aria-haspopup="true" aria-label="Actions for scheduler">
+                    <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">expandable rows</div>
+    <!--
+      components-datatable-expansion--default. The parent row carries
+      `parent-row`, the child that follows it `expandable-row`. The child also
+      takes `data-child-row`, which the reference DOM capture does not record —
+      it keeps only role and aria — but which @carbon/styles selects on directly
+      (`tr[data-child-row] > td`), so omitting it would leave the child row
+      unstyled. Shown expanded, because the collapsed state demos nothing.
+
+      AN EXPANDED PARENT CARRIES BOTH `parent-row` AND `expandable-row`, which is
+      what `tr.--parent-row.--expandable-row` selects; the captured story shows
+      only `parent-row` because every row in it is collapsed. check-compound
+      caught the split and it was right.
+
+      `data-table--selected` is NOT demoed. It reads like the obvious partner to
+      the checkbox column, but no story in the 641 marks a row selected, and a
+      class with no reference is not written here on a guess.
+    -->
+    <div class="rux--data-table-container">
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--lg">
+          <thead>
+            <tr>
+              <th scope="col" class="rux--table-expand"></th>
+              <th scope="col"><div class="rux--table-header-label">Job<div class="rux--table-header-label--decorator-inner"></div></div></th>
+              <th scope="col"><div class="rux--table-header-label">Last run<div class="rux--table-header-label--decorator-inner"></div></div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="rux--parent-row rux--expandable-row">
+              <!-- data-previous-value names the PREVIOUS value: `collapsed` means
+                   this row is now OPEN. It turns the chevron up and clears the
+                   bottom border between the parent and its own child row. -->
+              <td class="rux--table-expand" data-previous-value="collapsed">
+                <button type="button" class="rux--table-expand__button" aria-expanded="true" aria-label="Collapse row">
+                  <svg class="rux--table-expand__svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+                </button>
+              </td>
+              <td>nightly-backup</td>
+              <td>02:00 UTC</td>
+            </tr>
+            <tr class="rux--expandable-row" data-child-row>
+              <td colspan="3">
+                <div class="rux--child-row-inner-container">Completed in 41s, exit code 0. 2.4 GB written to eu-west-1.</div>
+              </td>
+            </tr>
+            <tr class="rux--parent-row">
+              <td class="rux--table-expand">
+                <button type="button" class="rux--table-expand__button" aria-expanded="false" aria-label="Expand row">
+                  <svg class="rux--table-expand__svg" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+                </button>
+              </td>
+              <td>index-rebuild</td>
+              <td>04:15 UTC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">single-select rows</div>
+    <!-- components-datatable-selection--with-radio-selection. The radio cell keeps
+         `table-column-checkbox` and adds `table-column-radio` — the base class is
+         what sizes the column, the modifier only swaps the control. -->
+    <div class="rux--data-table-container">
+      <div class="rux--data-table-content">
+        <table class="rux--data-table rux--data-table--lg">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"><div class="rux--table-header-label">Region<div class="rux--table-header-label--decorator-inner"></div></div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rux--table-column-checkbox rux--table-column-radio">
+                <div class="rux--radio-button-wrapper">
+                  <input type="radio" name="ks-tbl-region" id="ks-tbl-eu" class="rux--radio-button">
+                  <label for="ks-tbl-eu" class="rux--radio-button__label">
+                    <span class="rux--radio-button__appearance"></span>
+                    <span class="rux--radio-button__label-text rux--visually-hidden">Select eu-west-1</span>
+                  </label>
+                </div>
+              </td>
+              <td>eu-west-1</td>
+            </tr>
+            <tr>
+              <td class="rux--table-column-checkbox rux--table-column-radio">
+                <div class="rux--radio-button-wrapper">
+                  <input type="radio" name="ks-tbl-region" id="ks-tbl-us" class="rux--radio-button" checked>
+                  <label for="ks-tbl-us" class="rux--radio-button__label">
+                    <span class="rux--radio-button__appearance"></span>
+                    <span class="rux--radio-button__label-text rux--visually-hidden">Select us-east-2</span>
+                  </label>
+                </div>
+              </td>
+              <td>us-east-2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>

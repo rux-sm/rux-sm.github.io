@@ -1,0 +1,46 @@
+{
+  "name": "rux-ds",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "icons": "node tools/icons.mjs",
+    "marks": "node tools/make-marks.mjs",
+    "sink": "node tools/build-sink.mjs",
+    "portal": "node tools/build-portal.mjs",
+    "readme": "node tools/build-readme.mjs",
+    "blocks": "node tools/build-blocks.mjs",
+    "builder": "node tools/build-builder.mjs",
+    "theme-families": "node tools/build-theme-families.mjs",
+    "theme-creator": "node tools/build-theme-creator.mjs",
+    "tokens:snapshot": "node tools/build-token-values.mjs",
+    "inventory": "node tools/inventory.mjs",
+    "gates": "node tools/check-gates.mjs",
+    "tags": "node tools/check-tags.mjs",
+    "ancestry": "node tools/check-ancestry.mjs --all",
+    "coverage": "node tools/check-coverage.mjs",
+    "coverage:update": "node tools/check-coverage.mjs --update",
+    "verify": "npm run build && npm run sink && npm run portal && npm run readme && npm run blocks && npm run builder && npm run theme-families && npm run theme-catalogue && npm run theme-creator && npm run shell && node tools/check-classes.mjs && node tools/check-tokens.mjs && node tools/check-token-values.mjs && node tools/check-icons.mjs && node tools/check-glyphs.mjs && node tools/check-slots.mjs && node tools/check-co-classes.mjs && node tools/check-compound.mjs && node tools/check-tags.mjs && node tools/check-ancestry.mjs && node tools/check-coverage.mjs && node tools/check-inventory.mjs && node tools/check-headings.mjs && node tools/check-aria-roles.mjs && node tools/check-provenance.mjs && node tools/check-blocks.mjs && node tools/check-parity.mjs && node tools/check-gates.mjs",
+    "watch": "sass --load-path=node_modules --no-source-map --watch src/app.scss css/rux.css",
+    "serve": "node tools/serve.mjs",
+    "serve:workspace": "node tools/serve.mjs --workspace",
+    "app-check": "node tools/app-check.mjs --self-test",
+    "glyphs": "node tools/glyphs.mjs",
+    "slots": "node tools/check-slots.mjs --all",
+    "check-inventory": "node tools/check-inventory.mjs",
+    "headings": "node tools/check-headings.mjs --all",
+    "roles": "node tools/check-aria-roles.mjs --all",
+    "theme-catalogue": "node tools/build-theme-catalogue.mjs",
+    "shell": "node tools/inline-shell.mjs"
+  },
+  "devDependencies": {
+    "@carbon/colors": "^11.57.0",
+    "@carbon/elements": "^11.95.0",
+    "@carbon/styles": "^1.114.0",
+    "sass": "^1.103.1"
+  }
+}

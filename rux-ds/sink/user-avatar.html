@@ -1,0 +1,58 @@
+<section class="ks-sec" id="user-avatar">
+  <h2>User avatar</h2><p>initials · four sizes · the twelve colour orders</p>
+  <!-- PROVENANCE: rendered-dom · components-useravatar--default and
+       --with-image on the ibm-products origin, 2026-08-31 -->
+  <!--
+    THE ONLY FRAGMENT WHOSE REFERENCE IS `c4p--` RATHER THAN `cds--`, and that
+    needs saying because it looks like a provenance fault and is not.
+    `user-avatar` was ABSORBED OUT OF ibm-products into @carbon/styles with
+    Carbon 1.114 — src/app.scss records the same for the other seven arrivals —
+    so the component now compiles here under `rux--`, while the only captured
+    STORIES of it are still the ibm-products ones that render `c4p--`.
+
+    THE TWO SETS WERE CHECKED AGAINST EACH OTHER RATHER THAN ASSUMED TO MATCH.
+    Five of the six classes the capture renders resolve after a prefix swap —
+    `user-avatar`, `--md`, `--order-1-cyan`, `__photo`, `__photo--md`. The
+    sixth, `user-avatar__tooltip`, does NOT: it is ibm-products' own wrapper
+    for the hover hint, which this sink declines everywhere anyway.
+
+    NO MODULE. An avatar displays; it has no state and nothing to drive. The
+    capture wraps it in a tooltip trigger button, which is the story showing a
+    name on hover, not the component.
+
+    THE PHOTO VARIANTS ARE NOT EXERCISED, and the reason is the one card
+    records: `__photo`, `__photo--sm/md/lg/xl` all require an `<img>`, and this
+    sink has never carried a raster image — 59 sprite symbols and nothing else.
+    Five classes go unexercised for that reason rather than for want of a
+    reference, which the `--with-image` story supplies.
+
+    THE COLOUR IS THE CONSUMER'S CHOICE, not a state. Carbon ships twelve
+    `--order-N-*` classes and its own story renders only `--order-1-cyan`;
+    they exist so an application can hash a name onto a stable colour. All
+    twelve are demoed here because that is the whole of what the component
+    offers beyond size.
+  -->
+  <div class="ks-label">sizes</div>
+  <div class="ks-row" style="align-items:center;gap:1rem">
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--xl">RS</div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--lg">RS</div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--md">RS</div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--sm">RS</div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">colour orders</div>
+  <div class="ks-row" style="align-items:center;gap:.75rem">
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--md">A1</div>
+    <div class="rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--md">B2</div>
+    <div class="rux--user-avatar rux--user-avatar--order-3-green rux--user-avatar--md">C3</div>
+    <div class="rux--user-avatar rux--user-avatar--order-4-magenta rux--user-avatar--md">D4</div>
+    <div class="rux--user-avatar rux--user-avatar--order-5-purple rux--user-avatar--md">E5</div>
+    <div class="rux--user-avatar rux--user-avatar--order-6-teal rux--user-avatar--md">F6</div>
+    <div class="rux--user-avatar rux--user-avatar--order-7-cyan rux--user-avatar--md">G7</div>
+    <div class="rux--user-avatar rux--user-avatar--order-8-gray rux--user-avatar--md">H8</div>
+    <div class="rux--user-avatar rux--user-avatar--order-9-green rux--user-avatar--md">I9</div>
+    <div class="rux--user-avatar rux--user-avatar--order-10-magenta rux--user-avatar--md">J10</div>
+    <div class="rux--user-avatar rux--user-avatar--order-11-purple rux--user-avatar--md">K11</div>
+    <div class="rux--user-avatar rux--user-avatar--order-12-teal rux--user-avatar--md">L12</div>
+  </div>
+</section>

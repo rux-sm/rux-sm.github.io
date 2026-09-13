@@ -1,0 +1,153 @@
+<section class="ks-sec" id="stack">
+  <h2>Stack</h2><p>vertical · horizontal · the thirteen scale steps</p>
+  <!-- PROVENANCE: rendered-dom · layout-stack--default and layout-stack--horizontal,
+       2026-08-28 · both render `div.stack-<axis>.stack-scale-N` around bare divs and
+       nothing else; the children carry no class of their own. -->
+  <!--
+    RESTORED 2026-08-28, roadmap §4.4. Phase 3 cut it and two templates then found
+    the same gap: Carbon components carry NO vertical margin on purpose — the
+    spacing overview says so outright, "components ... not use margin and instead
+    delegate the responsibility of positioning and layout to parent components" —
+    so a page built from the compiled set had no rhythm at all and
+    templates/form-page.html carried a hand-written stand-in for it.
+
+    IT IS A GRID, NOT MARGINS. `stack-vertical` computes to `display: grid` with
+    `row-gap` from `--rux-stack-gap`, which is the one new custom property the
+    restore added. That mechanism is why the stand-in had to be a grid too: a
+    margin-based version lost to `.rux--checkbox-group`'s own `margin: 0`.
+
+    THE SCALE IS CARBON'S SPACING SCALE, steps 1 to 13 — `$spacing-01` through
+    `-13`, 0.125rem to 10rem. Every step is demoed IN THE STRIP because the point
+    of the component is choosing between them, and a comparison missing a rung
+    cannot be used for the one thing it is for.
+
+    IT SAID THAT WHILE MISSING THREE, until 2026-08-28. Steps 3, 5 and 7 were on
+    the page but not in the strip — 5 and 7 on the two demos above, and 3 as the
+    strip's own wrapper, which is to say the 8px gap BETWEEN these rows is itself
+    the step it was failing to label. All thirteen classes were used, so
+    check-coverage read stack 15/15 and had nothing to say; the claim was about
+    the DEMO being complete, and no gate measures that. The three that were
+    missing were 8px, 16px and 32px — the middle of the scale, and the steps a
+    page actually reaches for.
+
+    THE GAP IS THE SPECIMEN, AND IT IS THE ONLY THING THAT VARIES. Each row is
+    two identical 12x24 marks in a `stack-horizontal`; the space between them is
+    what that class produces. The step number and the px value sit OUTSIDE the
+    stack, in their own grid columns, because a label inside it is measured too.
+
+    THE STRIP USED TO PUT THE PX VALUE IN A TAG INSIDE THE STACK, and that was
+    the flaw. The Tag sized itself to its own text — 38px at "2px", 52px at
+    "160px" — so scanning down the column the label width AND the gap both
+    moved, and the eye tracked the pill rather than the space. A reader
+    inspected the "160px" pill, found it 52px wide and asked, fairly, why the
+    mark did not equal the number. It never had: the mark was a label and the
+    GAP was the measurement. A demo that needs that explained is not working,
+    the more so now that the `spacing` section a few rows up encodes the same
+    thirteen numbers the opposite way, as swatches that ARE the size.
+
+    The marks also drop a `rux--tag` borrow from a section demoing stack. That
+    cost nothing in coverage — `rux--tag`, `--gray` and `__label` all appear in
+    sink/tags.html many times over, so this strip was never load-bearing for
+    them — but the sink's own rule is that a section should not lean on a
+    component it is not demoing, and this now does not.
+
+    IT ONLY MEASURES TRUE BECAUSE OF `ks-ruler`, and that was worth measuring
+    rather than assuming. `stack-horizontal` is a grid of `auto` tracks, and
+    auto tracks STRETCH to absorb free width. Before the class the visible
+    distance was the gap PLUS the leftover — 44px for a 2px gap — and steps 1 to
+    10 compressed into 44 to 71px, near-identical at the bottom.
+
+    `ks-ruler` is `justify-content: start`, in harness.css with the sink's other
+    demo layout. It changes no `column-gap` — it stops the tracks stretching.
+    THE CAVEAT THAT REMAINS: a real page does not carry `ks-ruler`, and
+    `stack-horizontal` in a container wider than its content WILL spread that
+    way. The two demos above are left alone deliberately, so the honest
+    behaviour stands on the page beside the ruler.
+  -->
+  <div class="ks-label">VERTICAL · SCALE 7, WHAT A FORM USES</div>
+  <div class="rux--stack-vertical rux--stack-scale-7">
+    <div class="rux--tile"><p>First</p></div>
+    <div class="rux--tile"><p>Second</p></div>
+    <div class="rux--tile"><p>Third</p></div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">HORIZONTAL · SCALE 5</div>
+  <div class="rux--stack-horizontal rux--stack-scale-5">
+    <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
+    <button type="button" class="rux--btn rux--btn--primary">Save</button>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">THE SCALE, 1 TO 13</div>
+  <div class="rux--stack-vertical rux--stack-scale-3">
+    <div class="ks-strip-row">
+      <div class="ks-label">Step</div>
+      <div class="ks-label">Gap</div>
+      <div class="ks-label">px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>1</div>
+      <div class="rux--stack-horizontal rux--stack-scale-1 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>2px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>2</div>
+      <div class="rux--stack-horizontal rux--stack-scale-2 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>4px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>3</div>
+      <div class="rux--stack-horizontal rux--stack-scale-3 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>8px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>4</div>
+      <div class="rux--stack-horizontal rux--stack-scale-4 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>12px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>5</div>
+      <div class="rux--stack-horizontal rux--stack-scale-5 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>16px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>6</div>
+      <div class="rux--stack-horizontal rux--stack-scale-6 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>24px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>7</div>
+      <div class="rux--stack-horizontal rux--stack-scale-7 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>32px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>8</div>
+      <div class="rux--stack-horizontal rux--stack-scale-8 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>40px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>9</div>
+      <div class="rux--stack-horizontal rux--stack-scale-9 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>48px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>10</div>
+      <div class="rux--stack-horizontal rux--stack-scale-10 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>64px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>11</div>
+      <div class="rux--stack-horizontal rux--stack-scale-11 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>80px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>12</div>
+      <div class="rux--stack-horizontal rux--stack-scale-12 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>96px</div>
+    </div>
+    <div class="ks-strip-row">
+      <div>13</div>
+      <div class="rux--stack-horizontal rux--stack-scale-13 ks-ruler"><div class="ks-mark"></div><div class="ks-mark"></div></div>
+      <div>160px</div>
+    </div>
+  </div>
+</section>

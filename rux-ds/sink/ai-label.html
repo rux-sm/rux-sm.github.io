@@ -1,0 +1,90 @@
+<section class="ks-sec" id="ai-label">
+  <h2>AI label</h2><p>the AI affordance · sizes and inline form</p>
+  <!-- PROVENANCE: rendered-dom · components-ailabel--default and --inline,
+       2026-08-28 -->
+  <!--
+    The AI button is not a direct child of `.rux--ai-label`. Carbon puts a
+    toggletip popover container between them — `popover-container
+    popover--caret popover--high-contrast popover--bottom toggletip` — and the
+    button is that toggletip's trigger, which is why it also carries
+    `toggletip-button`. Without the container the trigger has no popover to
+    open and the caret rules have no element.
+
+    The reference also emits `popover--auto-align` and `autoalign`; both are
+    the floating-ui placement this system has no JS for yet, so a fixed
+    `--bottom` is used instead — the same call the side-panel decorator made.
+  -->
+  <!--
+    ADMITTED 2026-09-01, §4.9 batch 5. The md label now carries the popover the
+    capture renders — `popover > popover-content.ai-label-content >
+    toggletip-content` with a body and an `ai-label-actions` row — so the
+    toggletip has a surface to open; the button is `toggletip-button` first and
+    wraps its text in `ai-label__text`, as captured; `ai-label__button--default`
+    is attested and unstyled and is not written (§4.1.12). The three action buttons
+    are written without their icon-tooltip chrome, on the sink's standing
+    decline. `--revert` and the 2xs, lg and xl button sizes have rules in
+    @carbon/styles and no story renders them; kept as the file-uploader states
+    are, and named here so the next diff does not rediscover them.
+  -->
+  <div class="ks-row" style="padding-block:1rem">
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--ai-label__button--xs rux--toggletip-button" aria-label="AI information">AI</button>
+      </span>
+    </div>
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--ai-label__button--2xs" aria-label="AI information">AI</button>
+      </span>
+    </div>
+    <div class="rux--ai-label rux--ai-label--revert">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--toggletip-button rux--ai-label__button--inline" aria-label="AI information">
+        AI<span class="rux--ai-label__additional-text">&nbsp;generated</span>
+      </button>
+      </span>
+    </div>
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--ai-label__button--sm rux--toggletip-button" aria-label="AI information">AI</button>
+      </span>
+    </div>
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--toggletip-button rux--ai-label__button rux--ai-label__button--md" aria-expanded="false" aria-label="AI Show information"><span class="rux--ai-label__text">AI</span></button>
+        <span class="rux--popover">
+          <span class="rux--popover-content rux--ai-label-content">
+            <div class="rux--toggletip-content">
+              <div>
+                <p>AI explained</p>
+                <h2>84%</h2>
+                <p>Confidence score</p>
+                <p>This is not a real model. The label and its confidence are specimen copy.</p>
+                <hr>
+                <p>Model type</p>
+                <p>Foundation model</p>
+                <a class="rux--link" href="#">View details</a>
+              </div>
+              <div class="rux--toggletip-actions rux--ai-label-actions">
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="View"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-view"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Open folder"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--primary">View literature</button>
+              </div>
+            </div>
+          </span>
+          <span class="rux--popover-caret"></span>
+        </span>
+      </span>
+    </div>
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--ai-label__button--lg rux--toggletip-button" aria-label="AI information">AI</button>
+      </span>
+    </div>
+    <div class="rux--ai-label">
+      <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
+        <button type="button" class="rux--ai-label__button rux--ai-label__button--xl rux--toggletip-button" aria-label="AI information">AI</button>
+      </span>
+    </div>
+  </div>
+</section>

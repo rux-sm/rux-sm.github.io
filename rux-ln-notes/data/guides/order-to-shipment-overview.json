@@ -1,0 +1,3421 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "reference",
+  "id": "order-to-shipment-overview",
+  "title": "Order to shipment — the overview",
+  "updated": "2026-09-12",
+  "status": "draft",
+  "sources": [
+    "cppat1210m000",
+    "cprrp0520m000",
+    "cprrp1220m000",
+    "tcibd0501m100",
+    "tdipu0601m000",
+    "tdpur4100m900",
+    "tdsls4601m200",
+    "tisfc0501m000",
+    "whinh3512m000",
+    "whwmd4300m000"
+  ],
+  "intro": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The shape of the whole chain, in one screen."
+        },
+        {
+          "t": "text",
+          "v": " Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
+        }
+      ],
+      "text": "The shape of the whole chain, in one screen. Six module lanes, five stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every guide in this library is one route across it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "This replaces the SVG it was drawn as."
+        },
+        {
+          "t": "text",
+          "v": " It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what "
+        },
+        {
+          "t": "literal",
+          "v": "exchange/diagram-as-data.md"
+        },
+        {
+          "t": "text",
+          "v": " §1.2 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
+        }
+      ],
+      "text": "This replaces the SVG it was drawn as. It carries the same six lanes and five stages, and the seventeen nodes it was drawn with are now nineteen — the two inquiries the SVG had no way to draw are tiles like any other. It is data rather than markup — so the session codes in it are citations the gate verifies, which is what exchange/diagram-as-data.md §1.2 asked for. The picture the reader sees is the renderer's; nothing here says where anything lands."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Level 2 is `demand-to-shipment-session-map.md`"
+        },
+        {
+          "t": "text",
+          "v": ", which starts at sales demand and names every session with its route and action. This one is the shape; that one is the detail."
+        }
+      ],
+      "text": "Level 2 is `demand-to-shipment-session-map.md`, which starts at sales demand and names every session with its route and action. This one is the shape; that one is the detail."
+    }
+  ],
+  "topics": [
+    {
+      "n": 1,
+      "title": "The branch that is the whole point",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two orders for the same item can take completely different routes, and the difference is decided before anything is created."
+            },
+            {
+              "t": "text",
+              "v": " If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to picking and shipping — "
+            },
+            {
+              "t": "strong",
+              "v": "stages 3 and 4 never happen."
+            },
+            {
+              "t": "text",
+              "v": " If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing."
+            }
+          ],
+          "text": "Two orders for the same item can take completely different routes, and the difference is decided before anything is created. If on-hand plus on-order already covers the demand, order planning generates nothing and the sales order goes straight to picking and shipping — stages 3 and 4 never happen. If it does not, MRP proposes, the transfer makes those proposals real, and Procurement and Manufacturing supply what is missing."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "That branch is the edge marked `SKIPS 3, 4` in section 5"
+            },
+            {
+              "t": "text",
+              "v": ", and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not."
+            }
+          ],
+          "text": "That branch is the edge marked `SKIPS 3, 4` in section 5, and it is domain rather than drawing: which stages a route bypasses is a fact about Infor LN, and where the line is drawn on the page is not."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Lanes",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Lane",
+            "Carries"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Master Data"
+                    }
+                  ],
+                  "text": "Master Data"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What must exist before any of it runs"
+                    }
+                  ],
+                  "text": "What must exist before any of it runs"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Sales"
+                    }
+                  ],
+                  "text": "Sales"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The demand, and the branch"
+                    }
+                  ],
+                  "text": "The demand, and the branch"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enterprise Planning"
+                    }
+                  ],
+                  "text": "Enterprise Planning"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Proposals, and the two gates that decide whether there are any"
+                    }
+                  ],
+                  "text": "Proposals, and the two gates that decide whether there are any"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Procurement"
+                    }
+                  ],
+                  "text": "Procurement"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The purchase order the transfer created"
+                    }
+                  ],
+                  "text": "The purchase order the transfer created"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Manufacturing"
+                    }
+                  ],
+                  "text": "Manufacturing"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The production order the transfer created"
+                    }
+                  ],
+                  "text": "The production order the transfer created"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Warehousing"
+                    }
+                  ],
+                  "text": "Warehousing"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Receiving what was bought, and shipping what was sold"
+                    }
+                  ],
+                  "text": "Receiving what was bought, and shipping what was sold"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Stages",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Stage",
+            "What changes in it"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Prepare"
+                    }
+                  ],
+                  "text": "Prepare"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The master data the rest of the chain reads"
+                    }
+                  ],
+                  "text": "The master data the rest of the chain reads"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Demand"
+                    }
+                  ],
+                  "text": "Demand"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A sales order exists, and the branch is decided"
+                    }
+                  ],
+                  "text": "A sales order exists, and the branch is decided"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Plan"
+                    }
+                  ],
+                  "text": "Plan"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "MRP nets and explodes; proposals appear"
+                    }
+                  ],
+                  "text": "MRP nets and explodes; proposals appear"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Transfer"
+                    }
+                  ],
+                  "text": "Transfer"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "The boundary."
+                    },
+                    {
+                      "t": "text",
+                      "v": " Proposals become real orders. Planning ends here"
+                    }
+                  ],
+                  "text": "The boundary. Proposals become real orders. Planning ends here"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Execute"
+                    }
+                  ],
+                  "text": "Execute"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Components received, the item built, the order shipped"
+                    }
+                  ],
+                  "text": "Components received, the item built, the order shipped"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Nodes",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A number is a position on the walk."
+            },
+            {
+              "t": "text",
+              "v": " The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so "
+            },
+            {
+              "t": "literal",
+              "v": "8 · Warehouse Receipt"
+            },
+            {
+              "t": "text",
+              "v": " comes before "
+            },
+            {
+              "t": "literal",
+              "v": "9 · Production Orders"
+            },
+            {
+              "t": "text",
+              "v": " because the components have to be on hand before the order can consume them."
+            }
+          ],
+          "text": "A number is a position on the walk. The ten numbered tiles are what a reader passes through in order — the steps they take, the checkpoints the route turns on, and the shipment that ends it — numbered in the order they are walked rather than the order the lanes are printed, so 8 · Warehouse Receipt comes before 9 · Production Orders because the components have to be on hand before the order can consume them."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Seven tiles carry no number, for three different reasons."
+            },
+            {
+              "t": "text",
+              "v": " Four are setup: what must already be true before the walk starts, and they reach the walk by "
+            },
+            {
+              "t": "literal",
+              "v": "feed"
+            },
+            {
+              "t": "text",
+              "v": " rather than by "
+            },
+            {
+              "t": "literal",
+              "v": "flow"
+            },
+            {
+              "t": "text",
+              "v": ". Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. "
+            },
+            {
+              "t": "literal",
+              "v": "exchange/send-atlas-5-reply.md"
+            },
+            {
+              "t": "text",
+              "v": " §5 settled that a reading is not a step, and "
+            },
+            {
+              "t": "literal",
+              "v": "exchange/send-atlas-4-reply.md"
+            },
+            {
+              "t": "text",
+              "v": " §1 records the five categories these tiles fall into."
+            }
+          ],
+          "text": "Seven tiles carry no number, for three different reasons. Four are setup: what must already be true before the walk starts, and they reach the walk by feed rather than by flow. Three are results the system produced on its own — the two proposals MRP wrote, and the finished item in stock. Two are inquiries, and an inquiry carries no edge at all: it is a detour taken for information, and the walk is the same whether or not you take it. exchange/send-atlas-5-reply.md §5 settled that a reading is not a step, and exchange/send-atlas-4-reply.md §1 records the five categories these tiles fall into."
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.1",
+          "title": "Master Data",
+          "text": "Master Data"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcibd0501m100",
+              "name": "items · Items and groups"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "items · Items and groups (tcibd0501m100) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; tick a row in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m000",
+                  "name": "Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", and drill in"
+                }
+              ],
+              "text": "Route — no menu entry; tick a row in Items (tcibd0501m000), Master Data ➔ Items ➔ Items, and drill in"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold the item every other lane reads"
+                }
+              ],
+              "text": "Does — hold the item every other lane reads"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - confirm the item exists with its group, defaults and unit"
+                }
+              ],
+              "text": "Do - confirm the item exists with its group, defaults and unit"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdipu0601m000",
+              "name": "buyfrom · Item - Purchase"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "buyfrom · Item - Purchase (tdipu0601m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; "
+                },
+                {
+                  "t": "strong",
+                  "v": "Go to Details"
+                },
+                {
+                  "t": "text",
+                  "v": " from "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0101m000",
+                  "name": "Items - Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ Items ➔ Items - Purchase"
+                }
+              ],
+              "text": "Route — no menu entry; Go to Details from Items - Purchase (tdipu0101m000), Procurement ➔ Master Data ➔ Items ➔ Items - Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — carry the buy-from partner a purchased item needs"
+                }
+              ],
+              "text": "Does — carry the buy-from partner a purchased item needs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - check the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Item - Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " tab has a row. Without one the transfer refuses to create a purchase order at all"
+                }
+              ],
+              "text": "Do - check the Item - Business Partner tab has a row. Without one the transfer refuses to create a purchase order at all"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "bom · Bill of material and routing"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · outcome"
+            }
+          ],
+          "text": "bom · Bill of material and routing · stage 1 · outcome"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — define what a made item is built from and how, both Approved"
+                }
+              ],
+              "text": "Does — define what a made item is built from and how, both Approved"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "cluster · Planning cluster row on the item"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · outcome"
+            }
+          ],
+          "text": "cluster · Planning cluster row on the item · stage 1 · outcome"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — make the item visible to order planning. Without it the item is absent from the plan rather than refused"
+                }
+              ],
+              "text": "Does — make the item visible to order planning. Without it the item is absent from the plan rather than refused"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.2",
+          "title": "Sales",
+          "text": "Sales"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdsls4601m200",
+              "name": "1 · Sales Order Intake Workbench"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "1 · Sales Order Intake Workbench (tdsls4601m200) · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+                }
+              ],
+              "text": "Route — Sales ➔ Orders ➔ Order Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — create the demand the rest of the chain answers"
+                }
+              ],
+              "text": "Does — create the demand the rest of the chain answers"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - enter the order and approve it"
+                }
+              ],
+              "text": "Do - enter the order and approve it"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "2 · Does on-hand cover it?"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · decision"
+            }
+          ],
+          "text": "2 · Does on-hand cover it? · stage 2 · decision"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+                }
+              ],
+              "text": "Does — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.3",
+          "title": "Enterprise Planning",
+          "text": "Enterprise Planning"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "3 · Planning data exists"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · gate"
+            }
+          ],
+          "text": "3 · Planning data exists · stage 3 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide silently whether planning can see the item and every component beneath it"
+                }
+              ],
+              "text": "Does — decide silently whether planning can see the item and every component beneath it"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "4 · Inside the order horizon"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · gate"
+            }
+          ],
+          "text": "4 · Inside the order horizon · stage 3 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — decide silently whether the delivery date is near enough to plan. Counted in workdays"
+                }
+              ],
+              "text": "Does — decide silently whether the delivery date is near enough to plan. Counted in workdays"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "— · Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · read"
+            }
+          ],
+          "text": "— · Item Order Plan (cprrp0520m000) · stage 3 · read"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+                }
+              ],
+              "text": "Route — Planning ➔ Order Planning ➔ Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided"
+                }
+              ],
+              "text": "Does — show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - read the item's plan before the run and again after it, and compare"
+                }
+              ],
+              "text": "Do - read the item's plan before the run and again after it, and compare"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Leaves"
+                },
+                {
+                  "t": "text",
+                  "v": " — nothing. It is a detour for information and the walk is the same whether or not you take it"
+                }
+              ],
+              "text": "Leaves — nothing. It is a detour for information and the walk is the same whether or not you take it"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1220m000",
+              "name": "5 · Generate Order Planning (Item)"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · step"
+            }
+          ],
+          "text": "5 · Generate Order Planning (Item) (cprrp1220m000) · stage 3 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; reached by drilling in. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Route — no menu entry; reached by drilling in. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — net demand against stock and explode the bill of material"
+                }
+              ],
+              "text": "Does — net demand against stock and explode the bill of material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - run it with "
+                },
+                {
+                  "t": "em",
+                  "v": "Include Child Items"
+                }
+              ],
+              "text": "Do - run it with Include Child Items"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "planned-prod · Planned production order"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · planned"
+            }
+          ],
+          "text": "planned-prod · Planned production order · stage 3 · planned"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — propose making the shortfall. Real to nothing outside planning"
+                }
+              ],
+              "text": "Does — propose making the shortfall. Real to nothing outside planning"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "planned-purch · Planned purchase order"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · planned"
+            }
+          ],
+          "text": "planned-purch · Planned purchase order · stage 3 · planned"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — propose buying the shortfall. Real to nothing outside planning"
+                }
+              ],
+              "text": "Does — propose buying the shortfall. Real to nothing outside planning"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "6 · Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " · stage 4 · transfer"
+            }
+          ],
+          "text": "6 · Transfer Order Planning (cppat1210m000) · stage 4 · transfer"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+                }
+              ],
+              "text": "Route — Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — translate a proposal into a real order in its owning module. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planning ends here"
+                }
+              ],
+              "text": "Does — translate a proposal into a real order in its owning module. Planning ends here"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - confirm the planned orders first, then run it once per supply source"
+                }
+              ],
+              "text": "Do - confirm the planned orders first, then run it once per supply source"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.4",
+          "title": "Procurement",
+          "text": "Procurement"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdpur4100m900",
+              "name": "7 · Purchase Order"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · real"
+            }
+          ],
+          "text": "7 · Purchase Order (tdpur4100m900) · stage 5 · real"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; drill in from the purchase order list"
+                }
+              ],
+              "text": "Route — no menu entry; drill in from the purchase order list"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — buy the components, and raise the inbound warehousing order on its own"
+                }
+              ],
+              "text": "Does — buy the components, and raise the inbound warehousing order on its own"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - read the order the transfer named in its process report"
+                }
+              ],
+              "text": "Do - read the order the transfer named in its process report"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.5",
+          "title": "Manufacturing",
+          "text": "Manufacturing"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc0501m000",
+              "name": "9 · Production Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · real"
+            }
+          ],
+          "text": "9 · Production Orders (tisfc0501m000) · stage 5 · real"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — build the item: release, issue the components, report complete"
+                }
+              ],
+              "text": "Does — build the item: release, issue the components, report complete"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - open the order the transfer created and release it"
+                }
+              ],
+              "text": "Do - open the order the transfer created and release it"
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.6",
+          "title": "Warehousing",
+          "text": "Warehousing"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh3512m000",
+              "name": "8 · Warehouse Receipt"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "8 · Warehouse Receipt (whinh3512m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — no menu entry; opens from "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Receive"
+                },
+                {
+                  "t": "text",
+                  "v": " on the inbound order"
+                }
+              ],
+              "text": "Route — no menu entry; opens from Actions ➔ Receive on the inbound order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — book the bought components into stock"
+                }
+              ],
+              "text": "Does — book the bought components into stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - enter the packing-slip reference per line and confirm"
+                }
+              ],
+              "text": "Do - enter the packing-slip reference per line and confirm"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd4300m000",
+              "name": "— · Inventory 360"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · read"
+            }
+          ],
+          "text": "— · Inventory 360 (whwmd4300m000) · stage 2 · read"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory 360"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces"
+                }
+              ],
+              "text": "Does — answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+                }
+              ],
+              "text": "Do - read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Leaves"
+                },
+                {
+                  "t": "text",
+                  "v": " — nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
+                }
+              ],
+              "text": "Leaves — nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "stock · Finished item into stock"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · outcome"
+            }
+          ],
+          "text": "stock · Finished item into stock · stage 5 · outcome"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold the built item, which is only now sellable"
+                }
+              ],
+              "text": "Does — hold the built item, which is only now sellable"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "10 · Advise, pick and ship"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · terminal"
+            }
+          ],
+          "text": "10 · Advise, pick and ship · stage 5 · terminal"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+                }
+              ],
+              "text": "Does — take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Edges",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "From",
+            "To",
+            "Kind",
+            "Label"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "items"
+                    }
+                  ],
+                  "text": "items"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "prerequisite for everything right of it"
+                    }
+                  ],
+                  "text": "prerequisite for everything right of it"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "bom"
+                    }
+                  ],
+                  "text": "bom"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "what MRP explodes"
+                    }
+                  ],
+                  "text": "what MRP explodes"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "cluster"
+                    }
+                  ],
+                  "text": "cluster"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "what the gate looks for"
+                    }
+                  ],
+                  "text": "what the gate looks for"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "buyfrom"
+                    }
+                  ],
+                  "text": "buyfrom"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "without it the purchase half refuses"
+                    }
+                  ],
+                  "text": "without it the purchase half refuses"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "10"
+                    }
+                  ],
+                  "text": "10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "SKIPS 3, 4 — YES, and no planned order is generated"
+                    }
+                  ],
+                  "text": "SKIPS 3, 4 — YES, and no planned order is generated"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "NO"
+                    }
+                  ],
+                  "text": "NO"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "planned-prod"
+                    }
+                  ],
+                  "text": "planned-prod"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "planned-purch"
+                    }
+                  ],
+                  "text": "planned-purch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "planned-prod"
+                    }
+                  ],
+                  "text": "planned-prod"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "planned-purch"
+                    }
+                  ],
+                  "text": "planned-purch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "7"
+                    }
+                  ],
+                  "text": "7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "supply source Purchase"
+                    }
+                  ],
+                  "text": "supply source Purchase"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "9"
+                    }
+                  ],
+                  "text": "9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "branch"
+                    }
+                  ],
+                  "text": "branch"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "supply source Job Shop"
+                    }
+                  ],
+                  "text": "supply source Job Shop"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "7"
+                    }
+                  ],
+                  "text": "7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "8"
+                    }
+                  ],
+                  "text": "8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "the order raises its own inbound"
+                    }
+                  ],
+                  "text": "the order raises its own inbound"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "8"
+                    }
+                  ],
+                  "text": "8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "9"
+                    }
+                  ],
+                  "text": "9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "feed"
+                    }
+                  ],
+                  "text": "feed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "components on hand first"
+                    }
+                  ],
+                  "text": "components on hand first"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "9"
+                    }
+                  ],
+                  "text": "9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "stock"
+                    }
+                  ],
+                  "text": "stock"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "stock"
+                    }
+                  ],
+                  "text": "stock"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "10"
+                    }
+                  ],
+                  "text": "10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "flow"
+                    }
+                  ],
+                  "text": "flow"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Sources",
+      "blocks": [
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "`the source on file`"
+                },
+                {
+                  "t": "text",
+                  "v": " — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+                }
+              ],
+              "text": "`the source on file` — the guide this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The `the source on file` file for each code in `sources:`"
+                },
+                {
+                  "t": "text",
+                  "v": " — names, routes and the "
+                },
+                {
+                  "t": "literal",
+                  "v": "reached:"
+                },
+                {
+                  "t": "text",
+                  "v": " lines for the drill-ins."
+                }
+              ],
+              "text": "The `the source on file` file for each code in `sources:` — names, routes and the reached: lines for the drill-ins."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "`the source on file`"
+                },
+                {
+                  "t": "text",
+                  "v": " — level 2, where the same chain is named session by session."
+                }
+              ],
+              "text": "`the source on file` — level 2, where the same chain is named session by session."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "lanes": [
+      {
+        "n": 1,
+        "name": "Master Data"
+      },
+      {
+        "n": 2,
+        "name": "Sales"
+      },
+      {
+        "n": 3,
+        "name": "Enterprise Planning"
+      },
+      {
+        "n": 4,
+        "name": "Procurement"
+      },
+      {
+        "n": 5,
+        "name": "Manufacturing"
+      },
+      {
+        "n": 6,
+        "name": "Warehousing"
+      }
+    ],
+    "stages": [
+      {
+        "n": 1,
+        "name": "Prepare"
+      },
+      {
+        "n": 2,
+        "name": "Demand"
+      },
+      {
+        "n": 3,
+        "name": "Plan"
+      },
+      {
+        "n": 4,
+        "name": "Transfer",
+        "boundary": true
+      },
+      {
+        "n": 5,
+        "name": "Execute"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "items",
+        "session": "Items and groups",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcibd0501m100",
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; tick a row in "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m000",
+              "name": "Items"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Items"
+            },
+            {
+              "t": "text",
+              "v": ", and drill in"
+            }
+          ],
+          "text": "no menu entry; tick a row in Items (tcibd0501m000), Master Data ➔ Items ➔ Items, and drill in"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold the item every other lane reads"
+            }
+          ],
+          "text": "hold the item every other lane reads"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "confirm the item exists with its group, defaults and unit"
+              }
+            ],
+            "text": "confirm the item exists with its group, defaults and unit"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "confirm the item exists with its group, defaults and unit"
+            }
+          ],
+          "text": "confirm the item exists with its group, defaults and unit"
+        }
+      },
+      {
+        "id": "buyfrom",
+        "session": "Item - Purchase",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tdipu0601m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; "
+            },
+            {
+              "t": "strong",
+              "v": "Go to Details"
+            },
+            {
+              "t": "text",
+              "v": " from "
+            },
+            {
+              "t": "session",
+              "code": "tdipu0101m000",
+              "name": "Items - Purchase"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Procurement ➔ Master Data ➔ Items ➔ Items - Purchase"
+            }
+          ],
+          "text": "no menu entry; Go to Details from Items - Purchase (tdipu0101m000), Procurement ➔ Master Data ➔ Items ➔ Items - Purchase"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "carry the buy-from partner a purchased item needs"
+            }
+          ],
+          "text": "carry the buy-from partner a purchased item needs"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "check the "
+              },
+              {
+                "t": "strong",
+                "v": "Item - Business Partner"
+              },
+              {
+                "t": "text",
+                "v": " tab has a row. Without one the transfer refuses to create a purchase order at all"
+              }
+            ],
+            "text": "check the Item - Business Partner tab has a row. Without one the transfer refuses to create a purchase order at all"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "check the "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Business Partner"
+            },
+            {
+              "t": "text",
+              "v": " tab has a row. Without one the transfer refuses to create a purchase order at all"
+            }
+          ],
+          "text": "check the Item - Business Partner tab has a row. Without one the transfer refuses to create a purchase order at all"
+        }
+      },
+      {
+        "id": "bom",
+        "session": "Bill of material and routing",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "outcome",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "define what a made item is built from and how, both Approved"
+            }
+          ],
+          "text": "define what a made item is built from and how, both Approved"
+        }
+      },
+      {
+        "id": "cluster",
+        "session": "Planning cluster row on the item",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "outcome",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "make the item visible to order planning. Without it the item is absent from the plan rather than refused"
+            }
+          ],
+          "text": "make the item visible to order planning. Without it the item is absent from the plan rather than refused"
+        }
+      },
+      {
+        "id": "1",
+        "session": "Sales Order Intake Workbench",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "code": "tdsls4601m200",
+        "n": 1,
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+            }
+          ],
+          "text": "Sales ➔ Orders ➔ Order Intake Workbench"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "create the demand the rest of the chain answers"
+            }
+          ],
+          "text": "create the demand the rest of the chain answers"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "enter the order and approve it"
+              }
+            ],
+            "text": "enter the order and approve it"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "enter the order and approve it"
+            }
+          ],
+          "text": "enter the order and approve it"
+        }
+      },
+      {
+        "id": "2",
+        "session": "Does on-hand cover it?",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "decision",
+        "n": 2,
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            }
+          ],
+          "text": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+        }
+      },
+      {
+        "id": "3",
+        "session": "Planning data exists",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "gate",
+        "n": 3,
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide silently whether planning can see the item and every component beneath it"
+            }
+          ],
+          "text": "decide silently whether planning can see the item and every component beneath it"
+        }
+      },
+      {
+        "id": "4",
+        "session": "Inside the order horizon",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "gate",
+        "n": 4,
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "decide silently whether the delivery date is near enough to plan. Counted in workdays"
+            }
+          ],
+          "text": "decide silently whether the delivery date is near enough to plan. Counted in workdays"
+        }
+      },
+      {
+        "id": "read-cprrp0520m000",
+        "session": "Item Order Plan",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "read",
+        "code": "cprrp0520m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+            }
+          ],
+          "text": "Planning ➔ Order Planning ➔ Item Order Plan"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided"
+            }
+          ],
+          "text": "show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "read the item's plan before the run and again after it, and compare"
+              }
+            ],
+            "text": "read the item's plan before the run and again after it, and compare"
+          }
+        ],
+        "leaves": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "nothing. It is a detour for information and the walk is the same whether or not you take it"
+            }
+          ],
+          "text": "nothing. It is a detour for information and the walk is the same whether or not you take it"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "read the item's plan before the run and again after it, and compare"
+            }
+          ],
+          "text": "read the item's plan before the run and again after it, and compare"
+        }
+      },
+      {
+        "id": "5",
+        "session": "Generate Order Planning (Item)",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "step",
+        "code": "cprrp1220m000",
+        "n": 5,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; reached by drilling in. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "no menu entry; reached by drilling in. Not documented for this release."
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "net demand against stock and explode the bill of material"
+            }
+          ],
+          "text": "net demand against stock and explode the bill of material"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "run it with "
+              },
+              {
+                "t": "em",
+                "v": "Include Child Items"
+              }
+            ],
+            "text": "run it with Include Child Items"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "run it with "
+            },
+            {
+              "t": "em",
+              "v": "Include Child Items"
+            }
+          ],
+          "text": "run it with Include Child Items"
+        }
+      },
+      {
+        "id": "planned-prod",
+        "session": "Planned production order",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "planned",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "propose making the shortfall. Real to nothing outside planning"
+            }
+          ],
+          "text": "propose making the shortfall. Real to nothing outside planning"
+        }
+      },
+      {
+        "id": "planned-purch",
+        "session": "Planned purchase order",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "planned",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "propose buying the shortfall. Real to nothing outside planning"
+            }
+          ],
+          "text": "propose buying the shortfall. Real to nothing outside planning"
+        }
+      },
+      {
+        "id": "6",
+        "session": "Transfer Order Planning",
+        "lane": "Enterprise Planning",
+        "stage": 4,
+        "kind": "transfer",
+        "code": "cppat1210m000",
+        "n": 6,
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+            }
+          ],
+          "text": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "translate a proposal into a real order in its owning module. "
+            },
+            {
+              "t": "strong",
+              "v": "Planning ends here"
+            }
+          ],
+          "text": "translate a proposal into a real order in its owning module. Planning ends here"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "confirm the planned orders first, then run it once per supply source"
+              }
+            ],
+            "text": "confirm the planned orders first, then run it once per supply source"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "confirm the planned orders first, then run it once per supply source"
+            }
+          ],
+          "text": "confirm the planned orders first, then run it once per supply source"
+        }
+      },
+      {
+        "id": "7",
+        "session": "Purchase Order",
+        "lane": "Procurement",
+        "stage": 5,
+        "kind": "real",
+        "code": "tdpur4100m900",
+        "n": 7,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; drill in from the purchase order list"
+            }
+          ],
+          "text": "no menu entry; drill in from the purchase order list"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "buy the components, and raise the inbound warehousing order on its own"
+            }
+          ],
+          "text": "buy the components, and raise the inbound warehousing order on its own"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "read the order the transfer named in its process report"
+              }
+            ],
+            "text": "read the order the transfer named in its process report"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "read the order the transfer named in its process report"
+            }
+          ],
+          "text": "read the order the transfer named in its process report"
+        }
+      },
+      {
+        "id": "9",
+        "session": "Production Orders",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "real",
+        "code": "tisfc0501m000",
+        "n": 9,
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "build the item: release, issue the components, report complete"
+            }
+          ],
+          "text": "build the item: release, issue the components, report complete"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "open the order the transfer created and release it"
+              }
+            ],
+            "text": "open the order the transfer created and release it"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "open the order the transfer created and release it"
+            }
+          ],
+          "text": "open the order the transfer created and release it"
+        }
+      },
+      {
+        "id": "8",
+        "session": "Warehouse Receipt",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "step",
+        "code": "whinh3512m000",
+        "n": 8,
+        "route": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "no menu entry; opens from "
+            },
+            {
+              "t": "strong",
+              "v": "Actions ➔ Receive"
+            },
+            {
+              "t": "text",
+              "v": " on the inbound order"
+            }
+          ],
+          "text": "no menu entry; opens from Actions ➔ Receive on the inbound order"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "book the bought components into stock"
+            }
+          ],
+          "text": "book the bought components into stock"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "enter the packing-slip reference per line and confirm"
+              }
+            ],
+            "text": "enter the packing-slip reference per line and confirm"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "enter the packing-slip reference per line and confirm"
+            }
+          ],
+          "text": "enter the packing-slip reference per line and confirm"
+        }
+      },
+      {
+        "id": "read-whwmd4300m000",
+        "session": "Inventory 360",
+        "lane": "Warehousing",
+        "stage": 2,
+        "kind": "read",
+        "code": "whwmd4300m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory 360"
+            }
+          ],
+          "text": "Warehousing ➔ Inventory 360"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces"
+            }
+          ],
+          "text": "answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+              }
+            ],
+            "text": "read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+          }
+        ],
+        "leaves": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
+            }
+          ],
+          "text": "nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+            }
+          ],
+          "text": "read on-hand at the shipping warehouse before the order is entered, and write the figure down"
+        }
+      },
+      {
+        "id": "stock",
+        "session": "Finished item into stock",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "outcome",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold the built item, which is only now sellable"
+            }
+          ],
+          "text": "hold the built item, which is only now sellable"
+        }
+      },
+      {
+        "id": "10",
+        "session": "Advise, pick and ship",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "terminal",
+        "n": 10,
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+            }
+          ],
+          "text": "take the sales order to a confirmed shipment, with on-hand down by the shipped quantity"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "items",
+        "to": "1",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "prerequisite for everything right of it"
+            }
+          ],
+          "text": "prerequisite for everything right of it"
+        }
+      },
+      {
+        "from": "bom",
+        "to": "5",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "what MRP explodes"
+            }
+          ],
+          "text": "what MRP explodes"
+        }
+      },
+      {
+        "from": "cluster",
+        "to": "3",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "what the gate looks for"
+            }
+          ],
+          "text": "what the gate looks for"
+        }
+      },
+      {
+        "from": "buyfrom",
+        "to": "6",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "without it the purchase half refuses"
+            }
+          ],
+          "text": "without it the purchase half refuses"
+        }
+      },
+      {
+        "from": "1",
+        "to": "2",
+        "kind": "flow"
+      },
+      {
+        "from": "2",
+        "to": "10",
+        "kind": "branch",
+        "skips": [
+          3,
+          4
+        ],
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "YES, and no planned order is generated"
+            }
+          ],
+          "text": "YES, and no planned order is generated"
+        }
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "NO"
+            }
+          ],
+          "text": "NO"
+        }
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "kind": "flow"
+      },
+      {
+        "from": "4",
+        "to": "5",
+        "kind": "flow"
+      },
+      {
+        "from": "5",
+        "to": "planned-prod",
+        "kind": "flow"
+      },
+      {
+        "from": "5",
+        "to": "planned-purch",
+        "kind": "flow"
+      },
+      {
+        "from": "planned-prod",
+        "to": "6",
+        "kind": "flow"
+      },
+      {
+        "from": "planned-purch",
+        "to": "6",
+        "kind": "flow"
+      },
+      {
+        "from": "6",
+        "to": "7",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "supply source Purchase"
+            }
+          ],
+          "text": "supply source Purchase"
+        }
+      },
+      {
+        "from": "6",
+        "to": "9",
+        "kind": "branch",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "supply source Job Shop"
+            }
+          ],
+          "text": "supply source Job Shop"
+        }
+      },
+      {
+        "from": "7",
+        "to": "8",
+        "kind": "flow",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "the order raises its own inbound"
+            }
+          ],
+          "text": "the order raises its own inbound"
+        }
+      },
+      {
+        "from": "8",
+        "to": "9",
+        "kind": "feed",
+        "label": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "components on hand first"
+            }
+          ],
+          "text": "components on hand first"
+        }
+      },
+      {
+        "from": "9",
+        "to": "stock",
+        "kind": "flow"
+      },
+      {
+        "from": "stock",
+        "to": "10",
+        "kind": "flow"
+      }
+    ],
+    "budget": {
+      "session": 44
+    }
+  },
+  "openIssues": 1
+}

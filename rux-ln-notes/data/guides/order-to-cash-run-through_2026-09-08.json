@@ -1,0 +1,4893 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "order-to-cash-run-through_2026-09-08",
+  "title": "Order to Cash Run-through — Review",
+  "updated": "2026-09-08",
+  "status": "draft",
+  "sources": [
+    "tcibd2100m000",
+    "tcibd2600m000",
+    "cprrp0520m000",
+    "cprrp1100m000",
+    "tisfc0501m000",
+    "tdsls4601m200",
+    "whinh2100m000",
+    "whinh3122m000",
+    "whwmd4300m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An unscripted coaching session in which the trainee drove a complete order-to-cash run — sales order to demand, MRP to planned orders, transfer to a production order, material issue, receipt, inspection, shipment — with a second consultant guiding and a third participant attending his first meeting."
+        }
+      ],
+      "text": "An unscripted coaching session in which the trainee drove a complete order-to-cash run — sales order to demand, MRP to planned orders, transfer to a production order, material issue, receipt, inspection, shipment — with a second consultant guiding and a third participant attending his first meeting."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The declared subject is not where the evidence is."
+        },
+        {
+          "t": "text",
+          "v": " The first twenty minutes are a "
+        },
+        {
+          "t": "strong",
+          "v": "lot-sizing laboratory"
+        },
+        {
+          "t": "text",
+          "v": ": "
+        },
+        {
+          "t": "em",
+          "v": "Order Quantity Increment"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "em",
+          "v": "Safety Stock"
+        },
+        {
+          "t": "text",
+          "v": " were changed one at a time and the plan regenerated after each, producing a controlled before/after pair on a single variable. That is the most rigorous evidence in this library for how an order quantity is arrived at."
+        }
+      ],
+      "text": "The declared subject is not where the evidence is. The first twenty minutes are a lot-sizing laboratory: Order Quantity Increment and Safety Stock were changed one at a time and the plan regenerated after each, producing a controlled before/after pair on a single variable. That is the most rigorous evidence in this library for how an order quantity is arrived at."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "table",
+      "columns": [
+        "Role",
+        "Cues spoken"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee, hands-on-keyboard and screen-share owner"
+                }
+              ],
+              "text": "Trainee, hands-on-keyboard and screen-share owner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "419"
+                }
+              ],
+              "text": "419"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee, active throughout — the second half's guide"
+                }
+              ],
+              "text": "Attendee, active throughout — the second half's guide"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "238"
+                }
+              ],
+              "text": "238"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant, guiding"
+                }
+              ],
+              "text": "Consultant, guiding"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "181"
+                }
+              ],
+              "text": "181"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee"
+                }
+              ],
+              "text": "Attendee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "17"
+                }
+              ],
+              "text": "17"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee, present throughout"
+                }
+              ],
+              "text": "Attendee, present throughout"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Roles and counts come from the meeting platform's own caption export"
+        },
+        {
+          "t": "text",
+          "v": ", and the participant panel is visible in every frame pulled. This is the best attendee evidence in this library — prior reviews inferred roles from narration. "
+        }
+      ],
+      "text": "Roles and counts come from the meeting platform's own caption export, and the participant panel is visible in every frame pulled. This is the best attendee evidence in this library — prior reviews inferred roles from narration."
+    },
+    {
+      "kind": "callout",
+      "variant": "note",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The session has two halves with two different guides, and there is a clean handoff at minute 20."
+            },
+            {
+              "t": "text",
+              "v": " At "
+            },
+            {
+              "t": "literal",
+              "v": "00:01:31"
+            },
+            {
+              "t": "text",
+              "v": " of the source the consultant sets it up as "
+            },
+            {
+              "t": "em",
+              "v": "\"[the trainee] wants to drive, and [the second guide], you can guide him, and I'll be in the background writing code.\""
+            },
+            {
+              "t": "text",
+              "v": " Measured over the 855 filed cues, that is what happened — in two stages:"
+            }
+          ],
+          "text": "The session has two halves with two different guides, and there is a clean handoff at minute 20. At 00:01:31 of the source the consultant sets it up as \"[the trainee] wants to drive, and [the second guide], you can guide him, and I'll be in the background writing code.\" Measured over the 855 filed cues, that is what happened — in two stages:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Segment",
+            "Trainee",
+            "Consultant",
+            "Second guide",
+            "Attendee"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "00:00"
+                    },
+                    {
+                      "t": "text",
+                      "v": "–"
+                    },
+                    {
+                      "t": "literal",
+                      "v": "20:00"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", the parameter lab"
+                    }
+                  ],
+                  "text": "00:00–20:00, the parameter lab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "47.2%"
+                    }
+                  ],
+                  "text": "47.2%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "47.2%"
+                    }
+                  ],
+                  "text": "47.2%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.6%"
+                    }
+                  ],
+                  "text": "5.6%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "20:00"
+                    },
+                    {
+                      "t": "text",
+                      "v": "–"
+                    },
+                    {
+                      "t": "literal",
+                      "v": "68:16"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", the order-to-cash run"
+                    }
+                  ],
+                  "text": "20:00–68:16, the order-to-cash run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "50.2%"
+                    }
+                  ],
+                  "text": "50.2%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2%"
+                    }
+                  ],
+                  "text": "4.2%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "42.3%"
+                    }
+                  ],
+                  "text": "42.3%"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3%"
+                    }
+                  ],
+                  "text": "3.3%"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The consultant ran the lab and the second guide ran the execution walk."
+            },
+            {
+              "t": "text",
+              "v": " Everything in §3.1–§3.5 is the consultant's, the increment reasoning included; §3.6 onward is the second guide's. "
+            },
+            {
+              "t": "strong",
+              "v": "This corrects the first version of this note"
+            },
+            {
+              "t": "text",
+              "v": ", which read the whole-recording cue totals and concluded the second guide never guided — a whole-file average hid a handoff that a split by segment makes obvious."
+            }
+          ],
+          "text": "The consultant ran the lab and the second guide ran the execution walk. Everything in §3.1–§3.5 is the consultant's, the increment reasoning included; §3.6 onward is the second guide's. This corrects the first version of this note, which read the whole-recording cue totals and concluded the second guide never guided — a whole-file average hid a handoff that a split by segment makes obvious."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The status-bar account is the consultant's throughout, and the trainee is the one driving it."
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "strong",
+          "v": "Do not read a status-bar user as the person speaking."
+        },
+        {
+          "t": "text",
+          "v": " "
+        }
+      ],
+      "text": "The status-bar account is the consultant's throughout, and the trainee is the one driving it. Do not read a status-bar user as the person speaking."
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "The order-interval finding, reached independently a second time",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee opened by recounting, unprompted, the resolution of the 20/20/10 planned-order split: "
+            },
+            {
+              "t": "em",
+              "v": "\"I finally figured out that it was all due to the, what's it called, items ordering... that's where you set the intervals. And at the time, the intervals were set to zero, so no orders were getting combined at all.\""
+            }
+          ],
+          "text": "The trainee opened by recounting, unprompted, the resolution of the 20/20/10 planned-order split: \"I finally figured out that it was all due to the, what's it called, items ordering... that's where you set the intervals. And at the time, the intervals were set to zero, so no orders were getting combined at all.\""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This library had already settled that on 2026-09-05"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §1.1. What this recording adds is not the mechanism but its "
+            },
+            {
+              "t": "strong",
+              "v": "independent rediscovery by a second person from the environment itself"
+            },
+            {
+              "t": "text",
+              "v": ": the finding was not read back off this library, it was arrived at again. "
+            }
+          ],
+          "text": "This library had already settled that on 2026-09-05 — the source on file §1.1. What this recording adds is not the mechanism but its independent rediscovery by a second person from the environment itself: the finding was not read back off this library, it was arrived at again."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "Safety stock is demand, stated plainly",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two statements, both worth keeping because no filed source says either:"
+            }
+          ],
+          "text": "Two statements, both worth keeping because no filed source says either:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"Safety stock is, you have to have inventory mandatory in your company. When you get below safety stock it generates a demand order automatically.\""
+            }
+          ],
+          "text": "\"Safety stock is, you have to have inventory mandatory in your company. When you get below safety stock it generates a demand order automatically.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"There's no demand driving it — and safety stock is considered demand. Otherwise you need a production order asking for that part, or a sales order requesting inventory to ship.\""
+            }
+          ],
+          "text": "\"There's no demand driving it — and safety stock is considered demand. Otherwise you need a production order asking for that part, or a sales order requesting inventory to ship.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The second is the load-bearing one."
+            },
+            {
+              "t": "text",
+              "v": " It names safety stock as one of exactly three demand sources the consultant recognises — safety stock, a production order's material requirement, and a sales order — and it predicts a result the group then produced deliberately: with safety stock zeroed and nothing outstanding, a planning run generates nothing at all."
+            }
+          ],
+          "text": "The second is the load-bearing one. It names safety stock as one of exactly three demand sources the consultant recognises — safety stock, a production order's material requirement, and a sales order — and it predicts a result the group then produced deliberately: with safety stock zeroed and nothing outstanding, a planning run generates nothing at all."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "The increment laboratory: one variable, two frames, 45 becomes 50",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The most rigorous evidence in this recording, and it is settled by frame rather than narration."
+            }
+          ],
+          "text": "The most rigorous evidence in this recording, and it is settled by frame rather than narration."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — both status bar "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": ", company "
+            },
+            {
+              "t": "literal",
+              "v": "4100"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " for plan item "
+            },
+            {
+              "t": "literal",
+              "v": "NA1"
+            },
+            {
+              "t": "text",
+              "v": " · "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Inventory on Hand"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "`5.0000 ea`"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Actual Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "Job Shop"
+            },
+            {
+              "t": "text",
+              "v": ", scenario "
+            },
+            {
+              "t": "literal",
+              "v": "ACT"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "the source on file and the source on file — both status bar cprrp0520m000, company 4100, Item Order Plan for plan item NA1 · BAM-CHOP-PAIR, Inventory on Hand `5.0000 ea`, Actual Supply Source Job Shop, scenario ACT."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The two frames differ in exactly one row value, and the row is otherwise identical — same order number "
+            },
+            {
+              "t": "literal",
+              "v": "000000071"
+            },
+            {
+              "t": "text",
+              "v": ", same date "
+            },
+            {
+              "t": "literal",
+              "v": "9/7/2026"
+            },
+            {
+              "t": "text",
+              "v": ", same site "
+            },
+            {
+              "t": "literal",
+              "v": "CSADNA01"
+            },
+            {
+              "t": "text",
+              "v": ", same status "
+            },
+            {
+              "t": "literal",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": ", same warehouse "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA01"
+            },
+            {
+              "t": "text",
+              "v": ", same "
+            },
+            {
+              "t": "em",
+              "v": "Safety Stock"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "50.0000"
+            },
+            {
+              "t": "text",
+              "v": ", Specification cleared on both:"
+            }
+          ],
+          "text": "The two frames differ in exactly one row value, and the row is otherwise identical — same order number 000000071, same date 9/7/2026, same site CSADNA01, same status Planned, same warehouse ADNA01, same Safety Stock 50.0000, Specification cleared on both:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "_Order Quantity Increment_",
+            "Supply",
+            "Planned Available",
+            "ATP"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Before"
+                    }
+                  ],
+                  "text": "Before"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "1.0000"
+                    }
+                  ],
+                  "text": "1.0000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "`45.0000`"
+                    }
+                  ],
+                  "text": "`45.0000`"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "50.0000"
+                    }
+                  ],
+                  "text": "50.0000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "50.0000"
+                    }
+                  ],
+                  "text": "50.0000"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "After"
+                    }
+                  ],
+                  "text": "After"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "25.0000"
+                    }
+                  ],
+                  "text": "25.0000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "`50.0000`"
+                    }
+                  ],
+                  "text": "`50.0000`"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "55.0000"
+                    }
+                  ],
+                  "text": "55.0000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "55.0000"
+                    }
+                  ],
+                  "text": "55.0000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The changed variable is captured too."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2600m000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Ordering"
+            },
+            {
+              "t": "text",
+              "v": ", Lot Sizes tab: "
+            },
+            {
+              "t": "em",
+              "v": "Order Increment"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "`25.0000 ea`"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Minimum"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "1.0000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Maximum"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "99999999.0000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Fixed Order"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "1.0000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Lot Size Calculation Allowed"
+            },
+            {
+              "t": "text",
+              "v": " cleared."
+            }
+          ],
+          "text": "The changed variable is captured too. the source on file — status bar tcibd2600m000, Item - Ordering, Lot Sizes tab: Order Increment `25.0000 ea`, Minimum 1.0000, Maximum 99999999.0000, Fixed Order 1.0000, Lot Size Calculation Allowed cleared."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "So the arithmetic is fully sourced."
+            },
+            {
+              "t": "text",
+              "v": " Safety stock "
+            },
+            {
+              "t": "literal",
+              "v": "50"
+            },
+            {
+              "t": "text",
+              "v": " against on-hand "
+            },
+            {
+              "t": "literal",
+              "v": "5"
+            },
+            {
+              "t": "text",
+              "v": " is a requirement of "
+            },
+            {
+              "t": "literal",
+              "v": "45"
+            },
+            {
+              "t": "text",
+              "v": "; at an increment of "
+            },
+            {
+              "t": "literal",
+              "v": "1"
+            },
+            {
+              "t": "text",
+              "v": " the plan orders exactly that; at "
+            },
+            {
+              "t": "literal",
+              "v": "25"
+            },
+            {
+              "t": "text",
+              "v": " it rounds "
+            },
+            {
+              "t": "strong",
+              "v": "up to the next whole increment above the requirement"
+            },
+            {
+              "t": "text",
+              "v": ", giving "
+            },
+            {
+              "t": "literal",
+              "v": "50"
+            },
+            {
+              "t": "text",
+              "v": ". The consultant stated it in the same terms at "
+            },
+            {
+              "t": "literal",
+              "v": "00:18:44"
+            },
+            {
+              "t": "text",
+              "v": ": "
+            },
+            {
+              "t": "em",
+              "v": "\"it's going to take whatever your safety stock is, your increment is 25, so it wants you to buy 50 even though you have 5 in stock because the five doesn't divide into the 25 piece increment.\""
+            }
+          ],
+          "text": "So the arithmetic is fully sourced. Safety stock 50 against on-hand 5 is a requirement of 45; at an increment of 1 the plan orders exactly that; at 25 it rounds up to the next whole increment above the requirement, giving 50. The consultant stated it in the same terms at 00:18:44: \"it's going to take whatever your safety stock is, your increment is 25, so it wants you to buy 50 even though you have 5 in stock because the five doesn't divide into the 25 piece increment.\""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This is the first observed increment result this library has."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §1 notes the help carries four worked lot-sizing examples; every prior capture of the field read the deployed "
+            },
+            {
+              "t": "literal",
+              "v": "1.0000"
+            },
+            {
+              "t": "text",
+              "v": ", which rounds nothing and therefore demonstrates nothing."
+            }
+          ],
+          "text": "This is the first observed increment result this library has. the source on file §1 notes the help carries four worked lot-sizing examples; every prior capture of the field read the deployed 1.0000, which rounds nothing and therefore demonstrates nothing."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "_Planned Available_ reproduces exactly on both frames."
+                },
+                {
+                  "t": "text",
+                  "v": " On-hand "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " plus supply "
+                },
+                {
+                  "t": "literal",
+                  "v": "45"
+                },
+                {
+                  "t": "text",
+                  "v": " gives "
+                },
+                {
+                  "t": "literal",
+                  "v": "50"
+                },
+                {
+                  "t": "text",
+                  "v": "; plus supply "
+                },
+                {
+                  "t": "literal",
+                  "v": "50"
+                },
+                {
+                  "t": "text",
+                  "v": " gives "
+                },
+                {
+                  "t": "literal",
+                  "v": "55"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "em",
+                  "v": "ATP"
+                },
+                {
+                  "t": "text",
+                  "v": " moves with it here, unlike the 2026-08-04 frame in "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " §4 where ATP stood still across five rows — consistent with there being one supply row and no competing demand, and it does not reopen the ATP anomaly recorded there. "
+                }
+              ],
+              "text": "_Planned Available_ reproduces exactly on both frames. On-hand 5 plus supply 45 gives 50; plus supply 50 gives 55. ATP moves with it here, unlike the 2026-08-04 frame in the source on file §4 where ATP stood still across five rows — consistent with there being one supply row and no competing demand, and it does not reopen the ATP anomaly recorded there."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "The inheritance chain, and the field that would not change",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Setting safety stock to zero on the item appeared to do nothing:"
+            }
+          ],
+          "text": "Setting safety stock to zero on the item appeared to do nothing:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"Is it using global? Yes, it's using global. And see how the safety stock on that, on the site, is 50 — so it didn't zero it out.\""
+            }
+          ],
+          "text": "\"Is it using global? Yes, it's using global. And see how the safety stock on that, on the site, is 50 — so it didn't zero it out.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The same frame that carries the increment carries this."
+            },
+            {
+              "t": "text",
+              "v": " The "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2600m000"
+            },
+            {
+              "t": "text",
+              "v": " capture's "
+            },
+            {
+              "t": "strong",
+              "v": "Sites"
+            },
+            {
+              "t": "text",
+              "v": " subtab shows one row — site "
+            },
+            {
+              "t": "literal",
+              "v": "CSADNA01"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "PCG CSAD NA Site 1 Manufacturi Houston,TX"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Order Method"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "`Lot for Lot`"
+            },
+            {
+              "t": "text",
+              "v": ", warehouse "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA01"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "FINISHED GOODS"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "_Safety Stock_ `50.0000`"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "_Use Global Item Ordering_ selected"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The same frame that carries the increment carries this. The tcibd2600m000 capture's Sites subtab shows one row — site CSADNA01, PCG CSAD NA Site 1 Manufacturi Houston,TX, Order Method `Lot for Lot`, warehouse ADNA01 FINISHED GOODS, _Safety Stock_ `50.0000`, and _Use Global Item Ordering_ selected."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two things follow."
+            },
+            {
+              "t": "text",
+              "v": " The inheritance chain this library documents for "
+            },
+            {
+              "t": "em",
+              "v": "Order Interval"
+            },
+            {
+              "t": "text",
+              "v": " governs "
+            },
+            {
+              "t": "strong",
+              "v": "_Safety Stock_ too"
+            },
+            {
+              "t": "text",
+              "v": "; and "
+            },
+            {
+              "t": "em",
+              "v": "Use Global Item Ordering"
+            },
+            {
+              "t": "text",
+              "v": " is visible on the site row itself, so "
+            },
+            {
+              "t": "strong",
+              "v": "the frame shows both the flag and the value it defers to at once"
+            },
+            {
+              "t": "text",
+              "v": ". The increment field was separately observed "
+            },
+            {
+              "t": "strong",
+              "v": "greyed out"
+            },
+            {
+              "t": "text",
+              "v": " until the level was changed — "
+            },
+            {
+              "t": "em",
+              "v": "\"because use global\""
+            },
+            {
+              "t": "text",
+              "v": " — which makes a greyed field the environment's own statement of which level owns the value."
+            }
+          ],
+          "text": "Two things follow. The inheritance chain this library documents for Order Interval governs _Safety Stock_ too; and Use Global Item Ordering is visible on the site row itself, so the frame shows both the flag and the value it defers to at once. The increment field was separately observed greyed out until the level was changed — \"because use global\" — which makes a greyed field the environment's own statement of which level owns the value."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The enterprise-planning homework's Sitting 3 teaches exactly this reading and can now cite a captured instance. "
+            }
+          ],
+          "text": "The enterprise-planning homework's Sitting 3 teaches exactly this reading and can now cite a captured instance."
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "Cancelling a production order — the route, captured",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee could not find the cancel action and had failed to find it on a previous occasion. The consultant's answer at "
+            },
+            {
+              "t": "literal",
+              "v": "00:10:14"
+            },
+            {
+              "t": "text",
+              "v": " was "
+            },
+            {
+              "t": "em",
+              "v": "\"Go to exception handling… Actions, exception handling\""
+            },
+            {
+              "t": "text",
+              "v": " — and "
+            },
+            {
+              "t": "strong",
+              "v": "the menu was captured expanded at `00:10:13`"
+            },
+            {
+              "t": "text",
+              "v": ", which is the frame AGENTS.md's capture loop asks for by name."
+            }
+          ],
+          "text": "The trainee could not find the cancel action and had failed to find it on a previous occasion. The consultant's answer at 00:10:14 was \"Go to exception handling… Actions, exception handling\" — and the menu was captured expanded at `00:10:13`, which is the frame AGENTS.md's capture loop asks for by name."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0501m000"
+            },
+            {
+              "t": "text",
+              "v": ", company "
+            },
+            {
+              "t": "literal",
+              "v": "4100"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "the source on file — status bar tisfc0501m000, company 4100."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The "
+            },
+            {
+              "t": "strong",
+              "v": "Actions"
+            },
+            {
+              "t": "text",
+              "v": " menu, in order: "
+            },
+            {
+              "t": "strong",
+              "v": "Transfer Planned Production Orders… · Print Documents and Release Order… · Release Orders…"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+R"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Report Operations Completed"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+M"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Report Orders Completed"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+O"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Close Orders…"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+C"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Archive Orders…"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+A"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Backflush Materials and Hours…"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Shift+G"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "· Costs ▸ · Subcontracting ▸ · Production Planning ▸ · Materials ▸ · Exception Handling ▸ · Print ▸ · Export and Import ▸"
+            }
+          ],
+          "text": "The Actions menu, in order: Transfer Planned Production Orders… · Print Documents and Release Order… · Release Orders… Shift+R · Report Operations Completed Shift+M (greyed) · Report Orders Completed Shift+O (greyed) · Close Orders… Shift+C (greyed) · Archive Orders… Shift+A (greyed) · Backflush Materials and Hours… Shift+G (greyed) · Costs ▸ · Subcontracting ▸ · Production Planning ▸ · Materials ▸ · Exception Handling ▸ · Print ▸ · Export and Import ▸"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The "
+            },
+            {
+              "t": "strong",
+              "v": "Exception Handling"
+            },
+            {
+              "t": "text",
+              "v": " submenu: "
+            },
+            {
+              "t": "strong",
+              "v": "Reset Production Order Status… · Reprocess Production Orders… · Cancel Production Order… · Process Warehouse Release Information… · Replan Production Orders… · Split Production Order…"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "(greyed)"
+            }
+          ],
+          "text": "The Exception Handling submenu: Reset Production Order Status… · Reprocess Production Orders… · Cancel Production Order… · Process Warehouse Release Information… · Replan Production Orders… · Split Production Order… (greyed)"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Exception Handling returns zero hits across every help topic exported into this library"
+            },
+            {
+              "t": "text",
+              "v": ", and it is a real menu in the deployed client — an instance of principle 3's rule that only the environment can answer a navigation question. "
+            },
+            {
+              "t": "strong",
+              "v": "The Actions menu also carries Transfer Planned Production Orders…"
+            },
+            {
+              "t": "text",
+              "v": ", which is the control the unwalked production-order transfer has been waiting to see; it is captured here in a menu, not exercised. "
+            }
+          ],
+          "text": "Exception Handling returns zero hits across every help topic exported into this library, and it is a real menu in the deployed client — an instance of principle 3's rule that only the environment can answer a navigation question. The Actions menu also carries Transfer Planned Production Orders…, which is the control the unwalked production-order transfer has been waiting to see; it is captured here in a menu, not exercised."
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "Completing an operation without issuing its material",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A real error, hit live and diagnosed on camera. The trainee reported an operation complete, then found nothing had been issued:"
+            }
+          ],
+          "text": "A real error, hit live and diagnosed on camera. The trainee reported an operation complete, then found nothing had been issued:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"You basically completed an operation of building the item without the items, because you didn't release any warehousing.\""
+            }
+          ],
+          "text": "\"You basically completed an operation of building the item without the items, because you didn't release any warehousing.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The repair was to take the production order number into the warehousing order, issue the material, then advise and release it. "
+            },
+            {
+              "t": "strong",
+              "v": "The order of operations the group settled on is: release material to warehousing, issue it, then report the operation complete"
+            },
+            {
+              "t": "text",
+              "v": " — and LN did not prevent the wrong order."
+            }
+          ],
+          "text": "The repair was to take the production order number into the warehousing order, issue the material, then advise and release it. The order of operations the group settled on is: release material to warehousing, issue it, then report the operation complete — and LN did not prevent the wrong order."
+        }
+      ]
+    },
+    {
+      "n": "3.7",
+      "title": "Child items generated no purchase supply, and the stock that explains it is captured",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The parent's planning run produced a production order but no planned purchase orders for the components. The diagnosis was existing stock, and "
+            },
+            {
+              "t": "strong",
+              "v": "this time the stock is on screen"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The parent's planning run produced a production order but no planned purchase orders for the components. The diagnosis was existing stock, and this time the stock is on screen."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "whwmd4300m000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory 360"
+            },
+            {
+              "t": "text",
+              "v": ", company "
+            },
+            {
+              "t": "literal",
+              "v": "4100"
+            },
+            {
+              "t": "text",
+              "v": ":"
+            }
+          ],
+          "text": "the source on file — status bar whwmd4300m000, Inventory 360, company 4100:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Item",
+            "Description",
+            "Item Type",
+            "On Hand",
+            "Blocked",
+            "On Order"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    }
+                  ],
+                  "text": "BAM-CHOP-PAIR"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Bamboo Chopstick"
+                    }
+                  ],
+                  "text": "Bamboo Chopstick"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Product"
+                    }
+                  ],
+                  "text": "Product"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "5.0000 ea"
+                    }
+                  ],
+                  "text": "5.0000 ea"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "5.0000 ea"
+                    }
+                  ],
+                  "text": "5.0000 ea"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "50.0000 ea"
+                    }
+                  ],
+                  "text": "50.0000 ea"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    }
+                  ],
+                  "text": "BAM-ROD"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Bamboo Rod"
+                    }
+                  ],
+                  "text": "Bamboo Rod"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Product"
+                    }
+                  ],
+                  "text": "Product"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "`160.0000 ea`"
+                    }
+                  ],
+                  "text": "`160.0000 ea`"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "0.0000 ea"
+                    }
+                  ],
+                  "text": "0.0000 ea"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "0.0000 ea"
+                    }
+                  ],
+                  "text": "0.0000 ea"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    }
+                  ],
+                  "text": "BAM-SLEEVE"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Paper Sleeve"
+                    }
+                  ],
+                  "text": "Paper Sleeve"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Product"
+                    }
+                  ],
+                  "text": "Product"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "`80.0000 ea`"
+                    }
+                  ],
+                  "text": "`80.0000 ea`"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "0.0000 ea"
+                    }
+                  ],
+                  "text": "0.0000 ea"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "0.0000 ea"
+                    }
+                  ],
+                  "text": "0.0000 ea"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This is the evidence the `BAM-SLEEVE` no-supply case has been missing since 2026-08-25"
+            },
+            {
+              "t": "text",
+              "v": ", where the same explanation — existing stock — was offered on the call and never shown. It is not the same run, so "
+            },
+            {
+              "t": "strong",
+              "v": "it is not closed by this"
+            },
+            {
+              "t": "text",
+              "v": "; what it does is move the explanation from assertion to a captured figure on a comparable configuration. "
+            }
+          ],
+          "text": "This is the evidence the `BAM-SLEEVE` no-supply case has been missing since 2026-08-25, where the same explanation — existing stock — was offered on the call and never shown. It is not the same run, so it is not closed by this; what it does is move the explanation from assertion to a captured figure on a comparable configuration."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two findings outside the question."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": "'s description is "
+            },
+            {
+              "t": "strong",
+              "v": "Paper Sleeve"
+            },
+            {
+              "t": "text",
+              "v": ", not a bamboo item, which no document in this library records. And "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " shows "
+            },
+            {
+              "t": "strong",
+              "v": "on hand `5.0000` with blocked `5.0000`"
+            },
+            {
+              "t": "text",
+              "v": " — the whole of it blocked — while the planning frames of §3.3 net that same "
+            },
+            {
+              "t": "literal",
+              "v": "5"
+            },
+            {
+              "t": "text",
+              "v": " against safety stock as though it were available. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Two findings outside the question. BAM-SLEEVE's description is Paper Sleeve, not a bamboo item, which no document in this library records. And BAM-CHOP-PAIR shows on hand `5.0000` with blocked `5.0000` — the whole of it blocked — while the planning frames of §3.3 net that same 5 against safety stock as though it were available. Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.8",
+      "title": "Freeze is mandatory here, and the tab is at line level",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The shipment would not confirm until frozen, and the control was not where the trainee looked:"
+            }
+          ],
+          "text": "The shipment would not confirm until frozen, and the control was not where the trainee looked:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"You ran the wrong tab — at the line level.\""
+            },
+            {
+              "t": "text",
+              "v": " … "
+            },
+            {
+              "t": "em",
+              "v": "\"Freeze shipment is mandatory.\""
+            }
+          ],
+          "text": "\"You ran the wrong tab — at the line level.\" … \"Freeze shipment is mandatory.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The first live instance in this library of a mandatory freeze being enforced."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " records that the "
+            },
+            {
+              "t": "em",
+              "v": "Freeze Mandatory"
+            },
+            {
+              "t": "text",
+              "v": " reading "
+            },
+            {
+              "t": "literal",
+              "v": "SG-ship-from-stock"
+            },
+            {
+              "t": "text",
+              "v": " phase 5 rests on came from the shipment rather than from a line, and marks the session uncaptured. This corroborates the behaviour and still does not capture the line. "
+            }
+          ],
+          "text": "The first live instance in this library of a mandatory freeze being enforced. the source on file records that the Freeze Mandatory reading SG-ship-from-stock phase 5 rests on came from the shipment rather than from a line, and marks the session uncaptured. This corroborates the behaviour and still does not capture the line."
+        }
+      ]
+    },
+    {
+      "n": "3.9",
+      "title": "Scenarios as the outer horizon",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Volunteered by the trainee and confirmed by the consultant:"
+            }
+          ],
+          "text": "Volunteered by the trainee and confirmed by the consultant:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"Your scenario is the master, and then within the scenario you get all your different horizons, your order horizon, your planning horizon.\""
+            },
+            {
+              "t": "text",
+              "v": " … "
+            },
+            {
+              "t": "em",
+              "v": "\"Any scenario is not your actual scenario, it's just for simulation.\""
+            }
+          ],
+          "text": "\"Your scenario is the master, and then within the scenario you get all your different horizons, your order horizon, your planning horizon.\" … \"Any scenario is not your actual scenario, it's just for simulation.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Consistent with "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", and it adds a containment claim the concept does not make — that the scenario's horizon bounds the item horizons inside it. The §3.3 frames show this item's horizons under scenario "
+            },
+            {
+              "t": "literal",
+              "v": "ACT"
+            },
+            {
+              "t": "text",
+              "v": ": "
+            },
+            {
+              "t": "em",
+              "v": "Order Horizon"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "em",
+              "v": "Planning Horizon"
+            },
+            {
+              "t": "text",
+              "v": " both "
+            },
+            {
+              "t": "literal",
+              "v": "9/7/2027"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Time Fence"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "em",
+              "v": "CTP Horizon"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "9/8/2026"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Forecast Time Fence"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "9/7/2026"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Consistent with the source on file, and it adds a containment claim the concept does not make — that the scenario's horizon bounds the item horizons inside it. The §3.3 frames show this item's horizons under scenario ACT: Order Horizon and Planning Horizon both 9/7/2027, Time Fence and CTP Horizon 9/8/2026, Forecast Time Fence 9/7/2026. Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.10",
+      "title": "Inventory 360's own menu, captured in passing",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The "
+            },
+            {
+              "t": "session",
+              "code": "whwmd4300m000"
+            },
+            {
+              "t": "text",
+              "v": " frame carries the session's full content area, which this library has never had: "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory"
+            },
+            {
+              "t": "text",
+              "v": " (Warehouse Inventory · Stock Point Inventory · Item Lot Inventory · Item Serial Inventory · Site Inventory · Inventory by Specification) · "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory Handling"
+            },
+            {
+              "t": "text",
+              "v": " (Production Order Advice · Purchase Order Advice · Warehouse Order Advice · Item Order Plan · Warehousing Orders · Handling Units) · "
+            },
+            {
+              "t": "strong",
+              "v": "Special Inventory"
+            },
+            {
+              "t": "text",
+              "v": " (Consignment · Quarantine · Inspection · Project Pegged Inventory) · "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory Transactions"
+            },
+            {
+              "t": "text",
+              "v": " (Planned Transactions · Item Transactions · Item Issue by Period · Inventory Commitment · Inventory Blocking) · "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory Analysis"
+            },
+            {
+              "t": "text",
+              "v": " (ABC Analysis · Slow-Moving Analysis · Economic Order Quantity · Demand Forecast · Inventory Valuation) · "
+            },
+            {
+              "t": "strong",
+              "v": "Warehouse Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " (Generate Order Advice (SIC) · Generate Orders (TPOP) · Generate Orders (Kanban))."
+            }
+          ],
+          "text": "The whwmd4300m000 frame carries the session's full content area, which this library has never had: Inventory (Warehouse Inventory · Stock Point Inventory · Item Lot Inventory · Item Serial Inventory · Site Inventory · Inventory by Specification) · Inventory Handling (Production Order Advice · Purchase Order Advice · Warehouse Order Advice · Item Order Plan · Warehousing Orders · Handling Units) · Special Inventory (Consignment · Quarantine · Inspection · Project Pegged Inventory) · Inventory Transactions (Planned Transactions · Item Transactions · Item Issue by Period · Inventory Commitment · Inventory Blocking) · Inventory Analysis (ABC Analysis · Slow-Moving Analysis · Economic Order Quantity · Demand Forecast · Inventory Valuation) · Warehouse Order Planning (Generate Order Advice (SIC) · Generate Orders (TPOP) · Generate Orders (Kanban))."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "That is both Inventory 360 questions answered as far as a menu can answer them"
+            },
+            {
+              "t": "text",
+              "v": " — the three Warehouse Order Planning entries are now named, and the available groups are recorded. None has been opened, so both stay open on their substance. "
+            }
+          ],
+          "text": "That is both Inventory 360 questions answered as far as a menu can answer them — the three Warehouse Order Planning entries are now named, and the available groups are recorded. None has been opened, so both stay open on their substance."
+        }
+      ]
+    },
+    {
+      "n": "3.12",
+      "title": "The production order, and a ratio the frame corrected",
+      "blocks": [
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0101m100"
+            },
+            {
+              "t": "text",
+              "v": ", company "
+            },
+            {
+              "t": "literal",
+              "v": "4100"
+            },
+            {
+              "t": "text",
+              "v": ". Production order "
+            },
+            {
+              "t": "literal",
+              "v": "010000762"
+            },
+            {
+              "t": "text",
+              "v": ", status "
+            },
+            {
+              "t": "strong",
+              "v": "Created"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Quantity Ordered"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "50.0000 ea"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "BOM"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "JB0000242"
+            },
+            {
+              "t": "text",
+              "v": " revision "
+            },
+            {
+              "t": "literal",
+              "v": "000003"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Routing"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " revision "
+            },
+            {
+              "t": "literal",
+              "v": "000002"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Planning Method"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "Backward"
+            },
+            {
+              "t": "text",
+              "v": ", warehouse "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA01"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "the source on file — status bar tisfc0101m100, company 4100. Production order 010000762, status Created, BAM-CHOP-PAIR, Quantity Ordered 50.0000 ea, BOM JB0000242 revision 000003, Routing 0 revision 000002, Planning Method Backward, warehouse ADNA01."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The Materials tab reads "
+            },
+            {
+              "t": "literal",
+              "v": "100.0000 ea"
+            },
+            {
+              "t": "text",
+              "v": " of Bamboo Rod and "
+            },
+            {
+              "t": "literal",
+              "v": "50.0000 ea"
+            },
+            {
+              "t": "text",
+              "v": " of Paper Sleeve, both from "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA02"
+            },
+            {
+              "t": "text",
+              "v": ", both "
+            },
+            {
+              "t": "em",
+              "v": "Report Material"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "Manual"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "strong",
+              "v": "two rods and one sleeve per pair"
+            },
+            {
+              "t": "text",
+              "v": ", which is what "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §5 already records."
+            }
+          ],
+          "text": "The Materials tab reads 100.0000 ea of Bamboo Rod and 50.0000 ea of Paper Sleeve, both from ADNA02, both Report Material Manual — two rods and one sleeve per pair, which is what the source on file §5 already records."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "*"
+                },
+                {
+                  "t": "em",
+                  "v": "The second guide states the ratio aloud as"
+                },
+                {
+                  "t": "text",
+                  "v": "\"100 of BAM-ROD and 150 of BAM-SLEEVE to create 50 of BAM-CHOP\"* — and the screen he is describing reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "50.0000"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                },
+                {
+                  "t": "strong",
+                  "v": "Written up from the transcript, this would have entered the library as a contradiction against its own BOM and sent someone to re-verify a figure that was never wrong."
+                },
+                {
+                  "t": "text",
+                  "v": "This is the sharpest instance of principle 4 in this library**: not a garbled transcript or a hedged guess, but a confident, specific number from the person guiding the session, wrong against the frame in front of him."
+                }
+              ],
+              "text": "*The second guide states the ratio aloud as\"100 of BAM-ROD and 150 of BAM-SLEEVE to create 50 of BAM-CHOP\"* — and the screen he is describing reads 50.0000.Written up from the transcript, this would have entered the library as a contradiction against its own BOM and sent someone to re-verify a figure that was never wrong.This is the sharpest instance of principle 4 in this library**: not a garbled transcript or a hedged guess, but a confident, specific number from the person guiding the session, wrong against the frame in front of him."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.13",
+      "title": "The shipment reaches Frozen, at line level",
+      "blocks": [
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "whinh2100m100"
+            },
+            {
+              "t": "text",
+              "v": ". Sales order "
+            },
+            {
+              "t": "literal",
+              "v": "100000077"
+            },
+            {
+              "t": "text",
+              "v": " line "
+            },
+            {
+              "t": "literal",
+              "v": "1"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Transaction Type"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "Issue"
+            },
+            {
+              "t": "text",
+              "v": ", ship-from warehouse "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA01"
+            },
+            {
+              "t": "text",
+              "v": " ("
+            },
+            {
+              "t": "em",
+              "v": "PCG Aerospace & Defense"
+            },
+            {
+              "t": "text",
+              "v": "), ship-to business partner "
+            },
+            {
+              "t": "literal",
+              "v": "BP4000012"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "strong",
+              "v": "THE FINISHING CO."
+            },
+            {
+              "t": "text",
+              "v": " Shipment line "
+            },
+            {
+              "t": "literal",
+              "v": "200000693"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Shipped Quantity"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "50.0000 ea"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "_Status_ Frozen"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "the source on file — status bar whinh2100m100. Sales order 100000077 line 1, Transaction Type Issue, ship-from warehouse ADNA01 (PCG Aerospace & Defense), ship-to business partner BP4000012 — THE FINISHING CO. Shipment line 200000693, BAM-CHOP-PAIR, Shipped Quantity 50.0000 ea, _Status_ Frozen."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The first frame in this library of a shipment line actually reaching `Frozen`"
+            },
+            {
+              "t": "text",
+              "v": ", and it confirms §3.8 — the control is on the "
+            },
+            {
+              "t": "strong",
+              "v": "Shipment Lines"
+            },
+            {
+              "t": "text",
+              "v": " tab, not the header. The second guide's correction on camera: "
+            },
+            {
+              "t": "em",
+              "v": "\"you're on the wrong tab, at the line level.\""
+            },
+            {
+              "t": "text",
+              "v": " The freeze was refused until performed there, and the sequence needed two attempts and a stoplight control before the line took."
+            }
+          ],
+          "text": "The first frame in this library of a shipment line actually reaching `Frozen`, and it confirms §3.8 — the control is on the Shipment Lines tab, not the header. The second guide's correction on camera: \"you're on the wrong tab, at the line level.\" The freeze was refused until performed there, and the sequence needed two attempts and a stoplight control before the line took."
+        }
+      ]
+    },
+    {
+      "n": "3.14",
+      "title": "The rest of the execution chain, narrated only",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The run continued past the frames above and is recorded here without evidence, as leads:"
+            }
+          ],
+          "text": "The run continued past the frames above and is recorded here without evidence, as leads:"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Transfer is available from Item Order Plan's own line-level Actions"
+                },
+                {
+                  "t": "text",
+                  "v": ", not only from Planned Orders — "
+                },
+                {
+                  "t": "em",
+                  "v": "\"drill into the line… and then under Actions, still have Transfer.\""
+                }
+              ],
+              "text": "Transfer is available from Item Order Plan's own line-level Actions, not only from Planned Orders — \"drill into the line… and then under Actions, still have Transfer.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Material issue precedes reporting an operation."
+                },
+                {
+                  "t": "text",
+                  "v": " The repair sequence was: production order number ➔ warehouse orders ➔ advise ➔ release, after which "
+                },
+                {
+                  "t": "em",
+                  "v": "\"it went from ADNA02 to the work center.\""
+                }
+              ],
+              "text": "Material issue precedes reporting an operation. The repair sequence was: production order number ➔ warehouse orders ➔ advise ➔ release, after which \"it went from ADNA02 to the work center.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Inspection then put-away."
+                },
+                {
+                  "t": "text",
+                  "v": " Drill into the receipt line ➔ "
+                },
+                {
+                  "t": "strong",
+                  "v": "References ➔ Warehouse Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": " ➔ approve or reject, which "
+                },
+                {
+                  "t": "em",
+                  "v": "\"changes the status to put away and then that would allow you to close out the production order.\""
+                }
+              ],
+              "text": "Inspection then put-away. Drill into the receipt line ➔ References ➔ Warehouse Inspections ➔ approve or reject, which \"changes the status to put away and then that would allow you to close out the production order.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "A sales order does not close until it is processed."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "em",
+                  "v": "\"The reason it's not popping up is because we haven't processed the sales order\""
+                },
+                {
+                  "t": "text",
+                  "v": " — then "
+                },
+                {
+                  "t": "strong",
+                  "v": "Process Delivered Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", then check the status at line level."
+                }
+              ],
+              "text": "A sales order does not close until it is processed. \"The reason it's not popping up is because we haven't processed the sales order\" — then Process Delivered Orders, then check the status at line level."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Financials is the step after, and this team does not do it."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "em",
+                  "v": "\"The last part is financials… we don't do it at all, barely, that's what I've been told.\""
+                },
+                {
+                  "t": "text",
+                  "v": " Recorded as a scope boundary, not a gap."
+                }
+              ],
+              "text": "Financials is the step after, and this team does not do it. \"The last part is financials… we don't do it at all, barely, that's what I've been told.\" Recorded as a scope boundary, not a gap."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.11",
+      "title": "Navigation was the trainee's only real difficulty",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Asked directly by an attendee where he struggled, the trainee answered twice that it was not the process:"
+            }
+          ],
+          "text": "Asked directly by an attendee where he struggled, the trainee answered twice that it was not the process:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "em",
+              "v": "\"I couldn't remember where to go. It's just finding the right sessions.\""
+            },
+            {
+              "t": "text",
+              "v": " … "
+            },
+            {
+              "t": "em",
+              "v": "\"Sometimes I forget their tab is in the line level.\""
+            }
+          ],
+          "text": "\"I couldn't remember where to go. It's just finding the right sessions.\" … \"Sometimes I forget their tab is in the line level.\"",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Recorded because it names the same two failure modes twice — locating a session, and looking at header level for a line-level control (§3.8) — and because it is the clearest statement in any recording here of what this library is for. The advice given was to "
+            },
+            {
+              "t": "strong",
+              "v": "avoid keyboard shortcuts until the navigation is solid"
+            },
+            {
+              "t": "text",
+              "v": ", against another colleague's advice to use them; the caption attributes it to the consultant while the sentence quotes the consultant in the third person, so the speaker is not certain."
+            }
+          ],
+          "text": "Recorded because it names the same two failure modes twice — locating a session, and looking at header level for a line-level control (§3.8) — and because it is the clearest statement in any recording here of what this library is for. The advice given was to avoid keyboard shortcuts until the navigation is solid, against another colleague's advice to use them; the caption attributes it to the consultant while the sentence quotes the consultant in the third person, so the speaker is not certain."
+        }
+      ]
+    },
+    {
+      "n": "3.15",
+      "title": "The four passes, run over all seven captures",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "AGENTS.md's capture loop calls a capture done when four passes have run. They were "
+            },
+            {
+              "t": "strong",
+              "v": "not"
+            },
+            {
+              "t": "text",
+              "v": " run when these frames were first filed; they were run afterwards, and this section is their record."
+            }
+          ],
+          "text": "AGENTS.md's capture loop calls a capture done when four passes have run. They were not run when these frames were first filed; they were run afterwards, and this section is their record."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Capture",
+            "1 · help-to-frame",
+            "2 · condition",
+            "3 · fan-out",
+            "4 · issues"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ×2"
+                    }
+                  ],
+                  "text": "cprrp0520m000 ×2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "19 of 37 documented labels on frame"
+                    }
+                  ],
+                  "text": "19 of 37 documented labels on frame"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2 read, neither settled"
+                    }
+                  ],
+                  "text": "2 read, neither settled"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "25 docs"
+                    }
+                  ],
+                  "text": "25 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1 open row"
+                    }
+                  ],
+                  "text": "1 open row"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tcibd2600m000"
+                    }
+                  ],
+                  "text": "tcibd2600m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "could not run"
+                    }
+                  ],
+                  "text": "could not run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "could not run"
+                    }
+                  ],
+                  "text": "could not run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "10 docs"
+                    }
+                  ],
+                  "text": "10 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1 open row"
+                    }
+                  ],
+                  "text": "1 open row"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0501m000"
+                    }
+                  ],
+                  "text": "tisfc0501m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4 of 20"
+                    }
+                  ],
+                  "text": "4 of 20"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3 read, none settled"
+                    }
+                  ],
+                  "text": "3 read, none settled"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "19 docs"
+                    }
+                  ],
+                  "text": "19 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000"
+                    }
+                  ],
+                  "text": "whwmd4300m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "15 of 17"
+                    }
+                  ],
+                  "text": "15 of 17"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "none in its help"
+                    }
+                  ],
+                  "text": "none in its help"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "13 docs"
+                    }
+                  ],
+                  "text": "13 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0101m100"
+                    }
+                  ],
+                  "text": "tisfc0101m100"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "19 of 34"
+                    }
+                  ],
+                  "text": "19 of 34"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2 read, "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "1 settled"
+                    }
+                  ],
+                  "text": "2 read, 1 settled"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "15 docs"
+                    }
+                  ],
+                  "text": "15 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2100m100"
+                    }
+                  ],
+                  "text": "whinh2100m100"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "9 of 22"
+                    }
+                  ],
+                  "text": "9 of 22"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6 read, none settled"
+                    }
+                  ],
+                  "text": "6 read, none settled"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "22 docs"
+                    }
+                  ],
+                  "text": "22 docs"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2 open rows"
+                    }
+                  ],
+                  "text": "2 open rows"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two cells say the pass could not reach its input, and that is the report"
+            },
+            {
+              "t": "text",
+              "v": " — principle 9. They are not passes."
+            }
+          ],
+          "text": "Two cells say the pass could not reach its input, and that is the report — principle 9. They are not passes."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Pass 2 was first written up here as unrunnable, and that was wrong."
+            },
+            {
+              "t": "text",
+              "v": " The claim was that the conditional sentences lose their referenced names under extraction. They do not: the names are present, but the "
+            },
+            {
+              "t": "strong",
+              "v": "default extraction reorders the page"
+            },
+            {
+              "t": "text",
+              "v": ", so a gate name reads far from the sentence that depends on it and a contiguous search finds a truncated fragment. Re-extracting with "
+            },
+            {
+              "t": "literal",
+              "v": "extraction_mode=\"layout\""
+            },
+            {
+              "t": "text",
+              "v": " returns every condition intact. "
+            },
+            {
+              "t": "strong",
+              "v": "Rule 14 already says the generated text cache reorders text"
+            },
+            {
+              "t": "text",
+              "v": " — the failure was reading a fragment as an absence rather than believing the rule. The tracker row is corrected on that basis, and §3.16 is the sweep it was supposed to block. "
+            }
+          ],
+          "text": "Pass 2 was first written up here as unrunnable, and that was wrong. The claim was that the conditional sentences lose their referenced names under extraction. They do not: the names are present, but the default extraction reorders the page, so a gate name reads far from the sentence that depends on it and a contiguous search finds a truncated fragment. Re-extracting with extraction_mode=\"layout\" returns every condition intact. Rule 14 already says the generated text cache reorders text — the failure was reading a fragment as an absence rather than believing the rule. The tracker row is corrected on that basis, and §3.16 is the sweep it was supposed to block."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Pass 1 has no input at all for `tcibd2600m000`"
+            },
+            {
+              "t": "text",
+              "v": " — no help is filed for it, which is also why the "
+            },
+            {
+              "t": "literal",
+              "v": "fields"
+            },
+            {
+              "t": "text",
+              "v": " check reports its labels as unverifiable rather than passed. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Pass 1 has no input at all for `tcibd2600m000` — no help is filed for it, which is also why the fields check reports its labels as unverifiable rather than passed. Not documented for this release."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What pass 1 did surface, where it ran."
+            },
+            {
+              "t": "text",
+              "v": " Eight labels on the two "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": " frames are grid columns its Fields section does not carry — "
+            },
+            {
+              "t": "em",
+              "v": "Date"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Order Type"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Order Number"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Site"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Order Status"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Supply"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Specification"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Warehouse"
+            },
+            {
+              "t": "text",
+              "v": " — and three on "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0101m100"
+            },
+            {
+              "t": "text",
+              "v": " are Materials columns — "
+            },
+            {
+              "t": "em",
+              "v": "Allocation Date"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Net Quantity"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "em",
+              "v": "Estimated Quantity"
+            },
+            {
+              "t": "text",
+              "v": ". These are screen labels the filed help does not define, which is precisely what the ledger class exists to admit; they are transcribed in the ledgers and owned there."
+            }
+          ],
+          "text": "What pass 1 did surface, where it ran. Eight labels on the two cprrp0520m000 frames are grid columns its Fields section does not carry — Date, Order Type, Order Number, Site, Order Status, Supply, Specification, Warehouse — and three on tisfc0101m100 are Materials columns — Allocation Date, Net Quantity, Estimated Quantity. These are screen labels the filed help does not define, which is precisely what the ledger class exists to admit; they are transcribed in the ledgers and owned there."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Pass 3 read 104 document-touches across the six distinct sessions and changed none of them."
+            },
+            {
+              "t": "text",
+              "v": " Every document naming these sessions and predating the frames was checked for a value the frame contradicts; none was found, which is the expected result for frames of a fresh test scenario rather than of long-standing configuration."
+            }
+          ],
+          "text": "Pass 3 read 104 document-touches across the six distinct sessions and changed none of them. Every document naming these sessions and predating the frames was checked for a value the frame contradicts; none was found, which is the expected result for frames of a fresh test scenario rather than of long-standing configuration."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Pass 4 found no open issue contradicted by any frame."
+            },
+            {
+              "t": "text",
+              "v": " The four rows that name these codes — on "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2600m000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2100m000"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "session",
+              "code": "whinh2100m100"
+            },
+            {
+              "t": "text",
+              "v": " — are all still open on their own terms after the frames, and the frames are recorded against them where relevant."
+            }
+          ],
+          "text": "Pass 4 found no open issue contradicted by any frame. The four rows that name these codes — on cprrp0520m000, tcibd2600m000, tcibd2100m000 and whinh2100m100 — are all still open on their own terms after the frames, and the frames are recorded against them where relevant."
+        }
+      ]
+    },
+    {
+      "n": "3.16",
+      "title": "The condition sweep, and a parameter read without opening its session",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Thirteen conditions across the five sessions with help."
+            },
+            {
+              "t": "text",
+              "v": " One is settled by these frames, one set is vacuous, and the rest are undecidable from what was captured — recorded because an undecidable condition names the frame someone should take next."
+            }
+          ],
+          "text": "Thirteen conditions across the five sessions with help. One is settled by these frames, one set is vacuous, and the rest are undecidable from what was captured — recorded because an undecidable condition names the frame someone should take next."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Session",
+            "Conditional field(s)",
+            "Gate",
+            "Verdict on these frames"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000"
+                    }
+                  ],
+                  "text": "cprrp0520m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Supplying Company"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Supplying Item"
+                    }
+                  ],
+                  "text": "Supplying Company · Supplying Item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Multicompany Distribution"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprpd0100m000",
+                      "name": "Planning Parameters"
+                    }
+                  ],
+                  "text": "Multicompany Distribution in Planning Parameters (cprpd0100m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Undecidable"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — neither column is visible, and the Overview grid is cut off at the right edge, so absence is not established"
+                    }
+                  ],
+                  "text": "Undecidable — neither column is visible, and the Overview grid is cut off at the right edge, so absence is not established"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0501m000"
+                    }
+                  ],
+                  "text": "tisfc0501m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Allow Alternative Package Definition"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Item Engineering Revision"
+                    }
+                  ],
+                  "text": "Allow Alternative Package Definition · Item Engineering Revision"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "four- and three-clause conjunctions"
+                    }
+                  ],
+                  "text": "four- and three-clause conjunctions"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Undecidable"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the frame is a menu capture over a filtered list; neither field is on it"
+                    }
+                  ],
+                  "text": "Undecidable — the frame is a menu capture over a filtered list; neither field is on it"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0101m100"
+                    }
+                  ],
+                  "text": "tisfc0101m100"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Item Engineering Revision"
+                    }
+                  ],
+                  "text": "Item Engineering Revision"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Engineering Revisions"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Job Shop by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Active"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Engineering Revisions Active"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Originating App"
+                    }
+                  ],
+                  "text": "Engineering Revisions · Job Shop by Site Active · Engineering Revisions Active · Originating App"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Settled — displayed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", so all four clauses hold"
+                    }
+                  ],
+                  "text": "Settled — displayed, so all four clauses hold"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0101m100"
+                    }
+                  ],
+                  "text": "tisfc0101m100"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Allow Alternative Package Definition"
+                    }
+                  ],
+                  "text": "Allow Alternative Package Definition"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Handling Units in Use"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · the same box in "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0100s000"
+                    },
+                    {
+                      "t": "text",
+                      "v": " or "
+                    },
+                    {
+                      "t": "session",
+                      "code": "timfc0180m000"
+                    }
+                  ],
+                  "text": "Handling Units in Use · the same box in tisfc0100s000 or timfc0180m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Undecidable"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — not on the captured tab"
+                    }
+                  ],
+                  "text": "Undecidable — not on the captured tab"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2100m100"
+                    }
+                  ],
+                  "text": "whinh2100m100"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "From Rental Owner"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Into Rental Owner"
+                    }
+                  ],
+                  "text": "From Rental Owner · Into Rental Owner"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Equipment as a Service"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in Implemented Software Components"
+                    }
+                  ],
+                  "text": "Equipment as a Service in Implemented Software Components"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Undecidable"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the form is scrolled to Ship-From/Ship-To; consistent with the concept being off, and that is not evidence"
+                    }
+                  ],
+                  "text": "Undecidable — the form is scrolled to Ship-From/Ship-To; consistent with the concept being off, and that is not evidence"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000"
+                    }
+                  ],
+                  "text": "whwmd4300m000"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Complete"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — its help states no conditions"
+                    }
+                  ],
+                  "text": "Complete — its help states no conditions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The one that settled is worth the whole pass."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "Item Engineering Revision"
+            },
+            {
+              "t": "text",
+              "v": " renders on the production-order frame, and its help gates it on four things simultaneously. "
+            },
+            {
+              "t": "strong",
+              "v": "A conjunction that renders is one whose every clause holds"
+            },
+            {
+              "t": "text",
+              "v": ", so all four are true here — and one of them, "
+            },
+            {
+              "t": "strong",
+              "v": "_Engineering Revisions Active_ selected in Production Order Parameters (`tisfc0100s000`)"
+            },
+            {
+              "t": "text",
+              "v": ", appears in no document in this library and has never been read off the form, which nobody has opened. It is now recorded in "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §3."
+            }
+          ],
+          "text": "The one that settled is worth the whole pass. Item Engineering Revision renders on the production-order frame, and its help gates it on four things simultaneously. A conjunction that renders is one whose every clause holds, so all four are true here — and one of them, _Engineering Revisions Active_ selected in Production Order Parameters (`tisfc0100s000`), appears in no document in this library and has never been read off the form, which nobody has opened. It is now recorded in the source on file §3."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The other three clauses were already known from a 2026-09-02 "
+            },
+            {
+              "t": "session",
+              "code": "tirou0100m000"
+            },
+            {
+              "t": "text",
+              "v": " frame by the identical technique, recorded in "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "strong",
+              "v": "This frame corroborates them from a different session on a different date"
+            },
+            {
+              "t": "text",
+              "v": ", which is worth more than a second reading of the same source."
+            }
+          ],
+          "text": "The other three clauses were already known from a 2026-09-02 tirou0100m000 frame by the identical technique, recorded in the source on file. This frame corroborates them from a different session on a different date, which is worth more than a second reading of the same source."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Presence proves a conjunction; absence proves nothing about it."
+                },
+                {
+                  "t": "text",
+                  "v": " Every undecidable row above is undecidable in the same direction — the field is not visible, and any single clause failing would hide it, as would a scrolled grid or the wrong tab. "
+                },
+                {
+                  "t": "strong",
+                  "v": "That asymmetry is why the sweep is cheap when it works and silent when it does not"
+                },
+                {
+                  "t": "text",
+                  "v": ", and it is the reason to capture a form's full width rather than the part you came for."
+                }
+              ],
+              "text": "Presence proves a conjunction; absence proves nothing about it. Every undecidable row above is undecidable in the same direction — the field is not visible, and any single clause failing would hide it, as would a scrolled grid or the wrong tab. That asymmetry is why the sweep is cheap when it works and silent when it does not, and it is the reason to capture a form's full width rather than the part you came for."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "_Order Quantity Increment_ rounds the order up to the next whole increment above the requirement"
+            },
+            {
+              "t": "text",
+              "v": " — a 45 requirement at an increment of 25 yields 50. Captured on both sides of the change."
+            }
+          ],
+          "text": "_Order Quantity Increment_ rounds the order up to the next whole increment above the requirement — a 45 requirement at an increment of 25 yields 50. Captured on both sides of the change."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Safety stock counts as demand"
+            },
+            {
+              "t": "text",
+              "v": "; with safety stock zeroed and nothing outstanding, a planning run correctly produces nothing."
+            }
+          ],
+          "text": "Safety stock counts as demand; with safety stock zeroed and nothing outstanding, a planning run correctly produces nothing."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Ordering data inherits for _Safety Stock_ as well as _Order Interval_"
+            },
+            {
+              "t": "text",
+              "v": ", and a greyed field identifies the owning level."
+            }
+          ],
+          "text": "Ordering data inherits for _Safety Stock_ as well as _Order Interval_, and a greyed field identifies the owning level."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Material must reach warehousing before an operation is reported complete"
+            },
+            {
+              "t": "text",
+              "v": "; LN does not enforce the order."
+            }
+          ],
+          "text": "Material must reach warehousing before an operation is reported complete; LN does not enforce the order."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The shipment freeze is mandatory in this environment and is performed at line level."
+            }
+          ],
+          "text": "The shipment freeze is mandatory in this environment and is performed at line level."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Capture the General tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2600m000"
+                },
+                {
+                  "t": "text",
+                  "v": " to settle the narrated "
+                },
+                {
+                  "t": "literal",
+                  "v": "30"
+                },
+                {
+                  "t": "text",
+                  "v": "-day "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Interval"
+                }
+              ],
+              "text": "Capture the General tab of tcibd2600m000 to settle the narrated 30-day Order Interval"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find or export a source for safety stock as a planning demand source, and for the scenario-horizon containment claim"
+                }
+              ],
+              "text": "Find or export a source for safety stock as a planning demand source, and for the scenario-horizon containment claim"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Establish whether order planning nets blocked inventory — "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " is on hand "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": ", blocked "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": ", and planning netted the "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                }
+              ],
+              "text": "Establish whether order planning nets blocked inventory — BAM-CHOP-PAIR is on hand 5, blocked 5, and planning netted the 5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-run the "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " no-supply case with its on-hand captured in the same run"
+                }
+              ],
+              "text": "Re-run the BAM-SLEEVE no-supply case with its on-hand captured in the same run"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the three Warehouse Order Planning entries now named — SIC, TPOP, Kanban"
+                }
+              ],
+              "text": "Open the three Warehouse Order Planning entries now named — SIC, TPOP, Kanban"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Can planned orders be combined by any means other than widening "
+            },
+            {
+              "t": "em",
+              "v": "Order Interval"
+            },
+            {
+              "t": "text",
+              "v": "? Asked directly and left unanswered — "
+            },
+            {
+              "t": "em",
+              "v": "\"if there's a way to combine them manually, I haven't done that yet.\""
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " \"Watch out\" already rules out "
+            },
+            {
+              "t": "em",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " for plain Job Shop production, so the answer for this order type is probably no, and nobody stated it"
+            }
+          ],
+          "text": "Can planned orders be combined by any means other than widening Order Interval? Asked directly and left unanswered — \"if there's a way to combine them manually, I haven't done that yet.\" the source on file \"Watch out\" already rules out Combine Orders for plain Job Shop production, so the answer for this order type is probably no, and nobody stated it"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Does order planning net inventory that is wholly blocked? — "
+            }
+          ],
+          "text": "Does order planning net inventory that is wholly blocked? —"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Does a scenario's horizon bound the item horizons within it? — "
+            }
+          ],
+          "text": "Does a scenario's horizon bound the item horizons within it? —"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Is existing component stock the whole explanation for the "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " no-supply case, or only the explanation for this run? — "
+            }
+          ],
+          "text": "Is existing component stock the whole explanation for the BAM-SLEEVE no-supply case, or only the explanation for this run? —"
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A controlled before/after on one variable is worth more than either frame alone."
+            },
+            {
+              "t": "text",
+              "v": " §3.3 is the strongest configuration evidence in this library because the two Item Order Plan frames are identical in every column but one, and the frame that changed the input is captured too. Neither frame on its own would establish the rounding rule; the pair does, and it took no extra capture effort — only capturing "
+            },
+            {
+              "t": "em",
+              "v": "before"
+            },
+            {
+              "t": "text",
+              "v": " as well as after."
+            }
+          ],
+          "text": "A controlled before/after on one variable is worth more than either frame alone. §3.3 is the strongest configuration evidence in this library because the two Item Order Plan frames are identical in every column but one, and the frame that changed the input is captured too. Neither frame on its own would establish the rounding rule; the pair does, and it took no extra capture effort — only capturing before as well as after."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A confident spoken number was wrong against the screen it described."
+            },
+            {
+              "t": "text",
+              "v": " §3.12 is the strongest case in this library for capturing rather than transcribing: the guide states a BOM ratio aloud, specifically and without hedging, and the frame in front of him contradicts it. "
+            },
+            {
+              "t": "strong",
+              "v": "A transcript records what someone believed, not what the system holds"
+            },
+            {
+              "t": "text",
+              "v": " — and a review written from one would have manufactured a contradiction against this library's own BOM."
+            }
+          ],
+          "text": "A confident spoken number was wrong against the screen it described. §3.12 is the strongest case in this library for capturing rather than transcribing: the guide states a BOM ratio aloud, specifically and without hedging, and the frame in front of him contradicts it. A transcript records what someone believed, not what the system holds — and a review written from one would have manufactured a contradiction against this library's own BOM."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The recording was very nearly written up from narration alone."
+            },
+            {
+              "t": "text",
+              "v": " The first pass of this review recorded every §3 finding as an unverified claim and listed five captures as action items, because no frames had been pulled. Five frames converted four of those findings to fact and removed three issues that were about to be opened. "
+            },
+            {
+              "t": "strong",
+              "v": "The lesson is the cost asymmetry: pulling a frame is minutes, and re-running an experiment to capture what you already watched is a session."
+            }
+          ],
+          "text": "The recording was very nearly written up from narration alone. The first pass of this review recorded every §3 finding as an unverified claim and listed five captures as action items, because no frames had been pulled. Five frames converted four of those findings to fact and removed three issues that were about to be opened. The lesson is the cost asymmetry: pulling a frame is minutes, and re-running an experiment to capture what you already watched is a session."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A field name spoken on a call is not a field name — until the client shows it is."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "Exception Handling"
+            },
+            {
+              "t": "text",
+              "v": " returns zero matches across every exported help topic and was written up as speech; the expanded menu then showed it is a real submenu. Principle 3 in one step: the vendor documentation is silent and only the environment can answer."
+            }
+          ],
+          "text": "A field name spoken on a call is not a field name — until the client shows it is. Exception Handling returns zero matches across every exported help topic and was written up as speech; the expanded menu then showed it is a real submenu. Principle 3 in one step: the vendor documentation is silent and only the environment can answer."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The most valuable segment preceded the declared subject."
+            },
+            {
+              "t": "text",
+              "v": " The session was billed as an order-to-cash run; the evidence is in the twenty minutes of parameter changes before it. A scripted walkthrough does not produce that."
+            }
+          ],
+          "text": "The most valuable segment preceded the declared subject. The session was billed as an order-to-cash run; the evidence is in the twenty minutes of parameter changes before it. A scripted walkthrough does not produce that."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two transcriptions of one recording are not redundant when one carries speakers."
+            },
+            {
+              "t": "text",
+              "v": " The platform's own caption export attributes all 855 filed cues and settled a question "
+            },
+            {
+              "t": "literal",
+              "v": "faster-whisper"
+            },
+            {
+              "t": "text",
+              "v": " could not: who was teaching. The first draft of §2 had the guiding role assigned from narration and would have been wrong about it — the session was set up for one person to guide and a different person did. "
+            },
+            {
+              "t": "strong",
+              "v": "Where a claim's weight depends on who made it, an unattributed transcript is not enough"
+            },
+            {
+              "t": "text",
+              "v": ", and principle 4 rests exactly there."
+            }
+          ],
+          "text": "Two transcriptions of one recording are not redundant when one carries speakers. The platform's own caption export attributes all 855 filed cues and settled a question faster-whisper could not: who was teaching. The first draft of §2 had the guiding role assigned from narration and would have been wrong about it — the session was set up for one person to guide and a different person did. Where a claim's weight depends on who made it, an unattributed transcript is not enough, and principle 4 rests exactly there."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Recording:"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "strong",
+              "v": "The filed recording is trimmed"
+            },
+            {
+              "t": "text",
+              "v": " — it begins at "
+            },
+            {
+              "t": "literal",
+              "v": "00:02:24"
+            },
+            {
+              "t": "text",
+              "v": " of the source, removing pre-meeting small talk that contains no LN content. The manifest records the trim; the reason is held outside this repository. The raw video stays local and never commits."
+            }
+          ],
+          "text": "Recording: the source on file. The filed recording is trimmed — it begins at 00:02:24 of the source, removing pre-meeting small talk that contains no LN content. The manifest records the trim; the reason is held outside this repository. The raw video stays local and never commits."
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Ordering"
+                }
+              ],
+              "text": "Items - Ordering"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000"
+                }
+              ],
+              "text": "tcibd2100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item - Ordering, detail"
+                }
+              ],
+              "text": "Item - Ordering, detail"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd2600m000"
+                }
+              ],
+              "text": "tcibd2600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan"
+                }
+              ],
+              "text": "Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000"
+                }
+              ],
+              "text": "cprrp0520m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned Orders"
+                }
+              ],
+              "text": "Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                }
+              ],
+              "text": "cprrp1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders"
+                }
+              ],
+              "text": "Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000"
+                }
+              ],
+              "text": "tisfc0501m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales Order Intake Workbench"
+                }
+              ],
+              "text": "Sales Order Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4601m200"
+                }
+              ],
+              "text": "tdsls4601m200"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Orders"
+                }
+              ],
+              "text": "Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000"
+                }
+              ],
+              "text": "whinh2100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Inspections Overview"
+                }
+              ],
+              "text": "Warehouse Inspections Overview"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3122m000"
+                }
+              ],
+              "text": "whinh3122m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000"
+                }
+              ],
+              "text": "whwmd4300m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

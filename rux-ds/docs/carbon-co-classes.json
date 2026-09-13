@@ -1,0 +1,67 @@
+{
+ "_": "Classes @carbon/web-components ALWAYS emits together, extracted from the rendered shadow DOM of 219 tags via tools/extract/. Regenerate by re-installing @carbon/web-components and re-running the harness; see roadmap §4.1.7.",
+ "_ignored": {
+  "cds--popover--top": "mutual with --high-contrast; only one sample, not a real requirement",
+  "cds--popover--high-contrast": "mutual with --top; sample artifact",
+  "cds--popover-container": "--caret is a variant, not required",
+  "cds--toggletip": "inherits the popover sample artifact",
+  "cds--search-close": "mutual with --hidden; only the hidden state was sampled",
+  "cds--search-close--hidden": "sample artifact",
+  "cds--css-grid-column": "responsive spans are a choice, not a requirement",
+  "cds--lg:col-span-16": "sample artifact",
+  "cds--md:col-span-8": "sample artifact",
+  "cds--sm:col-span-4": "sample artifact",
+  "cds--tab--overflow-nav-button": "mutual with --hidden; sample artifact",
+  "cds--tab--overflow-nav-button--hidden": "sample artifact",
+  "cds--toggle-password-tooltip": "password-input specific; not used here",
+  "cds--tooltip--align-end": "password-input specific",
+  "cds--tooltip--bottom": "password-input specific",
+  "cds--tooltip__trigger": "co-classes are password-input specific",
+  "cds--tooltip--a11y": "password-input specific",
+  "cds--text-input--password__visibility__toggle": "password-input specific",
+  "cds--btn--md": "--primary is a kind, not required",
+  "cds--btn--lg": "size pairing is advisory",
+  "cds--date-picker__input--md": "mutual; and --md has no rule in @carbon/styles",
+  "cds--list-box--md": "no rule in @carbon/styles; the styled sizes are --dropdown--lg/--sm",
+  "cds--dropdown": "requires --list-box, but its --list-box--md/--layout--size-md are unstyled",
+  "cds--combo-box": "same as --dropdown",
+  "cds--multi-select": "same as --dropdown",
+  "cds--slug__button--xs": "one size among several; only --xs was sampled",
+  "cds--date-picker__input": "requires --md, which @carbon/styles does not define; --lg/--sm are the styled sizes",
+  "cds--text-input-wrapper": "DISPROVEN 2026-08-28 by components-slider--default: the slider renders `text-input-wrapper slider-text-input-wrapper` with NO form-item. The rule was true of every text-input sample and false in general — exactly the sample artifact this list exists for."
+ },
+ "required": {
+  "cds--btn--primary": [
+   "cds--btn"
+  ],
+  "cds--btn--sm": [
+   "cds--btn"
+  ],
+  "cds--text-input--empty": [
+   "cds--text-input"
+  ],
+  "cds--text-input--fluid": [
+   "cds--form-item",
+   "cds--text-input-wrapper"
+  ],
+  "cds--password-input-wrapper": [
+   "cds--form-item",
+   "cds--text-input-wrapper"
+  ],
+  "cds--password-input": [
+   "cds--text-input"
+  ],
+  "cds--time-picker__input-field": [
+   "cds--text-input"
+  ],
+  "cds--tile--selectable": [
+   "cds--tile"
+  ],
+  "cds--slug__button": [
+   "cds--toggletip-button"
+  ],
+  "cds--popover--drop-shadow": [
+   "cds--popover-container"
+  ]
+ }
+}

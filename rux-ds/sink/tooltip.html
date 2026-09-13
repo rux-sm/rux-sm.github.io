@@ -1,0 +1,51 @@
+<section class="ks-sec" id="tooltip">
+  <h2>Tooltip</h2><p>open state · definition variant — click a trigger</p>
+  <!-- PROVENANCE: rendered-dom · components-tooltip--default, --alignment and
+       components-definitiontooltip--default with its open recipe, 2026-08-28 -->
+  <!--
+      EVERY nesting finding here is one decision, reported once per class. The
+      reference wraps this component's trigger in an icon-tooltip, so its buttons
+      sit inside `tooltip-trigger__wrapper`; the sink declines that chrome on the
+      combo-button precedent — it demos the component, not the story's hover
+      hint — which leaves our buttons as direct children of the component's own
+      wrapper. Nothing else differs.
+  -->
+  <!--
+    .rux--tooltip--visible has no CSS rule. Visibility comes from the popover
+    mechanism: .rux--popover--open > .rux--popover > .rux--popover-content.
+  -->
+  <div class="ks-row" style="gap:6rem;padding:4rem 0 5rem 8rem">
+    <span class="rux--tooltip rux--popover-container rux--popover--bottom rux--popover--caret">
+      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm rux--tooltip__trigger">Trigger</button>
+      <span class="rux--popover">
+        <span class="rux--popover-content rux--tooltip-content">Tooltip content</span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+
+    <span class="rux--tooltip rux--popover-container rux--popover--top rux--popover--caret">
+      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm rux--tooltip__trigger">Top</button>
+      <span class="rux--popover">
+        <span class="rux--popover-content rux--tooltip-content">Above the trigger</span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+
+    <!--
+      Definition tooltip rebuilt 2026-08-27 against
+      components-definitiontooltip--default and its @open state recipe
+      (rendered DOM). Carbon no longer emits the tooltip--definition classes —
+      they survive in @carbon/styles as legacy rules — and the rendered form is
+      a plain popover: high-contrast bottom-start container, a definition-term
+      button, and popover-content carrying definition-tooltip. Note the
+      container does NOT take .rux--tooltip; only hover tooltips do.
+    -->
+    <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom-start">
+      <button type="button" class="rux--definition-term" aria-expanded="false">Defined term</button>
+      <span class="rux--popover">
+        <span class="rux--popover-content rux--definition-tooltip">The definition of the term.</span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+  </div>
+</section>

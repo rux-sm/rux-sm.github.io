@@ -1,0 +1,7 @@
+/* rux-theme.css -- this project's own, linked after /rux-ds/css/rux-theme.css, served from
+   rux-ds's own repository and never copied here. Only what THIS project
+   changes goes here: token values inside a [data-theme] block
+   (rux-theme.css), or
+   component rules at Carbon's own specificity with no !important
+   (rux-overrides.css). Empty is the normal state. rux-ds AGENTS.md, "Where a
+   change goes". */

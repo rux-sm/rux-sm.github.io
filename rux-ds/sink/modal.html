@@ -1,0 +1,248 @@
+<section class="ks-sec" id="modal">
+  <h2>Modal</h2><p>sizes · danger footer · composed · scrolling · full width — opens full-viewport</p>
+  <!-- PROVENANCE: rendered-dom · components-modal--default, --danger-modal,
+       --passive-modal and composedmodal--default, plus the xs, sm and lg
+       recipes, 2026-08-28 -->
+  <!--
+    THE CLOSE BUTTON HAS TWO WRAPPERS IN THE REFERENCE AND THIS FRAGMENT KEPT
+    NEITHER, which was a defect rather than a decision. `modal-close-button` is
+    `position: absolute; inset-block-start: 0; inset-inline-end: 0` — it is what
+    pins the X to the header's top-right corner, against the `position: fixed`
+    container, into the 3rem the header's `padding-inline: 1rem 3rem` reserves
+    for it. Without it the button sat in the flow directly under the heading,
+    left-aligned, with the reserved gutter empty beside it. Found by looking at
+    the rendered page, which is the README's point about what no gate catches.
+
+    The SECOND wrapper is still declined: the reference nests the button in an
+    icon-tooltip's `tooltip-trigger__wrapper` for a hover hint, which the sink
+    passes on for the same reason it does on combo-button and the table's
+    overflow trigger — the positioning is floating-ui JS.
+
+    The reference also carries `btn btn--primary btn--icon-only` on the button
+    itself. They are declined too, and this one is measured rather than assumed:
+    `modal-close` sets its own 3rem box, transparent background and padding, and
+    is emitted after `button` in the manifest, so the btn classes contribute
+    nothing but a chance for the cascade to change under a Carbon bump.
+  -->
+  <!--
+    .rux--modal is position:fixed at 100vw/100vh. Constraining it to a box
+    misrepresents the component, so it is triggered instead: `.is-visible` on a
+    modal WITHOUT `--enable-presence` is Carbon's own show hook.
+
+    `layer-one` on the root is Carbon's, and it is not decoration: it re-declares
+    the whole --rux-layer-* group at layer-01, so a modal opened from inside a
+    layer-two region still renders as layer-one. At the sink's top level it
+    resolves to what :root already had, which is why its absence was invisible —
+    check-ancestry found it, not the page.
+
+    THE TRIGGERS ARE THE REAL BEHAVIOUR LAYER, not the sink harness — js/modal.js
+    on top of js/overlay.js (Phase 5). `data-rux-open="<id>"` opens, anything
+    with `data-rux-close` inside a modal closes, and focus trapping, Escape and
+    backdrop press come from the kernel. This is what a page built from a
+    template gets, with no script of its own.
+  -->
+  <div class="ks-row">
+    <button type="button" class="rux--btn rux--btn--primary" data-rux-open="modal-sm">Open small modal</button>
+    <button type="button" class="rux--btn rux--btn--secondary" data-rux-open="modal-lg">Open large modal</button>
+    <button type="button" class="rux--btn rux--btn--tertiary" data-rux-open="modal-xs">Open xs modal</button>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-xs" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-xs-h" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="modal-xs-h">Sign out?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content"><p>You will need to sign in again.</p></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Stay</button>
+        <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-sm" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-sm-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__label">Optional label</h2>
+        <h2 class="rux--modal-header__heading" id="modal-sm-h">Delete this record?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>This cannot be undone. The record and its history are removed permanently.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--danger" data-rux-close>Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-lg" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-lg-h" tabindex="-1" class="rux--modal-container rux--modal-container--lg">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="modal-lg-h">Large container</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content"><p>A wider modal for denser content.</p></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Confirm</button>
+      </div>
+    </div>
+  </div>
+  <!--
+    COMPOSED MODAL, which is a different composition and not a size variant.
+    components-composedmodal--default puts a `modal-container-body` between the
+    container and the header; components-modal--default does NOT, and the three
+    specimens above follow that one. check-ancestry cannot require the wrapper
+    for exactly this reason — it is a wrapper Carbon renders SOMETIMES, which
+    the gate table names as its blind spot. Both compositions ship, so both are
+    demoed rather than one being treated as the truth.
+
+    The content element carries the scroll state: `modal-scroll-content--no-fade`
+    when it does not scroll (composedmodal--default) and `modal-scroll-content`
+    with role=region when it does (--with-scrolling-content). They are the same
+    element, never both.
+
+    THE SCROLLING SPECIMEN NEEDS ENOUGH CONTENT TO ACTUALLY SCROLL, and the first
+    draft did not have it. `modal-container` is `max-height: 90%`, so a short
+    modal grows to fit and the content box never overflows: the class was
+    present, role=region and tabindex=0 were present, and nothing scrolled. That
+    is worse than omitting it — a tab stop on a region a keyboard cannot scroll
+    is a cost with no benefit. Measured at 863px of viewport the container caps
+    at 777px and the content overflows 760 into 657. Shorten this list and the
+    specimen silently stops demonstrating anything.
+  -->
+  <div class="ks-row" style="margin-block-start:1.5rem">
+    <button type="button" class="rux--btn rux--btn--primary" data-rux-open="modal-composed">Open composed modal</button>
+    <button type="button" class="rux--btn rux--btn--secondary" data-rux-open="modal-scrolling">Open scrolling modal</button>
+    <button type="button" class="rux--btn rux--btn--tertiary" data-rux-open="modal-full">Open full-width modal</button>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-composed" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-composed-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-container-body">
+        <div class="rux--modal-header">
+          <h2 class="rux--modal-header__label">Composed</h2>
+          <h2 class="rux--modal-header__heading" id="modal-composed-h">Deploy this release?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        </div>
+        <div class="rux--layer-two rux--modal-content rux--modal-scroll-content--no-fade">
+          <p>Content that fits needs no fade, so Carbon marks it --no-fade rather than leaving the class off.</p>
+        </div>
+        <div class="rux--modal-footer rux--btn-set">
+          <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+          <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Deploy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-scrolling" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-scrolling-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-container-body">
+        <div class="rux--modal-header">
+          <h2 class="rux--modal-header__heading" id="modal-scrolling-h">Release notes</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        </div>
+        <div class="rux--layer-two rux--modal-content rux--modal-scroll-content" role="region" tabindex="0" aria-label="Release notes, scrollable">
+          <p>Scrollable content takes role=region and a tab stop of its own, because a region a mouse can scroll must be reachable by a keyboard too.</p>
+          <p>Alpha — cluster autoscaling now respects per-node taints.</p>
+          <p>Bravo — the deployment log streams instead of polling.</p>
+          <p>Charlie — expired credentials fail closed rather than retrying.</p>
+          <p>Delta — regional failover no longer waits on the health check.</p>
+          <p>Echo — audit entries carry the actor as well as the action.</p>
+          <p>Foxtrot — the settings panel remembers its last open section.</p>
+          <p>Golf — bulk edits are applied in one transaction.</p>
+          <p>Hotel — the region picker lists only regions the account can reach.</p>
+          <p>India — long-running jobs report progress instead of a spinner.</p>
+          <p>Juliett — deleted resources are recoverable for thirty days.</p>
+          <p>Kilo — the API returns a request id on every error response.</p>
+          <p>Lima — scheduled maintenance appears in the activity feed.</p>
+          <p>Mike — permissions changes take effect without a re-login.</p>
+          <p>November — the audit export includes the filters that produced it.</p>
+          <p>Oscar — webhook retries back off instead of hammering the endpoint.</p>
+          <p>Papa — the cost estimate updates as the instance size changes.</p>
+          <p>Quebec — draft changes survive a browser refresh.</p>
+          <p>Romeo — the search index rebuilds without taking the table offline.</p>
+          <p>Sierra — service accounts can no longer be created without an owner.</p>
+          <p>Tango — the log viewer keeps its position when new lines arrive.</p>
+          <p>Uniform — deprecated endpoints warn a release before they go.</p>
+        </div>
+        <div class="rux--modal-footer rux--btn-set">
+          <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rux--layer-one rux--modal" id="modal-full" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-full-h" tabindex="-1" class="rux--modal-container rux--modal-container--lg rux--modal-container--full-width">
+      <div class="rux--modal-container-body">
+        <div class="rux--modal-header">
+          <h2 class="rux--modal-header__label">Content reaches the container edge</h2>
+          <h2 class="rux--modal-header__heading" id="modal-full-h">Full width</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+        </div>
+        <!-- A TABLE, NOT A PARAGRAPH, and the difference is the whole specimen.
+             `--full-width` sets `padding: 0` on modal-content so something can
+             bleed to the container edge; both of Carbon's full-width stories put
+             a structured-list there for exactly that reason. This fragment used
+             to hold a <p>, which put body text flush against the edge and read
+             as a MISSING RULE rather than as the point of the variant — asked
+             about twice from the page on 2026-08-29.
+             structured-list is CUT (docs/inventory.md: "overlaps data-table"),
+             so the substitute is the component it was cut in favour of. The
+             explanation moved to `modal-header__label`, which is inside the
+             header and therefore still padded — text in the content area is the
+             one thing this variant cannot show without looking broken. -->
+        <div class="rux--layer-two rux--modal-content rux--modal-scroll-content--no-fade">
+          <div class="rux--data-table-content">
+            <table class="rux--data-table">
+              <thead>
+                <tr>
+                  <th scope="col"><div class="rux--table-header-label">Service</div></th>
+                  <th scope="col"><div class="rux--table-header-label">Region</div></th>
+                  <th scope="col"><div class="rux--table-header-label">Updated</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Atlas</td><td>eu-west-1</td><td>2 hours ago</td></tr>
+                <tr><td>Borealis</td><td>us-east-2</td><td>Yesterday</td></tr>
+                <tr><td>Cascade</td><td>ap-south-1</td><td>3 days ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="rux--modal-footer rux--btn-set">
+          <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

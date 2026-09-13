@@ -1,0 +1,108 @@
+<section class="ks-sec ks-overlay-room" id="combo-button">
+  <h2>Combo button</h2><p>primary action plus a menu of secondary ones · sm · md · lg</p>
+  <!-- PROVENANCE: rendered-dom · components-combobutton--default with its sm and
+       md recipes and `components-combobutton--default@open`, 2026-08-31 -->
+  <!--
+    A PRIMARY ACTION AND A TRIGGER, SIDE BY SIDE IN ONE CONTAINER. The
+    container carries the size on itself — `combo-button__container--lg` — and
+    the buttons carry `layout--size-*` as well, because the container sizes the
+    seam between them and the buttons size themselves.
+
+    TWO CLASSES THE REFERENCE RENDERS ARE NOT WRITTEN, both on the §4.1.12
+    precedent — attested in the capture, no rule in @carbon/styles, so
+    check-classes rejects them. `btn--lg` DOES NOT EXIST: Carbon's button size
+    classes stop at `--md`, and large comes from `layout--size-lg` alone, which
+    is kept. `combo-button__bottom` appears nowhere in Carbon's SCSS at all —
+    zero hits in the partial — so the menu carries only its own classes. Both
+    cost a check-classes rejection on this fragment's first run.
+
+    THE MENU IS PORTALED, and that is why this fragment writes an attribute
+    where most write none. Carbon's capture renders the `ul.menu` at the TOP
+    LEVEL, outside the container entirely — trigger and surface are too far
+    apart for the markup to relate them, which is the one case CLAUDE.md says
+    `data-rux-open` exists for. `js/menu.js` claims any `[data-rux-open]`
+    trigger, so no new module: this is the same contract the plain menu uses.
+
+    THE OPEN STATE LIVES ON THE CONTAINER. Carbon puts
+    `combo-button__container--open` there while the menu is open, and its only
+    rule rotates the trigger's chevron 180 degrees. `js/menu.js` toggles it —
+    the same shape as the `overflow-menu--open` class it already puts on an
+    overflow trigger, one element further out.
+
+    THE ICON-TOOLTIP IS DECLINED, as everywhere in this sink. The reference
+    wraps the trigger in `popover-container … icon-tooltip`; the fragment demos
+    the component, not the story's hover hint, and `check-ancestry` carries the
+    decline with its reason.
+  -->
+  <div class="ks-row" style="gap:2rem">
+
+    <div class="rux--combo-button__container rux--combo-button__container--lg">
+      <div class="rux--combo-button__primary-action">
+        <button type="button" class="rux--btn rux--layout--size-lg rux--btn--primary">Save record</button>
+      </div>
+      <button type="button" class="rux--combo-button__trigger rux--btn rux--layout--size-lg rux--btn--primary rux--btn--icon-only"
+              data-rux-open="ks-combo-menu" aria-haspopup="true" aria-expanded="false" aria-label="Additional actions">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+      </button>
+    </div>
+
+    <div class="rux--combo-button__container rux--combo-button__container--md">
+      <div class="rux--combo-button__primary-action">
+        <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--primary">Medium</button>
+      </div>
+      <button type="button" class="rux--combo-button__trigger rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only"
+              aria-haspopup="true" aria-expanded="false" aria-label="Additional actions">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+      </button>
+    </div>
+
+    <div class="rux--combo-button__container rux--combo-button__container--sm">
+      <div class="rux--combo-button__primary-action">
+        <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary">Small</button>
+      </div>
+      <button type="button" class="rux--combo-button__trigger rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary rux--btn--icon-only"
+              aria-haspopup="true" aria-expanded="false" aria-label="Additional actions">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!--
+    THE MENU, PORTALED. It sits outside every container because that is where
+    Carbon renders it.
+
+    `menu-item__selection-icon` AND `menu-item__icon` ARE IN THE CAPTURE AND
+    ARE KEPT EMPTY, exactly as the reference renders them: React emits both
+    divs for every item whether or not the menu has selections or icons, and
+    their widths are what keep the labels aligned down the list.
+
+    ONLY THE FIRST CONTAINER'S TRIGGER OPENS IT. The md and sm specimens carry
+    no `data-rux-open`, so they demo the closed shape at their sizes without
+    three triggers fighting over one surface — the call sink/menu.html records
+    for its own density specimens.
+  -->
+  <ul id="ks-combo-menu" class="rux--menu rux--menu--lg" role="menu" aria-label="Additional actions" tabindex="-1">
+    <li class="rux--menu-item" role="menuitem" aria-haspopup="false" tabindex="0">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">Save and duplicate</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" aria-haspopup="false" tabindex="0">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">Save as draft</div>
+    </li>
+    <li class="rux--menu-item rux--menu-item--disabled" role="menuitem" aria-disabled="true" aria-haspopup="false" tabindex="-1">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">Save to shared</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item rux--menu-item--danger" role="menuitem" aria-haspopup="false" tabindex="0">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">Discard changes</div>
+    </li>
+  </ul>
+</section>

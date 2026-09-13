@@ -1,0 +1,95 @@
+<section class="ks-sec" id="page-header">
+  <h2>Page header</h2><p>breadcrumb bar · title · description · actions</p>
+  <!-- PROVENANCE: rendered-dom · preview-pageheader--default,
+       --content-with-icon, --content-with-contextual-actions and
+       --tab-bar-with-tabs-and-tags on the @carbon/ibm-products origin,
+       2026-08-28 · @carbon/react has no PageHeader -->
+  <!--
+    TITLE-WRAPPER AND CONTENT__START WERE INVERTED. Carbon nests them
+    `css-grid-column > __title-wrapper > __start > __title-container`, and this
+    fragment had __start outermost — so the two-column grid rules on
+    __title-wrapper applied to the wrong box and __body sat inside __start
+    instead of beside the wrapper in the grid column.
+
+    Two findings recorded rather than changed. The reference puts its
+    breadcrumb in `nav.page-header-breadcrumb-overflow`, the collapsing
+    variant, which @carbon/styles has no rule for (§4.1.12) — so the ol sits
+    directly in __breadcrumb-wrapper here, carrying `breadcrumb--sm` and
+    `--no-trailing-slash`, which do have rules and which that story does not
+    use. And every button finding is the icon-tooltip chrome the reference
+    wraps its actions in, declined throughout this sink.
+  -->
+  <!--
+    __content__body is the DESCRIPTION TEXT (margin-block-start: .5rem,
+    max-inline-size: 40rem), not a wrapper — the title goes in
+    __content__title-wrapper > __content__title-container > __content__title.
+    __content is `padding: 1.5rem 0` with no horizontal padding: Carbon expects the
+    grid to supply it, so the content sits inside a .rux--css-grid column.
+    col-span-100 is `grid-column: 1/-1` — full width at every breakpoint. A fixed
+    col-span-16 clamps below the lg breakpoint, where the grid drops to 8 or 4.
+
+    __content__start is a WRAPPING FLEX ROW, so the title wrapper sizes to its
+    content unless it is given its own line. Carbon's React header sets
+    --pageheader-title-grid-width from JS to size the wrapper's second grid column;
+    with no JS the variable defaults to 0, so the demo uses flex-basis:100% to give
+    the title row full width. That is a demo accommodation, not a Carbon rule.
+  -->
+  <div class="rux--page-header">
+    <div class="rux--page-header__breadcrumb-bar">
+      <div class="rux--css-grid">
+        <div class="rux--css-grid-column rux--col-span-100">
+          <div class="rux--page-header__breadcrumb-container">
+            <div class="rux--page-header__breadcrumb-wrapper">
+              <nav aria-label="Breadcrumb">
+                <ol class="rux--breadcrumb rux--breadcrumb--sm rux--breadcrumb--no-trailing-slash">
+                  <li class="rux--breadcrumb-item"><a class="rux--link" href="#page-header">Home</a></li>
+                  <li class="rux--breadcrumb-item"><a class="rux--link" href="#page-header">Analytics</a></li>
+                  <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#page-header" aria-current="page">Reports</a></li>
+                </ol>
+              </nav>
+            </div>
+            <div class="rux--page-header__breadcrumb__actions">
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rux--page-header__content">
+      <div class="rux--css-grid">
+        <div class="rux--css-grid-column rux--col-span-100">
+          <div class="rux--page-header__content__title-wrapper">
+            <div class="rux--page-header__content__start">
+              <div class="rux--page-header__content__title-container">
+                <h1 class="rux--page-header__content__title">Quarterly report</h1>
+              </div>
+            </div>
+              <!--
+                THESE BUTTONS RENDER 40px TALL, NOT 32, AND THAT IS CARBON'S
+                LAYOUT RATHER THAN A DEFECT. __title-wrapper is a two-column grid
+                at md and up (_page-header.scss:82-87), so the title and the
+                actions share one row and grid stretches both to the row height,
+                which the h1 sets at 40px. __page-actions declares only
+                `display:flex; justify-content:right` (:134) — no align-items —
+                so the buttons stretch again inside it. Both stretches are
+                Carbon's; overriding either would be our invention.
+
+                Checked when the --layout--size-sm sweep left these two at 40px
+                while every other small button in the sink came out at 32.
+                min-height is 32px and --rux-layout-size-height is 2rem, so the
+                size class IS applied; the box is being stretched, not mis-sized.
+              -->
+              <ul class="rux--page-header__content__page-actions">
+                <li><button type="button" class="rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm">Export</button></li>
+                <li><button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Publish</button></li>
+              </ul>
+          </div>
+          <div class="rux--page-header__content__body">
+            Revenue, retention and headcount for the quarter, with commentary from each business unit.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

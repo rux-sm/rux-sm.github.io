@@ -1,0 +1,152 @@
+/* Kitchen-sink harness only. Not part of the system — everything here is ks-. */
+/* THE SHELL IS THE SYSTEM'S NOW, 2026-09-11. This file used to lay the page
+   out itself — a two-column body grid, a sticky ks-nav holding every section
+   link, and a row of eight theme buttons at the top of the content. All three
+   are gone. The page carries the same rux--header, side nav and profile panel
+   as every other page here, so the sink is built from the thing it documents
+   rather than from harness chrome that resembled it.
+
+   WHAT IS LEFT IS SIZING AND NOTHING ELSE. ks-main rides alongside
+   rux--content, which supplies the padding and the 18rem offset for the nav
+   inside the header; this only caps the measure so 68 sections do not run the
+   full width of a wide screen. ks-count is the line under the h1. */
+body { min-height: 100vh; background: var(--rux-background);
+       color: var(--rux-text-primary); }
+/* MEASURE ONLY. rux--content's own padding is left alone deliberately: the
+   sink used to set padding-block here, and check-spacing reported
+   rux--content diverging on paddingBlockStart and paddingBlockEnd as well as
+   the inline offset. Only the offset is adjudicated (SELF_INDENT, and every
+   template carries it), so a block padding of ours turns one known row into
+   an unknown one. Fitting the markup to the adjudication is the cheap side of
+   that; widening the adjudication is a control change. 2026-09-11. */
+.ks-main { max-width: 66rem; }
+
+/* THE SECTION INDEX, in the page. It was the left column until 2026-09-11,
+   then the shell's side nav for an afternoon, and neither was right: IBM puts
+   pages in the left panel and page content in the page. Dense on purpose --
+   19px rows against Carbon's 32px side-nav link, so 68 entries read as an
+   index rather than a second navigation. Columns rather than one tall list,
+   because a 1292px column pushes every section below the fold. */
+.ks-index { columns: 11rem; column-gap: 1.5rem; margin-block-end: 2.5rem;
+            padding-block: 1rem; border-block: 1px solid var(--rux-border-subtle); }
+.ks-index a { display: block; padding-block: .0625rem; break-inside: avoid; }
+.ks-index a { font-size: .8125rem; color: var(--rux-text-secondary);
+              text-decoration: none; }
+.ks-index a:hover { color: var(--rux-link-primary); text-decoration: underline; }
+/* A REAL FOCUS RING, because 68 links with only the browser's own is a defect
+   and check-a11y counts it as one. It reported 68 findings the moment this
+   index moved into the page -- all of them "no visible focus change" on an
+   anchor whose focused outline computes `auto`, which the gate does not count
+   and this stylesheet never writes. Carbon's own idiom: 2px solid on the focus
+   token, inset so it does not shift the row. The list that stood in the left
+   column before this had no ring either and was never reported, which is its
+   own question and is written up in docs/log.md. */
+.ks-index a:focus-visible { outline: 2px solid var(--rux-focus);
+                            outline-offset: -2px; }
+.ks-count { font-size: .75rem; color: var(--rux-text-helper);
+            margin-block: .25rem 2rem; }
+.ks-sec { padding-block: 2rem; border-block-start: 1px solid var(--rux-border-subtle); }
+/* EVERY SECTION IS ITS OWN STACKING CONTEXT, AND THE MODAL SECTION IS NOT.
+   The sink shows overlay components in their OPEN state statically — a page
+   does not normally have a dropdown, a menu and an overflow menu all open at
+   once — and those specimens carry Carbon's real z-indexes. `list-box__menu`
+   is 9100, and Carbon's scale puts `dropdown: 9100` deliberately ABOVE
+   `modal: 9000` so a dropdown inside a modal renders over the modal's surface.
+   Correct on a real page; wrong here, where the open specimen sits in a
+   different section entirely and painted over any modal the reader opened —
+   reported 2026-08-29, and elementFromPoint confirmed the menu was taking the
+   press, not just the pixels.
+   `isolation` confines each specimen's z-index to its own section without
+   touching a single Carbon value. The modal section is EXEMPT because the
+   modal is the one thing that must win: left in the root stacking context at
+   9000 it outranks every isolated section, whatever their DOM order. Anything
+   added later that must cover the whole page belongs outside this rule too. */
+.ks-sec:not(#modal):not(#date-picker):not(#combo-button) { isolation: isolate; }
+/* #date-picker AND #combo-button JOIN #modal OUTSIDE THE RULE, on the sentence above: its
+   calendar must cover what follows it. Unlike the permanently-open specimens
+   this rule was written for, the calendar OPENS ON A PRESS and is absent from
+   the DOM until then, so it cannot paint over a reader who has not asked for
+   it. Isolated, its container's z-index 9000 was confined to this section and
+   the Checkbox section below painted straight through the open calendar --
+   reported and measured 2026-08-31, elementFromPoint at the calendar's
+   midpoint returned `ks-nav`. Modal still wins over it: both sit at 9000 in
+   the root context and #modal comes later in sink/ORDER.
+
+   #combo-button is the same case and was found the same way: its menu is
+   PORTALED, opens on a press, and was painting under the Copy button section
+   below it. Its menu is z-index 9100 -- Carbon puts dropdown above modal
+   deliberately -- so outside the rule it wins over both, which is correct on a
+   real page and is why sink/ORDER puts modal last among the three. */
+/* ROOM FOR A SPECIMEN THAT IS PERMANENTLY OPEN. An absolutely-positioned menu
+   reserves no height, which is right on a real page — an open dropdown should
+   overlay what follows it — but wrong for a specimen that never closes: the
+   list box menu is 120px tall and hung 88px past its own section, painting
+   over the NEXT section's h2 and subtitle. Isolation did not fix that and was
+   never going to: it decides which stacking context a thing belongs to, not
+   how much space it takes. Confirmed pre-existing by measuring with the
+   isolation rule on and off — the heading read as covered either way.
+   7.5rem is the menu's own height, so the section reserves exactly what the
+   open state needs. */
+.ks-overlay-room { padding-block-end: 7.5rem; }
+.ks-sec > h2 { font-size: 1.25rem; margin-block-end: .25rem; }
+.ks-sec > p  { font-size: .75rem; color: var(--rux-text-secondary); margin-block-end: 1.25rem; }
+.ks-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-start;
+          margin-block-end: 1rem; }
+.ks-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.ks-label { font-size: .6875rem; letter-spacing: .32px; text-transform: uppercase;
+            color: var(--rux-text-secondary); margin-block-end: .5rem; }
+.ks-box { padding: 1rem; background: var(--rux-layer-01); }
+/* The stack scale strip measures itself, so its tracks must not absorb the
+   sink column's leftover width. `stack-horizontal` is a grid of `auto` tracks,
+   and auto tracks STRETCH by default — in a 507px column that put 44px of
+   visible space between two tags whose gap is 2px, and flattened steps 1 to 10
+   into a range of 44 to 71px. `justify-content: start` packs the tracks instead,
+   leaving the gap as the only space between them. It changes no `column-gap`
+   and so misrepresents nothing: what it removes is the container's slack. */
+.ks-ruler { justify-content: start; }
+/* The stack scale strip. Three columns, and only ONE thing varies down it: the
+   space between the two markers. The markers are a FIXED 12x24 in every row so
+   the eye has nothing else to track — the earlier version put the px number in
+   a Tag inside the stack, which made the label's own width change with the text
+   (38px at "2px", 52px at "160px") while the gap changed underneath it. Two
+   variables at once, and a reader inspecting the 160px pill found it 52px wide
+   and reasonably asked why. The number now sits OUTSIDE the stack, where its
+   width cannot be mistaken for the measurement. */
+.ks-strip-row { display: grid; grid-template-columns: 2rem 12rem auto;
+                gap: 1rem; align-items: center; font-size: .8125rem; }
+.ks-mark { inline-size: .75rem; block-size: 1.5rem; background: var(--rux-interactive); }
+
+/* The spacing scale table. Four columns: token, rem, px, swatch.
+   THE SWATCH IS SIZED BY THE TOKEN IT NAMES — each row sets `--ks-swatch` to
+   its own step's spacing token and the square reads both dimensions off it.
+   That is deliberate: a hardcoded px would still draw a correct-looking square
+   if the token were missing or moved, which is precisely the failure this
+   section exists to make visible.
+   NAME NO PLACEHOLDER TOKENS IN THIS FILE. The first draft wrote the spacing
+   token with a two-letter stand-in for the digits, inside this very comment,
+   and check-tokens failed the build on it as unresolved: the gate scans
+   harness.css for token references and has no idea what a comment is. Twice,
+   because the note explaining the first one repeated the name. Describe the
+   token in prose or write a real one. */
+.ks-scale { display: grid; grid-template-columns: 10rem 4rem 3rem 1fr;
+            gap: .5rem 1rem; align-items: center; font-size: .8125rem; }
+.ks-scale > .ks-label { margin-block-end: 0; }
+.ks-scale code { font-size: .75rem; color: var(--rux-text-secondary); }
+.ks-swatch { inline-size: var(--ks-swatch); block-size: var(--ks-swatch);
+             background: var(--rux-interactive); }
+.ks-dark { padding: 1rem; background: var(--rux-background-inverse); }
+
+/* A SCROLL GRADIENT FADES TO layer-01, SO ITS SPECIMEN HAS TO SIT ON ONE.
+   Carbon's component paints `var(--cds-layer-01)` at the closed edge -- read
+   off the running utility, not assumed -- and its own story renders on a
+   layer-01 surface, which is why the fade is invisible there. Dropped on the
+   sink's page background the same fade is a pale band: measured in g100,
+   layer-01 is #262626 against a #161616 ground. This is demo chrome, not a
+   rule about the component: ks- classes are the harness's, and check-classes
+   ignores them the way it ignores bld- and thc-. 2026-09-11. */
+.ks-layer { background: var(--rux-layer-01); }
+
+/* Carbon components set `display` on their own class, which outranks the UA
+   `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to
+   actually hide, to stand in for the mount/unmount Carbon's web components do. */
+[hidden] { display: none !important; }

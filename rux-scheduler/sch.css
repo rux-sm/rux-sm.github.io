@@ -1,0 +1,2474 @@
+/* sch.css — this app's two components: the week grid and the trip bar.
+   Carbon has neither. Every colour, size and space below is a --rux-* token
+   read from the vendored css, so all five themes hold without a rule here
+   per theme. --sch-* variables carry counts and geometry only (days, a
+   bar's start and span in days, its lane), never a colour or a size a token
+   names. Rules on rux--* classes do not belong here (AGENTS.md).
+
+   Ported 2026-09-06 from rux-ui scheduler/css/layout/scheduler.css and
+   features/trip-bar.css with these changes, each a Carbon rule over the old
+   one: fills are Carbon's tag tints with the tag's own text colour, not a
+   saturated fill with white text (old rule 2.12); corners are square (old
+   2.2 used a radius token this system does not have); selected is the
+   border-interactive token as an inset ring, focus is the focus token; the
+   type role is label-01, 12px, with the row height equal to its line height
+   (old rule 2.7) so a bar's height is rows times that and nothing else.
+   ONE TIER, NOT TWO. Old rule 2.8 allowed a second, comfortable one at
+   label-02, and it shipped behind a content switcher until 2026-09-06; rux
+   removed it. A 14px tier bought nothing the 12px one does not -- it fits
+   FEWER characters into a day column that already truncates a destination --
+   and the switcher cost a toolbar control to say so. --sch-fs and --sch-row-h
+   stay as the derivation, not as a knob. */
+
+.sch {
+  --sch-days: 7;
+  /* AS NARROW AS ITS CONTENT, ON A 2rem FLOOR. `max-content` is still what
+     sizes this track, so a bus number wider than the floor widens the column
+     and nothing is ever clipped -- a hand-set width would clip exactly the
+     four-digit bus this repository has not seen yet. The floor itself is on
+     the two cells, not here; see `.sch-corner`. Measured in Plex at label-01
+     600 with 4px of inline padding: "Bus" 28.5px, "218" 29.6px, "No bus" broken
+     28px -- all under 32, so the floor decides and the corner squares. "1234"
+     is the exception at 36.8px and widens the column; see `.sch-corner`. sch.js reads the rendered width rather
+     than this token. */
+  --sch-head-w: max-content;
+  /* THE FLOOR A DAY COLUMN WILL NOT GO BELOW, and the grid scrolls rather
+     than squeezing past it. 8.5rem is the largest value that changes nothing
+     on a 1440 window -- measured, the threshold is between 8.5rem where the
+     1fr share of 138px still wins and 9rem where the floor binds and pushes
+     42px of overflow. So this is free where the week fits and worth 24px a
+     column where it does not: 112px of text at 7rem against 136px here,
+     against a median destination needing 113px over 30 single-day bars in
+     two weeks of real data. It does NOT widen anything on a wide window --
+     only a floor above the 1fr share could, and that forces the whole week
+     to scroll. */
+  --sch-day-min: 8.5rem;
+  --sch-day-track: minmax(var(--sch-day-min), 1fr);
+  --sch-bar-rows: 5;
+  --sch-fs: var(--rux-label-01-font-size);
+  --sch-ls: var(--rux-label-01-letter-spacing);
+  --sch-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
+  --sch-bar-h: calc(var(--sch-bar-rows) * var(--sch-row-h) + 2 * var(--rux-spacing-02));
+  /* THE GAP IS MEASURED TO THE BOUNDARY; THE EYE MEASURES TO THE LINE.
+     Every rule is 1px painted on one side of the boundary it marks, so it
+     falls INSIDE the gap on that side and outside it on the other. With one
+     value on all four sides the clear space came out 3px left and bottom
+     against 4px right and top -- measured 2026-09-06, and visible once you
+     look closely. Two values fix it: `--sch-gap` where the rule is inside
+     (the day rule sits in its column's first pixel, the row rule in its
+     row's last), `--sch-gap-clear` where it is not. Three pixels of clear
+     space on all four sides, and the bar's first character still lands at
+     12px from the day boundary -- 4px plus its own 8px of padding -- which is
+     where the day header's own label starts. */
+  --sch-gap: var(--rux-spacing-02);
+  --sch-gap-clear: calc(var(--sch-gap) - 1px);
+  /* Between two stacked bars there is no rule at all, so this separates bar
+     from bar and stays at the full 4px: were it 3px like the rest, two bars
+     in one row would read as closer to each other than to the grid. */
+  --sch-lane-gap: var(--sch-gap);
+  position: relative;
+  overflow: auto;
+  /* THE GRID IS ITS OWN SCROLL PANE, not a tall block on a scrolling page.
+     Both sticky edges depend on it: the day header sticks to the top of its
+     SCROLL CONTAINER and the bus column to that container's left, so with the
+     page doing the scrolling instead the header slid away above ten bus rows
+     -- measured 2026-09-06, the grid 1199px inside a 950px viewport with the
+     container never scrolling at all. The subtraction is the shell header,
+     the page padding, the h1 and the toolbar; the max() keeps it usable on a
+     short window, where the page scrolls as well and that is fine. */
+  max-block-size: max(24rem, calc(100dvh - 15rem));
+  overscroll-behavior: contain;
+  background: var(--rux-layer);
+  /* NO BOX AROUND THE BOARD, REMOVED 2026-09-07. It had a 1px subtle border on
+     all four sides. Carbon's own data table draws none: the shape comes from
+     the header band's surface and the row rules, and the body bleeds to its
+     container. That is what happens here too -- this pane is `--rux-layer`
+     against the page's own background, so it still reads as an object, and the
+     header band closes the top edge.
+
+     IT ALSO RETIRES A LINE THAT HAD ALREADY COST SOMETHING. With the trip
+     panel open, this border met the panel's own 1px border as a doubled edge,
+     which is what rux saw on 2026-09-06 and what the gutter entry in
+     docs/log.md was chasing. One of the two lines was always going to be the
+     wrong one to keep; it is this one. */
+}
+/* The grid: one label column, then one column per day. A row is
+   display: contents so its head and its track are both grid children and
+   every row shares the same columns. The track spans the days and is the
+   containing block the bars are placed in by percentage. */
+.sch-grid {
+  position: relative;   /* the now-line's containing block: the GRID, not the
+                           scroll port, so it stays on today's column when the
+                           week is wider than the viewport and .sch scrolls. */
+  display: grid;
+  /* The day track is a variable so sch.js can replace the fluid default with
+     a WHOLE NUMBER OF PIXELS; see its note. Without that script this is what
+     renders, and it is what rendered until 2026-09-06. */
+  grid-template-columns: var(--sch-head-w) repeat(var(--sch-days), var(--sch-day-track));
+  /* AS WIDE AS ITS OWN COLUMNS, 2026-09-11, AND THIS IS WHAT MAKES THE BUS
+     COLUMN STICK. It was `min-inline-size: 100%` alone, which makes the grid
+     BOX exactly the width of the pane while its seven day columns total more
+     -- so the columns overflowed a box narrower than themselves, and a sticky
+     grid cell is clamped to that box. The bus column therefore held only while
+     `scrollLeft` stayed under (box - column): measured at 375px, it pinned to
+     247 and was then dragged one pixel per pixel, sitting 458px off the left
+     edge at the end of the week. From Wednesday on nothing said which bus a
+     row was.
+
+     THIS IS THE SAME FAULT docs/log.md RECORDS FOR THE NOW-LINE on 2026-09-06
+     -- "a grid container is only as wide as its own containing block" -- fixed
+     there for the line and left standing for the grid it was drawn on. It hid
+     on a desktop window because the whole overflow is only 136px there, well
+     inside the clamp; it is 705px on a phone.
+
+     `max-content` with the 100% floor keeps both cases. sch.js always sets
+     `--sch-day-track` to a whole number of pixels, so max-content is head plus
+     seven days exactly; where the week fits, that total is under 100% and the
+     floor wins, the `1fr` tracks divide the pane and nothing about the desktop
+     board changes. Measured at 1440 before and after: pane 1344, grid 1344,
+     every day column at 187px on the same x, all 22 bars unmoved. */
+  inline-size: max-content;
+  min-inline-size: 100%;
+}
+.sch-row { display: contents; }
+/* `display: contents` beats the UA's own [hidden] rule, so an empty
+   Unassigned row would still take a slot in the grid without this. */
+.sch-row[hidden] { display: none; }
+/* THE LAST ROW DRAWS ITS RULE AGAIN, RESTORED 2026-09-07, AND THIS IS A
+   CONSEQUENCE OF REMOVING THE PANE'S BORDER RATHER THAN A CHOICE OF ITS OWN.
+   It used to read: the pane's own bottom border already closes the grid, and
+   the two together read as a 2px line where every other boundary is 1px. True
+   while there was a pane border. There is not, so the exception left the board
+   with no bottom edge at all -- it simply stopped after the last bus. Carbon's
+   table rules every row including its last, which is what closes it there too.
+
+   `.sch-row--last` is still set by sch-data.js and is now unused by this
+   stylesheet. It is left in place rather than removed from the JS: it marks
+   the last VISIBLE row, which `:last-child` cannot do on the weeks the
+   Unassigned row is hidden, and that is worth keeping for whatever next wants
+   the distinction. */
+
+/* STALE, NOT EMPTY. While a week is being read the grid keeps the last one on
+   screen and dims it; clearing it would throw away something still worth
+   reading, and showing nothing at all is what made two presses of the arrow
+   look like a page that had not noticed. */
+.sch-grid--busy { opacity: .55; }
+
+/* THE HEADER BAND IS layer-accent-01, THE RULES ARE border-subtle-01, and
+   both were a step too dim until 2026-09-06. Carbon's tokens are LAYER-AWARE:
+   the un-suffixed `--rux-border-subtle` is the border for content sitting on
+   the page background, and this grid does not sit there -- its pane is
+   `--rux-layer`, which is layer-01, so its borders are `border-subtle-01` and
+   its header is `layer-accent-01`. Measured against the sink's own data table
+   in g90: table header #525252 against this grid's #393939, table row rule
+   #6f6f6f against this grid's #525252. Both now match the table exactly. */
+.sch-corner,
+.sch-day {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 3;
+  background: var(--rux-layer-accent-01);
+  /* NO RULE UNDER THE HEADER BAND, REMOVED 2026-09-07. Carbon's own table
+     header draws none -- `.rux--data-table th` sets a background and a colour
+     and no border at all, and the separation between the band and the first
+     row is the SURFACE CHANGE, nothing more. This carried a
+     `border-block-end: 1px solid var(--rux-border-subtle-01)` until now, which
+     was a line doing a job the accent band already does. */
+  /* ONE ROW OF 2rem, CARBON'S sm, AND A SQUARE CORNER.
+
+     THE MODULE SPLIT IN TWO ON 2026-09-10, and this band kept the smaller
+     half. The three REGION HEADS -- the toolbar, `.sch-aside__head` and the
+     trip editor's -- went to `size-md`, 40px, on rux's call that they read
+     too small. This band and the roster's `.sch-avail__day` did NOT: they
+     are COLUMN headers, subordinate to those titles, and the type already
+     says so (`heading-compact-02` over `-01`). Giving the heads the taller
+     band puts the heights in the same order the type is in.
+
+     WHAT IT PROTECTS, which is why the split went this way round: this rule
+     is what makes the corner square, and the corner IS the bus column's
+     width. At 40px the column would take 8px from the day tracks, and the
+     week already runs 323px short at 1440 with both companions open
+     (docs/log.md, 2026-09-08). The heads cost 8px of vertical board and
+     nothing horizontal; this band would have cost the opposite.
+
+     THE RULE, WHICH OUTLIVES THE NUMBER: this band and the toolbar's own
+     BUTTONS stay one module at 32px, because that is what Carbon's small
+     table does -- the toolbar's height follows the table's density
+     (`block-size: var(--rux-layout-size-height-local)` in rux.css) and the
+     controls in it stay `sm`. What changed is only the BAND the controls sit
+     in, which now centres 32px buttons in 40px of room.
+
+     THE NUMBER HAS MOVED THREE TIMES and the history is the argument. 51px as
+     two stacked lines; 2rem when the day and its date went onto one line; 2.5rem
+     for a 40x40 corner; 3rem to match Carbon's DEFAULT table, whose `tr` and
+     `.rux--table-toolbar` are both 3rem. 2rem is where it lands, because
+     Carbon's SMALL table variant is the one this board actually is: 32px
+     controls, 16px icons, a small primary button. A dispatch board is dense by
+     nature and 48px of chrome twice over was buying air it did not need.
+
+     WHAT IT COSTS, SAID PLAINLY: 32px controls are under both iOS's 44px and
+     Android's 48px touch guidance, on a page whose drag was just rebuilt
+     because rux mis-hits things on a phone. The paging chevrons are the most
+     repeated targets here. If they turn out to be hard to hit, the answer is
+     not this module -- it is a larger touch target for those two buttons
+     specifically, which the small variant does not forbid. */
+  block-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  padding-block: 0;
+  padding-inline: var(--rux-spacing-04);
+  /* CENTRED OVER THE COLUMN, 2026-09-11, AND ONLY BECAUSE THE RULES CAME BACK.
+     These were start-aligned, and the reason was load-bearing: with no vertical
+     rules between days, the label's left edge was the ONLY thing saying where a
+     column began, and it sat on the same pixel as the bar text below it --
+     measured at 1440, labels and bar text both 12px from their column's left
+     edge, in all seven. Centring then would have deleted the boundary cue.
+
+     THE BODY DRAWS A RULE AT EVERY DAY NOW, so the boundary is drawn rather
+     than implied and the label is free of that job. rux asked for the pair
+     together, which is the only order in which either makes sense. */
+  justify-content: center;
+  /* CARBON'S TABLE HEADER TYPE, 2026-09-07, ON BOTH BANDS AT ONCE. `thead` in
+     `.rux--data-table` is `heading-compact-01` at weight 600 in `text-primary`;
+     this band was label-01 at 400 in `text-secondary`, which is a caption, not
+     a column heading. rux read it off the spec and asked for both grids
+     together, which is the only way it could go -- changing one band would
+     have split the pair the last several passes spent joining.
+
+     IT COSTS A DISTINCTION THAT WAS DELIBERATE, and the comment below on
+     `.sch-day__num` used to record it: the day NAME was secondary and only the
+     DATE primary, so "Mon 7" read as one label with the changing half
+     emphasised. At the table header type both halves are bold primary and that
+     emphasis is gone. Today is still marked -- the interactive underline and
+     `aria-current` -- and the weekend still dims. What is lost is the date
+     standing out from its own day name. */
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  line-height: var(--rux-heading-compact-01-line-height);
+  color: var(--rux-text-primary);
+}
+/* The corner takes the ROW HEAD's inline padding, not the day cells', so the
+   word Bus starts on the same pixel as the numbers under it. */
+.sch-corner {
+  inset-inline-start: 0;
+  z-index: 4;
+  /* NO VERTICAL RULE IN THE HEADER BAND. NOT ONE, ANYWHERE, 2026-09-11.
+
+     A RULE WAS PUT HERE EARLIER THE SAME DAY AND TAKEN BACK OUT, so both the
+     argument and its answer are kept. It was added on the strength of the
+     2026-09-07 note on `.sch-row-head` -- "this one line comes back and the
+     corner's with it, they are a pair" -- and the pair was the wrong unit. rux
+     saw it rendered: "i dont want these vertical border to be applied on the
+     header row. similar rule to weekend border. doesnt cross into header."
+
+     WHICH MAKES ONE RULE OUT OF THREE SEPARATE DECISIONS, and that is why it
+     stands. The weekend mark is a hairline in the body and dimmed TEXT in the
+     band. The bus column is a rule in the body and nothing in the band. The
+     roster's name column is the same, in the same words. A header band is its
+     own surface, closed on all four sides by its own colour, and every line
+     that crosses into it is a line dividing something already divided.
+
+     THE ORIGINAL COMMENT HERE WAS ALSO WRONG, and is recorded rather than
+     quietly dropped. It read: "THE HEADER BAND STAYS OPEN AT THE CORNER. The
+     body keeps its divider, where it separates bus identity from trip content."
+     The body did NOT keep its divider -- `.sch-row-head` lost its rule later
+     that same 2026-09-07 -- so it described a line that had not existed for
+     four days. Its first sentence is the one that survived all of this. */
+  padding-inline: var(--rux-spacing-02);
+  /* THE COLUMN'S FLOOR, SET ON BOTH ITS CELLS. The track is still
+     `max-content`, so a bus number wider than the floor still widens the column
+     and nothing ever clips -- the floor only stops it being NARROWER than the
+     header is tall.
+
+     AT 2rem THE SQUARE NO LONGER SURVIVES EVERY BUS, and that is the honest
+     cost of the small module. Measured in Plex at label-01 600 with 4px of
+     padding either side: the corner's "Bus" comes to 28.5px, "218" to 29.6px
+     and "No bus" broken to 28px -- all under 32, so the floor decides and the
+     corner is square. "1234" comes to 36.8px and would push the column to 37,
+     unsquaring the corner on the weeks such a bus is in service. Every bus in
+     the fleet today is three digits, so this is a graceful degradation rather
+     than a defect: the column grows, nothing clips, and the corner stops being
+     square until that bus goes off the board. 8px of padding would break it for
+     three digits too, which is why it is 4 again.
+
+     sch.js measures this cell, so the floor reaches its arithmetic untold. */
+  min-inline-size: 2rem;
+  /* The head of a centred column. `.sch-day` keeps its own start alignment --
+     a day name and its date read left to right and are not centred. */
+  justify-content: center;
+}
+/* THE RULE IS PAINTED, NOT LAID OUT. As border-inline-start it sat inside the
+   cell and pushed the label 1px right of every other thing measured from the
+   day boundary; as an inset shadow it draws on the same pixel and moves
+   nothing. Measured before: label 13px from the cell edge, bar text 10px. */
+/* THE HEADER BAND CARRIES NO VERTICAL RULES, which is what Carbon's own data
+   table header does. It had them until 2026-09-06, drawn in the same token as
+   the body's; lifting the band to `layer-accent-01` put the rule and its own
+   background on the same colour in g10, and the step up, `border-subtle-02`,
+   collapses the same way in white and rux -- measured 1.00:1 in both cases.
+   `border-strong-01` survives all five at 2.3 to 2.5, but a header rule
+   heavier than the body's breaks the line each boundary is supposed to draw
+   from top to bottom. So the band has none: its own bottom edge divides it
+   from the grid, the sticky column's edge divides it from the bus numbers,
+   and the day labels sit at the same 12px as the bar text below them, which
+   is what actually says where a column starts. */
+/* BESIDE THE DAY NAME, NOT SPREAD TO THE FAR EDGE. The band has no vertical
+   rules any more, so a date pushed to the right of its own cell would sit
+   24px from the NEXT day's name and 117px from its own -- it would read as
+   belonging to the wrong column. Kept together, the pair is one label: the
+   name secondary, the date primary. */
+/* THE DATE INHERITS THE BAND NOW. It carried body-compact-01 in `text-primary`
+   to lift it off a secondary day name; with the band itself at the table header
+   type there is nothing left to lift it from, and declaring 14px/400 here would
+   make the number LIGHTER than the name beside it. Only the tabular figures
+   remain, which are its own business either way. */
+.sch-day__num { font-variant-numeric: tabular-nums; }
+.sch-day--weekend { color: var(--rux-text-placeholder); }
+/* BOTH SHADOWS, because they are one property. Moving the day rule off
+   border-inline-start and onto an inset shadow on 2026-09-06 meant this rule
+   -- later in the file, same specificity -- replaced it, and today's column
+   silently lost its left rule. */
+.sch-day--today { box-shadow: inset 0 -2px 0 var(--rux-border-interactive); }
+.sch-day--today .sch-day__num { color: var(--rux-text-primary); font-weight: 600; }
+
+/* NO NOW-LINE, REMOVED 2026-09-06. A 2px rule down today's column was
+   positioned as a percentage of .sch-grid, and a grid container is only as
+   wide as its own containing block: at 900px the box measured 770px while its
+   columns totalled 872px, so the line landed at 785px -- inside Friday, two
+   days off. Every other thing here is placed inside .sch-track, a grid ITEM
+   spanning the seven day columns, whose width IS their total, which is why
+   only this one drifted. It is not coming back in another form either: a
+   grid placed by DAY has no position within a day to point at, so a rule down
+   the middle of a column claims a precision the data does not have. Today is
+   the header cell's own accent -- the interactive underline, the bold date,
+   and aria-current="date" -- and nothing else. */
+
+/* THE BUS COLUMN IS THE NUMBER AND WHAT THE BUS CARRIES, nothing else.
+   It held "Bus 218" over "52 pax · Motorcoach" and cost 9rem of a grid whose
+   whole job is the seven days to its right. The number alone identifies the
+   row -- the corner cell already says these are buses -- and the equipment
+   became two icons, so capacity and type moved to the row's title where a
+   hover still reaches them.
+
+   40px, DOWN FROM 3.5rem, DOWN FROM 5.5rem, and the icons made neither cut.
+   Measured at 88px: two icons side by side were 36px, a three-digit number
+   26px, and the word "Unassigned" 66px against 71px of content box -- so the
+   LABEL was the column's width, and stacking the icons under a number that is
+   narrower than they were would have saved nothing on its own. The label is
+   "No bus" now, which wraps, and with the icons in a column the widest thing
+   left is the number. Dropping that number to label-01 took the widest cell to
+   36.8px, under the 40px floor that squares the corner -- so the column is now
+   the floor's width and not its content's.
+
+   THE ICONS ARE STILL HERE, AND THEIR LEAVING IS A SEPARATE PIECE. `ada_lift`
+   and `sleeper` are attributes of the bus, constant and learnable, and they
+   belong in a panel opened from this cell along with make, model, VIN, colour
+   and the service and expiry dates -- none of which this page can reach today.
+   They are not removed before that panel exists, because removing them first
+   deletes the information rather than moving it. Out of service is different
+   and stays: it is a STATE, it changes what the row can accept this week, and
+   the drag already reads it as a warning. */
+.sch-row-head {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 2;
+  /* THE PANE'S OWN SURFACE, NOT THE DAY BAND'S -- REVERSED 2026-09-07, AND
+     THE REASONING IT REPLACES IS BELOW RATHER THAN DELETED.
+
+     IT USED TO READ: the same surface as the day band, so the two sticky axes
+     read as one L-shaped frame and the corner is a corner rather than a cell
+     that changes colour halfway down. Carbon's own table says otherwise --
+     `thead` takes `layer-accent`, `tbody th` takes no background at all, only
+     `text-secondary` and a border -- and this deliberately did not follow it,
+     on the grounds that this axis holds identity rather than values, as
+     rux-ui's own scheduler did from one `--sched-calendar-header-bg`.
+
+     WHAT THAT MISSED IS AREA. The two axes carry the same token over wildly
+     different amounts of it: the day band is 40px tall and reads as a band,
+     while this column runs the full height of the fleet and grows with it --
+     950px at seven buses, more at thirty. The same accent that bands the top
+     slabs the left, on a board that is about 70% empty and whose emptiness is
+     the answer to "which bus is free on Thursday". rux saw it.
+
+     THE CORNER OBJECTION STILL STANDS AND IS ANSWERED BY SPLITTING THEM. The
+     corner belongs to the HEADER ROW and keeps `layer-accent-01`, so nothing
+     changes colour halfway down; the column below it is the end of the band,
+     not the top of the bus column. That is exactly Carbon's own arrangement,
+     arrived at from the other direction.
+
+     STILL OPAQUE, AND IT HAS TO BE: bars scroll under this column. `--rux-layer`
+     is the pane's own background, so the axis reads as unpainted while still
+     hiding what passes behind it. Its right border is what separates it, and
+     that is unchanged. */
+  background: var(--rux-layer);
+  /* THE VERTICAL RULE IS BACK, 2026-09-11, AND THE ENTRY THAT REMOVED IT CALLED
+     THIS EXACTLY. It said: "If it reads badly, this one line comes back and the
+     corner's with it -- they are a pair." It read badly, rux asked for it, and
+     both have come back.
+
+     WHAT THE COST TURNED OUT TO BE, MEASURED. The removal already named the
+     risk -- this column is sticky and paints `--rux-layer`, the same surface
+     the tracks paint, so a scrolled board sends bars under an invisible edge.
+     Driven at 900px, where the week overflows by 516: NINE bars sit under this
+     column at once, the head reads `rgb(38,38,38)` and the track reads
+     `rgba(0,0,0,0)` over the identical `--rux-layer`, and neither cell carried
+     a border or a shadow. Nothing marked the boundary at all. The header made
+     it plainest: "Wed 9" clipped to "ed 9" against no edge, a word cut in half
+     by something the eye could not see.
+
+     AND CARBON HAS NO ANSWER TO COPY HERE. `rux--data-table--sticky-header`
+     compiles a sticky header ROW; there is no sticky or frozen COLUMN in the
+     data table and no guidance page for one. So this is the app's own surface,
+     which is what `sch-` is for, and the instrument is the plainest available:
+     the same 1px `border-subtle-01` the row rules already draw, so the frame
+     closes in the token it is already made of rather than in a new one.
+
+     THIS IS NOT THE DAY RULES. Those were six lines making the board a grid,
+     removed 2026-09-07. This is one line where identity meets content, on the
+     one edge that content actually slides under.
+
+     AND IT STOPS AT THE HEADER BAND, which is where the 2026-09-07 note was
+     wrong. It said the two were "a pair" and that leaving the corner's out
+     "made the line start abruptly below the header band instead of running the
+     frame's whole height". Both halves were restored on that reasoning and rux
+     rejected it on sight -- the band is its own surface and a rule through it
+     divides something already divided. `.sch-corner` carries the full account.
+     The body is the only place any of this board's three vertical marks now
+     appears. */
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
+  /* SUPERSEDED 2026-09-07 BY THE RULE ABOVE -- KEPT BECAUSE IT IS STILL THE
+     RIGHT ARGUMENT ABOUT THE SURFACE IT WAS WRITTEN FOR. It read:
+
+       No row rules inside the frame, for the same reason the day band has no
+       column rules: on `layer-accent-01` the subtle tokens collapse into the
+       background -- this one measured 1.00:1 in g10, invisible -- and the only
+       token that survives all five, `border-strong-01`, reads 2.5:1 against
+       the band where the body's own rules read 1.3:1 against the pane, so the
+       frame would carry heavier lines than the grid it frames. So neither axis
+       draws grid lines and both are clean strips.
+
+     Every measurement in it holds. What changed is the surface underneath: the
+     head is no longer `layer-accent-01`, so nothing collapses and no heavier
+     token is needed. The day band above still draws no column rules and that
+     half is unchanged -- the two axes are no longer symmetric, because a row
+     is the unit here and a day is not. */
+  /* SPACING-02 INLINE, BACK AGAIN WITH THE 32px FLOOR. This has now been 4px
+     at a 40px floor, 8px at 48, and 4px again here, which is not indecision --
+     it is the same rule each time: the inline padding is whatever keeps the
+     widest ordinary bus number inside the floor. At 32 that is 4px, and it is
+     the last stop; there is no 2px to fall back on if the module shrinks
+     further. Block padding stays at spacing-03, which nothing constrains. */
+  padding-block: var(--rux-spacing-03);
+  padding-inline: var(--rux-spacing-02);
+  min-inline-size: 2rem;
+  /* THE ROW RULE RUNS THROUGH HERE TOO, ADDED 2026-09-07, AND THE REASON IT
+     COULD NOT BEFORE IS GONE. This cell used to draw no rule, and the comment
+     below still carries the argument: on `layer-accent-01` the subtle tokens
+     collapse into the background -- measured 1.00:1 in g10, invisible -- so a
+     rule here would have had to be `border-strong-01` and would have read
+     heavier than the grid it frames.
+
+     THAT WAS TRUE OF THE OLD SURFACE, NOT OF THIS ONE. The head is
+     `--rux-layer` now, the same surface `.sch-track` sits on, so this is the
+     identical pairing the track already draws and it is visible in all five:
+     white #c6c6c6 on #f4f4f4, g10 #e0e0e0 on #ffffff, g90 #6f6f6f on #393939,
+     g100 #525252 on #262626. One rule, one token, straight across -- which is
+     Carbon's table, where `tbody th` takes the same `border-block-end` as
+     every `td` beside it. */
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-02);
+  /* CENTRED BECAUSE THE COLUMN'S WIDTH IS NOT FIXED. sch.js gives this column
+     the flooring remainder so the board's right edge meets the toolbar's, so
+     it breathes by up to six pixels as the window moves -- and left-aligned
+     that showed as a glyph sitting 8px from one edge and up to 13.8 from the
+     other, measured at 1290. Centred, the remainder splits and neither side
+     moves much. It carries an identity, not a value, so there is no column of
+     figures wanting a shared left edge. */
+  align-items: center;
+  text-align: center;
+}
+/* LABEL-01, DOWN FROM body-compact-01. THIS WAS FORCED AND IS NOW A CHOICE.
+   At the old 40px floor 14px did not fit -- "1234" measures 33.6px and left
+   3.2px of padding a side. At 48px with spacing-03 it would still not fit
+   (33.6 + 16 = 49.6, which widens the column and unsquares the corner), but at
+   spacing-02 it would. So 14px remains available at the cost of the padding
+   restored above; it is kept at 12px on the merits. This number is
+   tabular, semibold, and alone in a column with nothing competing, which is
+   what makes it findable, not its size. It now matches the bar text it is read
+   beside, one weight above it. */
+/* THE TRIGGER IS THE NUMBER. On a bus row the number is a `button` inside a
+   toggletip, so it gives back everything a button brings with it -- padding,
+   border, background, the UA's own font -- and keeps only the type below. The
+   container must not add a box either: this cell's height is read by the grid,
+   and the whole point of the change was that this column stopped setting it. */
+.sch-row-head .rux--popover-container { display: block; }
+button.sch-row-head__num {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: inherit;
+}
+/* Carbon's toggletip content is prose; these are one-line facts. */
+.sch-bus-tip p { margin: 0; }
+.sch-row-head__num {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-weight: 600;
+  color: var(--rux-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+/* The equipment row: one icon per thing the bus has, in the order a
+   dispatcher asks for them. An absent icon means the bus does not have it,
+   which is why nothing here is a placeholder. */
+/* STACKED, NOT IN A ROW. Side by side the pair was 36px and set a floor the
+   column could not go under; in a column the number above them is the widest
+   thing in the cell. Three stacked icons -- a lift, a sleeper and an
+   out-of-service mark -- come to 56px, well inside the 96px a single-lane row
+   is already tall. */
+.sch-row-head__kit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+}
+.sch-row-head__kit svg { display: block; }
+.sch-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
+/* NOT layer-accent: that is the header band's surface since the header lifted,
+   and two accent bands at opposite ends of the grid read as two headers. The
+   hover step is a lift the header does not use. */
+/* THE HEAD MATCHES ITS OWN TRACK AGAIN, 2026-09-11, ON RUX'S CALL -- and this
+   cell has now been both, so both arguments are kept rather than one deleted.
+
+   IT READ: "THE FRAME'S SURFACE, LIKE EVERY OTHER ROW HEAD. It had its own
+   step, which made the one cell in the sticky column that is not the column's
+   colour -- the row is already told apart by its italic label and by the tint
+   on its track, which is where a row's own identity belongs." That is a real
+   argument and it is about the COLUMN: the sticky bus column should read as one
+   strip, and a cell that breaks its colour breaks that.
+
+   WHAT OVERRULES IT IS THAT THE ROW IS THE UNIT HERE. Unassigned is not a bus,
+   and its track is tinted precisely to say so; leaving the head on the frame's
+   surface split that one row into two colours across the divider, which is the
+   seam a reader crosses when they ask which row this is. rux looked at it
+   rendered and asked for them to match. The column loses its single colour in
+   exactly one row, which is the row that is not a bus.
+
+   THE RULES STILL HAVE TO READ ON IT, which is the thing this change could
+   break and does not: `border-subtle-01` is measured against `layer-hover-01`
+   in all eight themes below the fold in docs/log.md, and it is the same token
+   the track beside it already draws its own bottom rule in. */
+.sch-row--unassigned .sch-row-head { background: var(--rux-layer-hover-01); }
+.sch-row--unassigned .sch-row-head__num {
+  /* ALWAYS TWO LINES. Left to wrap on its own the label is 53px on one line
+     and sets the column's width single-handed -- wider than the bus numbers
+     it sits under. Broken at the space it is 28px, and the numbers decide. */
+  white-space: pre-line;
+  color: var(--rux-text-secondary);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  letter-spacing: var(--rux-helper-text-01-letter-spacing);
+}
+.sch-row--unassigned .sch-track { background-color: var(--rux-layer-hover-01); }
+
+.sch-track {
+  position: relative;
+  grid-column: span var(--sch-days);
+  min-block-size: calc(var(--sch-gap-clear) + var(--sch-lanes, 1) * var(--sch-bar-h) + (var(--sch-lanes, 1) - 1) * var(--sch-lane-gap) + var(--sch-gap));
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  /* THE DAY RULES. `--sch-day-rules` is the stop list, written by sch-data.js
+     once per render, and `--sch-day-rule` is what those 1px stops are drawn in.
+
+     A BACKGROUND, SO IT NEEDS NO STACKING ORDER. `background-image` paints
+     above this element's own `background-color` -- which is how it survives the
+     Unassigned row's tint -- and below every child, so bars (z-index 1) and
+     out-of-service stripes cover it without anything being declared. */
+  background-image: linear-gradient(90deg, var(--sch-day-rules));
+}
+/* ONE TOKEN, AND THE SAME ONE ON EVERY ROW, which a FILL could not manage.
+
+   THE FILL THIS REPLACED NEEDED TWO. `.sch-row--unassigned .sch-track` is
+   `--rux-layer-hover-01`, and `layer-hover-01` and `layer-accent-01` are the
+   SAME COLOUR in two of the eight themes -- ant-dark #1f1f1f and spotify
+   #242424 -- so a filled band had to pay a different token on that row or go
+   invisible in exactly those two. A hairline has no such problem: it is not a
+   surface, so it does not have to differ from the surface it sits on by a step
+   of the same scale, and `border-subtle-01` is already proven legible on both
+   of these backgrounds -- it is what `.sch-track` draws its own bottom rule in,
+   on every row and in every theme.
+
+   AND IT IS THE SAME TOKEN AND WIDTH THE RULES HAD BEFORE THEY WERE REMOVED,
+   which is what makes this a restoration rather than a new thing: the version
+   that went on 2026-09-07 was 1px `border-subtle-01` at a period of one day,
+   and the last commit carrying it is 47d3903. */
+.sch-track { --sch-day-rule: var(--rux-border-subtle-01); }
+
+/* NO DAY RULES IN THE BODY, TRIED 2026-09-07 AT RUX'S ASK. Carbon's data
+   table draws horizontal rules and no vertical ones, because there a column is
+   a FIELD and the reader travels along the row. rux asked to see this board on
+   the same terms.
+
+   WHAT WAS HERE, so it can come back in one paste: a `::before` on the track
+   painting a `repeating-linear-gradient` of 1px `--rux-border-subtle-01` with a
+   period of one day, inset one day from the start so it fell on days 1 to 6 and
+   neither edge -- start-aligned, so each body rule landed on the same pixel as
+   the header rule above it. The last commit carrying it is 47d3903.
+
+   WHAT TO LOOK FOR WHILE JUDGING IT. A column here is a DAY, which is a
+   position rather than a field, and the reader travels both ways: down to find
+   a bus, across to find a date. Where a bar sits, its own edges still say which
+   days it covers. Where a row is EMPTY -- about 70% of this board -- there is
+   now nothing to count against but the header seven columns away. That is the
+   question this trial answers and the only one; if it fails, it fails on an
+   empty row and not on a busy one.
+
+   THE BAR ARITHMETIC IS DELIBERATELY UNTOUCHED. `--sch-gap` (4px) on a bar's
+   start and `--sch-gap-clear` (3px) on its end existed because the day rule ate
+   one pixel of the start gap; with no rule the 1px difference has nothing to be
+   measured against, and collapsing the two would move every bar's width and
+   re-open the whole-pixel work. If the rules stay gone, that tidy-up is a
+   separate pass. */
+
+/* WHILE A TRIP IS BEING MOVED. The row it would land in lights up, in the
+   interactive tone for a clean drop and the warning tone where the bus is
+   already busy or out of service -- a warning, not a wall, because the drop
+   still goes through and the dispatcher can see what this page cannot. The
+   bar being dragged dims where it sits; nothing follows the cursor, and on
+   release the week is read back rather than moved optimistically. */
+.sch-track--drop { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
+.sch-track--warn { box-shadow: inset 0 0 0 2px var(--rux-support-warning); }
+.sch-bar--dragging { opacity: .4; cursor: grabbing; }
+
+/* Out of service: a striped span the bars sit over. */
+.sch-oos {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--sch-start) * (100% / var(--sch-days)));
+  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)));
+  background: repeating-linear-gradient(135deg,
+    transparent 0, transparent 6px,
+    var(--rux-support-warning) 6px, var(--rux-support-warning) 7px);
+  opacity: .45;
+  pointer-events: none;
+}
+
+/* ── the trip bar ─────────────────────────────────────────────────────── */
+.sch-bar {
+  --sch-bg: var(--rux-tag-background-gray);
+  --sch-fg: var(--rux-tag-color-gray);
+  --sch-hover: var(--rux-tag-hover-gray);
+  --sch-border: var(--rux-tag-border-gray);
+  position: absolute;
+  inset-block-start: calc(var(--sch-gap-clear) + var(--sch-lane, 0) * (var(--sch-bar-h) + var(--sch-lane-gap)));
+  inset-inline-start: calc(var(--sch-start) * (100% / var(--sch-days)) + var(--sch-gap));
+  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)) - var(--sch-gap) - var(--sch-gap-clear));
+  block-size: var(--sch-bar-h);
+  box-sizing: border-box;
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  background: var(--sch-bg);
+  color: var(--sch-fg);
+  font-size: var(--sch-fs);
+  letter-spacing: var(--sch-ls);
+  line-height: var(--sch-row-h);
+  font-weight: 400;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+  /* A BAR IS HELD BEFORE IT MOVES ON TOUCH, and a hold is the browser's own
+     gesture too: iOS raises the selection callout and both platforms offer to
+     select the label, either of which lands on top of the bar being picked up.
+     `manipulation` keeps panning and pinching -- the board must still scroll
+     under a finger that starts on a bar -- and drops only the double-tap zoom,
+     which has nothing to do here. The drag suppresses the scroll itself, once
+     the hold is done; see sch-data.js. */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.sch-bar:hover { background: var(--sch-hover); }
+.sch-bar:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+/* THE SELECTION RING IS THE LAYER'S INVERSE, NOT THE INTERACTIVE BLUE.
+   Once the default fill became blue -- which is what the old board used for a
+   confirmed trip -- a blue ring on a blue bar was the one pairing that could
+   not be seen. `layer-selected-inverse` is near-black on the light themes and
+   near-white on the dark ones, so it reads on every tag tint including its
+   own. Focus keeps the focus token; the two are different signals. */
+.sch-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
+.sch-bar[aria-pressed="true"]:hover { background: var(--sch-bg); }
+
+.sch-bar--gray      { --sch-bg: var(--rux-tag-background-gray);      --sch-fg: var(--rux-tag-color-gray);      --sch-hover: var(--rux-tag-hover-gray);      --sch-border: var(--rux-tag-border-gray); }
+.sch-bar--blue      { --sch-bg: var(--rux-tag-background-blue);      --sch-fg: var(--rux-tag-color-blue);      --sch-hover: var(--rux-tag-hover-blue);      --sch-border: var(--rux-tag-border-blue); }
+.sch-bar--cyan      { --sch-bg: var(--rux-tag-background-cyan);      --sch-fg: var(--rux-tag-color-cyan);      --sch-hover: var(--rux-tag-hover-cyan);      --sch-border: var(--rux-tag-border-cyan); }
+.sch-bar--teal      { --sch-bg: var(--rux-tag-background-teal);      --sch-fg: var(--rux-tag-color-teal);      --sch-hover: var(--rux-tag-hover-teal);      --sch-border: var(--rux-tag-border-teal); }
+.sch-bar--green     { --sch-bg: var(--rux-tag-background-green);     --sch-fg: var(--rux-tag-color-green);     --sch-hover: var(--rux-tag-hover-green);     --sch-border: var(--rux-tag-border-green); }
+.sch-bar--purple    { --sch-bg: var(--rux-tag-background-purple);    --sch-fg: var(--rux-tag-color-purple);    --sch-hover: var(--rux-tag-hover-purple);    --sch-border: var(--rux-tag-border-purple); }
+.sch-bar--magenta   { --sch-bg: var(--rux-tag-background-magenta);   --sch-fg: var(--rux-tag-color-magenta);   --sch-hover: var(--rux-tag-hover-magenta);   --sch-border: var(--rux-tag-border-magenta); }
+.sch-bar--red       { --sch-bg: var(--rux-tag-background-red);       --sch-fg: var(--rux-tag-color-red);       --sch-hover: var(--rux-tag-hover-red);       --sch-border: var(--rux-tag-border-red); }
+.sch-bar--cool-gray { --sch-bg: var(--rux-tag-background-cool-gray); --sch-fg: var(--rux-tag-color-cool-gray); --sch-hover: var(--rux-tag-hover-cool-gray); --sch-border: var(--rux-tag-border-cool-gray); }
+.sch-bar--warm-gray { --sch-bg: var(--rux-tag-background-warm-gray); --sch-fg: var(--rux-tag-color-warm-gray); --sch-hover: var(--rux-tag-hover-warm-gray); --sch-border: var(--rux-tag-border-warm-gray); }
+
+/* States. Unconfirmed is hollow with the hue's border; a partial PO has the
+   warning border; a leg that continues past the week has no edge on that
+   side and runs to it. */
+.sch-bar--unconfirmed { background: var(--rux-layer); border: 1px dashed var(--sch-border); padding-block: calc(var(--rux-spacing-02) - 1px); }
+.sch-bar--unconfirmed:hover { background: var(--rux-layer-hover); }
+.sch-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
+/* A CONTINUING EDGE TAKES NO GAP, because there is nothing on that side of it
+   to be separated from -- the trip runs off the week. Only the gap it keeps is
+   subtracted, so a bar continuing from last week ends where every other bar in
+   that day ends; subtracting both gaps left it one gap short of its own day. */
+.sch-bar--from-prev {
+  inset-inline-start: 0;
+  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)) - var(--sch-gap-clear));
+  border-inline-start: 3px dotted var(--sch-border);
+}
+.sch-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--sch-border); }
+.sch-bar--from-prev.sch-bar--to-next { inline-size: auto; }
+
+/* THE ROWS THE VIEW MENU CAN TURN OFF. `display: none` rather than
+   `visibility: hidden`, because the point is to get the height BACK --
+   `--sch-bar-rows` drops with it and the bar shrinks, so more buses fit. The
+   destination has no toggle: a bar with no name on it is not a shorter bar, it
+   is an unreadable one. */
+.sch--no-client .sch-bar__client,
+.sch--no-time .sch-bar__time,
+.sch--no-reqs .sch-bar__reqs,
+.sch--no-drivers .sch-bar__drivers { display: none; }
+
+.sch-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--sch-row-h); white-space: nowrap; overflow: hidden; }
+.sch-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
+.sch-bar__dest { font-weight: 600; }
+.sch-bar__ref, .sch-bar__time { font-variant-numeric: tabular-nums; }
+.sch-bar__ref { opacity: .75; flex: none; }
+.sch-bar__client, .sch-bar__reqs { opacity: .85; }
+
+/* A double booking: a strip over the last row, in the error tokens. */
+.sch-bar__conflict {
+  position: absolute; inset-inline: 0; inset-block-end: 0;
+  block-size: var(--sch-row-h);
+  padding-inline: var(--rux-spacing-03);
+  background: var(--rux-support-error);
+  color: var(--rux-text-on-color);
+  display: flex; align-items: center; gap: var(--rux-spacing-02);
+  white-space: nowrap; overflow: hidden;
+}
+.sch-bar__conflict svg { flex: none; }
+
+/* Toolbar around the grid, built from Carbon parts; only the arrangement
+   is this app's. */
+/* THE TOOLBAR IS PART OF THE BOARD, ATTACHED 2026-09-07. It was a bare row of
+   controls with the page's 32px stack gap under it, so the controls and the
+   thing they control read as two objects. Carbon's table puts them in one:
+   `.rux--table-toolbar` is `background-color: var(--rux-layer)` at `3rem`, full
+   width, sitting directly on the table with no gap and no rule between them.
+
+   THE TOOLBAR IS `layer`, NOT `layer-accent`. Worth stating because the obvious
+   guess is wrong: the toolbar takes the SAME surface as the grid body, and the
+   day band between them is the only accent. That is what the source screenshot
+   shows -- a dark toolbar strip above a lighter header row -- and it is what
+   makes the pair read as one component with a header inside it, rather than as
+   a two-tone masthead.
+
+   NO INLINE PADDING, so the first chevron starts on the same pixel as the bus
+   column below it. Carbon's toolbar content is flush to its table's edges for
+   the same reason.
+
+   IT SPANS THE WHOLE BOARD, THE AVAILABILITY GRID INCLUDED, and that is the
+   deciding argument rather than a tidiness one: `.sch-board` is full width
+   always, while `.sch` narrows whenever Drivers is toggled on. A toolbar over
+   `.sch` alone would resize and shift every time that toggle is pressed --
+   moving the very buttons being clicked, which is the same reason index.html
+   gives for keeping the week label after the controls that change it. */
+.sch-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
+/* THE ASIDE STARTS WHERE THE GRID STARTS, NOT WHERE THE TOOLBAR DOES. The
+   toolbar is inside `.sch-frame` now, so without this the driver grid would
+   begin 48px above the bus grid and its header row would no longer sit on the
+   same line as the day band -- and sch.js gives the availability pane the
+   SCHEDULE's measured height so the two bottoms meet, which only works if the
+   two tops do. The offset is the toolbar's own height and they must move
+   together; if one changes, change both.
+
+   IT LEAVES 48px EMPTY ABOVE THE DRIVER GRID, and that reads as the point
+   rather than as a hole: the toolbar visibly does not reach it. A label there
+   -- "Driver availability", with the close control the toggle currently owns
+   from across the page -- would fill it and make the two panes parallel
+   objects. That is a separate piece; it needs markup the aside's script
+   builds. */
+/* NO TOP OFFSET ANY MORE: the head below occupies that band. */
+.sch-aside { display: flex; flex-direction: column; }
+/* AND IT MUST SAY SO WHEN HIDDEN, for exactly the reason `.sch-row` does
+   twenty lines up: a `display` declaration beats the UA's own `[hidden]` rule,
+   so `asideSlot.hidden = true` left the head on screen with nothing under it --
+   a "Driver availability" bar over empty page, which is what rux saw. The
+   aside had no `display` of its own until the head arrived, which is why this
+   only appeared now. */
+.sch-aside[hidden] { display: none; }
+/* THE HEAD, AT THE TOOLBAR'S OWN MODULE so the grid's column header lands on
+   the schedule's day band. It takes the pane's surface rather than the header
+   band's accent -- it is a title over a region, the way the schedule's toolbar
+   is, and the accent belongs to the row that labels columns. */
+.sch-aside__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-03);
+  /* 40px, `size-md`, 2026-09-10 -- one of the three region heads that moved
+     together. It must equal `.sch-toolbar`'s to the pixel or the two grids'
+     COLUMN headers stop landing on one line, which is the whole reason this
+     head exists in this band. See `.sch-corner` for why the bands below
+     them stayed at 32.
+
+     48px, `size-lg`, 2026-09-11, with the other two. `.sch-toolbar` carries
+     the argument; the rule that this must equal it to the pixel is unchanged
+     and is precisely why it had to move with it.
+
+     40px, `size-md`, 2026-09-12, with the other two again -- rux asked for a
+     40px first row over a 32px second. **A `min-block-size` alone does not do
+     it**, which is the thing worth knowing: a head is as tall as what it holds,
+     so every control in it had to come down to `md` as well. Here that is the
+     close button; in the toolbar it is five icon buttons and `.sch-weekbtn`;
+     in the trip editor it is Carbon's own close button and its header padding.
+     Measured on the way: setting only these two rules left the toolbar at 48
+     and dropped the roster's column band 8px out of line with the board's. */
+  min-block-size: var(--rux-layout-size-height-md);
+  padding-inline-start: var(--rux-spacing-05);
+  background: var(--rux-layer);
+}
+/* heading-compact-02, ONE STEP ABOVE THE COLUMN HEADER BELOW IT. It was
+   heading-compact-01 -- the same 14px at 600 as the "Driver" heading directly
+   under it, two stacked bars with no hierarchy between them. A region's title
+   outranks its own column headings; 16px at 600 does that without leaving the
+   32px bar, and it is the same type the trip editor's title now carries so the
+   two regions' heads match each other rather than their own subordinates. */
+/* `heading-03`, THE SAME TYPE THE TRIP EDITOR'S TITLE TAKES, 2026-09-12. This
+   was `heading-compact-02` -- 16px at 600 against the panel's 20px at 400 --
+   and rux read the two side by side as different kinds of thing: "the
+   inconsistent header bother me a bit".
+
+   THE PANEL IS THE MODEL AND NOT THE OTHER WAY ROUND, which is what settled
+   which one moves. `.rux--side-panel__title-text` is `heading-03` because
+   Carbon says a side panel's title is; this head is this app's own markup
+   imitating that panel, so it is the one free to change. Overriding the
+   component to match the imitation would have been the app overruling the
+   design system on a component Carbon ships complete.
+
+   AND CARBON ALREADY USES BOTH TOKENS IN ONE PANEL, which is the detail that
+   makes this a mismatch rather than a preference: the side panel carries a
+   SECOND title, `__collapsed-title-text`, at `heading-compact-02` -- exactly
+   what this rule used to be -- and swaps to it as the panel scrolls. So the
+   roster's head was wearing the panel's COLLAPSED type beside the panel's
+   expanded one, permanently.
+
+   THE TOOLBAR IS NOT IN THIS COMPARISON. It has no title: the week is a BUTTON
+   that opens the date picker, and Carbon's data table toolbar carries no
+   heading either. Three regions, two headers and a control row. */
+.sch-aside__title {
+  font-size: var(--rux-heading-03-font-size);
+  font-weight: var(--rux-heading-03-font-weight);
+  line-height: var(--rux-heading-03-line-height);
+  letter-spacing: var(--rux-heading-03-letter-spacing);
+  color: var(--rux-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* THE TRIP EDITOR'S COLUMN. Sized here, not in rux-overrides.css, so the
+   column's width is an app decision in an app file; that file only undoes
+   Carbon's fixed positioning.
+
+   IBM'S OWN CAUTION APPLIES AND IS ANSWERED BY THE PANEL ITSELF: "use a
+   dissimilar background colour to avoid the components blending in to each
+   other". The board is `--rux-layer`; `.rux--side-panel` paints `layer-01`
+   from its own rule, which is the same value -- so the separation here is the
+   gap `.sch-board` already puts between its children, and if that reads as too
+   little the answer is a surface step on the panel, not a border.
+
+   20rem MATCHES `--sm`, the size class still on the element. Both move
+   together or the column and its content disagree. */
+.sch-trip {
+  /* SHRINKABLE, NOT FIXED. `flex: 0 0 auto` at a hard 20rem could not give way,
+     so on a window too narrow to hold the board and the editor the flex row
+     overflowed its grid column and the editor ran past the page's own inset --
+     flush to the window edge while the board kept its margin, which is what rux
+     saw. It gives way now; Carbon's own `min-inline-size: 16rem` on the panel
+     is the floor, so it stops shrinking at 256px rather than collapsing. */
+  /* NEVER SHRINKS, AND NEVER BELOW WHAT IT HOLDS. `flex: 0 1 20rem` with
+     `min-inline-size: 0` was the actual cause of the editor escaping its own
+     wrapper: Carbon's panel inside carries `min-inline-size: 16rem`, so the
+     wrapper shrank past 256px while its content would not, and the panel
+     overflowed the box that was supposed to contain it. A wrapper must never be
+     allowed below the floor of what it contains. It does not shrink at all now
+     -- the schedule absorbs instead. */
+  flex: 0 0 20rem;
+  min-inline-size: 20rem;
+  max-inline-size: 100%;
+  /* NO TOP OFFSET: ITS OWN HEADER TAKES THE TOOLBAR'S BAND. The panel already
+     carries a title block and a close button, so the 2rem that used to push it
+     down to the schedule's header line was 32px of nothing above a head that
+     wanted to be there. Every region on this board now begins at the board's
+     top; what differs is what each puts in its first 32px. sch.js measures
+     these panels from `.sch-board` rather than from `.sch` for the same
+     reason. */
+  /* A DEFINITE HEIGHT, AND THIS IS WHAT MAKES THE FORM SCROLL AND THE SAVE BAR
+     STAY PUT. Carbon's side panel is already built for it: the panel is
+     `grid-template-rows: auto 1fr auto` -- title, content, actions -- and the
+     content div in index.html already carries `rux--side-panel--scrolls`
+     (`overflow: auto`). So nothing needs `position: sticky`; the actions row is
+     simply the third row of a grid and cannot move.
+
+     None of that works against a `max-block-size`. The panel resolves its own
+     `block-size: 100%` against this box, and a percentage against a parent with
+     only a MAXIMUM resolves to auto -- so the `1fr` row had nothing to
+     constrain it, the content never scrolled, and the whole column grew until
+     the Save bar was pushed down the page instead of pinned. Changing this one
+     word from `max-block-size` to `block-size` is the whole fix.
+
+     IT IS THE NO-SCRIPT FALLBACK, NOT THE REAL HEIGHT. `.sch` carries the same
+     expression and sch.js replaces it on both by MEASURING the pane's own top,
+     because this hand-tuned 15rem is exactly the guess that function exists to
+     correct -- and left to it the editor stood visibly shorter than the board
+     and the driver grid beside it. */
+  block-size: max(24rem, calc(100dvh - 15rem));
+}
+.sch-toolbar {
+  display: flex;
+  align-items: center;
+  /* NO GAP BETWEEN BUTTONS, 2026-09-07. Carbon's table toolbar sets its icon
+     buttons edge to edge and runs the primary hard against them -- the spec
+     rux sent marks each as 32 wide with a 16px icon and nothing between. The
+     8px this had made five separate objects out of two groups.
+
+     THE WEEK LABEL KEEPS ITS OWN MARGIN, because it is not a button and the
+     rule above is about buttons touching each other. It is the only thing in
+     this row that needs air, and `.sch-toolbar__range` carries it. */
+  gap: 0;
+  /* IT STACKS EXACTLY ONCE, 2026-09-11, AND THE NOTE THIS REPLACES WAS RIGHT
+     ABOUT THE THING IT FEARED. It read: "IT DOES NOT STACK. `flex-wrap: wrap`
+     put the week on its own line and the two actions on a third, which is
+     three rows of chrome above a board whose whole argument is vertical room
+     -- and it moved the paging buttons every time it happened. One row,
+     always; what gives way is the label, below."
+
+     WHAT MAKES IT SAFE NOW is that the wrap is no longer left to chance.
+     `.sch-toolbar__weekrow` is `flex: 1 0 100%` with `order: -1`, so there are
+     exactly two rows by construction -- the week, then every control -- and
+     the controls can no longer be pushed onto a third by a long label, because
+     the label is not on their row. The old note's third row was the failure
+     mode of wrapping ACCIDENTALLY; this wraps on purpose, in one place.
+
+     AND IT IS REQUIRED, not merely allowed: `flex: 1 0 100%` cannot wrap
+     inside `nowrap`. Left at `nowrap` the week row took the full width on the
+     single line and every button overflowed the toolbar's box -- measured, the
+     buttons sat at y=100 under a toolbar ending at 88. */
+  flex-wrap: wrap;
+  background: var(--rux-layer);
+  /* 40px, `size-md`, 2026-09-10. CORRECTION, same day: this first read "with
+     its BUTTONS left at `sm`", and that lasted about an hour -- rux's next
+     call was that the controls match the band, so every button in the three
+     heads is `rux--layout--size-md` now and the toolbar is 40px of band
+     holding 40px of control, edge to edge, which is what Carbon's own table
+     toolbar is at any density.
+
+     WHAT THAT TRADES, stated because the version above traded the opposite
+     way: Carbon ties a toolbar's height to its TABLE's density, and the rows
+     and day band here are still `sm`. So the chrome is md over an sm grid,
+     which is a decoupling Carbon does not do. It buys the touch target the
+     note on `.sch-corner` asked for -- the paging chevrons were the two most
+     repeated targets on the board and were under both platforms' guidance at
+     32px. 40px is still under iOS's 44 and Android's 48, but it is 8px
+     closer and it is the whole module rather than a patch on two buttons.
+
+     48px, `size-lg`, 2026-09-11 -- AND THE PARAGRAPH ABOVE CARRIES THE CLAIM
+     THAT OVERTURNS IT. It says 40px of band holding 40px of control is "what
+     Carbon's own table toolbar is at any density". It is not.
+     `.rux--table-toolbar` REDEFINES `--rux-layout-size-height-md` to `3rem`
+     and clamps its height between `lg` and `lg` (rux.css:13160-13179), so a
+     Carbon table toolbar is 48px at every size class it accepts -- there is no
+     density at which it is 40. A bare `.rux--btn` is 48 as well: its clamp
+     falls back to `lg` when no size class is present, so `md` was a downgrade
+     from Carbon's default rather than a neutral choice. The shell's own header
+     actions in index.html have been `size-lg` all along.
+
+     SO THIS IS NOT A MOBILE SIZE APPLIED EVERYWHERE, which is what rux asked
+     -- "should we change actual size instead so it work best for both desktop
+     and mobile?" It is Carbon's number, and the 40 it replaces was below what
+     Carbon ships for this component. It also clears iOS's 44 and Android's 48,
+     which the note above conceded 40 did not.
+
+     WHAT IT COSTS, AND WHY THAT IS CHEAP: the three region heads sit SIDE BY
+     SIDE, not stacked, so raising all three takes 8px from the board once, not
+     three times. Row densities are untouched -- Carbon lets a table's rows go
+     dense and refuses to let its toolbar follow, which is exactly the
+     decoupling this note worried about, answered by Carbon itself.
+
+     THE BREAKPOINT SWAP IN sch.js GOES WITH THIS. One size at every width
+     needs no `matchMedia`; what stays there is the icon-only swap, which is
+     about words, not sizes. */
+  min-block-size: var(--rux-layout-size-height-md);
+}
+/* THE LABEL IS THE ONLY THING THAT GIVES WAY, and it is the right one. A
+   truncated "September 7 – 13, 20…" still says which week; a hidden button says
+   nothing and cannot be pressed. `min-inline-size: 0` is what lets a flex item
+   shrink below its own text at all -- without it the row overflows instead. */
+/* ── THE WEEK ROW ───────────────────────────────────────────────────────────
+   ITS OWN ROW AT EVERY WIDTH, 2026-09-11. It was one only below `md`, wrapped
+   there because the toolbar could not otherwise fit; it is one everywhere now
+   because the week became a CONTROL. `docs/screen-inventory.md` settles that
+   twice -- section 1 lists "the week range as a date-picker trigger", section 7
+   rejects a permanent mini calendar because it "spends standing space on an
+   occasional action" and makes the label the trigger instead. As a 125px label
+   wedged between buttons that is a poor target; as a row it is a 48px one.
+
+   WHAT IT COSTS, STATED BECAUSE THE PAGE HAS REFUSED THIS BEFORE: 48px of
+   board at every width -- measured at 1440x950, the pane goes 790 to 742 and
+   8.3 bus rows become 7.8. index.html refuses to draw the page's NAME for
+   exactly this reason. The week is the better candidate: the name is already
+   in the tab title, the shell header and the side nav, and it never changes.
+
+   IT ALSO ENDS A BREAKPOINT DIFFERENCE rather than adding one -- below `md`
+   this was already the layout, so the media block below no longer has to
+   restate it. */
+.sch-toolbar__weekrow {
+  /* IT SHARES THE ROW AGAIN ABOVE md, 2026-09-11 on rux's sketch:
+     `Datepicker |        < > [today] [Driver] [+]`. It was `flex: 1 0 100%`
+     with `order: -1` at every width for about an hour; the markup was reordered
+     instead, so this no longer paints anything out of DOM order and the tab
+     order reaches the week before the controls that page it.
+
+     WHAT THE SPACER BUYS, because this order was argued against once: a wider
+     week eats `.sch-toolbar__spacer` rather than pushing the controls, so they
+     stay pinned right whatever the label says. index.html carries the full
+     note.
+
+     `min-inline-size: 0` IS WHAT LETS IT GIVE WAY. A flex item will not shrink
+     below its own text without it, and the week is the only thing in this row
+     that can afford to -- a truncated week still says which week, a missing
+     button says nothing. That is the base rule's own argument, unchanged. */
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  /* `md` WITH THE TOOLBAR IT SITS IN, 2026-09-12. This wrapper is a row of its
+     own, so its minimum holds the toolbar at 48 even once every control inside
+     has come down to 40. Measured: all six controls at 40 and the toolbar still
+     48 until this moved. */
+  min-block-size: var(--rux-layout-size-height-md);
+  /* THE PICKER'S ROOT IS A ZERO-HEIGHT CHILD AFTER THE HEADING and the
+     calendar hangs off its bottom edge, so this box must not centre or stretch
+     it -- `align-content` centres the LINE, which is what the heading wants,
+     and the root contributes no line of its own. */
+  align-content: center;
+  position: relative;
+}
+.sch-toolbar__range {
+  font-variant-numeric: tabular-nums;
+  min-inline-size: 0;
+  margin: 0;
+}
+/* A HEADING THAT IS ALSO A TRIGGER. Carbon ships no such component -- its date
+   picker's trigger is an input and an icon -- so this is the app's own control
+   and every value below is a --rux-* token. It inherits the heading's type from
+   `.sch-toolbar__range`, which is `rux--type-heading-compact-02`, so the week
+   reads as the title it is and not as a 14px button label.
+
+   16px OF INLINE PADDING IS THE ALIGNMENT the label already had: the paging
+   chevron below is a 48px square holding a 16px icon, so its glyph starts at
+   exactly 16 and the week's first character lands on it. */
+.sch-weekbtn {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  /* `md` WITH THE REST OF THE TOOLBAR, 2026-09-12. This is the tallest thing in
+     that row, so it -- not the row's own `min-block-size` -- is what decides the
+     row's height. Left at `lg` while everything else moved, the toolbar stayed
+     48 and the two grids' column bands fell 8px apart; measured. */
+  min-block-size: var(--rux-layout-size-height-md);
+  padding-inline: var(--rux-spacing-05);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  max-inline-size: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Carbon's own ghost-button feedback, by token rather than by borrowing the
+   class: `--rux-background-hover` is what a ghost button takes on hover and
+   `--rux-focus` is the 2px inset ring every control on this page draws. */
+.sch-weekbtn:hover { background: var(--rux-background-hover); }
+.sch-weekbtn:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+}
+/* THE CARET SAYS "THIS OPENS SOMETHING" WITHOUT SAYING "CALENDAR". A calendar
+   glyph here would be the second in this toolbar -- `Today` already carries
+   one -- and the two mean different things: jump to now, and pick a date. The
+   caret is the generic disclosure mark and collides with neither.
+
+   IT IS A REAL `<use>` IN THE MARKUP, NOT A MASKED PSEUDO-ELEMENT. The first
+   version of this rule drew it with `mask: var(--sch-caret)`, which invents a
+   `--sch-*` variable holding a URL -- AGENTS.md allows those "a count or a
+   position only" -- and puts an icon on the page that `check.mjs` cannot see,
+   since the gate resolves `<use href>` and knows nothing about masks. Every
+   other glyph here comes from the inlined sprite and so does this one. */
+.sch-weekbtn__caret { flex: 0 0 auto; }
+/* Everything before this sits left, everything after it right. */
+.sch-toolbar__spacer { flex: 1; }
+
+
+/* ── THE PAGE BESIDE THE PANEL ──────────────────────────────────────────────
+   Carbon's side panel is `position: fixed` at z-index 9000, so it floats over
+   whatever is under it. The slide-in variant drops its shadow precisely so an
+   app can make room instead, and this is that room: the schedule region gets
+   the panel's own width as end padding while it is open, so the board stays
+   readable rather than hidden behind it. The grid measures its own pane, so
+   the columns and the height follow on their own -- they fall toward the
+   minimum and the week scrolls, which is the price of having both. */
+/* NO TRANSITION ON THE PADDING, and it is not a matter of taste: the
+   transition PREVENTED THE PADDING FROM EVER APPLYING. Measured 2026-09-06 at
+   1440 with the panel open -- the class is on the element, the rule declares
+   `padding-inline-end: 30rem` as it then was, its sheet is enabled and
+   `getComputedStyle` still returned `0px` with NO transition object in
+   `getAnimations()`. Suppressing transitions returned 480px immediately. So
+   the board was never given the panel's room at all and ran 96px underneath
+   it, which is the opposite of what this rule exists to do.
+
+   It had already cost one bug earlier today, when `fit()` measured the page
+   mid-transition and sized the grid for a width it was about to lose. Two
+   defects for an animation nobody asked for, on a page where the panel itself
+   already slides, is a poor trade. The room appears at once now. */
+/* THE PANEL'S FULL WIDTH, which is IBM's own slide-in contract: the page
+   content's inline-end margin is set to the panel's width and the content's
+   own padding keeps it off the panel's edge. The page is inset from the
+   viewport by the shell's gutter, 64px at 1440, so this leaves that same 64
+   between the board and the panel -- the inset the board already has from the
+   viewport's left edge. Framed alike on both sides. sch.js sets the measured
+   width at runtime; this is what renders if it never runs. A version that
+   reserved only the overlap put the board flush against the panel, border on
+   border, for about an hour on 2026-09-06. */
+/* NOTHING RESERVES ROOM FOR THE PANEL ANY MORE, and that is the point of the
+   move. `.sch-page--with-panel` set `padding-inline-end` to the panel's width
+   so a FIXED overlay had somewhere to sit; the editor is a flex child of
+   `.sch-board` now, so it takes its own room by existing. The rule, its
+   no-script fallback and `fitPanelRoom()` in sch.js are all gone with it --
+   three places that had to agree about one number, and the log records what it
+   cost when they did not. */
+
+/* Definition rows in the panel. Carbon's structured list is the nearest
+   compiled pattern and is used for the itinerary, which is a real table; a
+   trip's own fields are label-and-value pairs rather than rows of a table, so
+   they are a description list, which is what they are. */
+.sch-def { display: grid; grid-template-columns: 7rem 1fr; gap: var(--rux-spacing-03) var(--rux-spacing-05); margin: 0; }
+.sch-def dt {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+.sch-def dd {
+  margin: 0;
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  color: var(--rux-text-primary);
+}
+/* Billing summary composition, 2026-09-11: one headline beside its status.
+   This replaces the two stacked big-numbers; Paid is now a definition row.
+   Carbon still owns the number and tag styles. Wrapping keeps unusually
+   long amounts readable rather than clipping them against the status. */
+.sch-billing-figures {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+}
+
+/* ONE RECORD ON ONE LINE: a code, a word, an amount. Carbon's row content is
+   an inline-block, so this grid goes INSIDE it rather than on it -- no rule
+   here touches a `rux--*` class.
+
+   THE AMOUNT IS ITS OWN COLUMN, right-aligned, so the money reads as a column
+   down the list rather than trailing whatever width the middle value happened
+   to be. The middle column takes the slack; the two outer ones are
+   content-sized.
+
+   ONE RULE FOR ALL THREE LISTS, renamed from `.sch-payment-row` on 2026-09-11
+   when Purchase order and Invoice became lists too. The middle column holds a
+   date on a payment, a reference on a PO and the number on an invoice, and
+   the third is empty on an invoice -- `auto 1fr auto` handles an empty end
+   column without collapsing the row, so the tag and the value still line up
+   across all three sections. That alignment is the whole reason the three
+   share a class rather than having one each.
+
+   AND IT IS `listrow`, NOT `row`, BECAUSE `.sch-row` IS ALREADY THE BOARD'S.
+   The first version of this rename took the shorter name and broke the
+   schedule in the same commit: `.sch-row` is a bus row at line 110 of this
+   file, set to `display: contents` so its cells join the week grid, and a
+   second `.sch-row { display: grid }` further down the file won on order --
+   every bus row became a three-column grid and the board came apart. rux saw
+   it before the check did, and the check cannot see it at all: both classes
+   are this app's own, so nothing upstream is there to resolve them against.
+   A prefix is cheap; a name shared with an existing component is not. */
+.sch-listrow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  inline-size: 100%;
+}
+/* Document rows omit the redundant type tag, giving the reference room. */
+.sch-listrow--document { grid-template-columns: minmax(0, 1fr) auto; }
+/* A LONG REFERENCE CLIPS, IT DOES NOT WRAP, 2026-09-11. `overflow-wrap:
+   anywhere` broke "MT CONV DALLAS S26-ESCAMILLA" across two lines, which made
+   one PO 40px tall where every other row is 20 -- and with several POs on a
+   trip that is the list losing its rhythm, not one tall row. Measured at the
+   320px panel: 238px of reference in a 173px box, now one line with an
+   ellipsis. NOTHING IS LOST BY CLIPPING: the whole string is on the row's own
+   `title` and in the dialog the row opens, and a reference is matched against
+   a document rather than read down a list. */
+.sch-listrow--document .sch-listrow__when {
+  min-inline-size: 0;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sch-listrow__when {
+  color: var(--rux-text-secondary);
+  text-align: start;
+}
+.sch-listrow__much {
+  color: var(--rux-text-primary);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A LIST HEADER CARRYING TWO CONTROLS. `.rux--contained-list__action` is
+   `position: absolute` with `inset-inline: 0` and no block-end
+   (`css/rux.css:10752`), so it has no height of its own -- a 24px toggle and
+   a 32px button dropped straight into it would each hang from the top of the
+   band. This box gives them a flex row that centres them against each other,
+   and it is an element this app owns rather than a second override of a
+   Carbon component whose absolute positioning `rux-overrides.css` already
+   steers around once.
+
+   THE SWITCH COMES FIRST AND THE `+` IS LAST, so the add button sits at the
+   same right edge on all three lists whether or not the section has a switch.
+   Payments has no switch and its `+` does not move.
+
+   THE END PADDING IS THE HEADER'S OWN, PUT BACK, and it is a real bug being
+   fixed rather than a nicety. `__action` is absolute with `inset-inline: 0`,
+   so it resolves against the header's BORDER box and ignores the
+   `padding-inline` the header sets on itself -- the button lands flush to the
+   band's edge instead of at the header's content edge, which is where the
+   label starts. With the list bled out by the panel body's `spacing-05` that
+   edge is 16px OUTSIDE the panel, so the `+` was half clipped: measured
+   x 1036-1068 against a panel ending at 1052, on the Payments list as it has
+   shipped since 2026-09-10 and on both new lists. Reading Carbon's own local
+   density variable rather than hard-coding 16px keeps it correct if the list's
+   size changes. Filed against rux-ds as well -- the component should pad its
+   own action -- and this goes away when it does. */
+.sch-list-action {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding-inline-end: var(--rux-layout-density-padding-inline-local);
+}
+
+/* A LIST'S ROWS, HIDDEN WHILE ITS SWITCH IS OFF. The rule is needed for the
+   same reason `.sch-milestone-fields[hidden]` is: the bare attribute is not
+   safe on an element inside a Carbon component that may set `display` on it,
+   and the failure mode is silent -- the rows simply stay on screen. The
+   header is never hidden, because the switch that unhides the rows is in it. */
+.sch-list-body[hidden] { display: none; }
+
+/* The shortfall remains explicit, but uses the existing helper-text tone.
+   This replaces the red text treatment: a partial PO is a supported billing
+   state, not an input error. The summary tag still identifies that state. */
+.sch-billing-section { margin-block-start: var(--rux-spacing-05); }
+
+/* ── THE SEPARATION BETWEEN SECTIONS ────────────────────────────────────────
+   Added 2026-09-11. The billing tab is five stacked blocks on one surface and
+   nothing said where one ended; a heading over each was tried first and cost
+   about 60px of a 320px panel. This costs 1px.
+
+   THE RULE REPLACES THE GAP RATHER THAN ADDING TO IT. `.sch-billing-section`
+   already carries `spacing-05` above; left in place the border would sit in
+   the middle of a 32px void and each section would grow by another 16. The
+   margin goes to 0 and the same space becomes padding under the border, so a
+   separation is the border's own 1px. Measured before and after: the panel
+   went 624px to 560px on a new trip when this was corrected. */
+/* THE SECTION ALSO NEEDS ROOM BELOW ITS CONTENT, and leaving it out is what
+   made rux report the divider "disappearing", 2026-09-11. With padding only
+   above the border, a section's last element ended exactly ON the next
+   section's border:
+
+     - Contract signed's Note field and the PO section's rule both landed at
+       y=395, measured. A Carbon text input draws its own bottom border at
+       `border-strong-01` (#6f6f6f) and the divider is `border-subtle-01`
+       (#525252), so the brighter field underline covered the dimmer rule and
+       the separation was simply not on screen.
+     - The PO coverage line had the same collision without the overlap: the
+       border directly under the text read as an UNDERLINE of that sentence
+       rather than as the start of the Invoice section.
+
+   `spacing-03` and not another `spacing-05`: 8px is enough to part a field's
+   own border from the section's, and a second 16 on four boundaries would put
+   64px back into a panel this pass spent measurable effort shortening. */
+.sch-billing-rule {
+  margin-block-start: 0;
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+  padding-block-start: var(--rux-spacing-05);
+  padding-block-end: var(--rux-spacing-03);
+}
+
+/* ── THE ADD IS THE LIST'S LAST ROW ─────────────────────────────────────────
+   Added 2026-09-11, moving the `+` out of the header. In the header it shared
+   `__action` with the switch, which is what pushed PO's and Invoice's switches
+   40px inboard of Contract's -- three consecutive rows on two right edges,
+   measured 311 / 271 / 271. One control per header line puts them back on one.
+
+   AS A ROW IT GETS THE LIST'S OWN RULER and the rows' left, so it reads as the
+   place the next row will appear rather than a button floating under the list
+   at gap 0. `2.5rem` is what `--size-md` makes a contained-list row, so the
+   add does not break the 40px rhythm it sits in. */
+.sch-list-additem { padding: 0; }
+.sch-list-add {
+  inline-size: 100%;
+  justify-content: flex-start;
+  min-block-size: 2.5rem;
+}
+.sch-po-coverage { margin-block-start: var(--rux-spacing-03); }
+
+/* The payment dialog's fields, two to a row. `minmax` rather than `1fr 1fr`
+   so the pair collapses to one column if the modal is ever narrower than the
+   two fields plus their gap — and unlike the auto-fit grid this file tried on
+   the billing figures, this one fires in both directions at widths the modal
+   actually reaches: two columns at its 623px, one below about 400px. */
+.sch-dialog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--rux-spacing-05);
+}
+
+/* A milestone's fields, shown only while its switch is on. The rule is needed
+   because the block is also a `rux--stack-vertical`, which is `display: grid`
+   — that beats the user agent's own `[hidden] { display: none }`, so the bare
+   attribute would leave the fields on screen with nothing reporting an error.
+   Scoped to this app's own class, never to the Carbon one. */
+.sch-milestone-fields[hidden] { display: none; }
+
+/* A section heading with an inline control on its right. Sized to match the
+   `contained-list` header that Payments uses two sections above — same
+   `size-sm` height, and `__title` already carries the same 12px/400 — so the
+   billing tab reads as one rhythm even though one header is a Carbon
+   component and the others are app chrome. */
+.sch-panel-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+  min-block-size: var(--rux-layout-size-height-sm);
+}
+
+/* A section pulled out to the panel's edges. The panel body carries
+   `spacing-05` of inline padding and a `contained-list` carries `spacing-05`
+   of its own inside the header and every row, so the list's text sat 16px
+   right of every other heading and field on the tab — measured, not guessed.
+
+   IT BLEEDS RATHER THAN DROPPING THE PADDING, and that is the whole point of
+   doing it this way. Setting `padding-inline: 0` on the header would align
+   the text too, but the header band is exactly the content width, so the
+   words would touch its left edge. Pulling the list out by the body's own
+   padding keeps Carbon's 16px INSIDE the band and lands the text at the same
+   left as the fields, with the band running to the panel's edges. Same trick,
+   and the same number, as the sticky tab strip in `rux-overrides.css`.
+
+   The margin is on this app's wrapper, never on `.rux--contained-list`. */
+.sch-panel-section--bleed {
+  margin-inline: calc(-1 * var(--rux-spacing-05));
+}
+
+.sch-panel-section { margin-block-start: var(--rux-spacing-06); }
+.sch-panel-section__title {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  margin-block-end: var(--rux-spacing-03);
+}
+
+/* ── DRIVER AVAILABILITY, ON TRIAL IN TWO PLACES ────────────────────────────
+   Who is free on a given day, which is the question the schedule cannot
+   answer: the board says what every BUS is doing, and a driver with no trip
+   simply is not drawn. Rows are drivers, columns are the same seven days.
+
+   IT IS THE WEEK GRID AGAIN, not a third component. `.sch-avail__grid` carries
+   `.sch-grid` and inherits its column template, so the only thing these rules
+   add is a denser row and the three cell states. AGENTS.md names the week grid
+   and the trip bar as this app's two components and that stays true.
+
+   LEFT OF THE BOARD, decided 2026-09-06. It was tried three ways: docked
+   below the schedule sharing its day columns exactly, to the right between
+   the board and the trip panel, and here. Docking aligned Thursday under
+   Thursday and cost 240px of height; the right-hand slot put the grid between
+   the board and the panel describing it, which is what settled it. Left keeps
+   the trip panel beside the board it describes and gives up column alignment,
+   which the marked day column answers instead. */
+/* `min-inline-size: 0` IS LOAD-BEARING. This sits in Carbon's
+   `rux--stack-vertical`, which is a grid, and a grid item defaults to
+   `min-width: auto` -- it refuses to shrink below its own content. With the
+   side layout on and the trip panel open the track was 832px and this box
+   still measured 1316, so the aside ran to 1380 against a panel edge at 960
+   and sat behind it. The grid pane inside carries the same zero for the same
+   reason. */
+/* THE MENUS' CONTAINING BLOCK, AND IT WAS NEVER DECLARED. `popMenuAt` in
+   sch-data.js appends an absolutely positioned menu to `.sch-page` and offsets
+   it by that element's own bounding rect -- which is only correct if
+   `.sch-page` is the containing block. It never was: its sole rule was
+   `--with-panel`'s padding, and every ancestor up to `.rux--content` is
+   `position: static`, so an absolute child resolved against the initial
+   containing block and the offset was wrong by the page's own inset -- about
+   96px at 1440. The class carried no styling at all after the trip editor moved
+   in flow; it carries this, which is the thing the code has assumed all along.
+
+   Declared rather than removed, because the alternative -- deleting the wrapper
+   and positioning menus against the viewport -- would make `popMenuAt` do the
+   scroll arithmetic itself for no gain. */
+.sch-page { position: relative; }
+
+.sch-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
+/* FLEX-GROW IS BOTH THE MEASUREMENT AND THE BUG, so sch.js turns it off at the
+   moment it stops being the first. Growing is what lets the pane fill the
+   board, and `fitColumns` reads `clientWidth` off the pane to learn how much
+   room there is -- take grow away here and it measures its own content, comes
+   out at 995 instead of 1310, and the week never widens past the floor. But
+   once the columns are chosen the pane is deliberately narrowed so the few
+   leftover pixels fall OUTSIDE its border, and grow hands them straight back:
+   2.805px of daylight to the right of Sunday, measured at 1440 with the driver
+   grid on. So the rule keeps grow for the measuring pass and sch.js pins
+   `flex-grow: 0` inline for the width it just set. */
+.sch-board > .sch { flex: 1 1 auto; min-inline-size: 0; }
+
+/* AS WIDE AS ITS CONTENT, MEASURED, NOT PICKED -- the same rule the bus column
+   follows. The width here is only ever seven squares plus the longest driver
+   name, and hand-setting it means either clipping a name or carrying dead
+   space. Measured 2026-09-06 across 40 drivers: the longest, "Vicente Solar",
+   needs 88px with its padding, and seven 24px days are 168, so the whole box
+   comes to 261 -- against the 304 of 19rem and the 368 this carried at 32px
+   rows. The 43px is given back to the board.
+
+   THE FIRST MEASUREMENT OF THIS WAS WRONG AND SAID 131px, which would have
+   justified 19rem as "derived". The probe built its font from
+   `getComputedStyle(el).font`, and that SHORTHAND RETURNS AN EMPTY STRING
+   here, so it measured every name in the browser's default 16px serif and
+   inflated the lot by about half. Read the longhands -- fontStyle, fontWeight,
+   fontSize, lineHeight, fontFamily -- or check `scrollWidth` against
+   `clientWidth` on the real box, which is what caught it: no cell overflows.
+
+   THE CAP IS THE BOARD'S PROTECTION. One absurd name cannot take the
+   schedule's width with it: past 22rem the name track shrinks and ellipsises,
+   which is what `minmax(0, max-content)` on the column below is for.
+
+   `order` is the whole of "left" -- the box is after the grid in the markup so
+   the schedule is still the first thing reached, and before it on screen. */
+/* THE PANELS HOLD THEIR SIZE; THE SCHEDULE IS WHAT GIVES WAY. Settled
+   2026-09-07 after trying it the other way for an hour.
+
+   BOTH SIDES ARE `flex: 0 0 auto` AND THAT IS THE POINT. This was briefly
+   `0 1 auto` with `min-inline-size: 0`, to stop the row overflowing. It stopped
+   the overflow by letting the name column collapse -- `--sch-head-w` here is
+   `minmax(0, max-content)`, so under pressure the drivers truncated to "Jul",
+   "Juv", "Lor" and the "Driver" heading vanished entirely. A silently
+   unreadable roster is worse than a visible overflow, and it was not the cause
+   anyway; see `.sch-trip`.
+
+   THE SCHEDULE IS THE ONE REGION BUILT TO SHRINK. `.sch-frame` is
+   `flex: 1 1 auto` with `min-inline-size: 0`, and the pane inside it is
+   `overflow: auto` with a day-column floor -- narrowing it scrolls the week,
+   which is a thing the board already does and the only lossless answer of the
+   three. A driver's name and a form field have no equivalent. */
+/* 320, THE SAME STOCK NUMBER AS THE EDITOR, 2026-09-08. It was `max-content`
+   capped at 22rem and measured 331.195: a width set by the longest driver name,
+   so the two regions flanking the board sat 11px apart for a reason nobody
+   chose, and the roster moved whenever its data did. The editor is
+   `rux--side-panel--sm`, whose compiled width is `clamp(16rem, ..., 20rem,
+   100%)`, so 20rem here is Carbon's own number reached the same way rather than
+   a local invention. `--rux-side-panel-modified-size` is the hook for the other
+   direction and is deliberately unused: nothing here wants a width Carbon does
+   not already ship. */
+.sch-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
+
+/* XS ROWS UNDER AN SM HEAD, 2026-09-08, AND THE FLIP-FLOP ENDS ON AN ARGUMENT
+   RATHER THAN A PREFERENCE. This has been 24, 32, 24, 32 and is now 24. Every
+   previous turn was fought over one number -- how many drivers fit -- and the
+   two readings were genuinely even, which is why it kept turning. Measured at
+   1440x950: 24 of 40 drivers at 32px, 32 of 40 at 24px.
+
+   WHAT BROKE THE TIE IS THAT THE CONSISTENCY BEING PROTECTED WAS NOT THERE.
+   The entry this replaces traded eight drivers for "one module on the page",
+   and the page does not have one: a bus row is 95px. The 32px module lives in
+   the toolbar and the two header BANDS, never in a body row, so what the
+   driver rows were matched to was a band -- and the band is still 32px, still
+   explicit below, and still the thing that keeps the two grids' top edges on
+   one line.
+
+   AND THE CARBON PRECEDENT CITED HERE WAS NOT REAL -- corrected 2026-09-08,
+   second pass, by reading the compiled rules rather than recalling the
+   component. This said "Carbon's own row-height control offers exactly this:
+   five row heights under an unchanged header." It does not. `thead tr` appears
+   in EVERY size selector beside `tbody tr` -- `--xs` 1.5rem, `--sm` 2rem,
+   `--md` 2.5rem, `--xl` 4rem at rux.css:12127, 12157, 12182 and 12207, with lg
+   the unclassed default -- so Carbon moves the head and the body together and
+   ships no variant where they differ. A 24px row under a 32px band is this
+   app's own shape.
+
+   THE DECISION STANDS ANYWAY, on the half of the argument that was load-bearing:
+   the page has no 32px body row to be consistent WITH, and the band is not a
+   row. What it loses is the appeal to precedent, which was doing no work the
+   measurement was not already doing -- 32 of 40 drivers against 24. An `sch-`
+   component is allowed a shape Carbon does not ship; it is not allowed to claim
+   Carbon ships it.
+
+   THE DAY COLUMNS FOLLOW THE ROW AGAIN, 2026-09-08 ON RUX'S CALL, AND THE HEAD
+   PAYS IN LETTERS RATHER THAN PIXELS. The entry this replaces held the columns
+   at sm because "Wed" is 26px at label-01 in a 24px column. That measurement is
+   right and still is -- 25.0px of glyphs plus 0.32px of tracking three times,
+   re-measured today. What it did not consider is that the ambiguity three
+   letters exist to prevent only needs TWO: "Tu" and "Th" are as distinct as
+   "Tue" and "Thu", and "We" -- the widest of the seven -- is 18.4px, which
+   clears a 24px cell with 5.6 to spare. The words moved, so the column could.
+   sch-data.js's head builder is where they are cut.
+
+   THE 56px DOES NOT GO TO THE BOARD, which is the other thing that changed.
+   The aside is a fixed 320 now rather than a `max-content` 331, so every pixel
+   the days give up lands on the driver name inside it: 107 to 152. It buys
+   nothing for `.sch-frame`, where the week is still 323px short at 1440 with
+   both companions open, and it was never going to -- see the yield. */
+.sch--avail { --sch-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
+/* In the side slot every pixel the days do not need goes to the name, which is
+   the only thing there with anything to say: 320 less seven 24s is 152, where a
+   `max-content` head left it 107. `minmax(0, 1fr)` and not `1fr`: a grid
+   track's automatic minimum is its content, so a long name would push the
+   squares out of the panel rather than ellipsing. The comment said 1fr and the
+   value said `max-content` from the day the aside became `max-content` itself,
+   which is what made the head the thing sizing the box; a fixed box lets the
+   rule be what it always claimed to be. */
+.sch-aside .sch--avail {
+  --sch-head-w: minmax(0, 1fr);
+  /* THE TWO AXES SPLIT AGAIN, 2026-09-11, FOR A REASON THE OLD SPLIT DID NOT
+     HAVE. This was 24x24 and rejoined on 2026-09-08 with: "The split existed so
+     the head could hold three letters; the head holds two now and fits, so the
+     cell is a 24x24 square and the two axes of this grid are one number again."
+     That is still true of the HEAD -- "We" is 18.4px and clears 24 -- so
+     nothing here is reverting it. The new reason is the mark itself: a 24px
+     column is a thin mark to read a week off, and rux asked whether there was
+     room for the next size.
+
+     THERE IS, AND THE MEASUREMENT IS WHY IT IS WIDTH ONLY. The aside is a fixed
+     20rem = 320px, and `--sch-head-w: minmax(0, 1fr)` above makes the name
+     column the remainder -- so every pixel the days take comes off the names.
+     At 32 the days take 224 and the names get 96.
+
+     WHICH COST THE NAME PADDING, AND A FIRST READING OF THIS WAS WRONG. The
+     probe that sized this said the name column came to 108px with nothing
+     truncating -- but 108 was the symptom of an overflow, not a fit: the grid
+     had sized to its content and run 12px past the pane. Pinned to the pane it
+     is 96, and at `spacing-05` of padding the two longest names -- "Vicente
+     Solar" at 105px and "Prudenciano" at 101 -- would have ellipsed. The
+     padding is `spacing-03` here now, which takes the widest to 89 and clears
+     96 with room; `.sch-avail__grid` carries the overflow half of the fix.
+
+     HEIGHT IS THE EXPENSIVE AXIS AND IS DELIBERATELY UNTOUCHED. `--sch-avail-h`
+     stays xs. Measured at 1440x950: all 40 drivers fit at 24px tall and 35 of
+     40 at 32px, so a square would have cost five drivers below the fold --
+     which is the exact currency the 2026-09-08 decision was settled in, after
+     this number turned 24, 32, 24, 32, 24. Widening does not re-open it, and
+     that is the whole case for doing one axis and not both. */
+  --sch-day-track: var(--rux-layout-size-height-sm);
+  /* FILLS WHAT THE HEAD LEAVES. sch.js gives the ASIDE the board's height; this
+     takes the remainder under the head. `max-block-size: none` lifts the base
+     `.sch` cap, which is a viewport expression and would otherwise re-cap this
+     pane at the full board height inside a box already 32px shorter. */
+  flex: 1 1 auto;
+  min-block-size: 0;
+  max-block-size: none;
+}
+/* THIS GRID IS ITS PANE'S WIDTH, NEVER ITS CONTENT'S -- and it has to say so
+   itself, because it carries `.sch-grid` too and that class is
+   `inline-size: max-content` for the BOARD's sake: seven day columns that must
+   be allowed to total more than the pane and scroll, which is what makes the
+   bus column stick correctly.
+
+   THE ROSTER IS THE OPPOSITE CASE AND INHERITED THE WRONG HALF. Its seven
+   columns are a fixed token width and always fit, so nothing here ever needs to
+   overflow -- but `max-content` let the NAME column refuse to shrink, and
+   `--sch-head-w: minmax(0, 1fr)` could not do its job against a box already
+   sized to content. Caught by measuring after widening the cells to 32: the
+   grid computed 332.195px inside a 320px pane and the roster gained a 12px
+   horizontal scroll that nothing asked for. At 24px it had been hidden, since
+   108 + 168 came in under 320 and the `min-inline-size: 100%` floor won.
+
+   `inline-size: 100%` pins it, the day columns take their 224, and the name
+   column takes the remainder and ellipses -- which is what the note on
+   `--sch-head-w` above always claimed happened. */
+.sch-avail__grid { align-content: start; inline-size: 100%; }
+.sch-avail__days,
+.sch-avail__row { display: contents; }
+
+.sch-avail__name,
+.sch-avail__cell,
+.sch-avail__day {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  block-size: var(--sch-avail-h);
+  display: flex;
+  align-items: center;
+  font-size: var(--sch-fs);
+  letter-spacing: var(--sch-ls);
+}
+/* THE NAME COLUMN IS THE PANE'S OWN SURFACE, NOT THE HEADER BAND'S, matched
+   2026-09-07 to the schedule's bus column. Both were `layer-accent-01`; the
+   schedule's changed when rux saw that the same token covering a 32px band and
+   a column running the full height of the fleet reads as a band in one place
+   and a slab in the other. Forty drivers is the same argument, and with the two
+   grids beside each other the one that had not changed was the only slab left
+   on the page. Still opaque, because rows scroll under it sideways. */
+.sch-avail__day,
+.sch-avail__name {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 2;
+  background: var(--rux-layer);
+  color: var(--rux-text-secondary);
+  padding-inline: var(--rux-spacing-03);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: var(--sch-avail-h);
+}
+/* THE HEADER ROW STICKS, like the schedule's day band beside it. Added
+   2026-09-07: this pane scrolls its own drivers -- forty of them against a
+   viewport that holds about thirty -- and the row saying which column is which
+   day scrolled away with them, leaving seven unlabelled squares.
+
+   IT NEEDS A BACKGROUND TO STICK OVER, and `layer-accent-01` is the one the
+   band already had, so nothing changes standing still. The z-index ladder is
+   the same shape as the schedule's: the corner above the header row, the header
+   row above the sticky name column, the name column above the cells.
+
+   The 32px is not new and is not free either: it matched the schedule's day
+   header before the ROWS did, and it is kept explicit so a change to the row
+   height cannot pull the two grids' top edges apart again. */
+.sch-avail__days > .sch-avail__day {
+  block-size: 2rem;
+  line-height: 2rem;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 3;
+  background: var(--rux-layer-accent-01);
+  /* THE SAME TABLE HEADER TYPE AS THE SCHEDULE'S BAND, set on the header ROW so
+     the "Driver" heading and the seven day letters share it -- which is what
+     Carbon's `thead` does, where every header cell carries one type whatever it
+     labels. `line-height` stays at the 2rem above: it is what centres a label
+     in a 32px cell, and the type's own would not. */
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
+  /* NO RULE UNDER THIS HEADER EITHER, 2026-09-07, for the same reason the
+     schedule's band lost its own: Carbon's table header draws no border and the
+     surface change is what separates it from the first row. The two grids sit
+     side by side and one of them having a line under its head was the only
+     thing left saying they were different components. */
+  border-block-end: 0;
+}
+
+/* THE DRIVER COLUMN FOLLOWS THE TABLE, 2026-09-07. Carbon's `td` carries
+   `padding-inline: 1rem` and this column had spacing-03, half of it -- the name
+   sat closer to the pane's edge than any cell in a Carbon table does. It is
+   spacing-05 now, and it widens the column by 16px.
+
+   ITS HEADER FOLLOWS THE TABLE TOO, and rux read this off the spec correctly:
+   Carbon's `thead` is `heading-compact-01` at weight 600 in `text-primary`,
+   not the label-01 secondary this band was using. "Driver" is a column heading
+   over a column of names, which is exactly the case that type is for.
+
+   THE DAY LETTERS ARE DELIBERATELY NOT CHANGED. They are in the same header
+   row, so this leaves one row carrying two type roles -- which is Carbon's own
+   arrangement for a header cell that labels a column of text against one that
+   labels a column of marks, and it matches the schedule's band beside it,
+   where the day name is secondary and only the date is primary. If that reads
+   as an inconsistency rather than a distinction, the fix is to take BOTH
+   grids' bands to the table header type together, not this one alone. */
+/* THE NAME COLUMN'S RULE, 2026-09-11, AND IT IS THE SAME PAIR THE BOARD HAS.
+   This grid is built the same way as the schedule beside it: a sticky identity
+   column painting `--rux-layer`, the same surface the cells beside it sit on,
+   with rows passing under it when the pane scrolls sideways -- the comment on
+   the sticky rule above already says "rows scroll under it sideways". So it had
+   the same fault and it takes the same fix: one 1px `border-subtle-01` where
+   identity meets content, on the name cell and on the `Driver` heading both, so
+   the line runs the grid's whole height rather than starting below its header.
+
+   AND IT STOPS AT THE HEADER ROW, exactly as the board's does.
+   `.sch-avail__day--head` is this grid's corner and briefly carried a matching
+   rule; rux rejected both at once -- "doesnt cross into header" -- and the two
+   grids move together as they must, since they share seven day columns and sit
+   one above the other. The band is its own surface in both. */
+.sch-avail__name { padding-inline: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
+/* The type moved up to the header ROW, where it covers the day letters too.
+   What is left for this cell is set below, after the reset that would beat it. */
+
+/* THE DAY CELLS KEEP label-01 WHILE "Driver" TAKES THE TABLE HEADER'S 14px.
+   Three letters at 14px/600 is ~30px in a 32px square and the seven of them
+   touched; at 12px they sit clear. The two are different jobs in one row -- a
+   word labelling a column of names, and a day labelling a column of marks. */
+/* ONE TYPE FOR ALL FOUR COLUMN-HEADER CELLS, 2026-09-11. These were label-01
+   at 12px while the board's day cells, the board's corner and this grid's own
+   "Driver" corner are all `heading-compact-01` at 14/600 -- one cell in four
+   differing from the rest of the band.
+
+   THE 12px WAS SET FOR 24px CELLS AND OUTLIVED THEM. It exists because "Wed"
+   would not fit a 24px square, which is why these went to two letters in the
+   first place; the cells are 32px wide since the same-day pass, and two letters
+   at 14/600 measure **21px**, inside 32 with eleven to spare. Measured before
+   changing it, in the cell's own font.
+
+   SO THE RULE IS GONE RATHER THAN RETUNED: with nothing here, these cells
+   inherit the same `heading-compact-01` the rest of the band already sets. */
+.sch-avail__days > .sch-avail__day--head {
+  font-size: var(--rux-heading-compact-01-font-size);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+
+/* A day label needs no padding and reads better centred over its square. */
+.sch-avail__day {
+  inset-inline-start: auto;
+  position: static;
+  padding-inline: 0;
+  text-align: center;
+}
+/* THE CORNER OF THIS GRID, sticky in BOTH axes: it is the only cell that has
+   to hold its place while the drivers scroll under it and while the pane is
+   scrolled sideways, so it sits one step above the header row it is part of. */
+.sch-avail__day--head {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 4;
+  /* 1rem AND START-ALIGNED, so the heading sits on the same pixel as the names
+     under it -- Carbon's `.rux--table-header-label` is `text-align: start` and
+     its cells carry the same 1rem, which is the whole of what makes a column
+     heading look attached to its column.
+
+     BOTH HAVE TO BE DECLARED HERE rather than with the type, because
+     `.sch-avail__day`'s `padding-inline: 0` and `text-align: center` -- right
+     for a single letter over a square, wrong for a word over a column of names
+     -- sit between the two and match this cell as well at the same
+     specificity. Later wins, so later is where they go. */
+  padding-inline: var(--rux-spacing-05);
+  text-align: start;
+}
+
+/* THE THREE STATES, and free is the one being looked for, so it is the one
+   with nothing in it. Busy and off are Carbon's own tag tints, the same
+   palette the trip bar uses, so the two grids read as one system. */
+.sch-avail__cell { padding-inline: 0; overflow: hidden; }
+/* THE DAY RULES, CARRIED INTO THE ROSTER so the grid does not stop at the
+   board's bottom edge. The two panes share seven columns and sit one above the
+   other; ruling only the board would put the landmark on half the height of the
+   thing being counted.
+
+   PURE CSS HERE AND PAINTED STOPS THERE, because the two panes are built
+   differently and neither should be bent to match the other. A roster cell is a
+   real grid cell with a column of its own, so the rule is its inline start edge
+   and `data-day` already says which cell is first; a board track is ONE element
+   spanning all seven days, so there is no edge to hang a border on and the
+   positions have to be painted. Same token, same width, same pixel.
+
+   NOT ON THE FIRST COLUMN: that edge is the name column's own rule, drawn by
+   `.sch-avail__name`, and a border here as well would double it.
+
+   AND NEVER IN THE HEADER ROW -- this selector names `__cell`, which only body
+   rows use, so `.sch-avail__days` is untouched by construction. Both bands stay
+   clean, which is the rule rux set: no vertical line enters a header.
+
+   WHAT THIS REPLACED WAS A WEEKEND-ONLY BOUNDARY, one line where the weekend
+   met a weekday. With every day ruled, that line is no longer a mark -- it is
+   one of six identical ones -- so the class is gone and the weekend's only
+   remaining mark is the dimmed text in the band. */
+.sch-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+/* THE SELECTED TRIP'S DAYS, TINTED. `--rux-layer-selected` is Carbon's own
+   token for a selected surface -- what a selected row takes in its table --
+   rather than a step picked by eye: #393939 against the pane's #262626.
+
+   IT MARKS THE FREE CELLS AND ONLY THOSE, which is the point rather than a
+   limitation. This pane answers "who is free on this day", so the eye hunts the
+   EMPTY cells in the selected column -- and `--busy` and `--off` below set the
+   `background` SHORTHAND, which resets what is under it, so a booked or
+   day-off cell keeps its tag colour and the tint shows exactly where the answer
+   is.
+
+   BEFORE `--busy` AND `--off` FOR THAT REASON, so those two win on order.
+
+   AND IT NEEDS NO LINES. The header cells keep their underline, which says
+   which days without drawing on the body, and the day rules already mark every
+   column edge -- so the band has boundaries without adding any. What this
+   replaced drew four blue borders around the span, and before that a
+   four-sided box on all forty cells of one column. */
+.sch-avail__cell--on-day { background-color: var(--rux-layer-selected); }
+.sch-avail__cell--busy {
+  background: var(--rux-tag-background-blue);
+  color: var(--rux-tag-color-blue);
+}
+.sch-avail__cell--off {
+  background: var(--rux-tag-background-red);
+  color: var(--rux-tag-color-red);
+}
+.sch-avail__cell > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  inline-size: 100%;
+}
+/* The side slot has no room for a destination and does not need one: the
+   question there is free or not. */
+.sch-avail__cell > span { visibility: hidden; }
+
+/* The selected trip's day, so "who is free THEN" is answered without
+   counting columns. The old board did this by highlighting the row for the
+   trip's date and it is worth keeping in both layouts. */
+/* THE ROSTER'S DAY LETTERS DIM, they do not band -- exactly what
+   `.sch-day--weekend` does to the board's day names. Both header bands are
+   already their own surface and cutting notches into either would break a
+   band that reads as one unit; the tint belongs in the body, where the empty
+   row that cannot be counted actually is. Placed above `--on-day` so a
+   selected weekend column still takes the brighter colour. */
+/* THE CHILD COMBINATOR IS WHAT THIS HAS TO BEAT, AND IT NEVER DID.
+   `.sch-avail__days > .sch-avail__day` sets `color: var(--rux-text-primary)`
+   for the whole band and counts as (0,2,0); this was a single class at (0,1,0)
+   and lost. So the roster's weekend labels have been full-strength since the
+   day they were written, while the board's -- which have no such band rule to
+   fight -- dimmed correctly, and the two bands quietly disagreed.
+
+   IT PASSED A TEST THAT ASKED THE WRONG QUESTION. An earlier pass here checked
+   `.sch-day--weekend` and `.sch-avail__day--weekend` were on the right cells
+   and reported the weekend "still dims" -- the CLASSES were right and nothing
+   painted. Third time today: assert the computed colour, not the class. */
+.sch-avail__days > .sch-avail__day--weekend { color: var(--rux-text-placeholder); }
+/* THE HEADER BAND SHOWS NOTHING FOR THE SELECTED DAYS, 2026-09-11, and the
+   body's tint is the whole marker. It carried
+   `box-shadow: inset 0 -2px 0 var(--rux-border-interactive)` -- the underline
+   the board marks today with -- and rux asked for it off once the tint was
+   doing the work: "want to remove the accented line on date selected".
+
+   AND THE `color: var(--rux-text-primary)` THAT WENT WITH IT IS GONE TOO,
+   because measuring showed it had never changed anything: the band already
+   sets `text-primary` on every label through
+   `.sch-avail__days > .sch-avail__day`, so lifting a selected one to the same
+   value is a rule that computes to what was already there. Keeping it would
+   have been a line of CSS asserting a distinction that does not exist.
+
+   `.sch-avail__day--on-day` IS STILL APPLIED and now draws nothing. It stays
+   because it is the honest record of which days are selected -- the hook for a
+   header cue if one is ever wanted, and what a test would assert against --
+   but no rule reads it today. */
+
+/* ── THE SCHEDULE'S THREE TIMES, ON ONE ROW ─────────────────────────────────
+   Carbon pairs two DATES with `rux--date-picker--range`, which is a compiled
+   flex row, and ships nothing for three times -- so this is an `sch-` rule at
+   its own specificity rather than a Carbon class bent to fit.
+
+   WHY A ROW AT ALL: stacked, the three cost 192px in a panel that was already
+   279px over after the two readouts came out. On one row they cost 64, which
+   is most of the rest of the gap. They also belong together -- depart, spot
+   and return are one leg's clock, and reading them down a column made three
+   unrelated-looking fields out of one fact.
+
+   TWO COLUMNS AND NOT THREE, WHICH THE BROWSER DECIDED. Three fit the row
+   arithmetically -- 288 across, 91 each -- and rendered "07:5", "03:4", "07:C":
+   a `type="time"` control draws "07:50 AM" plus a clock affordance and needs
+   about 130px to do it, measured from its own intrinsic width. The clipping is
+   inside the control's shadow DOM, so `scrollWidth` on the input reports
+   nothing wrong and only looking at it does. Two columns give 140 each, which
+   clears 130.
+
+   IT ALSO GROUPS THEM RIGHT. Yard depart and Spot are both the `pickup` stop;
+   Return is the `return` stop, and it falls to the second row on its own.
+
+   `1fr` AND NOT `auto`: a time control's intrinsic width differs by browser and
+   by locale, so equal fractions keep the boxes the same size as each other
+   rather than each the size of its own content. */
+.sch-times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--rux-spacing-03);
+}
+/* AND THE INPUT HAS TO BE TOLD, because `minmax(0, 1fr)` sizes the TRACK and
+   an `<input>` ignores it: a form control carries an intrinsic width from its
+   own default `size`, which measured 129.695px against a 91px cell -- three of
+   them scrolling 327 inside 288. Every box between the cell and the control
+   gets a zero minimum for the same reason a grid item needs one, and the
+   control itself is told to fill rather than to be its natural size. */
+.sch-times > .rux--form-item,
+.sch-times .rux--text-input__field-outer-wrapper,
+.sch-times .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
+.sch-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
+
+
+/* TWO FIELDS ON ONE ROW WAS `.sch-two-up`, and it is GONE as of 2026-09-10.
+   It paired Phone beside Email in the booking block and Name beside Phone in
+   a day-of contact. Fluid ended both: a fluid field is a 64px box with its
+   label floating over its value, and two of them in a 288px column leave
+   about 140px each -- an email address ellipsises by its third character and
+   a phone number has nowhere to sit beside a name. Both blocks stack now, so
+   the class had no caller left and its rules went with it rather than staying
+   as a shape nothing makes. `.sch-times` above is the surviving grid pair;
+   it holds three SHORT time controls, which is the case this one was not. */
+
+/* ── FLUID CAME AND WENT, 2026-09-09 to 2026-09-10 ──────────────────────────
+   The trip editor's fields were Carbon's FLUID style for a day: label inside
+   a 64px filled block, runs of them flush against each other and bled to the
+   panel's edges by a negative margin. Two rules lived here to arrange it --
+   `.sch-fluid-group { --rux-stack-gap: 0 }` and the bleed -- and both are
+   gone with it, on rux's call to return to the default style at the same
+   field order.
+
+   WHAT DECIDED IT, recorded because the argument is older than the trial:
+   docs/log.md's 2026-09-08 entry rejected fluid for one reason, which the
+   trial then reproduced exactly -- rux-ds compiles no fluid checkbox, so
+   Equipment could not follow the rest and the form mixed the two styles,
+   "the one thing fluid must not do". Seen on the built page as a filled card
+   that stopped, with three checkboxes and a ghost button on bare panel under
+   it. Default style has no such gap in coverage: every control this form
+   uses has one.
+
+   THE TABS DID NOT COME BACK. They keep `--contained`, their sticky pin and
+   their edge-to-edge bleed, which never depended on the fields' style --
+   rux-overrides.css holds all three. */
+
+
+/* ══ BELOW CARBON'S md, 41.98rem ═══════════════════════════════════════════
+   Added 2026-09-11. Until today this stylesheet had NO media query at all --
+   `grep '@media' sch.css rux-overrides.css index.html` returned nothing --
+   while `rux.css` compiles 654 of them at sm 320 / md 672 / lg 1056 / xlg
+   1312 / max 1584. Every fault this block answers follows from that: a board
+   whose three regions are sized for a desktop row, laid out on a phone.
+
+   41.98rem IS CARBON'S OWN LINE, drawn from the other side. `.rux--side-panel`
+   turns `max-inline-size: 75vw` on at `min-width: 42rem`, so the component
+   itself stops expecting to be a column below it; the shell's nav uses the
+   same idiom one breakpoint up at 65.98rem. Nothing here picks a number.
+
+   WHAT IS NOT ATTEMPTED. The week stays a week and scrolls sideways, which is
+   Carbon's own small-screen table pattern -- a sticky first column over a
+   horizontal scroll. A day view below md was considered and is a separate
+   decision: it is a surface Carbon does not ship and would need the week/day
+   switch designed, not a breakpoint. */
+/* THE SAME CONTROL IN TWO PLACES, ONE PER WIDTH. `Today` and `Driver
+   availability` are toolbar buttons above `md` and menu rows below it, so the
+   phone's toolbar is one row -- the week, a spacer, and `< > (more)`. The pair
+   of classes is declared here rather than one in each block so the exchange
+   reads in one place.
+
+   `display: none`, NOT `visibility`: the half that is off must leave the
+   accessibility tree too, or a screen reader offers `Today` twice.
+
+   `New trip` IS NOT IN THIS SCHEME any more. It had these two classes for
+   about an hour, when it was a button above `md` and a row below; rux demoted
+   it at every width, so it is a menu row full stop and nothing hides it.
+
+   IT HIDES ABOVE `md` RATHER THAN SHOWING BELOW IT, and that is the fix for a
+   bug this rule caused. It was `display: none` here with `display: flex` in
+   the max-width block -- and `flex` is a value guessed for a Carbon component
+   whose own display this file is not entitled to choose. It happened to look
+   right, which is worse: it MASKED the `--with-selectable-items` layout fault
+   on the sibling row that had no such override, where `New trip`'s label came
+   out 16px and read "N..". Hiding at the other breakpoint leaves Carbon's own
+   display untouched at the width the row is actually used. */
+@media (min-width: 42rem) {
+  .sch-menu-item--sm-only { display: none; }
+}
+
+/* `.sch-toolbar__glyph` IS GONE, 2026-09-11. It existed so `Today` and
+   `Drivers` could be words on a desktop and icons on a phone, hiding one or
+   the other by width. rux made both icon-only at EVERY width, so each carries
+   a plain `rux--btn__icon` and `rux--btn--icon-only` in the markup and no rule
+   here decides anything. `New trip` is the only button left with a word to
+   lose -- and below `md` it does not lose it, it leaves the row entirely for
+   the overflow menu, so no rule hides a word anywhere any more. */
+
+@media (max-width: 41.98rem) {
+  /* THE TWO COMPANIONS LEAVE THE ROW. `.sch-board` is a flex row of up to
+     three: the roster at 20rem, the board, the editor at 20rem. On a 375px
+     screen the content box is 343px, so ONE 20rem companion is already wider
+     than the whole row -- measured before this block, opening either one put
+     `.sch-frame` and `.sch` at 0px wide and pushed the board off the right of
+     the screen. The schedule did not shrink, it disappeared.
+
+     The editor is handled where it belongs, in rux-overrides.css: Carbon's own
+     `position: fixed` is restored there by scoping the un-fixing to md and up,
+     so the panel floats over the board instead of displacing it. All this
+     wrapper has to do is stop reserving room -- and it must give up its
+     `min-inline-size` as well as its basis, which is the whole reason it was
+     taking 320px out of a 343px row. */
+  .sch-trip {
+    flex: 0 0 0;
+    min-inline-size: 0;
+    inline-size: 0;
+    block-size: auto;
+  }
+
+  /* THE ROSTER IS THIS APP'S OWN AND GETS THE SAME TREATMENT BY HAND, because
+     there is no Carbon component under it to restore. Same geometry as the
+     side panel it now sits beside in the stacking order: below the 3rem shell
+     header, full width, over the board. z-index is one under the trip panel's,
+     so that opening a trip while the roster is up puts the trip in front --
+     which is the order `openPanel` already enforces by closing the roster;
+     this only decides what happens during the frame between.
+
+     998, LOWERED FROM 8999 ON 2026-09-11 with the trip panel beside it and for
+     the same reason: at 8999 this sat over the shell's header panels, which are
+     8000, so pressing Account or the app switcher with the roster open opened a
+     panel nobody could see. rux-overrides.css carries the argument and the
+     whole scale. */
+  .sch-aside {
+    position: fixed;
+    inset: 3rem 0 0 0;
+    z-index: 998;
+    flex: 0 0 0;
+    inline-size: 100%;
+    order: 0;
+    background: var(--rux-layer);
+    box-shadow: 0 0.125rem 0.25rem var(--rux-overlay);
+  }
+  .sch-aside .sch--avail { max-block-size: none; }
+  /* THE HEAD WAS RAISED HERE AND NO LONGER NEEDS TO BE: `.sch-aside__head` is
+     `size-lg` at every width since 2026-09-11, so this breakpoint has nothing
+     left to say about it. Removed rather than left restating the base rule. */
+  /* THE ROSTER GOES UP ONE STEP, xs TO sm, 2026-09-11 ON RUX'S ASK. Both axes
+     together: the aside's rule joins `--sch-day-track` to the row height so a
+     day cell is a square, and that stays true here.
+
+     md WAS ASKED FOR AND IS THE ONE STEP TOO FAR, by 0.2px. The cells are the
+     row height, so seven of them at 40 take 280 of a 375 screen and leave the
+     name column 107 -- 75 inside its padding. Measured across all 40 drivers
+     with a Range rather than `scrollWidth` (which reports zero overflow on an
+     ellipsised grid cell and would have said md was fine): the longest,
+     "Vicente Solar", is 75.2px. It clips today and anything longer clips
+     worse, on the one column in this grid with something to say. sm leaves 119
+     and nothing clips.
+
+     AND IT COSTS DRIVERS, which is what every previous turn of this number was
+     fought over. In the 716px overlay: 29 drivers at xs, 22 at sm, 17 at md.
+     Going to md would spend 12 of 40 rows on a surface whose whole job while
+     it is open is scanning the roster.
+
+     THE DESKTOP IS NOT TOUCHED. `.sch--avail` stays xs above this breakpoint;
+     docs/log.md records that number turning 24, 32, 24, 32, 24 and settling on
+     an argument about a companion pane competing with the board for height.
+     None of that applies to a full-width overlay, which is why this can differ
+     without reopening it. */
+  .sch-aside .sch--avail {
+    --sch-avail-h: var(--rux-layout-size-height-sm);
+    --sch-day-track: var(--rux-layout-size-height-sm);
+  }
+
+  /* THE WEEK LABEL TAKES ITS OWN ROW, and this is a deliberate exception to
+     the rule 40 lines above `.sch-toolbar`, not an oversight of it. That rule
+     -- "It does not stack. One row, always" -- was decided against a desktop
+     board "whose whole argument is vertical room", and it holds there.
+
+     IT CANNOT HOLD HERE. The row's irreducible width is 434px with the label
+     already shrunk to nothing: seven controls that cannot give way, plus the
+     label's own margins. Add the page's padding and the PAGE overflowed below
+     a 499px viewport -- and because the shell header is `position: fixed` at
+     `inline-size: 100%`, it resolved that against the widened ICB and carried
+     Account and App switcher out to x=387 and x=435 on a 375px screen. Both
+     were off the display and unreachable without scrolling the whole page
+     sideways. A toolbar that will not stack took the shell's own controls with
+     it.
+
+     SO THE LABEL GOES FIRST AND FULL WIDTH, which also stops it being the
+     thing that pays. On one row it truncated to "Sep 7 – 13, 20…"; on its own
+     it reads "Sep 7 – 13, 2026" whole -- the same short form `formatRange`
+     builds at every width, no longer cut. (An earlier draft of this note
+     claimed it reads "September 7 – 13, 2026" there. It does not; the form is
+     the locale's, not the width's.) The buttons below it are then six
+     48px squares in 343px, with 55px to spare, and they no longer move when
+     the week changes -- the reason index.html gives for the label sitting
+     after its own controls is satisfied by the label being on a different
+     line entirely. */
+  /* THE WEEK TAKES ITS OWN ROW AGAIN BELOW md, AND ONLY HERE. Above this
+     width it shares the toolbar's single row; at 375 it cannot. Six 48px
+     controls are 288 of a 375 display, which leaves 87px for a week that wants
+     181 -- "Sep 7 - 1..." -- so the one row costs the label most of itself.
+     A full-width basis wraps it above them instead, which is what this block
+     did before the row was briefly permanent.
+
+     THE BAND, THE CENTRING AND THE 16px INSET ARE NOT RESTATED. Those are base
+     rules on `.sch-toolbar__weekrow` and `.sch-weekbtn` and hold at every
+     width; only the basis is genuinely about this breakpoint. */
+
+  /* ICON-ONLY, AND THE SWAP IS sch.js's. The label and the glyph are both in
+     the markup at all widths; which one shows is decided here, and the
+     `rux--btn--icon-only` and `rux--layout--size-lg` classes that make the
+     button a 48px square are added by `fitToolbar()` there. They are Carbon's
+     own compiled variants, so nothing in this file rules on a `rux--*` class
+     to make a square button -- which it is not allowed to do, and which would
+     be reimplementing a variant that already exists. */
+  /* ONE ROW ON A PHONE, 2026-09-11 on rux's call. The week no longer takes a
+     row of its own: `Today` and `Drivers` move into the menu, which leaves
+     `< > (more)` at 144px beside a week that wants 181 -- 325 of a 375
+     display, and 357 on a two-month span like "Aug 31 - Sep 6, 2026". Both
+     fit. Below about 357 the week is the thing that gives way, which is the
+     base rule's own argument and why it carries `min-inline-size: 0`: a
+     truncated week still says which week, a missing button says nothing.
+
+     THE FULL-WIDTH BASIS THAT WAS HERE IS GONE with it -- the week row is
+     `flex: 0 1 auto` at every width now, so the toolbar is one row everywhere
+     and this block no longer says anything about the layout of it. */
+  .sch-toolbar__lg-only { display: none; }
+}
+
+/* ── THE TOAST, AND ITS PLACEMENT IS OURS BECAUSE CARBON SHIPS NONE ─────────
+   `rux--toast-notification` and `rux--actionable-notification--toast` are
+   compiled, and between them they set an 18rem width, `flex-wrap` and a drop
+   shadow -- the card's APPEARANCE. Neither carries `position`, `inset` or a
+   z-index, so where a toast goes is the consumer's decision every time. This
+   is that decision, and it is an `sch-` rule for exactly the reason AGENTS.md
+   gives: it is a surface Carbon does not ship, so it is this app's own.
+
+   WHY THIS EXISTS AT ALL is in index.html beside the element: `#sch-status` is
+   in normal flow above the grid, so a message there pushes the board down and
+   pulls it back up. rux saw a move shove the whole table.
+
+   BOTTOM RIGHT IS NOT CARBON'S PLACEMENT, AND THE DEPARTURE IS DELIBERATE.
+   Carbon specifies exactly one, in `components/notification/usage.mdx`: "Toast
+   notifications slide in and out from the TOP RIGHT of the screen. They stack
+   with $spacing-03 in-between." Bottom right appears nowhere in its docs, and
+   neither does bottom centre.
+
+   IT WAS MEASURED AGAINST ALL THREE BEFORE BEING KEPT, at 1440x950 with a
+   288px card and a 16px gutter. Top right -- Carbon's own -- lands on
+   `.sch-toolbar` and its icon buttons: the week chevrons, the date picker, the
+   drivers toggle and the overflow. Those are present and interactive at ALL
+   times. Bottom centre lands on `.sch-bar` -- trip bars, data rather than
+   controls. Bottom right lands on empty `.sch-track`, and the one control it
+   can reach is the panel's action bar, which exists only while the panel is
+   open and which the rule below lifts clear of.
+
+   So the departure buys covering nothing instead of covering the toolbar, and
+   that is the whole of its justification. If this app's toolbar ever moves off
+   the top right, Carbon's placement becomes the right one and this should go
+   back to it. `docs/log.md` carries the measurements. Judged by rux.
+
+   THE OVERLAP WITH THE PANEL'S FOOTER IS MEASURED AND NAMED RATHER THAN
+   DESIGNED AROUND. `.rux--side-panel` is on the right and
+   its action bar -- Cancel, Reset, Save -- sits at its bottom edge, which is
+   the same corner. The toast is lifted clear of it rather than moved to the
+   other side, because the other side is where the board's own content starts
+   and a card there covers bus rows instead of three buttons that are only
+   present while the panel is open. See docs/log.md for the numbers.
+
+   ABOVE THE PANEL, NOT UNDER IT. The panel is the highest thing this page
+   draws; a toast reporting the save you just pressed cannot sit behind the
+   button you pressed. */
+.sch-toast {
+  position: fixed;
+  inset-block-end: var(--rux-spacing-05);
+  inset-inline-end: var(--rux-spacing-05);
+  z-index: 9000;
+  display: flex;
+  justify-content: flex-end;
+}
+/* A NARROW WINDOW HAS NO ROOM FOR A CARD BESIDE ANYTHING, so below md it spans
+   the width it is given, minus the same gutter on both sides. The 18rem
+   minimum Carbon sets would otherwise decide the width on a 375px phone and
+   leave the card hanging off one edge. */
+@media (max-width: 41.98rem) {
+  .sch-toast { inset-inline: var(--rux-spacing-05); }
+  .sch-toast > * { min-inline-size: 0; inline-size: 100%; max-inline-size: none; }
+}
+
+/* LIFTED CLEAR OF THE PANEL'S ACTION BAR WHILE THE PANEL IS OPEN. Measured at
+   1440x950 with a trip open: the bar -- Cancel, Reset, Save -- occupies y
+   869-918 and x 1072-1392, and a toast at the default 16px inset has its box
+   at y 854-934 over x 1136-1424. It covered Save.
+
+   MOVED UP RATHER THAN ACROSS, because the other bottom corner is where the
+   board's own rows are. Three buttons are only in that corner while the panel
+   is open; bus rows are always in the other one, and a card that covers data
+   every time beats one that covers controls sometimes only if you never press
+   the controls.
+
+   THE SUM IS THE PANEL'S OWN GEOMETRY, and it is spelled out because the token
+   that would carry it -- `--rux--side-panel--actions-height` -- is a
+   Carbon-internal double-dash variable scoped to the panel, so it does not
+   resolve out here: 48px of condensed action bar, the 32px the panel sits off
+   the bottom of the page, and the same 16px gutter the toast keeps everywhere
+   else.
+
+   `:has()` RATHER THAN A CLASS THIS FILE WOULD HAVE TO KEEP IN SYNC. The panel
+   is `#sch-panel` and its open state IS `[hidden]` -- sch-data.js sets nothing
+   else -- so the stylesheet can read it directly and there is no second source
+   of truth to drift. rux.css compiles 221 `:has()` rules of its own, so it is
+   already a baseline for any page loading it. */
+body:has(#sch-panel:not([hidden])) .sch-toast {
+  inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05));
+}
+
+/* ── THE HEADER SEARCH ──────────────────────────────────────────────────────
+   WHAT THIS RULE IS FOR: Carbon's expandable search is `inline-size: 100%` when
+   expanded, and 100% of nothing is nothing. `rux--header__global` is a flex row
+   of fixed squares, so the search needs a box of its own to expand INTO, and
+   that box is this app's business rather than the component's.
+
+   COLLAPSED IT IS A SQUARE THE SIZE OF THE ICONS BESIDE IT, which Carbon
+   already handles -- `.rux--search--expandable` takes
+   `--rux-layout-size-height-local` on both axes, and `rux--layout--size-lg` in
+   the markup sets that to the 48px the two header actions use. So the collapsed
+   state needs nothing here and the wrapper simply wraps it.
+
+   EXPANDED IT TAKES THE WHOLE EMPTY HEADER, which is the IBM demo's shape and
+   what rux asked for. It was 24rem, which was measured (at 16rem three of ten
+   result rows wrapped their second line) but was still a number sitting in a
+   file rather than a rule about the room available.
+
+   AND NOTHING CARBON OWNS HAD TO CHANGE, which is worth recording because the
+   obvious fix would have been to reach up and restyle the shell. Measured at
+   1263: `.rux--header__global` is ALREADY `flex: 1 1 0%` and already spans 1045
+   of those pixels, from the app name's right edge to the header's -- it simply
+   right-aligns its children, so the collapsed 48px square sits at the far end
+   with Account and the Switcher. All that was missing is for this wrapper to
+   claim the slack when it is expanded. So there is no rule here on
+   `__global`, and none in rux-overrides.css either.
+
+   `min-inline-size: 0` BECAUSE A FLEX ITEM WILL NOT SHRINK BELOW ITS CONTENT
+   OTHERWISE, which on a narrow header would push Account and the Switcher off
+   the end rather than shrinking the field.
+
+   IT GROWS AT ALL TIMES, AND THE FIRST VERSION SCOPED IT TO `:has(.rux--search--expanded)`
+   WHICH BROKE THE COLLAPSE. Measured frame by frame on the way back: the field
+   went 949 -> **0** and sat there for 72ms before popping to 48. The cause is
+   circular sizing -- the expanded field is `inline-size: 100%`, and removing
+   the class ALSO took the wrapper's `flex: 1 1 auto` in the same frame, so the
+   wrapper became shrink-to-fit while its only child was asking for 100% of it.
+   Percentage of a parent sized by that percentage resolves to zero.
+
+   GROWN ALWAYS, THE WRAPPER HAS A DEFINITE WIDTH and the transition has
+   something real to run against in both directions. The 949px box it leaves in
+   the header when collapsed costs nothing: it draws no background and no
+   border, the magnifier sits at its right edge under `flex-end` exactly where
+   the other icons are, and there is nothing behind it in the header to click.
+
+   `position: relative` IS WHAT THE RESULTS HANG FROM, which is the whole reason
+   this wrapper still exists now that the panel is gone -- and it is why the
+   results follow this width with no second rule: they are pinned to its inline
+   edges, so "the field's width" stays true at every size the field takes. */
+/* THE FIELD IS PINNED TO THIS BOX'S RIGHT EDGE, AND THAT IS THE WHOLE ANIMATION.
+   Carbon transitions the search's WIDTH (`width 70ms`, in
+   `.rux--search--expandable`) and says nothing about which edge stays still --
+   that falls out of the layout it is dropped into. Here the wrapper's `flex`
+   change is instantaneous, so on expand it becomes 949px in one frame while the
+   field is still 48; with the default `flex-start` the field was pinned to the
+   wrapper's LEFT edge, and the result was measured frame by frame: the
+   magnifier jumped 901px leftward in 3ms and the field then unrolled RIGHTWARD,
+   266 -> 857 -> 1167 over 79ms.
+
+   Which is backwards. The icon you pressed should stay under your cursor and
+   the field should sweep INTO the empty header beside it -- that is what makes
+   Carbon's own reason for putting search furthest left true of the search
+   itself and not only of Account and the Switcher: "an expanding search field
+   that does not disrupt other icon positions". `flex-end` anchors the right
+   edge, so the width transition plays out leftward and nothing jumps. */
+/* `flex-start`, NOT `center`, AND IT IS HALF A PIXEL OF REAL DIFFERENCE. The
+   search is 48px (`size-lg`, matching the header actions) and
+   `.rux--header__global` is 47 -- the header's 48 less its bottom border -- so
+   centring put the control at top -0.5, bottom 47.5 while Account and the
+   Switcher sit at 0 and 48. Half a pixel is invisible on an icon and is not
+   invisible on a focus ring: it put the ring's top edge above the header, where
+   the browser has nowhere to draw it. Aligned to the start, all three controls
+   share one top edge and the ring has room. The 1px the control then overhangs
+   at the bottom is not clipped by anything -- every ancestor is
+   `overflow: visible`, measured. */
+.sch-header-search {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  position: relative;
+  /* `align-self: flex-start` SO THIS BOX IS ITS CONTENT'S HEIGHT, NOT ITS
+     PARENT'S, AND THAT IS WHAT STOPPED CLIPPING THE FIELD'S FOCUS RING.
+
+     As an ordinary flex item it stretched to `.rux--header__global`'s 47px --
+     the header's 48 less its bottom border -- while the search inside is 48.
+     The results are `inset-block-start: 100%`, and 100% of 47 is 47, so they
+     began ONE PIXEL above the field's bottom edge and painted over it: they are
+     opaque `--rux-layer` at z-index 8100. Carbon draws the input's focus as
+     `outline: 2px solid` at `outline-offset: -2px`, which lands on y 46 to 48,
+     so the covered pixel was the ring's bottom edge. rux saw it against the
+     Carbon website, where the ring closes and the menu starts below it.
+
+     Content-sized, the box is 48, `100%` is the field's own bottom, and the
+     ring has its last pixel back. This is the third thing in this header that
+     the 47-against-48 difference has bent -- the magnifier's ring and its
+     alignment were the first two -- and it is the same cause every time. */
+  align-self: flex-start;
+}
+.sch-header-search { flex: 1 1 auto; min-inline-size: 0; }
+.sch-header-search .rux--search--expandable.rux--search--expanded { inline-size: 100%; }
+
+/* ── THE RESULTS, ATTACHED TO THE FIELD ─────────────────────────────────────
+   A MENU UNDER A FIELD, NOT A PANEL HOLDING A LIST. This was
+   `rux--header-panel` -- the component the switcher and the account use -- and
+   that is a full-HEIGHT shell panel: measured with ten results open, 256x1103
+   holding 659px of list, so 444px of it was empty surface. rux asked for the
+   Carbon type-ahead shape instead, attached to the field and its width, which
+   is also what the search pattern page describes for an active search:
+   "results are shown immediately below the search field".
+
+   THE FIELD'S WIDTH EXACTLY, by hanging off the wrapper's inline edges rather
+   than carrying a width of its own. The field and its results are then one
+   column at whatever size the field takes, and 24rem is stated once, above.
+
+   ITS SURFACE IS THE MENU'S, because that is what it now is: `--rux-layer` over
+   the page with Carbon's own menu shadow, `0 2px 6px var(--rux-shadow)`, read
+   off `.rux--menu` in rux.css rather than invented. */
+.sch-search__results {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  z-index: 8100;
+  background: var(--rux-layer);
+  box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
+  /* AS TALL AS ITS RESULTS AND NO TALLER, capped so a long list scrolls inside
+     itself rather than running off the bottom of the window. 60vh leaves the
+     board visible behind it, which is the point of a dropdown over a panel.
+
+     AND ONLY THE LIST SCROLLS, WHICH THE ARROW KEYS MADE NECESSARY. This whole
+     box was the scroller, so `scrollIntoView` on the highlighted option scrolled
+     the COUNT away: measured `scrollTop: 32`, exactly the count's height, after
+     four presses of Down. A column with the list as the one scrolling child
+     pins the count above it and the over-cap note below, where they can still be
+     read while the arrows walk the list. */
+  display: flex;
+  flex-direction: column;
+  max-block-size: 60vh;
+  overflow: hidden;
+}
+/* THE ONE SCROLLING CHILD. `min-block-size: 0` because a flex item will not
+   shrink below its content, and without it the list pushes the box past 60vh
+   instead of scrolling inside it. */
+.sch-search__results .rux--contained-list {
+  overflow-y: auto;
+  min-block-size: 0;
+}
+/* THE COUNT, WHICH CARBON ASKS FOR BY NAME: "Always include the number of
+   search results, including for searches with no results." It sits above the
+   rows and reads as a caption rather than a result. */
+.sch-search__count {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+}
+/* TWO LINES PER RESULT, and the second is what tells two "Dallas, TX" apart:
+   the date and who it is for.
+
+   DONE ON THIS FILE'S OWN CLASSES, AND THE FIRST DRAFT WAS SIMPLY INERT. It put
+   `flex-direction: column` on `.rux--contained-list-item__content`, which
+   computes `inline-block` -- so the direction applied to nothing and the two
+   spans stayed on one line. Found by reading the computed display rather than
+   by looking, since a wrong `flex-direction` shows as no change at all. */
+.sch-search__head,
+.sch-search__meta { display: block; }
+/* THE TITLE ROW: destination on the left, date pushed to the right edge.
+
+   THE DATE IS THE ONLY FIELD THAT CAN BE A COLUMN, which is why it is the only
+   one moved. Counted over 737 trips, it is the sole field that is both short and
+   always present -- destination runs to 53 characters and organization to 46,
+   and the booking contact is absent on 60% of rows. Right-aligned it lands on
+   the same x in every row, which is what tells seven "Dallas, TX" apart at a
+   glance. `gap` rather than `justify-content` alone so a 53-character
+   destination pushes against the date instead of running under it. */
+.sch-search__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+}
+.sch-search__dest {
+  color: var(--rux-text-primary);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  /* THE LONG ONE TRUNCATES AND THE DATE NEVER DOES. A 53-character destination
+     would otherwise wrap to two lines and push the row's height around, and the
+     date is what holds the column. */
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* NEVER SHRINKS, for the same reason: it is the column. `tabular-nums` so the
+   dates line up digit for digit the way the board's own day numbers do. */
+.sch-search__when {
+  flex: 0 0 auto;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  font-variant-numeric: tabular-nums;
+}
+/* ORGANIZATION, THEN THE BOOKING CONTACT WHEN THERE IS ONE. Truncated rather
+   than wrapped so every row is exactly two lines and the date column stays
+   straight. */
+.sch-search__meta {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* THE HIGHLIGHTED OPTION, AND IT WAS INVISIBLE UNTIL IT WAS MEASURED. The
+   arrows moved `aria-activedescendant` correctly from the day they were built
+   and NOTHING ON SCREEN CHANGED: measured, the active row's background computed
+   `transparent`, identical to every other row, contrast 1.00. A selection a
+   screen reader can follow and an eye cannot is barely a selection, and it is
+   why the keyboard felt like it was doing nothing.
+
+   CARBON'S OWN `background: none` WAS WINNING.
+   `.rux--contained-list-item--clickable .rux--contained-list-item__content` is
+   two classes; `.sch-search__opt--active` is one, so it lost on specificity and
+   never painted. Scoping it to the results makes it two as well, and sch.css
+   loads after rux.css, so the later of two equal rules wins -- no `!important`.
+
+   `--rux-layer-hover`, WHICH IS CARBON'S TOKEN FOR THIS EXACT ROW, read from
+   `.rux--contained-list-item--clickable ...:not(:disabled):hover` rather than
+   chosen: the keyboard highlight and the mouse hover are then literally the
+   same colour, and the pointermove handler in sch-data.js keeps them from ever
+   disagreeing about which row is current. */
+.sch-search__results .sch-search__opt--active { background-color: var(--rux-layer-hover); }
+
+/* THE MATCHED RUN, WHICH IS THE ONLY THING HERE THAT EXPLAINS A ROW. Weight and
+   nothing else -- no colour, no background -- so it reads as emphasis inside
+   the line rather than as a second kind of text, and it inherits whichever of
+   the two lines it lands in. */
+.sch-search__hit { font-weight: 600; }
+/* THE EMPTY AND OVER-CAP NOTES SHARE ONE RULE, because they say the same kind
+   of thing: what the list is not showing you. */
+.sch-search__empty {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  padding: var(--rux-spacing-05);
+}

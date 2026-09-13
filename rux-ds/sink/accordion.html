@@ -1,0 +1,53 @@
+<section class="ks-sec" id="accordion">
+  <h2>Accordion</h2><p>click a heading to expand or collapse</p>
+  <!-- PROVENANCE: rendered-dom · components-accordion--default with its
+       disabled recipe, plus --controlled and --with-layer, 2026-08-28 -->
+  <!--
+    Corrected against the reference 2026-08-28: the panel is
+    `__item > __heading + __wrapper > __content`. This fragment put __content
+    straight in the item, so the three rules on __wrapper — the ones that
+    animate the open and closed heights — had no element to act on.
+
+    The root takes `layout--size-md`. The reference also emits `accordion--md`,
+    dropped for having no rule in @carbon/styles (§4.1.12).
+
+    The `hidden` attribute is gone from the closed panels with it. Carbon opens
+    and closes purely from `__item--active` on the li — __wrapper is
+    display:none, max-block-size:0, opacity:0 until that class appears — so
+    `hidden` was a second, redundant mechanism that would have fought the
+    transition once the wrapper existed.
+  -->
+  <!-- BLOCK:BEGIN name=default label="Accordion" -->
+  <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
+    <li class="rux--accordion__item rux--accordion__item--active">
+      <button type="button" class="rux--accordion__heading" aria-expanded="true">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">Expanded section</div>
+      </button>
+      <div class="rux--accordion__wrapper">
+        <div class="rux--accordion__content">
+          <p>Content revealed when the section is open.</p>
+        </div>
+      </div>
+    </li>
+    <li class="rux--accordion__item">
+      <button type="button" class="rux--accordion__heading" aria-expanded="false">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">Collapsed section</div>
+      </button>
+      <div class="rux--accordion__wrapper">
+        <div class="rux--accordion__content"><p>Hidden content.</p></div>
+      </div>
+    </li>
+    <li class="rux--accordion__item rux--accordion__item--disabled">
+      <button type="button" class="rux--accordion__heading" aria-expanded="false" disabled>
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">Disabled section</div>
+      </button>
+      <div class="rux--accordion__wrapper">
+        <div class="rux--accordion__content"><p>Unreachable.</p></div>
+      </div>
+    </li>
+  </ul>
+  <!-- BLOCK:END default -->
+</section>

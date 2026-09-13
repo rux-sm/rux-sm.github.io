@@ -1,0 +1,92 @@
+<section class="ks-sec" id="tags">
+    <h2>Tags</h2><p>colors · sizes · filter</p>
+    <!-- PROVENANCE: rendered-dom · components-tag--operational, --dismissible,
+         --read-only with its disabled and lg recipes, and --selectable,
+         2026-08-28 -->
+    <!--
+      OPERATIONAL is a real variant this fragment never demoed — 57 rules, more
+      than any other tag modifier. It is a BUTTON, not a div, takes the size
+      pair `layout--size-md`, and puts its glyph in `__custom-icon` with the
+      text in a bare span rather than __label. Added above.
+
+      Not copied from the reference: the icon-tooltip popover it wraps
+      operational and dismissible tags in, on the combo-button precedent — the
+      sink demos the component, not the story's hover hint. `tag--md` and
+      `tag--dismissible` come from the reference and are dropped for having no
+      rule in @carbon/styles (§4.1.12).
+    -->
+    <div class="ks-row">
+      <div class="rux--tag rux--tag--red"><span class="rux--tag__label">Red</span></div>
+      <div class="rux--tag rux--tag--magenta"><span class="rux--tag__label">Magenta</span></div>
+      <div class="rux--tag rux--tag--purple"><span class="rux--tag__label">Purple</span></div>
+      <div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Blue</span></div>
+      <div class="rux--tag rux--tag--cyan"><span class="rux--tag__label">Cyan</span></div>
+      <div class="rux--tag rux--tag--teal"><span class="rux--tag__label">Teal</span></div>
+      <div class="rux--tag rux--tag--green"><span class="rux--tag__label">Green</span></div>
+      <div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Gray</span></div>
+      <div class="rux--tag rux--tag--cool-gray"><span class="rux--tag__label">Cool gray</span></div>
+      <div class="rux--tag rux--tag--warm-gray"><span class="rux--tag__label">Warm gray</span></div>
+      <div class="rux--tag rux--tag--high-contrast"><span class="rux--tag__label">High contrast</span></div>
+      <div class="rux--tag rux--tag--outline"><span class="rux--tag__label">Outline</span></div>
+    </div>
+    <div class="ks-row">
+      <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Small</span></div>
+      <div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Medium</span></div>
+      <div class="rux--tag rux--tag--blue rux--tag--lg"><span class="rux--tag__label">Large</span></div>
+      <div class="rux--tag rux--tag--gray rux--tag--disabled"><span class="rux--tag__label">Disabled</span></div>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">operational</div>
+    <div class="ks-row" role="group">
+      <button type="button" class="rux--tag rux--tag--operational rux--layout--size-md rux--tag--red">
+        <div class="rux--tag__custom-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        </div>
+        <span>Degraded</span>
+      </button>
+      <button type="button" class="rux--tag rux--tag--operational rux--layout--size-md rux--tag--blue">
+        <span>Filter by region</span>
+      </button>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">dismissible (filter)</div>
+    <!--
+      components-tag--dismissible. The section subtitle has said "filter" since
+      this fragment was written and there was never a filter tag in it; the tag
+      is added here with js/dismiss.js, which is what makes the close button
+      mean anything.
+
+      `tag--md` is NOT copied. The reference emits it beside `layout--size-md`,
+      but @carbon/styles defines no rule for it — the same omission recorded for
+      `dropdown--md` (§4.1.12) — so the layout class carries the size alone.
+
+      The close button sits directly in `interactive--tag-children`. The
+      reference wraps it in an icon-tooltip, the chrome this sink declines
+      throughout because its positioning is floating-ui JS.
+    -->
+    <div class="ks-row" role="group" aria-label="Active filters">
+      <div class="rux--tag rux--tag--filter rux--layout--size-md rux--tag--blue">
+        <span>
+          <div class="rux--interactive--tag-children">
+            <span class="rux--tag__label">region: eu-west-1</span>
+            <button type="button" class="rux--tag__close-icon" aria-label="Clear filter region: eu-west-1">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+        </span>
+      </div>
+      <div class="rux--tag rux--tag--filter rux--layout--size-md rux--tag--red">
+        <div class="rux--tag__custom-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        </div>
+        <span>
+          <div class="rux--interactive--tag-children">
+            <span class="rux--tag__label">status: failed</span>
+            <button type="button" class="rux--tag__close-icon" aria-label="Clear filter status: failed">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+        </span>
+      </div>
+    </div>
+  </section>

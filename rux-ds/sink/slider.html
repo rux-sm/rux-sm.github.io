@@ -1,0 +1,115 @@
+<section class="ks-sec" id="slider">
+  <h2>Slider</h2><p>single handle · two handles · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-slider--default with its
+       disabled, readonly, invalid and warn recipes, plus --two-handle-slider,
+       2026-08-28 -->
+  <!--
+    ADMITTED 2026-09-01. The `slider__input` is `type="hidden"`, as Carbon renders
+    it: `.rux--slider__input { display: none }` and no capture lists it, because
+    the extractor records no hidden input. The thumb is `div[role=slider]` and
+    Carbon drives it from React — drag, arrows, Home/End — which no module here
+    reimplements yet, so this fragment is a static specimen until one does. `role="slider"`,
+    tabindex and the aria-value* attributes sit on `slider__thumb` itself and
+    each example is wrapped in `form-item`, both as every capture has them. Each
+    two-handle thumb carries TWO icons, the plain one and the same with `--focus`
+    (`thumb-icon--lower`/`--upper` are attested and unstyled, so not written, on
+    the §4.1.12 precedent): Carbon shows focus on those thumbs by swapping the icon, not by a
+    ring, which is why check-a11y cannot see it and why the entry is adjudicated.
+
+    The value field is not a bare input in the slider container: Carbon wraps it
+    in `text-input-wrapper slider-text-input-wrapper`, which is the element its
+    two rules position beside the track. `slider-text-input--upper` and
+    `--lower` name the two fields of a two-handle slider and have no rule in
+    @carbon/styles, so they are not copied (§4.1.12).
+
+    The validation ICON goes in that wrapper too, beside the input — not inside
+    `__validation-msg`, which holds only the text. This fragment had it in the
+    message, where the rule that positions it against the field cannot work.
+  -->
+  <div style="max-width:28rem;display:grid;gap:2rem">
+    <div class="rux--form-item">
+      <label class="rux--label" for="sl-1">Volume</label>
+      <div class="rux--slider-container">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.6)"></div>
+          <div class="rux--slider__thumb-wrapper" style="inset-inline-start:60%;inset-block-start:50%">
+            <div class="rux--slider__thumb" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <input id="sl-1" class="rux--slider__input" type="hidden" min="0" max="100" value="60">
+        </div>
+        <span class="rux--slider__range-label">100</span>
+      </div>
+    </div>
+    <div class="rux--form-item">
+      <label class="rux--label" for="sl-2">Range</label>
+      <div class="rux--slider-container rux--slider-container--two-handles">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.4)"></div>
+          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--lower" style="inset-inline-start:25%;inset-block-start:50%">
+            <div class="rux--slider__thumb rux--slider__thumb--lower" tabindex="0" role="slider"><svg class="rux--slider__thumb-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg></div>
+          </div>
+          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--upper" style="inset-inline-start:65%;inset-block-start:50%">
+            <div class="rux--slider__thumb rux--slider__thumb--upper" tabindex="0" role="slider"><svg class="rux--slider__thumb-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></div>
+          </div>
+          <input id="sl-2" class="rux--slider__input" type="hidden" min="0" max="100" value="65">
+        </div>
+        <span class="rux--slider__range-label">100</span>
+      </div>
+    </div>
+    <div class="rux--form-item">
+      <label class="rux--label" for="sl-4">Read-only</label>
+      <div class="rux--slider-container rux--slider-container--readonly">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider rux--slider--readonly">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.3)"></div>
+          <div class="rux--slider__thumb-wrapper" style="inset-inline-start:30%;inset-block-start:50%">
+            <div class="rux--slider__thumb" role="slider" aria-valuemin="0" aria-valuemax="100" aria-readonly="true"></div>
+          </div>
+          <input id="sl-4" class="rux--slider__input" type="hidden" min="0" max="100" value="30" readonly>
+        </div>
+        <span class="rux--slider__range-label">100</span>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="sl-5">With validation</label>
+      <div class="rux--slider-container">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.9)"></div>
+          <div class="rux--slider__thumb-wrapper" style="inset-inline-start:90%;inset-block-start:50%">
+            <div class="rux--slider__thumb" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <input id="sl-5" class="rux--slider__input" type="hidden" min="0" max="100" value="90">
+        </div>
+        <div class="rux--text-input-wrapper rux--slider-text-input-wrapper">
+          <input class="rux--text-input rux--slider-text-input rux--slider-text-input--warn" type="number" value="90" aria-label="Value">
+          <svg class="rux--slider__invalid-icon rux--slider__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        </div>
+      </div>
+      <div class="rux--slider__validation-msg rux--slider__validation-msg--invalid rux--form-requirement">
+        Above the recommended range
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label rux--label--disabled" for="sl-3">Disabled</label>
+      <div class="rux--slider-container">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider rux--slider--disabled">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.3)"></div>
+          <div class="rux--slider__thumb-wrapper" style="inset-inline-start:30%;inset-block-start:50%"><div class="rux--slider__thumb" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <input id="sl-3" class="rux--slider__input" type="hidden" min="0" max="100" value="30" disabled>
+        </div>
+        <span class="rux--slider__range-label">100</span>
+      </div>
+    </div>
+  </div>
+</section>

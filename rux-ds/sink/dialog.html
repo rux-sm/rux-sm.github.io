@@ -1,0 +1,84 @@
+<section class="ks-sec" id="dialog">
+  <h2>Dialog</h2><p>the newer primitive under modal · two-button and three-button footers</p>
+  <!-- PROVENANCE: rendered-dom · preview-dialog--modal, --non-modal,
+       --danger-dialog, --passive-dialog and --with-scrolling-content,
+       2026-08-28 · supersedes f9f5414, which claimed a React DOM diff the
+       fragment could not name -->
+  <!--
+    The close control is not a loose absolutely-positioned button, which is what
+    this fragment had — inline styles and all. Carbon wraps it in
+    `dialog__header-controls`, and the button is a real Button
+    (`dialog__close btn btn--ghost btn--icon-only`) whose glyph carries
+    `icon__close` — dropped here for having no rule in @carbon/styles
+    (§4.1.12). The inline positioning went with the wrapper that makes it
+    unnecessary.
+
+    Every remaining nesting finding is the icon-tooltip popover the reference
+    wraps the close button in, which the sink declines on the combo-button
+    precedent, plus the footer buttons: no story puts a ghost button in a
+    dialog footer, though that is what the three-button footer is for.
+  -->
+  <!--
+    ADMITTED 2026-09-01, §4.9 batch 5, and the ROOT was the correction: every
+    capture renders a native `<dialog class="dialog">`, `--modal` on the modal
+    forms — attested and unstyled, so not written (§4.1.12) — with
+    `dialog-container` INSIDE it. The stub had the container as a
+    static div. Carbon positions the dialog `fixed; inset: 0; margin: auto`, so
+    each specimen sits `open` in a relative sandbox with an inline
+    `position:absolute`, the ui-shell fragment's technique. The content carries
+    `layer-two` and the footer `btn-set`, both as captured. No module drives
+    `showModal()` yet; these are open, non-modal specimens.
+  -->
+  <div class="ks-grid">
+    <div style="position:relative;height:22rem;border:1px solid var(--rux-border-subtle);overflow:hidden">
+    <dialog class="rux--dialog" open style="position:absolute" aria-labelledby="dlg-1-heading">
+    <div class="rux--dialog-container">
+      <div class="rux--dialog__header">
+        <h2 class="rux--dialog-header__label">Section</h2>
+        <h2 class="rux--dialog-header__heading" id="dlg-1-heading">Dialog heading</h2>
+        <div class="rux--dialog__header-controls">
+          <button type="button" class="rux--dialog__close rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <!--
+        Both classes on ONE element, corrected 2026-08-26. Carbon defines
+        `.rux--dialog-content.rux--dialog-scroll-content` and NO descendant
+        form, so nesting them split the pair: `-content` owns overflow-y:auto
+        and the grid area while `-scroll-content` owns the fade mask.
+      -->
+      <div class="rux--layer-two rux--dialog-content rux--dialog-scroll-content rux--dialog-scroll-content--no-fade">
+        <p>Body content for the dialog.</p>
+      </div>
+      <div class="rux--dialog-footer rux--btn-set">
+        <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary">Confirm</button>
+      </div>
+    </div>
+    </dialog>
+    </div>
+    <div style="position:relative;height:22rem;border:1px solid var(--rux-border-subtle);overflow:hidden">
+    <dialog class="rux--dialog" open style="position:absolute" aria-labelledby="dlg-2-heading">
+    <div class="rux--dialog-container">
+      <div class="rux--dialog__header">
+        <h2 class="rux--dialog-header__heading" id="dlg-2-heading">Destructive action</h2>
+        <div class="rux--dialog__header-controls">
+          <button type="button" class="rux--dialog__close rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- Paired here too, and without --no-fade, so the danger-specific mask
+           rule is actually exercised by something. -->
+      <div class="rux--layer-two rux--dialog-content rux--dialog-scroll-content"><p>Danger variant.</p></div>
+      <div class="rux--dialog-footer rux--dialog-footer--three-button rux--btn-set">
+        <button type="button" class="rux--btn rux--btn--ghost">Discard</button>
+        <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
+        <button type="button" class="rux--btn rux--btn--danger">Delete</button>
+      </div>
+    </div>
+    </dialog>
+    </div>
+  </div>
+</section>

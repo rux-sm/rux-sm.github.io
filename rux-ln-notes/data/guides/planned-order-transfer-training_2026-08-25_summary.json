@@ -1,0 +1,781 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "planned-order-transfer-training_2026-08-25_summary",
+  "title": "Turning Planned Orders Into Real Orders — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "cppat1210m000",
+    "cprpd1100m000",
+    "cprrp0520m000",
+    "cprrp1100m000",
+    "cprrp1220m000",
+    "tcibd0501m100"
+  ],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The follow-on to the previous order-planning session. MRP had already been run and had produced planned orders; this session took the next step and turned them into actual purchase orders. Along the way it repaired an item that planning had been quietly ignoring, and hit a transfer failure worth understanding."
+        }
+      ],
+      "text": "The follow-on to the previous order-planning session. MRP had already been run and had produced planned orders; this session took the next step and turned them into actual purchase orders. Along the way it repaired an item that planning had been quietly ignoring, and hit a transfer failure worth understanding."
+    }
+  ],
+  "topics": [
+    {
+      "title": "A planned order is not a real order yet",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is the idea the whole session rests on. MRP produces "
+            },
+            {
+              "t": "strong",
+              "v": "planned orders"
+            },
+            {
+              "t": "text",
+              "v": ", which are suggestions. They become real only when you "
+            },
+            {
+              "t": "strong",
+              "v": "transfer"
+            },
+            {
+              "t": "text",
+              "v": " them — until then you can rerun MRP as many times as you like without consequence."
+            }
+          ],
+          "text": "This is the idea the whole session rests on. MRP produces planned orders, which are suggestions. They become real only when you transfer them — until then you can rerun MRP as many times as you like without consequence."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "That is deliberate. Change a material, change a date, change the demand, and you simply re-plan again. Every rerun wipes the planned orders it made last time and rebuilds them from scratch. Orders you have already transferred are untouched, because they are no longer planning's to manage."
+            }
+          ],
+          "text": "That is deliberate. Change a material, change a date, change the demand, and you simply re-plan again. Every rerun wipes the planned orders it made last time and rebuilds them from scratch. Orders you have already transferred are untouched, because they are no longer planning's to manage."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " — the Overview and Demand tabs for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": ", showing two sales orders of demand against one unit on hand, and a planned production order raised to cover the shortfall."
+                }
+              ],
+              "text": "Item Order Plan (cprrp0520m000) — the Overview and Demand tabs for BAM-CHOP-PAIR, showing two sales orders of demand against one unit on hand, and a planned production order raised to cover the shortfall."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The plan for the component "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " showing the mirror image: the parent's planned production order appears here as demand, met by planned purchase orders."
+                }
+              ],
+              "text": "The plan for the component BAM-ROD showing the mirror image: the parent's planned production order appears here as demand, met by planned purchase orders."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "An item with no planning cluster is skipped, and nothing tells you",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " produced no planned orders while its siblings did. There was no error and no warning — it was simply absent from the results."
+            }
+          ],
+          "text": "BAM-SLEEVE produced no planned orders while its siblings did. There was no error and no warning — it was simply absent from the results."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The cause was a missing "
+            },
+            {
+              "t": "strong",
+              "v": "planning cluster"
+            },
+            {
+              "t": "text",
+              "v": " on the item. An item is linked to planning through its cluster; without that line, planning does not see it at all. The clue is on the Item Order Plan header, which shows the plan item prefixed by its cluster ("
+            },
+            {
+              "t": "literal",
+              "v": "NA1"
+            },
+            {
+              "t": "text",
+              "v": ")."
+            }
+          ],
+          "text": "The cause was a missing planning cluster on the item. An item is linked to planning through its cluster; without that line, planning does not see it at all. The clue is on the Item Order Plan header, which shows the plan item prefixed by its cluster (NA1)."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " — the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Clusters"
+                },
+                {
+                  "t": "text",
+                  "v": " subtab, where the missing line was added: cluster "
+                },
+                {
+                  "t": "literal",
+                  "v": "NA1"
+                },
+                {
+                  "t": "text",
+                  "v": ", site "
+                },
+                {
+                  "t": "literal",
+                  "v": "CSADNA01"
+                },
+                {
+                  "t": "text",
+                  "v": ", which carries warehouse "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Item (tcibd0501m100) — the Clusters subtab, where the missing line was added: cluster NA1, site CSADNA01, which carries warehouse ADNA02."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planning was then rerun, because the first run had never picked the item up."
+                }
+              ],
+              "text": "Planning was then rerun, because the first run had never picked the item up."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Extending the order horizon",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Planning only considers demand that falls inside the "
+            },
+            {
+              "t": "strong",
+              "v": "order horizon"
+            },
+            {
+              "t": "text",
+              "v": ". With it set to 10 days, newer sales orders were invisible to the plan."
+            }
+          ],
+          "text": "Planning only considers demand that falls inside the order horizon. With it set to 10 days, newer sales orders were invisible to the plan."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "From the Item Order Plan, "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "References ➔ Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", Horizons tab — the order horizon changed from 10 days to 365 so that demand further out would be picked up."
+                }
+              ],
+              "text": "From the Item Order Plan, References ➔ Items - Planning (cprpd1100m000), Horizons tab — the order horizon changed from 10 days to 365 so that demand further out would be picked up."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The same change repeated for the component items, since a horizon is set per item."
+                }
+              ],
+              "text": "The same change repeated for the component items, since a horizon is set per item."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Running MRP across the whole bill of material",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " run for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " with "
+                },
+                {
+                  "t": "strong",
+                  "v": "Include Parent Items"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Include Child Items"
+                },
+                {
+                  "t": "text",
+                  "v": " both selected — this is what makes one run plan the finished item and everything beneath it."
+                }
+              ],
+              "text": "Generate Order Planning (Item) (cprrp1220m000) run for BAM-CHOP-PAIR with Include Parent Items and Include Child Items both selected — this is what makes one run plan the finished item and everything beneath it."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "This matters most on deep structures: an item can appear in a bill of material and have a bill of material of its own, several levels down. One run covers all of it."
+                }
+              ],
+              "text": "This matters most on deep structures: an item can appear in a bill of material and have a bill of material of its own, several levels down. One run covers all of it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The transfer, and what stopped it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000",
+                  "name": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " — the review screen for everything MRP produced. Two planned purchase orders for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " were ticked: "
+                },
+                {
+                  "t": "literal",
+                  "v": "000000346"
+                },
+                {
+                  "t": "text",
+                  "v": " for 6 ea and "
+                },
+                {
+                  "t": "literal",
+                  "v": "000000347"
+                },
+                {
+                  "t": "text",
+                  "v": " for 10 ea."
+                }
+              ],
+              "text": "Planned Orders (cprrp1100m000) — the review screen for everything MRP produced. Two planned purchase orders for BAM-ROD were ticked: 000000346 for 6 ea and 000000347 for 10 ea."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cppat1210m000",
+                  "name": "Actions ➔ Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ". On the "
+                },
+                {
+                  "t": "strong",
+                  "v": "External"
+                },
+                {
+                  "t": "text",
+                  "v": " tab: purchase order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                },
+                {
+                  "t": "text",
+                  "v": ", order series "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Combine Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " selected. On the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Options"
+                },
+                {
+                  "t": "text",
+                  "v": " tab: process report and error report both selected."
+                }
+              ],
+              "text": "Actions ➔ Transfer Order Planning (cppat1210m000). On the External tab: purchase order type IPO, order series 1, and Combine Orders selected. On the Options tab: process report and error report both selected."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The first transfer failed"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the error report said exactly why:"
+                }
+              ],
+              "text": "The first transfer failed, and the error report said exactly why:"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> Purchase Order cannot be generated. Buy-from BP cannot be determined for item "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": "; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data."
+            }
+          ],
+          "text": "> Purchase Order cannot be generated. Buy-from BP cannot be determined for item BAM-ROD; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN had no way of knowing who to buy from."
+            }
+          ],
+          "text": "LN had no way of knowing who to buy from."
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The fix"
+                },
+                {
+                  "t": "text",
+                  "v": " — on the item's purchase data, the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Item - Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " tab (the third tab at line level), where a buy-from business partner was added: "
+                },
+                {
+                  "t": "literal",
+                  "v": "BP4000006"
+                },
+                {
+                  "t": "text",
+                  "v": ", Fairfield Engineering Co."
+                }
+              ],
+              "text": "The fix — on the item's purchase data, the Item - Business Partner tab (the third tab at line level), where a buy-from business partner was added: BP4000006, Fairfield Engineering Co."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The second transfer succeeded"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the report showed both planned orders landing on the "
+                },
+                {
+                  "t": "em",
+                  "v": "same"
+                },
+                {
+                  "t": "text",
+                  "v": " purchase order — "
+                },
+                {
+                  "t": "literal",
+                  "v": "100000682"
+                },
+                {
+                  "t": "text",
+                  "v": ". That is the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Combine Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " setting at work: several planned purchase orders merged into one real purchase order with a line each, rather than two separate orders."
+                }
+              ],
+              "text": "The second transfer succeeded, and the report showed both planned orders landing on the same purchase order — 100000682. That is the Combine Orders setting at work: several planned purchase orders merged into one real purchase order with a line each, rather than two separate orders."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Only the purchase orders were transferred. The two planned production orders were deliberately left alone, and correctly stayed at status "
+            },
+            {
+              "t": "literal",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Only the purchase orders were transferred. The two planned production orders were deliberately left alone, and correctly stayed at status Planned."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The next exercise is a full "
+            },
+            {
+              "t": "strong",
+              "v": "order-to-cash cycle driven from planning"
+            },
+            {
+              "t": "text",
+              "v": ": create a sales order for more than you have on hand, run MRP, transfer what it suggests, buy the materials, produce the item, and ship it — working from the Item Order Plan throughout."
+            }
+          ],
+          "text": "The next exercise is a full order-to-cash cycle driven from planning: create a sales order for more than you have on hand, run MRP, transfer what it suggests, buy the materials, produce the item, and ship it — working from the Item Order Plan throughout."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The bamboo item family continues as the training vehicle."
+            }
+          ],
+          "text": "The bamboo item family continues as the training vehicle."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Transferring "
+            },
+            {
+              "t": "strong",
+              "v": "production"
+            },
+            {
+              "t": "text",
+              "v": " orders was described as working the same way, but was not demonstrated."
+            }
+          ],
+          "text": "Transferring production orders was described as working the same way, but was not demonstrated."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Planned orders are free to get wrong."
+            },
+            {
+              "t": "text",
+              "v": " Re-plan as often as you like; nothing is real until you transfer it. That is the whole reason planning and execution are separate."
+            }
+          ],
+          "text": "Planned orders are free to get wrong. Re-plan as often as you like; nothing is real until you transfer it. That is the whole reason planning and execution are separate."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A rerun deletes and rebuilds."
+            },
+            {
+              "t": "text",
+              "v": " Planned orders do not survive a run on merit — every one of them is swept and regenerated. Only confirmed orders, and orders already transferred, persist."
+            }
+          ],
+          "text": "A rerun deletes and rebuilds. Planned orders do not survive a run on merit — every one of them is swept and regenerated. Only confirmed orders, and orders already transferred, persist."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A missing planning cluster is a silent failure."
+            },
+            {
+              "t": "text",
+              "v": " The item does not error; it simply never appears in the results. If an item you expect to be planned is absent, check its cluster line before anything else."
+            }
+          ],
+          "text": "A missing planning cluster is a silent failure. The item does not error; it simply never appears in the results. If an item you expect to be planned is absent, check its cluster line before anything else."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Set the order horizon before you blame the plan."
+            },
+            {
+              "t": "text",
+              "v": " Demand beyond the horizon is not \"missed\" — planning is configured not to look that far."
+            }
+          ],
+          "text": "Set the order horizon before you blame the plan. Demand beyond the horizon is not \"missed\" — planning is configured not to look that far."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "MRP needs to know who to buy from."
+            },
+            {
+              "t": "text",
+              "v": " A planned purchase order cannot become a real one without a buy-from business partner on the item. The transfer's error report names this precisely, so read it rather than guessing."
+            }
+          ],
+          "text": "MRP needs to know who to buy from. A planned purchase order cannot become a real one without a buy-from business partner on the item. The transfer's error report names this precisely, so read it rather than guessing."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Combine Orders decides the shape of what you get."
+            },
+            {
+              "t": "text",
+              "v": " Selected, several planned purchase orders become one purchase order with several lines — usually what you want when buying multiple parts from one supplier."
+            }
+          ],
+          "text": "Combine Orders decides the shape of what you get. Selected, several planned purchase orders become one purchase order with several lines — usually what you want when buying multiple parts from one supplier."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`planned-order-transfer-training_2026-08-25.md`",
+          "href": "planned-order-transfer-training_2026-08-25.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `planned-order-transfer-training_2026-08-25.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

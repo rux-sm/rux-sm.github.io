@@ -1,0 +1,3004 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "exercise",
+  "id": "HOMEWORK-enterprise-planning-foundations",
+  "title": "Homework — learn Enterprise Planning as a consultant",
+  "updated": "2026-09-06",
+  "status": "draft",
+  "summary": "explain an LN planning result from demand through execution, identify the effective configuration that caused it, predict the result of one controlled change, and prove the explanation with Item Order Plan and Order Pegging.",
+  "sources": [
+    "cppat1210m000",
+    "cprpd1100m000",
+    "cprpd4100m000",
+    "cprrp0520m000",
+    "cprrp1100m000",
+    "cprrp1220m000",
+    "tcibd2100m000",
+    "tcibd2150m000",
+    "whinh2300m000",
+    "whwmd4101s000"
+  ],
+  "keyed": true,
+  "intro": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Goal:"
+        },
+        {
+          "t": "text",
+          "v": " explain an LN planning result from demand through execution, identify the effective configuration that caused it, predict the result of one controlled change, and prove the explanation with Item Order Plan and Order Pegging."
+        }
+      ],
+      "text": "Goal: explain an LN planning result from demand through execution, identify the effective configuration that caused it, predict the result of one controlled change, and prove the explanation with Item Order Plan and Order Pegging."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "This is a six-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
+        }
+      ],
+      "text": "This is a six-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
+    },
+    {
+      "kind": "callout",
+      "variant": "warning",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Change only the bamboo test items in Company "
+            },
+            {
+              "t": "literal",
+              "v": "4100"
+            },
+            {
+              "t": "text",
+              "v": ". Record the baseline before every change and restore it afterward. Every capture must show the whole LN window and readable status bar."
+            }
+          ],
+          "text": "Change only the bamboo test items in Company 4100. Record the baseline before every change and restore it afterward. Every capture must show the whole LN window and readable status bar."
+        }
+      ]
+    }
+  ],
+  "assignments": [
+    {
+      "n": 1,
+      "title": "Sitting 1 — map the planning landscape",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Start with the main work areas, then deliberately inspect "
+            },
+            {
+              "t": "strong",
+              "v": "Views"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "References"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Actions"
+            },
+            {
+              "t": "text",
+              "v": " rather than treating the main grid as the whole session."
+            }
+          ],
+          "text": "Start with the main work areas, then deliberately inspect Views, References, and Actions rather than treating the main grid as the whole session."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Main session",
+            "Route",
+            "Explain it in one sentence"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    }
+                  ],
+                  "text": "Item Order Plan (cprrp0520m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+                    }
+                  ],
+                  "text": "Planning ➔ Order Planning ➔ Item Order Plan"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A time-phased view of one item's order planning: demand and forecast against scheduled receipts and planned supply — the demand question starts here"
+                    }
+                  ],
+                  "text": "A time-phased view of one item's order planning: demand and forecast against scheduled receipts and planned supply — the demand question starts here"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprrp1100m000",
+                      "name": "Planned Orders"
+                    }
+                  ],
+                  "text": "Planned Orders (cprrp1100m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Planning ➔ Order Planning ➔ Planned Orders"
+                    }
+                  ],
+                  "text": "Planning ➔ Order Planning ➔ Planned Orders"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The planned orders a run produced, for review and selection before they are transferred to execution — the planned-order question starts here"
+                    }
+                  ],
+                  "text": "The planned orders a run produced, for review and selection before they are transferred to execution — the planned-order question starts here"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprpd1100m000",
+                      "name": "Items - Planning"
+                    }
+                  ],
+                  "text": "Items - Planning (cprpd1100m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+                    }
+                  ],
+                  "text": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order horizon, planning horizon and time fences that decide whether, and how far ahead, an item is planned — a configuration question about "
+                    },
+                    {
+                      "t": "text",
+                      "v": "reach"
+                    },
+                    {
+                      "t": "text",
+                      "v": " starts here"
+                    }
+                  ],
+                  "text": "The order horizon, planning horizon and time fences that decide whether, and how far ahead, an item is planned — a configuration question about reach starts here"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprpd4100m000",
+                      "name": "Scenarios"
+                    }
+                  ],
+                  "text": "Scenarios (cprpd4100m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Planning ➔ Master Data ➔ Scenarios ➔ Scenarios"
+                    }
+                  ],
+                  "text": "Planning ➔ Master Data ➔ Scenarios ➔ Scenarios"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The scenario a planning run executes in: its horizon, whether the plan rolls, and whether a run is net change or a full regeneration"
+                    }
+                  ],
+                  "text": "The scenario a planning run executes in: its horizon, whether the plan rolls, and whether a run is net change or a full regeneration"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tcibd2100m000",
+                      "name": "Items - Ordering"
+                    }
+                  ],
+                  "text": "Items - Ordering (tcibd2100m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering"
+                    }
+                  ],
+                  "text": "Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Supply-planning boundaries, lot sizing and the ordering interval — how much LN plans and in how many orders; a configuration question about "
+                    },
+                    {
+                      "t": "text",
+                      "v": "quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " starts here"
+                    }
+                  ],
+                  "text": "Supply-planning boundaries, lot sizing and the ordering interval — how much LN plans and in how many orders; a configuration question about quantity starts here"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2300m000",
+                      "name": "Warehouse Manager Dashboard"
+                    }
+                  ],
+                  "text": "Warehouse Manager Dashboard (whinh2300m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "path",
+                      "route": "Warehousing ➔ Dashboard ➔ Warehouse Manager Dashboard"
+                    }
+                  ],
+                  "text": "Warehousing ➔ Dashboard ➔ Warehouse Manager Dashboard"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Management overviews of inbound and outbound warehousing orders — the execution question starts here"
+                    }
+                  ],
+                  "text": "Management overviews of inbound and outbound warehousing orders — the execution question starts here"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "For each session, write down which questions it answers, which questions it cannot answer, and one sub-session or reference it opens."
+            }
+          ],
+          "text": "For each session, write down which questions it answers, which questions it cannot answer, and one sub-session or reference it opens."
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "you can choose the correct starting session for a demand question, a configuration question, a planned-order question, and an execution question without searching the menu."
+            }
+          ],
+          "text": "you can choose the correct starting session for a demand question, a configuration question, a planned-order question, and an execution question without searching the menu."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Sitting 2 — trace demand before generating anything",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Use "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ". In "
+            },
+            {
+              "t": "strong",
+              "v": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": ", identify every demand and supply row before running planning."
+            }
+          ],
+          "text": "Use BAM-CHOP-PAIR. In Item Order Plan, identify every demand and supply row before running planning."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Question",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What is current on-hand inventory?"
+                    }
+                  ],
+                  "text": "What is current on-hand inventory?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Inventory on Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the form header, before any grid row is applied. The Overview grid's running balance starts from it"
+                    }
+                  ],
+                  "text": "Inventory on Hand on the form header, before any grid row is applied. The Overview grid's running balance starts from it"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which rows are sales demand?"
+                    }
+                  ],
+                  "text": "Which rows are sales demand?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Rows whose Order Type is Sales Order, each carrying its demand quantity and the sales order number it comes from"
+                    }
+                  ],
+                  "text": "Rows whose Order Type is Sales Order, each carrying its demand quantity and the sales order number it comes from"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Is there a safety-stock requirement?"
+                    }
+                  ],
+                  "text": "Is there a safety-stock requirement?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Only if "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Safety Stock"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is set on the item's ordering record. A safety-stock top-up appears as a demand of its own, and planning answers it with supply of its own, separate from the sales-order-driven supply"
+                    }
+                  ],
+                  "text": "Only if Safety Stock is set on the item's ordering record. A safety-stock top-up appears as a demand of its own, and planning answers it with supply of its own, separate from the sales-order-driven supply"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Is any demand carrying a Specification indicator?"
+                    }
+                  ],
+                  "text": "Is any demand carrying a Specification indicator?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Settled 2026-09-06."
+                    },
+                    {
+                      "t": "text",
+                      "v": " It is a green check on exactly the rows tied to a project — a "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Project Contract"
+                    },
+                    {
+                      "t": "text",
+                      "v": " demand and the order that answers it — and cleared on every ordinary sales-order or safety-stock row. It marks "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "project-pegged"
+                    },
+                    {
+                      "t": "text",
+                      "v": " activity, not a property of the item or of demand pegging generally. See "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "the source on file"
+                    },
+                    {
+                      "t": "text",
+                      "v": " §6 "
+                    }
+                  ],
+                  "text": "Settled 2026-09-06. It is a green check on exactly the rows tied to a project — a Project Contract demand and the order that answers it — and cleared on every ordinary sales-order or safety-stock row. It marks project-pegged activity, not a property of the item or of demand pegging generally. See the source on file §6"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which rows are actual supply and which are planned supply?"
+                    }
+                  ],
+                  "text": "Which rows are actual supply and which are planned supply?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Actual supply is an existing order with a number and a status — a purchase order advice, a production order. Planned supply is what the run created — a "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Planned Production Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " or planned purchase order, status "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Planned"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — and it exists only until it is transferred"
+                    }
+                  ],
+                  "text": "Actual supply is an existing order with a number and a status — a purchase order advice, a production order. Planned supply is what the run created — a Planned Production Order or planned purchase order, status Planned — and it exists only until it is transferred"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What is Planned Available after each row?"
+                    }
+                  ],
+                  "text": "What is Planned Available after each row?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Planned Available"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is a running balance: the previous row's figure, minus that row's demand, plus its supply, starting from "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory on Hand"
+                    }
+                  ],
+                  "text": "Planned Available is a running balance: the previous row's figure, minus that row's demand, plus its supply, starting from Inventory on Hand"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Can you reconcile the running balance as prior balance − demand + supply?"
+                    }
+                  ],
+                  "text": "Can you reconcile the running balance as prior balance − demand + supply?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Yes, and it reproduces every value on screen. It is the one arithmetic the grid makes visible; pegging is what explains "
+                    },
+                    {
+                      "t": "text",
+                      "v": "which"
+                    },
+                    {
+                      "t": "text",
+                      "v": " demand a supply answers"
+                    }
+                  ],
+                  "text": "Yes, and it reproduces every value on screen. It is the one arithmetic the grid makes visible; pegging is what explains which demand a supply answers"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Open Order Pegging for each planned supply. Record the exact demand it answers. Treat the grid quantity as the result and the pegging tree as the explanation."
+            }
+          ],
+          "text": "Open Order Pegging for each planned supply. Record the exact demand it answers. Treat the grid quantity as the result and the pegging tree as the explanation."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Captures to hand in with your report-back — whole LN window, status bar readable:"
+            }
+          ],
+          "text": "Captures to hand in with your report-back — whole LN window, status bar readable:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Capture"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The Item Order Plan Overview grid for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " before any planning run, with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory on Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": " visible"
+                    }
+                  ],
+                  "text": "The Item Order Plan Overview grid for BAM-CHOP-PAIR before any planning run, with Inventory on Hand visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One demand row opened, with its Specification check box visible"
+                    }
+                  ],
+                  "text": "One demand row opened, with its Specification check box visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order Pegging for one planned supply, showing the demand it answers"
+                    }
+                  ],
+                  "text": "Order Pegging for one planned supply, showing the demand it answers"
+                }
+              ]
+            }
+          ],
+          "answers": [],
+          "check": 0
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "you can explain why two demands for the same item may still need separate supply."
+            }
+          ],
+          "text": "you can explain why two demands for the same item may still need separate supply."
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Sitting 3 — find the effective master-data value",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Trace ordering data from the warehouse level upward:"
+            }
+          ],
+          "text": "Trace ordering data from the warehouse level upward:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "strong",
+                  "v": "Item Data by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", record whether "
+                },
+                {
+                  "t": "strong",
+                  "v": "Use Item Ordering Data by Site"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected."
+                }
+              ],
+              "text": "In Item Data by Warehouse, record whether Use Item Ordering Data by Site is selected."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2150m000",
+                  "name": "Item - Ordering by Site"
+                },
+                {
+                  "t": "text",
+                  "v": ", reached off-menu from the item context, record whether "
+                },
+                {
+                  "t": "strong",
+                  "v": "Use Global Item Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected."
+                }
+              ],
+              "text": "In Item - Ordering by Site (tcibd2150m000), reached off-menu from the item context, record whether Use Global Item Ordering is selected."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "strong",
+                  "v": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", record "
+                },
+                {
+                  "t": "strong",
+                  "v": "Method"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Interval"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Safety Stock"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Order Increment"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Minimum"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Maximum"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Fixed Order"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "In Items - Ordering, record Method, Interval, Safety Stock, Order Increment, Minimum, Maximum, and Fixed Order."
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Level",
+            "Uses its own value or inherits?",
+            "Effective source",
+            "Evidence"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Warehouse"
+                    }
+                  ],
+                  "text": "Warehouse"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Use Item Ordering Data by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the warehouse record. Selected, the chain reads warehouse ➔ site ➔ global item. A 2026-09-06 capture identifies this record as session "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "`whwmd2110s000`"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — item "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "100200"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", warehouse "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA01"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — though the box's own help is still not filed, so its meaning is still inferred rather than read. "
+                    },
+                    {
+                      "t": "strong",
+                      "v": "Not documented for this release."
+                    }
+                  ],
+                  "text": "Read Use Item Ordering Data by Site on the warehouse record. Selected, the chain reads warehouse ➔ site ➔ global item. A 2026-09-06 capture identifies this record as session `whwmd2110s000` — item 100200, warehouse ADNA01 — though the box's own help is still not filed, so its meaning is still inferred rather than read. Not documented for this release."
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The site record while the box is selected, on the reading above"
+                    }
+                  ],
+                  "text": "The site record while the box is selected, on the reading above"
+                },
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A capture of the warehouse record showing the check box, the item and warehouse codes, and the status bar — see "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "the source on file"
+                    }
+                  ],
+                  "text": "A capture of the warehouse record showing the check box, the item and warehouse codes, and the status bar — see the source on file"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Site"
+                    }
+                  ],
+                  "text": "Site"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Inherits while "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Global Item Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is selected: the site is a live mirror of the company-level record, and a change there synchronises to it. Cleared, the site is an independent copy and stops following"
+                    }
+                  ],
+                  "text": "Inherits while Use Global Item Ordering is selected: the site is a live mirror of the company-level record, and a change there synchronises to it. Cleared, the site is an independent copy and stops following"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Items - Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " while the box is selected; "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Item - Ordering by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " once it is cleared"
+                    }
+                  ],
+                  "text": "Items - Ordering while the box is selected; Item - Ordering by Site once it is cleared"
+                },
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A capture of "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Item - Ordering by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with the check box and the Lot Sizes tab visible, and the status bar readable"
+                    }
+                  ],
+                  "text": "A capture of Item - Ordering by Site with the check box and the Lot Sizes tab visible, and the status bar readable"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Global item"
+                    }
+                  ],
+                  "text": "Global item"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Its own value. This is the record that holds the company-level lot-sizing fields and the ordering interval, and the one the site mirrors while "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Global Item Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is selected"
+                    }
+                  ],
+                  "text": "Its own value. This is the record that holds the company-level lot-sizing fields and the ordering interval, and the one the site mirrors while Use Global Item Ordering is selected"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tcibd2100m000",
+                      "name": "Items - Ordering"
+                    }
+                  ],
+                  "text": "Items - Ordering (tcibd2100m000)"
+                },
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A capture of "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Items - Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " showing "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Method"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Interval"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and the lot-size fields, with the status bar"
+                    }
+                  ],
+                  "text": "A capture of Items - Ordering showing Order Method, Order Interval and the lot-size fields, with the status bar"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Captures to hand in — one per level, each with the check box that decides inheritance visible:"
+            }
+          ],
+          "text": "Captures to hand in — one per level, each with the check box that decides inheritance visible:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Capture"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The warehouse record with "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Use Item Ordering Data by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", the item and warehouse codes, and the status bar"
+                    }
+                  ],
+                  "text": "The warehouse record with Use Item Ordering Data by Site, the item and warehouse codes, and the status bar"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Item - Ordering by Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Global Item Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and the Lot Sizes tab"
+                    }
+                  ],
+                  "text": "Item - Ordering by Site with Use Global Item Ordering and the Lot Sizes tab"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Items - Ordering"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Method"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Interval"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and the lot-size fields"
+                    }
+                  ],
+                  "text": "Items - Ordering with Order Method, Order Interval and the lot-size fields"
+                }
+              ]
+            }
+          ],
+          "answers": [],
+          "check": 0
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "you can point to the record that owns the effective Order Interval and explain why editing a different level would have no effect."
+            }
+          ],
+          "text": "you can point to the record that owns the effective Order Interval and explain why editing a different level would have no effect."
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Sitting 4 — horizons, time fences, and run scope",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Read "
+            },
+            {
+              "t": "strong",
+              "v": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": " before opening the planning run."
+            }
+          ],
+          "text": "Read Items - Planning before opening the planning run."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Boundary",
+            "Value",
+            "What result would fall outside it?"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order Horizon"
+                    }
+                  ],
+                  "text": "Order Horizon"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read it on the item's "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Items - Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " record: the workdays you enter, and the date LN shows for them. A deployed value belongs to this environment on this date and is not printed here; write down what you see and when"
+                    }
+                  ],
+                  "text": "Read it on the item's Items - Planning record: the workdays you enter, and the date LN shows for them. A deployed value belongs to this environment on this date and is not printed here; write down what you see and when"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A demand dated after the current date plus the horizon's workdays. Planning does not see it, so no planned order answers it, and nothing says why"
+                    }
+                  ],
+                  "text": "A demand dated after the current date plus the horizon's workdays. Planning does not see it, so no planned order answers it, and nothing says why"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Planning Horizon"
+                    }
+                  ],
+                  "text": "Planning Horizon"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read it on the same record. If "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Master Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is cleared the field is not editable and its date equals the order horizon's"
+                    }
+                  ],
+                  "text": "Read it on the same record. If Master Plan is cleared the field is not editable and its date equals the order horizon's"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The total period an item is planned for. It is editable only with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Master Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " selected; without a master plan it equals the order horizon, so for these items it adds no boundary of its own"
+                    }
+                  ],
+                  "text": "The total period an item is planned for. It is editable only with Master Plan selected; without a master plan it equals the order horizon, so for these items it adds no boundary of its own"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Time Fence"
+                    }
+                  ],
+                  "text": "Time Fence"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Time Fence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and its unit, and whether "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Time Fence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is selected — a fence that is not in use is no boundary"
+                    }
+                  ],
+                  "text": "Read Time Fence and its unit, and whether Use Time Fence is selected — a fence that is not in use is no boundary"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The date a set number of workdays ahead. Inside it, what a run does to existing planned orders depends on "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Time Fence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " together with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Generate within"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the generate session — check both before reading a result as a fence effect"
+                    }
+                  ],
+                  "text": "The date a set number of workdays ahead. Inside it, what a run does to existing planned orders depends on Use Time Fence together with Generate within on the generate session — check both before reading a result as a fence effect"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Forecast Time Fence"
+                    }
+                  ],
+                  "text": "Forecast Time Fence"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read it on the same record; it is counted on the enterprise unit's calendar, falling back to the company's"
+                    }
+                  ],
+                  "text": "Read it on the same record; it is counted on the enterprise unit's calendar, falling back to the company's"
+                },
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Before it, planning counts only actual customer orders; beyond it, demand is actual orders plus forecast. A forecast-driven planned order can only appear beyond the fence"
+                    }
+                  ],
+                  "text": "Before it, planning counts only actual customer orders; beyond it, demand is actual orders plus forecast. A forecast-driven planned order can only appear beyond the fence"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Then open "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1220m000",
+              "name": "Generate Order Planning (Item)"
+            },
+            {
+              "t": "text",
+              "v": ", which has no menu entry and is reached from the item-planning context. Record the state of "
+            },
+            {
+              "t": "strong",
+              "v": "Include Parent Items"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Include Child Items"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Generate within"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Confirm within"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Update Pegging Relations"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Automatic Order Grouping"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Then open Generate Order Planning (Item) (cprrp1220m000), which has no menu entry and is reached from the item-planning context. Record the state of Include Parent Items, Include Child Items, Generate within, Confirm within, Update Pegging Relations, and Automatic Order Grouping."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Run two controlled tests:"
+            }
+          ],
+          "text": "Run two controlled tests:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate from a component only and record whether parent demand is included."
+                }
+              ],
+              "text": "Generate from a component only and record whether parent demand is included."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate from the top-level item with "
+                },
+                {
+                  "t": "strong",
+                  "v": "Include Child Items"
+                },
+                {
+                  "t": "text",
+                  "v": " selected and record which components are planned."
+                }
+              ],
+              "text": "Generate from the top-level item with Include Child Items selected and record which components are planned."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Captures to hand in:"
+            }
+          ],
+          "text": "Captures to hand in:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Capture"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item's "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Items - Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " record with all four horizons and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Time Fence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " visible"
+                    }
+                  ],
+                  "text": "The item's Items - Planning record with all four horizons and Use Time Fence visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Generate Order Planning (Item)"
+                    },
+                    {
+                      "t": "text",
+                      "v": " as run, with every check box and range visible"
+                    }
+                  ],
+                  "text": "Generate Order Planning (Item) as run, with every check box and range visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " after each of the two controlled tests"
+                    }
+                  ],
+                  "text": "Planned Orders after each of the two controlled tests"
+                }
+              ]
+            }
+          ],
+          "answers": [],
+          "check": 0
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "you can distinguish “the item was not selected for the run” from “the item was selected but a planning boundary prevented an order.”"
+            }
+          ],
+          "text": "you can distinguish “the item was not selected for the run” from “the item was selected but a planning boundary prevented an order.”"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Sitting 5 — order quantity laboratory",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Use the same demand baseline for every run. Change one value at a time and restore it before the next test."
+            }
+          ],
+          "text": "Use the same demand baseline for every run. Change one value at a time and restore it before the next test."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Test",
+            "Baseline",
+            "One change",
+            "Prediction",
+            "Actual planned orders",
+            "Pegging reconciled?"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order Interval"
+                    }
+                  ],
+                  "text": "Order Interval"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "0"
+                    },
+                    {
+                      "t": "text",
+                      "v": " Days"
+                    }
+                  ],
+                  "text": "0 Days"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "10"
+                    },
+                    {
+                      "t": "text",
+                      "v": " Days"
+                    }
+                  ],
+                  "text": "10 Days"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "At "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "0"
+                    },
+                    {
+                      "t": "text",
+                      "v": " days, one planned order per requirement. At "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "10"
+                    },
+                    {
+                      "t": "text",
+                      "v": " days, every requirement whose date falls inside the window that opens at the first requirement is netted into one planned order — the library saw three requirements become one on 2026-09-05. Predict the count from the requirement dates, the quantity as their sum"
+                    }
+                  ],
+                  "text": "At 0 days, one planned order per requirement. At 10 days, every requirement whose date falls inside the window that opens at the first requirement is netted into one planned order — the library saw three requirements become one on 2026-09-05. Predict the count from the requirement dates, the quantity as their sum"
+                },
+                {
+                  "col": 4,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " after the run: count the rows for the item and note each quantity and date"
+                    }
+                  ],
+                  "text": "Read Planned Orders after the run: count the rows for the item and note each quantity and date"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open each planned order's pegging: one order pegged to several demands is the interval at work, and the sum of the pegged demands must equal the order quantity"
+                    }
+                  ],
+                  "text": "Open each planned order's pegging: one order pegged to several demands is the interval at work, and the sum of the pegged demands must equal the order quantity"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Maximum quantity"
+                    }
+                  ],
+                  "text": "Maximum quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Unbound test value"
+                    }
+                  ],
+                  "text": "Unbound test value"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A value below total demand"
+                    }
+                  ],
+                  "text": "A value below total demand"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A requirement above the maximum splits into as many orders as it takes, each at the maximum — the help's own example is 430 against a ceiling of 400 giving two orders of 400. Predict ceil(demand ÷ maximum) orders"
+                    }
+                  ],
+                  "text": "A requirement above the maximum splits into as many orders as it takes, each at the maximum — the help's own example is 430 against a ceiling of 400 giving two orders of 400. Predict ceil(demand ÷ maximum) orders"
+                },
+                {
+                  "col": 4,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Count the rows and quantities as above; the last order may be smaller than the maximum only if the rules round it, which the help's example does not"
+                    }
+                  ],
+                  "text": "Count the rows and quantities as above; the last order may be smaller than the maximum only if the rules round it, which the help's example does not"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each split order pegs to the same demand; together they must cover it and no more"
+                    }
+                  ],
+                  "text": "Each split order pegs to the same demand; together they must cover it and no more"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Minimum quantity"
+                    }
+                  ],
+                  "text": "Minimum quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A value above one requirement"
+                    }
+                  ],
+                  "text": "A value above one requirement"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A requirement below the minimum is raised to it; the excess becomes planned inventory. Predict one order at the minimum for any requirement under it"
+                    }
+                  ],
+                  "text": "A requirement below the minimum is raised to it; the excess becomes planned inventory. Predict one order at the minimum for any requirement under it"
+                },
+                {
+                  "col": 4,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the quantity on the planned order and compare it with the requirement it answers"
+                    }
+                  ],
+                  "text": "Read the quantity on the planned order and compare it with the requirement it answers"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The pegged demand is smaller than the order; the difference is not a second demand"
+                    }
+                  ],
+                  "text": "The pegged demand is smaller than the order; the difference is not a second demand"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Fixed order quantity"
+                    }
+                  ],
+                  "text": "Fixed order quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A deliberate test quantity"
+                    }
+                  ],
+                  "text": "A deliberate test quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Every planned order is the fixed quantity, and a requirement larger than it takes several. Predict ceil(demand ÷ fixed) orders of the fixed quantity"
+                    }
+                  ],
+                  "text": "Every planned order is the fixed quantity, and a requirement larger than it takes several. Predict ceil(demand ÷ fixed) orders of the fixed quantity"
+                },
+                {
+                  "col": 4,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Count the rows; every quantity should be the fixed value"
+                    }
+                  ],
+                  "text": "Count the rows; every quantity should be the fixed value"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Several orders peg to one demand, as for the maximum"
+                    }
+                  ],
+                  "text": "Several orders peg to one demand, as for the maximum"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Safety stock"
+                    }
+                  ],
+                  "text": "Safety stock"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Record first"
+                    }
+                  ],
+                  "text": "Record first"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One controlled increase"
+                    }
+                  ],
+                  "text": "One controlled increase"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Safety Stock"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is the minimum the plan preserves, so raising it creates a demand of its own for the increase; predict one planned order for that amount, dated at the start of the plan, separate from the sales-order-driven supply"
+                    }
+                  ],
+                  "text": "Safety Stock is the minimum the plan preserves, so raising it creates a demand of its own for the increase; predict one planned order for that amount, dated at the start of the plan, separate from the sales-order-driven supply"
+                },
+                {
+                  "col": 4,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the new row and its date; the library's 2026-09-03 capture showed the top-up as its own "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Planned Production Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " beside the ordinary ones"
+                    }
+                  ],
+                  "text": "Read the new row and its date; the library's 2026-09-03 capture showed the top-up as its own Planned Production Order beside the ordinary ones"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The top-up pegs to the safety-stock requirement, not to a sales order — that is how you tell it from ordinary supply"
+                    }
+                  ],
+                  "text": "The top-up pegs to the safety-stock requirement, not to a sales order — that is how you tell it from ordinary supply"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "For the Order Interval test, confirm that the interval begins with the first requirement and includes requirements inside its workday or working-hour window. Keep "
+            },
+            {
+              "t": "strong",
+              "v": "Automatic Order Grouping"
+            },
+            {
+              "t": "text",
+              "v": " cleared so it cannot be mistaken for the cause."
+            }
+          ],
+          "text": "For the Order Interval test, confirm that the interval begins with the first requirement and includes requirements inside its workday or working-hour window. Keep Automatic Order Grouping cleared so it cannot be mistaken for the cause."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Captures to hand in — for every test, before and after:"
+            }
+          ],
+          "text": "Captures to hand in — for every test, before and after:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Capture"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The ordering record showing the one changed value, before the run"
+                    }
+                  ],
+                  "text": "The ordering record showing the one changed value, before the run"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the item after the run, every row visible"
+                    }
+                  ],
+                  "text": "Planned Orders for the item after the run, every row visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order Pegging for one planned order the change produced"
+                    }
+                  ],
+                  "text": "Order Pegging for one planned order the change produced"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The ordering record restored to its baseline"
+                    }
+                  ],
+                  "text": "The ordering record restored to its baseline"
+                }
+              ]
+            }
+          ],
+          "answers": [],
+          "check": 0
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "before pressing Generate, you can predict both the number of planned orders and their quantities, then explain any difference using the lot-size rules and pegging."
+            }
+          ],
+          "text": "before pressing Generate, you can predict both the number of planned orders and their quantities, then explain any difference using the lot-size rules and pegging."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "These are training values, not a recommendation for production replenishment policy."
+                }
+              ],
+              "text": "These are training values, not a recommendation for production replenishment policy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Sitting 6 — transfer, execution, and exception handling",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Review the result in "
+            },
+            {
+              "t": "strong",
+              "v": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": ", select one planned order, and follow the documented transfer path."
+            }
+          ],
+          "text": "Review the result in Planned Orders, select one planned order, and follow the documented transfer path."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Question",
+            "Your answer"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What planned-order type was generated?"
+                    }
+                  ],
+                  "text": "What planned-order type was generated?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the row in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ": a planned production order for an item whose supply source is production, a planned purchase order for one whose supply source is purchase. The item's ordering data decides which"
+                    }
+                  ],
+                  "text": "Read Order Type on the row in Planned Orders: a planned production order for an item whose supply source is production, a planned purchase order for one whose supply source is purchase. The item's ordering data decides which"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which demand does it answer?"
+                    }
+                  ],
+                  "text": "Which demand does it answer?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the planned order and its pegging. The pegged demand names the sales order line, or the safety-stock requirement, that this supply exists for; the grid quantity is the result and the pegging is the explanation"
+                    }
+                  ],
+                  "text": "Open the planned order and its pegging. The pegged demand names the sales order line, or the safety-stock requirement, that this supply exists for; the grid quantity is the result and the pegging is the explanation"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What transfer session opens?"
+                    }
+                  ],
+                  "text": "What transfer session opens?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cppat1210m000",
+                      "name": "Transfer Order Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", opened from the rows selected in Planned Orders"
+                    }
+                  ],
+                  "text": "Transfer Order Planning (cppat1210m000), opened from the rows selected in Planned Orders"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Does "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Combine Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " apply to this order class?"
+                    }
+                  ],
+                  "text": "Does Combine Orders apply to this order class?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Only to the four classes that have a "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Combine Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " field at transfer — subcontracting, intra-company distribution, purchase and multicompany distribution. An ordinary job-shop planned production order has no equivalent, so for production supply the answer is no"
+                    }
+                  ],
+                  "text": "Only to the four classes that have a Combine Orders field at transfer — subcontracting, intra-company distribution, purchase and multicompany distribution. An ordinary job-shop planned production order has no equivalent, so for production supply the answer is no"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "What real order number was created?"
+                    }
+                  ],
+                  "text": "What real order number was created?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Process Report"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Transfer Order Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " lists the orders processed with the numbers they became, and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Error Report"
+                    },
+                    {
+                      "t": "text",
+                      "v": " lists what did not transfer and why. If nothing transferred and no error printed, the orders were still "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Planned"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and the "
+                    },
+                    {
+                      "t": "text",
+                      "v": "Transfer Status … as Well"
+                    },
+                    {
+                      "t": "text",
+                      "v": " box was not ticked — that is a status, not an error"
+                    }
+                  ],
+                  "text": "Process Report on Transfer Order Planning lists the orders processed with the numbers they became, and Error Report lists what did not transfer and why. If nothing transferred and no error printed, the orders were still Planned and the Transfer Status … as Well box was not ticked — that is a status, not an error"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Where does the order appear in execution?"
+                    }
+                  ],
+                  "text": "Where does the order appear in execution?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A planned purchase order becomes a purchase order, one order for several planned ones where "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Combine Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " was selected. For production supply the transfer has not been walked in this environment: capture the resulting production order, or the exact error, with the status bar readable and hand it in; this sitting is updated from it. "
+                    },
+                    {
+                      "t": "strong",
+                      "v": "Not documented for this release."
+                    }
+                  ],
+                  "text": "A planned purchase order becomes a purchase order, one order for several planned ones where Combine Orders was selected. For production supply the transfer has not been walked in this environment: capture the resulting production order, or the exact error, with the status bar readable and hand it in; this sitting is updated from it. Not documented for this release."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Which report, warning, or exception message was produced?"
+                    }
+                  ],
+                  "text": "Which report, warning, or exception message was produced?"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 1,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read both reports on the transfer. One message is already known for a purchased item with no buy-from business partner: the transfer fails and says the purchase order cannot be generated because the buy-from partner cannot be determined. Any other message is worth a capture: it goes to the library's inbox and the session file gains it"
+                    }
+                  ],
+                  "text": "Read both reports on the transfer. One message is already known for a purchased item with no buy-from business partner: the transfer fails and says the purchase order cannot be generated because the buy-from partner cannot be determined. Any other message is worth a capture: it goes to the library's inbox and the session file gains it"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            1
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "For purchase supply, compare generation-time Order Interval with transfer-time "
+            },
+            {
+              "t": "strong",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": ", reached from selected rows in Planned Orders. Explain why they can both reduce the number of visible orders while acting at different stages."
+            }
+          ],
+          "text": "For purchase supply, compare generation-time Order Interval with transfer-time Combine Orders in Transfer Order Planning (cppat1210m000), reached from selected rows in Planned Orders. Explain why they can both reduce the number of visible orders while acting at different stages."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "For production supply, treat the transfer as a test: it has not been walked end to end in this environment. Capture the transfer report or exact error and the resulting production order. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "For production supply, treat the transfer as a test: it has not been walked end to end in this environment. Capture the transfer report or exact error and the resulting production order. Not documented for this release."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Captures to hand in:"
+            }
+          ],
+          "text": "Captures to hand in:"
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Capture"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Transfer Order Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " as run, with the transfer-status boxes and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Combine Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " visible"
+                    }
+                  ],
+                  "text": "Transfer Order Planning as run, with the transfer-status boxes and Combine Orders visible"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Process Report"
+                    },
+                    {
+                      "t": "text",
+                      "v": " or "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Error Report"
+                    },
+                    {
+                      "t": "text",
+                      "v": " it produced, whole"
+                    }
+                  ],
+                  "text": "The Process Report or Error Report it produced, whole"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The resulting production or purchase order, or the exact error, with the status bar"
+                    }
+                  ],
+                  "text": "The resulting production or purchase order, or the exact error, with the status bar"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order where it appears in execution"
+                    }
+                  ],
+                  "text": "The order where it appears in execution"
+                }
+              ]
+            }
+          ],
+          "answers": [],
+          "check": 0
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "you can narrate the complete chain: demand → effective parameters → planning run → planned order → pegging → transfer → execution order → warehouse activity."
+            }
+          ],
+          "text": "you can narrate the complete chain: demand → effective parameters → planning run → planned order → pegging → transfer → execution order → warehouse activity."
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "title": "Consultant report-back",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Present one surprising result to the team in this format:"
+            }
+          ],
+          "text": "Present one surprising result to the team in this format:"
+        },
+        {
+          "kind": "code",
+          "text": "Question tested:\nDemand and required date:\nBaseline configuration:\nInheritance path:\nOne value changed:\nPrediction:\nObserved planned order(s):\nPegging explanation:\nTransfer or execution result:\nWhat the screen proves:\nWhat was only said:\nWhat remains unknown:\nBaseline restored and confirmed:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "You pass the curriculum when the team can challenge any link in your explanation and you can open the exact session, value, result, or pegging relation that supports it."
+            }
+          ],
+          "text": "You pass the curriculum when the team can challenge any link in your explanation and you can open the exact session, value, result, or pegging relation that supports it."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    }
+  ]
+}

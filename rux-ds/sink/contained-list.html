@@ -1,0 +1,51 @@
+<section class="ks-sec" id="contained-list">
+  <h2>Contained list</h2><p>on-page · disclosed · item variants</p>
+  <!-- PROVENANCE: rendered-dom · components-containedlist--default,
+       --disclosed, --with-actions, --with-interactive-items and
+       --with-list-title-decorators, 2026-08-28 -->
+  <!--
+    DELIBERATE divergence, kept against the reference: Carbon renders
+    __label on a <div>; this system uses <h3> — a contained list's label
+    is a heading, and the heading level gives screen-reader users the
+    outline Carbon reconstructs with ARIA instead. Applies to both lists
+    below. check-tags reports it by design.
+
+    The nesting report flags the buttons inside `contained-list-item__action`.
+    That class is real — two rules in @carbon/styles — but every story that
+    demos an action puts it in the HEADER's `contained-list__action` instead,
+    so no sample pairs a button with the item-level one. Kept: the item action
+    is what those two rules exist for. 2026-08-28.
+
+    Both lists take `layout--size-lg`, and the ul takes role=list, from the
+    reference. `contained-list--lg` is emitted there too and dropped for having
+    no rule in @carbon/styles (§4.1.12).
+  -->
+  <div class="ks-grid">
+    <!-- BLOCK:BEGIN name=on-page label="Contained list" -->
+    <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
+      <div class="rux--contained-list__header"><h3 class="rux--contained-list__label">On page</h3></div>
+      <ul role="list">
+        <li class="rux--contained-list-item">
+          <div class="rux--contained-list-item__content">First item</div>
+        </li>
+        <li class="rux--contained-list-item rux--contained-list-item--with-action">
+          <div class="rux--contained-list-item__content">With action</div>
+          <div class="rux--contained-list-item__action">
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Edit</button>
+          </div>
+        </li>
+        <li class="rux--contained-list-item rux--contained-list-item--clickable">
+          <button type="button" class="rux--contained-list-item__content">Clickable item</button>
+        </li>
+      </ul>
+    </div>
+    <!-- BLOCK:END on-page -->
+    <div class="rux--contained-list rux--layout--size-lg rux--contained-list--disclosed rux--contained-list--inset-rulers">
+      <div class="rux--contained-list__header"><h3 class="rux--contained-list__label">Disclosed</h3></div>
+      <ul role="list">
+        <li class="rux--contained-list-item"><div class="rux--contained-list-item__content">Alpha</div></li>
+        <li class="rux--contained-list-item"><div class="rux--contained-list-item__content">Bravo</div></li>
+      </ul>
+    </div>
+  </div>
+</section>

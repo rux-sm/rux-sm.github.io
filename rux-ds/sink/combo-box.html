@@ -1,0 +1,52 @@
+<section class="ks-sec" id="combo-box">
+  <h2>Combo box</h2><p>filterable input over a list box</p>
+  <!-- PROVENANCE: rendered-dom · components-combobox--default and its state
+       recipes (open, readonly) in docs/carbon-react-states.json, harvested
+       2026-08-27 -->
+  <!--
+    Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
+    extraction (roadmap §4.1.11). What the rendered DOM corrected:
+      - the root is `combo-box list-box` ONLY — no `--dropdown`, no size and no
+        layout class; the shadow DOM's `--dropdown` pairing was the web
+        component's, not React's
+      - label and control sit inside div.list-box__wrapper
+      - the menu icon is a BUTTON carrying aria-expanded, not a div
+      - the menu is a UL of LI options
+  -->
+  <div class="ks-grid">
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" for="cbx-1">Filter and choose</label>
+      <div class="rux--combo-box rux--list-box">
+        <div class="rux--list-box__field">
+          <input id="cbx-1" class="rux--text-input rux--text-input--empty" type="text" role="combobox"
+                 aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list" placeholder="Type to filter…">
+          <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+        </div>
+        <ul class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Apple</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Apricot</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Blackberry</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" for="cbx-2">Readonly</label>
+      <div class="rux--combo-box rux--combo-box--readonly rux--list-box">
+        <div class="rux--list-box__field">
+          <input id="cbx-2" class="rux--text-input" type="text" role="combobox" aria-expanded="false" aria-haspopup="listbox" value="Locked" readonly>
+          <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1" disabled>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

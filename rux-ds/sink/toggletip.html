@@ -1,0 +1,75 @@
+<section class="ks-sec" id="toggletip">
+  <h2>Toggletip</h2><p>click-triggered, open state · labelled field — click a trigger</p>
+  <!-- PROVENANCE: rendered-dom · components-toggletip--default for the popover
+       and components-dropdown--with-toggletip-label for the label form,
+       2026-08-27 -->
+  <!--
+    `popover--high-contrast` ADDED ON RESTORE, 2026-08-31, and it is not
+    decoration: it is what makes a toggletip dark. Carbon renders it on the
+    container in ALL 55 captures that draw a toggletip-button, and
+    check-ancestry says so the moment this file is read.
+
+    IT WAS MISSING BECAUSE NO GATE READ THIS FILE. The fragment was quarried
+    2026-08-27; check-ancestry landed after it, and sink/deferred/ is outside
+    every gate's target set. A deferred fragment rots silently against gates
+    that arrive after it, and restoring one is the only thing that finds out.
+    This was the SECOND such defect in two fragments restored the same day --
+    sink/time-picker.html carried a wrong glyph for the same reason.
+  -->
+  <div class="ks-row" style="padding:3rem 0 6rem 8rem">
+    <span class="rux--toggletip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+      <button type="button" class="rux--toggletip-button" aria-expanded="false">More information</button>
+      <span class="rux--popover">
+        <!-- popover-content and toggletip-content are NESTED, not compounded:
+             Carbon renders span.popover-content > div.toggletip-content
+             (components-toggletip--default). -->
+        <span class="rux--popover-content">
+          <div class="rux--toggletip-content">
+            <p>Toggletips stay open until dismissed, so their content can be interactive.</p>
+            <div class="rux--toggletip-actions">
+              <a class="rux--link" href="#toggletip">Learn more</a>
+            </div>
+          </div>
+        </span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+
+    <!--
+      __toggletip-label is NOT a heading inside the popover, which is where this
+      fragment had it. Carbon renders it in a field's <label>, as the label text
+      that sits beside the toggletip trigger — `label.rux--label > span.
+      rux--toggletip-label + span.rux--toggletip` (components-dropdown--with-
+      toggletip-label). Demoed in that position instead, on the field it
+      belongs to.
+    -->
+    <div class="rux--list-box__wrapper" style="inline-size:16rem">
+      <label class="rux--label" id="tt-dd-label">
+        <div>
+          <span class="rux--toggletip-label">Region</span>
+          <span class="rux--toggletip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+            <button type="button" class="rux--toggletip-button" aria-label="More information" aria-expanded="false">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+            </button>
+            <span class="rux--popover">
+              <span class="rux--popover-content">
+                <div class="rux--toggletip-content">
+                  <p>Region sets where the data is stored, and cannot be changed later.</p>
+                </div>
+              </span>
+              <span class="rux--popover-caret"></span>
+            </span>
+          </span>
+        </div>
+      </label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="tt-dd-label" aria-expanded="false" aria-haspopup="listbox">
+          <span class="rux--list-box__label">Frankfurt</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

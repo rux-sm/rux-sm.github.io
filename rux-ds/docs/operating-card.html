@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The operating card for the six-repo family: the per-session loop and
+     the once-per-Mac setup. Printable, two sections. Not a rux-ds page and not
+     on rux-ds: it links Google Fonts for IBM Plex and carries its own CSS,
+     so no gate reads it (sources.mjs enumerates the root, sink/ and
+     templates/ only). Written 2026-09-02, revised the same day after the
+     family audit; revised 2026-09-04 for rux-sm.github.io and rux-backend,
+     which had been live for two days and one day without appearing here,
+     and for sync-ds.sh, retired 2026-09-02 and still documented twice.
+     That revision grew the content about 30%, so the masthead no longer
+     claims a page count — nobody has run a print preview since.
+     Corrected the same day: an earlier draft of this file said
+     rux-backend had core.hooksPath set and only lacked the hook file.
+     It had neither. The claim came from misreading one line of output
+     as two, which is the same class of mistake step 6 exists to catch. -->
+<title>Rux Operating Card</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #161616;
+    --muted: #525252;
+    --line: #e0e0e0;
+    --tint: #f4f4f4;
+    --accent: #0f62fe;
+    --accent-ink: #002d9c;
+    --warn-bg: #fff8e1;
+    --warn-line: #f1c21b;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #161616; --ink: #f4f4f4; --muted: #a8a8a8; --line: #393939;
+      --tint: #262626; --accent: #78a9ff; --accent-ink: #a6c8ff;
+      --warn-bg: #2a2410; --warn-line: #d2a106; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #161616; --ink: #f4f4f4; --muted: #a8a8a8; --line: #393939;
+    --tint: #262626; --accent: #78a9ff; --accent-ink: #a6c8ff;
+    --warn-bg: #2a2410; --warn-line: #d2a106; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 400 15px/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet { max-width: 760px; margin: 0 auto; padding: 40px 28px 64px; }
+
+  /* masthead */
+  .mast { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+          border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 28px; }
+  .mast h1 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; }
+  .mast .sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .mast .print { font: 500 12px/1 var(--mono); color: var(--muted); white-space: nowrap; }
+
+  .eyebrow { font: 600 11px/1 var(--sans); letter-spacing: 0.08em; text-transform: uppercase;
+             color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 0 0 4px; text-wrap: balance; letter-spacing: -0.01em; }
+  h3 { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+  p { margin: 0 0 10px; max-width: 62ch; }
+  .lede { color: var(--muted); margin-bottom: 18px; }
+
+  section { margin-bottom: 32px; break-inside: avoid; }
+  .page-2 { break-before: page; }
+
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: grid; gap: 12px; }
+  ol.steps > li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; counter-increment: s; }
+  ol.steps > li::before { content: counter(s); font: 500 13px/24px var(--mono); color: var(--accent-ink);
+                          border: 1px solid var(--line); border-radius: 2px; text-align: center; height: 24px; }
+  ol.steps li p:last-child { margin-bottom: 0; }
+
+  pre { margin: 6px 0 8px; padding: 10px 12px; background: var(--tint); border-left: 3px solid var(--accent);
+        font: 400 12.5px/1.55 var(--mono); overflow-x: auto; white-space: pre; }
+  code { font: 500 0.92em var(--mono); background: var(--tint); padding: 1px 4px; border-radius: 2px; }
+  pre code { background: none; padding: 0; font-weight: 400; }
+
+  /* two flows side by side */
+  .flows { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .flow { border: 1px solid var(--line); padding: 14px 16px; }
+  .flow h3 { display: flex; align-items: baseline; gap: 8px; }
+  .flow .arrow { color: var(--muted); font-weight: 400; font-size: 13px; }
+  .flow ol { margin: 0; padding-left: 18px; }
+  .flow li { margin: 0 0 4px; }
+  .flow li + li { margin-top: 2px; }
+
+  .rule { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+
+  .never { background: var(--warn-bg); border-left: 3px solid var(--warn-line); padding: 12px 16px; }
+  .never ul { margin: 0; padding-left: 18px; }
+  .never li { margin-bottom: 3px; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  .tag { display: inline-block; font: 600 10.5px/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase;
+         padding: 3px 6px; border-radius: 2px; border: 1px solid var(--line); color: var(--muted); }
+  .tag.private { color: var(--accent-ink); border-color: var(--accent); }
+
+  .why { color: var(--muted); font-size: 13.5px; }
+
+  @media (max-width: 600px) { .flows { grid-template-columns: 1fr; } }
+
+  @media print {
+    :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+      --paper: #fff; --ink: #000; --muted: #444; --line: #bbb; --tint: #f2f2f2;
+      --accent: #0043ce; --accent-ink: #0043ce; --warn-bg: #fff; --warn-line: #000;
+    }
+    @page { margin: 16mm 18mm; }
+    body { font-size: 12.5px; }
+    .sheet { max-width: none; padding: 0; }
+    .mast .print { display: none; }
+    pre { font-size: 11px; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+<header class="mast">
+  <div>
+    <h1>Rux Operating Card</h1>
+    <p class="sub">rux-ds · rux-ln-atlas · rux-ln-notes · rux-scheduler · rux-sm.github.io · rux-backend — one card for both Macs. The per-repo index (run, edit, verify, release) is the workspace page in rux's config; this card is the loop and the setup.</p>
+  </div>
+  <div class="print">⌘P to print</div>
+</header>
+
+<!-- ============ PAGE 1: THE LOOP ============ -->
+
+<section>
+  <p class="eyebrow">Every session</p>
+  <h2>The loop</h2>
+  <p class="lede">The two things that have gone wrong were both left-behind work: a commit on one Mac, unpushed, and a second agent in a repo already being worked. The loop closes both.</p>
+
+  <h3>Start</h3>
+  <ol class="steps">
+    <li><div>
+      <p>Open the workspace and pull all six. Fast-forward only. If a pull refuses, see the box below before doing anything else.</p>
+<pre><code>code ~/Developer/rux.code-workspace
+for r in rux-ds rux-ln-atlas rux-ln-notes rux-scheduler rux-sm.github.io rux-backend; do
+  git -C ~/Developer/$r pull --ff-only
+done</code></pre>
+    </div></li>
+    <li><div>
+      <p>Health-check only the repo you are about to touch. Read the exit code, not the output.</p>
+<pre><code>cd ~/Developer/rux-ds          &amp;&amp; npm install --ignore-scripts &amp;&amp; npm run verify
+cd ~/Developer/rux-ln-notes    &amp;&amp; node tools/check.mjs
+cd ~/Developer/rux-ln-atlas    &amp;&amp; python3 tools/check.py
+cd ~/Developer/rux-scheduler   &amp;&amp; node tools/check.mjs
+cd ~/Developer/rux-sm.github.io &amp;&amp; node tools/check.mjs</code></pre>
+      <p class="why"><code>rux-backend</code> has no check of this kind: pgTAP, <code>supabase test db</code>, Docker, and only when a migration changes.</p>
+    </div></li>
+    <li><div>
+      <p>Start agents on the tree you just pulled. One agent per repo at a time. Agents do not pull; you did.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <h3>Work flows downstream, one repo at a time</h3>
+  <p class="why">Finish, commit and push the upstream repo before you sync the downstream one. The sync scripts refuse a dirty upstream, so this is the order the tools already expect.</p>
+  <div class="flows">
+    <div class="flow">
+      <h3>Content <span class="arrow">atlas → notes</span></h3>
+      <ol>
+        <li>atlas: edit · <code>python3 tools/check.py</code> · commit · push</li>
+        <li>notes: <code>sh tools/sync-guides.sh</code></li>
+        <li><code>node tools/build.mjs</code> · <code>node tools/check.mjs</code></li>
+        <li>commit · push — <strong>the push is the publication</strong></li>
+      </ol>
+    </div>
+    <div class="flow">
+      <h3>Design system <span class="arrow">rux-ds → every module</span></h3>
+      <ol>
+        <li>rux-ds: edit · <code>npm run verify</code> · commit · push</li>
+        <li>a line in <code>CHANGES.md</code> if a class left · <code>git tag vX.Y.Z</code> · <code>git push origin vX.Y.Z</code></li>
+        <li>from rux-ds on <code>main</code>: <code>sh tools/roll-out.sh vX.Y.Z</code></li>
+        <li>each app it moved: read the drift report · commit · push</li>
+      </ol>
+      <p class="why">Every app moves in one pass — the hub, notes and the scheduler. An app already holding the tag's bytes is left alone, pin and all. <code>tools/drift.mjs</code> reports what an app still lacks after a move.</p>
+    </div>
+    <div class="flow">
+      <h3>A new app <span class="arrow">rux-ds → hub</span></h3>
+      <ol>
+        <li><code>sh tools/new-project.sh ~/Developer/&lt;repo&gt;</code></li>
+        <li>one entry in the hub's <code>switcher.json</code></li>
+        <li>hub: <code>node tools/check.mjs</code> · commit · push</li>
+        <li>add it to <code>docs/rux.code-workspace</code>, the index, and the loops on this card</li>
+      </ol>
+      <p class="why">Its own repository and folder, serving at <code>rux-sm.github.io/&lt;repo&gt;/</code>. Apps are shared by URL, the design system by pin, nothing else.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>End</h3>
+  <ol class="steps">
+    <li><div><p>Commit in every repo you touched. The hook checks the message: <code>type(scope): Subject</code>, subject ≤ 50 characters, body wrapped at 72, no AI trailer of any kind.</p></div></li>
+    <li><div><p>Push every repo you touched, then confirm each one reads level with origin <strong>and lists no file</strong>. The branch line alone cannot see an uncommitted or untracked file.</p>
+<pre><code>for r in rux-ds rux-ln-atlas rux-ln-notes rux-scheduler rux-sm.github.io rux-backend; do
+  git -C ~/Developer/$r fetch -q; git -C ~/Developer/$r status -sb
+done
+## main...origin/main      ← one such line per repo and NOTHING under it;
+                          a file listed there is work only this Mac has</code></pre></div></li>
+    <li><div><p><strong>Close the lid only after the push.</strong> Nothing stays local on either Mac. Ever.</p></div></li>
+  </ol>
+</section>
+
+<section class="never">
+  <h3>Never</h3>
+  <ul>
+    <li>Hand-edit <code>vendor/</code> or <code>data/guides/</code> in notes. The next sync erases the edit; the fix belongs upstream.</li>
+    <li>Edit a generated file in rux-ds: <code>css/rux.css</code>, <code>css/rux.min.css</code>, <code>kitchen-sink.html</code>, <code>portal.html</code>, the README stats table.</li>
+    <li>Work around a "dirty tree" or "wrong identity" refusal. It is holding a rule for you.</li>
+    <li>Run two agent sessions in the same repo. Different repos at once are fine.</li>
+    <li>Send anything from notes or atlas into rux-ds except an ask with invented content that <code>check-publishable</code> clears. Never a real page.</li>
+  </ul>
+</section>
+
+<section>
+  <h3>When a pull refuses</h3>
+  <p>It means you committed on the other Mac and forgot to push before switching. Both sides have real commits. Put yours on top of theirs, re-check, push.</p>
+<pre><code>git pull --rebase origin main   # then re-run that repo's check, then: git push</code></pre>
+  <p class="why">A conflict in a generated file — <code>css/rux.css</code>, <code>kitchen-sink.html</code>, <code>portal.html</code>, the README stats table, <code>MEASURED</code>, <code>guides/*.html</code> — is never resolved by editing it. Take either side, run the generator (<code>npm run verify</code>, <code>node tools/build.mjs</code>, <code>node tools/measure.mjs</code>), then <code>git add</code> the result and <code>git rebase --continue</code>. The hooks do not run while a rebase replays commits, so the check you re-run afterwards is the only one.</p>
+</section>
+
+<!-- ============ PAGE 2: SETUP ============ -->
+
+<section class="page-2">
+  <p class="eyebrow">Once per Mac</p>
+  <h2>Set up — or check — the other Mac</h2>
+  <p class="lede">Use this page before continuing work on another machine. If the six repositories are already there, do not clone them again: start at step 2 and continue through step 6. A clone contains the files, but not the machine-local hook setting, dependencies, Python environment or VS Code workspace.</p>
+
+  <p><strong>You need:</strong> git; Node 22.13 or newer; Python 3.9 or newer; VS Code; and access to the two private repositories, <code>rux-ln-atlas</code> and <code>rux-backend</code>. In VS Code, open the Command Palette and run “Shell Command: Install 'code' command in PATH”. For a private clone, use a GitHub personal access token with repository access when git asks for a password; macOS then stores it in the keychain. Docker Desktop and the Supabase CLI are needed only to run <code>rux-backend</code>'s migrations or tests locally — not to work in any other repo.</p>
+<pre><code>git --version
+node --version          # 22.13 or newer
+python3 --version       # 3.9 or newer
+code --version</code></pre>
+
+  <ol class="steps">
+    <li><div>
+      <p><strong>Only if they are missing:</strong> clone all six into <code>~/Developer</code>, under exactly these names and beside one another. That layout matters because notes reads its two sibling repositories, and because only <code>rux-sm.github.io</code> can carry that name — it is what publishes at the account root. If a directory already exists, stop instead of cloning over it; use the pull commands in step 2.</p>
+<pre><code>mkdir -p ~/Developer &amp;&amp; cd ~/Developer
+git clone https://github.com/rux-sm/rux-ds.git
+git clone https://github.com/rux-sm/rux-ln-atlas.git
+git clone https://github.com/rux-sm/rux-ln-notes.git
+git clone https://github.com/rux-sm/rux-scheduler.git
+git clone https://github.com/rux-sm/rux-sm.github.io.git
+git clone https://github.com/rux-sm/rux-backend.git</code></pre>
+    </div></li>
+    <li><div>
+      <p>Pull all six before doing any work. <code>--ff-only</code> refuses to hide a commit that exists only on this Mac. If it refuses, use “When a pull refuses” on page 1.</p>
+<pre><code>for r in rux-ds rux-ln-atlas rux-ln-notes rux-scheduler rux-sm.github.io rux-backend; do
+  git -C ~/Developer/$r pull --ff-only
+done</code></pre>
+    </div></li>
+    <li><div>
+      <p>Set the commit identity, then arm the hooks. The identity is a machine setting. The hook path is a clone setting, so pulling files from GitHub does not install it. Notes deliberately uses a different path.</p>
+<pre><code>git config --global user.name "rux"
+git config --global user.email "rux.dev@pm.me"
+
+git -C ~/Developer/rux-ds        config core.hooksPath .githooks
+git -C ~/Developer/rux-ln-atlas  config core.hooksPath .githooks
+git -C ~/Developer/rux-ln-notes  config core.hooksPath tools/githooks
+git -C ~/Developer/rux-scheduler config core.hooksPath .githooks
+git -C ~/Developer/rux-sm.github.io config core.hooksPath .githooks
+git -C ~/Developer/rux-backend   config core.hooksPath .githooks</code></pre>
+      <p class="why">Confirm the values instead of assuming. <strong>A value here is still not proof the hook runs</strong> — the setting and the hook FILE are two halves and a clone carries neither. <code>rux-backend</code> had no hook at all until 2026-09-04 and every commit in it went unchecked. Step 6 is what settles it.</p>
+<pre><code>for r in rux-ds rux-ln-atlas rux-ln-notes rux-scheduler rux-sm.github.io rux-backend; do
+  printf '%s: ' "$r"; git -C ~/Developer/$r config --get core.hooksPath
+done</code></pre>
+    </div></li>
+    <li><div>
+      <p>Install and run the first check in each. You want exit 0 from verify, <code>check: clean</code> from atlas, and <code>gates passed</code> from notes with no <code>NAMES WERE NOT CHECKED</code> line above it. Three things look like failures and are not: npm warns that it skipped install scripts (expected; read the exit line), an atlas warning names a content defect (the text-cache warning clears once the venv line has run; the venv is per machine and gitignored), and notes prints where the sibling checkouts stand under “siblings (live)”, which is information and never a failure. Commit nothing during setup.</p>
+<pre><code>cd ~/Developer/rux-ds          &amp;&amp; npm ci --ignore-scripts &amp;&amp; npm run verify; echo "exit $?"
+cd ~/Developer/rux-ln-atlas    &amp;&amp; python3 tools/build.py &amp;&amp; python3 tools/check.py
+cd ~/Developer/rux-ln-atlas    &amp;&amp; python3 -m venv .venv &amp;&amp; .venv/bin/python -m pip install -q pypdf &amp;&amp; .venv/bin/python tools/text.py
+cd ~/Developer/rux-ln-notes    &amp;&amp; node tools/check.mjs
+cd ~/Developer/rux-scheduler   &amp;&amp; node tools/check.mjs
+cd ~/Developer/rux-sm.github.io &amp;&amp; node tools/check.mjs</code></pre>
+      <p class="why">The hub's and the scheduler's checks need no install: each reads its own <code>vendor/</code>. it reads its own <code>vendor/</code>. <code>rux-backend</code> is not checked here — see page 1.</p>
+    </div></li>
+    <li><div>
+      <p>Create the VS Code workspace that holds all six, so one window pulls and shows everything.</p>
+<pre><code>cp ~/Developer/rux-ds/docs/rux.code-workspace ~/Developer/
+code ~/Developer/rux.code-workspace</code></pre>
+      <p class="why">The file lives in rux-ds under <code>docs/</code> and is copied up because VS Code wants it beside the six folders; edit the copy in rux-ds, never the one in <code>~/Developer</code> — that one is overwritten by the next run of this step, so a fix made there is lost on the other Mac. <strong>A new app joins here and in the pull loops above, in the same commit that adds it to the hub's <code>switcher.json</code>.</strong> Auto-fetch keeps the ahead/behind arrows honest without pulling; pull-tags brings rux-ds's version tags down; rebase-when-sync puts your commits on top of the other Mac's instead of making merge commits. Scan depth 0 stops VS Code listing <code>carbon-website/</code>, IBM's docs clone that rux-ds keeps gitignored as a quarry; it is not yours and never needs syncing, and no Mac needs it: nothing in <code>npm run verify</code> reads it, and a Mac that wants it clones <code>github.com/carbon-design-system/carbon-website</code> into <code>rux-ds/</code>, where <code>.gitignore</code> already hides it. Always open VS Code from this file — the window title ends in “(Workspace)” — and in the Source Control view each repo gets its own row. Pull from there or with the loop on page 1; what matters is all six, before any agent starts. An up-arrow on a row at the end of a session is a commit only this Mac has.</p>
+    </div></li>
+    <li><div>
+      <p>Prove the hooks work in all six repositories. This tries to make an empty commit with a forbidden trailer; each hook must refuse it. A refusal changes nothing. If one is accepted, do not push it: run the safe undo command below in that repository, then repeat step 3 for it. <strong>This is the only step that proves git actually calls the hook</strong>, rather than that the script exists or the setting is spelled right — running the script by hand proves neither. <code>rux-backend</code> had no hook at all until 2026-09-04 and nothing said so.</p>
+<pre><code>for r in rux-ds rux-ln-atlas rux-ln-notes rux-scheduler rux-sm.github.io rux-backend; do
+  git -C ~/Developer/$r commit --allow-empty -m "test: Probe
+
+Co-Authored-By: nobody"; done
+# expect six refusals: commit-msg: Co-Authored-By trailer …
+
+# ONLY if a probe was accepted, run this inside that repository:
+git reset --soft HEAD~1</code></pre>
+      <p class="why"><code>--soft</code> removes only the unpushed probe commit and leaves files alone. Do not use <code>reset --hard</code>; it can erase real work.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <p class="eyebrow">Reference</p>
+  <h2>The six repos</h2>
+  <p>What each one is, how to run it, where to edit, how to verify and how it is released — one table, kept in one place: the workspace page in rux's config (<code>~/claude-config/workspaces/rux-ln.md</code>, private). This card used to carry a copy of that table; it went stale, so it now carries the pointer. The checks are in step 2 of the loop above.</p>
+  <hr class="rule">
+  <p class="why"><strong>Atlas never touches rux-ds.</strong> The content line is atlas → notes ← rux-ds; rux-ds also feeds the hub and the scheduler, and the hub feeds every app its list by URL.<br>
+  <strong>rux-ui is outside the family but no longer separate.</strong> <code>rux-backend</code> adopted its Supabase project rather than provision a second, so one database holds two systems: <code>public</code> is rux-ui's and is never edited here, <code>platform</code> is ours. Its <code>public.profiles</code> is a driver roster, unrelated to <code>platform.profiles</code>. The scheduler reads rux-ui's tables live — buses, trips, drivers — so rux-ui's own pages are still how that data is entered.<br>
+  <strong>Only <code>rux-sm.github.io</code> can carry that name.</strong> Rename it and <code>/switcher.json</code> and <code>/switcher.js</code> 404 on every module — silently, each page falling back to the entries it shipped.</p>
+</section>
+
+</div>
+</body>
+</html>

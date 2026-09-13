@@ -1,0 +1,67 @@
+<section class="ks-sec" id="textarea">
+  <h2>Text area</h2><p>default · invalid · warning · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-textarea--default with its
+       invalid, warn and readonly recipes, plus --with-layer, 2026-08-28 -->
+  <!--
+    Corrected against the reference 2026-08-28. The character counter was
+    missing entirely: Carbon renders `__label-counter` as a second .rux--label
+    inside __label-wrapper, a visually-hidden live region as a SIBLING of the
+    wrapper, and `__counter-alert` inside it. All three have rules in
+    @carbon/styles and none had an element here.
+
+    The counter text is static — keeping it in sync with typing is a behaviour,
+    and behaviours are Phase 5 (roadmap §4.5). The markup is the contract that
+    module will drive.
+
+    `__label-counter` is NOT here, though the reference emits it: the Phase 3
+    strip showed @carbon/styles defines that class only inside the fluid-text-area
+    partial, so with the fluid family cut it styles nothing. React emits it on
+    the plain text area regardless — the mirror of §4.1.12, and the reason
+    check-classes is the arbiter rather than the reference.
+  -->
+  <div class="ks-grid">
+    <div class="rux--form-item">
+      <div class="rux--text-area__label-wrapper">
+        <label class="rux--label" for="ta-1">Notes</label>
+      </div>
+      <span class="rux--visually-hidden">Character count</span>
+      <div class="rux--text-area__wrapper">
+        <textarea id="ta-1" class="rux--text-area" rows="4" cols="50" placeholder="Placeholder" maxlength="500"></textarea>
+        <span class="rux--text-area__counter-alert" role="alert"></span>
+      </div>
+      <div class="rux--form__helper-text">Optional helper text</div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="ta-5">Read-only</label>
+      <div class="rux--text-area__wrapper rux--text-area__wrapper--readonly">
+        <textarea id="ta-5" class="rux--text-area" rows="4" cols="50" readonly>Set upstream; not editable here.</textarea>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="ta-2">Invalid</label>
+      <div class="rux--text-area__wrapper" data-invalid>
+        <svg class="rux--text-area__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <textarea id="ta-2" class="rux--text-area rux--text-area--invalid" rows="4" cols="50" data-invalid aria-invalid="true">Bad</textarea>
+      </div>
+      <div class="rux--form-requirement">Error message</div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="ta-3">Warning</label>
+      <div class="rux--text-area__wrapper rux--text-area__wrapper--warn">
+        <svg class="rux--text-area__invalid-icon rux--text-area__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        <textarea id="ta-3" class="rux--text-area rux--text-area--warn" rows="4" cols="50">Careful</textarea>
+      </div>
+      <div class="rux--form-requirement">Warning message</div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label rux--label--disabled" for="ta-4">Disabled</label>
+      <div class="rux--text-area__wrapper">
+        <textarea id="ta-4" class="rux--text-area" rows="4" cols="50" disabled>Disabled</textarea>
+      </div>
+    </div>
+  </div>
+</section>

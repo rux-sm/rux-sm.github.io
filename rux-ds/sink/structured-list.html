@@ -1,0 +1,77 @@
+<section class="ks-sec" id="structured-list">
+  <h2>Structured list</h2><p>header row · selection · condensed</p>
+  <!-- PROVENANCE: rendered-dom · components-structuredlist--default,
+       --selection, --initial-selection and its condensed recipe, 2026-08-28 -->
+  <!--
+    ADMITTED 2026-09-01. Its radio ids were `sl-1`/`sl-2`, which the slider
+    fragment also uses; renamed `stl-*` so the sink has one element per id. That collision had also
+    been NAMING these radios — the slider's `<label for="sl-1">` reached them —
+    so each now carries the aria-label every capture gives its input, and the
+    check mark is `role="img"` with a label rather than hidden, as captured.
+
+    Two corrections from the reference. The list carries ARIA table roles —
+    role=table on the root, rowgroup on thead and tbody, row on each row,
+    columnheader on the th and cell on the td — which this fragment had none of,
+    so it read to a screen reader as a stack of unrelated divs.
+
+    And the SELECTION variant is a real component state this fragment named in
+    its own subtitle but never demoed: `--selection` on the root, then each row
+    holds a visually-hidden radio `structured-list-input` and a final cell whose
+    `structured-list-svg` tick marks the chosen row. Fifteen rules hang off
+    --selection alone. The row-level `--selected` class the fragment already had
+    is what paints it; the input is what makes it selectable.
+
+    `th` is a span in the reference and `td` a div; both are kept as rendered.
+  -->
+  <!-- BLOCK:BEGIN name=condensed label="Structured list" -->
+  <div class="rux--structured-list rux--structured-list--condensed" role="table">
+    <div class="rux--structured-list-thead" role="rowgroup">
+      <div class="rux--structured-list-row rux--structured-list-row--header-row" role="row">
+        <span class="rux--structured-list-th" role="columnheader">Name</span>
+        <span class="rux--structured-list-th" role="columnheader">Description</span>
+      </div>
+    </div>
+    <div class="rux--structured-list-tbody" role="rowgroup">
+      <div class="rux--structured-list-row rux--structured-list-row--selected" role="row">
+        <div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Alpha</div>
+        <div class="rux--structured-list-td" role="cell">Selected row</div>
+      </div>
+      <div class="rux--structured-list-row" role="row">
+        <div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Bravo</div>
+        <div class="rux--structured-list-td" role="cell">Ordinary row</div>
+      </div>
+    </div>
+  </div>
+  <!-- BLOCK:END condensed -->
+
+  <div class="ks-label" style="margin-block-start:1.5rem">selection</div>
+  <!-- BLOCK:BEGIN name=selection label="Structured list, selectable" -->
+  <div class="rux--structured-list rux--structured-list--selection" role="table">
+    <div class="rux--structured-list-thead" role="rowgroup">
+      <div class="rux--structured-list-row rux--structured-list-row--header-row" role="row">
+        <span class="rux--structured-list-th" role="columnheader">Plan</span>
+        <span class="rux--structured-list-th" role="columnheader">Included</span>
+        <span class="rux--structured-list-th" role="columnheader"></span>
+      </div>
+    </div>
+    <div class="rux--structured-list-tbody" role="rowgroup">
+      <div class="rux--structured-list-row rux--structured-list-row--selected" role="row">
+        <div class="rux--structured-list-td" role="cell">Standard</div>
+        <div class="rux--structured-list-td" role="cell">Everything in the base tier</div>
+        <input id="stl-1" class="rux--structured-list-input rux--visually-hidden" type="radio" name="sl" aria-label="Select Standard" checked>
+        <div class="rux--structured-list-td" role="cell">
+          <svg class="rux--structured-list-svg" role="img" aria-label="Selected" width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><use href="#i-checkmark--filled"/></svg>
+        </div>
+      </div>
+      <div class="rux--structured-list-row" role="row">
+        <div class="rux--structured-list-td" role="cell">Extended</div>
+        <div class="rux--structured-list-td" role="cell">Adds retention and audit</div>
+        <input id="stl-2" class="rux--structured-list-input rux--visually-hidden" type="radio" name="sl" aria-label="Select Extended">
+        <div class="rux--structured-list-td" role="cell">
+          <svg class="rux--structured-list-svg" role="img" aria-label="Selected" width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><use href="#i-checkmark--filled"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- BLOCK:END selection -->
+</section>

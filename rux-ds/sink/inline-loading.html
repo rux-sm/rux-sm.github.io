@@ -1,0 +1,54 @@
+<section class="ks-sec" id="inline-loading">
+  <h2>Inline loading</h2><p>active · finished · error</p>
+  <!-- PROVENANCE: source · @carbon/react InlineLoading.tsx, 2026-08-26
+       · never diffed against the rendered page -->
+  <!--
+    STRUCTURE CORRECTED 2026-08-26, from @carbon/react InlineLoading.tsx. The
+    status classes go on the ICON SVG, not on a wrapper. The previous markup put
+    them on wrappers, which reads fine and renders wrong, because both classes
+    style an icon:
+
+      .rux--inline-loading__checkmark-container { fill: support-success }   :18614
+      .rux--inline-loading--error { block-size:1rem; inline-size:1rem; fill } :18639
+
+    On a <div> the fill does nothing and the sizes size the wrong box. React:
+
+      finished:  <CheckmarkFilled className="…__checkmark-container" />
+      error:     <ErrorFilled     className="…--error" />
+
+    both inside <div class="…__animation">, with the wrapper only ever
+    `cds--inline-loading`.
+
+    DROPPED, deliberately: `__checkmark` and `__svg`. React emits neither here.
+    `.rux--inline-loading__checkmark` (:18626) is stroke-animation styling —
+    fill:none, stroke-dasharray:12 — for an inline path Carbon no longer renders;
+    applied to our <use> of a FILLED icon its fill:none simply erased the tick.
+    `__svg` belongs to the spinner (`.rux--loading--small .rux--inline-loading__svg`
+    :18647), not to the error icon.
+  -->
+  <div class="ks-row">
+    <div class="rux--inline-loading">
+      <div class="rux--inline-loading__animation">
+        <div class="rux--loading rux--loading--small">
+          <svg class="rux--loading__svg" viewBox="0 0 100 100">
+            <circle class="rux--loading__background" cx="50%" cy="50%" r="42"></circle>
+            <circle class="rux--loading__stroke" cx="50%" cy="50%" r="42"></circle>
+          </svg>
+        </div>
+      </div>
+      <div class="rux--inline-loading__text">Submitting…</div>
+    </div>
+    <div class="rux--inline-loading">
+      <div class="rux--inline-loading__animation">
+        <svg class="rux--inline-loading__checkmark-container" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+      </div>
+      <div class="rux--inline-loading__text">Submitted</div>
+    </div>
+    <div class="rux--inline-loading">
+      <div class="rux--inline-loading__animation">
+        <svg class="rux--inline-loading--error" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-error--filled"/></svg>
+      </div>
+      <div class="rux--inline-loading__text">Failed</div>
+    </div>
+  </div>
+</section>

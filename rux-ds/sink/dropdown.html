@@ -1,0 +1,196 @@
+<section class="ks-sec" id="dropdown">
+  <h2>Dropdown</h2><p>closed · expanded · invalid · read-only · inline · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-dropdown--default and its state
+       recipes (open, disabled, readonly, sm, lg, warn) in
+       docs/carbon-react-states.json, harvested 2026-08-27 -->
+  <!--
+    Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
+    extraction this fragment used to carry (roadmap §4.1.11: the web components
+    are the wrong reference for light-DOM structure). What the rendered DOM
+    corrected:
+      - everything sits in one wrapper div with the label inside it
+      - the field is a BUTTON with role=combobox, not a div
+      - the menu is a UL of LI options, not divs
+      - menu items render __option only — no __selected-icon svg; v11 marks the
+        selected item by weight and background alone
+      - the invalid/warn icon is an SVG carrying the classes itself, a child of
+        the list-box root BEFORE the field (proven by the @warn capture)
+      - disabled emits dropdown--disabled only, never list-box--disabled
+    Sizes follow the reference idiom dropdown--<size> + layout--size-<size>;
+    the list-box--<size> classes Carbon also emits have no rule in
+    @carbon/styles and are left off (§4.1.12) — as is dropdown__wrapper, which
+    the stylesheet defines only in its --inline form; list-box__wrapper is the
+    styled wrapper class.
+  -->
+  <div class="ks-grid">
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-1-label">Choose an option</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-1-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="dd-1-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-1-menu" class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option C</div>
+          </li>
+        </ul>
+      </div>
+      <div class="rux--form__helper-text">Optional helper text</div>
+    </div>
+
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-2-label">Expanded</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-2-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-2-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-2-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--highlighted rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option C</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OPENS UPWARD · --list-box--up, from
+         components-dropdown--experimental-auto-align, where it sits on the
+         dropdown root beside list-box. The story pairs it with `autoalign`,
+         which is floating-ui deciding the direction at runtime; the modifier
+         alone is pure CSS and flips the menu above the field, so it is shown
+         open here and the autoalign class is left off — the same call the
+         popover fragment makes about --auto-align, and for the same reason.
+
+         WHAT THIS SPECIMEN CANNOT SHOW, and it is not particular to --up.
+         js/list-box.js adopts a list box shipped `--expanded` so the first click
+         closes rather than re-opens it, and by the time the page settles the
+         root has lost `--open` and `--expanded` and the menu is `hidden`. Both
+         expanded dropdowns here read 0px tall at rest. The classes are in the
+         static markup, so check-coverage counts them, but a reader never sees
+         the state — press the field to open it. That gap belongs to the
+         specimen and the module together and is recorded, not fixed here.
+
+         FIXED 2026-08-28 in js/ui-shell.js: adopting the sink's declared-open
+         nav ran register()'s default dismissAbove() and closed both of these
+         before the page settled. Adoption now dismisses nothing; a hamburger
+         PRESS still does. The margin below is for the same specimen — a menu
+         that opens upward is absolutely positioned over whatever sits above it,
+         and without the room it covered the closed dropdown in the row above.
+         Its own LABEL is still covered, and that is not a defect to fix: the
+         menu is positioned above the FIELD, and the label sits there. A real
+         page reaches this state only when there is no room below. -->
+    <div class="rux--list-box__wrapper" style="margin-block-start:7rem">
+      <label class="rux--label" id="dd-8-label">Expanded upward</label>
+      <div class="rux--dropdown rux--list-box rux--list-box--up rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-8-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-8-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-8-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-3-label">Invalid</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--invalid rux--list-box--invalid" data-invalid>
+        <svg class="rux--list-box__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-3-label" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true">
+          <span class="rux--list-box__label">Pick one</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+      </div>
+      <div class="rux--form-requirement">A selection is required</div>
+    </div>
+
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-5-label">Read-only</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--readonly">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-5-label" aria-expanded="false" aria-disabled="true">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-6-label">Small</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--sm rux--layout--size-sm">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-6-label" aria-expanded="false" aria-haspopup="listbox">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- INLINE. The only unexercised dropdown class any capture emits, with its
+         wrapper: components-dropdown--inline puts --inline on BOTH the wrapper and
+         the dropdown root, and pairs list-box__wrapper--inline alongside. The
+         other fourteen unexercised rux--dropdown-* classes are v10 markup
+         (dropdown-item, dropdown-link, dropdown-list, dropdown-text,
+         dropdown-v2, dropdown__arrow) or states no story renders; none has a
+         reference, so none is demoed rather than guessed at. -->
+    <div class="rux--list-box__wrapper rux--dropdown__wrapper--inline rux--list-box__wrapper--inline">
+      <label class="rux--label" id="dd-7-label">Inline</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--inline rux--layout--size-md">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-7-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="dd-7-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-7-menu" class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label rux--label--disabled" id="dd-4-label">Disabled</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--disabled">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-4-label" aria-expanded="false" disabled>
+          <span class="rux--list-box__label">Unavailable</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

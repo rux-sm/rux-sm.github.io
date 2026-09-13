@@ -1,0 +1,36 @@
+<section class="ks-sec" id="aspect-ratio">
+  <h2>Aspect ratio</h2><p>16x9 · 4x3 · 1x1 · 2x1 · 9x16</p>
+  <!-- PROVENANCE: rendered-dom · components-aspectratio--default with its
+       2x1, 4x3 and 9x16 recipes, 2026-08-28 · diffed clean -->
+  <!--
+    The reference wraps its ratios in `css-grid` / `css-grid-column` with
+    responsive span classes. That is the STORY's layout, not the component:
+    AspectRatio is the ratio box itself, and the sink lays its examples out with
+    its own ks-grid. Recorded so the omission is a decision, not an oversight.
+  -->
+  <!--
+    The ratio comes from ::before { padding-block-start: <pct> } — the box takes its
+    HEIGHT from its own width. Two things break it:
+      1. a parent that stretches children (grid/flex default) overrides the height,
+         so align-items:start is required;
+      2. any padding or in-flow content ADDS to that height, so the label is
+         absolutely positioned rather than flowed.
+  -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1.5rem;align-items:start">
+    <div class="rux--aspect-ratio rux--aspect-ratio--16x9" style="background:var(--rux-layer-01)">
+      <span style="position:absolute;inset:0;display:grid;place-items:center">16 × 9</span>
+    </div>
+    <div class="rux--aspect-ratio rux--aspect-ratio--4x3" style="background:var(--rux-layer-01)">
+      <span style="position:absolute;inset:0;display:grid;place-items:center">4 × 3</span>
+    </div>
+    <div class="rux--aspect-ratio rux--aspect-ratio--1x1" style="background:var(--rux-layer-01)">
+      <span style="position:absolute;inset:0;display:grid;place-items:center">1 × 1</span>
+    </div>
+    <div class="rux--aspect-ratio rux--aspect-ratio--2x1" style="background:var(--rux-layer-01)">
+      <span style="position:absolute;inset:0;display:grid;place-items:center">2 × 1</span>
+    </div>
+    <div class="rux--aspect-ratio rux--aspect-ratio--9x16" style="background:var(--rux-layer-01)">
+      <span style="position:absolute;inset:0;display:grid;place-items:center">9 × 16</span>
+    </div>
+  </div>
+</section>

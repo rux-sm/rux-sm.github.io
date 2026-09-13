@@ -1,0 +1,313 @@
+{
+  "note": "Per-component class coverage of the kitchen sink, as achieved. check-coverage fails when a component exercises fewer classes than recorded here. `--update` REFUSES to lower any entry, so this file only ever moves up; the refusal is in tools/check-coverage.mjs and is not advice. Regenerate with `npm run coverage:update` after adding sink markup. A real loss — a component stripped, or a class gone upstream — needs `--update --force`, which prints what it lowered.",
+  "components": {
+    "big-number": {
+      "hit": 5,
+      "own": 18
+    },
+    "dropdown": {
+      "hit": 9,
+      "own": 23
+    },
+    "multiselect": {
+      "hit": 4,
+      "own": 10
+    },
+    "tooltip": {
+      "hit": 5,
+      "own": 12
+    },
+    "popover": {
+      "hit": 16,
+      "own": 33
+    },
+    "code-snippet": {
+      "hit": 8,
+      "own": 16
+    },
+    "combo-box": {
+      "hit": 2,
+      "own": 4
+    },
+    "copy-button": {
+      "hit": 3,
+      "own": 6
+    },
+    "EditInPlace": {
+      "hit": 8,
+      "own": 16
+    },
+    "data-table": {
+      "hit": 41,
+      "own": 80
+    },
+    "OptionsTile": {
+      "hit": 14,
+      "own": 25
+    },
+    "text-area": {
+      "hit": 11,
+      "own": 19
+    },
+    "aspect-ratio": {
+      "hit": 6,
+      "own": 10
+    },
+    "combo-button": {
+      "hit": 6,
+      "own": 10
+    },
+    "overflow-menu": {
+      "hit": 12,
+      "own": 20
+    },
+    "radio-button": {
+      "hit": 14,
+      "own": 23
+    },
+    "number-input": {
+      "hit": 16,
+      "own": 26
+    },
+    "search": {
+      "hit": 8,
+      "own": 13
+    },
+    "side-panel": {
+      "hit": 31,
+      "own": 50
+    },
+    "time-picker": {
+      "hit": 13,
+      "own": 21
+    },
+    "date-picker": {
+      "hit": 33,
+      "own": 52
+    },
+    "inline-loading": {
+      "hit": 5,
+      "own": 8
+    },
+    "loading": {
+      "hit": 5,
+      "own": 8
+    },
+    "text-input": {
+      "hit": 17,
+      "own": 27
+    },
+    "tile": {
+      "hit": 17,
+      "own": 26
+    },
+    "list-box": {
+      "hit": 23,
+      "own": 35
+    },
+    "accordion": {
+      "hit": 10,
+      "own": 15
+    },
+    "select": {
+      "hit": 16,
+      "own": 24
+    },
+    "checkbox": {
+      "hit": 17,
+      "own": 25
+    },
+    "list": {
+      "hit": 28,
+      "own": 41
+    },
+    "modal": {
+      "hit": 17,
+      "own": 25
+    },
+    "user-avatar": {
+      "hit": 17,
+      "own": 24
+    },
+    "notification": {
+      "hit": 39,
+      "own": 54
+    },
+    "card": {
+      "hit": 25,
+      "own": 34
+    },
+    "form": {
+      "hit": 6,
+      "own": 8
+    },
+    "link": {
+      "hit": 6,
+      "own": 8
+    },
+    "tabs": {
+      "hit": 28,
+      "own": 37
+    },
+    "content-switcher": {
+      "hit": 10,
+      "own": 13
+    },
+    "pagination-nav": {
+      "hit": 10,
+      "own": 13
+    },
+    "button": {
+      "hit": 18,
+      "own": 23
+    },
+    "contained-list": {
+      "hit": 11,
+      "own": 14
+    },
+    "pagination": {
+      "hit": 20,
+      "own": 25
+    },
+    "structured-list": {
+      "hit": 13,
+      "own": 16
+    },
+    "tag": {
+      "hit": 22,
+      "own": 27
+    },
+    "ai-label": {
+      "hit": 14,
+      "own": 17
+    },
+    "file-uploader": {
+      "hit": 23,
+      "own": 28
+    },
+    "ui-shell": {
+      "hit": 46,
+      "own": 56
+    },
+    "breadcrumb": {
+      "hit": 5,
+      "own": 6
+    },
+    "toggletip": {
+      "hit": 5,
+      "own": 6
+    },
+    "action-set": {
+      "hit": 12,
+      "own": 14
+    },
+    "progress-bar": {
+      "hit": 12,
+      "own": 14
+    },
+    "scroll-gradient": {
+      "hit": 8,
+      "own": 9
+    },
+    "slider": {
+      "hit": 25,
+      "own": 28
+    },
+    "treeview": {
+      "hit": 17,
+      "own": 19
+    },
+    "dialog": {
+      "hit": 12,
+      "own": 13
+    },
+    "menu": {
+      "hit": 22,
+      "own": 24
+    },
+    "icon-indicator": {
+      "hit": 14,
+      "own": 15
+    },
+    "shape-indicator": {
+      "hit": 13,
+      "own": 14
+    },
+    "toggle": {
+      "hit": 16,
+      "own": 17
+    },
+    "badge-indicator": {
+      "hit": 2,
+      "own": 2
+    },
+    "chat-button": {
+      "hit": 4,
+      "own": 4
+    },
+    "fluid-combo-box": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-date-picker": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-dropdown": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-list-box": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-multiselect": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-number-input": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-search": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-select": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-text-area": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-text-input": {
+      "hit": 1,
+      "own": 1
+    },
+    "fluid-time-picker": {
+      "hit": 1,
+      "own": 1
+    },
+    "FullPageError": {
+      "hit": 10,
+      "own": 10
+    },
+    "menu-button": {
+      "hit": 3,
+      "own": 3
+    },
+    "progress-indicator": {
+      "hit": 7,
+      "own": 7
+    },
+    "skeleton-styles": {
+      "hit": 7,
+      "own": 7
+    },
+    "stack": {
+      "hit": 15,
+      "own": 15
+    }
+  }
+}

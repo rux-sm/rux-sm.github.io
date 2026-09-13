@@ -1,0 +1,2823 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-transfer-item-between-warehouses",
+  "title": "Warehouse transfer",
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "updated": "2026-09-02",
+  "status": "draft",
+  "summary": "move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity.",
+  "order": 4,
+  "sources": [
+    "cppat1210m000",
+    "whinh0100m000",
+    "whinh0120m000",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh2104m000",
+    "whinh2129m000",
+    "whinh3122m000",
+    "whinh3201m000",
+    "whinh3512m000",
+    "whinh4130m000",
+    "whinh4525m100",
+    "whinh4630m000",
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Confirm stock, destination, and expected order type",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself."
+            }
+          ],
+          "text": "What LN is doing. Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the item in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Filter Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", run it, tick the row, and open "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Warehouse Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " group"
+                    }
+                  ],
+                  "text": "Enter the item in Filter Items, run it, tick the row, and open Warehouse Inventory in the Inventory group"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd2515m000",
+                      "name": "Warehouse - Item Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens, item carried through — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "item"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "source warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "source on-hand before"
+                    }
+                  ],
+                  "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through — item, source warehouse, source on-hand before"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the same grid, find the row for the intended destination warehouse"
+                    }
+                  ],
+                  "text": "In the same grid, find the row for the intended destination warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "destination warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "destination on-hand before"
+                    }
+                  ],
+                  "text": "destination warehouse, destination on-hand before"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Default Order Types by Origin"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ("
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh0120m000"
+                    },
+                    {
+                      "t": "text",
+                      "v": ")"
+                    }
+                  ],
+                  "text": "Open Warehousing ➔ Master Data ➔ Order Procedures ➔ Default Order Types by Origin (whinh0120m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The default-order-type table opens"
+                    }
+                  ],
+                  "text": "The default-order-type table opens"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find the row with transaction type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Transfer"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", ship-from "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and ship-to "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Warehouse"
+                    }
+                  ],
+                  "text": "Find the row with transaction type Transfer, ship-from Warehouse, and ship-to Warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "expected warehousing order type"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "Create Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". For different source and destination warehouses, official help states "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Create Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Always"
+                    }
+                  ],
+                  "text": "expected warehousing order type; Create Shipment. For different source and destination warehouses, official help states Create Shipment = Always"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create the transfer order",
+      "route": "Warehousing ➔ Orders ➔ Orders",
+      "session": "Warehousing Orders",
+      "sessionCode": "whinh2100m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+            }
+          ],
+          "text": "What LN is doing. A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Warehousing ➔ Orders ➔ Orders"
+                    }
+                  ],
+                  "text": "Open Warehousing ➔ Orders ➔ Orders"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2100m000",
+                      "name": "Warehousing Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Warehousing Orders (whinh2100m000) opens"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New"
+                    }
+                  ],
+                  "text": "Click New"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A blank warehousing-order header opens"
+                    }
+                  ],
+                  "text": "A blank warehousing-order header opens"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " origin to "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Transfer (Manual)"
+                    }
+                  ],
+                  "text": "Set Order origin to Transfer (Manual)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "This is one of the ten manual order origins listed in the session help — section 3.1"
+                    }
+                  ],
+                  "text": "This is one of the ten manual order origins listed in the session help — section 3.1"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory Transaction Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Transfer"
+                    }
+                  ],
+                  "text": "Set Inventory Transaction Type to Transfer"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Only settable by hand because the order has no originating package — section 3.1"
+                    }
+                  ],
+                  "text": "Only settable by hand because the order has no originating package — section 3.1"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.5"
+                    }
+                  ],
+                  "text": "1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Ship-From Code"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to the source warehouse from 0.1, and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Ship-To Code"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to the destination warehouse from 0.2"
+                    }
+                  ],
+                  "text": "Set Ship-From Code to the source warehouse from 0.1, and Ship-To Code to the destination warehouse from 0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both types read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the condition for the Transfer transaction type"
+                    }
+                  ],
+                  "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+                }
+              ],
+              "id": "1.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.6"
+                    }
+                  ],
+                  "text": "1.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Compare the defaulted "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Warehousing Order Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with step 0.4 and record the value actually used"
+                    }
+                  ],
+                  "text": "Compare the defaulted Warehousing Order Type with step 0.4 and record the value actually used"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "actual warehousing order type"
+                    }
+                  ],
+                  "text": "actual warehousing order type"
+                }
+              ],
+              "id": "1.6",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.7"
+                    }
+                  ],
+                  "text": "1.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save the header"
+                    }
+                  ],
+                  "text": "Save the header"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "transfer order number"
+                    }
+                  ],
+                  "text": "transfer order number"
+                }
+              ],
+              "id": "1.7",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.8"
+                    }
+                  ],
+                  "text": "1.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add an order line: the item from 0.1 and the quantity to move"
+                    }
+                  ],
+                  "text": "Add an order line: the item from 0.1 and the quantity to move"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "transferred quantity"
+                    }
+                  ],
+                  "text": "transferred quantity"
+                }
+              ],
+              "id": "1.8",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.9"
+                    }
+                  ],
+                  "text": "1.9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save the line"
+                    }
+                  ],
+                  "text": "Save the line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.9",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Confirm the processing path and create advice",
+      "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
+      "session": "Outbound Line Status Overview",
+      "sessionCode": "whinh2129m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+            }
+          ],
+          "text": "What LN is doing. The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2129m000",
+                      "name": "Outbound Line Status Overview"
+                    }
+                  ],
+                  "text": "Open Outbound Line Status Overview (whinh2129m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The outbound-line overview opens"
+                    }
+                  ],
+                  "text": "The outbound-line overview opens"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find the transfer order line from phase 1"
+                    }
+                  ],
+                  "text": "Find the transfer order line from phase 1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item and order line match; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Type"
+                    },
+                    {
+                      "t": "text",
+                      "v": " matches the actual value from 1.6"
+                    }
+                  ],
+                  "text": "The item and order line match; Order Type matches the actual value from 1.6"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read every row in the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Activities"
+                    },
+                    {
+                      "t": "text",
+                      "v": " table, especially "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Finished"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    }
+                  ],
+                  "text": "Read every row in the Activities table, especially Finished and Automatic"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Yes"
+                    },
+                    {
+                      "t": "text",
+                      "v": " means LN runs it; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "No"
+                    },
+                    {
+                      "t": "text",
+                      "v": " means it is an operator step"
+                    }
+                  ],
+                  "text": "Automatic = Yes means LN runs it; Automatic = No means it is an operator step"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Record the activities marked "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "No"
+                    }
+                  ],
+                  "text": "Record the activities marked Automatic = No"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "manual outbound activities"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; these determine which later steps you perform"
+                    }
+                  ],
+                  "text": "manual outbound activities; these determine which later steps you perform"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.5"
+                    }
+                  ],
+                  "text": "2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If the first unfinished activity is automatic, return to the warehousing order and choose "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Process"
+                    }
+                  ],
+                  "text": "If the first unfinished activity is automatic, return to the warehousing order and choose Process"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "LN executes consecutive automatic activities and stops at the next manual activity"
+                    }
+                  ],
+                  "text": "LN executes consecutive automatic activities and stops at the next manual activity"
+                }
+              ],
+              "id": "2.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.6"
+                    }
+                  ],
+                  "text": "2.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Generate Outbound Advice"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is manual, open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Outbound Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", select the line, and choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Advice ➔ Generate Advice"
+                    }
+                  ],
+                  "text": "If Generate Outbound Advice is manual, open Outbound Lines, select the line, and choose Actions ➔ Advice ➔ Generate Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "status",
+                      "v": "Advised"
+                    },
+                    {
+                      "t": "text",
+                      "v": " fills; automatic follow-on activities may also finish"
+                    }
+                  ],
+                  "text": "Advised fills; automatic follow-on activities may also finish"
+                }
+              ],
+              "id": "2.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.7"
+                    }
+                  ],
+                  "text": "2.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Release Outbound Advice"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is manual and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Released"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is still blank, choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Advice ➔ Release Advice"
+                    }
+                  ],
+                  "text": "If Release Outbound Advice is manual and Released is still blank, choose Actions ➔ Advice ➔ Release Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    },
+                    {
+                      "t": "text",
+                      "v": " fills"
+                    }
+                  ],
+                  "text": "Released fills"
+                }
+              ],
+              "id": "2.7",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Pick the goods",
+      "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
+      "session": "Picking List",
+      "sessionCode": "whinh4525m100",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise "
+            },
+            {
+              "t": "em",
+              "v": "Picked"
+            },
+            {
+              "t": "text",
+              "v": " fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line."
+            }
+          ],
+          "text": "What LN is doing. Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise Picked fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Check the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Picking List"
+                    },
+                    {
+                      "t": "text",
+                      "v": " row recorded in phase 2"
+                    }
+                  ],
+                  "text": "Check the Picking List row recorded in phase 2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If absent or already finished automatically, record "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Automatic / not applicable"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and skip 3.2–3.5; if "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "No"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", continue"
+                    }
+                  ],
+                  "text": "If absent or already finished automatically, record Automatic / not applicable and skip 3.2–3.5; if Automatic = No, continue"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find the Run for this order"
+                    }
+                  ],
+                  "text": "Find the Run for this order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The line for your item and source warehouse"
+                    }
+                  ],
+                  "text": "The line for your item and source warehouse"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the line"
+                    }
+                  ],
+                  "text": "Tick the line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Pick Run"
+                    }
+                  ],
+                  "text": "Actions ➔ Pick Run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Stock moves from the source location to staging. "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Picked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " fills on Outbound Lines"
+                    }
+                  ],
+                  "text": "Stock moves from the source location to staging. Picked fills on Outbound Lines"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.5"
+                    }
+                  ],
+                  "text": "3.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Record the Run number from the header"
+                    }
+                  ],
+                  "text": "Record the Run number from the header"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "picking list Run number"
+                    }
+                  ],
+                  "text": "picking list Run number"
+                }
+              ],
+              "id": "3.5",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Ship",
+      "route": "Warehousing ➔ Shipments ➔ Shipments",
+      "session": "Shipments",
+      "sessionCode": "whinh4130m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question phase 2's activity table answers."
+            }
+          ],
+          "text": "What LN is doing. A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question phase 2's activity table answers."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Check the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Freeze/Confirm Shipments/Loads"
+                    },
+                    {
+                      "t": "text",
+                      "v": " row recorded in phase 2"
+                    }
+                  ],
+                  "text": "Check the Freeze/Confirm Shipments/Loads row recorded in phase 2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If already finished automatically, record "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Automatic / not observed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and skip 4.2–4.4; if "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Automatic"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "No"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", continue"
+                    }
+                  ],
+                  "text": "If already finished automatically, record Automatic / not observed and skip 4.2–4.4; if Automatic = No, continue"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find the shipment for this order, then click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Find the shipment for this order, then click Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipment number"
+                    }
+                  ],
+                  "text": "shipment number"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Freeze Mandatory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is ticked, choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Freeze"
+                    }
+                  ],
+                  "text": "If Freeze Mandatory is ticked, choose Actions ➔ Freeze"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Frozen"
+                    }
+                  ],
+                  "text": "Status = Frozen"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Confirm"
+                    }
+                  ],
+                  "text": "Choose Actions ➔ Confirm"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Inventory leaves the source warehouse"
+                    }
+                  ],
+                  "text": "Status = Confirmed. Inventory leaves the source warehouse"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Receive at the destination",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order's inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination."
+            }
+          ],
+          "text": "What LN is doing. The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order's inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inbound Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab on the transfer order"
+                    }
+                  ],
+                  "text": "Open the Inbound Lines tab on the transfer order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The inbound side of the same order, ship-to = destination warehouse"
+                    }
+                  ],
+                  "text": "The inbound side of the same order, ship-to = destination warehouse"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the inbound line and choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Receipt"
+                    }
+                  ],
+                  "text": "Select the inbound line and choose Actions ➔ Receipt"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh3512m000",
+                      "name": "Warehouse Receipt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens for the transfer line"
+                    }
+                  ],
+                  "text": "Warehouse Receipt (whinh3512m000) opens for the transfer line"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the receipt line and choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Confirm"
+                    }
+                  ],
+                  "text": "Select the receipt line and choose Actions ➔ Confirm"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The receipt is confirmed and the destination inventory is updated"
+                    }
+                  ],
+                  "text": "The receipt is confirmed and the destination inventory is updated"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Verify it worked",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+            }
+          ],
+          "text": "What LN is doing. Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.1"
+                    }
+                  ],
+                  "text": "6.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read on-hand for the item at both warehouses"
+                    }
+                  ],
+                  "text": "Read on-hand for the item at both warehouses"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "source on-hand after"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "destination on-hand after"
+                    }
+                  ],
+                  "text": "source on-hand after, destination on-hand after"
+                }
+              ],
+              "id": "6.1",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure."
+            },
+            {
+              "t": "text",
+              "v": " The guide is complete only when both hold."
+            }
+          ],
+          "text": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure. The guide is complete only when both hold."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> "
+            },
+            {
+              "t": "strong",
+              "v": "Warning"
+            },
+            {
+              "t": "text",
+              "v": " > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat phase 0 immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat phase 6 in the same view. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "> Warning > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat phase 0 immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat phase 6 in the same view. Not documented for this release."
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. "
+        },
+        {
+          "t": "strong",
+          "v": "Base guide"
+        },
+        {
+          "t": "text",
+          "v": " — this is the foundation for a future multicompany-transfer variant."
+        }
+      ],
+      "text": "Objective: move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. Base guide — this is the foundation for a future multicompany-transfer variant."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Confirm stock, destination, and expected order type"
+                }
+              ],
+              "text": "0 Confirm stock, destination, and expected order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360; Default Order Types by Origin"
+                }
+              ],
+              "text": "Inventory 360; Default Order Types by Origin"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stock is known and the expected transfer configuration is recorded"
+                }
+              ],
+              "text": "Stock is known and the expected transfer configuration is recorded"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create the transfer order"
+                }
+              ],
+              "text": "1 Create the transfer order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Orders"
+                }
+              ],
+              "text": "Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A warehousing order exists with transaction type "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transfer"
+                }
+              ],
+              "text": "A warehousing order exists with transaction type Transfer"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Confirm the processing path and create advice"
+                }
+              ],
+              "text": "2 Confirm the processing path and create advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Outbound Line Status Overview; Warehousing Order"
+                }
+              ],
+              "text": "Outbound Line Status Overview; Warehousing Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Manual and automatic activities are known before processing continues"
+                }
+              ],
+              "text": "Manual and automatic activities are known before processing continues"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Pick the goods"
+                }
+              ],
+              "text": "3 Pick the goods"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Picking List"
+                }
+              ],
+              "text": "Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stock physically moves to staging at the source"
+                }
+              ],
+              "text": "Stock physically moves to staging at the source"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Ship"
+                }
+              ],
+              "text": "4 Ship"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipments"
+                }
+              ],
+              "text": "Shipments"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Goods leave the source warehouse"
+                }
+              ],
+              "text": "Goods leave the source warehouse"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Receive at the destination"
+                }
+              ],
+              "text": "5 Receive at the destination"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order — Inbound Lines"
+                }
+              ],
+              "text": "Warehousing Order — Inbound Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Goods are put away in the destination warehouse"
+                }
+              ],
+              "text": "Goods are put away in the destination warehouse"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "6"
+                },
+                {
+                  "t": "text",
+                  "v": " Verify"
+                }
+              ],
+              "text": "6 Verify"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Source on-hand down, destination on-hand up, by the same quantity"
+                }
+              ],
+              "text": "Source on-hand down, destination on-hand up, by the same quantity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "One warehousing order carries the whole move."
+        },
+        {
+          "t": "text",
+          "v": " Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1."
+        }
+      ],
+      "text": "One warehousing order carries the whole move. Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No order number appears"
+                }
+              ],
+              "text": "No order number appears"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Header not saved, or a required field is still blank — recheck 1.3–1.6"
+                }
+              ],
+              "text": "Header not saved, or a required field is still blank — recheck 1.3–1.6"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " greyed out"
+                }
+              ],
+              "text": "Advice greyed out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "You are on the session toolbar, not the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar — see 2.6"
+                }
+              ],
+              "text": "You are on the session toolbar, not the Outbound Lines toolbar — see 2.6"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No Run appears on the Picking List"
+                }
+              ],
+              "text": "No Run appears on the Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the order already advanced, record "
+                },
+                {
+                  "t": "literal",
+                  "v": "Automatic / not observed"
+                },
+                {
+                  "t": "text",
+                  "v": ". Otherwise, picking may not apply or advice was not generated; return to phase 2"
+                }
+              ],
+              "text": "If the order already advanced, record Automatic / not observed. Otherwise, picking may not apply or advice was not generated; return to phase 2"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No shipment is visible for a different-warehouse transfer"
+                }
+              ],
+              "text": "No shipment is visible for a different-warehouse transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Official help says "
+                },
+                {
+                  "t": "field",
+                  "v": "Create Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                },
+                {
+                  "t": "text",
+                  "v": ". Check Shipment Lines and the phase 2 activity status before continuing"
+                }
+              ],
+              "text": "Official help says Create Shipment is Always. Check Shipment Lines and the phase 2 activity status before continuing"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm greyed out"
+                }
+              ],
+              "text": "Confirm greyed out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment not yet Frozen, or "
+                },
+                {
+                  "t": "field",
+                  "v": "Freeze Mandatory"
+                },
+                {
+                  "t": "text",
+                  "v": " requires it — run 4.3 first"
+                }
+              ],
+              "text": "Shipment not yet Frozen, or Freeze Mandatory requires it — run 4.3 first"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Destination on-hand did not rise"
+                }
+              ],
+              "text": "Destination on-hand did not rise"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt in phase 5 was not confirmed — return to the inbound line and Warehouse Receipt"
+                }
+              ],
+              "text": "The receipt in phase 5 was not confirmed — return to the inbound line and Warehouse Receipt"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Source and destination changes do not both equal the transfer quantity"
+                }
+              ],
+              "text": "Source and destination changes do not both equal the transfer quantity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do not approve the run. Recheck the phase 0 values and investigate unrelated inventory activity "
+                }
+              ],
+              "text": "Do not approve the run. Recheck the phase 0 values and investigate unrelated inventory activity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Multicompany warehouse transfer"
+                },
+                {
+                  "t": "text",
+                  "v": " — source and destination warehouses in different logistic companies"
+                }
+              ],
+              "text": "Multicompany warehouse transfer — source and destination warehouses in different logistic companies"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN generates "
+                },
+                {
+                  "t": "chip",
+                  "v": "two"
+                },
+                {
+                  "t": "text",
+                  "v": " warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-to Code"
+                },
+                {
+                  "t": "text",
+                  "v": " becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own guide rather than a bullet here"
+                }
+              ],
+              "text": "LN generates two warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. Ship-to Code becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own guide rather than a bullet here"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Planned/automated transfer, driven by Order Planning"
+                }
+              ],
+              "text": "Planned/automated transfer, driven by Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cppat1210m000",
+                  "name": "Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", reached via "
+                },
+                {
+                  "t": "command",
+                  "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this guide. "
+                }
+              ],
+              "text": "Transfer Order Planning (cppat1210m000), reached via Planning ➔ Plan Transfer ➔ Transfer Order Planning, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this guide."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Serialized or lot-controlled item"
+                }
+              ],
+              "text": "Serialized or lot-controlled item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order header's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Reclassification"
+                },
+                {
+                  "t": "text",
+                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base guide. Source: Infor LN help for "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", Field Information — Reclassification ("
+                },
+                {
+                  "t": "field",
+                  "v": "Rental Product Transfer"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Serial Number"
+                },
+                {
+                  "t": "text",
+                  "v": ")"
+                }
+              ],
+              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base guide. Source: Infor LN help for Warehousing Order (whinh2100m100), Field Information — Reclassification (Rental Product Transfer, Serial Number)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A variant earns its own guide only when it "
+        },
+        {
+          "t": "strong",
+          "v": "changes the phase structure"
+        },
+        {
+          "t": "text",
+          "v": ". Multicompany transfer does; the other two rows do not change this guide's phases, only which sessions and fields matter within them."
+        }
+      ],
+      "text": "A variant earns its own guide only when it changes the phase structure. Multicompany transfer does; the other two rows do not change this guide's phases, only which sessions and fields matter within them."
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The quantity is on hand at the destination warehouse"
+                }
+              ],
+              "text": "The quantity is on hand at the destination warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "SG-ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " — ship from the destination"
+                }
+              ],
+              "text": "Ship from stock — ship from the destination"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0, reading the destination's on-hand"
+                }
+              ],
+              "text": "Phase 0, reading the destination's on-hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Warning Partly verified. Phases 0, 1, 2 have been performed against a live system and confirmed. Phases 3, 4, 5, 6 have not. Follow those as a plan, not as a record.",
+  "openIssues": 5
+}

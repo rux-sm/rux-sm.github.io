@@ -1,0 +1,592 @@
+<section class="ks-sec" id="fluid">
+  <h2>Fluid inputs</h2><p>the label inside the field · text input · select · number · text area · search</p>
+  <!-- PROVENANCE: rendered-dom · components-fluid-components-fluidtextinput--default,
+       --fluidselect--default, --fluidnumberinput--default, --fluidtextarea--default
+       and --fluidsearch--default, 2026-08-31; --fluidcombobox--default and
+       --condensed, --fluidmultiselect--default, its @open-selected recipe and
+       --filterable, 2026-09-01 -->
+  <!--
+    FLUID IS A STYLE, NOT A COMPONENT. Carbon ships eleven `fluid-*` partials
+    and none of them is a new control: each restates an input this build
+    already has, with the label INSIDE the field box and a rule under it.
+    IBM's own guidance puts default and fluid side by side as two styles —
+    default "where space is at a premium", fluid "in expressive moments, fluid
+    forms, contained spaces, or attached to complex components, like a
+    toolbar".
+
+    THE MARKER IS THE `<hr>`. Every fluid variant renders a divider element —
+    `text-input__divider`, `select__divider` and their siblings — between the
+    field and whatever sits under it. It is a real element in the capture, not
+    a border, which is why it is written here rather than assumed away.
+
+    ELEVEN OF ELEVEN ARE COMPILED since 2026-09-01. `fluid-combo-box` and
+    `fluid-multiselect` were held by their BASES rather than by cost — a fluid
+    variant cannot be written until `combo-box` and `multiselect` compile,
+    because check-classes reports STRIPPED on any class whose component is
+    not compiled. §4.9 batch 1 admitted both bases; batch 2 is these two.
+
+    THE GRID MUST NOT STRETCH, and `align-items:start` is why it says so.
+    `ks-grid` defaults to stretching every cell to the tallest in the row, and
+    a fluid input paints a 64px field on a background that then filled the
+    whole cell — the number input read 106px of form-item against a 64px
+    control, and beside a text area it grew to the text area's height with
+    hundreds of pixels of empty ground under it. Reported from looking; the
+    control was always 64px, and the box around it was the harness.
+
+    THE SIZE IS NOT A CHOICE HERE. A fluid input has ONE height — IBM's
+    guidance says 64px against the default style's 32/40/48 — so there are no
+    `--sm`/`--lg` specimens to demo, which is most of why this section is
+    shorter than its default-style counterparts.
+  -->
+
+  <div class="ks-grid" style="align-items:start">
+
+    <!-- TEXT INPUT. `form-item` and `text-input-wrapper` are the same wrappers
+         the default style uses; `text-input--fluid` is the whole difference. -->
+    <div class="rux--form-item rux--text-input--fluid rux--text-input-wrapper">
+      <div class="rux--text-input__label-wrapper">
+        <label class="rux--label" for="fl-text">Cluster name</label>
+      </div>
+      <div class="rux--text-input__field-outer-wrapper">
+        <div class="rux--text-input__field-wrapper">
+          <input id="fl-text" class="rux--text-input" type="text" value="eu-west-prod">
+          <hr class="rux--text-input__divider">
+        </div>
+      </div>
+    </div>
+
+    <!-- SELECT. The label sits INSIDE `.rux--select`, above the native
+         control, and the arrow and divider are siblings of the <select>. -->
+    <div class="rux--form-item rux--select--fluid">
+      <div class="rux--select">
+        <label class="rux--label" for="fl-select">Region</label>
+        <div class="rux--select-input__wrapper">
+          <select id="fl-select" class="rux--select-input">
+            <option class="rux--select-option" value="eu">Europe</option>
+            <option class="rux--select-option" value="us">North America</option>
+            <option class="rux--select-option" value="ap">Asia Pacific</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          <hr class="rux--select__divider">
+        </div>
+      </div>
+    </div>
+
+    <!-- NUMBER INPUT. `number-input--fluid` on the form-item; the component
+         keeps its own `number number--md` root inside, and the steppers are
+         driven by js/form-controls.js exactly as in the default style.
+
+         THE WRAPPER DIV IS LOAD-BEARING, and it is Carbon's rule that makes it
+         so: `.rux--number-input--fluid` sets `block-size: 100%`. In a grid cell
+         that resolves against the ROW's height, so beside a text area the
+         64px control painted a 106px box with 42px of empty field under it.
+         Reported from looking. The plain wrapper gives the grid an auto-height
+         item and the fluid box fills it exactly — measured 64px after, against
+         the fluid text input's 64px beside it.
+
+         THE INPUT IS `type="number"`, AND A CORRECTION IS RECORDED HERE
+         RATHER THAN QUIETLY UNDONE. It was briefly changed to `type="text"`
+         on the reading that the fluid rules are written
+         `.rux--number-input--fluid input[type=text]`. They are — and they are
+         ALSO written `input[type=number]`, in the same selector lists: every
+         one of these rules appears exactly twice in `css/rux.css`, once per
+         type, because Carbon writes the pair. The `matches()` test that
+         "proved" the mismatch only asked about the `[type=text]` half.
+
+         The change styled nothing new and BROKE THE STEPPERS, because
+         `js/form-controls.js` finds the field with
+         `root.querySelector('input[type="number"]')`. Reported from looking:
+         the buttons did nothing. -->
+    <div>
+    <div class="rux--form-item rux--number-input--fluid">
+      <div class="rux--number rux--number--md">
+        <label class="rux--label" for="fl-number">Replicas</label>
+        <div class="rux--number__input-wrapper">
+          <input id="fl-number" type="number" value="3" min="1" max="12">
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <hr class="rux--number-input__divider">
+      </div>
+    </div>
+    </div>
+
+    <!-- TEXT AREA. Same shape as the fluid text input, with the component's
+         own wrapper in place of the input's. -->
+    <div class="rux--form-item rux--text-area--fluid">
+      <div class="rux--text-area__label-wrapper">
+        <label class="rux--label" for="fl-area">Change note</label>
+      </div>
+      <div class="rux--text-area__wrapper">
+        <textarea id="fl-area" class="rux--text-area" rows="3">Rolled the gateway to 1.14.2.</textarea>
+      </div>
+    </div>
+
+    <!-- SEARCH. The fluid search has NO wrapper form-item: `search--fluid`
+         sits on the search root itself, and the label is a sibling of the
+         input rather than living in a label-wrapper. Read off
+         components-fluid-components-fluidsearch--default. -->
+    <div class="rux--search rux--search--fluid" role="search" aria-labelledby="fl-search-label">
+      <div class="rux--search-magnifier" tabindex="-1">
+        <svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg>
+      </div>
+      <label class="rux--label" id="fl-search-label" for="fl-search">Find a cluster</label>
+      <input id="fl-search" class="rux--search-input" type="text" role="searchbox" value="prod">
+      <button type="button" class="rux--search-close" aria-label="Clear search input">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">compound controls</div>
+  <!--
+    EACH CONTROL SITS IN A PLAIN WRAPPER, and that is load-bearing for the
+    same reason the number input's is: `.rux--form-item` computes
+    `flex: 1 1 auto`, so in a flex row the FLUID BOX grows to fill while the
+    control inside keeps Carbon's set width. Measured before: a 336px box
+    around a 144px date picker, and a 188px box around a 47px time field. The
+    wrapper gives the row an item that shrinks to content.
+
+    A ROW, NOT A GRID, and for the reason the date-picker section records:
+    Carbon gives these controls SET WIDTHS and the fluid box around them fills
+    whatever it is given. In a 244px grid cell the date picker's 144px input
+    and the time picker's 61px one sat inside a full-width field, so the
+    underline stopped a third of the way across the box. IBM's own guidance
+    says the pickers have set widths and that a form may widen them to match
+    its other inputs; what it does not say is that the BOX should be wider
+    than the control. A flex row lets each take the width Carbon gives it.
+  -->
+  <!--
+    THESE THREE EXIST BECAUSE check-coverage REFUSED THE ALTERNATIVE. They were
+    first left undemoed with a note saying so, and the gate answered
+    `EXERCISES NOTHING — add markup, or strip the component` and failed the
+    build. It is right: a component that renders nowhere is CSS nobody has
+    seen, which is the defect check-coverage was rewritten to catch.
+
+    EACH NEEDS EXACTLY ONE CLASS, which is why three specimens close four
+    components: `list-box__wrapper--fluid` is owned by `fluid-dropdown` AND
+    `fluid-list-box`, and the two pickers own one class each.
+  -->
+  <div class="ks-row" style="gap:2.5rem;align-items:flex-start">
+
+    <!-- DROPDOWN. The fluid class goes on the WRAPPER, beside the two the
+         default style already uses. `js/list-box.js` drives it unchanged. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid">
+      <label class="rux--label" id="fl-dd-label" for="fl-dd">Environment</label>
+      <div class="rux--dropdown rux--list-box">
+        <button type="button" id="fl-dd" class="rux--list-box__field" role="combobox" aria-labelledby="fl-dd-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-dd-menu">
+          <span class="rux--list-box__label">Production</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="fl-dd-menu" class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Production</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Staging</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    </div>
+
+    <!-- DATE PICKER, simple. `date-picker--fluid` goes on the form-item and
+         the component keeps its own root inside. The reference wraps its label
+         in a toggletip; that is the story explaining itself, not the style. -->
+    <div>
+    <div class="rux--form-item rux--date-picker--fluid">
+      <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
+        <div class="rux--date-picker-container rux--date-picker-container--simple">
+          <label class="rux--label" for="fl-date">Expiry date</label>
+          <div class="rux--date-picker-input__wrapper">
+            <span>
+              <input id="fl-date" class="rux--date-picker__input" type="text" value="2026-12-01">
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ── FLUID STATES ──────────────────────────────────────────────────
+         Recovered 2026-09-01 from sink/deferred/fluid.html, which shadowed this
+         fragment after the fluid family was admitted. REBUILT rather than
+         copied: each specimen below is one of the blocks already in this file
+         with the state classes its own capture renders, so the base markup is
+         the one the gates have already accepted.
+
+         SOURCES, one per specimen:
+           components-fluid-components-fluiddropdown--default@invalid
+           components-fluid-components-fluiddatepicker--simple@invalid and @warn
+           components-fluid-components-fluidnumberinput--default@invalid
+             and @disabled
+
+         WHAT WAS DROPPED. The stub's `list-box__field--wrapper` is in the
+         captures and has NO rule in css/rux.css, so it would be a check-classes
+         fault; a class Carbon renders is not automatically a class this build
+         styles. Its two `multi-select` classes belong to a DEFER component.
+         And the three fluid TIME PICKER states -- `--invalid`, `--disabled`,
+         `--warning` -- plus `--skeleton` are left unexercised on purpose: the
+         class sits on the widget ROOT, so each one costs a clone of the whole
+         forty-line compound below to collect a single class. Recorded here
+         rather than silently skipped. -->
+
+    <!-- DROPDOWN, invalid. The capture puts the state on the WRAPPER and again
+         on the two component roots, with the divider and requirement after the
+         list box.
+
+         NO `list-box__invalid-icon` HERE, and the reason is the one already
+         recorded twice in check-ancestry's declines. Carbon nests that icon
+         inside `dropdown__wrapper` in every capture that renders it, but
+         @carbon/styles defines `dropdown__wrapper` only in its `--inline`
+         form, so this build has no rule for it and check-classes rejects it --
+         the call already made for `data-table-header__content` and `cds--form`.
+         Adding the icon would mean either an undefined class or a third
+         decline; the icon is already exercised in sink/dropdown.html and
+         sink/list-box.html, so nothing is lost by leaving it out here. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid rux--list-box__wrapper--fluid--invalid">
+      <label class="rux--label" id="fl-dd-inv-label" for="fl-dd-inv">Region</label>
+      <div class="rux--dropdown rux--dropdown--invalid rux--list-box rux--list-box--invalid">
+        <button type="button" id="fl-dd-inv" class="rux--list-box__field" role="combobox" aria-labelledby="fl-dd-inv-label" aria-describedby="fl-dd-inv-msg" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-dd-inv-menu">
+          <span class="rux--list-box__label">Choose a region</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="fl-dd-inv-menu" class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">eu-west-1</div>
+          </li>
+        </ul>
+      </div>
+      <hr class="rux--list-box__divider">
+      <div id="fl-dd-inv-msg" class="rux--form-requirement">Pick a region to continue</div>
+    </div>
+    </div>
+
+    <!-- DROPDOWN, condensed. The only difference is the wrapper class. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid rux--list-box__wrapper--fluid--condensed">
+      <label class="rux--label" id="fl-dd-cond-label" for="fl-dd-cond">Tier</label>
+      <div class="rux--dropdown rux--list-box">
+        <button type="button" id="fl-dd-cond" class="rux--list-box__field" role="combobox" aria-labelledby="fl-dd-cond-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-dd-cond-menu">
+          <span class="rux--list-box__label">Standard</span>
+          <div class="rux--list-box__menu-icon">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="fl-dd-cond-menu" class="rux--list-box__menu" role="listbox" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Premium</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    </div>
+
+    <!-- COMBO BOX, fluid. The wrapper takes the fluid class, the control is
+         the default-style combo box unchanged: a text input with role=combobox
+         and a menu-icon BUTTON at tabindex=-1, as every capture has it.
+         `hr.list-box__divider` follows the list box. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid">
+      <label class="rux--label" id="fl-cb-label" for="fl-cb">Owner</label>
+      <div class="rux--combo-box rux--list-box">
+        <div class="rux--list-box__field">
+          <input id="fl-cb" class="rux--text-input rux--text-input--empty" type="text" role="combobox" aria-labelledby="fl-cb-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-cb-menu" placeholder="Type to filter…">
+          <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+        </div>
+        <ul id="fl-cb-menu" class="rux--list-box__menu" role="listbox" aria-labelledby="fl-cb-label" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Platform team</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Data team</div>
+          </li>
+        </ul>
+      </div>
+      <hr class="rux--list-box__divider">
+    </div>
+    </div>
+
+    <!-- COMBO BOX, fluid and condensed. Only the wrapper class differs. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid rux--list-box__wrapper--fluid--condensed">
+      <label class="rux--label" id="fl-cb-cond-label" for="fl-cb-cond">Reviewer</label>
+      <div class="rux--combo-box rux--list-box">
+        <div class="rux--list-box__field">
+          <input id="fl-cb-cond" class="rux--text-input rux--text-input--empty" type="text" role="combobox" aria-labelledby="fl-cb-cond-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-cb-cond-menu" placeholder="Type a name…">
+          <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+        </div>
+        <ul id="fl-cb-cond-menu" class="rux--list-box__menu" role="listbox" aria-labelledby="fl-cb-cond-label" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">A. Reviewer</div>
+          </li>
+        </ul>
+      </div>
+      <hr class="rux--list-box__divider">
+    </div>
+    </div>
+
+    <!-- MULTISELECT, fluid. As sink/multiselect.html: `multi-select__wrapper`
+         is attested and unstyled and is not written; the field sits in
+         `list-box__field--wrapper`, which multiselect's partial styles now, and
+         the menu items are checkboxes. `js/list-box.js` opens it and rings the
+         wrapper on focus. check-spacing reports `checkbox-label` in the menu as
+         UNKNOWN for the reason sink/multiselect.html records: ours is Carbon's
+         multiselect rule and the harvest sampled no open multiselect. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid">
+      <label class="rux--label" id="fl-ms-label" for="fl-ms">Notify</label>
+      <div class="rux--multi-select rux--list-box">
+        <div class="rux--list-box__field--wrapper">
+          <button type="button" id="fl-ms" class="rux--list-box__field" role="combobox" aria-labelledby="fl-ms-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-ms-menu">
+            <span class="rux--list-box__label">Choose who</span>
+            <div class="rux--list-box__menu-icon">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+            </div>
+          </button>
+        </div>
+        <ul id="fl-ms-menu" class="rux--list-box__menu" role="listbox" aria-labelledby="fl-ms-label" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">
+              <div class="rux--checkbox-wrapper">
+                <div class="rux--form-item rux--checkbox-wrapper">
+                  <input id="fl-ms-a" class="rux--checkbox" type="checkbox" tabindex="-1">
+                  <label class="rux--checkbox-label" for="fl-ms-a" title="Owners">
+                    <div class="rux--checkbox-label-text">Owners</div>
+                  </label>
+                  <div class="rux--checkbox__validation-msg"></div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">
+              <div class="rux--checkbox-wrapper">
+                <div class="rux--form-item rux--checkbox-wrapper">
+                  <input id="fl-ms-b" class="rux--checkbox" type="checkbox" tabindex="-1">
+                  <label class="rux--checkbox-label" for="fl-ms-b" title="Reviewers">
+                    <div class="rux--checkbox-label-text">Reviewers</div>
+                  </label>
+                  <div class="rux--checkbox__validation-msg"></div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <hr class="rux--list-box__divider">
+    </div>
+    </div>
+
+    <!-- MULTISELECT, fluid and filterable. The filterable form is a combo box
+         with checkbox options: the input and the menu-icon button straight
+         inside `list-box__field`, no field wrapper, as
+         --fluidmultiselect--filterable renders. -->
+    <div>
+    <div class="rux--list-box__wrapper rux--list-box__wrapper--fluid">
+      <label class="rux--label" id="fl-msf-label" for="fl-msf">Labels</label>
+      <div class="rux--multi-select rux--combo-box rux--multi-select--filterable rux--list-box">
+        <div class="rux--list-box__field">
+          <input id="fl-msf" class="rux--text-input rux--text-input--empty" type="text" role="combobox" aria-labelledby="fl-msf-label" aria-expanded="false" aria-haspopup="listbox" aria-controls="fl-msf-menu" placeholder="Filter…">
+          <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+        </div>
+        <ul id="fl-msf-menu" class="rux--list-box__menu" role="listbox" aria-labelledby="fl-msf-label" hidden>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">
+              <div class="rux--checkbox-wrapper">
+                <div class="rux--form-item rux--checkbox-wrapper">
+                  <input id="fl-msf-a" class="rux--checkbox" type="checkbox" tabindex="-1">
+                  <label class="rux--checkbox-label" for="fl-msf-a" title="bug">
+                    <div class="rux--checkbox-label-text">bug</div>
+                  </label>
+                  <div class="rux--checkbox__validation-msg"></div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <hr class="rux--list-box__divider">
+    </div>
+    </div>
+
+    <!-- DATE PICKER, invalid and warn. The state class goes on the form-item
+         AND on the container; the icon is an <svg> here, which is what the
+         fluid capture renders and what the non-fluid `--next` simple picker in
+         sink/date-picker.html deliberately has none of. -->
+    <div>
+    <div class="rux--form-item rux--date-picker--fluid rux--date-picker--fluid--invalid">
+      <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
+        <div class="rux--date-picker-container rux--date-picker-container--simple rux--date-picker--fluid--invalid">
+          <label class="rux--label" for="fl-date-inv">Expiry date</label>
+          <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
+            <span>
+              <input id="fl-date-inv" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="2026-13-01" aria-invalid="true" aria-describedby="fl-date-inv-msg">
+              <svg class="rux--date-picker__icon rux--date-picker__icon--invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+            </span>
+          </div>
+          <div id="fl-date-inv-msg" class="rux--form-requirement">Not a valid date</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div>
+    <div class="rux--form-item rux--date-picker--fluid rux--date-picker--fluid--warn">
+      <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
+        <div class="rux--date-picker-container rux--date-picker-container--simple rux--date-picker--fluid--warn">
+          <label class="rux--label" for="fl-date-warn">Renewal date</label>
+          <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
+            <span>
+              <input id="fl-date-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="2020-01-01" aria-describedby="fl-date-warn-msg">
+              <svg class="rux--date-picker__icon rux--date-picker__icon--warn" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+            </span>
+          </div>
+          <div id="fl-date-warn-msg" class="rux--form-requirement">That date is in the past</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- NUMBER INPUT, invalid and disabled. The state sits on the form-item;
+         the capture also renders `number__invalid` beside the input and the
+         requirement after the divider. -->
+    <div>
+    <div class="rux--form-item rux--number-input--fluid rux--number-input--fluid--invalid">
+      <div class="rux--number rux--number--md">
+        <label class="rux--label" for="fl-number-inv">Replicas</label>
+        <div class="rux--number__input-wrapper">
+          <input id="fl-number-inv" type="number" value="99" min="1" max="12" aria-invalid="true" aria-describedby="fl-number-inv-msg">
+          <svg class="rux--number__invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <hr class="rux--number-input__divider">
+        <div id="fl-number-inv-msg" class="rux--form-requirement">Maximum is 12</div>
+      </div>
+    </div>
+    </div>
+
+    <div>
+    <div class="rux--form-item rux--number-input--fluid rux--number-input--fluid--disabled">
+      <div class="rux--number rux--number--md">
+        <label class="rux--label" for="fl-number-dis">Replicas</label>
+        <div class="rux--number__input-wrapper">
+          <input id="fl-number-dis" type="number" value="3" min="1" max="12" disabled>
+          <div class="rux--number__controls">
+            <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement" disabled>
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+            <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment" disabled>
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
+            </button>
+            <div class="rux--number__rule-divider"></div>
+          </div>
+        </div>
+        <hr class="rux--number-input__divider">
+      </div>
+    </div>
+    </div>
+
+    <!-- TIME PICKER. The fluid form has its own `__wrapper`, and the field
+         inside is a FLUID TEXT INPUT rather than the bare input the default
+         style uses — read off components-fluid-components-fluidtimepicker--default.
+
+         THE TWO SELECTS ARE NOT OPTIONAL FURNITURE, and leaving them out is
+         what made this specimen look broken. `time-picker__input` computes
+         `flex: 0 1 25%`: Carbon sizes the time field to a QUARTER of the
+         wrapper because the wrapper holds three children — the field, a
+         period select and a zone select. With only the field written, 47px of
+         control sat in a 188px box and three quarters of it was empty ground.
+         Reported from looking, then read off the capture.
+
+         AND THE LABEL HAS TO BE SHORT. At `flex: 0 1 25%` the field is 84px
+         wide and `.rux--label` does not wrap, so "Cutover time" was clipped
+         mid-word against the period select. That is the component's shape
+         rather than a fault to fix — a quarter of the box is what Carbon
+         gives the field, so the label has to fit it.
+
+         THE INPUT CARRIES NO `time-picker__input-field`, and that is the
+         reference rather than an omission. The default style puts that
+         modifier on a bare input; the fluid form nests a whole fluid
+         text-input instead, whose own classes do the work. Writing it here
+         cost a check-ancestry finding — `time-picker__input-field` requires
+         `.rux--time-picker` above it, which the fluid root is not. -->
+    <div>
+    <div class="rux--time-picker--fluid">
+      <div class="rux--time-picker--fluid__wrapper">
+        <div class="rux--time-picker__input">
+          <div class="rux--form-item rux--text-input--fluid rux--text-input-wrapper">
+            <div class="rux--text-input__label-wrapper">
+              <label class="rux--label" for="fl-time">Time</label>
+            </div>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper">
+                <input id="fl-time" class="rux--text-input" type="text" value="02:30" maxlength="5">
+                <hr class="rux--text-input__divider">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--form-item rux--select--fluid">
+          <div class="rux--select">
+            <label class="rux--label" for="fl-period">Period</label>
+            <div class="rux--select-input__wrapper">
+              <select id="fl-period" class="rux--select-input">
+                <option class="rux--select-option" value="am">AM</option>
+                <option class="rux--select-option" value="pm">PM</option>
+              </select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              <hr class="rux--select__divider">
+            </div>
+          </div>
+        </div>
+        <div class="rux--form-item rux--select--fluid">
+          <div class="rux--select">
+            <label class="rux--label" for="fl-zone">Time zone</label>
+            <div class="rux--select-input__wrapper">
+              <select id="fl-zone" class="rux--select-input">
+                <option class="rux--select-option" value="cet">CET</option>
+                <option class="rux--select-option" value="utc">UTC</option>
+              </select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              <hr class="rux--select__divider">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</section>

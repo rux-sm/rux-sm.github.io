@@ -1,0 +1,80 @@
+<section class="ks-sec" id="buttons">
+    <h2>Buttons</h2><p>kinds · sizes · states</p>
+    <!-- PROVENANCE: rendered-dom · components-button--default and the kind
+         stories, plus button-set-of-buttons and the xs recipe, 2026-08-28 -->
+    <!--
+      One finding recorded: `inline-loading__animation` inside a loading button.
+      Carbon nests that animation in `inline-loading`, but no story renders
+      btn--loading at all — the class is in check-tags' no-reference list — so
+      there is no sampled composition to match. The pairing follows the CSS,
+      which scopes btn--loading to `.rux--btn-set .rux--btn.rux--btn--loading`.
+      The fluid btn-set variants the omissions report lists are a separate
+      layout this fragment does not demo.
+    -->
+    <div class="ks-row">
+      <button type="button" class="rux--btn rux--btn--primary">Primary</button>
+      <button type="button" class="rux--btn rux--btn--secondary">Secondary</button>
+      <button type="button" class="rux--btn rux--btn--tertiary">Tertiary</button>
+      <button type="button" class="rux--btn rux--btn--ghost">Ghost</button>
+      <button type="button" class="rux--btn rux--btn--danger">Danger</button>
+      <button type="button" class="rux--btn rux--btn--danger--tertiary">Danger tertiary</button>
+      <button type="button" class="rux--btn rux--btn--danger--ghost">Danger ghost</button>
+    </div>
+    <div class="ks-row">
+      <button type="button" class="rux--btn rux--btn--primary rux--btn--xs rux--layout--size-xs">xs</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">sm</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--btn--md rux--layout--size-md">md</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg">lg</button>
+      <!--
+        DELIBERATE, against an unsampled reference: no story renders an xl
+        button, so check-tags only knows layout--size-xl from layout wrappers.
+        The pairing on the button itself is Carbon's own idiom — the ui-shell
+        header actions render layout--size-lg on their buttons. btn--xl and
+        btn--lg stay off for the usual §4.1.12 reason: no rule in the CSS.
+      -->
+      <button type="button" class="rux--btn rux--btn--primary rux--layout--size-xl">xl</button>
+    </div>
+    <div class="ks-row">
+      <button type="button" class="rux--btn rux--btn--primary" disabled>Disabled</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--btn--expressive">Expressive</button>
+      <button type="button" class="rux--btn rux--btn--ghost rux--btn--selected">Selected ghost</button>
+      <!--
+        --btn--disabled is the CLASS form of the disabled attribute, for a kind
+        rendered on an <a>, where `disabled` does not exist. Carbon styles it
+        beside :disabled throughout (_button.scss:187, :231, :376).
+        DELIBERATE, against an unsampled reference: check-tags reports btn,
+        btn--ghost and btn--disabled here on an element no story shows, because
+        no story passes href — but Button with href is Carbon's own API and
+        renders exactly this <a class="cds--btn">. The class-form disabled
+        exists FOR that element.
+      -->
+      <a class="rux--btn rux--btn--ghost rux--btn--disabled" aria-disabled="true">Disabled ghost link</a>
+    </div>
+    <div class="ks-row">
+      <div class="rux--btn-set">
+        <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary">Submit</button>
+      </div>
+    </div>
+    <!--
+      --btn--loading has exactly one rule, and it is scoped:
+      `.rux--btn-set .rux--btn.rux--btn--loading` (_button.scss:514). Outside a
+      btn-set the class does nothing, so the set is where it has to be shown.
+    -->
+    <div class="ks-row">
+      <div class="rux--btn-set">
+        <button type="button" class="rux--btn rux--btn--secondary" disabled>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary rux--btn--loading" disabled>
+          <div class="rux--inline-loading__animation">
+            <div class="rux--loading rux--loading--small">
+              <svg class="rux--loading__svg" viewBox="0 0 100 100">
+                <circle class="rux--loading__background" cx="50%" cy="50%" r="42"></circle>
+                <circle class="rux--loading__stroke" cx="50%" cy="50%" r="42"></circle>
+              </svg>
+            </div>
+          </div>
+          Submitting
+        </button>
+      </div>
+    </div>
+  </section>

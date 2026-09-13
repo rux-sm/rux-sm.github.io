@@ -1,0 +1,86 @@
+<section class="ks-sec" id="select">
+  <h2>Select</h2><p>default · invalid · warning · disabled · inline</p>
+  <!-- PROVENANCE: rendered-dom · components-select--default with its invalid,
+       warn, disabled and readonly recipes, plus --inline, 2026-08-28 -->
+  <!--
+    Corrected against the reference 2026-08-28: every select carries a size,
+    and this fragment carried none — the unclassed default happened to look
+    right, so nothing caught it. The size here is `layout--size-<size>` ALONE:
+    the reference also emits `select--md`, but @carbon/styles defines no rule
+    for any `select--<size>`, so it is dropped on the §4.1.12 precedent that
+    retired `--dropdown--lg` and `--list-box--md`. The disabled variant also takes `form__helper-text--disabled` on its
+    helper text, the same greying every other disabled field gets. And the
+    LABEL SITS INSIDE .rux--select, not beside it in the form-item — the same
+    correction the number input needed, and invisible for the same reason: a
+    label inside a form-item is attested on a dozen other components, so only
+    this component's own reference says where its label goes.
+  -->
+  <div class="ks-grid">
+    <div class="rux--form-item">
+      <div class="rux--select rux--layout--size-md">
+        <label class="rux--label" for="se-1">Choose</label>
+        <div class="rux--select-input__wrapper">
+          <select id="se-1" class="rux--select-input">
+            <option class="rux--select-option" value="a">Option A</option>
+            <option class="rux--select-option" value="b">Option B</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        </div>
+        <div class="rux--form__helper-text">Optional helper text</div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <div class="rux--select rux--select--invalid rux--layout--size-md">
+        <label class="rux--label" for="se-2">Invalid</label>
+        <div class="rux--select-input__wrapper" data-invalid>
+          <select id="se-2" class="rux--select-input" data-invalid aria-invalid="true">
+            <option class="rux--select-option" value="a">Option A</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          <svg class="rux--select__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        </div>
+        <div class="rux--form-requirement">A selection is required</div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <div class="rux--select rux--select--warning rux--layout--size-md">
+        <label class="rux--label" for="se-3">Warning</label>
+        <div class="rux--select-input__wrapper">
+          <select id="se-3" class="rux--select-input">
+            <option class="rux--select-option" value="a">Option A</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          <svg class="rux--select__invalid-icon rux--select__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        </div>
+        <div class="rux--form-requirement">Warning message</div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <div class="rux--select rux--select--readonly rux--layout--size-md">
+        <label class="rux--label" for="se-5">Read-only</label>
+        <div class="rux--select-input__wrapper">
+          <select id="se-5" class="rux--select-input" aria-readonly="true">
+            <option class="rux--select-option" value="a">Option A</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <div class="rux--select rux--select--disabled rux--layout--size-md">
+        <label class="rux--label rux--label--disabled" for="se-4">Disabled</label>
+        <div class="rux--select-input__wrapper">
+          <select id="se-4" class="rux--select-input" disabled>
+            <option class="rux--select-option" value="a">Unavailable</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        </div>
+        <div class="rux--form__helper-text rux--form__helper-text--disabled">Set by your administrator</div>
+      </div>
+    </div>
+  </div>
+</section>

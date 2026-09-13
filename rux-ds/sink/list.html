@@ -1,0 +1,33 @@
+<section class="ks-sec" id="list">
+    <h2>List</h2><p>ordered · unordered</p>
+    <!-- PROVENANCE: rendered-dom · components-orderedlist--default and
+         --nested, components-unorderedlist--default and --nested, 2026-08-28 -->
+    <!--
+      A nested list carries `list--nested` alongside its own type class, and
+      lives INSIDE the parent's <li> rather than beside it. Fifteen rules hang
+      off that class and this fragment had no nested list at all to hang them on.
+    -->
+    <div class="ks-grid">
+      <!-- BLOCK:BEGIN name=unordered label="Unordered list" -->
+      <ul class="rux--list--unordered">
+        <li class="rux--list__item">First item</li>
+        <li class="rux--list__item">Second item</li>
+      </ul>
+      <!-- BLOCK:END unordered -->
+      <!-- BLOCK:BEGIN name=ordered label="Ordered list" -->
+      <ol class="rux--list--ordered">
+        <li class="rux--list__item">First item</li>
+        <li class="rux--list__item">Second item
+          <ol class="rux--list--ordered rux--list--nested">
+            <li class="rux--list__item">Nested item</li>
+            <li class="rux--list__item">Nested sibling</li>
+          </ol>
+        </li>
+      </ol>
+      <!-- BLOCK:END ordered -->
+      <ul class="rux--list--unordered rux--list--expressive">
+        <li class="rux--list__item">Expressive spacing</li>
+        <li class="rux--list__item">Second item</li>
+      </ul>
+    </div>
+  </section>

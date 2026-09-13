@@ -1,0 +1,338 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "bamboo-production-order-walkthrough_2026-08-18_summary",
+  "title": "Bamboo Production Order Walkthrough — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Taking the bamboo training items (a rod, a sleeve, and a finished chopstick pair) all the way from bare item records to a produced, received finished good — building the bill of material, the routing, the cost, and the stock the production order needed, then running that order to completion."
+        }
+      ],
+      "text": "Taking the bamboo training items (a rod, a sleeve, and a finished chopstick pair) all the way from bare item records to a produced, received finished good — building the bill of material, the routing, the cost, and the stock the production order needed, then running that order to completion."
+    }
+  ],
+  "topics": [
+    {
+      "title": "Building the recipe: bill of material and routing",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The chopstick pair needs a bill of material (what goes into it) and a routing (the steps to make it). Both were built from scratch."
+            }
+          ],
+          "text": "The chopstick pair needs a bill of material (what goes into it) and a routing (the steps to make it). Both were built from scratch."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Bill of Material — created BOM "
+                },
+                {
+                  "t": "literal",
+                  "v": "JB0000242"
+                },
+                {
+                  "t": "text",
+                  "v": " for the chopstick pair: 2 rods, 1 sleeve."
+                }
+              ],
+              "text": "Job Shop Bill of Material — created BOM JB0000242 for the chopstick pair: 2 rods, 1 sleeve."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Routing — one cutting operation, at work center "
+                },
+                {
+                  "t": "literal",
+                  "v": "A1000"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Job Shop Routing — one cutting operation, at work center A1000."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Later, a second BOM revision was created on purpose, just to show how revisions work: create the new one, approve it, then mark the old one \"expired\" so the system switches over automatically."
+                }
+              ],
+              "text": "Later, a second BOM revision was created on purpose, just to show how revisions work: create the new one, approve it, then mark the old one \"expired\" so the system switches over automatically."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Costing the item",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Before you can produce something, LN needs to know what it costs. This turned out to be simpler than expected — it's a button right on the item's own screen ("
+            },
+            {
+              "t": "strong",
+              "v": "Calculate and Actualize Standard Costs"
+            },
+            {
+              "t": "text",
+              "v": "), not a separate session."
+            }
+          ],
+          "text": "Before you can produce something, LN needs to know what it costs. This turned out to be simpler than expected — it's a button right on the item's own screen (Calculate and Actualize Standard Costs), not a separate session."
+        }
+      ]
+    },
+    {
+      "title": "Getting materials on hand — the purchasing route",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The rod and sleeve had to physically be in the warehouse before production could use them. The team bought them from an existing test supplier (Vista Machines Inc.) rather than just adjusting inventory by hand — a real purchase order, all the way through to a warehouse receipt."
+            }
+          ],
+          "text": "The rod and sleeve had to physically be in the warehouse before production could use them. The team bought them from an existing test supplier (Vista Machines Inc.) rather than just adjusting inventory by hand — a real purchase order, all the way through to a warehouse receipt."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Created a purchase order for 2 rods and 1 sleeve."
+                }
+              ],
+              "text": "Created a purchase order for 2 rods and 1 sleeve."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Hit a real system error on receiving (\"Stock Point Details not found\") — worked through it and the receipt still closed out successfully."
+                }
+              ],
+              "text": "Hit a real system error on receiving (\"Stock Point Details not found\") — worked through it and the receipt still closed out successfully."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Running the production order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "With the recipe, cost, and materials all in place, the order ran start to finish: created, released, materials issued, operation completed, and the finished pair received into the warehouse — with an inspection step in between."
+            }
+          ],
+          "text": "With the recipe, cost, and materials all in place, the order ran start to finish: created, released, materials issued, operation completed, and the finished pair received into the warehouse — with an inspection step in between."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production order created and released."
+                }
+              ],
+              "text": "Production order created and released."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Materials issued to the shop floor."
+                }
+              ],
+              "text": "Materials issued to the shop floor."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Finished pair inspected, then the order closed — closing it required both the materials being fully issued "
+                },
+                {
+                  "t": "em",
+                  "v": "and"
+                },
+                {
+                  "t": "text",
+                  "v": " the finished item being fully put away, not just received."
+                }
+              ],
+              "text": "Finished pair inspected, then the order closed — closing it required both the materials being fully issued and the finished item being fully put away, not just received."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Buying components in through a real purchase order is the standard way to stock these training items — not manually adjusting inventory."
+            }
+          ],
+          "text": "Buying components in through a real purchase order is the standard way to stock these training items — not manually adjusting inventory."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Vista Machines Inc. is the go-to test supplier for this kind of purchase."
+            }
+          ],
+          "text": "Vista Machines Inc. is the go-to test supplier for this kind of purchase."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Closing out a production order stays a separate, later step — not part of the standard walkthrough, even though it was demonstrated here."
+            }
+          ],
+          "text": "Closing out a production order stays a separate, later step — not part of the standard walkthrough, even though it was demonstrated here."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Standard costing lives on the item screen itself as an action, not a separate costing session."
+            }
+          ],
+          "text": "Standard costing lives on the item screen itself as an action, not a separate costing session."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A BOM revision doesn't take effect until the old one is expired — approve the new one, then expire the old one."
+            }
+          ],
+          "text": "A BOM revision doesn't take effect until the old one is expired — approve the new one, then expire the old one."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Closing a production order needs everything finished on both sides: materials fully issued out, and the finished item fully put away, not just received."
+            }
+          ],
+          "text": "Closing a production order needs everything finished on both sides: materials fully issued out, and the finished item fully put away, not just received."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Real errors happen even on a \"known good\" path (the stock-point error on receipt) — and the system can still recover and complete normally."
+            }
+          ],
+          "text": "Real errors happen even on a \"known good\" path (the stock-point error on receipt) — and the system can still recover and complete normally."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`bamboo-production-order-walkthrough_2026-08-18.md`",
+          "href": "bamboo-production-order-walkthrough_2026-08-18.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `bamboo-production-order-walkthrough_2026-08-18.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

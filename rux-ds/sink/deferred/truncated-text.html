@@ -1,0 +1,36 @@
+<section class="ks-sec" id="truncated-text">
+  <h2>Truncated text</h2>
+  <!-- PROVENANCE: inferred · structure read off CSS selectors ·
+       NO REFERENCE EXISTS; see below -->
+  <!--
+  NO REFERENCE EXISTS. Checked 2026-08-28: the only story matching "truncat"
+      across both origins is preview-card--with-truncated-title, and that is a
+      CARD truncating its own title with `card__title-text-row--truncate` — a
+      different component. Nothing renders the TruncatedText classes, so this
+      fragment stays `inferred` for want of anything to diff against, not for
+      want of trying.
+
+      The known upstream gap below is unrelated and still stands.
+  -->
+  <p>end truncation · <strong>known upstream gap</strong> — the expand toggle has no button reset in light DOM</p>
+  <!--
+    RENDERED AS-IS ON PURPOSE. .rux--truncated-text__expand-toggle sets only `color`
+    and `cursor`; it has NO button reset, unlike .rux--truncated-text__tooltip-trigger
+    directly below it in Carbon's CSS. The web component gets that reset from its
+    shadow root, so a light-DOM consumer sees the browser's default button chrome.
+    .rux--link does not fix it (no `background: none`), and Carbon's button-reset is a
+    Sass mixin with no emitted class. Fixing it means editing a Carbon file, which
+    §1.1 forbids — so it is shown broken and recorded in roadmap §4.1.5.
+  -->
+  <div style="max-width:26rem;display:grid;gap:1.5rem">
+    <div>
+      <span class="rux--truncated-text__text-content">A long single line of content that runs past the width of its container and is truncated.</span>
+      <button type="button" class="rux--truncated-text__expand-toggle">show more</button>
+      <div class="ks-label" style="margin-block-start:.5rem">↑ browser default chrome — the gap</div>
+    </div>
+    <div>
+      <button type="button" class="rux--truncated-text__tooltip-trigger">Tooltip trigger, which does carry Carbon's reset</button>
+      <div class="ks-label" style="margin-block-start:.5rem">↑ same component, correct</div>
+    </div>
+  </div>
+</section>

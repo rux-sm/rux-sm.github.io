@@ -1,0 +1,769 @@
+{
+  "_": "Which NAMED @carbon/icons glyph Carbon renders into each icon slot, harvested from the 505 react.carbondesignsystem.com stories by tools/extract/react-dom.js in its icons mode on 2026-08-29, then resolved from drawing to name against @carbon/icons 11.86.0. Committed so check-slots survives Phase 4, which removes node_modules.",
+  "_rule": "A slot is ENFORCED when Carbon draws exactly ONE glyph there AND that is corroborated, either by 3+ distinct stories — check-ancestry’s MIN_STORIES, for its reason — or by 3+ SIBLING slots agreeing. A sibling is a slot with the same ROLE, the class with its component name stripped: checkbox__invalid-icon, select__invalid-icon and four more are all __invalid-icon. Six independent components drawing one glyph is corroboration of the same kind as one component in six stories, and it is the form the evidence actually takes for the invalid and warn states, which no default story renders. Everything under the bar is recorded and reported, never failed.",
+  "_declined": {
+    "side-nav__icon": "the consumer chooses their nav icons; Carbon’s stories happen to use `fade` throughout, which is a fact about the stories",
+    "tag__custom-icon": "the class says custom; the glyph is the consumer’s by definition",
+    "tile__checkmark.tile__checkmark--persistent": "Carbon’s captures show `checkbox` here, but the selectable tile’s mark is a variant of the same control and the sink demos the filled checkmark",
+    "toast-notification__icon": "a VARIANT slot. Carbon’s stories only rendered the error toast, so the capture sees one glyph where the component legitimately has four — success, error, warning, info",
+    "visually-hidden": "a utility class, not an icon slot; it happens to wrap a close icon in the tabs stories",
+    "visually-hidden.tabs__nav-item--close-icon--selected": "as visually-hidden"
+  },
+  "slots": {
+    "accordion__arrow": {
+      "kind": "own",
+      "glyphs": [
+        "chevron--right"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "actionable-notification__close-icon": {
+      "kind": "own",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "btn__icon": {
+      "kind": "own",
+      "glyphs": [
+        "trash-can",
+        "save",
+        "download",
+        "chevron--down",
+        "arrow--right",
+        "add"
+      ],
+      "drawings": 6,
+      "corroboration": [
+        2,
+        2,
+        2,
+        3,
+        2,
+        1
+      ],
+      "rule": "6 different glyphs"
+    },
+    "btn.btn--ghost.btn--disabled.btn--icon-only": {
+      "kind": "in",
+      "glyphs": [
+        "caret--left"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "btn.btn--ghost.btn--icon-only": {
+      "kind": "in",
+      "glyphs": [
+        "caret--right"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "checkbox__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "checkbox__invalid-icon.checkbox__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "header__action.btn.btn--lg.layout--size-lg.btn--ghost.btn--icon-only": {
+      "kind": "in",
+      "glyphs": [
+        "search",
+        "notification",
+        "switcher"
+      ],
+      "drawings": 3,
+      "corroboration": [
+        1,
+        1,
+        1
+      ],
+      "rule": "3 different glyphs",
+      "from": "ICON_STATES"
+    },
+    "header__action.header__menu-trigger.header__menu-toggle.header__menu-toggle__hidden": {
+      "kind": "in",
+      "glyphs": [
+        "menu"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "header__menu-arrow": {
+      "kind": "own",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "icon-visibility-on": {
+      "kind": "own",
+      "glyphs": [
+        "view"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        2
+      ],
+      "rule": "one glyph but only 2 story/stories",
+      "from": "ICON_STATES"
+    },
+    "inline-loading__checkmark-container": {
+      "kind": "own",
+      "glyphs": [
+        "checkmark--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "inline-loading--error": {
+      "kind": "own",
+      "glyphs": [
+        "error--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "inline-notification__close-icon": {
+      "kind": "own",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories"
+    },
+    "inline-notification__icon": {
+      "kind": "own",
+      "glyphs": [
+        "information--filled",
+        "error--filled"
+      ],
+      "drawings": 2,
+      "corroboration": [
+        3,
+        2
+      ],
+      "rule": "2 different glyphs"
+    },
+    "list-box__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "list-box__invalid-icon.list-box__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "list-box__menu-icon": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "list-box__menu-icon.list-box__menu-icon--open": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        2
+      ],
+      "rule": "one glyph but only 2 story/stories",
+      "from": "ICON_STATES"
+    },
+    "menu-item__icon": {
+      "kind": "in",
+      "glyphs": [
+        "folder--shared",
+        "cut",
+        "copy",
+        "paste",
+        "text--bold",
+        "text--italic",
+        "trash-can"
+      ],
+      "drawings": 7,
+      "corroboration": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "rule": "7 different glyphs"
+    },
+    "menu-item__selection-icon": {
+      "kind": "in",
+      "glyphs": [
+        "checkmark"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories"
+    },
+    "modal-close__icon": {
+      "kind": "own",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "number__control-btn": {
+      "kind": "in",
+      "glyphs": [
+        "subtract",
+        "add"
+      ],
+      "drawings": 2,
+      "corroboration": [
+        3,
+        3
+      ],
+      "rule": "2 different glyphs"
+    },
+    "number__invalid.number__invalid--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "overflow-menu__icon": {
+      "kind": "own",
+      "glyphs": [
+        "overflow-menu--horizontal",
+        "overflow-menu--vertical",
+        "settings",
+        "filter"
+      ],
+      "drawings": 4,
+      "corroboration": [
+        3,
+        3,
+        3,
+        1
+      ],
+      "rule": "4 different glyphs"
+    },
+    "pagination__button.pagination__button--backward.pagination__button--no-index.btn.btn--ghost.btn--disabled.btn--icon-only": {
+      "kind": "in",
+      "glyphs": [
+        "caret--left"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "pagination__button.pagination__button--forward.btn.btn--ghost.btn--icon-only": {
+      "kind": "in",
+      "glyphs": [
+        "caret--right"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "popover--tab-tip__button": {
+      "kind": "in",
+      "glyphs": [
+        "settings"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories"
+    },
+    "radio-button__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "radio-button__invalid-icon.radio-button__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "search-close.search-close--hidden": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "search-magnifier-icon": {
+      "kind": "own",
+      "glyphs": [
+        "search"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "select__arrow": {
+      "kind": "own",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "select__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "select__invalid-icon.select__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "side-nav__icon": {
+      "kind": "in",
+      "glyphs": [
+        "fade"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "side-nav__icon.side-nav__icon--small.side-nav__submenu-chevron": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "tab--overflow-nav-button.tab--overflow-nav-button--next.tab--overflow-nav-button--hidden": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--right"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tab--overflow-nav-button.tab--overflow-nav-button--previous.tab--overflow-nav-button--hidden": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--left"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "table-expand__svg": {
+      "kind": "own",
+      "glyphs": [
+        "chevron--right"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "table-sort__icon": {
+      "kind": "own",
+      "glyphs": [
+        "arrow--up"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "table-sort__icon-unsorted": {
+      "kind": "own",
+      "glyphs": [
+        "arrows--vertical"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tabs__nav-item--close-icon": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tabs__nav-item--close-icon.tabs__nav-item--close-icon--disabled": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tabs__nav-item--icon": {
+      "kind": "in",
+      "glyphs": [
+        "dashboard",
+        "cloud--monitoring",
+        "activity",
+        "ibm-watson--discovery",
+        "settings",
+        "task",
+        "restart"
+      ],
+      "drawings": 7,
+      "corroboration": [
+        3,
+        3,
+        2,
+        3,
+        2,
+        1,
+        1
+      ],
+      "rule": "7 different glyphs"
+    },
+    "tabs__nav-item-label": {
+      "kind": "in",
+      "glyphs": [
+        "ibm-watson--discovery",
+        "activity",
+        "notification",
+        "chat",
+        "notification"
+      ],
+      "drawings": 5,
+      "corroboration": [
+        3,
+        3,
+        2,
+        3,
+        2
+      ],
+      "rule": "5 different glyphs"
+    },
+    "tag__close-icon": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tag__custom-icon": {
+      "kind": "in",
+      "glyphs": [
+        "asleep"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "text-area__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "text-area__invalid-icon.text-area__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "text-input__invalid-icon": {
+      "kind": "own",
+      "glyphs": [
+        "warning--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        2
+      ],
+      "rule": "one glyph but only 2 story/stories"
+    },
+    "text-input__invalid-icon.text-input__invalid-icon--warning": {
+      "kind": "own",
+      "glyphs": [
+        "warning--alt--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories",
+      "from": "ICON_STATES"
+    },
+    "tile__checkmark": {
+      "kind": "in",
+      "glyphs": [
+        "checkmark--filled",
+        "radio-button",
+        "radio-button--checked"
+      ],
+      "drawings": 3,
+      "corroboration": [
+        3,
+        3,
+        1
+      ],
+      "rule": "3 different glyphs"
+    },
+    "tile__checkmark.tile__checkmark--persistent": {
+      "kind": "in",
+      "glyphs": [
+        "checkbox"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tile__chevron": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tile__chevron.tile__chevron--interactive": {
+      "kind": "in",
+      "glyphs": [
+        "chevron--down"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "tile--icon": {
+      "kind": "own",
+      "glyphs": [
+        "launch",
+        "arrow--right"
+      ],
+      "drawings": 2,
+      "corroboration": [
+        1,
+        3
+      ],
+      "rule": "2 different glyphs"
+    },
+    "toast-notification__close-icon": {
+      "kind": "own",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        1
+      ],
+      "rule": "one glyph but only 1 story/stories"
+    },
+    "toast-notification__icon": {
+      "kind": "own",
+      "glyphs": [
+        "error--filled"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "visually-hidden": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    },
+    "visually-hidden.tabs__nav-item--close-icon--selected": {
+      "kind": "in",
+      "glyphs": [
+        "close"
+      ],
+      "drawings": 1,
+      "corroboration": [
+        3
+      ],
+      "rule": "one glyph in 3+ stories"
+    }
+  },
+  "_states": "20 configured captures via ICON_STATES in tools/extract/react-dom.js, run 2026-08-29. They exist because 24 of our 64 slots had no capture from the bare harvest, almost all of them invalid or warn states. Each row configures a DIFFERENT component: the point is agreement ACROSS components, not repeating one slot until it clears a threshold, which would be measuring the recipe list."
+}

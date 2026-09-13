@@ -1,0 +1,57 @@
+<section class="ks-sec" id="list-box">
+  <h2>List box</h2><p>the primitive under dropdown, combo box and multiselect</p>
+  <!-- PROVENANCE: rendered-dom · the list-box stories of its consumers —
+       components-dropdown--default@open, components-combobox--default@open and
+       components-multiselect--default@open-selected, 2026-08-28 -->
+  <!--
+    List box is the PRIMITIVE under dropdown, combo box and multiselect, and it
+    has no story of its own: every reference for it is one of those three. That
+    is why the omissions report lists their parts — the checkbox rows of a
+    multiselect menu, the `dropdown` root of a dropdown. Each belongs to the
+    fragment that owns the consumer.
+
+    Corrected 2026-08-27 against those references: the warning icon is an SVG
+    carrying the classes itself, before the field, and menu items render no
+    __selected-icon.
+
+    The `__divider` HR this fragment gained in that pass is GONE again, and the
+    Phase 3 strip is what found it: `list-box__divider` is defined only inside
+    the fluid-* partials, so with that family cut the class has no rule. It was
+    always a fluid-stacking element rather than a list-box one — the reference
+    that showed it was fluidcombobox — and it should not have been demoed here.
+  -->
+  <!-- ks-overlay-room reserves the open menu's own height. The menu is
+       `position: absolute` so it adds nothing to the section's layout, and this
+       specimen never closes — without the reservation it hung 88px into the
+       modal section and painted over its heading. See harness.css. -->
+  <div class="ks-grid ks-overlay-room">
+    <div class="rux--list-box__wrapper">
+      <div class="rux--list-box rux--list-box--expanded">
+        <div class="rux--list-box__field">
+          <span class="rux--list-box__label">Selected value</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </div>
+        <ul class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Selected value</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Another value</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">A third value</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="rux--list-box__wrapper">
+      <div class="rux--list-box rux--list-box--warning">
+        <svg class="rux--list-box__invalid-icon rux--list-box__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        <div class="rux--list-box__field">
+          <span class="rux--list-box__label">Warning state</span>
+          <div class="rux--list-box__menu-icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

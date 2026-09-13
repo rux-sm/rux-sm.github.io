@@ -1,0 +1,3466 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-manual-production-order-existing-master-data",
+  "title": "Production order",
+  "module": "Manufacturing · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "updated": "2026-09-02",
+  "status": "draft",
+  "summary": "create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse.",
+  "order": 3,
+  "sources": [
+    "ticst0101m000",
+    "ticst0101m100",
+    "ticst0201m000",
+    "tisfc0100s000",
+    "tisfc0101m100",
+    "tisfc0105m000",
+    "tisfc0110m000",
+    "tisfc0120s000",
+    "tisfc0130m000",
+    "tisfc0204m000",
+    "tisfc0207m000",
+    "tisfc0501m000",
+    "tisfc0516m000",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh2104m000",
+    "whinh2129m000",
+    "whinh3122m000",
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Confirm the existing foundation",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+            }
+          ],
+          "text": "What LN is doing. Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Obtain one prequalified training case from the master-data owner"
+                    }
+                  ],
+                  "text": "Obtain one prequalified training case from the master-data owner"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "finished item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "component item"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", with an existing valid BOM and routing"
+                    }
+                  ],
+                  "text": "finished item and component item, with an existing valid BOM and routing"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the component item in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Filter Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and run it"
+                    }
+                  ],
+                  "text": "Enter the component item in Filter Items and run it"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The component appears with inventory totals"
+                    }
+                  ],
+                  "text": "The component appears with inventory totals"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the component row and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Warehouse Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " group"
+                    }
+                  ],
+                  "text": "Tick the component row and click Warehouse Inventory in the Inventory group"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd2515m000",
+                      "name": "Warehouse - Item Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens for the component"
+                    }
+                  ],
+                  "text": "Warehouse - Item Inventory (whwmd2515m000) opens for the component"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+                    }
+                  ],
+                  "text": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "component warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "component on-hand before"
+                    }
+                  ],
+                  "text": "component warehouse and component on-hand before"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.5"
+                    }
+                  ],
+                  "text": "0.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+                    }
+                  ],
+                  "text": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "All inputs needed to check the created order are known before entry begins"
+                    }
+                  ],
+                  "text": "All inputs needed to check the created order are known before entry begins"
+                }
+              ],
+              "id": "0.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.6"
+                    }
+                  ],
+                  "text": "0.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Repeat steps 0.2–0.3 for the finished item, filtered at the receiving warehouse the training case identifies"
+                    }
+                  ],
+                  "text": "Repeat steps 0.2–0.3 for the finished item, filtered at the receiving warehouse the training case identifies"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "finished item on-hand before"
+                    }
+                  ],
+                  "text": "finished item on-hand before"
+                }
+              ],
+              "id": "0.6",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create the production order",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+      "session": "Production Orders",
+      "sessionCode": "tisfc0501m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " On save LN reads the item's BOM and routing valid on the "
+            },
+            {
+              "t": "em",
+              "v": "Reference Date"
+            },
+            {
+              "t": "text",
+              "v": " and generates the order's operations and estimated materials from them. "
+            },
+            {
+              "t": "em",
+              "v": "Quantity Ordered"
+            },
+            {
+              "t": "text",
+              "v": " is what is to be produced and "
+            },
+            {
+              "t": "em",
+              "v": "Warehouse"
+            },
+            {
+              "t": "text",
+              "v": " is where the result will be received. The order exists at "
+            },
+            {
+              "t": "strong",
+              "v": "Created"
+            },
+            {
+              "t": "text",
+              "v": "; nothing has moved."
+            }
+          ],
+          "text": "What LN is doing. On save LN reads the item's BOM and routing valid on the Reference Date and generates the order's operations and estimated materials from them. Quantity Ordered is what is to be produced and Warehouse is where the result will be received. The order exists at Created; nothing has moved."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New"
+                    }
+                  ],
+                  "text": "Click New"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A new production-order record opens"
+                    }
+                  ],
+                  "text": "A new production-order record opens"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the finished item from step 0.1"
+                    }
+                  ],
+                  "text": "Enter the finished item from step 0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item is accepted for the order"
+                    }
+                  ],
+                  "text": "The item is accepted for the order"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the training case"
+                    }
+                  ],
+                  "text": "Confirm Site for the training case"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "site"
+                    }
+                  ],
+                  "text": "site"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter 1 in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Quantity Ordered"
+                    }
+                  ],
+                  "text": "Enter 1 in Quantity Ordered"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "production quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = 1"
+                    }
+                  ],
+                  "text": "production quantity = 1"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.5"
+                    }
+                  ],
+                  "text": "1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is the intended receiving warehouse"
+                    }
+                  ],
+                  "text": "Confirm Warehouse is the intended receiving warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "receiving warehouse"
+                    }
+                  ],
+                  "text": "receiving warehouse"
+                }
+              ],
+              "id": "1.5",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.6"
+                    }
+                  ],
+                  "text": "1.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Production Start"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Delivery Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planning Method"
+                    },
+                    {
+                      "t": "text",
+                      "v": " are suitable for the training run"
+                    }
+                  ],
+                  "text": "Confirm Production Start, Planned Delivery Date, and Planning Method are suitable for the training run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order dates remain within the qualified BOM and routing dates"
+                    }
+                  ],
+                  "text": "The order dates remain within the qualified BOM and routing dates"
+                }
+              ],
+              "id": "1.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.7"
+                    }
+                  ],
+                  "text": "1.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+                    }
+                  ],
+                  "text": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The selected revision is visible before save"
+                    }
+                  ],
+                  "text": "The selected revision is visible before save"
+                }
+              ],
+              "id": "1.7",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.8"
+                    }
+                  ],
+                  "text": "1.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Save"
+                    }
+                  ],
+                  "text": "Click Save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Created"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "production order number"
+                    }
+                  ],
+                  "text": "Order Status = Created — production order number"
+                }
+              ],
+              "id": "1.8",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Verify the generated foundation",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+      "session": "Production Orders",
+      "sessionCode": "tisfc0501m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order."
+            }
+          ],
+          "text": "What LN is doing. The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Double-click the production order recorded in step 1.8"
+                    }
+                  ],
+                  "text": "Double-click the production order recorded in step 1.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Production Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens for the same order"
+                    }
+                  ],
+                  "text": "Production Order opens for the same order"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Compare the displayed BOM and revision with the qualified training case"
+                    }
+                  ],
+                  "text": "Compare the displayed BOM and revision with the qualified training case"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "BOM and revision"
+                    },
+                    {
+                      "t": "text",
+                      "v": " match the expected foundation"
+                    }
+                  ],
+                  "text": "BOM and revision match the expected foundation"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Compare the displayed routing and revision with the qualified training case"
+                    }
+                  ],
+                  "text": "Compare the displayed routing and revision with the qualified training case"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "routing and revision"
+                    },
+                    {
+                      "t": "text",
+                      "v": " match the expected foundation"
+                    }
+                  ],
+                  "text": "routing and revision match the expected foundation"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the production-planning area and confirm the expected operation is present"
+                    }
+                  ],
+                  "text": "Open the production-planning area and confirm the expected operation is present"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "expected operation"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Operations Present"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is selected in the overview"
+                    }
+                  ],
+                  "text": "expected operation; Operations Present is selected in the overview"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.5"
+                    }
+                  ],
+                  "text": "2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the estimated-materials area and confirm the expected component and quantity"
+                    }
+                  ],
+                  "text": "Open the estimated-materials area and confirm the expected component and quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "estimated component quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the component from step 0.1"
+                    }
+                  ],
+                  "text": "estimated component quantity for the component from step 0.1"
+                }
+              ],
+              "id": "2.5",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.6"
+                    }
+                  ],
+                  "text": "2.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Return to the overview without running a release or processing action"
+                    }
+                  ],
+                  "text": "Return to the overview without running a release or processing action"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order remains "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Created"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and no material issue has begun"
+                    }
+                  ],
+                  "text": "The order remains Created and no material issue has begun"
+                }
+              ],
+              "id": "2.6",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Release the order",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+      "session": "Production Orders",
+      "sessionCode": "tisfc0501m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Release changes the order to "
+            },
+            {
+              "t": "strong",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": ", the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. Phase 4 works the first; phase 5 depends on the second."
+            }
+          ],
+          "text": "What LN is doing. Release changes the order to Released, the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. Phase 4 works the first; phase 5 depends on the second."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the production order row from step 1.8"
+                    }
+                  ],
+                  "text": "Select the production order row from step 1.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The row is highlighted"
+                    }
+                  ],
+                  "text": "The row is highlighted"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Release Orders"
+                    }
+                  ],
+                  "text": "Actions ➔ Release Orders"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0204m000",
+                      "name": "Release Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Release Production Orders (tisfc0204m000) opens"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm the selection range narrows to this one production order"
+                    }
+                  ],
+                  "text": "Confirm the selection range narrows to this one production order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Only this order is in scope for the release run"
+                    }
+                  ],
+                  "text": "Only this order is in scope for the release run"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run the release"
+                    }
+                  ],
+                  "text": "Run the release"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The dialog closes; back in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order status after release"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    }
+                  ],
+                  "text": "The dialog closes; back in Production Orders, order status after release = Released"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.5"
+                    }
+                  ],
+                  "text": "3.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm no other order changed status"
+                    }
+                  ],
+                  "text": "Confirm no other order changed status"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Only the order from step 1.8 shows "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    }
+                  ],
+                  "text": "Only the order from step 1.8 shows Released"
+                }
+              ],
+              "id": "3.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Issue material to the job shop",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to "
+            },
+            {
+              "t": "strong",
+              "v": "Active"
+            },
+            {
+              "t": "text",
+              "v": "; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line."
+            }
+          ],
+          "text": "What LN is doing. Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to Active; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ("
+                    },
+                    {
+                      "t": "session",
+                      "code": "ticst0101m100"
+                    },
+                    {
+                      "t": "text",
+                      "v": ") for the order released in phase 3"
+                    }
+                  ],
+                  "text": "Open Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders (ticst0101m100) for the order released in phase 3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The component line from step 0.1 is listed, with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Production Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    }
+                  ],
+                  "text": "The component line from step 0.1 is listed, with Production Order Status = Released"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Estimated Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Actual Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "To Issue by Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the component line"
+                    }
+                  ],
+                  "text": "Read Estimated Quantity, Actual Quantity, and To Issue by Warehouse for the component line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "material to issue"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "To Issue by Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " figure; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Actual Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = 0"
+                    }
+                  ],
+                  "text": "material to issue = the To Issue by Warehouse figure; Actual Quantity = 0"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If the line is not already unblocked, run "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0207m000",
+                      "name": "Initiate Inventory Issue"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the line"
+                    }
+                  ],
+                  "text": "If the line is not already unblocked, run Initiate Inventory Issue (tisfc0207m000) for the line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The material's warehouse order line unblocks"
+                    }
+                  ],
+                  "text": "The material's warehouse order line unblocks"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2100m000",
+                      "name": "Warehousing Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and find the production issue order for this production order"
+                    }
+                  ],
+                  "text": "Open Warehousing Orders (whinh2100m000) and find the production issue order for this production order"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order shows order type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "30- Production (Out)"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", source the component warehouse from step 0.4, destination the work center from the routing"
+                    }
+                  ],
+                  "text": "The order shows order type 30- Production (Out), source the component warehouse from step 0.4, destination the work center from the routing"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.5"
+                    }
+                  ],
+                  "text": "4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the issue order — "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2100m100",
+                      "name": "Warehousing Order"
+                    }
+                  ],
+                  "text": "Click Drill In on the issue order — Warehousing Order (whinh2100m100)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order lines and the "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2129m000",
+                      "name": "Outbound Line Status Overview"
+                    },
+                    {
+                      "t": "text",
+                      "v": " activity list are visible"
+                    }
+                  ],
+                  "text": "The order lines and the Outbound Line Status Overview (whinh2129m000) activity list are visible"
+                }
+              ],
+              "id": "4.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.6"
+                    }
+                  ],
+                  "text": "4.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Generate Outbound Advice"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Release Outbound Advice"
+                    },
+                    {
+                      "t": "text",
+                      "v": " show unfinished and not automatic, run them"
+                    }
+                  ],
+                  "text": "If Generate Outbound Advice and Release Outbound Advice show unfinished and not automatic, run them"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The advice is generated and released"
+                    }
+                  ],
+                  "text": "The advice is generated and released"
+                }
+              ],
+              "id": "4.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.7"
+                    }
+                  ],
+                  "text": "4.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Continue the outbound procedure until the issue order reaches "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Shipped"
+                    }
+                  ],
+                  "text": "Continue the outbound procedure until the issue order reaches Shipped"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Ordered and advised quantities match; the order shows "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Shipped"
+                    }
+                  ],
+                  "text": "Ordered and advised quantities match; the order shows Shipped"
+                }
+              ],
+              "id": "4.7",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.8"
+                    }
+                  ],
+                  "text": "4.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Return to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Material to Issue for Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Production Orders"
+                    }
+                  ],
+                  "text": "Return to Material to Issue for Production Orders and Production Orders"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Actual Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the estimated quantity, "
+                    },
+                    {
+                      "t": "field",
+                      "v": "To Issue by Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = 0; "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order status after material issue"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Active"
+                    }
+                  ],
+                  "text": "Actual Quantity = the estimated quantity, To Issue by Warehouse = 0; order status after material issue = Active"
+                }
+              ],
+              "id": "4.8",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Report the operation complete and confirm warehouse receipt",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
+      "session": "Report Operations",
+      "sessionCode": "tisfc0130m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes "
+            },
+            {
+              "t": "strong",
+              "v": "Production Completed"
+            },
+            {
+              "t": "text",
+              "v": " when reported and "
+            },
+            {
+              "t": "strong",
+              "v": "Completed"
+            },
+            {
+              "t": "text",
+              "v": " only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The phase ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+            }
+          ],
+          "text": "What LN is doing. Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes Production Completed when reported and Completed only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The phase ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ("
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0130m000"
+                    },
+                    {
+                      "t": "text",
+                      "v": ") for the order's next operation"
+                    }
+                  ],
+                  "text": "Open Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations (tisfc0130m000) for the order's next operation"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The operation line shows "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Operation Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Output"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and the item from step 0.1"
+                    }
+                  ],
+                  "text": "The operation line shows Operation Status, Planned Output, and the item from step 0.1"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the production quantity from step 1.4 in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Completed"
+                    }
+                  ],
+                  "text": "Enter the production quantity from step 1.4 in Completed"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The quantity is accepted"
+                    }
+                  ],
+                  "text": "The quantity is accepted"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save"
+                    }
+                  ],
+                  "text": "Save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If this was the last operation, LN can book the completed product into inventory"
+                    }
+                  ],
+                  "text": "If this was the last operation, LN can book the completed product into inventory"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.4"
+                    }
+                  ],
+                  "text": "5.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Repeat steps 5.1–5.3 for each remaining operation, in routing sequence"
+                    }
+                  ],
+                  "text": "Repeat steps 5.1–5.3 for each remaining operation, in routing sequence"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each operation reports complete in turn"
+                    }
+                  ],
+                  "text": "Each operation reports complete in turn"
+                }
+              ],
+              "id": "5.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.5"
+                    }
+                  ],
+                  "text": "5.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On the last operation's save, if "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0120s000",
+                      "name": "Report Orders Completed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens, enter the completed quantity in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Additional Quantity to Deliver"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and save"
+                    }
+                  ],
+                  "text": "On the last operation's save, if Report Orders Completed (tisfc0120s000) opens, enter the completed quantity in Additional Quantity to Deliver and save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "LN asks "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "\"Automatically confirm receipt when activating warehouse order inbound line?\""
+                    },
+                    {
+                      "t": "text",
+                      "v": " — see the note below before answering"
+                    }
+                  ],
+                  "text": "LN asks \"Automatically confirm receipt when activating warehouse order inbound line?\" — see the note below before answering"
+                }
+              ],
+              "id": "5.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.6"
+                    }
+                  ],
+                  "text": "5.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Answer the receipt question, and record which way you answered"
+                    }
+                  ],
+                  "text": "Answer the receipt question, and record which way you answered"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "receipt answer"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "delivered"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the production quantity if you answered "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Yes"
+                    }
+                  ],
+                  "text": "receipt answer; delivered = the production quantity if you answered Yes"
+                }
+              ],
+              "id": "5.6",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.7"
+                    }
+                  ],
+                  "text": "5.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Return to "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0501m000",
+                      "name": "Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    }
+                  ],
+                  "text": "Return to Production Orders (tisfc0501m000) and read Order Status"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order status after reporting"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Production Completed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " means Warehousing has not finished the inbound procedure yet; "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Completed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " means the goods are in inventory. On the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Yes"
+                    },
+                    {
+                      "t": "text",
+                      "v": " path expect "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Quantity Delivered"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the production quantity and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Quantity to Deliver"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = 0; on the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "No"
+                    },
+                    {
+                      "t": "text",
+                      "v": " path the quantity sits in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Quantity to Deliver"
+                    },
+                    {
+                      "t": "text",
+                      "v": " until Warehousing processes the inbound line"
+                    }
+                  ],
+                  "text": "order status after reporting. Production Completed means Warehousing has not finished the inbound procedure yet; Completed means the goods are in inventory. On the Yes path expect Quantity Delivered = the production quantity and Quantity to Deliver = 0; on the No path the quantity sits in Quantity to Deliver until Warehousing processes the inbound line"
+                }
+              ],
+              "id": "5.7",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.8"
+                    }
+                  ],
+                  "text": "5.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000",
+                      "name": "Inventory 360"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and filter the finished item at the receiving warehouse from step 1.5"
+                    }
+                  ],
+                  "text": "Open Inventory 360 (whwmd4300m000) and filter the finished item at the receiving warehouse from step 1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "finished item on-hand after"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; on-hand has increased by the production quantity over step 0.6. On the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "No"
+                    },
+                    {
+                      "t": "text",
+                      "v": " path this only holds once Warehousing has finished the inbound procedure"
+                    }
+                  ],
+                  "text": "finished item on-hand after; on-hand has increased by the production quantity over step 0.6. On the No path this only holds once Warehousing has finished the inbound procedure"
+                }
+              ],
+              "id": "5.8",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse."
+        }
+      ],
+      "text": "Objective: create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Scope note:"
+        },
+        {
+          "t": "text",
+          "v": " this guide ends at finished-goods receipt. "
+        },
+        {
+          "t": "session",
+          "code": "ticst0201m000",
+          "name": "Close Production Orders"
+        },
+        {
+          "t": "text",
+          "v": " — actual-cost calculation and financial posting — is out of scope and remains future work. "
+        }
+      ],
+      "text": "Scope note: this guide ends at finished-goods receipt. Close Production Orders (ticst0201m000) — actual-cost calculation and financial posting — is out of scope and remains future work."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Confirm the existing foundation"
+                }
+              ],
+              "text": "0 Confirm the existing foundation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360 and the approved training case"
+                }
+              ],
+              "text": "Inventory 360 and the approved training case"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A qualified finished item, component, BOM, routing, warehouses, and stock are known"
+                }
+              ],
+              "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create the order"
+                }
+              ],
+              "text": "1 Create the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders"
+                }
+              ],
+              "text": "Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A quantity-one order exists at "
+                },
+                {
+                  "t": "chip",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": " status"
+                }
+              ],
+              "text": "A quantity-one order exists at Created status"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Verify what LN generated"
+                }
+              ],
+              "text": "2 Verify what LN generated"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Order detail"
+                }
+              ],
+              "text": "Production Order detail"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The expected BOM, routing, operation, and estimated component are attached"
+                }
+              ],
+              "text": "The expected BOM, routing, operation, and estimated component are attached"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Release the order"
+                }
+              ],
+              "text": "3 Release the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders ➔ Release Production Orders"
+                }
+              ],
+              "text": "Production Orders ➔ Release Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order is "
+                },
+                {
+                  "t": "chip",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": "; warehousing issue and receipt orders exist"
+                }
+              ],
+              "text": "The order is Released; warehousing issue and receipt orders exist"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Issue material to the job shop"
+                }
+              ],
+              "text": "4 Issue material to the job shop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Material to Issue for Production Orders, Warehousing Orders"
+                }
+              ],
+              "text": "Material to Issue for Production Orders, Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The component is issued; the order is "
+                },
+                {
+                  "t": "chip",
+                  "v": "Active"
+                }
+              ],
+              "text": "The component is issued; the order is Active"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Report complete and confirm receipt"
+                }
+              ],
+              "text": "5 Report complete and confirm receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report Operations, Production Orders, Inventory 360"
+                }
+              ],
+              "text": "Report Operations, Production Orders, Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The finished item is posted to inventory and on-hand increases at the receiving warehouse"
+                }
+              ],
+              "text": "The finished item is posted to inventory and on-hand increases at the receiving warehouse"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Use the finished-goods receipt as the boundary."
+        },
+        {
+          "t": "text",
+          "v": " This guide is complete only when "
+        },
+        {
+          "t": "strong",
+          "v": "Production Orders"
+        },
+        {
+          "t": "text",
+          "v": " shows "
+        },
+        {
+          "t": "strong",
+          "v": "Order Status Completed"
+        },
+        {
+          "t": "text",
+          "v": " with "
+        },
+        {
+          "t": "em",
+          "v": "Quantity Delivered"
+        },
+        {
+          "t": "text",
+          "v": " equal to the production quantity, and "
+        },
+        {
+          "t": "strong",
+          "v": "Inventory 360"
+        },
+        {
+          "t": "text",
+          "v": " confirms the receiving warehouse's on-hand increased by the same amount. Do not run "
+        },
+        {
+          "t": "session",
+          "code": "ticst0201m000",
+          "name": "Close Production Orders"
+        },
+        {
+          "t": "text",
+          "v": " from this guide."
+        }
+      ],
+      "text": "Use the finished-goods receipt as the boundary. This guide is complete only when Production Orders shows Order Status Completed with Quantity Delivered equal to the production quantity, and Inventory 360 confirms the receiving warehouse's on-hand increased by the same amount. Do not run Close Production Orders (ticst0201m000) from this guide."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No qualified item/BOM/routing combination is available"
+                }
+              ],
+              "text": "No qualified item/BOM/routing combination is available"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stop. This guide does not create or repair master data; request a qualified training case"
+                }
+              ],
+              "text": "Stop. This guide does not create or repair master data; request a qualified training case"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Component has no suitable warehouse stock"
+                }
+              ],
+              "text": "Component has no suitable warehouse stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose another qualified case or replenish it before creating an order intended for later execution"
+                }
+              ],
+              "text": "Choose another qualified case or replenish it before creating an order intended for later execution"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item or revision is rejected"
+                }
+              ],
+              "text": "The item or revision is rejected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this guide"
+                }
+              ],
+              "text": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this guide"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order does not save at "
+                },
+                {
+                  "t": "status",
+                  "v": "Created"
+                }
+              ],
+              "text": "The order does not save at Created"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the message and visible fields; do not substitute guessed values"
+                }
+              ],
+              "text": "Record the message and visible fields; do not substitute guessed values"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "BOM or routing is blank or unexpected"
+                }
+              ],
+              "text": "BOM or routing is blank or unexpected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the qualified dates/revisions and record the mismatch "
+                }
+              ],
+              "text": "Check the qualified dates/revisions and record the mismatch"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Validation reports a multilevel BOM loop"
+                }
+              ],
+              "text": "Validation reports a multilevel BOM loop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented "
+                }
+              ],
+              "text": "Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Expected operation or component is absent"
+                }
+              ],
+              "text": "Expected operation or component is absent"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Leave the order at "
+                },
+                {
+                  "t": "status",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": " and return it to the master-data owner for diagnosis"
+                }
+              ],
+              "text": "Leave the order at Created and return it to the master-data owner for diagnosis"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order does not reach "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                }
+              ],
+              "text": "The order does not reach Released"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the message; the release options this guide does not exercise (shortages, quality, printing) may be blocking it — check them against "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0100s000",
+                  "name": "Production Order Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": " before assuming a fault "
+                }
+              ],
+              "text": "Record the message; the release options this guide does not exercise (shortages, quality, printing) may be blocking it — check them against Production Order Parameters (tisfc0100s000) before assuming a fault"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The material line stays blocked / "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " never appears"
+                }
+              ],
+              "text": "The material line stays blocked / To Issue by Warehouse never appears"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0207m000",
+                  "name": "Initiate Inventory Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " manually; if still blocked, stop and record what was observed "
+                }
+              ],
+              "text": "Run Initiate Inventory Issue (tisfc0207m000) manually; if still blocked, stop and record what was observed"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate/Release Outbound Advice are missing or already actioned"
+                }
+              ],
+              "text": "Generate/Release Outbound Advice are missing or already actioned"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do not assume a fault. "
+                },
+                {
+                  "t": "chip",
+                  "v": "Direct Process Warehouse Order Line"
+                },
+                {
+                  "t": "text",
+                  "v": " may be automatic for this material — confirm in "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2104m000",
+                  "name": "Activities by Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": " before troubleshooting further"
+                }
+              ],
+              "text": "Do not assume a fault. Direct Process Warehouse Order Line may be automatic for this material — confirm in Activities by Warehousing Order (whinh2104m000) before troubleshooting further"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Report Orders Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " does not open after the last operation"
+                }
+              ],
+              "text": "Report Orders Completed does not open after the last operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stop and record the operation's status and any message; this dialog's trigger condition is not documented "
+                }
+              ],
+              "text": "Stop and record the operation's status and any message; this dialog's trigger condition is not documented"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Quantity Delivered"
+                },
+                {
+                  "t": "text",
+                  "v": " stays at 0 or finished-item on-hand does not increase"
+                }
+              ],
+              "text": "Quantity Delivered stays at 0 or finished-item on-hand does not increase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The production receipt warehousing order may need manual processing, like phase 4's issue order. Check "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " for an open receipt order before assuming an error "
+                }
+              ],
+              "text": "The production receipt warehousing order may need manual processing, like phase 4's issue order. Check Warehousing Orders (whinh2100m000) for an open receipt order before assuming an error"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "More than one component"
+                }
+              ],
+              "text": "More than one component"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record and compare every expected component and estimated quantity in phase 2; issue every material line in phase 4; the phase structure does not change"
+                }
+              ],
+              "text": "Record and compare every expected component and estimated quantity in phase 2; issue every material line in phase 4; the phase structure does not change"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "More than one operation"
+                }
+              ],
+              "text": "More than one operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm every expected operation in routing sequence in phase 2; report each one complete in phase 5 (step 5.4); the phase structure does not change"
+                }
+              ],
+              "text": "Confirm every expected operation in routing sequence in phase 2; report each one complete in phase 5 (step 5.4); the phase structure does not change"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Revision-controlled item"
+                }
+              ],
+              "text": "Revision-controlled item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The qualified training case must include the item revision as well as BOM and routing revisions"
+                }
+              ],
+              "text": "The qualified training case must include the item revision as well as BOM and routing revisions"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "No routing"
+                }
+              ],
+              "text": "No routing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Outside this basic foundation. The help states that no estimated production costs are defined when the order has no routing"
+                }
+              ],
+              "text": "Outside this basic foundation. The help states that no estimated production costs are defined when the order has no routing"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Fully automatic material issue"
+                }
+              ],
+              "text": "Fully automatic material issue"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "field",
+                  "v": "Direct Initiate Inventory Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Direct Process Warehouse Order Line"
+                },
+                {
+                  "t": "text",
+                  "v": " are both selected for the material, steps 4.3–4.7 complete themselves once the order is released; the phase structure does not change"
+                }
+              ],
+              "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 4.3–4.7 complete themselves once the order is released; the phase structure does not change"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The finished item is on hand at the receiving warehouse"
+                }
+              ],
+              "text": "The finished item is on hand at the receiving warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "SG-ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " — sell and ship what was produced"
+                }
+              ],
+              "text": "Ship from stock — sell and ship what was produced"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0, reading the new on-hand"
+                }
+              ],
+              "text": "Phase 0, reading the new on-hand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The finished item is on hand but belongs in another warehouse"
+                }
+              ],
+              "text": "The finished item is on hand but belongs in another warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "SG-transfer-item-between-warehouses.md"
+                }
+              ],
+              "text": "Warehouse transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0"
+                }
+              ],
+              "text": "Phase 0"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Actual costs need calculating and posting"
+                }
+              ],
+              "text": "Actual costs need calculating and posting"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 8
+}

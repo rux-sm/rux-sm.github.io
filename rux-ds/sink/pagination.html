@@ -1,0 +1,140 @@
+<section class="ks-sec" id="pagination">
+  <h2>Pagination</h2><p>full bar</p>
+  <!-- PROVENANCE: rendered-dom · components-pagination--default, re-diffed
+       2026-08-28. The label named that story before the page-number select was
+       here, and was wrong: diff-fragment ranked this markup 18/18 against
+       components-pagination--pagination-unknown-pages and 17/18 against the
+       story it claimed. It is the default shape now, and the claim holds.
+       components-paginationnav--default is no longer a source — pagination-nav
+       is CUT and its markup left this fragment with it. -->
+  <!--
+    `select__item-count` is not a class on the select: Carbon puts it on a
+    `form-item` WRAPPING the select, which is the element its one rule sizes.
+    The select inside is a plain inline select, and it keeps its own
+    `select-input__wrapper` that this fragment had skipped.
+
+    THE RIGHT SIDE HAS TWO SHAPES AND NO THIRD. Carbon renders either
+
+      known count    form-item(page-number select) + span.pagination__text
+                     reading "of N pages" + control-buttons
+      unknown count  span.pagination__text.page-text.unknown-pages-text
+                     reading "page N" + control-buttons, and NO select
+
+    and the class sets are not interchangeable. `page-text` carries
+    `margin-inline: 1rem 0.0625rem`, whose 1rem start is the gap a page-number
+    select would sit in; `unknown-pages-text` then restores the end margin to
+    1rem. In all 641 captures `page-text` NEVER appears without
+    `unknown-pages-text` — checked, not assumed.
+
+    UNTIL 2026-08-28 THIS FRAGMENT WAS A THIRD SHAPE THAT CARBON NEVER RENDERS:
+    `page-text` with no select and the known-count wording. The text sat 17px
+    from the divider and 1px from the buttons, and it was spotted by eye on a
+    page built from this markup, not by a gate. The second shape's wording is
+    "page N", not "of N pages" — if you want the unknown variant, change the
+    words too.
+
+    `select__page-number`, the class Carbon puts on that wrapper, has no rule in
+    @carbon/styles, so the class is dropped and the element kept — the call
+    `data-table-header__content` already records. `select__item-count` is NOT a
+    substitute: it draws a border-inline-end the page-number select does not have.
+
+    The root takes `layout--size-md`; `pagination--md` comes with it in the
+    reference and is dropped for having no rule (§4.1.12).
+
+    The nav-only variant is GONE from this fragment: `pagination-nav` is a
+    SEPARATE component, CUT in Phase 3, so none of its classes has a rule any
+    more. Its markup is preserved in sink/deferred/pagination.html's sibling
+    history — restoring it means uncommenting `pagination-nav` in src/app.scss.
+
+    TWO WRAPPERS, and this fragment kept neither until check-ancestry found it.
+    `pagination__control-buttons` is styled — `.rux--pagination
+    .rux--pagination__control-buttons { display: flex }` — so the two buttons
+    were laid out by their parent's rules rather than their own. It is back.
+
+    The SECOND wrapper is still declined: the reference nests each button in an
+    icon-tooltip, the chrome this sink passes on throughout. Same shape as the
+    modal close button, and the same mistake — a note that named the optional
+    wrapper and never mentioned the load-bearing one.
+  -->
+  <div class="rux--pagination rux--layout--size-md" style="margin-block-end:2rem">
+    <div class="rux--pagination__left">
+      <label class="rux--pagination__text" for="pg-size">Items per page:</label>
+      <div class="rux--form-item rux--select__item-count">
+        <div class="rux--select rux--select--inline">
+          <div class="rux--select-input--inline__wrapper">
+            <div class="rux--select-input__wrapper">
+              <select id="pg-size" class="rux--select-input">
+                <option class="rux--select-option" value="10">10</option>
+                <option class="rux--select-option" value="20">20</option>
+              </select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="rux--pagination__items-count rux--pagination__text">1–10 of 84 items</span>
+    </div>
+    <div class="rux--pagination__right">
+      <div class="rux--form-item">
+        <div class="rux--select rux--select--inline">
+          <label class="rux--label rux--visually-hidden" for="ks-pag-page">Page of 9 pages</label>
+          <div class="rux--select-input--inline__wrapper">
+            <div class="rux--select-input__wrapper">
+              <select id="ks-pag-page" class="rux--select-input">
+                <option class="rux--select-option" value="1">1</option>
+                <option class="rux--select-option" value="2">2</option>
+                <option class="rux--select-option" value="3">3</option>
+              </select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="rux--pagination__text">of 9 pages</span>
+      <div class="rux--pagination__control-buttons">
+        <button type="button" class="rux--pagination__button" aria-label="Previous page"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg></button>
+        <button type="button" class="rux--pagination__button" aria-label="Next page"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ks-label">unknown page count — the OTHER shape</div>
+  <!--
+    THE SECOND SHAPE, and it is here so the pair can be compared rather than
+    described. No page-number select, and the text carries `page-text` AND
+    `unknown-pages-text` together, which is the only way Carbon emits either.
+    The wording changes with the shape: "page 4", not "of N pages", because the
+    count is what this variant does not know.
+
+    It also carries the two classes the bar above no longer does. When the
+    default shape was corrected on 2026-08-28, coverage fell 9 to 8 and the
+    ratchet stopped the build — the right answer being a second specimen that
+    demonstrates the distinction, not a lower number.
+  -->
+  <div class="rux--pagination rux--layout--size-md">
+    <div class="rux--pagination__left">
+      <label class="rux--pagination__text" for="pg-size-unknown">Items per page:</label>
+      <div class="rux--form-item rux--select__item-count">
+        <div class="rux--select rux--select--inline">
+          <div class="rux--select-input--inline__wrapper">
+            <div class="rux--select-input__wrapper">
+              <select id="pg-size-unknown" class="rux--select-input">
+                <option class="rux--select-option" value="10">10</option>
+                <option class="rux--select-option" value="20">20</option>
+              </select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="rux--pagination__items-count rux--pagination__text">31–40 items</span>
+    </div>
+    <div class="rux--pagination__right">
+      <span class="rux--pagination__text rux--pagination__page-text rux--pagination__unknown-pages-text">page 4</span>
+      <div class="rux--pagination__control-buttons">
+        <button type="button" class="rux--pagination__button" aria-label="Previous page"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg></button>
+        <button type="button" class="rux--pagination__button" aria-label="Next page"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>

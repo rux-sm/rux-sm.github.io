@@ -1,0 +1,3251 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "planned-order-transfer-training_2026-08-25",
+  "title": "Planned Order Transfer Training — Review",
+  "updated": "2026-09-03",
+  "status": "draft",
+  "sources": [
+    "cppat1210m000",
+    "cprpd1100m000",
+    "cprpd4100m000",
+    "cprrp0520m000",
+    "cprrp0521s000",
+    "cprrp1100m000",
+    "cprrp1220m000",
+    "tcibd0501m100",
+    "tdipu0101m000",
+    "tdipu0601m000",
+    "tibom3100m000",
+    "tibom3600m000",
+    "whwmd4300m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Carry order planning forward from the 2026-08-20 session to the step that was named there but never walked: "
+        },
+        {
+          "t": "strong",
+          "v": "turning a planned order into a real one"
+        },
+        {
+          "t": "text",
+          "v": ". The 2026-08-20 review recorded the mechanism as narration — "
+        },
+        {
+          "t": "em",
+          "v": "\"from here you transfer, you actualize the order\""
+        },
+        {
+          "t": "text",
+          "v": " — and cited "
+        },
+        {
+          "t": "session",
+          "code": "cprrp1100m000"
+        },
+        {
+          "t": "text",
+          "v": "'s help for the destination. This session performs it, on the same bamboo family, and LN prints the result twice."
+        }
+      ],
+      "text": "Carry order planning forward from the 2026-08-20 session to the step that was named there but never walked: turning a planned order into a real one. The 2026-08-20 review recorded the mechanism as narration — \"from here you transfer, you actualize the order\" — and cited cprrp1100m000's help for the destination. This session performs it, on the same bamboo family, and LN prints the result twice."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Along the way the session repairs an item that planning had been silently ignoring, and hits a transfer failure whose error message turns out to document the rule that caused it."
+        }
+      ],
+      "text": "Along the way the session repairs an item that planning had been silently ignoring, and hits a transfer failure whose error message turns out to document the rule that caused it."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "table",
+      "columns": [
+        "Role",
+        "Count",
+        "Organisation"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant — the LN account driving the screen"
+                }
+              ],
+              "text": "Consultant — the LN account driving the screen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee"
+                }
+              ],
+              "text": "Trainee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee"
+                }
+              ],
+              "text": "Attendee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee — muted throughout every sampled frame"
+                }
+              ],
+              "text": "Attendee — muted throughout every sampled frame"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    },
+    {
+      "kind": "callout",
+      "variant": "warning",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [],
+          "text": ""
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "variant": "note",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This is a third role split across four recordings"
+            },
+            {
+              "t": "text",
+              "v": ", after two different people held the consultant role on 2026-08-18 and 2026-08-20. Each is as-observed for its own recording; the meetings are a recurring internal training series and who drives varies."
+            }
+          ],
+          "text": "This is a third role split across four recordings, after two different people held the consultant role on 2026-08-18 and 2026-08-20. Each is as-observed for its own recording; the meetings are a recurring internal training series and who drives varies."
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "A planned order is not an order, and that is the point",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The framing given for the whole session was that planned orders are deliberately not real, and that this is a feature rather than a stage to hurry through:"
+            }
+          ],
+          "text": "The framing given for the whole session was that planned orders are deliberately not real, and that this is a feature rather than a stage to hurry through:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "quote",
+              "v": "A plan order isn't an actual order yet. It's not an open order. It's just a planned order — which allows you to rerun MRP over and over and over again, you know, without worrying about anything. Because the actualization of the plan orders, that's what happens when you transfer.",
+              "at": "08:26"
+            }
+          ],
+          "text": "",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Restated a moment later as a working method — "
+            },
+            {
+              "t": "quote",
+              "v": "if anything changes, you know, any materials change, you can just re-plan, re-plan, re-plan — until you have the orders that you need, well then that's when you can transfer them",
+              "at": "08:54"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Restated a moment later as a working method — ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The vendor states the same boundary as the session's purpose: "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " is used "
+            },
+            {
+              "t": "em",
+              "v": "\"to transfer planned orders from Enterprise Planning to the execution level\""
+            },
+            {
+              "t": "text",
+              "v": ", and the destinations are exact — "
+            },
+            {
+              "t": "em",
+              "v": "\"Planned production orders and production plans are translated to production order in the Job Shop Control module in Manufacturing. Planned purchase orders and purchase plans are translated to purchase orders in Procurement.\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": ", session description."
+            }
+          ],
+          "text": "The vendor states the same boundary as the session's purpose: Transfer Order Planning (cppat1210m000) is used \"to transfer planned orders from Enterprise Planning to the execution level\", and the destinations are exact — \"Planned production orders and production plans are translated to production order in the Job Shop Control module in Manufacturing. Planned purchase orders and purchase plans are translated to purchase orders in Procurement.\" — Infor LN help for Transfer Order Planning (cppat1210m000), session description."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This corroborates and sharpens the 2026-08-20 review's §3.5, which recorded the same idea from narration alone."
+            }
+          ],
+          "text": "This corroborates and sharpens the 2026-08-20 review's §3.5, which recorded the same idea from narration alone."
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "What an order type is decided by",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two planned purchase orders and two planned production orders sat side by side in the plan, and the trainee asked why. The answer given was the item's own setting: "
+            },
+            {
+              "t": "quote",
+              "v": "the reason that these are planned purchase and not planned production is what you set in the item master — default supply source",
+              "at": "10:59"
+            },
+            {
+              "t": "text",
+              "v": ", repeated at the transfer step as "
+            },
+            {
+              "t": "quote",
+              "v": "it's not going to create sales orders, it's going to create purchase or production depending on the supply source of that item",
+              "at": "26:31"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Two planned purchase orders and two planned production orders sat side by side in the plan, and the trainee asked why. The answer given was the item's own setting: , repeated at the transfer step as ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The environment shows the field where the narration says it is. On "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100",
+              "name": "Item"
+            },
+            {
+              "t": "text",
+              "v": ", the "
+            },
+            {
+              "t": "strong",
+              "v": "Sites"
+            },
+            {
+              "t": "text",
+              "v": " subtab carries a "
+            },
+            {
+              "t": "strong",
+              "v": "Default Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " column, reading "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " at site "
+            },
+            {
+              "t": "literal",
+              "v": "CSADNA01"
+            },
+            {
+              "t": "text",
+              "v": ". The parent "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " reads "
+            },
+            {
+              "t": "strong",
+              "v": "Job Shop"
+            },
+            {
+              "t": "text",
+              "v": " in the "
+            },
+            {
+              "t": "strong",
+              "v": "Actual Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " field of its own Item Order Plan, against "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The environment shows the field where the narration says it is. On Item (tcibd0501m100), the Sites subtab carries a Default Supply Source column, reading Purchase for BAM-SLEEVE at site CSADNA01. The parent BAM-CHOP-PAIR reads Job Shop in the Actual Supply Source field of its own Item Order Plan, against Purchase for BAM-ROD."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file, the source on file, the source on file"
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "An item with no planning cluster is skipped in silence",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This was the most useful failure in the session, because nothing announced it."
+            }
+          ],
+          "text": "This was the most useful failure in the session, because nothing announced it."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " produced no planned orders while its siblings did. The cause was found by inspection rather than by any message: "
+            },
+            {
+              "t": "quote",
+              "v": "you don't have a planning cluster for BAM-SLEEVE",
+              "at": "13:34"
+            },
+            {
+              "t": "text",
+              "v": ". The link was then explained from the screen the trainee already had open — "
+            },
+            {
+              "t": "quote",
+              "v": "look on the top, in your header level at your Item Order Plan, see how it says Plan Item `NA1`? That's tied to your planning cluster",
+              "at": "17:31"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "BAM-SLEEVE produced no planned orders while its siblings did. The cause was found by inspection rather than by any message: . The link was then explained from the screen the trainee already had open — ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The repair, described as it was made: "
+            },
+            {
+              "t": "quote",
+              "v": "all I did was add a line which was `NA1`, and I just had to input the site data which was `CSADNA01`, and it has a warehouse tied to that which is `ADNA02`",
+              "at": "18:58"
+            },
+            {
+              "t": "text",
+              "v": ". On "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100"
+            },
+            {
+              "t": "text",
+              "v": " the destination is the "
+            },
+            {
+              "t": "strong",
+              "v": "Clusters"
+            },
+            {
+              "t": "text",
+              "v": " subtab, which sits alongside Sites, Enterprise Units, Purchase Offices, Sales Offices and Service Offices."
+            }
+          ],
+          "text": "The repair, described as it was made: . On tcibd0501m100 the destination is the Clusters subtab, which sits alongside Sites, Enterprise Units, Purchase Offices, Sales Offices and Service Offices."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The consequence was stated as a prediction and is worth keeping as procedure: "
+            },
+            {
+              "t": "quote",
+              "v": "we're probably gonna have to run MRP again, because when it ran the first time it probably didn't pick up the demand for this item since it was missing the planning cluster",
+              "at": "19:15"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The consequence was stated as a prediction and is worth keeping as procedure: ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is the second recording to reach the same conclusion by a different route. On 2026-08-20 an item could not be planned until planning data existed at all; here an item that "
+            },
+            {
+              "t": "em",
+              "v": "had"
+            },
+            {
+              "t": "text",
+              "v": " planning data was still skipped because the cluster line was absent. Both point at the vendor's rule that a planning cluster "
+            },
+            {
+              "t": "em",
+              "v": "\"represents one or more business locations for which planning processes are performed\""
+            },
+            {
+              "t": "text",
+              "v": " and that "
+            },
+            {
+              "t": "em",
+              "v": "\"if the multisite concepts are activated, planning clusters and sites are mandatory\""
+            },
+            {
+              "t": "text",
+              "v": " — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Clusters"
+            },
+            {
+              "t": "text",
+              "v": " (p. 39, and p. 22 for the segment)."
+            }
+          ],
+          "text": "This is the second recording to reach the same conclusion by a different route. On 2026-08-20 an item could not be planned until planning data existed at all; here an item that had planning data was still skipped because the cluster line was absent. Both point at the vendor's rule that a planning cluster \"represents one or more business locations for which planning processes are performed\" and that \"if the multisite concepts are activated, planning clusters and sites are mandatory\" — the Infor LN Order Planning user guide, Planning Clusters (p. 39, and p. 22 for the segment)."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "`BAM-SLEEVE` still produced no planned order after the cluster was added and planning was rerun."
+                },
+                {
+                  "t": "text",
+                  "v": " The Planned Orders list filtered on "
+                },
+                {
+                  "t": "literal",
+                  "v": "bam"
+                },
+                {
+                  "t": "text",
+                  "v": " at 27:20 holds four rows, all of them "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": ". The narration offers an explanation in passing — "
+                },
+                {
+                  "t": "quote",
+                  "v": "we already have some inventory, so it's going to take that into account",
+                  "at": "25:55"
+                },
+                {
+                  "t": "text",
+                  "v": " — which is plausible and would be correct behaviour, but no on-hand figure for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " was shown at any point, so the explanation is not evidenced. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "`BAM-SLEEVE` still produced no planned order after the cluster was added and planning was rerun. The Planned Orders list filtered on bam at 27:20 holds four rows, all of them BAM-CHOP-PAIR or BAM-ROD. The narration offers an explanation in passing — — which is plausible and would be correct behaviour, but no on-hand figure for BAM-SLEEVE was shown at any point, so the explanation is not evidenced. Not documented for this release."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "Extending the order horizon, and the route to it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The order horizon had to be pushed out before the newer demand would be seen, exactly as on 2026-08-20 — "
+            },
+            {
+              "t": "quote",
+              "v": "our order horizon is only 10 days from now, so let's put that in the future, let's say 365",
+              "at": "21:47"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The order horizon had to be pushed out before the newer demand would be seen, exactly as on 2026-08-20 — ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The route taken is worth recording because the narration corrected itself mid-sentence: "
+            },
+            {
+              "t": "quote",
+              "v": "go to Actions — actually no, References — and there should be under Items Planning",
+              "at": "21:19"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "strong",
+              "v": "References"
+            },
+            {
+              "t": "text",
+              "v": ", not Actions, from the Item Order Plan."
+            }
+          ],
+          "text": "The route taken is worth recording because the narration corrected itself mid-sentence: . References, not Actions, from the Item Order Plan."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": " Horizons tab was captured again, this time for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " with "
+            },
+            {
+              "t": "strong",
+              "v": "Master Plan cleared"
+            },
+            {
+              "t": "text",
+              "v": " — the complement of the 2026-08-20 capture, which had it selected. The two together demonstrate the vendor's rule from both sides: with Master Plan off, Order Horizon and Planning Horizon read the same date ("
+            },
+            {
+              "t": "literal",
+              "v": "9/3/2026"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " before the change, "
+            },
+            {
+              "t": "literal",
+              "v": "8/24/2027"
+            },
+            {
+              "t": "text",
+              "v": " for both after it); with it on, "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": "'s two horizons diverge to "
+            },
+            {
+              "t": "literal",
+              "v": "9/19/2026"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "literal",
+              "v": "9/19/2027"
+            },
+            {
+              "t": "text",
+              "v": ". That is "
+            },
+            {
+              "t": "em",
+              "v": "\"If the item does not have an item master plan, the planning horizon is equal to the order horizon\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Horizon"
+            },
+            {
+              "t": "text",
+              "v": " — now shown in both states on two items."
+            }
+          ],
+          "text": "The Items - Planning (cprpd1100m000) Horizons tab was captured again, this time for BAM-ROD with Master Plan cleared — the complement of the 2026-08-20 capture, which had it selected. The two together demonstrate the vendor's rule from both sides: with Master Plan off, Order Horizon and Planning Horizon read the same date (9/3/2026 for BAM-ROD before the change, 8/24/2027 for both after it); with it on, BAM-CHOP-PAIR's two horizons diverge to 9/19/2026 and 9/19/2027. That is \"If the item does not have an item master plan, the planning horizon is equal to the order horizon\" — Infor LN help for Item Order Plan (cprrp0520m000), Field Information, Planning Horizon — now shown in both states on two items."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file, the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The same frame settles the screen half of that question again: the Horizons tab exposes "
+            },
+            {
+              "t": "strong",
+              "v": "Order Horizon"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "strong",
+              "v": "Planning Horizon"
+            },
+            {
+              "t": "text",
+              "v": " and no third field, with Master Plan cleared just as with it selected. The vendor's "
+            },
+            {
+              "t": "strong",
+              "v": "master-planning horizon"
+            },
+            {
+              "t": "text",
+              "v": " still has no control on this tab. "
+            }
+          ],
+          "text": "The same frame settles the screen half of that question again: the Horizons tab exposes Order Horizon and Planning Horizon and no third field, with Master Plan cleared just as with it selected. The vendor's master-planning horizon still has no control on this tab."
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "Running MRP across the BOM, and a check box that is not the operator's to set",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1220m000",
+              "name": "Generate Order Planning (Item)"
+            },
+            {
+              "t": "text",
+              "v": " was run with "
+            },
+            {
+              "t": "strong",
+              "v": "Include Parent Items"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "strong",
+              "v": "Include Child Items"
+            },
+            {
+              "t": "text",
+              "v": " both selected — "
+            },
+            {
+              "t": "quote",
+              "v": "they're already checked off, but make sure that they include parent items and child items",
+              "at": "24:08"
+            },
+            {
+              "t": "text",
+              "v": ", because "
+            },
+            {
+              "t": "quote",
+              "v": "there's like a really complicated item with like 20 levels, it'll just plan everything out for you",
+              "at": "24:38"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Generate Order Planning (Item) (cprrp1220m000) was run with Include Parent Items and Include Child Items both selected — , because ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The full option set as deployed was captured, and it carries something the narration did not mention: "
+            },
+            {
+              "t": "strong",
+              "v": "Update Pegging Relations is selected and read-only"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The full option set as deployed was captured, and it carries something the narration did not mention: Update Pegging Relations is selected and read-only."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "That answers a question the 2026-08-20 review left open. Its §3.6 recorded that multi-level pegging requires pegging relations to have been generated, that this was never discussed on that call, and that the tree resolving anyway "
+            },
+            {
+              "t": "em",
+              "v": "\"suggests the environment already has it configured, but that was not shown\""
+            },
+            {
+              "t": "text",
+              "v": ". It is shown now — and the greyed-out state says more than a tick would. The help states: "
+            },
+            {
+              "t": "em",
+              "v": "\"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1220m000",
+              "name": "Generate Order Planning Item"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information. Disabled and selected therefore means the "
+            },
+            {
+              "t": "literal",
+              "v": "ACT"
+            },
+            {
+              "t": "text",
+              "v": " scenario is "
+            },
+            {
+              "t": "strong",
+              "v": "not"
+            },
+            {
+              "t": "text",
+              "v": " set to "
+            },
+            {
+              "t": "literal",
+              "v": "User Specified"
+            },
+            {
+              "t": "text",
+              "v": ", and pegging relations are updated on every run whether or not the operator wants them. No one on this call could have turned it off."
+            }
+          ],
+          "text": "That answers a question the 2026-08-20 review left open. Its §3.6 recorded that multi-level pegging requires pegging relations to have been generated, that this was never discussed on that call, and that the tree resolving anyway \"suggests the environment already has it configured, but that was not shown\". It is shown now — and the greyed-out state says more than a tick would. The help states: \"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information. Disabled and selected therefore means the ACT scenario is not set to User Specified, and pegging relations are updated on every run whether or not the operator wants them. No one on this call could have turned it off."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The same frame reads "
+            },
+            {
+              "t": "strong",
+              "v": "Item Master Plan → Generate"
+            },
+            {
+              "t": "text",
+              "v": " selected with "
+            },
+            {
+              "t": "strong",
+              "v": "Update"
+            },
+            {
+              "t": "text",
+              "v": " disabled, "
+            },
+            {
+              "t": "strong",
+              "v": "Time Fence → Generate within"
+            },
+            {
+              "t": "text",
+              "v": " selected, and "
+            },
+            {
+              "t": "strong",
+              "v": "Exception Messages → Print and Save"
+            },
+            {
+              "t": "text",
+              "v": " selected against the consultant's planner account."
+            }
+          ],
+          "text": "The same frame reads Item Master Plan → Generate selected with Update disabled, Time Fence → Generate within selected, and Exception Messages → Print and Save selected against the consultant's planner account."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "`cprrp1220m000`'s own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets."
+                },
+                {
+                  "t": "text",
+                  "v": " The topic opens "
+                },
+                {
+                  "t": "em",
+                  "v": "\"also generates planned orders for the"
+                },
+                {
+                  "t": "em",
+                  "v": "parent"
+                },
+                {
+                  "t": "text",
+                  "v": "* items (multi-level) of the specified plan item\"* — word for word the Include Parent Items text above it — before the bullet list below correctly gives "
+                },
+                {
+                  "t": "em",
+                  "v": "\"The components of the specified plan item (multi-level) in the item's bill of material.\""
+                },
+                {
+                  "t": "text",
+                  "v": " The duplication is in the PDF, not in the "
+                },
+                {
+                  "t": "literal",
+                  "v": "_text/"
+                },
+                {
+                  "t": "text",
+                  "v": " cache: two independent extractions of Infor LN help for "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning Item"
+                },
+                {
+                  "t": "text",
+                  "v": " produce it. Rely on the bullets, which match both the field's name and the observed result. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "`cprrp1220m000`'s own help contradicts itself on Include Child Items, and the wrong half is the first thing a reader meets. The topic opens \"also generates planned orders for theparent* items (multi-level) of the specified plan item\"* — word for word the Include Parent Items text above it — before the bullet list below correctly gives \"The components of the specified plan item (multi-level) in the item's bill of material.\" The duplication is in the PDF, not in the _text/ cache: two independent extractions of Infor LN help for Generate Order Planning Item (cprrp1220m000) produce it. Rely on the bullets, which match both the field's name and the observed result. Not documented for this release."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "The transfer, and the error report that documents its own rule",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " was reached from "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1100m000",
+              "name": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": " with rows ticked (27:20). Two planned purchase orders for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " were selected — "
+            },
+            {
+              "t": "literal",
+              "v": "000000346"
+            },
+            {
+              "t": "text",
+              "v": " for 6 ea and "
+            },
+            {
+              "t": "literal",
+              "v": "000000347"
+            },
+            {
+              "t": "text",
+              "v": " for 10 ea — leaving the two planned production orders for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " untouched."
+            }
+          ],
+          "text": "Transfer Order Planning (cppat1210m000) was reached from Planned Orders (cprrp1100m000) with rows ticked (27:20). Two planned purchase orders for BAM-ROD were selected — 000000346 for 6 ea and 000000347 for 10 ea — leaving the two planned production orders for BAM-CHOP-PAIR untouched."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The route into the session is narration only — the Actions menu was never captured open."
+                },
+                {
+                  "t": "text",
+                  "v": " The words on the call are "
+                },
+                {
+                  "t": "quote",
+                  "v": "actions, transfer order planning",
+                  "at": "27:20"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the four frames spanning the selection show the rows being ticked and the session already open, with the "
+                },
+                {
+                  "t": "strong",
+                  "v": "ACTIONS"
+                },
+                {
+                  "t": "text",
+                  "v": " control unexpanded in every one. This is precisely the capture §2.6 ranks first and the fourth time this library has recorded missing it. The standalone menu route is separately verified — "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", 2026-08-08 — but that is a different way in, and the form it opens is not the one used here. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "The route into the session is narration only — the Actions menu was never captured open. The words on the call are , and the four frames spanning the selection show the rows being ticked and the session already open, with the ACTIONS control unexpanded in every one. This is precisely the capture §2.6 ranks first and the fourth time this library has recorded missing it. The standalone menu route is separately verified — Planning ➔ Plan Transfer ➔ Transfer Order Planning, 2026-08-08 — but that is a different way in, and the form it opens is not the one used here. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The session as launched this way carries two tabs. "
+            },
+            {
+              "t": "strong",
+              "v": "External"
+            },
+            {
+              "t": "text",
+              "v": " holds "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase Order Type"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "IPO"
+            },
+            {
+              "t": "text",
+              "v": " \"Inventory Purchase Order\", "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase Order Series"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "1"
+            },
+            {
+              "t": "text",
+              "v": " \"Purchase Orders\", "
+            },
+            {
+              "t": "strong",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " selected, and Retain Buyer and Generate Request for Quotation cleared. "
+            },
+            {
+              "t": "strong",
+              "v": "Options"
+            },
+            {
+              "t": "text",
+              "v": " holds Transfer Text cleared, and "
+            },
+            {
+              "t": "strong",
+              "v": "Process Report"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "strong",
+              "v": "Error Report"
+            },
+            {
+              "t": "text",
+              "v": " both selected."
+            }
+          ],
+          "text": "The session as launched this way carries two tabs. External holds Purchase Order Type IPO \"Inventory Purchase Order\", Purchase Order Series 1 \"Purchase Orders\", Combine Orders selected, and Retain Buyer and Generate Request for Quotation cleared. Options holds Transfer Text cleared, and Process Report and Error Report both selected."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file, the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The first transfer failed, and its report is the most valuable single frame in the recording:"
+            }
+          ],
+          "text": "The first transfer failed, and its report is the most valuable single frame in the recording:"
+        },
+        {
+          "kind": "code",
+          "text": "Order Type                Order       Plan Item\nPlanned Purchase Order    000000346   NA1   BAM-ROD    Bamboo Rod\nError :\nPurchase Order cannot be generated.\nBuy-from BP cannot be determined for item BAM-ROD; neither valid Item - BP data\nis present, nor a BP is linked to Item Purchase Data."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", showing the same error against "
+            },
+            {
+              "t": "literal",
+              "v": "000000347"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file, showing the same error against 000000347"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The message names both places LN looks, and the fix screen shows both."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "em",
+              "v": "\"Item - BP data\""
+            },
+            {
+              "t": "text",
+              "v": " is the line-level "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Business Partner"
+            },
+            {
+              "t": "text",
+              "v": " tab; "
+            },
+            {
+              "t": "em",
+              "v": "\"a BP linked to Item Purchase Data\""
+            },
+            {
+              "t": "text",
+              "v": " is the header-level "
+            },
+            {
+              "t": "strong",
+              "v": "Buy-from BP"
+            },
+            {
+              "t": "text",
+              "v": " field on "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Purchase"
+            },
+            {
+              "t": "text",
+              "v": ". The frame taken during the repair has the two visible at once: the header "
+            },
+            {
+              "t": "strong",
+              "v": "Buy-from BP"
+            },
+            {
+              "t": "text",
+              "v": " field empty, and the newly added line below reading "
+            },
+            {
+              "t": "strong",
+              "v": "`BP4000006` FAIRFIELD ENGINEERING CO."
+            },
+            {
+              "t": "text",
+              "v": " on the "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Business Partner"
+            },
+            {
+              "t": "text",
+              "v": " tab — which is the third tab, as narrated ("
+            },
+            {
+              "t": "em",
+              "v": "\"the third tab at the line level says Item Business Partner\""
+            },
+            {
+              "t": "text",
+              "v": ", 30:07), and whose own status bar reads "
+            },
+            {
+              "t": "session",
+              "code": "tdipu0601m000"
+            },
+            {
+              "t": "text",
+              "v": " inside an "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Purchase"
+            },
+            {
+              "t": "text",
+              "v": " dialog opened from "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The message names both places LN looks, and the fix screen shows both. \"Item - BP data\" is the line-level Item - Business Partner tab; \"a BP linked to Item Purchase Data\" is the header-level Buy-from BP field on Item - Purchase. The frame taken during the repair has the two visible at once: the header Buy-from BP field empty, and the newly added line below reading `BP4000006` FAIRFIELD ENGINEERING CO. on the Item - Business Partner tab — which is the third tab, as narrated (\"the third tab at the line level says Item Business Partner\", 30:07), and whose own status bar reads tdipu0601m000 inside an Item - Purchase dialog opened from tcibd0501m100."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The reason given was mechanical and correct: "
+            },
+            {
+              "t": "quote",
+              "v": "this is where LN — where MRP picks up the buy-from business partner, because if not, it's not gonna know who to buy from",
+              "at": "30:23"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The reason given was mechanical and correct: ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "After the partner was added, the second transfer succeeded and printed:"
+            }
+          ],
+          "text": "After the partner was added, the second transfer succeeded and printed:"
+        },
+        {
+          "kind": "code",
+          "text": "Order Type                Order       Plan Item          Quantity      Transferred To\nPlanned Purchase Order    000000346   NA1   BAM-ROD       6.0000 ea    Purchase Order: 100000682\nPlanned Purchase Order    000000347   NA1   BAM-ROD      10.0000 ea    Purchase Order: 100000682"
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-25 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-25 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Two planned orders, one purchase order — Combine Orders proven on screen."
+            },
+            {
+              "t": "text",
+              "v": " The narration read it correctly off the report — "
+            },
+            {
+              "t": "quote",
+              "v": "they're not two POs, it's two lines but it's the same PO",
+              "at": "29:08"
+            },
+            {
+              "t": "text",
+              "v": " — and the vendor defines exactly this: "
+            },
+            {
+              "t": "em",
+              "v": "\"If this check box is selected, the application combines multiple planned purchase orders into a single purchase order. If this check box is cleared, each of the selected planned purchase orders is transferred into a single order line of purchase orders.\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000",
+              "name": "Transfer Order Planning"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information, "
+            },
+            {
+              "t": "em",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " (Purchase)."
+            }
+          ],
+          "text": "Two planned orders, one purchase order — Combine Orders proven on screen. The narration read it correctly off the report — — and the vendor defines exactly this: \"If this check box is selected, the application combines multiple planned purchase orders into a single purchase order. If this check box is cleared, each of the selected planned purchase orders is transferred into a single order line of purchase orders.\" — Infor LN help for Transfer Order Planning (cppat1210m000), Field Information, Combine Orders (Purchase)."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The two planned production orders were still `Planned` at the end of the recording, and that is correct, not a failure."
+                },
+                {
+                  "t": "text",
+                  "v": " Only the two planned purchase orders were ticked for transfer. It is worth stating because the closing frames show "
+                },
+                {
+                  "t": "literal",
+                  "v": "000000061"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "000000062"
+                },
+                {
+                  "t": "text",
+                  "v": " unchanged in "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", which reads like a transfer that did nothing. It also leaves the production half of the transfer — the half the unwritten transfer guide actually needs — still unwalked. "
+                }
+              ],
+              "text": "The two planned production orders were still `Planned` at the end of the recording, and that is correct, not a failure. Only the two planned purchase orders were ticked for transfer. It is worth stating because the closing frames show 000000061 and 000000062 unchanged in Planned Orders, which reads like a transfer that did nothing. It also leaves the production half of the transfer — the half the unwritten transfer guide actually needs — still unwalked."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.7",
+      "title": "Why rerunning planning is safe",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee asked whether rerunning would disturb existing orders. The answer was that regeneration replaces what it previously suggested and leaves real orders alone: "
+            },
+            {
+              "t": "quote",
+              "v": "it's gonna rerun planning, it's gonna regenerate orders, and any old orders, if they're obsolete, if they're not needed anymore, this should erase those… and the reason they're staying the same is because we didn't transfer any of them to actual order",
+              "at": "19:41"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The trainee asked whether rerunning would disturb existing orders. The answer was that regeneration replaces what it previously suggested and leaves real orders alone: ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The vendor states the rule precisely, and it is narrower than the narration: "
+            },
+            {
+              "t": "em",
+              "v": "\"LN always removes all previously generated planned orders with `Planned` order status before it starts a new simulation. Previously generated planned orders with `Confirmed` order status are retained.\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1220m000",
+              "name": "Generate Order Planning Item"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information, "
+            },
+            {
+              "t": "em",
+              "v": "Remove Firm Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": ". Three statuses are in play, not two: "
+            },
+            {
+              "t": "literal",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": " is swept every run, "
+            },
+            {
+              "t": "literal",
+              "v": "Confirmed"
+            },
+            {
+              "t": "text",
+              "v": " survives, and "
+            },
+            {
+              "t": "literal",
+              "v": "Firm Planned"
+            },
+            {
+              "t": "text",
+              "v": " is swept only when that check box is selected — it was cleared here."
+            }
+          ],
+          "text": "The vendor states the rule precisely, and it is narrower than the narration: \"LN always removes all previously generated planned orders with `Planned` order status before it starts a new simulation. Previously generated planned orders with `Confirmed` order status are retained.\" — Infor LN help for Generate Order Planning Item (cprrp1220m000), Field Information, Remove Firm Planned Orders. Three statuses are in play, not two: Planned is swept every run, Confirmed survives, and Firm Planned is swept only when that check box is selected — it was cleared here."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The narration's "
+            },
+            {
+              "t": "em",
+              "v": "\"if they're obsolete, if they're not needed anymore\""
+            },
+            {
+              "t": "text",
+              "v": " is therefore the right intuition with the wrong mechanism. LN does not assess obsolescence; it deletes every "
+            },
+            {
+              "t": "literal",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": " order and rebuilds. The visible result is identical whenever the rebuild reproduces the same suggestions, which is why the shorthand survives a training call — but a guide should not repeat it, because it implies orders can persist across a run on merit."
+            }
+          ],
+          "text": "The narration's \"if they're obsolete, if they're not needed anymore\" is therefore the right intuition with the wrong mechanism. LN does not assess obsolescence; it deletes every Planned order and rebuilds. The visible result is identical whenever the rebuild reproduces the same suggestions, which is why the shorthand survives a training call — but a guide should not repeat it, because it implies orders can persist across a run on merit."
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The trainee's next exercise is order-to-cash driven from planning"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "quote",
+              "v": "create your sales order… make your demand, run MRP, and then fulfill out all those orders and then ship against that item from beginning to end",
+              "at": "33:43"
+            },
+            {
+              "t": "text",
+              "v": ", with the demand deliberately exceeding on-hand so that both purchase and production are triggered, and with everything driven from the Item Order Plan."
+            }
+          ],
+          "text": "The trainee's next exercise is order-to-cash driven from planning — , with the demand deliberately exceeding on-hand so that both purchase and production are triggered, and with everything driven from the Item Order Plan."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The bamboo family continues as the training vehicle"
+            },
+            {
+              "t": "text",
+              "v": ", now across three consecutive sessions."
+            }
+          ],
+          "text": "The bamboo family continues as the training vehicle, now across three consecutive sessions."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Nothing was decided about the production-order half of the transfer."
+            },
+            {
+              "t": "text",
+              "v": " It was described as identical — "
+            },
+            {
+              "t": "quote",
+              "v": "it would be the same thing transferring production orders as well",
+              "at": "30:31"
+            },
+            {
+              "t": "text",
+              "v": " — and left undemonstrated."
+            }
+          ],
+          "text": "Nothing was decided about the production-order half of the transfer. It was described as identical — — and left undemonstrated."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run a full order-to-cash cycle driven from the Item Order Plan, including production of the finished item"
+                }
+              ],
+              "text": "Run a full order-to-cash cycle driven from the Item Order Plan, including production of the finished item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee"
+                }
+              ],
+              "text": "Trainee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open (assigned as practice, no date given)"
+                }
+              ],
+              "text": "Open (assigned as practice, no date given)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Establish why "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " generated no supply after its cluster was added"
+                }
+              ],
+              "text": "Establish why BAM-SLEEVE generated no supply after its cluster was added"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Export session help for the Item - Business Partner data the transfer depends on"
+                }
+              ],
+              "text": "Export session help for the Item - Business Partner data the transfer depends on"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee"
+                }
+              ],
+              "text": "Attendee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Walk the production-order transfer, which this session left undone"
+                }
+              ],
+              "text": "Walk the production-order transfer, which this session left undone"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Why did "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " still generate no planned order after its planning cluster was added and planning was rerun? The on-hand explanation offered on the call was never shown on screen "
+            }
+          ],
+          "text": "Why did BAM-SLEEVE still generate no planned order after its planning cluster was added and planning was rerun? The on-hand explanation offered on the call was never shown on screen"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Which of "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000"
+            },
+            {
+              "t": "text",
+              "v": "'s documented selections apply when the session is launched from ticked rows in "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1100m000"
+            },
+            {
+              "t": "text",
+              "v": " rather than standalone? The deployed form shows two tabs where the help documents eleven "
+            }
+          ],
+          "text": "Which of cppat1210m000's documented selections apply when the session is launched from ticked rows in cprrp1100m000 rather than standalone? The deployed form shows two tabs where the help documents eleven"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Where is the "
+            },
+            {
+              "t": "strong",
+              "v": "Item - Business Partner"
+            },
+            {
+              "t": "text",
+              "v": " relationship documented, and what makes an entry "
+            },
+            {
+              "t": "em",
+              "v": "\"valid\""
+            },
+            {
+              "t": "text",
+              "v": " in the error message's terms — effectivity date, or something else? "
+            }
+          ],
+          "text": "Where is the Item - Business Partner relationship documented, and what makes an entry \"valid\" in the error message's terms — effectivity date, or something else?"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Who was driving the shared screen before the consultant's tile appears at about 23:00? "
+            }
+          ],
+          "text": "Who was driving the shared screen before the consultant's tile appears at about 23:00?"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Is the multisite concept active? This session adds a third strand — an item "
+            },
+            {
+              "t": "strong",
+              "v": "Clusters"
+            },
+            {
+              "t": "text",
+              "v": " subtab that must be populated per item before planning will consider it — without opening the parameter. Narrows nothing that 2026-08-20 did not already narrow. "
+            }
+          ],
+          "text": "Is the multisite concept active? This session adds a third strand — an item Clusters subtab that must be populated per item before planning will consider it — without opening the parameter. Narrows nothing that 2026-08-20 did not already narrow."
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "An error message can be a better source than a screenshot of the field it points at."
+            },
+            {
+              "t": "text",
+              "v": " The buy-from failure named its own two-place lookup rule in one sentence — "
+            },
+            {
+              "t": "em",
+              "v": "\"neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data\""
+            },
+            {
+              "t": "text",
+              "v": " — which is more than either screen shows on its own, and more than any filed help says about this dependency. When a session fails during a walk, capture the report before dismissing it; it is the one moment LN explains itself unprompted. This is the same lesson learned by "
+            },
+            {
+              "t": "em",
+              "v": "not"
+            },
+            {
+              "t": "text",
+              "v": " capturing a dialog in 2026-08-18. "
+            }
+          ],
+          "text": "An error message can be a better source than a screenshot of the field it points at. The buy-from failure named its own two-place lookup rule in one sentence — \"neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data\" — which is more than either screen shows on its own, and more than any filed help says about this dependency. When a session fails during a walk, capture the report before dismissing it; it is the one moment LN explains itself unprompted. This is the same lesson learned by not capturing a dialog in 2026-08-18."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A greyed-out control is evidence about configuration, not just about the screen."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "Update Pegging Relations"
+            },
+            {
+              "t": "text",
+              "v": " being selected "
+            },
+            {
+              "t": "em",
+              "v": "and"
+            },
+            {
+              "t": "text",
+              "v": " disabled resolves a question the previous review had to leave open, because the help explains exactly which scenario setting disables it. A tick alone would have proved less. Capture the enabled/disabled state, not only the value."
+            }
+          ],
+          "text": "A greyed-out control is evidence about configuration, not just about the screen. Update Pegging Relations being selected and disabled resolves a question the previous review had to leave open, because the help explains exactly which scenario setting disables it. A tick alone would have proved less. Capture the enabled/disabled state, not only the value."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Capture the same tab twice in opposite states and the pair proves a rule."
+            },
+            {
+              "t": "text",
+              "v": " The Horizons tab with Master Plan cleared is only interesting beside the 2026-08-20 capture with it selected; together they demonstrate the planning-horizon rule without needing either narration. This is the paired-frame method §3.3 of the 2026-08-20 review already named, applied across two recordings five days apart rather than within one."
+            }
+          ],
+          "text": "Capture the same tab twice in opposite states and the pair proves a rule. The Horizons tab with Master Plan cleared is only interesting beside the 2026-08-20 capture with it selected; together they demonstrate the planning-horizon rule without needing either narration. This is the paired-frame method §3.3 of the 2026-08-20 review already named, applied across two recordings five days apart rather than within one."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The transcript needs a correction key before anyone reads it unaccompanied."
+            },
+            {
+              "t": "text",
+              "v": " Five mis-hearings recur and two of them look like real terms: "
+            },
+            {
+              "t": "em",
+              "v": "\"automotive plant\""
+            },
+            {
+              "t": "text",
+              "v": " is "
+            },
+            {
+              "t": "strong",
+              "v": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " throughout (10:14, 10:21, 26:11), "
+            },
+            {
+              "t": "em",
+              "v": "\"multi-level bombs\""
+            },
+            {
+              "t": "text",
+              "v": " is "
+            },
+            {
+              "t": "strong",
+              "v": "multi-level BOMs"
+            },
+            {
+              "t": "text",
+              "v": " (24:51), "
+            },
+            {
+              "t": "em",
+              "v": "\"MRT\""
+            },
+            {
+              "t": "text",
+              "v": " is "
+            },
+            {
+              "t": "strong",
+              "v": "MRP"
+            },
+            {
+              "t": "text",
+              "v": " (01:28), "
+            },
+            {
+              "t": "em",
+              "v": "\"Ellen's\""
+            },
+            {
+              "t": "text",
+              "v": " is "
+            },
+            {
+              "t": "strong",
+              "v": "LN is"
+            },
+            {
+              "t": "text",
+              "v": " (30:23), and "
+            },
+            {
+              "t": "em",
+              "v": "\"LA\""
+            },
+            {
+              "t": "text",
+              "v": " is "
+            },
+            {
+              "t": "strong",
+              "v": "LN"
+            },
+            {
+              "t": "text",
+              "v": " (32:13). A reader who does not know the product would take \"automotive plant\" for a site name."
+            }
+          ],
+          "text": "The transcript needs a correction key before anyone reads it unaccompanied. Five mis-hearings recur and two of them look like real terms: \"automotive plant\" is Item Order Plan throughout (10:14, 10:21, 26:11), \"multi-level bombs\" is multi-level BOMs (24:51), \"MRT\" is MRP (01:28), \"Ellen's\" is LN is (30:23), and \"LA\" is LN (32:13). A reader who does not know the product would take \"automotive plant\" for a site name."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Say which half of a step was walked."
+            },
+            {
+              "t": "text",
+              "v": " This session performs the transfer for planned "
+            },
+            {
+              "t": "em",
+              "v": "purchase"
+            },
+            {
+              "t": "text",
+              "v": " orders only. Recording it as \"the transfer was walked\" would have made the production half look closer to done than it is. "
+            }
+          ],
+          "text": "Say which half of a step was walked. This session performs the transfer for planned purchase orders only. Recording it as \"the transfer was walked\" would have made the production half look closer to done than it is."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Recording:"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+            }
+          ],
+          "text": "Recording: the source on file — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan"
+                }
+              ],
+              "text": "Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000"
+                }
+              ],
+              "text": "cprrp0520m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan - Find"
+                }
+              ],
+              "text": "Item Order Plan - Find"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0521s000"
+                }
+              ],
+              "text": "cprrp0521s000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Order Planning (Item)"
+                }
+              ],
+              "text": "Generate Order Planning (Item)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000"
+                }
+              ],
+              "text": "cprrp1220m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned Orders"
+                }
+              ],
+              "text": "Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                }
+              ],
+              "text": "cprrp1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Transfer Order Planning"
+                }
+              ],
+              "text": "Transfer Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cppat1210m000"
+                }
+              ],
+              "text": "cppat1210m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Planning"
+                }
+              ],
+              "text": "Items - Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                }
+              ],
+              "text": "cprpd1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Scenarios"
+                }
+              ],
+              "text": "Scenarios"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprpd4100m000"
+                }
+              ],
+              "text": "cprpd4100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item"
+                }
+              ],
+              "text": "Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100"
+                }
+              ],
+              "text": "tcibd0501m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item - Business Partner"
+                }
+              ],
+              "text": "Item - Business Partner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdipu0601m000"
+                }
+              ],
+              "text": "tdipu0601m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Purchase"
+                }
+              ],
+              "text": "Items - Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdipu0101m000"
+                }
+              ],
+              "text": "tdipu0101m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Bills of Material"
+                }
+              ],
+              "text": "Job Shop Bills of Material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3100m000"
+                }
+              ],
+              "text": "tibom3100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Bill of Material"
+                }
+              ],
+              "text": "Job Shop Bill of Material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3600m000"
+                }
+              ],
+              "text": "tibom3600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000"
+                }
+              ],
+              "text": "whwmd4300m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select Device"
+                }
+              ],
+              "text": "Select Device"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "ttstpsplopen"
+                }
+              ],
+              "text": "ttstpsplopen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Menu routes captured on screen"
+        },
+        {
+          "t": "text",
+          "v": ", from the navigation panel expanded in two frames: "
+        },
+        {
+          "t": "strong",
+          "v": "Planning ➔ Order Planning"
+        },
+        {
+          "t": "text",
+          "v": " holds "
+        },
+        {
+          "t": "em",
+          "v": "Special Demand by Item"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Generate Order Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Item Order Plan"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Planned Orders"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Planned Cost Peg Transfers"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "em",
+          "v": "Confirm Order Planning"
+        },
+        {
+          "t": "text",
+          "v": ", with "
+        },
+        {
+          "t": "em",
+          "v": "Master Data"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Master Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Resource Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Plan Analysis"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Plan Transfer"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "em",
+          "v": "Parameters"
+        },
+        {
+          "t": "text",
+          "v": " as Planning's other nodes; "
+        },
+        {
+          "t": "strong",
+          "v": "Master Data ➔ Items"
+        },
+        {
+          "t": "text",
+          "v": " holds "
+        },
+        {
+          "t": "em",
+          "v": "Items"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Items by Site"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Item Classification"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "em",
+          "v": "Defaults"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "em",
+          "v": "Miscellaneous"
+        },
+        {
+          "t": "text",
+          "v": ". These corroborate the 2026-08-20 navigation extract rather than adding to it, and are the first "
+        },
+        {
+          "t": "em",
+          "v": "screen"
+        },
+        {
+          "t": "text",
+          "v": " evidence for the Order Planning routes the library cites — "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Menu routes captured on screen, from the navigation panel expanded in two frames: Planning ➔ Order Planning holds Special Demand by Item, Generate Order Planning, Item Order Plan, Planned Orders, Planned Cost Peg Transfers and Confirm Order Planning, with Master Data, Master Planning, Resource Planning, Plan Analysis, Plan Transfer and Parameters as Planning's other nodes; Master Data ➔ Items holds Items, Items by Site, Item Classification, Defaults and Miscellaneous. These corroborate the 2026-08-20 navigation extract rather than adding to it, and are the first screen evidence for the Order Planning routes the library cites — the source on file, the source on file."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The two Job Shop BOM sessions are identified by tab title, not by status bar."
+        },
+        {
+          "t": "text",
+          "v": " They were opened as browser tabs while the BOM was checked at 11:40 and their status bars were never in frame; "
+        },
+        {
+          "t": "em",
+          "v": "Job Shop Bills of Material"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "em",
+          "v": "Job Shop Bill of Material"
+        },
+        {
+          "t": "text",
+          "v": " match the filed help for "
+        },
+        {
+          "t": "session",
+          "code": "tibom3100m000"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "session",
+          "code": "tibom3600m000"
+        },
+        {
+          "t": "text",
+          "v": " exactly, which is the whole basis for the two codes. Every other code in the table was read off a status bar."
+        }
+      ],
+      "text": "The two Job Shop BOM sessions are identified by tab title, not by status bar. They were opened as browser tabs while the BOM was checked at 11:40 and their status bars were never in frame; Job Shop Bills of Material and Job Shop Bill of Material match the filed help for tibom3100m000 and tibom3600m000 exactly, which is the whole basis for the two codes. Every other code in the table was read off a status bar."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Three of the codes above are drill-in only and are not gaps"
+        },
+        {
+          "t": "text",
+          "v": " per §4.1. "
+        },
+        {
+          "t": "session",
+          "code": "cprrp0521s000"
+        },
+        {
+          "t": "text",
+          "v": " is the Find selection form of the Item Order Plan; "
+        },
+        {
+          "t": "session",
+          "code": "tdipu0601m000"
+        },
+        {
+          "t": "text",
+          "v": " is the Item - Business Partner tab inside an Item - Purchase dialog; "
+        },
+        {
+          "t": "literal",
+          "v": "ttstpsplopen"
+        },
+        {
+          "t": "text",
+          "v": " is LN's shared Select Device dialog. None appears in "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": ", which is the expected result for a form reached from inside another session."
+        }
+      ],
+      "text": "Three of the codes above are drill-in only and are not gaps per §4.1. cprrp0521s000 is the Find selection form of the Item Order Plan; tdipu0601m000 is the Item - Business Partner tab inside an Item - Purchase dialog; ttstpsplopen is LN's shared Select Device dialog. None appears in the source on file, which is the expected result for a form reached from inside another session."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Session help is filed for four of the thirteen"
+        },
+        {
+          "t": "text",
+          "v": " — "
+        },
+        {
+          "t": "session",
+          "code": "cprrp0520m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "cprrp1220m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "cprrp1100m000"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "session",
+          "code": "cppat1210m000"
+        },
+        {
+          "t": "text",
+          "v": " — which is why this review's load-bearing claims could be verified rather than left as leads. The "
+        },
+        {
+          "t": "literal",
+          "v": "cprpd"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "literal",
+          "v": "cprmp"
+        },
+        {
+          "t": "text",
+          "v": " prefixes remain entirely unexported, and neither "
+        },
+        {
+          "t": "session",
+          "code": "tdipu0101m000"
+        },
+        {
+          "t": "text",
+          "v": " nor "
+        },
+        {
+          "t": "session",
+          "code": "tdipu0601m000"
+        },
+        {
+          "t": "text",
+          "v": " has help. "
+        }
+      ],
+      "text": "Session help is filed for four of the thirteen — cprrp0520m000, cprrp1220m000, cprrp1100m000 and cppat1210m000 — which is why this review's load-bearing claims could be verified rather than left as leads. The cprpd and cprmp prefixes remain entirely unexported, and neither tdipu0101m000 nor tdipu0601m000 has help."
+    }
+  ]
+}

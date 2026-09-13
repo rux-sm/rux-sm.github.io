@@ -1,0 +1,121 @@
+<section class="ks-sec" id="radio">
+  <h2>Radio button</h2><p>vertical · horizontal · disabled · label placement</p>
+  <!-- PROVENANCE: rendered-dom · components-radiobutton--default with its
+       invalid, warn and readonly recipes, plus --vertical, 2026-08-27:
+       the GROUP is the fieldset — form-item > fieldset.radio-button-group >
+       legend.label, with the validation message a sibling of the fieldset.
+       Carbon always emits --label-right (labelPosition defaults to right).
+       · 2026-08-28: re-diffed clean on nesting and tags. The omissions report
+       lists the ai-label decorator chrome from radiobutton--with-ai-label,
+       which is the AI variant this fragment does not demo and which belongs to
+       the ai-label fragment. -->
+  <div class="ks-row" style="gap:4rem">
+    <div class="rux--form-item">
+      <!-- THE THREE INPUTS SHARE name="rb", AND TWO COPIES ON ONE PAGE DO NOT MERGE.
+           builder/rewrites.mjs suffixes a `name` only when the tag is an
+           input[type=radio], so a second instance becomes name="rb-2" and keeps its
+           own selection. That branch is invisible from here, which is why it is
+           written down: without it, marking a radio group would look unsafe. -->
+      <!-- BLOCK:BEGIN name=group label="Radio button group" -->
+      <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical">
+        <legend class="rux--label">Pick one</legend>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-1" class="rux--radio-button" type="radio" name="rb" checked>
+          <label for="rb-1" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Selected</span>
+          </label>
+        </div>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-2" class="rux--radio-button" type="radio" name="rb">
+          <label for="rb-2" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Unselected</span>
+          </label>
+        </div>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-3" class="rux--radio-button" type="radio" name="rb" disabled>
+          <label for="rb-3" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Disabled</span>
+          </label>
+        </div>
+      </fieldset>
+      <!-- BLOCK:END group -->
+    </div>
+
+    <div class="rux--form-item">
+      <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical rux--radio-button-group--invalid">
+        <legend class="rux--label">Invalid</legend>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-6" class="rux--radio-button" type="radio" name="rb3" aria-invalid="true">
+          <label for="rb-6" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Pick one</span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="rux--radio-button__validation-msg">
+        <svg class="rux--radio-button__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <div class="rux--form-requirement">A selection is required</div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical rux--radio-button-group--warning">
+        <legend class="rux--label">Warning</legend>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-7" class="rux--radio-button" type="radio" name="rb4" checked>
+          <label for="rb-7" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Delete after 30 days</span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="rux--radio-button__validation-msg">
+        <svg class="rux--radio-button__invalid-icon rux--radio-button__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
+        <div class="rux--form-requirement">Records cannot be recovered</div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical rux--radio-button-group--readonly">
+        <legend class="rux--label">Read-only</legend>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-8" class="rux--radio-button" type="radio" name="rb5" checked aria-readonly="true">
+          <label for="rb-8" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Set by policy</span>
+          </label>
+        </div>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-9" class="rux--radio-button" type="radio" name="rb5" aria-readonly="true">
+          <label for="rb-9" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Not available</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="rux--form-item">
+      <fieldset class="rux--radio-button-group rux--radio-button-group--label-right">
+        <legend class="rux--label">Horizontal</legend>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-4" class="rux--radio-button" type="radio" name="rb2" checked>
+          <label for="rb-4" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">One</span>
+          </label>
+        </div>
+        <div class="rux--radio-button-wrapper">
+          <input id="rb-5" class="rux--radio-button" type="radio" name="rb2">
+          <label for="rb-5" class="rux--radio-button__label">
+            <span class="rux--radio-button__appearance"></span>
+            <span class="rux--radio-button__label-text">Two</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</section>

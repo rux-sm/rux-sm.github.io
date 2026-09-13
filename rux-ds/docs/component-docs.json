@@ -1,0 +1,589 @@
+{
+  "_meta": {
+    "generated": "2026-09-02",
+    "from": "carbon-website/src/data/nav-items.yaml, carbon-website/src/pages/components/, and docs/carbon-*.json",
+    "pagesInNav": 42,
+    "note": "Generated where the quarry is and committed, because carbon-website/ is gitignored and no gate reads it. Re-run tools/build-component-docs.mjs after a carbon-website pull."
+  },
+  "components": {
+    "EditInPlace": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-editinplace--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-editinplace--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "FullPageError": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-fullpageerror--full-page-error",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-fullpageerror--full-page-error",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "OptionsTile": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-optionstile--options-tile",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-optionstile--options-tile",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "accordion": {
+      "kind": "page",
+      "title": "Accordion",
+      "usage": "https://carbondesignsystem.com/components/accordion/usage/",
+      "style": "https://carbondesignsystem.com/components/accordion/style/",
+      "accessibility": "https://carbondesignsystem.com/components/accordion/accessibility/"
+    },
+    "action-set": {
+      "kind": "none",
+      "why": "no page in IBM’s nav and no captured story: nothing to link that this repository can attest"
+    },
+    "ai-label": {
+      "kind": "page",
+      "title": "AI label",
+      "usage": "https://carbondesignsystem.com/components/ai-label/usage/",
+      "style": "https://carbondesignsystem.com/components/ai-label/style/",
+      "accessibility": "https://carbondesignsystem.com/components/ai-label/accessibility/"
+    },
+    "aspect-ratio": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-aspectratio--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-aspectratio--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "badge-indicator": {
+      "kind": "story",
+      "site": "react",
+      "story": "components-iconbutton--with-badge-indicator",
+      "specimen": "https://react.carbondesignsystem.com/iframe.html?id=components-iconbutton--with-badge-indicator",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "big-number": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "preview-candidate-bignumber--big-number",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=preview-candidate-bignumber--big-number",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "breadcrumb": {
+      "kind": "page",
+      "title": "Breadcrumb",
+      "usage": "https://carbondesignsystem.com/components/breadcrumb/usage/",
+      "style": "https://carbondesignsystem.com/components/breadcrumb/style/",
+      "accessibility": "https://carbondesignsystem.com/components/breadcrumb/accessibility/"
+    },
+    "button": {
+      "kind": "page",
+      "title": "Button",
+      "usage": "https://carbondesignsystem.com/components/button/usage/",
+      "style": "https://carbondesignsystem.com/components/button/style/",
+      "accessibility": "https://carbondesignsystem.com/components/button/accessibility/"
+    },
+    "card": {
+      "kind": "story",
+      "site": "react",
+      "story": "preview-preview-card--default",
+      "specimen": "https://react.carbondesignsystem.com/iframe.html?id=preview-preview-card--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "chat-button": {
+      "kind": "story",
+      "site": "react",
+      "story": "preview-preview-chatbutton--default",
+      "specimen": "https://react.carbondesignsystem.com/iframe.html?id=preview-preview-chatbutton--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "checkbox": {
+      "kind": "page",
+      "title": "Checkbox",
+      "usage": "https://carbondesignsystem.com/components/checkbox/usage/",
+      "style": "https://carbondesignsystem.com/components/checkbox/style/",
+      "accessibility": "https://carbondesignsystem.com/components/checkbox/accessibility/"
+    },
+    "code-snippet": {
+      "kind": "page",
+      "title": "Code snippet",
+      "usage": "https://carbondesignsystem.com/components/code-snippet/usage/",
+      "style": "https://carbondesignsystem.com/components/code-snippet/style/",
+      "accessibility": "https://carbondesignsystem.com/components/code-snippet/accessibility/"
+    },
+    "combo-box": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"combo box\" occurs 43× on dropdown, 2× on form"
+    },
+    "combo-button": {
+      "kind": "alias",
+      "title": "Menu buttons",
+      "usage": "https://carbondesignsystem.com/components/menu-buttons/usage/",
+      "style": "https://carbondesignsystem.com/components/menu-buttons/style/",
+      "accessibility": "https://carbondesignsystem.com/components/menu-buttons/accessibility/",
+      "page": "menu-buttons",
+      "evidence": "\"combo button\" occurs 63× on menu-buttons, 9× on menu, 1× on data-table"
+    },
+    "contained-list": {
+      "kind": "page",
+      "title": "Contained list",
+      "usage": "https://carbondesignsystem.com/components/contained-list/usage/",
+      "style": "https://carbondesignsystem.com/components/contained-list/style/",
+      "accessibility": "https://carbondesignsystem.com/components/contained-list/accessibility/"
+    },
+    "content-switcher": {
+      "kind": "page",
+      "title": "Content switcher",
+      "usage": "https://carbondesignsystem.com/components/content-switcher/usage/",
+      "style": "https://carbondesignsystem.com/components/content-switcher/style/",
+      "accessibility": "https://carbondesignsystem.com/components/content-switcher/accessibility/"
+    },
+    "copy-button": {
+      "kind": "alias",
+      "title": "Code snippet",
+      "usage": "https://carbondesignsystem.com/components/code-snippet/usage/",
+      "style": "https://carbondesignsystem.com/components/code-snippet/style/",
+      "accessibility": "https://carbondesignsystem.com/components/code-snippet/accessibility/",
+      "page": "code-snippet",
+      "evidence": "\"copy button\" occurs 10× on code-snippet"
+    },
+    "data-table": {
+      "kind": "page",
+      "title": "Data table",
+      "usage": "https://carbondesignsystem.com/components/data-table/usage/",
+      "style": "https://carbondesignsystem.com/components/data-table/style/",
+      "accessibility": "https://carbondesignsystem.com/components/data-table/accessibility/"
+    },
+    "date-picker": {
+      "kind": "page",
+      "title": "Date picker",
+      "usage": "https://carbondesignsystem.com/components/date-picker/usage/",
+      "style": "https://carbondesignsystem.com/components/date-picker/style/",
+      "accessibility": "https://carbondesignsystem.com/components/date-picker/accessibility/"
+    },
+    "dialog": {
+      "kind": "alias",
+      "title": "Modal",
+      "usage": "https://carbondesignsystem.com/components/modal/usage/",
+      "style": "https://carbondesignsystem.com/components/modal/style/",
+      "accessibility": "https://carbondesignsystem.com/components/modal/accessibility/",
+      "page": "modal",
+      "evidence": "\"dialog\" occurs 24× on modal, 9× on button, 5× on file-uploader"
+    },
+    "dropdown": {
+      "kind": "page",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/"
+    },
+    "file-uploader": {
+      "kind": "page",
+      "title": "File uploader",
+      "usage": "https://carbondesignsystem.com/components/file-uploader/usage/",
+      "style": "https://carbondesignsystem.com/components/file-uploader/style/",
+      "accessibility": "https://carbondesignsystem.com/components/file-uploader/accessibility/"
+    },
+    "fluid-combo-box": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"combo box\" occurs 43× on dropdown, 2× on form"
+    },
+    "fluid-date-picker": {
+      "kind": "alias",
+      "title": "Date picker",
+      "usage": "https://carbondesignsystem.com/components/date-picker/usage/",
+      "style": "https://carbondesignsystem.com/components/date-picker/style/",
+      "accessibility": "https://carbondesignsystem.com/components/date-picker/accessibility/",
+      "page": "date-picker",
+      "evidence": "\"date picker\" occurs 54× on date-picker, 2× on form, 1× on ai-label"
+    },
+    "fluid-dropdown": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"dropdown\" occurs 272× on dropdown, 14× on select, 7× on menu"
+    },
+    "fluid-list-box": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"list box\" occurs 1× on dropdown"
+    },
+    "fluid-multiselect": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"multiselect\" occurs 71× on dropdown, 4× on tile, 3× on form"
+    },
+    "fluid-number-input": {
+      "kind": "alias",
+      "title": "Number input",
+      "usage": "https://carbondesignsystem.com/components/number-input/usage/",
+      "style": "https://carbondesignsystem.com/components/number-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/number-input/accessibility/",
+      "page": "number-input",
+      "evidence": "\"number input\" occurs 71× on number-input, 28× on slider, 2× on ai-label"
+    },
+    "fluid-search": {
+      "kind": "alias",
+      "title": "Search",
+      "usage": "https://carbondesignsystem.com/components/search/usage/",
+      "style": "https://carbondesignsystem.com/components/search/style/",
+      "accessibility": "https://carbondesignsystem.com/components/search/accessibility/",
+      "page": "search",
+      "evidence": "\"search\" occurs 152× on search, 19× on data-table, 10× on contained-list"
+    },
+    "fluid-select": {
+      "kind": "alias",
+      "title": "Select",
+      "usage": "https://carbondesignsystem.com/components/select/usage/",
+      "style": "https://carbondesignsystem.com/components/select/style/",
+      "accessibility": "https://carbondesignsystem.com/components/select/accessibility/",
+      "page": "select",
+      "evidence": "\"select\" occurs 181× on select, 171× on dropdown, 114× on tabs"
+    },
+    "fluid-text-area": {
+      "kind": "alias",
+      "title": "Text input",
+      "usage": "https://carbondesignsystem.com/components/text-input/usage/",
+      "style": "https://carbondesignsystem.com/components/text-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/text-input/accessibility/",
+      "page": "text-input",
+      "evidence": "\"text area\" occurs 63× on text-input, 2× on form"
+    },
+    "fluid-text-input": {
+      "kind": "alias",
+      "title": "Text input",
+      "usage": "https://carbondesignsystem.com/components/text-input/usage/",
+      "style": "https://carbondesignsystem.com/components/text-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/text-input/accessibility/",
+      "page": "text-input",
+      "evidence": "\"text input\" occurs 86× on text-input, 16× on form, 9× on date-picker"
+    },
+    "fluid-time-picker": {
+      "kind": "alias",
+      "title": "Date picker",
+      "usage": "https://carbondesignsystem.com/components/date-picker/usage/",
+      "style": "https://carbondesignsystem.com/components/date-picker/style/",
+      "accessibility": "https://carbondesignsystem.com/components/date-picker/accessibility/",
+      "page": "date-picker",
+      "evidence": "\"time picker\" occurs 43× on date-picker"
+    },
+    "form": {
+      "kind": "page",
+      "title": "Form",
+      "usage": "https://carbondesignsystem.com/components/form/usage/",
+      "style": "https://carbondesignsystem.com/components/form/style/",
+      "accessibility": "https://carbondesignsystem.com/components/form/accessibility/"
+    },
+    "icon-indicator": {
+      "kind": "story",
+      "site": "react",
+      "story": "preview-statusindicators-preview-iconindicator--default",
+      "specimen": "https://react.carbondesignsystem.com/iframe.html?id=preview-statusindicators-preview-iconindicator--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "inline-loading": {
+      "kind": "page",
+      "title": "Inline loading",
+      "usage": "https://carbondesignsystem.com/components/inline-loading/usage/",
+      "style": "https://carbondesignsystem.com/components/inline-loading/style/",
+      "accessibility": "https://carbondesignsystem.com/components/inline-loading/accessibility/"
+    },
+    "link": {
+      "kind": "page",
+      "title": "Link",
+      "usage": "https://carbondesignsystem.com/components/link/usage/",
+      "style": "https://carbondesignsystem.com/components/link/style/",
+      "accessibility": "https://carbondesignsystem.com/components/link/accessibility/"
+    },
+    "list": {
+      "kind": "page",
+      "title": "List",
+      "usage": "https://carbondesignsystem.com/components/list/usage/",
+      "style": "https://carbondesignsystem.com/components/list/style/",
+      "accessibility": "https://carbondesignsystem.com/components/list/accessibility/"
+    },
+    "list-box": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"list box\" occurs 1× on dropdown"
+    },
+    "loading": {
+      "kind": "page",
+      "title": "Loading",
+      "usage": "https://carbondesignsystem.com/components/loading/usage/",
+      "style": "https://carbondesignsystem.com/components/loading/style/",
+      "accessibility": "https://carbondesignsystem.com/components/loading/accessibility/"
+    },
+    "menu": {
+      "kind": "page",
+      "title": "Menu",
+      "usage": "https://carbondesignsystem.com/components/menu/usage/",
+      "style": "https://carbondesignsystem.com/components/menu/style/",
+      "accessibility": "https://carbondesignsystem.com/components/menu/accessibility/"
+    },
+    "menu-button": {
+      "kind": "alias",
+      "title": "Menu buttons",
+      "usage": "https://carbondesignsystem.com/components/menu-buttons/usage/",
+      "style": "https://carbondesignsystem.com/components/menu-buttons/style/",
+      "accessibility": "https://carbondesignsystem.com/components/menu-buttons/accessibility/",
+      "page": "menu-buttons",
+      "evidence": "\"menu button\" occurs 95× on menu-buttons, 25× on menu, 5× on button"
+    },
+    "modal": {
+      "kind": "page",
+      "title": "Modal",
+      "usage": "https://carbondesignsystem.com/components/modal/usage/",
+      "style": "https://carbondesignsystem.com/components/modal/style/",
+      "accessibility": "https://carbondesignsystem.com/components/modal/accessibility/"
+    },
+    "multiselect": {
+      "kind": "alias",
+      "title": "Dropdown",
+      "usage": "https://carbondesignsystem.com/components/dropdown/usage/",
+      "style": "https://carbondesignsystem.com/components/dropdown/style/",
+      "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/",
+      "page": "dropdown",
+      "evidence": "\"multiselect\" occurs 71× on dropdown, 4× on tile, 3× on form"
+    },
+    "notification": {
+      "kind": "page",
+      "title": "Notification",
+      "usage": "https://carbondesignsystem.com/components/notification/usage/",
+      "style": "https://carbondesignsystem.com/components/notification/style/",
+      "accessibility": "https://carbondesignsystem.com/components/notification/accessibility/"
+    },
+    "number-input": {
+      "kind": "page",
+      "title": "Number input",
+      "usage": "https://carbondesignsystem.com/components/number-input/usage/",
+      "style": "https://carbondesignsystem.com/components/number-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/number-input/accessibility/"
+    },
+    "overflow-menu": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-overflowmenu--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-overflowmenu--default",
+      "why": "IBM’s nav no longer lists its page, though the directory survives in the quarry; a captured specimen, not usage guidance"
+    },
+    "pagination": {
+      "kind": "page",
+      "title": "Pagination",
+      "usage": "https://carbondesignsystem.com/components/pagination/usage/",
+      "style": "https://carbondesignsystem.com/components/pagination/style/",
+      "accessibility": "https://carbondesignsystem.com/components/pagination/accessibility/"
+    },
+    "pagination-nav": {
+      "kind": "alias",
+      "title": "Pagination",
+      "usage": "https://carbondesignsystem.com/components/pagination/usage/",
+      "style": "https://carbondesignsystem.com/components/pagination/style/",
+      "accessibility": "https://carbondesignsystem.com/components/pagination/accessibility/",
+      "page": "pagination",
+      "evidence": "\"pagination nav\" occurs 51× on pagination"
+    },
+    "popover": {
+      "kind": "page",
+      "title": "Popover",
+      "usage": "https://carbondesignsystem.com/components/popover/usage/",
+      "style": "https://carbondesignsystem.com/components/popover/style/",
+      "accessibility": "https://carbondesignsystem.com/components/popover/accessibility/"
+    },
+    "progress-bar": {
+      "kind": "page",
+      "title": "Progress bar",
+      "usage": "https://carbondesignsystem.com/components/progress-bar/usage/",
+      "style": "https://carbondesignsystem.com/components/progress-bar/style/",
+      "accessibility": "https://carbondesignsystem.com/components/progress-bar/accessibility/"
+    },
+    "progress-indicator": {
+      "kind": "page",
+      "title": "Progress indicator",
+      "usage": "https://carbondesignsystem.com/components/progress-indicator/usage/",
+      "style": "https://carbondesignsystem.com/components/progress-indicator/style/",
+      "accessibility": "https://carbondesignsystem.com/components/progress-indicator/accessibility/"
+    },
+    "radio-button": {
+      "kind": "page",
+      "title": "Radio button",
+      "usage": "https://carbondesignsystem.com/components/radio-button/usage/",
+      "style": "https://carbondesignsystem.com/components/radio-button/style/",
+      "accessibility": "https://carbondesignsystem.com/components/radio-button/accessibility/"
+    },
+    "scroll-gradient": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "utilities-scrollgradient--scroll-gradient-vertical",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=utilities-scrollgradient--scroll-gradient-vertical",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "search": {
+      "kind": "page",
+      "title": "Search",
+      "usage": "https://carbondesignsystem.com/components/search/usage/",
+      "style": "https://carbondesignsystem.com/components/search/style/",
+      "accessibility": "https://carbondesignsystem.com/components/search/accessibility/"
+    },
+    "select": {
+      "kind": "page",
+      "title": "Select",
+      "usage": "https://carbondesignsystem.com/components/select/usage/",
+      "style": "https://carbondesignsystem.com/components/select/style/",
+      "accessibility": "https://carbondesignsystem.com/components/select/accessibility/"
+    },
+    "shape-indicator": {
+      "kind": "story",
+      "site": "react",
+      "story": "preview-statusindicators-preview-shapeindicator--default",
+      "specimen": "https://react.carbondesignsystem.com/iframe.html?id=preview-statusindicators-preview-shapeindicator--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "side-panel": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-sidepanel--slide-in",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-sidepanel--slide-in",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "skeleton-styles": {
+      "kind": "none",
+      "why": "no page in IBM’s nav and no captured story: nothing to link that this repository can attest"
+    },
+    "slider": {
+      "kind": "page",
+      "title": "Slider",
+      "usage": "https://carbondesignsystem.com/components/slider/usage/",
+      "style": "https://carbondesignsystem.com/components/slider/style/",
+      "accessibility": "https://carbondesignsystem.com/components/slider/accessibility/"
+    },
+    "stack": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "patterns-coachmark-stacked--coachmark-stack",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=patterns-coachmark-stacked--coachmark-stack",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "structured-list": {
+      "kind": "page",
+      "title": "Structured list",
+      "usage": "https://carbondesignsystem.com/components/structured-list/usage/",
+      "style": "https://carbondesignsystem.com/components/structured-list/style/",
+      "accessibility": "https://carbondesignsystem.com/components/structured-list/accessibility/"
+    },
+    "tabs": {
+      "kind": "page",
+      "title": "Tabs",
+      "usage": "https://carbondesignsystem.com/components/tabs/usage/",
+      "style": "https://carbondesignsystem.com/components/tabs/style/",
+      "accessibility": "https://carbondesignsystem.com/components/tabs/accessibility/"
+    },
+    "tag": {
+      "kind": "page",
+      "title": "Tag",
+      "usage": "https://carbondesignsystem.com/components/tag/usage/",
+      "style": "https://carbondesignsystem.com/components/tag/style/",
+      "accessibility": "https://carbondesignsystem.com/components/tag/accessibility/"
+    },
+    "text-area": {
+      "kind": "alias",
+      "title": "Text input",
+      "usage": "https://carbondesignsystem.com/components/text-input/usage/",
+      "style": "https://carbondesignsystem.com/components/text-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/text-input/accessibility/",
+      "page": "text-input",
+      "evidence": "\"text area\" occurs 63× on text-input, 2× on form"
+    },
+    "text-input": {
+      "kind": "page",
+      "title": "Text input",
+      "usage": "https://carbondesignsystem.com/components/text-input/usage/",
+      "style": "https://carbondesignsystem.com/components/text-input/style/",
+      "accessibility": "https://carbondesignsystem.com/components/text-input/accessibility/"
+    },
+    "tile": {
+      "kind": "page",
+      "title": "Tile",
+      "usage": "https://carbondesignsystem.com/components/tile/usage/",
+      "style": "https://carbondesignsystem.com/components/tile/style/",
+      "accessibility": "https://carbondesignsystem.com/components/tile/accessibility/"
+    },
+    "time-picker": {
+      "kind": "alias",
+      "title": "Date picker",
+      "usage": "https://carbondesignsystem.com/components/date-picker/usage/",
+      "style": "https://carbondesignsystem.com/components/date-picker/style/",
+      "accessibility": "https://carbondesignsystem.com/components/date-picker/accessibility/",
+      "page": "date-picker",
+      "evidence": "\"time picker\" occurs 43× on date-picker"
+    },
+    "toggle": {
+      "kind": "page",
+      "title": "Toggle",
+      "usage": "https://carbondesignsystem.com/components/toggle/usage/",
+      "style": "https://carbondesignsystem.com/components/toggle/style/",
+      "accessibility": "https://carbondesignsystem.com/components/toggle/accessibility/"
+    },
+    "toggletip": {
+      "kind": "page",
+      "title": "Toggletip",
+      "usage": "https://carbondesignsystem.com/components/toggletip/usage/",
+      "style": "https://carbondesignsystem.com/components/toggletip/style/",
+      "accessibility": "https://carbondesignsystem.com/components/toggletip/accessibility/"
+    },
+    "tooltip": {
+      "kind": "page",
+      "title": "Tooltip",
+      "usage": "https://carbondesignsystem.com/components/tooltip/usage/",
+      "style": "https://carbondesignsystem.com/components/tooltip/style/",
+      "accessibility": "https://carbondesignsystem.com/components/tooltip/accessibility/"
+    },
+    "treeview": {
+      "kind": "alias",
+      "title": "Tree view",
+      "usage": "https://carbondesignsystem.com/components/tree-view/usage/",
+      "style": "https://carbondesignsystem.com/components/tree-view/style/",
+      "accessibility": "https://carbondesignsystem.com/components/tree-view/accessibility/",
+      "page": "tree-view",
+      "evidence": "\"treeview\" occurs 16× on tree-view"
+    },
+    "ui-shell": {
+      "kind": "alias",
+      "title": "UI shell header",
+      "usage": "https://carbondesignsystem.com/components/UI-shell-header/usage/",
+      "style": "https://carbondesignsystem.com/components/UI-shell-header/style/",
+      "accessibility": "https://carbondesignsystem.com/components/UI-shell-header/accessibility/",
+      "page": "UI-shell-header",
+      "evidence": "\"ui shell\" occurs 31× on UI-shell-header, 24× on UI-shell-left-panel, 23× on UI-shell-right-panel"
+    },
+    "user-avatar": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-useravatar--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-useravatar--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    }
+  }
+}

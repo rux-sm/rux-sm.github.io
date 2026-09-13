@@ -1,0 +1,46 @@
+<section class="ks-sec" id="edit-in-place">
+  <h2>Edit in place</h2><p>default · invalid</p>
+  <!-- PROVENANCE: rendered-dom · components-editinplace--default and
+       --invalid on the ibm-products origin, 2026-08-31 -->
+  <!--
+    The captures render c4p--edit-in-place beside cds-- primitives; the
+    absorbed @carbon/styles component compiles both families under rux-- here.
+    __btn and text-input--sm appear in every capture and have no compiled rule;
+    §4.1.12 therefore leaves them unwritten. The icon-tooltip wrapper is kept:
+    check-ancestry proves every captured edit button sits inside it, so dropping
+    it would make this component an exception to the captured structure. The
+    read-only story is omitted: it
+    is a toggletip composition rather than another edit state, while the two
+    structures below exercise every class needed for the captured editable
+    and invalid forms.
+  -->
+  <div class="ks-stack" style="max-inline-size:32rem">
+    <div class="rux--edit-in-place rux--edit-in-place--sm">
+      <input class="rux--edit-in-place__text-input rux--text-input" aria-invalid="false" aria-label="Project name" value="Atlas migration">
+      <div class="rux--edit-in-place__toolbar">
+        <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--top rux--tooltip rux--icon-tooltip">
+          <div class="rux--tooltip-trigger__wrapper">
+            <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-default"><svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-edit"/></svg></button>
+          </div>
+          <span class="rux--popover" role="tooltip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content" id="eip-tip-default">Edit project name</span><span class="rux--popover-caret"></span></span>
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <div class="rux--edit-in-place rux--edit-in-place--sm rux--edit-in-place--invalid">
+        <input class="rux--edit-in-place__text-input rux--text-input" aria-invalid="true" aria-describedby="eip-warning" aria-label="Project code" value="">
+        <div class="rux--edit-in-place__toolbar">
+          <svg class="rux--edit-in-place__warning-icon" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--top rux--tooltip rux--icon-tooltip">
+            <div class="rux--tooltip-trigger__wrapper">
+              <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-invalid"><svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-edit"/></svg></button>
+            </div>
+            <span class="rux--popover" role="tooltip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content" id="eip-tip-invalid">Edit project code</span><span class="rux--popover-caret"></span></span>
+          </span>
+        </div>
+      </div>
+      <p class="rux--edit-in-place__warning-text" id="eip-warning">Enter a project code</p>
+    </div>
+  </div>
+</section>

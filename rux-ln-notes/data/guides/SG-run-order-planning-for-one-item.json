@@ -1,0 +1,2714 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-run-order-planning-for-one-item",
+  "title": "Run order planning",
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "updated": "2026-09-03",
+  "status": "draft",
+  "summary": "make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree.",
+  "order": 1,
+  "sources": [
+    "cppat1210m000",
+    "cprpd0100m000",
+    "cprpd1100m000",
+    "cprpd1200m000",
+    "cprpd4100m000",
+    "cprrp0240m000",
+    "cprrp0520m000",
+    "cprrp0740m200",
+    "cprrp1100m000",
+    "cprrp1200m000",
+    "cprrp1210m000",
+    "cprrp1220m000",
+    "cprrp1600m000",
+    "tcibd0501m000",
+    "tcibd0501m100",
+    "tcibd2100m000",
+    "tdsls4601m200",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Make the item visible to planning",
+      "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+      "session": "Item Order Plan",
+      "sessionCode": "cprrp0520m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> "
+            },
+            {
+              "t": "strong",
+              "v": "Prerequisite"
+            },
+            {
+              "t": "text",
+              "v": " > A finished item with an "
+            },
+            {
+              "t": "strong",
+              "v": "Approved"
+            },
+            {
+              "t": "text",
+              "v": " BOM and routing, components, and stock data — the qualified training case from "
+            },
+            {
+              "t": "literal",
+              "v": "SG-create-basic-test-items-and-defaults.md"
+            },
+            {
+              "t": "text",
+              "v": ". The 2026-08-20 session used "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " with components "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from SG-create-basic-test-items-and-defaults.md. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+            }
+          ],
+          "text": "What LN is doing. The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    }
+                  ],
+                  "text": "Open Item Order Plan (cprrp0520m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The plan selection screen"
+                    }
+                  ],
+                  "text": "The plan selection screen"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Search for the finished item"
+                    }
+                  ],
+                  "text": "Search for the finished item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "finished item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — if it appears, planning data exists: go to 0.6. If it does not, the item is invisible to planning: continue"
+                    }
+                  ],
+                  "text": "finished item — if it appears, planning data exists: go to 0.6. If it does not, the item is invisible to planning: continue"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tcibd0501m000",
+                      "name": "Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": " via "
+                    },
+                    {
+                      "t": "path",
+                      "route": "Master Data ➔ Items ➔ Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and drill into the finished item"
+                    }
+                  ],
+                  "text": "Open Items (tcibd0501m000) via Master Data ➔ Items ➔ Items and drill into the finished item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tcibd0501m100",
+                      "name": "Item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Item (tcibd0501m100) opens"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Clusters"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab, add a row with the environment's planning cluster"
+                    }
+                  ],
+                  "text": "On the Clusters tab, add a row with the environment's planning cluster"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planning cluster"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "site"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the observed environment uses "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "NA1"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "CSADNA01"
+                    }
+                  ],
+                  "text": "planning cluster and site — the observed environment uses NA1 and CSADNA01"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.5"
+                    }
+                  ],
+                  "text": "0.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save, then reopen "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Item Order Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and search again"
+                    }
+                  ],
+                  "text": "Save, then reopen Item Order Plan and search again"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item now appears — an empty plan, but a plan"
+                    }
+                  ],
+                  "text": "The item now appears — an empty plan, but a plan"
+                }
+              ],
+              "id": "0.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.6"
+                    }
+                  ],
+                  "text": "0.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Repeat 0.2–0.5 for "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "every component in the BOM"
+                    }
+                  ],
+                  "text": "Repeat 0.2–0.5 for every component in the BOM"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "components given plan data"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — each appears in its own Item Order Plan"
+                    }
+                  ],
+                  "text": "components given plan data — each appears in its own Item Order Plan"
+                }
+              ],
+              "id": "0.6",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create demand",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+      "session": "Sales Order Intake Workbench",
+      "sessionCode": "tdsls4601m200",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+            }
+          ],
+          "text": "What LN is doing. Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000",
+                      "name": "Inventory 360"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", read the finished item's on-hand at its warehouse"
+                    }
+                  ],
+                  "text": "In Inventory 360 (whwmd4300m000), read the finished item's on-hand at its warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "finished item on-hand before"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the demand must exceed this"
+                    }
+                  ],
+                  "text": "finished item on-hand before — the demand must exceed this"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Create a sales order for the finished item, following "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "SG-ship-from-stock.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": " phase 1 steps 1.1–1.11"
+                    }
+                  ],
+                  "text": "Create a sales order for the finished item, following SG-ship-from-stock.md phase 1 steps 1.1–1.11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "An order exists at "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Free"
+                    }
+                  ],
+                  "text": "An order exists at Free"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Ordered Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " above the on-hand from 1.1, and the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Delivery Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " no more than a few days out"
+                    }
+                  ],
+                  "text": "Set Ordered Quantity above the on-hand from 1.1, and the Planned Delivery Date no more than a few days out"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "sales order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "ordered quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned delivery date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the observed run booked "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "5"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ea"
+                    },
+                    {
+                      "t": "text",
+                      "v": " against "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "1"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on hand"
+                    }
+                  ],
+                  "text": "sales order number, ordered quantity, planned delivery date — the observed run booked 5 ea against 1 on hand"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Put the demand inside the horizon",
+      "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning",
+      "session": "Items - Planning",
+      "sessionCode": "cprpd1100m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+            }
+          ],
+          "text": "What LN is doing. The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprpd1100m000",
+                      "name": "Items - Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the finished item, "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Horizons"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
+                    }
+                  ],
+                  "text": "Open Items - Planning (cprpd1100m000) for the finished item, Horizons tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " as a number of days, with the resulting date beside it"
+                    }
+                  ],
+                  "text": "Order Horizon as a number of days, with the resulting date beside it"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If the delivery date from 1.3 falls beyond the horizon date, raise the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " days until it falls inside"
+                    }
+                  ],
+                  "text": "If the delivery date from 1.3 falls beyond the horizon date, raise the Order Horizon days until it falls inside"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — record both the days entered and the date displayed"
+                    }
+                  ],
+                  "text": "order horizon — record both the days entered and the date displayed"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Save, and reopen "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the item"
+                    }
+                  ],
+                  "text": "Save, and reopen Item Order Plan (cprrp0520m000) for the item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Horizons"
+                    },
+                    {
+                      "t": "text",
+                      "v": " block shows the new "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " date"
+                    }
+                  ],
+                  "text": "The Horizons block shows the new Order Horizon date"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find the demand in the grid"
+                    }
+                  ],
+                  "text": "Find the demand in the grid"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " row with your order number and quantity as "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Demand"
+                    }
+                  ],
+                  "text": "A Sales Order row with your order number and quantity as Demand"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Run MRP",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what phase 5 reads."
+            }
+          ],
+          "text": "What LN is doing. The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what phase 5 reads."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp1220m000",
+                      "name": "Generate Order Planning (Item)"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the finished item"
+                    }
+                  ],
+                  "text": "Open Generate Order Planning (Item) (cprrp1220m000) for the finished item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Scenario"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Plan Item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " are set"
+                    }
+                  ],
+                  "text": "Scenario and Plan Item are set"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Include Child Items"
+                    }
+                  ],
+                  "text": "Select Include Child Items"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The run will also plan the BOM components — multi-level, top-down"
+                    }
+                  ],
+                  "text": "The run will also plan the BOM components — multi-level, top-down"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Update Pegging Relations"
+                    },
+                    {
+                      "t": "text",
+                      "v": " is selected, where the field is open"
+                    }
+                  ],
+                  "text": "Confirm Update Pegging Relations is selected, where the field is open"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Phase 5 depends on it — see the notes"
+                    }
+                  ],
+                  "text": "Phase 5 depends on it — see the notes"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run the generation"
+                    }
+                  ],
+                  "text": "Run the generation"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The run completes; exception messages print or store if selected"
+                    }
+                  ],
+                  "text": "The run completes; exception messages print or store if selected"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Review the result",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+            }
+          ],
+          "text": "What LN is doing. One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Reopen the finished item's "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Item Order Plan"
+                    }
+                  ],
+                  "text": "Reopen the finished item's Item Order Plan"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The sales order row now has a companion"
+                    }
+                  ],
+                  "text": "The sales order row now has a companion"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the planned supply row"
+                    }
+                  ],
+                  "text": "Read the planned supply row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned production order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned production quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — a "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned Production Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " whose "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Supply"
+                    },
+                    {
+                      "t": "text",
+                      "v": " equals ordered quantity minus on-hand"
+                    }
+                  ],
+                  "text": "planned production order number and planned production quantity — a Planned Production Order whose Supply equals ordered quantity minus on-hand"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "component's"
+                    },
+                    {
+                      "t": "text",
+                      "v": " Item Order Plan"
+                    }
+                  ],
+                  "text": "Open the component's Item Order Plan"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The same planned production order appears — as "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Demand"
+                    }
+                  ],
+                  "text": "The same planned production order appears — as Demand"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the component's planned supply row"
+                    }
+                  ],
+                  "text": "Read the component's planned supply row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "component planned purchase order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "component planned quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — a "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned Purchase Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " covering what stock does not"
+                    }
+                  ],
+                  "text": "component planned purchase order and component planned quantity — a Planned Purchase Order covering what stock does not"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.5"
+                    }
+                  ],
+                  "text": "4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp1100m000",
+                      "name": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for the cluster and site from 0.4"
+                    }
+                  ],
+                  "text": "Open Planned Orders (cprrp1100m000) for the cluster and site from 0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Both planned orders listed, "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Planned"
+                    }
+                  ],
+                  "text": "Both planned orders listed, Order Status Planned"
+                }
+              ],
+              "id": "4.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Read the pegging tree",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+            }
+          ],
+          "text": "What LN is doing. The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", select the planned production order from 4.5"
+                    }
+                  ],
+                  "text": "In Planned Orders, select the planned production order from 4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Pegging - Upstream"
+                    }
+                  ],
+                  "text": "Run Pegging - Upstream"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "cprrp0740m200",
+                      "name": "Order Pegging"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens as a tree"
+                    }
+                  ],
+                  "text": "Order Pegging (cprrp0740m200) opens as a tree"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the tree from the top"
+                    }
+                  ],
+                  "text": "Read the tree from the top"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The sales order, then each level of stock and planned supply beneath it"
+                    }
+                  ],
+                  "text": "The sales order, then each level of stock and planned supply beneath it"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.4"
+                    }
+                  ],
+                  "text": "5.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Check the arithmetic at every level against the BOM and the stock figures"
+                    }
+                  ],
+                  "text": "Check the arithmetic at every level against the BOM and the stock figures"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "pegging arithmetic check"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — each level's children sum to its requirement"
+                    }
+                  ],
+                  "text": "pegging arithmetic check — each level's children sum to its requirement"
+                }
+              ],
+              "id": "5.4",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree. "
+        },
+        {
+          "t": "strong",
+          "v": "Base guide"
+        },
+        {
+          "t": "text",
+          "v": " — the first Enterprise Planning guide in the library. Everything before this created supply by hand; this is where the system proposes it."
+        }
+      ],
+      "text": "Objective: make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree. Base guide — the first Enterprise Planning guide in the library. Everything before this created supply by hand; this is where the system proposes it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide ends at reviewed planned orders."
+        },
+        {
+          "t": "text",
+          "v": " Its completion boundary is a planned supply chain that covers the shortfall "
+        },
+        {
+          "t": "strong",
+          "v": "and reconciles arithmetically"
+        },
+        {
+          "t": "text",
+          "v": " against the BOM and stock in the pegging tree. "
+        },
+        {
+          "t": "strong",
+          "v": "Transferring a planned order to execution is out of scope"
+        },
+        {
+          "t": "text",
+          "v": " — that is the opening move of the planned-production-order guide, which does not exist yet. A planned order is a suggestion; nothing in this guide creates a real order. "
+        }
+      ],
+      "text": "> Warning > This guide ends at reviewed planned orders. Its completion boundary is a planned supply chain that covers the shortfall and reconciles arithmetically against the BOM and stock in the pegging tree. Transferring a planned order to execution is out of scope — that is the opening move of the planned-production-order guide, which does not exist yet. A planned order is a suggestion; nothing in this guide creates a real order."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Make the item visible to planning"
+                }
+              ],
+              "text": "0 Make the item visible to planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan; Item"
+                }
+              ],
+              "text": "Item Order Plan; Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The finished item and every BOM component have planning data"
+                }
+              ],
+              "text": "The finished item and every BOM component have planning data"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create demand"
+                }
+              ],
+              "text": "1 Create demand"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360; SO Intake Workbench"
+                }
+              ],
+              "text": "Inventory 360; SO Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A sales order exists for more than is on hand"
+                }
+              ],
+              "text": "A sales order exists for more than is on hand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Put the demand inside the horizon"
+                }
+              ],
+              "text": "2 Put the demand inside the horizon"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Planning; Item Order Plan"
+                }
+              ],
+              "text": "Items - Planning; Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planning can see the demand"
+                }
+              ],
+              "text": "Planning can see the demand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Run MRP"
+                }
+              ],
+              "text": "3 Run MRP"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Order Planning (Item)"
+                }
+              ],
+              "text": "Generate Order Planning (Item)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned orders exist covering the shortfall, with pegging relations"
+                }
+              ],
+              "text": "Planned orders exist covering the shortfall, with pegging relations"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Review the result"
+                }
+              ],
+              "text": "4 Review the result"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan; Planned Orders"
+                }
+              ],
+              "text": "Item Order Plan; Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The planned supply is read on both the parent and the component"
+                }
+              ],
+              "text": "The planned supply is read on both the parent and the component"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Read the pegging tree"
+                }
+              ],
+              "text": "5 Read the pegging tree"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned Orders ➔ Order Pegging"
+                }
+              ],
+              "text": "Planned Orders ➔ Order Pegging"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The whole chain reconciles: demand, stock, planned make, planned buy"
+                }
+              ],
+              "text": "The whole chain reconciles: demand, stock, planned make, planned buy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The Item Order Plan is the progress indicator."
+        },
+        {
+          "t": "text",
+          "v": " Phase 0 ends when the item appears in it at all; phase 2 ends when the demand row appears; phase 3 ends when a planned supply row appears beside it. If a phase did not change what that session shows, the phase did not work."
+        }
+      ],
+      "text": "The Item Order Plan is the progress indicator. Phase 0 ends when the item appears in it at all; phase 2 ends when the demand row appears; phase 3 ends when a planned supply row appears beside it. If a phase did not change what that session shows, the phase did not work."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item is not in the Item Order Plan"
+                }
+              ],
+              "text": "The item is not in the Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It has no planning data — no cluster row, no plan. Steps 0.3–0.5. Not an error state; nothing will tell you"
+                }
+              ],
+              "text": "It has no planning data — no cluster row, no plan. Steps 0.3–0.5. Not an error state; nothing will tell you"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+                }
+              ],
+              "text": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item has no row for the order's sales office. Add it on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales Offices"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", then close and reopen the order session"
+                }
+              ],
+              "text": "The item has no row for the order's sales office. Add it on the Sales Offices tab of Item (tcibd0501m100), then close and reopen the order session"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A master-data fix appears to have no effect"
+                }
+              ],
+              "text": "A master-data fix appears to have no effect"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+                }
+              ],
+              "text": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The demand does not appear in the Item Order Plan"
+                }
+              ],
+              "text": "The demand does not appear in the Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The delivery date is beyond the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " date. Step 2.2 — and remember the date is not today plus your days "
+                }
+              ],
+              "text": "The delivery date is beyond the Order Horizon date. Step 2.2 — and remember the date is not today plus your days"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run plans the parent but not a component"
+                }
+              ],
+              "text": "The run plans the parent but not a component"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The component has no planning data of its own. Step 0.6 — MRP skips it silently"
+                }
+              ],
+              "text": "The component has no planning data of its own. Step 0.6 — MRP skips it silently"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run produces nothing at all, or nothing propagates to the parent"
+                }
+              ],
+              "text": "The run produces nothing at all, or nothing propagates to the parent"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 3.1"
+                }
+              ],
+              "text": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 3.1"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A planned quantity does not equal the raw shortfall"
+                }
+              ],
+              "text": "A planned quantity does not equal the raw shortfall"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order-quantity rules in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000",
+                  "name": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " round it — \"Lot sizing\", "
+                },
+                {
+                  "t": "literal",
+                  "v": "cpordplanug"
+                },
+                {
+                  "t": "text",
+                  "v": " p. 21"
+                }
+              ],
+              "text": "Order-quantity rules in Items - Ordering (tcibd2100m000) round it — \"Lot sizing\", cpordplanug p. 21"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An expected planned purchase order is missing entirely"
+                }
+              ],
+              "text": "An expected planned purchase order is missing entirely"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": " help"
+                }
+              ],
+              "text": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — cprrp1100m000 help"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pegging tree is empty"
+                }
+              ],
+              "text": "The pegging tree is empty"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Pegging relations were not generated, or the demand lies beyond the "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd0100m000",
+                  "name": "Pegging Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": ". See the phase 5 Prerequisite"
+                }
+              ],
+              "text": "Pegging relations were not generated, or the demand lies beyond the Pegging Horizon (cprpd0100m000). See the phase 5 Prerequisite"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A component was given planning data and still does not appear"
+                }
+              ],
+              "text": "A component was given planning data and still does not appear"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 "
+                }
+              ],
+              "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own Item Order Plan and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Run planning for all items"
+                }
+              ],
+              "text": "Run planning for all items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1210m000",
+                  "name": "Generate Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", runs ranges instead of one item — the production habit. No help is filed for it, so its options are not assumed to match "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s "
+                }
+              ],
+              "text": "Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning, runs ranges instead of one item — the production habit. No help is filed for it, so its options are not assumed to match cprrp1220m000's"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Net change instead of regenerative"
+                }
+              ],
+              "text": "Net change instead of regenerative"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Run a Net Change Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " in the generate session — simulates only from the first net-change date. A value change inside one step, not a phase change"
+                }
+              ],
+              "text": "Run a Net Change Planning in the generate session — simulates only from the first net-change date. A value change inside one step, not a phase change"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Master planning"
+                }
+              ],
+              "text": "Master planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A different mechanism, not a value change: enabling "
+                },
+                {
+                  "t": "field",
+                  "v": "Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " on "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": " splits the horizons, and the item master plan must be initialized before it exists. "
+                },
+                {
+                  "t": "chip",
+                  "v": "Own guide when written"
+                },
+                {
+                  "t": "text",
+                  "v": " — it needs "
+                },
+                {
+                  "t": "literal",
+                  "v": "cprpd"
+                },
+                {
+                  "t": "text",
+                  "v": "/"
+                },
+                {
+                  "t": "literal",
+                  "v": "cprmp"
+                },
+                {
+                  "t": "text",
+                  "v": " session help first "
+                }
+              ],
+              "text": "A different mechanism, not a value change: enabling Master Plan on cprpd1100m000 splits the horizons, and the item master plan must be initialized before it exists. Own guide when written — it needs cprpd/cprmp session help first"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned orders cover the shortfall and reconcile in the pegging tree"
+                }
+              ],
+              "text": "Planned orders cover the shortfall and reconcile in the pegging tree"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The planned quantities look wrong against supplier reality"
+                }
+              ],
+              "text": "The planned quantities look wrong against supplier reality"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Adjust order-quantity rules in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000",
+                  "name": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " and rerun phase 3"
+                }
+              ],
+              "text": "Adjust order-quantity rules in Items - Ordering (tcibd2100m000) and rerun phase 3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 3"
+                }
+              ],
+              "text": "Phase 3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "What is known about the step after this guide"
+        },
+        {
+          "t": "text",
+          "v": ", so the boundary is a handover rather than a cliff. "
+        },
+        {
+          "t": "session",
+          "code": "cppat1210m000",
+          "name": "Transfer Order Planning"
+        },
+        {
+          "t": "text",
+          "v": " turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the "
+        },
+        {
+          "t": "strong",
+          "v": "purchase"
+        },
+        {
+          "t": "text",
+          "v": " half was walked on 2026-08-25: two planned purchase orders for "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": " became purchase order "
+        },
+        {
+          "t": "literal",
+          "v": "100000682"
+        },
+        {
+          "t": "text",
+          "v": ". Full reference in "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": ". Three things from that walk matter to anyone leaving this guide:"
+        }
+      ],
+      "text": "What is known about the step after this guide, so the boundary is a handover rather than a cliff. Transfer Order Planning (cppat1210m000) turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the purchase half was walked on 2026-08-25: two planned purchase orders for BAM-ROD became purchase order 100000682. Full reference in the source on file. Three things from that walk matter to anyone leaving this guide:"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "- "
+        },
+        {
+          "t": "strong",
+          "v": "A purchased component will not transfer without buy-from business partner data."
+        },
+        {
+          "t": "text",
+          "v": " The transfer fails and prints "
+        },
+        {
+          "t": "em",
+          "v": "\"Buy-from BP cannot be determined for item … ; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data.\""
+        },
+        {
+          "t": "text",
+          "v": " The fix is a row on the "
+        },
+        {
+          "t": "strong",
+          "v": "Item - Business Partner"
+        },
+        {
+          "t": "text",
+          "v": " tab of the item's purchase data. "
+        },
+        {
+          "t": "strong",
+          "v": "Nothing in this guide's phases surfaces this"
+        },
+        {
+          "t": "text",
+          "v": ", because a planned purchase order is generated happily without it — the gap only appears at transfer. "
+        },
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "- A purchased component will not transfer without buy-from business partner data. The transfer fails and prints \"Buy-from BP cannot be determined for item … ; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data.\" The fix is a row on the Item - Business Partner tab of the item's purchase data. Nothing in this guide's phases surfaces this, because a planned purchase order is generated happily without it — the gap only appears at transfer. Not documented for this release."
+    }
+  ],
+  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "openIssues": 7
+}

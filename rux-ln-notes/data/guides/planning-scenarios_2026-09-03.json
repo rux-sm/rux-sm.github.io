@@ -1,0 +1,2121 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "planning-scenarios_2026-09-03",
+  "title": "Planning Scenarios — Review",
+  "updated": "2026-09-05",
+  "status": "draft",
+  "sources": [
+    "cprrp0520m000",
+    "cprrp1100m000",
+    "cppat1210m000",
+    "whinh2100m000",
+    "whinh2300m000",
+    "whinh3512m000",
+    "tdipu0101m000",
+    "whwmd2510m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Free-form training session on Enterprise Planning end to end: a sales order recognized as demand, MRP generating planned production and purchase orders, transferring planned orders to execution, receiving through to put-away, and two second-order demand sources (a project contract deliverable, and a safety-stock top-up) pegged the same way as ordinary sales demand. Unlike the guided walkthroughs this library has reviewed before, this session had no script — the trainee drove, hit real system behavior live, and the group worked several open questions out on screen as they went."
+        }
+      ],
+      "text": "Free-form training session on Enterprise Planning end to end: a sales order recognized as demand, MRP generating planned production and purchase orders, transferring planned orders to execution, receiving through to put-away, and two second-order demand sources (a project contract deliverable, and a safety-stock top-up) pegged the same way as ordinary sales demand. Unlike the guided walkthroughs this library has reviewed before, this session had no script — the trainee drove, hit real system behavior live, and the group worked several open questions out on screen as they went."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "table",
+      "columns": [
+        "Role",
+        "Count",
+        "Organisation"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant, running the session"
+                }
+              ],
+              "text": "Consultant, running the session"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee, hands-on-keyboard throughout"
+                }
+              ],
+              "text": "Trainee, hands-on-keyboard throughout"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee, active in narration and in the later chat thread"
+                }
+              ],
+              "text": "Attendee, active in narration and in the later chat thread"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee, named in the video call panel"
+                }
+              ],
+              "text": "Attendee, named in the video call panel"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Roles beyond the consultant (coaching language, \"let's see the help\", \"the answer is on the screen\") and the trainee (status bar user, screen-share owner) are confirmed by the recording itself — the video-call participant panel is visible in every frame pulled. This is stronger attendee evidence than prior reviews in this library, which relied on narration alone."
+        }
+      ],
+      "text": "Roles beyond the consultant (coaching language, \"let's see the help\", \"the answer is on the screen\") and the trainee (status bar user, screen-share owner) are confirmed by the recording itself — the video-call participant panel is visible in every frame pulled. This is stronger attendee evidence than prior reviews in this library, which relied on narration alone."
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "Demand is recognized the instant a sales order line is entered",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Creating a sales order line makes it visible on "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " immediately, before any planning run: "
+            },
+            {
+              "t": "em",
+              "v": "\"as soon as the order is entered, the demand is recognized.\""
+            },
+            {
+              "t": "text",
+              "v": " MRP (\"Generate Orders...\") still has to run to turn that demand into planned supply, but the demand itself needs no run to appear. Confirmed on screen for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ", order "
+            },
+            {
+              "t": "literal",
+              "v": "100000669"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Creating a sales order line makes it visible on Item Order Plan (cprrp0520m000) immediately, before any planning run: \"as soon as the order is entered, the demand is recognized.\" MRP (\"Generate Orders...\") still has to run to turn that demand into planned supply, but the demand itself needs no run to appear. Confirmed on screen for BAM-CHOP-PAIR, order 100000669."
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "Generate Orders only traverses the BOM from where you run it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Running "
+            },
+            {
+              "t": "strong",
+              "v": "Generate Orders..."
+            },
+            {
+              "t": "text",
+              "v": " on a "
+            },
+            {
+              "t": "strong",
+              "v": "component"
+            },
+            {
+              "t": "text",
+              "v": " item does not pick up its "
+            },
+            {
+              "t": "strong",
+              "v": "parent's"
+            },
+            {
+              "t": "text",
+              "v": " demand — the trainee ran it on "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": " directly and nothing propagated up. Running it on the "
+            },
+            {
+              "t": "strong",
+              "v": "top-level"
+            },
+            {
+              "t": "text",
+              "v": " item ("
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ") with "
+            },
+            {
+              "t": "strong",
+              "v": "Include Child Items"
+            },
+            {
+              "t": "text",
+              "v": " selected is what walks the BOM down and generates supply for the components. The consultant's diagnosis on screen: "
+            },
+            {
+              "t": "em",
+              "v": "\"I don't know why I didn't traverse your BOM or pick up the components because I didn't run the... I generated on the child item\""
+            },
+            {
+              "t": "text",
+              "v": " — corrected by re-running from the parent. This is a procedural trap worth a guide callout wherever generation is first taught."
+            }
+          ],
+          "text": "Running Generate Orders... on a component item does not pick up its parent's demand — the trainee ran it on BAM-SLEEVE directly and nothing propagated up. Running it on the top-level item (BAM-CHOP-PAIR) with Include Child Items selected is what walks the BOM down and generates supply for the components. The consultant's diagnosis on screen: \"I don't know why I didn't traverse your BOM or pick up the components because I didn't run the... I generated on the child item\" — corrected by re-running from the parent. This is a procedural trap worth a guide callout wherever generation is first taught."
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "Combine Orders, reproduced on a second item",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "`the source on file`"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": ", shows the same "
+            },
+            {
+              "t": "strong",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " outcome this library already documented for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " on 2026-08-25 ("
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §9.1): multiple "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase Order Advice"
+            },
+            {
+              "t": "text",
+              "v": " rows against one "
+            },
+            {
+              "t": "strong",
+              "v": "Purchase Order"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "100000688"
+            },
+            {
+              "t": "text",
+              "v": ". This second, independent instance corroborates the earlier finding rather than opening a new question."
+            }
+          ],
+          "text": "`the source on file` — status bar cprrp0520m000, BAM-SLEEVE, shows the same Combine Orders outcome this library already documented for BAM-ROD on 2026-08-25 (the source on file §9.1): multiple Purchase Order Advice rows against one Purchase Order 100000688. This second, independent instance corroborates the earlier finding rather than opening a new question."
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "A PO can't be received until it's released — and Status Overview shows why",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Narrated and shown: a freshly created PO cannot be received. "
+            },
+            {
+              "t": "em",
+              "v": "\"If it's created, the warehousing is not going to see it.\""
+            },
+            {
+              "t": "text",
+              "v": " The "
+            },
+            {
+              "t": "strong",
+              "v": "Status Overview"
+            },
+            {
+              "t": "text",
+              "v": " command (right-click a PO line, or a toolbar command) shows the document's progression — Created → Printed → Released → Warehousing sees it. The group tested this live rather than taking it as given: attempted a receipt on a "
+            },
+            {
+              "t": "literal",
+              "v": "Created"
+            },
+            {
+              "t": "text",
+              "v": " PO, confirmed it failed, printed the PO (which auto-released it), and confirmed receiving then worked."
+            }
+          ],
+          "text": "Narrated and shown: a freshly created PO cannot be received. \"If it's created, the warehousing is not going to see it.\" The Status Overview command (right-click a PO line, or a toolbar command) shows the document's progression — Created → Printed → Released → Warehousing sees it. The group tested this live rather than taking it as given: attempted a receipt on a Created PO, confirmed it failed, printed the PO (which auto-released it), and confirmed receiving then worked."
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "\"Why are there two POs with the same number?\" — resolved: one PO, two lines",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Live, unresolved on camera ("
+            },
+            {
+              "t": "em",
+              "v": "\"I don't know why there's two, but I know that they're the same number, I don't know what that means\""
+            },
+            {
+              "t": "text",
+              "v": "). "
+            },
+            {
+              "t": "strong",
+              "v": "Settled by frame, not by narration"
+            },
+            {
+              "t": "text",
+              "v": ": "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "session",
+              "code": "whinh2300m000",
+              "name": "Warehouse Manager Dashboard"
+            },
+            {
+              "t": "text",
+              "v": ", Inbound Open grid, two rows both reading "
+            },
+            {
+              "t": "literal",
+              "v": "Purchase 100000688"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Line 1"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "strong",
+              "v": "Line 2"
+            },
+            {
+              "t": "text",
+              "v": ", both "
+            },
+            {
+              "t": "literal",
+              "v": "PUI"
+            },
+            {
+              "t": "text",
+              "v": " \"Purchase Receipts\", both received "
+            },
+            {
+              "t": "literal",
+              "v": "9/3/2026 1:22 PM"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
+              "t": "strong",
+              "v": "It was never two purchase orders — one PO with two order lines shows as two rows in this dashboard view."
+            },
+            {
+              "t": "text",
+              "v": " This is the same \"how do I know what's in here\" pattern the consultant separately named for the Inbound Order Lines standalone session (§3.6 below) — a session built to be read at line granularity will always show more rows than there are orders."
+            }
+          ],
+          "text": "Live, unresolved on camera (\"I don't know why there's two, but I know that they're the same number, I don't know what that means\"). Settled by frame, not by narration: the source on file — Warehouse Manager Dashboard (whinh2300m000), Inbound Open grid, two rows both reading Purchase 100000688, Line 1 and Line 2, both PUI \"Purchase Receipts\", both received 9/3/2026 1:22 PM. It was never two purchase orders — one PO with two order lines shows as two rows in this dashboard view. This is the same \"how do I know what's in here\" pattern the consultant separately named for the Inbound Order Lines standalone session (§3.6 below) — a session built to be read at line granularity will always show more rows than there are orders."
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "Managing at order level vs. line level, and a session that isn't on the menu",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The consultant showed the same underlying data two ways: "
+            },
+            {
+              "t": "strong",
+              "v": "Warehouse Manager Dashboard"
+            },
+            {
+              "t": "text",
+              "v": " / "
+            },
+            {
+              "t": "strong",
+              "v": "Warehousing Order"
+            },
+            {
+              "t": "text",
+              "v": " header-level (one row per order, no line detail), versus a standalone "
+            },
+            {
+              "t": "strong",
+              "v": "Inbound Order Lines"
+            },
+            {
+              "t": "text",
+              "v": " session reached only by drilling in — "
+            },
+            {
+              "t": "em",
+              "v": "\"this session is not in the menu... this is the standalone session of the inbound lines tab in your warehouse order.\""
+            },
+            {
+              "t": "text",
+              "v": " Its "
+            },
+            {
+              "t": "strong",
+              "v": "second view"
+            },
+            {
+              "t": "text",
+              "v": " shows every inbound line in the system regardless of which order or order-set it belongs to. "
+            },
+            {
+              "t": "strong",
+              "v": "This directly answers a question consultants get from clients"
+            },
+            {
+              "t": "text",
+              "v": ", in the consultant's own words: "
+            },
+            {
+              "t": "em",
+              "v": "\"how do I know what's in here, or how do I get a list view — this is it.\""
+            }
+          ],
+          "text": "The consultant showed the same underlying data two ways: Warehouse Manager Dashboard / Warehousing Order header-level (one row per order, no line detail), versus a standalone Inbound Order Lines session reached only by drilling in — \"this session is not in the menu... this is the standalone session of the inbound lines tab in your warehouse order.\" Its second view shows every inbound line in the system regardless of which order or order-set it belongs to. This directly answers a question consultants get from clients, in the consultant's own words: \"how do I know what's in here, or how do I get a list view — this is it.\""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.7",
+      "title": "Warehouse order sets: why one order can appear as several",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Named and explained, not just observed"
+            },
+            {
+              "t": "text",
+              "v": ": LN groups a warehousing order's lines into separate "
+            },
+            {
+              "t": "strong",
+              "v": "warehouse order sets"
+            },
+            {
+              "t": "text",
+              "v": " by whatever makes their receiving or shipping handling "
+            },
+            {
+              "t": "em",
+              "v": "unique"
+            },
+            {
+              "t": "text",
+              "v": " — plan receipt date, carrier, delivery terms, and similar fields. "
+            },
+            {
+              "t": "em",
+              "v": "\"It's not even the order of your lines, it's dependent by those unique receiving qualities.\""
+            },
+            {
+              "t": "text",
+              "v": " Same customer, same item, same date collapses to one set; changing the date or the customer splits it into its own. This is a general LN mechanism, not specific to purchasing — the consultant confirmed it applies the same way to sales and production orders."
+            }
+          ],
+          "text": "Named and explained, not just observed: LN groups a warehousing order's lines into separate warehouse order sets by whatever makes their receiving or shipping handling unique — plan receipt date, carrier, delivery terms, and similar fields. \"It's not even the order of your lines, it's dependent by those unique receiving qualities.\" Same customer, same item, same date collapses to one set; changing the date or the customer splits it into its own. This is a general LN mechanism, not specific to purchasing — the consultant confirmed it applies the same way to sales and production orders."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This section documents "
+            },
+            {
+              "t": "em",
+              "v": "within-order"
+            },
+            {
+              "t": "text",
+              "v": " line grouping, not a way to merge two independently pegged demand-driven orders into one — it rules out one plausible-sounding mechanism for whether the two sales-order-pegged supplies for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " could be combined, though the question is still open and was narrowed a different way, from the vendor help rather than from this section. "
+            }
+          ],
+          "text": "This section documents within-order line grouping, not a way to merge two independently pegged demand-driven orders into one — it rules out one plausible-sounding mechanism for whether the two sales-order-pegged supplies for BAM-CHOP-PAIR could be combined, though the question is still open and was narrowed a different way, from the vendor help rather than from this section."
+        }
+      ]
+    },
+    {
+      "n": "3.8",
+      "title": "Receiving early: the exact tolerance warning, quoted from the dialog",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — status bar "
+            },
+            {
+              "t": "session",
+              "code": "whinh3512m000"
+            },
+            {
+              "t": "text",
+              "v": ", dialog "
+            },
+            {
+              "t": "strong",
+              "v": "\"Warehouse Receipt: whinh0056\""
+            },
+            {
+              "t": "text",
+              "v": ":"
+            }
+          ],
+          "text": "the source on file — status bar whinh3512m000, dialog \"Warehouse Receipt: whinh0056\":"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Link order line to receipt: You are about to receive order line Purchase "
+            },
+            {
+              "t": "literal",
+              "v": "100000688 / 30 - 1"
+            },
+            {
+              "t": "text",
+              "v": " on a date other than planned receipt date (09-16-2026)."
+            }
+          ],
+          "text": "Link order line to receipt: You are about to receive order line Purchase 100000688 / 30 - 1 on a date other than planned receipt date (09-16-2026).",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Narrated cause: "
+            },
+            {
+              "t": "session",
+              "code": "tdipu0101m000",
+              "name": "Items - Purchase"
+            },
+            {
+              "t": "text",
+              "v": " carries a "
+            },
+            {
+              "t": "strong",
+              "v": "date tolerance"
+            },
+            {
+              "t": "text",
+              "v": " and a "
+            },
+            {
+              "t": "strong",
+              "v": "quantity tolerance"
+            },
+            {
+              "t": "text",
+              "v": " field per item; this message fires because the receipt (9/3) falls outside the planned receipt date's tolerance window (9/16). The dialog offers to proceed ("
+            },
+            {
+              "t": "literal",
+              "v": "OK"
+            },
+            {
+              "t": "text",
+              "v": "), cancel, or view the full log ("
+            },
+            {
+              "t": "literal",
+              "v": "LOG..."
+            },
+            {
+              "t": "text",
+              "v": ") — one further error/information message was noted but not opened."
+            }
+          ],
+          "text": "Narrated cause: Items - Purchase (tdipu0101m000) carries a date tolerance and a quantity tolerance field per item; this message fires because the receipt (9/3) falls outside the planned receipt date's tolerance window (9/16). The dialog offers to proceed (OK), cancel, or view the full log (LOG...) — one further error/information message was noted but not opened."
+        }
+      ]
+    },
+    {
+      "n": "3.9",
+      "title": "Receiving vocabulary: Receipt Open, Confirmed, and put-away are three different states",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Directly narrated and worth keeping as vocabulary: putting order lines on a receipt gives them status "
+            },
+            {
+              "t": "strong",
+              "v": "Receipt Open"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "em",
+              "v": "\"these lines are sitting on a receipt but they haven't been confirmed yet.\""
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "Confirm"
+            },
+            {
+              "t": "text",
+              "v": " is what \"puts them away\" logically (moves them toward inventory); it is a distinct step from receiving. The stated order of operations for a location-controlled warehouse: "
+            },
+            {
+              "t": "strong",
+              "v": "Receive → Confirm → Inbound Advice → Put Away."
+            },
+            {
+              "t": "text",
+              "v": " For a "
+            },
+            {
+              "t": "strong",
+              "v": "non"
+            },
+            {
+              "t": "text",
+              "v": "-location-controlled warehouse, there is no inbound-advice step at all: "
+            },
+            {
+              "t": "em",
+              "v": "\"inbound advice only applies when locations are involved.\""
+            }
+          ],
+          "text": "Directly narrated and worth keeping as vocabulary: putting order lines on a receipt gives them status Receipt Open — \"these lines are sitting on a receipt but they haven't been confirmed yet.\" Confirm is what \"puts them away\" logically (moves them toward inventory); it is a distinct step from receiving. The stated order of operations for a location-controlled warehouse: Receive → Confirm → Inbound Advice → Put Away. For a non-location-controlled warehouse, there is no inbound-advice step at all: \"inbound advice only applies when locations are involved.\""
+        }
+      ]
+    },
+    {
+      "n": "3.10",
+      "title": "Inbound advice location selection: priority, then alphanumeric order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "With multiple candidate bulk locations at equal priority, LN falls back to "
+            },
+            {
+              "t": "strong",
+              "v": "alphanumeric order"
+            },
+            {
+              "t": "text",
+              "v": " — demonstrated live by process of elimination (occupied/full checks ruled out, then the "
+            },
+            {
+              "t": "strong",
+              "v": "Inbound Priority"
+            },
+            {
+              "t": "text",
+              "v": " field on the location, both "
+            },
+            {
+              "t": "literal",
+              "v": "9999"
+            },
+            {
+              "t": "text",
+              "v": "/tied, then "
+            },
+            {
+              "t": "strong",
+              "v": "Fixed Location"
+            },
+            {
+              "t": "text",
+              "v": " ruled out by checking "
+            },
+            {
+              "t": "strong",
+              "v": "Fixed Locations"
+            },
+            {
+              "t": "text",
+              "v": " (references) and finding the item wasn't in that list). The "
+            },
+            {
+              "t": "strong",
+              "v": "Fixed Location"
+            },
+            {
+              "t": "text",
+              "v": " field's own help was read on screen: a location so flagged is "
+            },
+            {
+              "t": "em",
+              "v": "\"a fixed location for one or more items\""
+            },
+            {
+              "t": "text",
+              "v": " set up through a fixed-location session, and "
+            },
+            {
+              "t": "em",
+              "v": "\"unbound[?] by fixed have a higher priority than those that are not fixed.\""
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "This transcript line is garbled by the auto-transcription"
+            },
+            {
+              "t": "text",
+              "v": " ("
+            },
+            {
+              "t": "literal",
+              "v": "faster-whisper"
+            },
+            {
+              "t": "text",
+              "v": ", not a citation-grade source per principle 4) — the field help should be re-read from its own session for exact wording before this goes into a session file."
+            }
+          ],
+          "text": "With multiple candidate bulk locations at equal priority, LN falls back to alphanumeric order — demonstrated live by process of elimination (occupied/full checks ruled out, then the Inbound Priority field on the location, both 9999/tied, then Fixed Location ruled out by checking Fixed Locations (references) and finding the item wasn't in that list). The Fixed Location field's own help was read on screen: a location so flagged is \"a fixed location for one or more items\" set up through a fixed-location session, and \"unbound[?] by fixed have a higher priority than those that are not fixed.\" This transcript line is garbled by the auto-transcription (faster-whisper, not a citation-grade source per principle 4) — the field help should be re-read from its own session for exact wording before this goes into a session file."
+        }
+      ]
+    },
+    {
+      "n": "3.11",
+      "title": "A location-controlled item, received into a non-location-controlled warehouse, is received as if it weren't",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Deliberately tested live, not just stated: the consultant added a PO line for a location-controlled item to a "
+            },
+            {
+              "t": "strong",
+              "v": "non"
+            },
+            {
+              "t": "text",
+              "v": "-location-controlled warehouse ("
+            },
+            {
+              "t": "literal",
+              "v": "ADNA05"
+            },
+            {
+              "t": "text",
+              "v": "), received and confirmed it, and showed the item lands in inventory with "
+            },
+            {
+              "t": "strong",
+              "v": "no inbound advice step at all"
+            },
+            {
+              "t": "text",
+              "v": " and no location assigned. "
+            },
+            {
+              "t": "em",
+              "v": "\"Even though the item's location controlled, if the warehouse isn't, it ignores that fact.\""
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "strong",
+              "v": "The warehouse's setting overrides the item's"
+            },
+            {
+              "t": "text",
+              "v": ", not the reverse — worth a session-file note wherever "
+            },
+            {
+              "t": "session",
+              "code": "whwmd2500m000"
+            },
+            {
+              "t": "text",
+              "v": "'s location-control flag is documented, since a reader could reasonably assume the item's own flag always applies."
+            }
+          ],
+          "text": "Deliberately tested live, not just stated: the consultant added a PO line for a location-controlled item to a non-location-controlled warehouse (ADNA05), received and confirmed it, and showed the item lands in inventory with no inbound advice step at all and no location assigned. \"Even though the item's location controlled, if the warehouse isn't, it ignores that fact.\" The warehouse's setting overrides the item's, not the reverse — worth a session-file note wherever whwmd2500m000's location-control flag is documented, since a reader could reasonably assume the item's own flag always applies."
+        }
+      ]
+    },
+    {
+      "n": "3.12",
+      "title": "A second demand source: Contract Deliverable, and it does not auto-plan like a sales order",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The single most substantial new topic in this recording."
+            },
+            {
+              "t": "text",
+              "v": " A "
+            },
+            {
+              "t": "strong",
+              "v": "Project Contract"
+            },
+            {
+              "t": "text",
+              "v": " (order "
+            },
+            {
+              "t": "literal",
+              "v": "100000011"
+            },
+            {
+              "t": "text",
+              "v": ") was added as demand for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ", alongside the item's ordinary sales orders. Two behaviors distinguish it from a sales order:"
+            }
+          ],
+          "text": "The single most substantial new topic in this recording. A Project Contract (order 100000011) was added as demand for BAM-CHOP-PAIR, alongside the item's ordinary sales orders. Two behaviors distinguish it from a sales order:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "It is not automatically recognized by planning."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "em",
+                  "v": "\"When you create it, it's immediately recognized by planning\" is true for a sales order — a contract deliverable in a \"Free\" status is not; the consultant had to"
+                },
+                {
+                  "t": "em",
+                  "v": "activate"
+                },
+                {
+                  "t": "text",
+                  "v": "* it before MRP would plan against it. Left in Free status, MRP ignores it entirely, silently — the same \"no message explains the absence\" pattern this library has already logged for planning-cluster rows ("
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": " §3) and time-fence gating."
+                }
+              ],
+              "text": "It is not automatically recognized by planning. \"When you create it, it's immediately recognized by planning\" is true for a sales order — a contract deliverable in a \"Free\" status is not; the consultant had toactivate* it before MRP would plan against it. Left in Free status, MRP ignores it entirely, silently — the same \"no message explains the absence\" pattern this library has already logged for planning-cluster rows (cprpd1100m000 §3) and time-fence gating."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "It carries a _Specification_ / project-pegging field a sales order does not show the same way."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — status bar "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000"
+                },
+                {
+                  "t": "text",
+                  "v": ", the full Overview grid for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": ": the "
+                },
+                {
+                  "t": "literal",
+                  "v": "Project Contract"
+                },
+                {
+                  "t": "text",
+                  "v": " row (order "
+                },
+                {
+                  "t": "literal",
+                  "v": "100000011"
+                },
+                {
+                  "t": "text",
+                  "v": ", status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Active"
+                },
+                {
+                  "t": "text",
+                  "v": ", demand "
+                },
+                {
+                  "t": "literal",
+                  "v": "50.0000"
+                },
+                {
+                  "t": "text",
+                  "v": ", warehouse "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA07"
+                },
+                {
+                  "t": "text",
+                  "v": " — a "
+                },
+                {
+                  "t": "strong",
+                  "v": "different"
+                },
+                {
+                  "t": "text",
+                  "v": " warehouse than the item's other rows, all "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA01"
+                },
+                {
+                  "t": "text",
+                  "v": ") carries a green "
+                },
+                {
+                  "t": "strong",
+                  "v": "Specification"
+                },
+                {
+                  "t": "text",
+                  "v": " check mark, as does its dedicated supply row, "
+                },
+                {
+                  "t": "strong",
+                  "v": "Production Order `020000034`"
+                },
+                {
+                  "t": "text",
+                  "v": " (supply "
+                },
+                {
+                  "t": "literal",
+                  "v": "50.0000"
+                },
+                {
+                  "t": "text",
+                  "v": ", same date "
+                },
+                {
+                  "t": "literal",
+                  "v": "9/17/2026"
+                },
+                {
+                  "t": "text",
+                  "v": "). The consultant: "
+                },
+                {
+                  "t": "em",
+                  "v": "\"That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.\""
+                }
+              ],
+              "text": "It carries a _Specification_ / project-pegging field a sales order does not show the same way. the source on file — status bar cprrp0520m000, the full Overview grid for BAM-CHOP-PAIR: the Project Contract row (order 100000011, status Active, demand 50.0000, warehouse ADNA07 — a different warehouse than the item's other rows, all ADNA01) carries a green Specification check mark, as does its dedicated supply row, Production Order `020000034` (supply 50.0000, same date 9/17/2026). The consultant: \"That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.\""
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Release to warehousing works the same as a sales order once the deliverable is activated: "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " shows it as an outbound line, "
+            },
+            {
+              "t": "literal",
+              "v": "SO/SC Out (Documents=Yes)"
+            },
+            {
+              "t": "text",
+              "v": ", in "
+            },
+            {
+              "t": "session",
+              "code": "whinh2300m000",
+              "name": "Warehouse Manager Dashboard"
+            },
+            {
+              "t": "text",
+              "v": " once released."
+            }
+          ],
+          "text": "Release to warehousing works the same as a sales order once the deliverable is activated: the source on file shows it as an outbound line, SO/SC Out (Documents=Yes), in Warehouse Manager Dashboard (whinh2300m000) once released."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This mechanism now has a home"
+            },
+            {
+              "t": "text",
+              "v": ": "
+            },
+            {
+              "t": "text",
+              "v": "`the source on file`"
+            },
+            {
+              "t": "text",
+              "v": ", written from this session. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "This mechanism now has a home: `the source on file`, written from this session. Not documented for this release."
+        }
+      ]
+    },
+    {
+      "n": "3.13",
+      "title": "The safety-stock/MRP-split puzzle from earlier in the chat thread",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This recording is the live origin of the "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " safety-stock-50 question mined into "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §5. Not repeated here — see that section for the full account, including the trainer's on-camera guess (warehouse-level ordering data, explicitly left unconfirmed: "
+            },
+            {
+              "t": "em",
+              "v": "\"I don't know, look later\""
+            },
+            {
+              "t": "text",
+              "v": ") against an attendee's later, screen-verified pegging explanation from the chat thread. The follow-up combine-orders question ran further than this recording: "
+            },
+            {
+              "t": "literal",
+              "v": "Combine Orders"
+            },
+            {
+              "t": "text",
+              "v": " was ruled out from "
+            },
+            {
+              "t": "session",
+              "code": "cppat1210m000"
+            },
+            {
+              "t": "text",
+              "v": "'s \"Watch out\" section, then the same chat thread's next round pointed at "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2100m000"
+            },
+            {
+              "t": "text",
+              "v": "'s "
+            },
+            {
+              "t": "em",
+              "v": "Order Interval"
+            },
+            {
+              "t": "text",
+              "v": " instead — a generation-time mechanism, deployed at "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " Days at the time."
+            }
+          ],
+          "text": "This recording is the live origin of the BAM-CHOP-PAIR safety-stock-50 question mined into the source on file §5. Not repeated here — see that section for the full account, including the trainer's on-camera guess (warehouse-level ordering data, explicitly left unconfirmed: \"I don't know, look later\") against an attendee's later, screen-verified pegging explanation from the chat thread. The follow-up combine-orders question ran further than this recording: Combine Orders was ruled out from cppat1210m000's \"Watch out\" section, then the same chat thread's next round pointed at tcibd2100m000's Order Interval instead — a generation-time mechanism, deployed at 0 Days at the time."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Settled in a controlled follow-up on 2026-09-05."
+            },
+            {
+              "t": "text",
+              "v": " The baseline still showed the three planned production orders for "
+            },
+            {
+              "t": "literal",
+              "v": "20"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "20"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "literal",
+              "v": "10"
+            },
+            {
+              "t": "text",
+              "v": ". With the global interval changed to "
+            },
+            {
+              "t": "literal",
+              "v": "10"
+            },
+            {
+              "t": "text",
+              "v": " Days through the warehouse → site → global inheritance chain, regenerating the plan replaced them with one planned production order for "
+            },
+            {
+              "t": "literal",
+              "v": "50"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "strong",
+              "v": "Automatic Order Grouping"
+            },
+            {
+              "t": "text",
+              "v": " was cleared. The project-contract supply remained separate with its Specification indicator. Sources: "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            }
+          ],
+          "text": "Settled in a controlled follow-up on 2026-09-05. The baseline still showed the three planned production orders for 20, 20, and 10. With the global interval changed to 10 Days through the warehouse → site → global inheritance chain, regenerating the plan replaced them with one planned production order for 50; Automatic Order Grouping was cleared. The project-contract supply remained separate with its Specification indicator. Sources: the source on file, the source on file, the source on file, the source on file, the source on file, and the source on file."
+        }
+      ]
+    },
+    {
+      "n": "3.14",
+      "title": "Exception Messages, briefly",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Named but not explored in depth: "
+            },
+            {
+              "t": "strong",
+              "v": "Exception Messages"
+            },
+            {
+              "t": "text",
+              "v": " surface planner-facing warnings, e.g. "
+            },
+            {
+              "t": "em",
+              "v": "\"reschedule into 9/3\""
+            },
+            {
+              "t": "text",
+              "v": " on an order running late. The consultant flagged this as \"a whole bunch of stuff\" for a future session and deferred it explicitly rather than opening it here — recorded as a deferral, not a gap."
+            }
+          ],
+          "text": "Named but not explored in depth: Exception Messages surface planner-facing warnings, e.g. \"reschedule into 9/3\" on an order running late. The consultant flagged this as \"a whole bunch of stuff\" for a future session and deferred it explicitly rather than opening it here — recorded as a deferral, not a gap."
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Generate Orders must be run from the top-level (parent) item with Include Child Items selected"
+            },
+            {
+              "t": "text",
+              "v": " to traverse the BOM and plan components — running it on a component alone does not propagate demand upward."
+            }
+          ],
+          "text": "Generate Orders must be run from the top-level (parent) item with Include Child Items selected to traverse the BOM and plan components — running it on a component alone does not propagate demand upward."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The \"two POs, same number\" reading was wrong"
+            },
+            {
+              "t": "text",
+              "v": " — Warehouse Manager Dashboard shows order "
+            },
+            {
+              "t": "em",
+              "v": "lines"
+            },
+            {
+              "t": "text",
+              "v": ", not orders; one PO with multiple lines will always show as multiple rows there."
+            }
+          ],
+          "text": "The \"two POs, same number\" reading was wrong — Warehouse Manager Dashboard shows order lines, not orders; one PO with multiple lines will always show as multiple rows there."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Contract Deliverable is confirmed as a second, distinct demand mechanism"
+            },
+            {
+              "t": "text",
+              "v": " worth its own documentation pass, not folded into the existing sales-order-demand write-ups."
+            }
+          ],
+          "text": "Contract Deliverable is confirmed as a second, distinct demand mechanism worth its own documentation pass, not folded into the existing sales-order-demand write-ups."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Order Interval, not Combine Orders or Automatic Order Grouping, is the generation-time control that netted the three ordinary requirements into one planned production order"
+            },
+            {
+              "t": "text",
+              "v": " in the 2026-09-05 follow-up."
+            }
+          ],
+          "text": "Order Interval, not Combine Orders or Automatic Order Grouping, is the generation-time control that netted the three ordinary requirements into one planned production order in the 2026-09-05 follow-up."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "~~Document Contract Deliverable / Project Contract as a planning demand source~~ — done, "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": "; export Contract/Project module help to vendor-source the Free/Active gate"
+                }
+              ],
+              "text": "~~Document Contract Deliverable / Project Contract as a planning demand source~~ — done, the source on file; export Contract/Project module help to vendor-source the Free/Active gate"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read Fixed Location's field help directly from its session — the transcript's wording is garbled"
+                }
+              ],
+              "text": "Re-read Fixed Location's field help directly from its session — the transcript's wording is garbled"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open, low priority"
+                }
+              ],
+              "text": "Open, low priority"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Capture the standalone Inbound Order Lines session's own status bar on a future recording"
+                }
+              ],
+              "text": "Capture the standalone Inbound Order Lines session's own status bar on a future recording"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Library"
+                }
+              ],
+              "text": "Library"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What vendor source documents Contract Deliverable's Free/Active planning gate and its project-pegging mechanism? "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " covers the mechanism from this recording, unsourced from the vendor — "
+            }
+          ],
+          "text": "What vendor source documents Contract Deliverable's Free/Active planning gate and its project-pegging mechanism? the source on file covers the mechanism from this recording, unsourced from the vendor —"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What is the standalone Inbound Order Lines session's actual code? — "
+            }
+          ],
+          "text": "What is the standalone Inbound Order Lines session's actual code? —"
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A live, unscripted session settles questions a scripted walkthrough can't raise."
+            },
+            {
+              "t": "text",
+              "v": " Every prior review in this library followed a planned procedure; this one caught the group actually being wrong on camera twice (the child-item generation trap, §3.2; the \"two POs\" misreading, §3.5) and correcting from the screen rather than from narration. "
+            },
+            {
+              "t": "strong",
+              "v": "This is a stronger evidentiary pattern than a rehearsed demo"
+            },
+            {
+              "t": "text",
+              "v": " — the errors are real, not staged, and their corrections are traceable to a specific frame."
+            }
+          ],
+          "text": "A live, unscripted session settles questions a scripted walkthrough can't raise. Every prior review in this library followed a planned procedure; this one caught the group actually being wrong on camera twice (the child-item generation trap, §3.2; the \"two POs\" misreading, §3.5) and correcting from the screen rather than from narration. This is a stronger evidentiary pattern than a rehearsed demo — the errors are real, not staged, and their corrections are traceable to a specific frame."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A spoken guess and a screen-verified finding can address the same question and disagree — record both, attributed, don't let the later one silently overwrite the earlier one."
+            },
+            {
+              "t": "text",
+              "v": " §3.13 and "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §5 do this explicitly for the safety-stock question; it is the clearest instance yet of principle 4 in this library."
+            }
+          ],
+          "text": "A spoken guess and a screen-verified finding can address the same question and disagree — record both, attributed, don't let the later one silently overwrite the earlier one. §3.13 and the source on file §5 do this explicitly for the safety-stock question; it is the clearest instance yet of principle 4 in this library."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A chat thread that grows out of a recording is itself evidence, on the recording's own timeline"
+            },
+            {
+              "t": "text",
+              "v": " — the two are not independent sources to reconcile, they are one incident split across two capture mechanisms. Filing both under one narrative (here, and in the session file) rather than two disconnected write-ups kept the account coherent."
+            }
+          ],
+          "text": "A chat thread that grows out of a recording is itself evidence, on the recording's own timeline — the two are not independent sources to reconcile, they are one incident split across two capture mechanisms. Filing both under one narrative (here, and in the session file) rather than two disconnected write-ups kept the account coherent."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Recording:"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+            }
+          ],
+          "text": "Recording: the source on file — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan"
+                }
+              ],
+              "text": "Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000"
+                }
+              ],
+              "text": "cprrp0520m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned Orders"
+                }
+              ],
+              "text": "Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                }
+              ],
+              "text": "cprrp1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Transfer Order Planning"
+                }
+              ],
+              "text": "Transfer Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cppat1210m000"
+                }
+              ],
+              "text": "cppat1210m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order"
+                }
+              ],
+              "text": "Warehousing Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000"
+                }
+              ],
+              "text": "whinh2100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Manager Dashboard"
+                }
+              ],
+              "text": "Warehouse Manager Dashboard"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2300m000"
+                }
+              ],
+              "text": "whinh2300m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Receipt"
+                }
+              ],
+              "text": "Warehouse Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3512m000"
+                }
+              ],
+              "text": "whinh3512m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "`the source on file`"
+                }
+              ],
+              "text": "`the source on file`"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Purchase"
+                }
+              ],
+              "text": "Items - Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdipu0101m000"
+                }
+              ],
+              "text": "tdipu0101m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Data by Warehouse"
+                }
+              ],
+              "text": "Item Data by Warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2510m000"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd2110s000"
+                }
+              ],
+              "text": "whwmd2510m000 or whwmd2110s000"
+            },
+            {
+              "tokens": [],
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    }
+  ]
+}

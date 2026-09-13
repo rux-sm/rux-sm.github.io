@@ -1,0 +1,92 @@
+<section class="ks-sec" id="grid">
+  <h2>Grid</h2><p>16 columns · spans · condensed · narrow · full width</p>
+  <!-- PROVENANCE: rendered-dom · elements-grid--default, --subgrid, --narrow
+       and --condensed, 2026-08-28; --full-width added 2026-09-06 · supersedes
+       f9f5414, which claimed a React DOM diff the fragment could not name -->
+  <!--
+    Two findings recorded rather than changed. The reference's default story
+    spans columns with BREAKPOINT-PREFIXED classes (`sm:col-span-4`), so a bare
+    `col-span-N` appears there only inside a subgrid — the same idiom either
+    way, and ours has a rule behind it. And the responsive and subgrid span sets
+    the omissions report lists are variants this fragment does not demo.
+  -->
+  <!--
+    .rux--css-grid sets grid-template-columns: repeat(var(--rux-grid-columns),
+    minmax(0,1fr)) and --rux-grid-columns is set responsively (4 / 8 / 16).
+    Column tokens are emitted by @carbon/grid as literal --cds-grid-* names, which
+    tools/build.mjs renames; see roadmap §4.1.2.
+
+    WHY THE GAPS ARE WIDER THAN THE COLUMNS, AND WHY THAT IS NOT A DEFECT.
+    The gutter is margin-inline on the column (css/rux.css:280), not padding, so a
+    background on the column stops at the gutter and the boxes read as small
+    islands. --rux-grid-gutter is 2rem, i.e. 16px of margin per side. .ks-main caps
+    content at 64rem, leaving ~912px of track: 912/16 = 57px per column, minus 32px
+    of gutter = a ~25px box sitting in a 32px gap. Carbon's grid is drawn for a
+    99rem page, not a 64rem reading column. The 4/4/8 row below measures
+    196/196/424px, which is the check that proves the grid itself (roadmap §4.1.9).
+
+    THE LABELS, HOWEVER, WERE A REAL BUG. These boxes carried `padding:.5rem`,
+    which at a 25px column leaves a 9px content box — and "16" at body-01 (14px) is
+    about 16px wide, so every two-digit number overflowed its own background by
+    ~3.5px per side and sat visibly outside the box. Corrected 2026-08-26 to
+    vertical-only padding at .75rem, which fits the digits inside the column.
+    Below roughly a 1100px viewport the columns get too narrow for even that; the
+    grid stays correct, the numbering just runs out of room.
+  -->
+  <div class="ks-label">all 16 columns, one span each — the 2rem gutter is margin, so at this width the gap is wider than the column itself</div>
+  <div class="rux--css-grid" style="margin-block-end:1.5rem">
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">1</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">2</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">3</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">4</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">5</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">6</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">7</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">8</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">9</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">10</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">11</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">12</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">13</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">14</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">15</div>
+    <div class="rux--css-grid-column rux--col-span-1 ks-box" style="padding:.5rem 0;text-align:center;font-size:.75rem">16</div>
+  </div>
+
+  <div class="ks-label">spans — 4 · 4 · 8</div>
+  <div class="rux--css-grid" style="margin-block-end:1.5rem">
+    <div class="rux--css-grid-column rux--col-span-4 ks-box" style="padding:1rem">4 columns</div>
+    <div class="rux--css-grid-column rux--col-span-4 ks-box" style="padding:1rem">4 columns</div>
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8 columns</div>
+  </div>
+
+  <div class="ks-label">condensed — 1px gutters</div>
+  <div class="rux--css-grid rux--css-grid--condensed" style="margin-block-end:1.5rem">
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+  </div>
+
+  <div class="ks-label">narrow — gutter pulled to the left of the column</div>
+  <div class="rux--css-grid rux--css-grid--narrow">
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+  </div>
+
+  <!-- FULL WIDTH ATTESTS THE MARKUP, NOT THE EFFECT. elements-grid--full-width
+       renders `div.cds--css-grid.cds--css-grid--full-width`; the modifier is one
+       rule, `max-inline-size: 100%` over the default's 99rem. This sink caps
+       .ks-main at 64rem, below 99rem, so here the two draw identically -- the
+       difference is measurable only on a page wider than 1584px, and it was:
+       the scheduler at 2000px, 2026-09-06, docs/log.md. Offered by
+       new-project.sh --grid full and the builder's grid width. -->
+  <!-- THE GAP IS ON THE SINK'S OWN LABEL, NOT ON THE GRID ABOVE IT. The first
+       draft put `margin-block-end` on the narrow grid and check-spacing
+       reported it at once -- marginBlockEnd ours 24px, Carbon none -- because
+       Carbon components carry no margin and the gate reads that rule. Demo
+       spacing is the sink's business, so it sits on sink chrome. -->
+  <div class="ks-label" style="margin-block-start:1.5rem">full width — the 99rem cap lifted; identical here, where the page is narrower than the cap</div>
+  <div class="rux--css-grid rux--css-grid--full-width">
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+    <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
+  </div>
+</section>

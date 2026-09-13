@@ -1,0 +1,4622 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-demand-to-shipment-via-planning",
+  "title": "Plan to shipment",
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "updated": "2026-09-02",
+  "status": "draft",
+  "summary": "run the bamboo family down the long route of `order-to-shipment-overview.md` — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down.",
+  "order": 6,
+  "sources": [
+    "cppat1210m000",
+    "cprpd0100m000",
+    "cprpd1100m000",
+    "cprpd1200m000",
+    "cprrp0520m000",
+    "cprrp1100m000",
+    "cprrp1200m000",
+    "cprrp1210m000",
+    "cprrp1220m000",
+    "tcibd0501m100",
+    "tdpur4534m000",
+    "tdsls4601m200",
+    "ticst0101m100",
+    "ticst0201m000",
+    "tisfc0100s000",
+    "tisfc0120s000",
+    "tisfc0130m000",
+    "tisfc0204m000",
+    "tisfc0207m000",
+    "tisfc0501m000",
+    "whinh0110m000",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh2300m000",
+    "whinh3512m000",
+    "whinh3530m000",
+    "whinh4130m000",
+    "whinh4131m000",
+    "whinh4525m100",
+    "whinh4630m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Preflight",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> "
+            },
+            {
+              "t": "strong",
+              "v": "Prerequisite"
+            },
+            {
+              "t": "text",
+              "v": " > The bamboo family as section 2 describes it. If any of it is missing, "
+            },
+            {
+              "t": "literal",
+              "v": "SG-create-basic-test-items-and-defaults.md"
+            },
+            {
+              "t": "text",
+              "v": " builds it and "
+            },
+            {
+              "t": "literal",
+              "v": "SG-run-order-planning-for-one-item.md"
+            },
+            {
+              "t": "text",
+              "v": " phase 0 adds the planning data."
+            }
+          ],
+          "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, SG-create-basic-test-items-and-defaults.md builds it and SG-run-order-planning-for-one-item.md phase 0 adds the planning data."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing yet. This chain fails silently in two places, an item with no planning data and a component whose stock already covers the requirement, and both are decided by figures readable before anything is created. The Item Order Plan shows whether each item is plannable; Inventory 360 shows what MRP will net against."
+            }
+          ],
+          "text": "What LN is doing. Nothing yet. This chain fails silently in two places, an item with no planning data and a component whose stock already covers the requirement, and both are decided by figures readable before anything is created. The Item Order Plan shows whether each item is plannable; Inventory 360 shows what MRP will net against."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whwmd4300m000",
+                      "name": "Inventory 360"
+                    }
+                  ],
+                  "text": "Open Inventory 360 (whwmd4300m000)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item filter"
+                    }
+                  ],
+                  "text": "The item filter"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on-hand at "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA01"
+                    }
+                  ],
+                  "text": "Read BAM-CHOP-PAIR on-hand at ADNA01"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "pair on-hand before"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipping warehouse"
+                    }
+                  ],
+                  "text": "pair on-hand before and shipping warehouse"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on-hand at "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    }
+                  ],
+                  "text": "Read BAM-ROD and BAM-SLEEVE on-hand at ADNA02"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "rod on-hand before"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "sleeve on-hand before"
+                    }
+                  ],
+                  "text": "rod on-hand before, sleeve on-hand before"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and search each of the three items in turn"
+                    }
+                  ],
+                  "text": "Open Item Order Plan (cprrp0520m000) and search each of the three items in turn"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each one appears. An item that does not is invisible to MRP"
+                    }
+                  ],
+                  "text": "Each one appears. An item that does not is invisible to MRP"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.5"
+                    }
+                  ],
+                  "text": "0.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "For any item that does not appear, add its cluster row per "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "SG-run-order-planning-for-one-item.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": " steps 0.3–0.5"
+                    }
+                  ],
+                  "text": "For any item that does not appear, add its cluster row per SG-run-order-planning-for-one-item.md steps 0.3–0.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item now appears — an empty plan, but a plan"
+                    }
+                  ],
+                  "text": "The item now appears — an empty plan, but a plan"
+                }
+              ],
+              "id": "0.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create the demand",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+      "session": "Sales Order Intake Workbench",
+      "sessionCode": "tdsls4601m200",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " A sales order for more pairs than exist creates the shortfall the rest of the chain answers. Planning will see it only if its delivery date falls inside the item's order horizon, which LN computes in workdays on a calendar, and the order is approved now because phase 6's release needs it, not because planning does."
+            }
+          ],
+          "text": "What LN is doing. A sales order for more pairs than exist creates the shortfall the rest of the chain answers. Planning will see it only if its delivery date falls inside the item's order horizon, which LN computes in workdays on a calendar, and the order is approved now because phase 6's release needs it, not because planning does."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Create a sales order for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " per "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "SG-ship-from-stock.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": " steps 1.1–1.11, with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the warehouse from 0.2"
+                    }
+                  ],
+                  "text": "Create a sales order for BAM-CHOP-PAIR per SG-ship-from-stock.md steps 1.1–1.11, with Warehouse = the warehouse from 0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "An order at "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Free"
+                    }
+                  ],
+                  "text": "An order at Free"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Ordered Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " above the on-hand from 0.2, and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Delivery Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " a few days out"
+                    }
+                  ],
+                  "text": "Set Ordered Quantity above the on-hand from 0.2, and Planned Delivery Date a few days out"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "sales order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "ordered quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned delivery date"
+                    }
+                  ],
+                  "text": "sales order number, ordered quantity, planned delivery date"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Approve"
+                    }
+                  ],
+                  "text": "Actions ➔ Approve"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "In Process"
+                    }
+                  ],
+                  "text": "Status = In Process"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprpd1100m000",
+                      "name": "Items - Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Horizons"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab, and read the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " date"
+                    }
+                  ],
+                  "text": "Open Items - Planning (cprpd1100m000) for BAM-CHOP-PAIR, Horizons tab, and read the Order Horizon date"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "order horizon date"
+                    }
+                  ],
+                  "text": "order horizon date"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.5"
+                    }
+                  ],
+                  "text": "1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If the date from 1.2 falls beyond it, raise the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    },
+                    {
+                      "t": "text",
+                      "v": " days until it does not"
+                    }
+                  ],
+                  "text": "If the date from 1.2 falls beyond it, raise the Order Horizon days until it does not"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The displayed date moves past your delivery date"
+                    }
+                  ],
+                  "text": "The displayed date moves past your delivery date"
+                }
+              ],
+              "id": "1.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.6"
+                    }
+                  ],
+                  "text": "1.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Reopen "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    }
+                  ],
+                  "text": "Reopen Item Order Plan (cprrp0520m000) for BAM-CHOP-PAIR"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " row with your number and quantity as "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Demand"
+                    }
+                  ],
+                  "text": "A Sales Order row with your number and quantity as Demand"
+                }
+              ],
+              "id": "1.6",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Run MRP",
+      "route": null,
+      "session": null,
+      "sessionCode": null,
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly."
+            }
+          ],
+          "text": "What LN is doing. MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp1220m000",
+                      "name": "Generate Order Planning (Item)"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    }
+                  ],
+                  "text": "Open Generate Order Planning (Item) (cprrp1220m000) for BAM-CHOP-PAIR"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Scenario"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ACT"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Plan Item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " are set"
+                    }
+                  ],
+                  "text": "Scenario ACT and Plan Item are set"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Include Child Items"
+                    }
+                  ],
+                  "text": "Select Include Child Items"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The run will plan the rods and sleeves too"
+                    }
+                  ],
+                  "text": "The run will plan the rods and sleeves too"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run the generation"
+                    }
+                  ],
+                  "text": "Run the generation"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The run completes"
+                    }
+                  ],
+                  "text": "The run completes"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp0520m000",
+                      "name": "Item Order Plan"
+                    },
+                    {
+                      "t": "text",
+                      "v": " for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and read the planned supply row"
+                    }
+                  ],
+                  "text": "Open Item Order Plan (cprrp0520m000) for BAM-CHOP-PAIR and read the planned supply row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned production order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Supply"
+                    },
+                    {
+                      "t": "text",
+                      "v": " equals ordered quantity minus on-hand"
+                    }
+                  ],
+                  "text": "planned production order — Supply equals ordered quantity minus on-hand"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.5"
+                    }
+                  ],
+                  "text": "2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp1100m000",
+                      "name": "Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " at "
+                    },
+                    {
+                      "t": "path",
+                      "route": "Planning ➔ Order Planning ➔ Planned Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", for cluster "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "NA1"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and site "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "CSADNA01"
+                    }
+                  ],
+                  "text": "Open Planned Orders (cprrp1100m000) at Planning ➔ Order Planning ➔ Planned Orders, for cluster NA1 and site CSADNA01"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "planned purchase orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — every row at "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Planned"
+                    }
+                  ],
+                  "text": "planned purchase orders — every row at Order Status Planned"
+                }
+              ],
+              "id": "2.5",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.6"
+                    }
+                  ],
+                  "text": "2.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the planned production order and run "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Pegging - Upstream"
+                    }
+                  ],
+                  "text": "Select the planned production order and run Pegging - Upstream"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "pegging arithmetic check"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — each level's children sum to its requirement"
+                    }
+                  ],
+                  "text": "pegging arithmetic check — each level's children sum to its requirement"
+                }
+              ],
+              "id": "2.6",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Cross the boundary",
+      "route": "Planning ➔ Order Planning ➔ Confirm Order Planning",
+      "session": "Confirm Order Planning",
+      "sessionCode": "cprrp1200m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "> "
+            },
+            {
+              "t": "strong",
+              "v": "Warning"
+            },
+            {
+              "t": "text",
+              "v": " > "
+            },
+            {
+              "t": "strong",
+              "v": "The purchase half of this phase is walked; the production half has never been run here."
+            },
+            {
+              "t": "text",
+              "v": " On 2026-08-25 two planned purchase orders for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " became purchase order "
+            },
+            {
+              "t": "literal",
+              "v": "100000682"
+            },
+            {
+              "t": "text",
+              "v": ". The two planned production orders beside them were deliberately left untransferred and remain at "
+            },
+            {
+              "t": "status",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": ". Step 3.6 is therefore the one step in this guide nobody has performed — "
+            },
+            {
+              "t": "strong",
+              "v": "you are testing it, not using it."
+            },
+            {
+              "t": "text",
+              "v": " "
+            }
+          ],
+          "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became purchase order 100000682. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 3.6 is therefore the one step in this guide nobody has performed — you are testing it, not using it."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing."
+            }
+          ],
+          "text": "What LN is doing. A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    },
+                    {
+                      "t": "text",
+                      "v": " has a row on the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Item - Business Partner"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab of its purchase data"
+                    }
+                  ],
+                  "text": "Confirm BAM-ROD has a row on the Item - Business Partner tab of its purchase data"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "BP4000006"
+                    },
+                    {
+                      "t": "text",
+                      "v": " FAIRFIELD ENGINEERING CO. — added 2026-08-25"
+                    }
+                  ],
+                  "text": "BP4000006 FAIRFIELD ENGINEERING CO. — added 2026-08-25"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If MRP proposed a planned purchase order for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", check the same tab for that item"
+                    }
+                  ],
+                  "text": "If MRP proposed a planned purchase order for BAM-SLEEVE, check the same tab for that item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A partner row, or the transfer will refuse it at 3.5"
+                    }
+                  ],
+                  "text": "A partner row, or the transfer will refuse it at 3.5"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cprrp1200m000",
+                      "name": "Confirm Order Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", confirm the planned orders you intend to transfer"
+                    }
+                  ],
+                  "text": "In Confirm Order Planning (cprrp1200m000), confirm the planned orders you intend to transfer"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " moves from "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Planned"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    }
+                  ],
+                  "text": "Order Status moves from Planned to Confirmed"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "cppat1210m000",
+                      "name": "Transfer Order Planning"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", select "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Purchase"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and select "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Error Report"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Process Report"
+                    }
+                  ],
+                  "text": "Open Transfer Order Planning (cppat1210m000), select Purchase, and select Error Report and Process Report"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The transfer is scoped to the purchase orders"
+                    }
+                  ],
+                  "text": "The transfer is scoped to the purchase orders"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.5"
+                    }
+                  ],
+                  "text": "3.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run the transfer and read the report"
+                    }
+                  ],
+                  "text": "Run the transfer and read the report"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "real purchase order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — the report names the order each proposal became, or why it did not transfer"
+                    }
+                  ],
+                  "text": "real purchase order number — the report names the order each proposal became, or why it did not transfer"
+                }
+              ],
+              "id": "3.5",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.6"
+                    }
+                  ],
+                  "text": "3.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Repeat 3.4–3.5 with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Job Shop"
+                    },
+                    {
+                      "t": "text",
+                      "v": " selected instead of "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Purchase"
+                    }
+                  ],
+                  "text": "Repeat 3.4–3.5 with Job Shop selected instead of Purchase"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "real production order number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — expected in "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0501m000",
+                      "name": "Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " at "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Created"
+                    }
+                  ],
+                  "text": "real production order number — expected in Production Orders (tisfc0501m000) at Created"
+                }
+              ],
+              "id": "3.6",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Receive the components",
+      "route": "Warehousing ➔ Orders ➔ Orders",
+      "session": "Warehousing Orders",
+      "sessionCode": "whinh2100m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The purchase order generated an inbound warehousing order; receiving against it and confirming the receipt books the components into the raw-material warehouse. The on-hand figure, not the receipt status, is the proof."
+            }
+          ],
+          "text": "What LN is doing. The purchase order generated an inbound warehousing order; receiving against it and confirming the receipt books the components into the raw-material warehouse. The on-hand figure, not the receipt status, is the proof."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2100m000",
+                      "name": "Warehousing Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and find the inbound order LN raised from the purchase order at 3.5, then "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Open Warehousing Orders (whinh2100m000) and find the inbound order LN raised from the purchase order at 3.5, then Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "PUI"
+                    },
+                    {
+                      "t": "text",
+                      "v": " \"Purchase Receipts\", ship-to "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    }
+                  ],
+                  "text": "Order type PUI \"Purchase Receipts\", ship-to ADNA02"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the inbound lines and run "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Receive"
+                    }
+                  ],
+                  "text": "Select the inbound lines and run Actions ➔ Receive"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh3512m000",
+                      "name": "Warehouse Receipt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Warehouse Receipt (whinh3512m000) opens"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the packing-slip reference for each line"
+                    }
+                  ],
+                  "text": "Enter the packing-slip reference for each line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The lines carry their references"
+                    }
+                  ],
+                  "text": "The lines carry their references"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm the receipt"
+                    }
+                  ],
+                  "text": "Confirm the receipt"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "warehouse receipt number"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "All Lines Final"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "All Lines Complete"
+                    },
+                    {
+                      "t": "text",
+                      "v": " both set"
+                    }
+                  ],
+                  "text": "warehouse receipt number; Status = Confirmed, All Lines Final and All Lines Complete both set"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.5"
+                    }
+                  ],
+                  "text": "4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Errors Logged"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", then re-read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-ROD"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on-hand at "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA02"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory 360"
+                    }
+                  ],
+                  "text": "Read Errors Logged, then re-read BAM-ROD on-hand at ADNA02 in Inventory 360"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "rod on-hand after receipt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — up by exactly the quantity received"
+                    }
+                  ],
+                  "text": "rod on-hand after receipt — up by exactly the quantity received"
+                }
+              ],
+              "id": "4.5",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Build the pairs",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+      "session": "Production Orders",
+      "sessionCode": "tisfc0501m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. "
+            },
+            {
+              "t": "strong",
+              "v": "Production Completed"
+            },
+            {
+              "t": "text",
+              "v": " is the handoff to Warehousing, not a failed "
+            },
+            {
+              "t": "strong",
+              "v": "Completed"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "What LN is doing. The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. Production Completed is the handoff to Warehousing, not a failed Completed."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the production order from 3.6 and check its BOM, routing and estimated materials"
+                    }
+                  ],
+                  "text": "Open the production order from 3.6 and check its BOM, routing and estimated materials"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "BOM "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "JB0000242"
+                    },
+                    {
+                      "t": "text",
+                      "v": " rev "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "000002"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", routing "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "0"
+                    },
+                    {
+                      "t": "text",
+                      "v": " rev "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "000001"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", operation "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "10"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", rods and sleeves listed"
+                    }
+                  ],
+                  "text": "BOM JB0000242 rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the order and run "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Release Orders"
+                    }
+                  ],
+                  "text": "Select the order and run Actions ➔ Release Orders"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tisfc0204m000",
+                      "name": "Release Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Release Production Orders (tisfc0204m000) opens"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Run the release for this order only"
+                    }
+                  ],
+                  "text": "Run the release for this order only"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; warehousing issue and receipt orders now exist"
+                    }
+                  ],
+                  "text": "Order Status = Released; warehousing issue and receipt orders now exist"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.4"
+                    }
+                  ],
+                  "text": "5.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "ticst0101m100",
+                      "name": "Material to Issue for Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " at "
+                    },
+                    {
+                      "t": "path",
+                      "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and issue the materials per "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "SG-manual-production-order-existing-master-data.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": " steps 4.2–4.7"
+                    }
+                  ],
+                  "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per SG-manual-production-order-existing-master-data.md steps 4.2–4.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Actual Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = the estimated quantity; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Active"
+                    }
+                  ],
+                  "text": "Actual Quantity = the estimated quantity; Order Status = Active"
+                }
+              ],
+              "id": "5.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.5"
+                    }
+                  ],
+                  "text": "5.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tisfc0130m000",
+                      "name": "Report Operations"
+                    },
+                    {
+                      "t": "text",
+                      "v": " at "
+                    },
+                    {
+                      "t": "path",
+                      "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", enter the built quantity in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Completed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and save"
+                    }
+                  ],
+                  "text": "Open Report Operations (tisfc0130m000) at Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations, enter the built quantity in Completed, and save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "LN may ask whether to confirm the receipt automatically — record which way you answer"
+                    }
+                  ],
+                  "text": "LN may ask whether to confirm the receipt automatically — record which way you answer"
+                }
+              ],
+              "id": "5.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.6"
+                    }
+                  ],
+                  "text": "5.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Return to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Production Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Status"
+                    }
+                  ],
+                  "text": "Return to Production Orders and read Order Status"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "production order status after reporting"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Production Completed"
+                    },
+                    {
+                      "t": "text",
+                      "v": " or "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Completed"
+                    }
+                  ],
+                  "text": "production order status after reporting — Production Completed or Completed"
+                }
+              ],
+              "id": "5.6",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.7"
+                    }
+                  ],
+                  "text": "5.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on-hand at "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ADNA01"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory 360"
+                    }
+                  ],
+                  "text": "Read BAM-CHOP-PAIR on-hand at ADNA01 in Inventory 360"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "pair on-hand after build"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — up by the built quantity over 0.2"
+                    }
+                  ],
+                  "text": "pair on-hand after build — up by the built quantity over 0.2"
+                }
+              ],
+              "id": "5.7",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Ship",
+      "route": "Warehousing ➔ Manager Dashboard",
+      "session": "Warehouse Manager Dashboard",
+      "sessionCode": "whinh2300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The sales order from phase 1 is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock guide. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+            }
+          ],
+          "text": "What LN is doing. The sales order from phase 1 is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock guide. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.1"
+                    }
+                  ],
+                  "text": "6.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the sales order, "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Release ➔ Release to Warehousing…"
+                    },
+                    {
+                      "t": "text",
+                      "v": " per "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "SG-ship-from-stock.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": " steps 2.2–2.5"
+                    }
+                  ],
+                  "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per SG-ship-from-stock.md steps 2.2–2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Log Report prints; a warehousing order exists under your sales order number"
+                    }
+                  ],
+                  "text": "Log Report prints; a warehousing order exists under your sales order number"
+                }
+              ],
+              "id": "6.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.2"
+                    }
+                  ],
+                  "text": "6.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh2300m000",
+                      "name": "Warehouse Manager Dashboard"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", filter on your sales order number and "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "In Warehouse Manager Dashboard (whinh2300m000), filter on your sales order number and Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2100m100",
+                      "name": "Warehousing Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Origin Sales"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Type 20- SO/SC Out"
+                    }
+                  ],
+                  "text": "Warehousing Order (whinh2100m100), Origin Sales, Type 20- SO/SC Out"
+                }
+              ],
+              "id": "6.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.3"
+                    }
+                  ],
+                  "text": "6.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Outbound Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab, tick the line and run "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Advice ➔ Generate Advice"
+                    }
+                  ],
+                  "text": "On the Outbound Lines tab, tick the line and run Actions ➔ Advice ➔ Generate Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "status",
+                      "v": "Advised"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    },
+                    {
+                      "t": "text",
+                      "v": " both fill; Picking List by Location prints"
+                    }
+                  ],
+                  "text": "Advised and Released both fill; Picking List by Location prints"
+                }
+              ],
+              "id": "6.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.4"
+                    }
+                  ],
+                  "text": "6.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh4525m100",
+                      "name": "Picking List"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", tick the line and run "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Pick Run"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", then read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the order's "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Shipment Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
+                    }
+                  ],
+                  "text": "In Picking List (whinh4525m100), tick the line and run Actions ➔ Pick Run, then read Shipment on the order's Shipment Lines tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Line status "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Staged"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipment number"
+                    }
+                  ],
+                  "text": "Line status Staged — shipment number"
+                }
+              ],
+              "id": "6.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.5"
+                    }
+                  ],
+                  "text": "6.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh4130m000",
+                      "name": "Shipments"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", find the shipment and "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", then "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Freeze"
+                    }
+                  ],
+                  "text": "In Shipments (whinh4130m000), find the shipment and Drill In, then Actions ➔ Freeze"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Frozen"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Confirm"
+                    },
+                    {
+                      "t": "text",
+                      "v": " becomes available"
+                    }
+                  ],
+                  "text": "Status = Frozen; Confirm becomes available"
+                }
+              ],
+              "id": "6.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.6"
+                    }
+                  ],
+                  "text": "6.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Confirm"
+                    }
+                  ],
+                  "text": "Actions ➔ Confirm"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipped quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": "; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", inventory relieved"
+                    }
+                  ],
+                  "text": "shipped quantity; Status = Confirmed, inventory relieved"
+                }
+              ],
+              "id": "6.6",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.7"
+                    }
+                  ],
+                  "text": "6.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Re-read "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on-hand at the warehouse from 0.2"
+                    }
+                  ],
+                  "text": "Re-read BAM-CHOP-PAIR on-hand at the warehouse from 0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "pair on-hand after shipping"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — down by exactly the shipped quantity"
+                    }
+                  ],
+                  "text": "pair on-hand after shipping — down by exactly the shipped quantity"
+                }
+              ],
+              "id": "6.7",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " run the bamboo family down the long route of "
+        },
+        {
+          "t": "literal",
+          "v": "order-to-shipment-overview.md"
+        },
+        {
+          "t": "text",
+          "v": " — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. "
+        },
+        {
+          "t": "strong",
+          "v": "Spine guide"
+        },
+        {
+          "t": "text",
+          "v": " — it carries the sequence and the handovers. Each phase names the atomic guide that owns its detail and does not restate it."
+        }
+      ],
+      "text": "Objective: run the bamboo family down the long route of order-to-shipment-overview.md — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. Spine guide — it carries the sequence and the handovers. Each phase names the atomic guide that owns its detail and does not restate it."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Preflight"
+                }
+              ],
+              "text": "0 Preflight"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360; Item Order Plan"
+                }
+              ],
+              "text": "Inventory 360; Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "All three items are plannable, and every on-hand figure is written down"
+                }
+              ],
+              "text": "All three items are plannable, and every on-hand figure is written down"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create the demand"
+                }
+              ],
+              "text": "1 Create the demand"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "SO Intake Workbench"
+                }
+              ],
+              "text": "SO Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A sales order for more pairs than exist, inside the order horizon"
+                }
+              ],
+              "text": "A sales order for more pairs than exist, inside the order horizon"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Run MRP"
+                }
+              ],
+              "text": "2 Run MRP"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Order Planning (Item)"
+                }
+              ],
+              "text": "Generate Order Planning (Item)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned orders cover the shortfall and reconcile in the pegging tree"
+                }
+              ],
+              "text": "Planned orders cover the shortfall and reconcile in the pegging tree"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Cross the boundary"
+                }
+              ],
+              "text": "3 Cross the boundary"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm Order Planning; Transfer Order Planning"
+                }
+              ],
+              "text": "Confirm Order Planning; Transfer Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The proposals become a real purchase order and a real production order"
+                }
+              ],
+              "text": "The proposals become a real purchase order and a real production order"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Receive the components"
+                }
+              ],
+              "text": "4 Receive the components"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order; Warehouse Receipt"
+                }
+              ],
+              "text": "Warehousing Order; Warehouse Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Rods and sleeves are on hand at the raw-material warehouse"
+                }
+              ],
+              "text": "Rods and sleeves are on hand at the raw-material warehouse"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Build the pairs"
+                }
+              ],
+              "text": "5 Build the pairs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders; Report Operations"
+                }
+              ],
+              "text": "Production Orders; Report Operations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The finished item is posted to inventory"
+                }
+              ],
+              "text": "The finished item is posted to inventory"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "6"
+                },
+                {
+                  "t": "text",
+                  "v": " Ship"
+                }
+              ],
+              "text": "6 Ship"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Manager Dashboard; Picking List; Shipment"
+                }
+              ],
+              "text": "Manager Dashboard; Picking List; Shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", on-hand down by the shipped quantity"
+                }
+              ],
+              "text": "Shipment Confirmed, on-hand down by the shipped quantity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "[The overview](order-to-shipment-overview.md) is the level-1 view of this guide"
+        },
+        {
+          "t": "text",
+          "v": " — five stages across six module lanes, master data through confirmed shipment. The "
+        },
+        {
+          "t": "strong",
+          "v": "YES"
+        },
+        {
+          "t": "text",
+          "v": " rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this guide walks. Its sessions and their routes are stated per phase below, not on the diagram."
+        }
+      ],
+      "text": "[The overview](order-to-shipment-overview.md) is the level-1 view of this guide — five stages across six module lanes, master data through confirmed shipment. The YES rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this guide walks. Its sessions and their routes are stated per phase below, not on the diagram."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The level-2 view holds what the diagram leaves out."
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "The session map",
+          "href": "demand-to-shipment-session-map.md"
+        },
+        {
+          "t": "text",
+          "v": " names all 21 sessions this chain touches, each with its route, the action performed there and what it leaves for the next one. It is the page to keep open beside the screen while you walk this guide; every tile names the phase step here that owns its detail, so the two cannot drift apart quietly."
+        }
+      ],
+      "text": "The level-2 view holds what the diagram leaves out. The session map names all 21 sessions this chain touches, each with its route, the action performed there and what it leaves for the next one. It is the page to keep open beside the screen while you walk this guide; every tile names the phase step here that owns its detail, so the two cannot drift apart quietly."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The Item Order Plan is the progress indicator for phases 0–2; the order status is the indicator from phase 3 on."
+        },
+        {
+          "t": "text",
+          "v": " Planned ➔ Confirmed ➔ transferred ➔ real order ➔ received or completed ➔ shipped."
+        }
+      ],
+      "text": "The Item Order Plan is the progress indicator for phases 0–2; the order status is the indicator from phase 3 on. Planned ➔ Confirmed ➔ transferred ➔ real order ➔ received or completed ➔ shipped."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Values verified 2026-08-25 — "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": ", which owns them. Do not re-derive them here."
+        }
+      ],
+      "text": "Values verified 2026-08-25 — the source on file, which owns them. Do not re-derive them here."
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Item",
+        "Role",
+        "Supply source",
+        "Per pair",
+        "Cluster row"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                }
+              ],
+              "text": "BAM-CHOP-PAIR"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Finished product"
+                }
+              ],
+              "text": "Finished product"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Job Shop"
+                }
+              ],
+              "text": "Job Shop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "NA1"
+                },
+                {
+                  "t": "text",
+                  "v": " / "
+                },
+                {
+                  "t": "literal",
+                  "v": "CSADNA01"
+                }
+              ],
+              "text": "NA1 / CSADNA01"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                }
+              ],
+              "text": "BAM-ROD"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchased material"
+                }
+              ],
+              "text": "Purchased material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                }
+              ],
+              "text": "Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "NA1"
+                },
+                {
+                  "t": "text",
+                  "v": " / "
+                },
+                {
+                  "t": "literal",
+                  "v": "CSADNA01"
+                }
+              ],
+              "text": "NA1 / CSADNA01"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                }
+              ],
+              "text": "BAM-SLEEVE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchased packaging"
+                }
+              ],
+              "text": "Purchased packaging"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                }
+              ],
+              "text": "Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "NA1"
+                },
+                {
+                  "t": "text",
+                  "v": " / "
+                },
+                {
+                  "t": "literal",
+                  "v": "CSADNA01"
+                }
+              ],
+              "text": "NA1 / CSADNA01"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "BOM "
+        },
+        {
+          "t": "literal",
+          "v": "JB0000242"
+        },
+        {
+          "t": "text",
+          "v": " — "
+        },
+        {
+          "t": "strong",
+          "v": "revision `000002`"
+        },
+        {
+          "t": "text",
+          "v": "; revision "
+        },
+        {
+          "t": "literal",
+          "v": "000001"
+        },
+        {
+          "t": "text",
+          "v": " was expired 2026-08-18. Routing "
+        },
+        {
+          "t": "literal",
+          "v": "0"
+        },
+        {
+          "t": "text",
+          "v": " revision "
+        },
+        {
+          "t": "literal",
+          "v": "000001"
+        },
+        {
+          "t": "text",
+          "v": ", operation "
+        },
+        {
+          "t": "literal",
+          "v": "10"
+        },
+        {
+          "t": "text",
+          "v": ", work center "
+        },
+        {
+          "t": "literal",
+          "v": "A1000"
+        },
+        {
+          "t": "text",
+          "v": ". Site "
+        },
+        {
+          "t": "literal",
+          "v": "CSADNA01"
+        },
+        {
+          "t": "text",
+          "v": ". Raw materials at "
+        },
+        {
+          "t": "literal",
+          "v": "ADNA02"
+        },
+        {
+          "t": "text",
+          "v": ", finished goods at "
+        },
+        {
+          "t": "literal",
+          "v": "ADNA01"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "BOM JB0000242 — revision `000002`; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "`BAM-ROD` has a buy-from business partner and `BAM-SLEEVE` has not been checked."
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "literal",
+          "v": "BP4000006"
+        },
+        {
+          "t": "text",
+          "v": " FAIRFIELD ENGINEERING CO. was added to "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": " on 2026-08-25 "
+        },
+        {
+          "t": "strong",
+          "v": "because the transfer refused it without one"
+        },
+        {
+          "t": "text",
+          "v": ". If MRP proposes a planned purchase order for "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": ", phase 3 will very likely fail on it the same way. "
+        },
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "> Warning > `BAM-ROD` has a buy-from business partner and `BAM-SLEEVE` has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An item is absent from the Item Order Plan"
+                }
+              ],
+              "text": "An item is absent from the Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It has no cluster row. Step 0.5. Not an error state; nothing will tell you"
+                }
+              ],
+              "text": "It has no cluster row. Step 0.5. Not an error state; nothing will tell you"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN refuses the item on the sales order"
+                }
+              ],
+              "text": "LN refuses the item on the sales order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No row for the order's sales office on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales Offices"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ". Add it, then close and reopen the order session"
+                }
+              ],
+              "text": "No row for the order's sales office on the Sales Offices tab of Item (tcibd0501m100). Add it, then close and reopen the order session"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The demand does not appear in the Item Order Plan"
+                }
+              ],
+              "text": "The demand does not appear in the Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The delivery date is beyond the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " date. Step 1.5 — and the date is not today plus your days "
+                }
+              ],
+              "text": "The delivery date is beyond the Order Horizon date. Step 1.5 — and the date is not today plus your days"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run plans the pair but not a component"
+                }
+              ],
+              "text": "The run plans the pair but not a component"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The component has no planning data of its own. Step 0.4 — MRP skips it silently"
+                }
+              ],
+              "text": "The component has no planning data of its own. Step 0.4 — MRP skips it silently"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A component has plan data and still produces nothing"
+                }
+              ],
+              "text": "A component has plan data and still produces nothing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand "
+                }
+              ],
+              "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pegging tree is empty"
+                }
+              ],
+              "text": "The pegging tree is empty"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Pegging relations were not generated, or the demand is beyond the Pegging Horizon in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd0100m000",
+                  "name": "Planning Parameters"
+                }
+              ],
+              "text": "Pegging relations were not generated, or the demand is beyond the Pegging Horizon in Planning Parameters (cprpd0100m000)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The transfer runs and nothing happens"
+                }
+              ],
+              "text": "The transfer runs and nothing happens"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The orders were still "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                },
+                {
+                  "t": "text",
+                  "v": ". Step 3.3. There is no message for \"nothing matched\""
+                }
+              ],
+              "text": "The orders were still Planned. Step 3.3. There is no message for \"nothing matched\""
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "\"Buy-from BP cannot be determined for item …\""
+                }
+              ],
+              "text": "\"Buy-from BP cannot be determined for item …\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No partner row on the item's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item - Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " tab. Steps 3.1–3.2. The failed proposal survives, so fix it and rerun "
+                }
+              ],
+              "text": "No partner row on the item's Item - Business Partner tab. Steps 3.1–3.2. The failed proposal survives, so fix it and rerun"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order Type is blank"
+                }
+              ],
+              "text": "Purchase Order Type is blank"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN gives an error. This environment defaults "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                }
+              ],
+              "text": "LN gives an error. This environment defaults IPO"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No inbound order appears after the transfer"
+                }
+              ],
+              "text": "No inbound order appears after the transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the purchase order's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release to Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": " tab; "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4534m000",
+                  "name": "Purchase Order Line Status"
+                },
+                {
+                  "t": "text",
+                  "v": " names the activity a stuck line is waiting on"
+                }
+              ],
+              "text": "Check the purchase order's Release to Warehousing tab; Purchase Order Line Status (tdpur4534m000) names the activity a stuck line is waiting on"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "whinh0032"
+                },
+                {
+                  "t": "text",
+                  "v": " at the receipt"
+                }
+              ],
+              "text": "whinh0032 at the receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Capture the LOG detail before clearing it, and read "
+                },
+                {
+                  "t": "field",
+                  "v": "Errors Logged"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3530m000",
+                  "name": "Receipt Message Log"
+                },
+                {
+                  "t": "text",
+                  "v": " afterwards "
+                }
+              ],
+              "text": "Capture the LOG detail before clearing it, and read Errors Logged and Receipt Message Log (whinh3530m000) afterwards"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt confirms but on-hand does not move"
+                }
+              ],
+              "text": "The receipt confirms but on-hand does not move"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Whether "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Final"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " were both set, and whether you re-read the warehouse from 0.3"
+                }
+              ],
+              "text": "Whether All Lines Final and All Lines Complete were both set, and whether you re-read the warehouse from 0.3"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order will not release"
+                }
+              ],
+              "text": "The order will not release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Printing Production Order Documents Mandatory"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0100s000"
+                },
+                {
+                  "t": "text",
+                  "v": " may require "
+                },
+                {
+                  "t": "status",
+                  "v": "Printed"
+                },
+                {
+                  "t": "text",
+                  "v": " first "
+                }
+              ],
+              "text": "Printing Production Order Documents Mandatory in tisfc0100s000 may require Printed first"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The material line stays blocked"
+                }
+              ],
+              "text": "The material line stays blocked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0207m000",
+                  "name": "Initiate Inventory Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " manually; if still blocked, record what you saw "
+                }
+              ],
+              "text": "Run Initiate Inventory Issue (tisfc0207m000) manually; if still blocked, record what you saw"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status reaches "
+                },
+                {
+                  "t": "status",
+                  "v": "Production Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " and on-hand does not move"
+                }
+              ],
+              "text": "Status reaches Production Completed and on-hand does not move"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "That is the "
+                },
+                {
+                  "t": "chip",
+                  "v": "No"
+                },
+                {
+                  "t": "text",
+                  "v": " path at 5.5. Check "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " for an open production receipt order"
+                }
+              ],
+              "text": "That is the No path at 5.5. Check Warehousing Orders (whinh2100m000) for an open production receipt order"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " greyed out"
+                }
+              ],
+              "text": "Advice greyed out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "You are on the session toolbar. The advice actions live on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar — step 6.3"
+                }
+              ],
+              "text": "You are on the session toolbar. The advice actions live on the Outbound Lines toolbar — step 6.3"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order will not advise"
+                }
+              ],
+              "text": "The order will not advise"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The header "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " does not hold the stock. Recheck against 0.2"
+                }
+              ],
+              "text": "The header Warehouse does not hold the stock. Recheck against 0.2"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The shipment will not confirm"
+                }
+              ],
+              "text": "The shipment will not confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line was never picked, or the shipment was never frozen. Steps 6.4 and 6.5"
+                }
+              ],
+              "text": "The line was never picked, or the shipment was never frozen. Steps 6.4 and 6.5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Stock already covers the order"
+                }
+              ],
+              "text": "Stock already covers the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The "
+                },
+                {
+                  "t": "chip",
+                  "v": "YES"
+                },
+                {
+                  "t": "text",
+                  "v": " branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to "
+                },
+                {
+                  "t": "literal",
+                  "v": "SG-ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
+                }
+              ],
+              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to SG-ship-from-stock.md. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "The finished item is in the wrong warehouse to ship from"
+                }
+              ],
+              "text": "The finished item is in the wrong warehouse to ship from"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Insert "
+                },
+                {
+                  "t": "literal",
+                  "v": "SG-transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
+                  "v": " between phases 5 and 6. On current evidence "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " is received and shipped at "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA01"
+                },
+                {
+                  "t": "text",
+                  "v": ", so this does not arise"
+                }
+              ],
+              "text": "Insert SG-transfer-item-between-warehouses.md between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Components already in stock"
+                }
+              ],
+              "text": "Components already in stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall "
+                }
+              ],
+              "text": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Build by hand instead of from planning"
+                }
+              ],
+              "text": "Build by hand instead of from planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Skip step 3.6 and create the production order directly per "
+                },
+                {
+                  "t": "literal",
+                  "v": "SG-manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 1. "
+                },
+                {
+                  "t": "chip",
+                  "v": "This is the only production path anyone here has walked"
+                },
+                {
+                  "t": "text",
+                  "v": " — it is the fallback if step 3.6 fails"
+                }
+              ],
+              "text": "Skip step 3.6 and create the production order directly per SG-manual-production-order-existing-master-data.md phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The shipment is "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": " and on-hand has decreased"
+                }
+              ],
+              "text": "The shipment is Confirmed and on-hand has decreased"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "None — the documented chain ends here. Invoicing and Financials are outside the library's scope by decision"
+                }
+              ],
+              "text": "None — the documented chain ends here. Invoicing and Financials are outside the library's scope by decision"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Actual costs need calculating and posting"
+                }
+              ],
+              "text": "Actual costs need calculating and posting"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Warning Partly verified. Phases 1, 6 have been performed against a live system and confirmed. Phases 0, 2, 3, 4, 5 have not. Follow those as a plan, not as a record.",
+  "openIssues": 12
+}

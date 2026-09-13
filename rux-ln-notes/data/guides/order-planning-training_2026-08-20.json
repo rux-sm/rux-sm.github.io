@@ -1,0 +1,3321 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "order-planning-training_2026-08-20",
+  "title": "Order Planning Training — Review",
+  "updated": "2026-09-03",
+  "status": "draft",
+  "sources": [
+    "cprmp2101m000",
+    "cprpd0100m000",
+    "cprpd1100m000",
+    "cprpd4100m000",
+    "cprrp0240m000",
+    "cprrp0520m000",
+    "cprrp0740m000",
+    "cprrp0740m200",
+    "cprrp1100m000",
+    "cprrp1210m000",
+    "cprrp1220m000",
+    "tcibd0102m000",
+    "tcibd0501m100",
+    "tcibd2100m000",
+    "tdsls4100m900",
+    "whwmd4300m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Introduce "
+        },
+        {
+          "t": "strong",
+          "v": "order planning"
+        },
+        {
+          "t": "text",
+          "v": " — MRP — to the trainees, using the bamboo test-item family ("
+        },
+        {
+          "t": "literal",
+          "v": "BAM-CHOP-PAIR"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": ") already built in the 2026-08-18 walkthrough. The session answers a question asked directly on the call: "
+        },
+        {
+          "t": "em",
+          "v": "\"have you already used planning?\""
+        },
+        {
+          "t": "text",
+          "v": " — and works forward from what an item needs before it can be planned at all, through where demand comes from, to how the "
+        },
+        {
+          "t": "strong",
+          "v": "order horizon"
+        },
+        {
+          "t": "text",
+          "v": " decides which demand planning is willing to see."
+        }
+      ],
+      "text": "Introduce order planning — MRP — to the trainees, using the bamboo test-item family (BAM-CHOP-PAIR, BAM-ROD, BAM-SLEEVE) already built in the 2026-08-18 walkthrough. The session answers a question asked directly on the call: \"have you already used planning?\" — and works forward from what an item needs before it can be planned at all, through where demand comes from, to how the order horizon decides which demand planning is willing to see."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "This is the first recording in the library to cover Enterprise Planning. Every previous session stopped at execution level — sales orders, production orders, warehouse receipts — where supply was created by hand."
+        }
+      ],
+      "text": "This is the first recording in the library to cover Enterprise Planning. Every previous session stopped at execution level — sales orders, production orders, warehouse receipts — where supply was created by hand."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "table",
+      "columns": [
+        "Role",
+        "Count",
+        "Organisation"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant, running the session and driving the screen"
+                }
+              ],
+              "text": "Consultant, running the session and driving the screen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee"
+                }
+              ],
+              "text": "Trainee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee"
+                }
+              ],
+              "text": "Attendee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    },
+    {
+      "kind": "callout",
+      "variant": "note",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "This is a different role split from the 2026-08-18 review"
+            },
+            {
+              "t": "text",
+              "v": ", which recorded a different person as the consultant running the session. Both are as-observed for their own recording; the meetings are a recurring internal training series and who drives the screen varies."
+            }
+          ],
+          "text": "This is a different role split from the 2026-08-18 review, which recorded a different person as the consultant running the session. Both are as-observed for their own recording; the meetings are a recurring internal training series and who drives the screen varies."
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "An item cannot be planned until it has planning data",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The session opened by searching "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " and finding nothing: "
+            },
+            {
+              "t": "quote",
+              "v": "it's not set up for planning yet",
+              "at": "03:45"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The session opened by searching Item Order Plan (cprrp0520m000) for BAM-CHOP-PAIR and finding nothing: ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The reasoning given is exact and worth keeping: "
+            },
+            {
+              "t": "quote",
+              "v": "This is one of the main planning screens, so it uses the items planning data. But if it's not here then you can't plan it",
+              "at": "04:39"
+            },
+            {
+              "t": "text",
+              "v": ". The link between an item and its planning data is the "
+            },
+            {
+              "t": "strong",
+              "v": "cluster"
+            },
+            {
+              "t": "text",
+              "v": " — "
+            },
+            {
+              "t": "em",
+              "v": "\"under clusters in the item master, that's where items planning is linked to the overall item.\""
+            }
+          ],
+          "text": "The reasoning given is exact and worth keeping: . The link between an item and its planning data is the cluster — \"under clusters in the item master, that's where items planning is linked to the overall item.\""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The item's group, "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-FG"
+            },
+            {
+              "t": "text",
+              "v": " \"Bamboo Finished Goods\", had been created new for the bamboo family, so the "
+            },
+            {
+              "t": "strong",
+              "v": "Item Defaults"
+            },
+            {
+              "t": "text",
+              "v": " template carried no cluster and the planning record was not generated automatically. It was created manually instead, after which the item appeared in the Item Order Plan (05:41)."
+            }
+          ],
+          "text": "The item's group, BAM-FG \"Bamboo Finished Goods\", had been created new for the bamboo family, so the Item Defaults template carried no cluster and the planning record was not generated automatically. It was created manually instead, after which the item appeared in the Item Order Plan (05:41)."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The environment's planning cluster is "
+            },
+            {
+              "t": "strong",
+              "v": "`NA1`"
+            },
+            {
+              "t": "text",
+              "v": " (\"Cluster NA 1\") and the site is "
+            },
+            {
+              "t": "strong",
+              "v": "`CSADNA01`"
+            },
+            {
+              "t": "text",
+              "v": " (\"PCG CSAD NA Site 1 Manufacturi Houston,TX\") — both read from the selection block of "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1100m000",
+              "name": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The environment's planning cluster is `NA1` (\"Cluster NA 1\") and the site is `CSADNA01` (\"PCG CSAD NA Site 1 Manufacturi Houston,TX\") — both read from the selection block of Planned Orders (cprrp1100m000)."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file, the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The vendor states the concept behind this: a planning cluster "
+            },
+            {
+              "t": "em",
+              "v": "\"represents one or more business locations for which planning processes are performed\""
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "em",
+              "v": "\"if the multisite concepts are activated, planning clusters and sites are mandatory\""
+            },
+            {
+              "t": "text",
+              "v": " — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Clusters"
+            },
+            {
+              "t": "text",
+              "v": " — \"Planning clusters in Enterprise Planning\" (p. 39). That a cluster was genuinely required here, rather than defaulting blank, is evidence that multisite is active in this environment — see section 6. "
+            }
+          ],
+          "text": "The vendor states the concept behind this: a planning cluster \"represents one or more business locations for which planning processes are performed\", and \"if the multisite concepts are activated, planning clusters and sites are mandatory\" — the Infor LN Order Planning user guide, Planning Clusters — \"Planning clusters in Enterprise Planning\" (p. 39). That a cluster was genuinely required here, rather than defaulting blank, is evidence that multisite is active in this environment — see section 6."
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "Demand has to exist, and the item has to be sellable",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "quote",
+              "v": "If there's no demand there won't be anything to plan. Or if there's not demand and sufficient supply, there's nothing to plan",
+              "at": "06:25"
+            },
+            {
+              "t": "text",
+              "v": ". A sales order was duplicated to create demand."
+            }
+          ],
+          "text": ". A sales order was duplicated to create demand."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two execution-level obstacles surfaced before the demand could be booked, both worth recording as procedure:"
+            }
+          ],
+          "text": "Two execution-level obstacles surfaced before the demand could be booked, both worth recording as procedure:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "An item cannot go on a sales order without a sales-office record for the order's sales office."
+                },
+                {
+                  "t": "text",
+                  "v": " The error message was read out as "
+                },
+                {
+                  "t": "em",
+                  "v": "\"item sales by sales office not present\""
+                },
+                {
+                  "t": "text",
+                  "v": ". The fix was to add the row on the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Sales Offices"
+                },
+                {
+                  "t": "text",
+                  "v": " subtab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", taking the sales office from the order header."
+                }
+              ],
+              "text": "An item cannot go on a sales order without a sales-office record for the order's sales office. The error message was read out as \"item sales by sales office not present\". The fix was to add the row on the Sales Offices subtab of Item (tcibd0501m100), taking the sales office from the order header."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "After a master-data change, the session must be exited and re-entered before it will pick the change up"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "quote",
+                  "v": "with these things, when you do like a master data change like I just did, you got to exit that session, come back in so that it'll do a refresh",
+                  "at": "07:06"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "After a master-data change, the session must be exited and re-entered before it will pick the change up — ."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The order was booked for "
+            },
+            {
+              "t": "strong",
+              "v": "5 ea"
+            },
+            {
+              "t": "text",
+              "v": " against "
+            },
+            {
+              "t": "strong",
+              "v": "1 ea"
+            },
+            {
+              "t": "text",
+              "v": " on hand — "
+            },
+            {
+              "t": "quote",
+              "v": "that means that there's four short",
+              "at": "07:44"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The order was booked for 5 ea against 1 ea on hand — ."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", which also shows the item's "
+            },
+            {
+              "t": "strong",
+              "v": "Order System"
+            },
+            {
+              "t": "text",
+              "v": " as "
+            },
+            {
+              "t": "strong",
+              "v": "Planned"
+            },
+            {
+              "t": "text",
+              "v": " and the full subentity set (Sales, Production, Service, Ordering, Warehousing selected; Project, Purchase, Quality, Tool not)."
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file, which also shows the item's Order System as Planned and the full subentity set (Sales, Production, Service, Ordering, Warehousing selected; Project, Purchase, Quality, Tool not)."
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "The order horizon decides which demand planning sees",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This was the core teaching point, and it was demonstrated as a controlled experiment rather than asserted."
+            }
+          ],
+          "text": "This was the core teaching point, and it was demonstrated as a controlled experiment rather than asserted."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "With the sales order's delivery date set to "
+            },
+            {
+              "t": "strong",
+              "v": "today"
+            },
+            {
+              "t": "text",
+              "v": ", the demand appeared in the Item Order Plan. Moved out to "
+            },
+            {
+              "t": "strong",
+              "v": "a week from now"
+            },
+            {
+              "t": "text",
+              "v": " and refreshed, it disappeared: "
+            },
+            {
+              "t": "quote",
+              "v": "it's gone. Why is it gone? This means planning does not recognize that demand",
+              "at": "08:25"
+            },
+            {
+              "t": "text",
+              "v": ". The trainees were asked to explain it and could not — "
+            },
+            {
+              "t": "quote",
+              "v": "so that is your horizons",
+              "at": "09:05"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "With the sales order's delivery date set to today, the demand appeared in the Item Order Plan. Moved out to a week from now and refreshed, it disappeared: . The trainees were asked to explain it and could not — ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The screen at that moment shows why. The "
+            },
+            {
+              "t": "strong",
+              "v": "Horizons"
+            },
+            {
+              "t": "text",
+              "v": " block of "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": " reads "
+            },
+            {
+              "t": "strong",
+              "v": "Order Horizon `8/20/2026`"
+            },
+            {
+              "t": "text",
+              "v": " — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid."
+            }
+          ],
+          "text": "The screen at that moment shows why. The Horizons block of cprrp0520m000 reads Order Horizon `8/20/2026` — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The order horizon was then extended in "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": " and the plan refreshed. The same session now shows "
+            },
+            {
+              "t": "strong",
+              "v": "Order Horizon `8/28/2026`"
+            },
+            {
+              "t": "text",
+              "v": " and two rows dated "
+            },
+            {
+              "t": "literal",
+              "v": "8/27/2026"
+            },
+            {
+              "t": "text",
+              "v": ": the "
+            },
+            {
+              "t": "strong",
+              "v": "Sales Order"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "100000667"
+            },
+            {
+              "t": "text",
+              "v": " with Demand "
+            },
+            {
+              "t": "literal",
+              "v": "5.0000"
+            },
+            {
+              "t": "text",
+              "v": ", and a "
+            },
+            {
+              "t": "strong",
+              "v": "Planned Production Order"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "000000061"
+            },
+            {
+              "t": "text",
+              "v": " with Supply "
+            },
+            {
+              "t": "literal",
+              "v": "4.0000"
+            },
+            {
+              "t": "text",
+              "v": " and Planned Available "
+            },
+            {
+              "t": "literal",
+              "v": "5.0000"
+            },
+            {
+              "t": "text",
+              "v": " — MRP's answer to five short of one on hand."
+            }
+          ],
+          "text": "The order horizon was then extended in Items - Planning (cprpd1100m000) and the plan refreshed. The same session now shows Order Horizon `8/28/2026` and two rows dated 8/27/2026: the Sales Order 100000667 with Demand 5.0000, and a Planned Production Order 000000061 with Supply 4.0000 and Planned Available 5.0000 — MRP's answer to five short of one on hand."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The definition given was "
+            },
+            {
+              "t": "quote",
+              "v": "the horizon is how far out you want planning to consider demand for an item",
+              "at": "10:05"
+            },
+            {
+              "t": "text",
+              "v": ", and the business reason was given plainly:"
+            }
+          ],
+          "text": "The definition given was , and the business reason was given plainly:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "quote",
+              "v": "If you had an order horizon of infinity, and you had a demand that's a year from now or two years from now, then planning is going to tell you you should supply that demand — but maybe this company doesn't want to supply that demand yet, because it could change, or they just cannot handle the capacity of it.",
+              "at": "15:43"
+            }
+          ],
+          "text": "",
+          "quoted": true
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A trainee's paraphrase — "
+            },
+            {
+              "t": "em",
+              "v": "\"it's like a window where they ignore everything outside of it\""
+            },
+            {
+              "t": "text",
+              "v": " — was confirmed on the call."
+            }
+          ],
+          "text": "A trainee's paraphrase — \"it's like a window where they ignore everything outside of it\" — was confirmed on the call."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is consistent with the vendor, which frames the same boundary from the supply side: "
+            },
+            {
+              "t": "em",
+              "v": "\"Within the order horizon, supply is planned in the form of planned orders. Within the master-planning horizon, supply is planned in the form of a supply plan\""
+            },
+            {
+              "t": "text",
+              "v": " — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Concepts"
+            },
+            {
+              "t": "text",
+              "v": " — \"Supply planned by order planning and master planning; item master plan\" (p. 17)."
+            }
+          ],
+          "text": "This is consistent with the vendor, which frames the same boundary from the supply side: \"Within the order horizon, supply is planned in the form of planned orders. Within the master-planning horizon, supply is planned in the form of a supply plan\" — the Infor LN Order Planning user guide, Planning Concepts — \"Supply planned by order planning and master planning; item master plan\" (p. 17)."
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "Horizons are entered as days; the dates come from the scenario",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprpd1100m000"
+            },
+            {
+              "t": "text",
+              "v": "'s "
+            },
+            {
+              "t": "strong",
+              "v": "Horizons"
+            },
+            {
+              "t": "text",
+              "v": " tab takes each horizon as "
+            },
+            {
+              "t": "strong",
+              "v": "a number of days"
+            },
+            {
+              "t": "text",
+              "v": " and displays the resulting date beside it. Captured values for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": ": Order Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "10"
+            },
+            {
+              "t": "text",
+              "v": " days → "
+            },
+            {
+              "t": "literal",
+              "v": "9/4/2026"
+            },
+            {
+              "t": "text",
+              "v": "; Planning Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "365"
+            },
+            {
+              "t": "text",
+              "v": " days → "
+            },
+            {
+              "t": "literal",
+              "v": "7/9/2027"
+            },
+            {
+              "t": "text",
+              "v": "; Forecast Time Fence "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " days → "
+            },
+            {
+              "t": "literal",
+              "v": "8/19/2026"
+            },
+            {
+              "t": "text",
+              "v": "; Production Schedules "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " days → "
+            },
+            {
+              "t": "literal",
+              "v": "8/20/2026"
+            },
+            {
+              "t": "text",
+              "v": "; Operations Horizon "
+            },
+            {
+              "t": "literal",
+              "v": "9999"
+            },
+            {
+              "t": "text",
+              "v": " days → "
+            },
+            {
+              "t": "literal",
+              "v": "8/20/2032"
+            },
+            {
+              "t": "text",
+              "v": "; Time Fence "
+            },
+            {
+              "t": "literal",
+              "v": "0.00"
+            },
+            {
+              "t": "text",
+              "v": " days with "
+            },
+            {
+              "t": "strong",
+              "v": "Use Time Fence"
+            },
+            {
+              "t": "text",
+              "v": " selected."
+            }
+          ],
+          "text": "cprpd1100m000's Horizons tab takes each horizon as a number of days and displays the resulting date beside it. Captured values for BAM-CHOP-PAIR: Order Horizon 10 days → 9/4/2026; Planning Horizon 365 days → 7/9/2027; Forecast Time Fence 0 days → 8/19/2026; Production Schedules 0 days → 8/20/2026; Operations Horizon 9999 days → 8/20/2032; Time Fence 0.00 days with Use Time Fence selected."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This matches the vendor exactly: "
+            },
+            {
+              "t": "em",
+              "v": "\"A horizon in Enterprise Planning is defined by a figure that indicates a number of workdays\""
+            },
+            {
+              "t": "text",
+              "v": " — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Concepts"
+            },
+            {
+              "t": "text",
+              "v": " — \"Horizons\" (p. 18)."
+            }
+          ],
+          "text": "This matches the vendor exactly: \"A horizon in Enterprise Planning is defined by a figure that indicates a number of workdays\" — the Infor LN Order Planning user guide, Planning Concepts — \"Horizons\" (p. 18)."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The dates the Item Order Plan displays are then shaped by the "
+            },
+            {
+              "t": "strong",
+              "v": "scenario's"
+            },
+            {
+              "t": "text",
+              "v": " period settings, not by the horizon alone — "
+            },
+            {
+              "t": "quote",
+              "v": "these dates are pulling in the scenario time periods",
+              "at": "10:31"
+            },
+            {
+              "t": "text",
+              "v": ". The scenario in use throughout is "
+            },
+            {
+              "t": "literal",
+              "v": "ACT"
+            },
+            {
+              "t": "text",
+              "v": ", \"Actual Plan (Day, Weekly basis)\". Changing the period settings requires "
+            },
+            {
+              "t": "strong",
+              "v": "Initialize, Roll, and Update Scenario"
+            },
+            {
+              "t": "text",
+              "v": " before the change takes effect, which the session demonstrated after LN prompted for it (13:08)."
+            }
+          ],
+          "text": "The dates the Item Order Plan displays are then shaped by the scenario's period settings, not by the horizon alone — . The scenario in use throughout is ACT, \"Actual Plan (Day, Weekly basis)\". Changing the period settings requires Initialize, Roll, and Update Scenario before the change takes effect, which the session demonstrated after LN prompted for it (13:08)."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "An eight-day order horizon resolved to a date two days further out than expected, and the discrepancy was not explained on the call."
+                },
+                {
+                  "t": "text",
+                  "v": " Counting from 2026-08-20, the trainer expected "
+                },
+                {
+                  "t": "literal",
+                  "v": "8/27"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "literal",
+                  "v": "8/28"
+                },
+                {
+                  "t": "text",
+                  "v": " and could not reconcile which — "
+                },
+                {
+                  "t": "quote",
+                  "v": "I don't know why it's having that two-day discrepancy",
+                  "at": "12:11"
+                },
+                {
+                  "t": "text",
+                  "v": ", and later "
+                },
+                {
+                  "t": "quote",
+                  "v": "why isn't it doing it right… I have to look at this later",
+                  "at": "14:49"
+                },
+                {
+                  "t": "text",
+                  "v": ". Workday counting, the scenario's period boundaries, and the calendar are all plausible causes and none was confirmed. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "An eight-day order horizon resolved to a date two days further out than expected, and the discrepancy was not explained on the call. Counting from 2026-08-20, the trainer expected 8/27 or 8/28 and could not reconcile which — , and later . Workday counting, the scenario's period boundaries, and the calendar are all plausible causes and none was confirmed. Not documented for this release."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "Running MRP, and why components need their own planning data",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "With the demand inside the horizon, MRP was run and produced a planned order to cover the shortfall. The point made next matters more: "
+            },
+            {
+              "t": "quote",
+              "v": "not only does it do that, it also includes the materials required from your BOM",
+              "at": "17:26"
+            },
+            {
+              "t": "text",
+              "v": " — but it only did so for the component that had planning data of its own. "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " had none; it was given plan data and planning was rerun, "
+            },
+            {
+              "t": "quote",
+              "v": "so now it's planning two items on that instead of one",
+              "at": "18:18"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "With the demand inside the horizon, MRP was run and produced a planned order to cover the shortfall. The point made next matters more: — but it only did so for the component that had planning data of its own. BAM-ROD had none; it was given plan data and planning was rerun, ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The result reads as a chain across two sessions. On the parent's plan, the planned production order is "
+            },
+            {
+              "t": "strong",
+              "v": "supply"
+            },
+            {
+              "t": "text",
+              "v": ". Open the component's own Item Order Plan and the same planned production order is "
+            },
+            {
+              "t": "strong",
+              "v": "demand"
+            },
+            {
+              "t": "text",
+              "v": ", met by a planned purchase order. "
+            },
+            {
+              "t": "quote",
+              "v": "The plan production order that was supply for the main item is demand for the component",
+              "at": "19:06"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The result reads as a chain across two sessions. On the parent's plan, the planned production order is supply. Open the component's own Item Order Plan and the same planned production order is demand, met by a planned purchase order. ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1100m000",
+              "name": "Planned Orders"
+            },
+            {
+              "t": "text",
+              "v": " is where results are actually reviewed, because "
+            },
+            {
+              "t": "quote",
+              "v": "normally you wouldn't run MRP for a single item, you would run it for all the plannable items",
+              "at": "22:55"
+            },
+            {
+              "t": "text",
+              "v": ". The captured session shows the environment's existing planned orders across many items — order types "
+            },
+            {
+              "t": "strong",
+              "v": "Planned Purchase Order"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "strong",
+              "v": "Planned Production Order"
+            },
+            {
+              "t": "text",
+              "v": ", with Order Quantity, Routing, Bill of Material and Required Date columns."
+            }
+          ],
+          "text": "Planned Orders (cprrp1100m000) is where results are actually reviewed, because . The captured session shows the environment's existing planned orders across many items — order types Planned Purchase Order and Planned Production Order, with Order Quantity, Routing, Bill of Material and Required Date columns."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two framings from this part are worth carrying into any future guide:"
+            }
+          ],
+          "text": "Two framings from this part are worth carrying into any future guide:"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Planned orders are suggestions, not instructions."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "quote",
+                  "v": "These are only suggestions… the actual planners know their data better than we do",
+                  "at": "23:11"
+                },
+                {
+                  "t": "text",
+                  "v": ". The worked example: a suggestion to buy 101 makes no sense where the supplier sells in batches of 100, so the planner buys 200. The vendor supports this as a configurable constraint rather than a judgement call — "
+                },
+                {
+                  "t": "em",
+                  "v": "\"You can specify that the ordered quantity must be a multiple of 100 units. If you have a requirement for 530 units, LN generates an order for 600 units\""
+                },
+                {
+                  "t": "text",
+                  "v": ", set in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000",
+                  "name": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " among others — the Infor LN "
+                },
+                {
+                  "t": "strong",
+                  "v": "Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " user guide, "
+                },
+                {
+                  "t": "em",
+                  "v": "Planning Concepts"
+                },
+                {
+                  "t": "text",
+                  "v": " — \"Lot sizing\" (p. 21)."
+                }
+              ],
+              "text": "Planned orders are suggestions, not instructions. . The worked example: a suggestion to buy 101 makes no sense where the supplier sells in batches of 100, so the planner buys 200. The vendor supports this as a configurable constraint rather than a judgement call — \"You can specify that the ordered quantity must be a multiple of 100 units. If you have a requirement for 530 units, LN generates an order for 600 units\", set in Items - Ordering (tcibd2100m000) among others — the Infor LN Order Planning user guide, Planning Concepts — \"Lot sizing\" (p. 21)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "A planned order becomes real by being transferred."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "quote",
+                  "v": "From here you transfer, you actualize the order",
+                  "at": "23:46"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s own help confirms the mechanism and names the destination: a planned order carries a flag for whether it "
+                },
+                {
+                  "t": "em",
+                  "v": "\"is ready for transfer to the execution level\""
+                },
+                {
+                  "t": "text",
+                  "v": ", and on transfer the information "
+                },
+                {
+                  "t": "em",
+                  "v": "\"is passed on to the Job Shop Control module and the Purchase Control module.\""
+                },
+                {
+                  "t": "text",
+                  "v": " — Infor LN help for "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000",
+                  "name": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", Field Information"
+                }
+              ],
+              "text": "A planned order becomes real by being transferred. . cprrp1100m000's own help confirms the mechanism and names the destination: a planned order carries a flag for whether it \"is ready for transfer to the execution level\", and on transfer the information \"is passed on to the Job Shop Control module and the Purchase Control module.\" — Infor LN help for Planned Orders (cprrp1100m000), Field Information"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "Order pegging",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Pegging was introduced as the answer to multi-level complexity — "
+            },
+            {
+              "t": "quote",
+              "v": "like the one I'm on right now, they have like 20 levels. So after an MRP run it's difficult to track and manage that. But that's what pegging is for",
+              "at": "19:51"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Pegging was introduced as the answer to multi-level complexity — ."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The tree captured is "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0740m200",
+              "name": "Order Pegging"
+            },
+            {
+              "t": "text",
+              "v": ", reached as "
+            },
+            {
+              "t": "strong",
+              "v": "Pegging - Upstream"
+            },
+            {
+              "t": "text",
+              "v": ":"
+            }
+          ],
+          "text": "The tree captured is Order Pegging (cprrp0740m200), reached as Pegging - Upstream:"
+        },
+        {
+          "kind": "code",
+          "text": "Sales Order 100000667-10 | NA1 BAM-CHOP-PAIR | Free | 5 of 5 ea | 08-27-2026\n├─ Stock | ADNA01 | NA1 BAM-CHOP-PAIR | 1 of 1 ea\n└─ Planned Production Order 000000061 | NA1 BAM-CHOP-PAIR | Planned | 4 of 4 ea | 08-27-2026\n   └─ Planned Production Order 000000061-1 | NA1 BAM-ROD | Planned | 8 of 8 ea | 08-27-2026\n      ├─ Stock | ADNA02 | NA1 BAM-ROD | 2 of 2 ea\n      └─ Planned Purchase Order 000000346 | NA1 BAM-ROD | Planned | 6 of 6 ea | 08-27-2026"
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The tree reconciles against the BOM recorded on 2026-08-18 — "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. "
+            },
+            {
+              "t": "strong",
+              "v": "`BAM-SLEEVE` does not appear"
+            },
+            {
+              "t": "text",
+              "v": ", consistent with only one component having been given planning data during the session."
+            }
+          ],
+          "text": "The tree reconciles against the BOM recorded on 2026-08-18 — BAM-ROD at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. `BAM-SLEEVE` does not appear, consistent with only one component having been given planning data during the session."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Upstream and downstream"
+            },
+            {
+              "t": "text",
+              "v": " were both demonstrated and both are real commands: "
+            },
+            {
+              "t": "quote",
+              "v": "upstream is what will supply, downstream is… the demand that drove this order",
+              "at": "21:21"
+            },
+            {
+              "t": "text",
+              "v": ". The vendor documents them on the same session: "
+            },
+            {
+              "t": "em",
+              "v": "\"To start the graphical browser from the Planned Orders (cprrp1100m000) session, on the appropriate menu, click Pegging - Upstream or Pegging - Downstream\""
+            },
+            {
+              "t": "text",
+              "v": " — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Order Based Planning"
+            },
+            {
+              "t": "text",
+              "v": " — \"Browsing order pegging relationships\" (p. 115)."
+            }
+          ],
+          "text": "Upstream and downstream were both demonstrated and both are real commands: . The vendor documents them on the same session: \"To start the graphical browser from the Planned Orders (cprrp1100m000) session, on the appropriate menu, click Pegging - Upstream or Pegging - Downstream\" — the Infor LN Order Planning user guide, Order Based Planning — \"Browsing order pegging relationships\" (p. 115)."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The "
+            },
+            {
+              "t": "strong",
+              "v": "red-means-demand, green-means-supply"
+            },
+            {
+              "t": "text",
+              "v": " convention stated on the call (20:32) is a reading of the tree's own icons. It is on-screen behaviour with no vendor statement found; treat it as observed, not defined."
+            }
+          ],
+          "text": "The red-means-demand, green-means-supply convention stated on the call (20:32) is a reading of the tree's own icons. It is on-screen behaviour with no vendor statement found; treat it as observed, not defined."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The narration did not mention a prerequisite the vendor treats as mandatory."
+                },
+                {
+                  "t": "text",
+                  "v": " Multi-level pegging is only browsable once pegging relations have been generated — either by selecting "
+                },
+                {
+                  "t": "strong",
+                  "v": "Update Pegging Relations"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1210m000",
+                  "name": "Generate Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", or by running "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0240m000",
+                  "name": "Generate Pegging Relations"
+                },
+                {
+                  "t": "text",
+                  "v": " — and LN only generates them out to the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Pegging Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " set in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd0100m000",
+                  "name": "Planning Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ". The tree resolved on the call without this being discussed, which suggests the environment already has it configured, but that was not shown. the Infor LN "
+                },
+                {
+                  "t": "strong",
+                  "v": "Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " user guide, "
+                },
+                {
+                  "t": "em",
+                  "v": "Order Based Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " — \"Pegging for planned orders\" (p. 113–114)."
+                }
+              ],
+              "text": "The narration did not mention a prerequisite the vendor treats as mandatory. Multi-level pegging is only browsable once pegging relations have been generated — either by selecting Update Pegging Relations in Generate Order Planning (cprrp1210m000), or by running Generate Pegging Relations (cprrp0240m000) — and LN only generates them out to the Pegging Horizon set in Planning Parameters (cprpd0100m000). The tree resolved on the call without this being discussed, which suggests the environment already has it configured, but that was not shown. the Infor LN Order Planning user guide, Order Based Planning — \"Pegging for planned orders\" (p. 113–114)."
+            },
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Shown 2026-08-25, and the answer is stronger than \"already configured\"."
+                },
+                {
+                  "t": "text",
+                  "v": " The next session in the series captured "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s full option set, where "
+                },
+                {
+                  "t": "strong",
+                  "v": "Update Pegging Relations is selected _and_ read-only"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": ". Its help states "
+                },
+                {
+                  "t": "em",
+                  "v": "\"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\""
+                },
+                {
+                  "t": "text",
+                  "v": ", so the disabled state means the "
+                },
+                {
+                  "t": "literal",
+                  "v": "ACT"
+                },
+                {
+                  "t": "text",
+                  "v": " scenario is "
+                },
+                {
+                  "t": "strong",
+                  "v": "not"
+                },
+                {
+                  "t": "text",
+                  "v": " set to "
+                },
+                {
+                  "t": "literal",
+                  "v": "User Specified"
+                },
+                {
+                  "t": "text",
+                  "v": " and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See "
+                },
+                {
+                  "t": "literal",
+                  "v": "planned-order-transfer-training_2026-08-25.md"
+                },
+                {
+                  "t": "text",
+                  "v": " §3.5."
+                }
+              ],
+              "text": "Shown 2026-08-25, and the answer is stronger than \"already configured\". The next session in the series captured cprrp1220m000's full option set, where Update Pegging Relations is selected _and_ read-only — the source on file. Its help states \"You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`\", so the disabled state means the ACT scenario is not set to User Specified and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See planned-order-transfer-training_2026-08-25.md §3.5."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.7",
+      "title": "Master planning and the planning horizon",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Master planning was covered as "
+            },
+            {
+              "t": "quote",
+              "v": "the other side of it that's not used as often",
+              "at": "23:54"
+            },
+            {
+              "t": "text",
+              "v": ", with explicit advice to learn MRP first."
+            }
+          ],
+          "text": "Master planning was covered as , with explicit advice to learn MRP first."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The mechanism as demonstrated:"
+            }
+          ],
+          "text": "The mechanism as demonstrated:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " is a check box on "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": ". Until it is selected, the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planning Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " field is disabled — "
+                },
+                {
+                  "t": "quote",
+                  "v": "you got your order horizon and planning, but it's disabled. Why? Because master planning is not enabled",
+                  "at": "24:17"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Master Plan is a check box on cprpd1100m000. Until it is selected, the Planning Horizon field is disabled — ."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "With it selected, the planning horizon becomes separately maintainable — 365 days against the order horizon's 10 — "
+                },
+                {
+                  "t": "em",
+                  "v": "\"so now you can have a separate horizon maintained outside of MRP.\""
+                }
+              ],
+              "text": "With it selected, the planning horizon becomes separately maintainable — 365 days against the order horizon's 10 — \"so now you can have a separate horizon maintained outside of MRP.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item master plan must then be "
+                },
+                {
+                  "t": "strong",
+                  "v": "initialized"
+                },
+                {
+                  "t": "text",
+                  "v": " before it exists: "
+                },
+                {
+                  "t": "quote",
+                  "v": "every time you turn on the master plan, you got to initialize the master plan… so right now, see, it's just blank, doesn't exist",
+                  "at": "26:07"
+                },
+                {
+                  "t": "text",
+                  "v": ". This is the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Initialize, Roll, and Update Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " command, visible as a toolbar button on "
+                },
+                {
+                  "t": "session",
+                  "code": "cprmp2101m000",
+                  "name": "Item Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "The item master plan must then be initialized before it exists: . This is the Initialize, Roll, and Update Scenario command, visible as a toolbar button on Item Master Plan (cprmp2101m000)."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generating then produces a "
+                },
+                {
+                  "t": "strong",
+                  "v": "production plan"
+                },
+                {
+                  "t": "text",
+                  "v": " inside the item master plan, in the scenario's "
+                },
+                {
+                  "t": "strong",
+                  "v": "time buckets"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "quote",
+                  "v": "this is why they call them buckets",
+                  "at": "27:35"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Generating then produces a production plan inside the item master plan, in the scenario's time buckets — ."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The captured Item Master Plan shows the two horizons having genuinely diverged — "
+            },
+            {
+              "t": "strong",
+              "v": "Order Horizon `9/4/2026`, Planning Horizon `7/9/2027`"
+            },
+            {
+              "t": "text",
+              "v": " — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan."
+            }
+          ],
+          "text": "The captured Item Master Plan shows the two horizons having genuinely diverged — Order Horizon `9/4/2026`, Planning Horizon `7/9/2027` — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan."
+        },
+        {
+          "kind": "source",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "LN training environment, verified 2026-08-20 — "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            }
+          ],
+          "text": "LN training environment, verified 2026-08-20 — the source on file"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The purpose given was capacity and long-lead-time planning: anticipating demand far enough out to know "
+            },
+            {
+              "t": "em",
+              "v": "\"if we're capable of fulfilling this demand further out\""
+            },
+            {
+              "t": "text",
+              "v": " — materials lead times and storage space, factory capacity, and letting order-takers know "
+            },
+            {
+              "t": "quote",
+              "v": "if they can promise these delivery dates",
+              "at": "29:17"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The purpose given was capacity and long-lead-time planning: anticipating demand far enough out to know \"if we're capable of fulfilling this demand further out\" — materials lead times and storage space, factory capacity, and letting order-takers know ."
+        }
+      ]
+    },
+    {
+      "n": "3.8",
+      "title": "Where narration and vendor sources diverge",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two claims need separating from the rest, because both concern the same pair of horizons and only one of them survives its source unchanged."
+            }
+          ],
+          "text": "Two claims need separating from the rest, because both concern the same pair of horizons and only one of them survives its source unchanged."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Confirmed."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "quote",
+              "v": "If master planning is not used, then the planning horizon will always equal the order horizon",
+              "at": "24:03"
+            },
+            {
+              "t": "text",
+              "v": ". This is stated almost word for word by the vendor: "
+            },
+            {
+              "t": "em",
+              "v": "\"If the item does not have an item master plan, the planning horizon is equal to the order horizon.\""
+            },
+            {
+              "t": "text",
+              "v": " — Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Horizon"
+            },
+            {
+              "t": "text",
+              "v": ". It is also visible on screen twice over: with master planning off, both horizons read "
+            },
+            {
+              "t": "literal",
+              "v": "8/20/2026"
+            },
+            {
+              "t": "text",
+              "v": " and later "
+            },
+            {
+              "t": "literal",
+              "v": "8/28/2026"
+            },
+            {
+              "t": "text",
+              "v": " together; with it on, they diverge to "
+            },
+            {
+              "t": "literal",
+              "v": "9/4/2026"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "literal",
+              "v": "7/9/2027"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Confirmed. . This is stated almost word for word by the vendor: \"If the item does not have an item master plan, the planning horizon is equal to the order horizon.\" — Infor LN help for Item Order Plan (cprrp0520m000), Field Information, Planning Horizon. It is also visible on screen twice over: with master planning off, both horizons read 8/20/2026 and later 8/28/2026 together; with it on, they diverge to 9/4/2026 and 7/9/2027."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Imprecise."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "quote",
+              "v": "There's two horizons. The order horizon is for MRP. The planning horizon is for master planning",
+              "at": "09:51"
+            },
+            {
+              "t": "text",
+              "v": ". The vendor does not treat these as a pair of siblings. The "
+            },
+            {
+              "t": "strong",
+              "v": "planning horizon is the total"
+            },
+            {
+              "t": "text",
+              "v": ", and it "
+            },
+            {
+              "t": "em",
+              "v": "\"consists of an order horizon and/or a master-planning horizon\""
+            },
+            {
+              "t": "text",
+              "v": "; the horizon that is specifically for master planning is the "
+            },
+            {
+              "t": "strong",
+              "v": "master-planning horizon"
+            },
+            {
+              "t": "text",
+              "v": ", a sub-horizon, not the planning horizon — the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, "
+            },
+            {
+              "t": "em",
+              "v": "Planning Concepts"
+            },
+            {
+              "t": "text",
+              "v": " — \"Major horizons and time fences\" (p. 19)."
+            }
+          ],
+          "text": "Imprecise. . The vendor does not treat these as a pair of siblings. The planning horizon is the total, and it \"consists of an order horizon and/or a master-planning horizon\"; the horizon that is specifically for master planning is the master-planning horizon, a sub-horizon, not the planning horizon — the Infor LN Order Planning user guide, Planning Concepts — \"Major horizons and time fences\" (p. 19)."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The practical consequence in "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000"
+            },
+            {
+              "t": "text",
+              "v": " is the same, which is why the shorthand works on a training call: the planning-horizon field is the one you extend to plan further out under master planning. But the shorthand should not be written into a guide, because it makes the planning horizon sound like it excludes the order horizon when the vendor defines it as containing it."
+            }
+          ],
+          "text": "The practical consequence in cprpd1100m000 is the same, which is why the shorthand works on a training call: the planning-horizon field is the one you extend to plan further out under master planning. But the shorthand should not be written into a guide, because it makes the planning horizon sound like it excludes the order horizon when the vendor defines it as containing it."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "The vendor's third horizon has no matching field on the screen as deployed."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "cpordplanug"
+                },
+                {
+                  "t": "text",
+                  "v": " names an "
+                },
+                {
+                  "t": "strong",
+                  "v": "order horizon"
+                },
+                {
+                  "t": "text",
+                  "v": ", a "
+                },
+                {
+                  "t": "strong",
+                  "v": "master-planning horizon"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a "
+                },
+                {
+                  "t": "strong",
+                  "v": "planning horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " that contains them; "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s Horizons tab exposes only "
+                },
+                {
+                  "t": "strong",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planning Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": ". Whether the master-planning horizon is simply the span between the two, or a field held elsewhere, is not established by anything in the folder. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "The vendor's third horizon has no matching field on the screen as deployed. cpordplanug names an order horizon, a master-planning horizon, and a planning horizon that contains them; cprpd1100m000's Horizons tab exposes only Order Horizon and Planning Horizon. Whether the master-planning horizon is simply the span between the two, or a field held elsewhere, is not established by anything in the folder. Not documented for this release."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "MRP is the priority for the trainees; master planning is context."
+            },
+            {
+              "t": "text",
+              "v": " Stated twice and repeated in the closing instructions — "
+            },
+            {
+              "t": "quote",
+              "v": "MRP is the number one thing that you should know and learn, but master plan is good to know too",
+              "at": "24:51"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "quote",
+              "v": "focus on MRP first",
+              "at": "27:05"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "MRP is the priority for the trainees; master planning is context. Stated twice and repeated in the closing instructions — , and ."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "The bamboo family stays the training vehicle for planning"
+            },
+            {
+              "t": "text",
+              "v": ", continuing from the 2026-08-18 walkthrough rather than starting a fresh item set."
+            }
+          ],
+          "text": "The bamboo family stays the training vehicle for planning, continuing from the 2026-08-18 walkthrough rather than starting a fresh item set."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Michelle's plant-3 item is to be cleaned of old demand before MRP is rerun against it"
+            },
+            {
+              "t": "text",
+              "v": " — a separate workstream discussed in the standup, to be settled in a meeting half an hour later (01:03). Not part of this training."
+            }
+          ],
+          "text": "Michelle's plant-3 item is to be cleaned of old demand before MRP is rerun against it — a separate workstream discussed in the standup, to be settled in a meeting half an hour later (01:03). Not part of this training."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create plan data for the remaining bamboo items and rerun planning, then review results under Planned Orders"
+                }
+              ],
+              "text": "Create plan data for the remaining bamboo items and rerun planning, then review results under Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainees"
+                }
+              ],
+              "text": "Trainees"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open (assigned as practice, no date given)"
+                }
+              ],
+              "text": "Open (assigned as practice, no date given)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Experiment with the scenario period settings, the BOM, the ordering settings and the horizons"
+                }
+              ],
+              "text": "Experiment with the scenario period settings, the BOM, the ordering settings and the horizons"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainees"
+                }
+              ],
+              "text": "Trainees"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open (assigned as practice, no date given)"
+                }
+              ],
+              "text": "Open (assigned as practice, no date given)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Resolve why an eight-day order horizon resolved two days further out than expected"
+                }
+              ],
+              "text": "Resolve why an eight-day order horizon resolved two days further out than expected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant"
+                }
+              ],
+              "text": "Consultant"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open — explicitly deferred on the call "
+                }
+              ],
+              "text": "Open — explicitly deferred on the call"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Export session help for the Enterprise Planning sessions demonstrated"
+                }
+              ],
+              "text": "Export session help for the Enterprise Planning sessions demonstrated"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee"
+                }
+              ],
+              "text": "Trainee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "How does LN resolve a horizon expressed in days to the date it displays, and what accounts for the two-day gap seen on the call? — needs a controlled re-test against the scenario's period dates and the calendar "
+            }
+          ],
+          "text": "How does LN resolve a horizon expressed in days to the date it displays, and what accounts for the two-day gap seen on the call? — needs a controlled re-test against the scenario's period dates and the calendar"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Where does the vendor's "
+            },
+            {
+              "t": "strong",
+              "v": "master-planning horizon"
+            },
+            {
+              "t": "text",
+              "v": " live in "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000"
+            },
+            {
+              "t": "text",
+              "v": " as deployed, if anywhere? — needs session help for that session "
+            }
+          ],
+          "text": "Where does the vendor's master-planning horizon live in cprpd1100m000 as deployed, if anywhere? — needs session help for that session"
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Is the multisite concept active in this environment?"
+            },
+            {
+              "t": "text",
+              "v": " This session strengthens the case considerably — a planning cluster ("
+            },
+            {
+              "t": "literal",
+              "v": "NA1"
+            },
+            {
+              "t": "text",
+              "v": ") was genuinely required before the item could be planned, and a named site ("
+            },
+            {
+              "t": "literal",
+              "v": "CSADNA01"
+            },
+            {
+              "t": "text",
+              "v": ") is a mandatory selection field on "
+            },
+            {
+              "t": "session",
+              "code": "cprrp1100m000"
+            },
+            {
+              "t": "text",
+              "v": " — but the vendor's rule runs the other way too, and the parameter itself was never opened. "
+            }
+          ],
+          "text": "Is the multisite concept active in this environment? This session strengthens the case considerably — a planning cluster (NA1) was genuinely required before the item could be planned, and a named site (CSADNA01) is a mandatory selection field on cprrp1100m000 — but the vendor's rule runs the other way too, and the parameter itself was never opened."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Is the red/green colour convention in the pegging tree documented anywhere, or purely a UI affordance? — needs help for "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0740m200"
+            },
+            {
+              "t": "text",
+              "v": " "
+            }
+          ],
+          "text": "Is the red/green colour convention in the pegging tree documented anywhere, or purely a UI affordance? — needs help for cprrp0740m200"
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A controlled experiment beats an explanation, and it survives into the library as two frames."
+            },
+            {
+              "t": "text",
+              "v": " The order-horizon lesson was taught by moving one date and refreshing — demand present, demand gone, demand back. Because both states were captured on the same session with the horizon visible in the same block, the pair of screenshots proves the mechanism without needing the narration at all. Where a session demonstrates a cause, capture the before "
+            },
+            {
+              "t": "strong",
+              "v": "and"
+            },
+            {
+              "t": "text",
+              "v": " the after; either one alone is just a screen."
+            }
+          ],
+          "text": "A controlled experiment beats an explanation, and it survives into the library as two frames. The order-horizon lesson was taught by moving one date and refreshing — demand present, demand gone, demand back. Because both states were captured on the same session with the horizon visible in the same block, the pair of screenshots proves the mechanism without needing the narration at all. Where a session demonstrates a cause, capture the before and the after; either one alone is just a screen."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A training session is the cheapest source of \"what a session actually looks like\" for sessions nobody has exported help for."
+            },
+            {
+              "t": "text",
+              "v": " Five of the seven frames filed here are the only record in the folder of their session's field layout. That does not make them a substitute for help text — a screenshot shows a value and never tells you what it means (§2.2) — but it does mean the export list can now be written from observed field names rather than guesses. "
+            }
+          ],
+          "text": "A training session is the cheapest source of \"what a session actually looks like\" for sessions nobody has exported help for. Five of the seven frames filed here are the only record in the folder of their session's field layout. That does not make them a substitute for help text — a screenshot shows a value and never tells you what it means (§2.2) — but it does mean the export list can now be written from observed field names rather than guesses."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Verify the confident-sounding claim, not just the hedged one."
+            },
+            {
+              "t": "text",
+              "v": " The two horizon claims in section 3.8 were delivered with equal confidence in the same minute; one is near-verbatim vendor text and the other conflates two defined terms. Neither could be sorted by tone. The only thing that separated them was reading "
+            },
+            {
+              "t": "literal",
+              "v": "cpordplanug"
+            },
+            {
+              "t": "text",
+              "v": " p. 19 and "
+            },
+            {
+              "t": "session",
+              "code": "cprrp0520m000"
+            },
+            {
+              "t": "text",
+              "v": "'s Field Information side by side."
+            }
+          ],
+          "text": "Verify the confident-sounding claim, not just the hedged one. The two horizon claims in section 3.8 were delivered with equal confidence in the same minute; one is near-verbatim vendor text and the other conflates two defined terms. Neither could be sorted by tone. The only thing that separated them was reading cpordplanug p. 19 and cprrp0520m000's Field Information side by side."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Record what the narration left out, not only what it got wrong."
+            },
+            {
+              "t": "text",
+              "v": " The pegging prerequisite in section 3.6 is not an error — nothing false was said — but a guide written from the transcript alone would produce an empty tree for anyone whose environment had not already generated pegging relations."
+            }
+          ],
+          "text": "Record what the narration left out, not only what it got wrong. The pegging prerequisite in section 3.6 is not an error — nothing false was said — but a guide written from the transcript alone would produce an empty tree for anyone whose environment had not already generated pegging relations."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Recording:"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+            }
+          ],
+          "text": "Recording: the source on file — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan"
+                }
+              ],
+              "text": "Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000"
+                }
+              ],
+              "text": "cprrp0520m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Planning"
+                }
+              ],
+              "text": "Items - Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000"
+                }
+              ],
+              "text": "cprpd1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned Orders"
+                }
+              ],
+              "text": "Planned Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000"
+                }
+              ],
+              "text": "cprrp1100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Master Plan"
+                }
+              ],
+              "text": "Item Master Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprmp2101m000"
+                }
+              ],
+              "text": "cprmp2101m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order Pegging"
+                }
+              ],
+              "text": "Order Pegging"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0740m200"
+                }
+              ],
+              "text": "cprrp0740m200"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select for Order Pegging"
+                }
+              ],
+              "text": "Select for Order Pegging"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0740m000"
+                }
+              ],
+              "text": "cprrp0740m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Order Planning"
+                }
+              ],
+              "text": "Generate Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1210m000"
+                }
+              ],
+              "text": "cprrp1210m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Order Planning (Item)"
+                }
+              ],
+              "text": "Generate Order Planning (Item)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000"
+                }
+              ],
+              "text": "cprrp1220m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate Pegging Relations"
+                }
+              ],
+              "text": "Generate Pegging Relations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0240m000"
+                }
+              ],
+              "text": "cprrp0240m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planning Parameters"
+                }
+              ],
+              "text": "Planning Parameters"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprpd0100m000"
+                }
+              ],
+              "text": "cprpd0100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Scenarios"
+                }
+              ],
+              "text": "Scenarios"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprpd4100m000"
+                }
+              ],
+              "text": "cprpd4100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item"
+                }
+              ],
+              "text": "Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100"
+                }
+              ],
+              "text": "tcibd0501m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Ordering"
+                }
+              ],
+              "text": "Items - Ordering"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000"
+                }
+              ],
+              "text": "tcibd2100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Defaults"
+                }
+              ],
+              "text": "Item Defaults"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0102m000"
+                }
+              ],
+              "text": "tcibd0102m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000"
+                }
+              ],
+              "text": "whwmd4300m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales Order"
+                }
+              ],
+              "text": "Sales Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4100m900"
+                }
+              ],
+              "text": "tdsls4100m900"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The split runs along module lines."
+        },
+        {
+          "t": "text",
+          "v": " Session help is filed for every Common, Sales and Warehousing session above — "
+        },
+        {
+          "t": "session",
+          "code": "tcibd0501m100"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "tcibd2100m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "tcibd0102m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "tdsls4100m900"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "whwmd4300m000"
+        },
+        {
+          "t": "text",
+          "v": " — and for three Enterprise Planning sessions: "
+        },
+        {
+          "t": "session",
+          "code": "cprrp0520m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "cprrp1100m000"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "session",
+          "code": "cprrp1220m000"
+        },
+        {
+          "t": "text",
+          "v": ". The other eight EP sessions have none, including every session under the "
+        },
+        {
+          "t": "literal",
+          "v": "cprpd"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "literal",
+          "v": "cprmp"
+        },
+        {
+          "t": "text",
+          "v": " prefixes. Those eight are named here from the vendor guide or read off the status bar. "
+        }
+      ],
+      "text": "The split runs along module lines. Session help is filed for every Common, Sales and Warehousing session above — tcibd0501m100, tcibd2100m000, tcibd0102m000, tdsls4100m900, whwmd4300m000 — and for three Enterprise Planning sessions: cprrp0520m000, cprrp1100m000, cprrp1220m000. The other eight EP sessions have none, including every session under the cprpd and cprmp prefixes. Those eight are named here from the vendor guide or read off the status bar."
+    }
+  ]
+}

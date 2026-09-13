@@ -1,0 +1,35 @@
+rux-ds
+Copyright 2026 rux
+
+This product includes software developed by IBM Corp. as part of the
+Carbon Design System.
+
+  Carbon Design System
+  Copyright IBM Corp. 2015, 2026
+  Licensed under the Apache License, Version 2.0
+
+Specifically, and as recorded in docs/roadmap.md section 3:
+
+  css/rux.css and css/rux.min.css are compiled from @carbon/styles.
+    The class and custom-property prefix is changed from `cds` to `rux`
+    at build time, the component set is reduced, and two of four themes
+    are kept. The rules themselves are Carbon's.
+
+  css/base/ carries the same origin.
+
+  assets/icons.svg is assembled by tools/icons.mjs from individual SVG
+    sources in @carbon/icons. The path data is IBM's; the sprite
+    wrapper and the `i-` symbol naming are not.
+
+  docs/carbon-*.json are captures of Carbon's own rendered output, kept
+    as a markup reference. They are recorded observations of the
+    upstream work.
+
+Carbon's Sass sources carry `// Copyright IBM Corp.` headers which Sass
+strips when compiling, so the built CSS in this repository cannot carry
+them inline. This file, and the banner tools/build.mjs writes at the top
+of the built stylesheet, are where that attribution is retained instead.
+
+Nothing in this repository is endorsed by or affiliated with IBM.
+"Carbon" and "IBM" are trademarks of International Business Machines
+Corporation and are used here only to identify the origin of the work.

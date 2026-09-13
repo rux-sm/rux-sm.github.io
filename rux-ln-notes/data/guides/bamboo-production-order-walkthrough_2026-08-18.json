@@ -1,0 +1,1839 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "bamboo-production-order-walkthrough_2026-08-18",
+  "title": "Bamboo Production Order Walkthrough — Review",
+  "updated": "2026-09-03",
+  "status": "draft",
+  "sources": [
+    "tccom4520m000",
+    "tcibd0501m100",
+    "tcibd2150m000",
+    "tdipu0101m000",
+    "tdpur4100m900",
+    "tdpur4601m200",
+    "tibom3100m000",
+    "tibom3110m000",
+    "tibom3600m000",
+    "ticst0201m000",
+    "tirou4600m000",
+    "tisfc0101m100",
+    "tisfc0120s000",
+    "tisfc0501m000",
+    "whinh2100m100",
+    "whinh3122m000",
+    "whinh3512m000",
+    "whwmd4600m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Continue the bamboo test-item training case ("
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-CHOP-PAIR"
+        },
+        {
+          "t": "text",
+          "v": ") past master-data creation: build a job shop bill of material and routing, calculate a standard cost, source component stock by purchasing and receiving, and run the resulting production order through to a finished-goods receipt. This is the walk "
+        },
+        {
+          "t": "literal",
+          "v": "SG-create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " phases 6–10 and "
+        },
+        {
+          "t": "literal",
+          "v": "SG-manual-production-order-existing-master-data.md"
+        },
+        {
+          "t": "text",
+          "v": " phases 3–5 had been waiting on."
+        }
+      ],
+      "text": "Continue the bamboo test-item training case (BAM-ROD, BAM-SLEEVE, BAM-CHOP-PAIR) past master-data creation: build a job shop bill of material and routing, calculate a standard cost, source component stock by purchasing and receiving, and run the resulting production order through to a finished-goods receipt. This is the walk SG-create-basic-test-items-and-defaults.md phases 6–10 and SG-manual-production-order-existing-master-data.md phases 3–5 had been waiting on."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "table",
+      "columns": [
+        "Role",
+        "Count",
+        "Organisation"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant, running the session"
+                }
+              ],
+              "text": "Consultant, running the session"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee, hands-on-keyboard for most of the walkthrough"
+                }
+              ],
+              "text": "Trainee, hands-on-keyboard for most of the walkthrough"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Attendee"
+                }
+              ],
+              "text": "Attendee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Internal"
+                }
+              ],
+              "text": "Internal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Roles beyond the consultant (identified by authorship and coaching language throughout) and the trainee (the one operating the screen and being asked \"you got that?\") are not independently confirmed on screen or in narration."
+        }
+      ],
+      "text": "Roles beyond the consultant (identified by authorship and coaching language throughout) and the trainee (the one operating the screen and being asked \"you got that?\") are not independently confirmed on screen or in narration."
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "Job shop bill of material",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee built "
+            },
+            {
+              "t": "session",
+              "code": "tibom3600m000",
+              "name": "Job Shop Bill of Material"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "JB0000242"
+            },
+            {
+              "t": "text",
+              "v": " revision "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " — BOM Quantity "
+            },
+            {
+              "t": "literal",
+              "v": "1 ea"
+            },
+            {
+              "t": "text",
+              "v": ", source Manual — with two material lines from "
+            },
+            {
+              "t": "session",
+              "code": "tibom3110m000",
+              "name": "Job Shop List of Materials"
+            },
+            {
+              "t": "text",
+              "v": ": "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-ROD"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-SLEEVE"
+            },
+            {
+              "t": "text",
+              "v": ", warehouse "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA02"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "The trainee built Job Shop Bill of Material (tibom3600m000) JB0000242 revision 000001 for BAM-CHOP-PAIR — BOM Quantity 1 ea, source Manual — with two material lines from Job Shop List of Materials (tibom3110m000): BAM-ROD and BAM-SLEEVE, warehouse ADNA02."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Later in the session a "
+                },
+                {
+                  "t": "strong",
+                  "v": "second revision, `000002`"
+                },
+                {
+                  "t": "text",
+                  "v": ", was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6."
+                }
+              ],
+              "text": "Later in the session a second revision, `000002`, was created as a deliberate teaching demonstration of the revision mechanism — see section 3.6."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "Job shop routing",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tirou4600m000",
+              "name": "Job Shop Routing"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " revision "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": ", Routing Quantity "
+            },
+            {
+              "t": "literal",
+              "v": "1 ea"
+            },
+            {
+              "t": "text",
+              "v": ", one operation: Operation "
+            },
+            {
+              "t": "literal",
+              "v": "10"
+            },
+            {
+              "t": "text",
+              "v": ", Reference Operation "
+            },
+            {
+              "t": "literal",
+              "v": "A1004"
+            },
+            {
+              "t": "text",
+              "v": " (\"Cutting - shear\"), Work Center "
+            },
+            {
+              "t": "literal",
+              "v": "A1000"
+            },
+            {
+              "t": "text",
+              "v": ", Machine Type "
+            },
+            {
+              "t": "literal",
+              "v": "AA1005"
+            },
+            {
+              "t": "text",
+              "v": ". This is an independent, unambiguous capture of the operation grid's column order (Operation → Reference Operation → Work Center → Machine Type). It settles a long-open question about whether an earlier (2026-08-06) frame had work center and reference operation transposed. "
+            }
+          ],
+          "text": "Job Shop Routing (tirou4600m000) 0 revision 000001, Routing Quantity 1 ea, one operation: Operation 10, Reference Operation A1004 (\"Cutting - shear\"), Work Center A1000, Machine Type AA1005. This is an independent, unambiguous capture of the operation grid's column order (Operation → Reference Operation → Work Center → Machine Type). It settles a long-open question about whether an earlier (2026-08-06) frame had work center and reference operation transposed."
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "Standard cost calculation",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The consultant located the standard-cost calculation route the library had been missing: it is not a separate session but an "
+            },
+            {
+              "t": "strong",
+              "v": "Actions"
+            },
+            {
+              "t": "text",
+              "v": " command on "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100",
+              "name": "Item"
+            },
+            {
+              "t": "text",
+              "v": " itself — "
+            },
+            {
+              "t": "strong",
+              "v": "Calculate and Actualize Standard Costs..."
+            },
+            {
+              "t": "text",
+              "v": " — run against "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": "'s Enterprise Unit row ("
+            },
+            {
+              "t": "literal",
+              "v": "4201AA"
+            },
+            {
+              "t": "text",
+              "v": ", Legal Entity US - A). Narration confirms this is run at the line level after the item exists, and that an item without an actualization date is not yet costed. "
+            }
+          ],
+          "text": "The consultant located the standard-cost calculation route the library had been missing: it is not a separate session but an Actions command on Item (tcibd0501m100) itself — Calculate and Actualize Standard Costs... — run against BAM-CHOP-PAIR's Enterprise Unit row (4201AA, Legal Entity US - A). Narration confirms this is run at the line level after the item exists, and that an item without an actualization date is not yet costed."
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "Component stock via purchase and receipt",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [],
+          "text": ""
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Route A (purchase) was walked in full, not just proposed:"
+            }
+          ],
+          "text": "Route A (purchase) was walked in full, not just proposed:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4601m200",
+                  "name": "Purchase Order Intake Workbench"
+                },
+                {
+                  "t": "text",
+                  "v": " → "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4100m900",
+                  "name": "Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", order "
+                },
+                {
+                  "t": "literal",
+                  "v": "100000677"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Purchase Order Intake Workbench (tdpur4601m200) → Purchase Order (tdpur4100m900), order 100000677."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Buy-from business partner "
+                },
+                {
+                  "t": "strong",
+                  "v": "`BP4000007` VISTA MACHINES INC."
+                },
+                {
+                  "t": "text",
+                  "v": ", selected from the standard test-partner list via the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Buy-from Business Partners"
+                },
+                {
+                  "t": "text",
+                  "v": " lookup ("
+                },
+                {
+                  "t": "session",
+                  "code": "tccom4520m000"
+                },
+                {
+                  "t": "text",
+                  "v": "). Order Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                },
+                {
+                  "t": "text",
+                  "v": ", Purchase Office "
+                },
+                {
+                  "t": "literal",
+                  "v": "401P00"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Buy-from business partner `BP4000007` VISTA MACHINES INC., selected from the standard test-partner list via the Buy-from Business Partners lookup (tccom4520m000). Order Type IPO, Purchase Office 401P00."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order lines booked exactly from the BOM: "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " qty "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.0000 ea"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " qty "
+                },
+                {
+                  "t": "literal",
+                  "v": "1.0000 ea"
+                },
+                {
+                  "t": "text",
+                  "v": ", both to "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02 RAW MATERIALS"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Order lines booked exactly from the BOM: BAM-ROD qty 2.0000 ea, BAM-SLEEVE qty 1.0000 ea, both to ADNA02 RAW MATERIALS."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order generated a "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", type "
+                },
+                {
+                  "t": "literal",
+                  "v": "PUI"
+                },
+                {
+                  "t": "text",
+                  "v": " \"Purchase Receipts\". "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actions ➔ Receive..."
+                },
+                {
+                  "t": "text",
+                  "v": " opened "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3512m000",
+                  "name": "Warehouse Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": ", receipt "
+                },
+                {
+                  "t": "literal",
+                  "v": "100001505"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "The order generated a Warehousing Order (whinh2100m100), type PUI \"Purchase Receipts\". Actions ➔ Receive... opened Warehouse Receipt (whinh3512m000), receipt 100001505."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Receiving hit a real error, "
+                },
+                {
+                  "t": "literal",
+                  "v": "whinh0032"
+                },
+                {
+                  "t": "text",
+                  "v": " — \"Advise and put away receipt line: 100001505 - 10 Receipt Line Stock Point Details not found,\" plus 3 more messages. The receipt nonetheless reached "
+                },
+                {
+                  "t": "strong",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", All Lines Final and Complete, packing slips "
+                },
+                {
+                  "t": "literal",
+                  "v": "123"
+                },
+                {
+                  "t": "text",
+                  "v": "/"
+                },
+                {
+                  "t": "literal",
+                  "v": "124"
+                },
+                {
+                  "t": "text",
+                  "v": ". How the error was cleared was not captured. "
+                }
+              ],
+              "text": "Receiving hit a real error, whinh0032 — \"Advise and put away receipt line: 100001505 - 10 Receipt Line Stock Point Details not found,\" plus 3 more messages. The receipt nonetheless reached Confirmed, All Lines Final and Complete, packing slips 123/124. How the error was cleared was not captured."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "Production order — release through finished-goods receipt",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Production order "
+            },
+            {
+              "t": "literal",
+              "v": "010000749"
+            },
+            {
+              "t": "text",
+              "v": " for "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " (BOM "
+            },
+            {
+              "t": "literal",
+              "v": "JB0000242"
+            },
+            {
+              "t": "text",
+              "v": " rev "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": ", routing "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": " rev "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": ") ran "
+            },
+            {
+              "t": "literal",
+              "v": "Created"
+            },
+            {
+              "t": "text",
+              "v": " → "
+            },
+            {
+              "t": "literal",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": " → material issue → "
+            },
+            {
+              "t": "strong",
+              "v": "Production Completed"
+            },
+            {
+              "t": "text",
+              "v": " as one continuous session — the first time those phases have been walked end to end on one order. Several step-level values (the exact "
+            },
+            {
+              "t": "em",
+              "v": "Completed"
+            },
+            {
+              "t": "text",
+              "v": " quantity, whether "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0120s000"
+            },
+            {
+              "t": "text",
+              "v": " opened, the finished-item on-hand read) were not captured cleanly. "
+            }
+          ],
+          "text": "Production order 010000749 for BAM-CHOP-PAIR (BOM JB0000242 rev 000001, routing 0 rev 000001) ran Created → Released → material issue → Production Completed as one continuous session — the first time those phases have been walked end to end on one order. Several step-level values (the exact Completed quantity, whether tisfc0120s000 opened, the finished-item on-hand read) were not captured cleanly."
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "Warehouse inspection, order closure, and the revision demonstration",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A "
+            },
+            {
+              "t": "session",
+              "code": "whinh3122m000",
+              "name": "Warehouse Inspection"
+            },
+            {
+              "t": "text",
+              "v": " ran against the finished "
+            },
+            {
+              "t": "literal",
+              "v": "BAM-CHOP-PAIR"
+            },
+            {
+              "t": "text",
+              "v": " at "
+            },
+            {
+              "t": "literal",
+              "v": "ADNA01"
+            },
+            {
+              "t": "text",
+              "v": ", Inspection Status "
+            },
+            {
+              "t": "literal",
+              "v": "Open"
+            },
+            {
+              "t": "text",
+              "v": " at the point captured. Narration states plainly that "
+            },
+            {
+              "t": "strong",
+              "v": "Close Order"
+            },
+            {
+              "t": "text",
+              "v": " was blocked until this inspection's put-away step finished — \"if your status on that order isn't set to put away, and all of your materials are not issued, it's not going to let you close out that order\" — and that closing requires "
+            },
+            {
+              "t": "strong",
+              "v": "both"
+            },
+            {
+              "t": "text",
+              "v": " materials issued "
+            },
+            {
+              "t": "strong",
+              "v": "and"
+            },
+            {
+              "t": "text",
+              "v": " the end item not just received but "
+            },
+            {
+              "t": "strong",
+              "v": "put away"
+            },
+            {
+              "t": "text",
+              "v": ". This is narration (TR-grade), not yet confirmed against "
+            },
+            {
+              "t": "session",
+              "code": "ticst0201m000"
+            },
+            {
+              "t": "text",
+              "v": "'s own help, which was previously read as silent on any precondition. "
+            }
+          ],
+          "text": "A Warehouse Inspection (whinh3122m000) ran against the finished BAM-CHOP-PAIR at ADNA01, Inspection Status Open at the point captured. Narration states plainly that Close Order was blocked until this inspection's put-away step finished — \"if your status on that order isn't set to put away, and all of your materials are not issued, it's not going to let you close out that order\" — and that closing requires both materials issued and the end item not just received but put away. This is narration (TR-grade), not yet confirmed against ticst0201m000's own help, which was previously read as silent on any precondition."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Close Production Orders was actually run"
+            },
+            {
+              "t": "text",
+              "v": " in this session, despite being explicitly out of scope for both Scenario Guides. Recorded here as observed environment behavior; it does not change either guide's documented scope boundary."
+            }
+          ],
+          "text": "Close Production Orders was actually run in this session, despite being explicitly out of scope for both Scenario Guides. Recorded here as observed environment behavior; it does not change either guide's documented scope boundary."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Separately, the consultant walked the trainee through a "
+            },
+            {
+              "t": "strong",
+              "v": "BOM revision demonstration"
+            },
+            {
+              "t": "text",
+              "v": ": created "
+            },
+            {
+              "t": "literal",
+              "v": "JB0000242"
+            },
+            {
+              "t": "text",
+              "v": " revision "
+            },
+            {
+              "t": "literal",
+              "v": "000002"
+            },
+            {
+              "t": "text",
+              "v": " (quantity "
+            },
+            {
+              "t": "literal",
+              "v": "2"
+            },
+            {
+              "t": "text",
+              "v": "), approved it, flagged it Use for Planning and Use for Costing, then selected the original revision "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": " and ran "
+            },
+            {
+              "t": "strong",
+              "v": "Actions ➔ Expire Revision"
+            },
+            {
+              "t": "text",
+              "v": " — explaining that LN will now select "
+            },
+            {
+              "t": "literal",
+              "v": "000002"
+            },
+            {
+              "t": "text",
+              "v": " because "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": " is no longer valid. "
+            }
+          ],
+          "text": "Separately, the consultant walked the trainee through a BOM revision demonstration: created JB0000242 revision 000002 (quantity 2), approved it, flagged it Use for Planning and Use for Costing, then selected the original revision 000001 and ran Actions ➔ Expire Revision — explaining that LN will now select 000002 because 000001 is no longer valid."
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Route A (purchase) is the procedure for stocking training-item components"
+            },
+            {
+              "t": "text",
+              "v": ", not Route B (adjustment) — the consultant walked the trainee through the full purchase-to-receipt cycle rather than a stock adjustment."
+            }
+          ],
+          "text": "Route A (purchase) is the procedure for stocking training-item components, not Route B (adjustment) — the consultant walked the trainee through the full purchase-to-receipt cycle rather than a stock adjustment."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "`BP4000007` VISTA MACHINES INC."
+            },
+            {
+              "t": "text",
+              "v": " is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one."
+            }
+          ],
+          "text": "`BP4000007` VISTA MACHINES INC. is the standing test business partner for this kind of purchase, selected from the existing test-partner list rather than creating a new one."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Close Production Orders stays out of the two Scenario Guides' documented scope"
+            },
+            {
+              "t": "text",
+              "v": ", even though it was run in this session — the guides continue to end at finished-goods receipt."
+            }
+          ],
+          "text": "Close Production Orders stays out of the two Scenario Guides' documented scope, even though it was run in this session — the guides continue to end at finished-goods receipt."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Rerun the purchasing and item-creation steps independently to build familiarity"
+                }
+              ],
+              "text": "Rerun the purchasing and item-creation steps independently to build familiarity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee"
+                }
+              ],
+              "text": "Trainee"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open (stated intent, no date given)"
+                }
+              ],
+              "text": "Open (stated intent, no date given)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Capture the "
+                },
+                {
+                  "t": "literal",
+                  "v": "whinh0032"
+                },
+                {
+                  "t": "text",
+                  "v": " error's LOG detail and resolution on a future receipt"
+                }
+              ],
+              "text": "Capture the whinh0032 error's LOG detail and resolution on a future receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant"
+                }
+              ],
+              "text": "Consultant"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-walk phase 5 with closer per-step screenshotting"
+                }
+              ],
+              "text": "Re-walk phase 5 with closer per-step screenshotting"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Consultant"
+                }
+              ],
+              "text": "Consultant"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "How was the "
+            },
+            {
+              "t": "literal",
+              "v": "whinh0032"
+            },
+            {
+              "t": "text",
+              "v": " \"Stock Point Details not found\" error actually cleared? — needs an answer from a future walk "
+            }
+          ],
+          "text": "How was the whinh0032 \"Stock Point Details not found\" error actually cleared? — needs an answer from a future walk"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Does "
+            },
+            {
+              "t": "session",
+              "code": "ticst0201m000"
+            },
+            {
+              "t": "text",
+              "v": "'s official help actually document the issued-and-put-away precondition for Close Order, or does it remain narration-only? — needs an answer from a closer re-read of the session help "
+            }
+          ],
+          "text": "Does ticst0201m000's official help actually document the issued-and-put-away precondition for Close Order, or does it remain narration-only? — needs an answer from a closer re-read of the session help"
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What are the exact phase-5 step values (completed quantity, "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0120s000"
+            },
+            {
+              "t": "text",
+              "v": ", finished-item on-hand)? — needs an answer from a future walk "
+            }
+          ],
+          "text": "What are the exact phase-5 step values (completed quantity, tisfc0120s000, finished-item on-hand)? — needs an answer from a future walk"
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A grid's column order is a session property, not a per-record one."
+            },
+            {
+              "t": "text",
+              "v": " Once one unambiguous capture of "
+            },
+            {
+              "t": "session",
+              "code": "tirou4600m000"
+            },
+            {
+              "t": "text",
+              "v": "'s operation grid confirmed Operation → Reference Operation → Work Center → Machine Type, that column order could be safely applied to re-read an earlier, differently-worded capture of the same session (the 2026-08-06 frame) — this is how that question closed from a second, unrelated recording rather than needing the original frame re-shot. "
+            }
+          ],
+          "text": "A grid's column order is a session property, not a per-record one. Once one unambiguous capture of tirou4600m000's operation grid confirmed Operation → Reference Operation → Work Center → Machine Type, that column order could be safely applied to re-read an earlier, differently-worded capture of the same session (the 2026-08-06 frame) — this is how that question closed from a second, unrelated recording rather than needing the original frame re-shot."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Narration can answer a question official help left silent on, but it stays TR-grade until sourced."
+            },
+            {
+              "t": "text",
+              "v": " The Close Order put-away precondition is a specific, mechanistically plausible claim, not a vague impression — but it was still logged as a narrowing lead, not written into a guide as a confirmed rule. "
+            }
+          ],
+          "text": "Narration can answer a question official help left silent on, but it stays TR-grade until sourced. The Close Order put-away precondition is a specific, mechanistically plausible claim, not a vague impression — but it was still logged as a narrowing lead, not written into a guide as a confirmed rule."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Deliberately running a \"wrong\" or out-of-scope action during training is itself worth recording."
+            },
+            {
+              "t": "text",
+              "v": " Running Close Production Orders here, and creating-then-expiring a second BOM revision, were both teaching choices, not procedure — the review records them as what happened without pulling them into either Scenario Guide's scope."
+            }
+          ],
+          "text": "Deliberately running a \"wrong\" or out-of-scope action during training is itself worth recording. Running Close Production Orders here, and creating-then-expiring a second BOM revision, were both teaching choices, not procedure — the review records them as what happened without pulling them into either Scenario Guide's scope."
+        },
+        {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Recording:"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+            }
+          ],
+          "text": "Recording: the source on file — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives."
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Bill of Material"
+                }
+              ],
+              "text": "Job Shop Bill of Material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3600m000"
+                }
+              ],
+              "text": "tibom3600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop List of Materials"
+                }
+              ],
+              "text": "Job Shop List of Materials"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3110m000"
+                }
+              ],
+              "text": "tibom3110m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Bills of Material (overview)"
+                }
+              ],
+              "text": "Job Shop Bills of Material (overview)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3100m000"
+                }
+              ],
+              "text": "tibom3100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Routing"
+                }
+              ],
+              "text": "Job Shop Routing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tirou4600m000"
+                }
+              ],
+              "text": "tirou4600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item"
+                }
+              ],
+              "text": "Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100"
+                }
+              ],
+              "text": "tcibd0501m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order Intake Workbench"
+                }
+              ],
+              "text": "Purchase Order Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4601m200"
+                }
+              ],
+              "text": "tdpur4601m200"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order"
+                }
+              ],
+              "text": "Purchase Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4100m900"
+                }
+              ],
+              "text": "tdpur4100m900"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Buy-from Business Partners (lookup)"
+                }
+              ],
+              "text": "Buy-from Business Partners (lookup)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tccom4520m000"
+                }
+              ],
+              "text": "tccom4520m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Purchase"
+                }
+              ],
+              "text": "Items - Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdipu0101m000"
+                }
+              ],
+              "text": "tdipu0101m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order"
+                }
+              ],
+              "text": "Warehousing Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m100"
+                }
+              ],
+              "text": "whinh2100m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Receipt"
+                }
+              ],
+              "text": "Warehouse Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3512m000"
+                }
+              ],
+              "text": "whinh3512m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse Inspection"
+                }
+              ],
+              "text": "Warehouse Inspection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3122m000"
+                }
+              ],
+              "text": "whinh3122m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item - Warehousing"
+                }
+              ],
+              "text": "Item - Warehousing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd4600m000"
+                }
+              ],
+              "text": "whwmd4600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Ordering by Site"
+                }
+              ],
+              "text": "Items - Ordering by Site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd2150m000"
+                }
+              ],
+              "text": "tcibd2150m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Order"
+                }
+              ],
+              "text": "Production Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0101m100"
+                }
+              ],
+              "text": "tisfc0101m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders (overview)"
+                }
+              ],
+              "text": "Production Orders (overview)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000"
+                }
+              ],
+              "text": "tisfc0501m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": ""
+    }
+  ]
+}

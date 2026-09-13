@@ -1,0 +1,10 @@
+commit   63d9d536f7f46df3214188de3a8d0c17c2653d00
+date     2026-09-12T18:15:27Z
+subject  docs(diagram): Number the walk, add two inquiries
+contract 8 
+tier     export
+sha256   827b094b704a460a2bafe04b7ae2e0d7b77e081b40b30a2b8bdd7c470fe210b3
+
+Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
+These files are INPUTS, not source. Do not hand-edit them -- the next sync
+overwrites them, and the real fix belongs in the guide in atlas.

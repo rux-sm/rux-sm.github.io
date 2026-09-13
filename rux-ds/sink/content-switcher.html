@@ -1,0 +1,93 @@
+<section class="ks-sec" id="content-switcher">
+  <h2>Content switcher</h2><p>sizes · selected state</p>
+  <!-- PROVENANCE: rendered-dom · components-contentswitcher--default,
+       --icon-only, --low-contrast and the sm/lg recipes, 2026-08-28 -->
+  <!--
+      ADMITTED 2026-09-01. Every root now carries `layout--size-*` beside its
+      size class, as every capture does, and the icon-only demo is md rather
+      than sm because the three icon-only captures are all md — check-ancestry
+      required `layout--size-md` above the popover wrapper. `content-switcher--md`
+      is attested and unstyled, so the md root carries `layout--size-md` alone
+      (§4.1.12); the three `layout-constraint--size__*` classes every capture
+      puts on the root ARE styled (24 rules) and are written on each root.
+
+      Tab stops follow the captures: the selected tab is tabindex=0 and every
+      other tab -1, a roving tabindex check-a11y read as "3 of 3 tab stops"
+      before it was written.
+
+      EVERY nesting finding here is one decision, reported once per class. The
+      reference wraps this component's trigger in an icon-tooltip, so its buttons
+      sit inside `tooltip-trigger__wrapper`; the sink declines that chrome on the
+      combo-button precedent — it demos the component, not the story's hover
+      hint — which leaves our buttons as direct children of the component's own
+      wrapper. Nothing else differs.
+  -->
+  <div class="ks-row">
+    <!-- BLOCK:BEGIN name=default label="Content switcher" -->
+    <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist">
+      <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0">
+        <span class="rux--content-switcher__label">First</span>
+      </button>
+      <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
+        <span class="rux--content-switcher__label">Second</span>
+      </button>
+      <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
+        <span class="rux--content-switcher__label">Third</span>
+      </button>
+    </div>
+    <!-- BLOCK:END default -->
+  </div>
+  <!--
+    --content-switcher-popover--disabled sits on the __wrapper, never on the
+    button: every rule reads it as `.__wrapper:not(.popover--disabled)` or as the
+    sibling of a selected wrapper.
+
+    ICON-ONLY BUTTONS ARE FULL BUTTONS. Found 2026-08-27 by looking at the
+    rendered page: these three collapsed to 16x16 icons in a 48px-wide
+    switcher. Every sizing rule for __content-switcher-btn is scoped
+    `.rux--content-switcher:not(.rux--content-switcher--icon-only)`
+    (css/rux.css:10614), so in the icon-only variant the box comes from the
+    Button classes instead — and Carbon's own stylesheet says so outright:
+    `.--content-switcher--icon-only.--content-switcher--sm .rux--btn--sm
+    { block-size: 2rem }` (:10825) is dead markup without them. The rendered
+    reference agrees, emitting btn + size pair + primary + icon-only on each
+    (components-contentswitcher--icon-only). With them the buttons measure
+    32x32 and the switcher 96x40; btn--primary paints nothing, because the
+    switcher rules and the selected ::before win.
+
+    Not copied from that reference: its icon-tooltip popover chrome and
+    __tooltip-trigger__wrapper, on the same ground as combo-button — the sink
+    demos the component, not the story's hover hint. The selected fill is a
+    ::before, which is why the button's own background computes transparent.
+  -->
+  <div class="ks-row">
+    <div class="rux--content-switcher rux--layout--size-md rux--content-switcher--icon-only rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist">
+      <span class="rux--content-switcher-popover__wrapper rux--content-switcher-popover--selected">
+        <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="true" aria-label="List view" tabindex="0">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg>
+        </button>
+      </span>
+      <span class="rux--content-switcher-popover__wrapper">
+        <button type="button" class="rux--content-switcher-btn rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="false" aria-label="Grid view" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg>
+        </button>
+      </span>
+      <span class="rux--content-switcher-popover__wrapper rux--content-switcher-popover--disabled">
+        <button type="button" class="rux--content-switcher-btn rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="false" aria-label="Map view" disabled tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-location"/></svg>
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <div class="ks-row">
+    <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist">
+      <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0">
+        <span class="rux--content-switcher__label">Large</span>
+      </button>
+      <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
+        <span class="rux--content-switcher__label">Switcher</span>
+      </button>
+    </div>
+  </div>
+</section>

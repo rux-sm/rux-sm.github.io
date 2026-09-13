@@ -1,0 +1,40 @@
+<section class="ks-sec" id="scroll-gradient">
+  <h2>Scroll gradient</h2><p>vertical overflow structure</p>
+  <!-- PROVENANCE: rendered-dom · utilities-scrollgradient--scroll-gradient-vertical
+       on the ibm-products origin, 2026-08-31 -->
+  <!--
+    The captured c4p-- utility is absorbed and compiles as rux--. The capture
+    records the four presentation overlays and the scrollable class but not the
+    data attributes or inline paint React uses to observe the scroll edges.
+
+    THE FADE IS LIVE SINCE 2026-09-11, and this comment said the opposite until
+    then. js/scroll-gradient.js drives it, from declarations read off Carbon's
+    own running component rather than from the capture -- @carbon/styles ships
+    NO background for this utility at all, so nothing was missing from the
+    build and nothing here is a compiled rule. The module's BEHAVIOUR label
+    carries the three gradients, the two stories they were read on and the
+    three scroll positions. Still not claimed: the IntersectionObserver
+    mechanism, which needs the data attributes the capture did not record.
+
+    --x-none and --y-none appear in the capture and have no compiled rule, so
+    §4.1.12 leaves them unwritten.
+  -->
+  <div class="rux--scroll-gradient rux--scroll-gradient--y-scrollable ks-layer" role="presentation" style="block-size:12rem;max-inline-size:32rem">
+    <div class="rux--scroll-gradient__content">
+      <span></span><span></span>
+      <div class="rux--scroll-gradient__content-children">
+        <div class="ks-stack">
+          <p>Deployment created</p><p>Validation started</p><p>Assets compiled</p>
+          <p>Checks completed</p><p>Review requested</p><p>Deployment approved</p>
+          <p>Release published</p><p>Monitoring active</p><p>Health checked</p>
+          <p>Traffic shifted</p><p>Metrics stable</p><p>Runbook updated</p>
+        </div>
+      </div>
+      <span></span><span></span>
+    </div>
+    <div class="rux--scroll-gradient__start-vertical" role="presentation" aria-hidden="true"></div>
+    <div class="rux--scroll-gradient__start-horizontal" role="presentation" aria-hidden="true"></div>
+    <div class="rux--scroll-gradient__end-vertical" role="presentation" aria-hidden="true"></div>
+    <div class="rux--scroll-gradient__end-horizontal" role="presentation" aria-hidden="true"></div>
+  </div>
+</section>

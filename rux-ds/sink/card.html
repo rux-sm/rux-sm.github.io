@@ -1,0 +1,244 @@
+<section class="ks-sec" id="card">
+    <h2>Card</h2><p>productive · expressive · clickable · header actions · truncation</p>
+    <!-- PROVENANCE: rendered-dom · preview-preview-card--default, --minimal,
+         --clickable, --productive-and-expressive, --with-header-actions,
+         --with-flush-body, --with-title-leading-icon, --with-title-trailing-icon,
+         --with-title-media, --with-header-media and --with-horizontal-media,
+         2026-08-31 -->
+    <!--
+      ADMITTED 2026-08-31 AGAINST RULE 1, NOT UNDER IT. No page shape in
+      `templates/` requires a card, and `tile` serves the container shape —
+      which is the reasoning that keeps `big-number` deferred. It was admitted
+      as an author's call at a measured +1.2 KB gzipped. `docs/inventory.md`
+      carries that in the open rather than dressed as a rule-2 pass.
+
+      THE ROW IT REPLACED SAID "Carbon has no Card". That was true when
+      roadmap 4.1.14 wrote it and Carbon has since promoted the component:
+      `@carbon/styles` 1.114 ships a 474-line `components/card`, and this
+      Storybook renders 17 `preview-preview-card--*` stories. The old reason
+      survived because nothing re-reads a CUT row's evidence.
+
+      `card` NEVER APPEARS ALONE. Every one of the 112 occurrences in the
+      captures carries `--productive` or `--expressive` beside it, so the
+      base class is never written on its own here either.
+
+      NO `<img>`, AND THAT COSTS FOUR CLASSES. The sink has never carried a
+      raster image — 59 sprite symbols and nothing else — and the three media
+      specimens all render `img` in the reference. `card__media`,
+      `card__media--horizontal`, `card__title-media` and, with them,
+      `card--horizontal` and `card__content` are therefore NOT exercised.
+      `card__header-media` IS, because that one renders an `svg`.
+
+      Vertical `card__media` has a second blocker even with an image: the
+      reference always compounds it with `aspect-ratio`, which Phase 3 cut, so
+      writing it bare would be unattested nesting.
+
+      Two classes have NO reference at all and are recorded rather than
+      invented: `card__label--truncate-multi` and
+      `card__description--truncate-multi` appear in none of the 505 harvested
+      stories, though their `title-text-row` sibling does.
+
+      `card--has-ai-label` and `card__decorator` belong to ai-label, which
+      Phase 3 cut. Unreachable by construction, not missing markup.
+
+      THE HEADER ACTION DECLINES THE STORY'S TOOLTIP, on the combo-button and
+      tooltip precedent recorded in `sink/tooltip.html`: the reference wraps
+      each `card__action` button in an icon-tooltip, and the sink demos the
+      component rather than the story's hover hint. `diff-fragment` reports
+      the missing `popover-container` chrome; one cause, no defect.
+
+      WHICH GLYPH THE CLICKABLE FOOTER CARRIES IS CHOSEN, NOT CORROBORATED.
+      The captures record `svg > path` and never the symbol's identity, so no
+      capture can say this is Carbon's own arrow. `arrow--right` is the
+      reading of Carbon's clickable-card affordance; `check-slots` has no slot
+      for it and is not claimed to.
+    -->
+    <div class="ks-grid">
+
+      <!-- base, productive -->
+      <!-- BLOCK:BEGIN name=default label="Card" -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row">Productive card</span>
+            <div class="rux--card__description">A short supporting description.</div>
+          </div>
+        </div>
+        <div class="rux--card__body">Body copy sits here.</div>
+        <div class="rux--card__footer">
+          <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary">Action</button>
+        </div>
+      </div>
+      <!-- BLOCK:END default -->
+
+      <!-- expressive -->
+      <!-- BLOCK:BEGIN name=expressive label="Card, expressive" -->
+      <div class="rux--card rux--card--expressive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row">Expressive card</span>
+          </div>
+        </div>
+        <div class="rux--card__body">The expressive variant sets a larger title scale.</div>
+      </div>
+      <!-- BLOCK:END expressive -->
+
+      <!--
+        CLICKABLE IS role=button + tabindex=0 + aria-labelledby, and the
+        footer is aria-hidden. The reference also renders an <a> form of the
+        same card; the div/role=button form is the one demoed, matching the
+        classic selectable-tile call in sink/tile.html.
+      -->
+      <div class="rux--card rux--card--clickable rux--card--productive" role="button" tabindex="0" aria-labelledby="card-clickable-title">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row" id="card-clickable-title">Clickable card</span>
+          </div>
+        </div>
+        <div class="rux--card__body">The whole surface is the control.</div>
+        <div class="rux--card__clickable-footer" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-arrow--right"></use></svg>
+        </div>
+      </div>
+
+      <!-- disabled clickable: aria-disabled true and tabindex -1, per the reference -->
+      <div class="rux--card rux--card--disabled rux--card--productive" role="button" tabindex="-1" aria-disabled="true" aria-labelledby="card-disabled-title">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row" id="card-disabled-title">Disabled card</span>
+          </div>
+        </div>
+        <div class="rux--card__body">Not operable, and out of the tab order.</div>
+        <div class="rux--card__clickable-footer" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-arrow--right"></use></svg>
+        </div>
+      </div>
+
+      <!-- title leading icon -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <span class="rux--card__title-text-row rux--card__title-text-row--with-start-icon">
+              <span class="rux--card__title-start-icon">
+                <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-information"></use></svg>
+              </span>
+              Leading icon
+            </span>
+          </div>
+        </div>
+        <div class="rux--card__body">The icon sits inside the title row.</div>
+      </div>
+
+      <!-- title trailing icon -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <span class="rux--card__title-text-row rux--card__title-text-row--with-end-icon">
+              Trailing icon
+              <span class="rux--card__title-end-icon">
+                <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-view"></use></svg>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="rux--card__body">The end-icon modifier changes the row's grid.</div>
+      </div>
+
+      <!-- header media: the one media slot the reference fills with an svg -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__header-media">
+            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-document"></use></svg>
+          </div>
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row">Header media</span>
+          </div>
+        </div>
+        <div class="rux--card__body">Media above the title, not beside it.</div>
+      </div>
+
+      <!-- flush body -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <span class="rux--card__title-text-row">Flush body</span>
+          </div>
+        </div>
+        <div class="rux--card__body rux--card__body--flush">
+          <div>The flush modifier drops the body's inline padding.</div>
+        </div>
+      </div>
+
+      <!-- header actions -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label">Label</div>
+            <span class="rux--card__title-text-row">Header actions</span>
+            <div class="rux--card__description">Actions sit beside the title, not under it.</div>
+          </div>
+          <div class="rux--card__actions">
+            <div>
+              <div class="rux--card__action">
+                <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Edit">
+                  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-edit"></use></svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="rux--card__action">
+                <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Delete">
+                  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-trash-can"></use></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--card__body">Body copy sits here.</div>
+      </div>
+
+      <!--
+        TRUNCATION, single-line. The reference puts --truncate on the label and
+        the description and --truncate-multi on the title row; both forms are
+        demoed, across this card and the next.
+      -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <div class="rux--card__label rux--card__label--truncate">A label long enough that the single-line truncation rule has something to cut</div>
+            <span class="rux--card__title-text-row rux--card__title-text-row--truncate">A title long enough that the single-line truncation rule has something to cut</span>
+            <div class="rux--card__description rux--card__description--truncate">A description long enough that the single-line truncation rule has something to cut</div>
+          </div>
+        </div>
+        <div class="rux--card__body">Single-line truncation.</div>
+      </div>
+
+      <!--
+        TRUNCATION, MULTI-LINE — AND THE CLAMP IS A CONSUMER CONTRACT, NOT A
+        DEFAULT. `--truncate-multi` compiles to
+        `-webkit-line-clamp: var(--rux--card--title-line-clamp)` with NO
+        fallback, and Carbon's light-DOM CSS never declares that property —
+        `tools/check-tokens.mjs` carries all three card line-clamp tokens in
+        KNOWN as "set by the consumer". Written without it the class computes
+        `line-clamp: none` and clamps NOTHING, which is what this specimen did
+        when it was first written: measured 2026-08-31, `scrollHeight ===
+        clientHeight`, an inert class on a card that looked finished. The
+        inline property is the contract, not a workaround, and it is the whole
+        reason this specimen is worth carrying.
+      -->
+      <div class="rux--card rux--card--productive">
+        <div class="rux--card__header">
+          <div class="rux--card__title">
+            <span class="rux--card__title-text-row rux--card__title-text-row--truncate-multi" style="--rux--card--title-line-clamp:2">A title long enough that the multi-line clamp has more than two lines of text to work against before it stops</span>
+          </div>
+        </div>
+        <div class="rux--card__body">Multi-line clamp on the title row, set to 2.</div>
+      </div>
+
+    </div>
+</section>

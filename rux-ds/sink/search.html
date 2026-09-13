@@ -1,0 +1,41 @@
+<section class="ks-sec" id="search">
+  <h2>Search</h2><p>sizes · with close · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-search--default with its disabled
+       recipe, plus --expandable and --with-layer, 2026-08-28 -->
+  <!--
+    The magnifier is not a loose svg in the search box: Carbon wraps it in
+    `search-magnifier`, which is the element positioned against the input's
+    padding, and it comes BEFORE the label. With the svg bare the two rules on
+    that wrapper had nothing to sit on.
+
+    The remaining nesting finding is `label--disabled` inside .rux--search:
+    every sampled disabled label sits in a form-item or list-box wrapper,
+    because no story disables a Search. The label belongs to this search, so
+    the pairing is right and the reference simply has no example.
+  -->
+  <div style="display:grid;gap:1.5rem;max-width:34rem">
+    <!-- BLOCK:BEGIN name=default label="Search" -->
+    <div class="rux--search rux--layout--size-lg">
+      <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+      <label class="rux--label" for="sr-1">Large</label>
+      <input id="sr-1" class="rux--search-input" type="text" role="searchbox" placeholder="Search…">
+      <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <!-- BLOCK:END default -->
+    <div class="rux--search rux--layout--size-md">
+      <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+      <label class="rux--label" for="sr-2">Medium · with value</label>
+      <input id="sr-2" class="rux--search-input" type="text" role="searchbox" value="query">
+      <button type="button" class="rux--search-close" aria-label="Clear">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--search rux--layout--size-sm rux--search--disabled">
+      <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+      <label class="rux--label rux--label--disabled" for="sr-3">Small · disabled</label>
+      <input id="sr-3" class="rux--search-input" type="text" role="searchbox" placeholder="Search…" disabled>
+    </div>
+  </div>
+</section>

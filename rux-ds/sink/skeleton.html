@@ -1,0 +1,57 @@
+<section class="ks-sec" id="skeleton">
+  <h2>Skeleton</h2><p>text · heading · placeholder · ai variants · whole component</p>
+  <!-- PROVENANCE: rendered-dom · the --skeleton story on each host component
+       (accordion, tag, slider, structuredlist and the rest), 2026-08-28 -->
+  <!--
+    Skeleton is not a component of its own: roadmap §4.1.14 records that it is a
+    `--skeleton` story on 32 others. So the omissions report lists whole host
+    components — accordion, data-table, tile — because those stories ARE the
+    reference. What this fragment owns is the skeleton classes themselves, and
+    those match; the hosts belong to their own fragments.
+  -->
+  <div class="ks-grid">
+    <div>
+      <p class="rux--skeleton__heading"></p>
+      <p class="rux--skeleton__text"></p>
+      <p class="rux--skeleton__text"></p>
+      <p class="rux--skeleton__text"></p>
+    </div>
+    <div class="rux--skeleton__placeholder"></div>
+  </div>
+
+  <!-- AI VARIANTS · components-skeleton-aiskeleton--ai-skeleton-text,
+       --ai-skeleton-placeholder and --ai-skeleton-icon. These are the ONLY AI
+       classes this system can demo: they are plain elements carrying a skeleton
+       modifier, owned by skeleton-styles and compiled. The AI classes elsewhere
+       — data-table's --ai-label-row, modal's --decorator, the table header
+       label variants — are hooks for the ai-label and slug components, and both
+       are CUT in src/app.scss, so those stay unexercised on purpose. -->
+  <div class="ks-label" style="margin-block-start:1.5rem">ai variants</div>
+  <div class="ks-grid">
+    <div>
+      <p class="rux--skeleton__text rux--skeleton__text--ai"></p>
+      <p class="rux--skeleton__text rux--skeleton__text--ai"></p>
+      <p class="rux--skeleton__text rux--skeleton__text--ai"></p>
+    </div>
+    <div class="rux--skeleton__placeholder rux--skeleton__placeholder--ai"></div>
+  </div>
+  <div class="ks-row" style="margin-block-start:1rem">
+    <div class="rux--skeleton__icon--ai rux--icon--skeleton"></div>
+    <div class="rux--skeleton__icon--ai rux--icon--skeleton"></div>
+  </div>
+
+  <!-- `skeleton` BARE is the whole-component form: components-button--skeleton
+       renders `div.skeleton.btn.btn--lg` and components-breadcrumb--skeleton
+       puts it on the breadcrumb root. It is not a shape of its own — it turns a
+       real component into its own placeholder, which is why it lives here on
+       borrowed hosts rather than on a bare div. -->
+  <div class="ks-label" style="margin-block-start:1.5rem">a component as its own placeholder</div>
+  <div class="ks-row">
+    <div class="rux--skeleton rux--btn rux--layout--size-lg"></div>
+    <div class="rux--breadcrumb rux--skeleton">
+      <div class="rux--breadcrumb-item"><span class="rux--link"></span></div>
+      <div class="rux--breadcrumb-item"><span class="rux--link"></span></div>
+      <div class="rux--breadcrumb-item"><span class="rux--link"></span></div>
+    </div>
+  </div>
+</section>

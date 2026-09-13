@@ -1,0 +1,65 @@
+<section class="ks-sec" id="code-snippet">
+  <h2>Code snippet</h2><p>inline · single line · multi line</p>
+  <!-- PROVENANCE: rendered-dom · components-codesnippet--inline, --singleline
+       and --multiline with their disabled recipes, 2026-08-28 -->
+  <!--
+    THE SNIPPET BUTTONS ARE BUTTONS, the third component in this sweep to be
+    missing that (copy-button and the icon-only content switcher were the
+    others). The copy control is `copy-btn copy btn btn--sm layout--size-sm
+    btn--primary btn--icon-only` and the expand control adds `btn--ghost`;
+    this fragment carried only the snippet-specific classes, so neither had a
+    box or a kind. `snippet-button` went with them — the reference never emits
+    it and @carbon/styles has no rule for it.
+
+    Not copied: the icon-tooltip popover wrapping the copy button in the
+    reference, on the combo-button precedent. That is what the nesting report
+    means when it says Carbon puts copy-btn inside `tooltip-trigger__wrapper`.
+  -->
+  <div style="display:grid;gap:1.5rem;max-width:36rem">
+    <div>
+      <!--
+        REVERSED 2026-08-28. The 2026-08-27 adjudication recorded this as a
+        deliberate divergence and rendered it on a <code>, reasoning that inert
+        code is semantically a code element. check-compound then failed the
+        moment the other snippet buttons got their Button classes: Carbon
+        writes `.snippet--inline.btn` as a COMPOUND, so within this system the
+        inline snippet is one element that is both. The earlier call was mine
+        and it was wrong — an inline CodeSnippet in Carbon is a copy button,
+        and a <code> cannot carry the classes that make it one. Both KNOWN
+        entries in check-tags go with it.
+
+        The child is a <code>, as the reference renders it, and that matters:
+        `.rux--copy` sets `font-size: 0` to swallow stray text, and the code
+        element is what re-establishes a readable size. With a <span> there the
+        snippet measured 4px wide.
+      -->
+      <button type="button" class="rux--snippet rux--snippet--inline rux--copy rux--btn rux--btn--primary rux--btn--icon-only">
+        <code>npm run build</code>
+      </button>
+    </div>
+    <!-- BLOCK:BEGIN name=single label="Code snippet, single line" -->
+    <div class="rux--snippet rux--snippet--single">
+      <div class="rux--snippet-container"><pre><code>node tools/build.mjs</code></pre></div>
+      <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary rux--btn--icon-only" aria-label="Copy">
+        <span class="rux--copy-btn__feedback">Copied</span>
+      </button>
+    </div>
+    <!-- BLOCK:END single -->
+    <div class="rux--snippet rux--snippet--single rux--snippet--disabled">
+      <div class="rux--snippet-container"><pre><code>npm run verify   # disabled</code></pre></div>
+      <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary rux--btn--icon-only" aria-label="Copy" disabled>
+        <span class="rux--copy-btn__feedback">Copied</span>
+      </button>
+    </div>
+    <!-- BLOCK:BEGIN name=multi label="Code snippet" -->
+    <div class="rux--snippet rux--snippet--multi">
+      <div class="rux--snippet-container"><pre><code>@use "@carbon/styles/scss/config" with ($prefix: "rux");
+@use "@carbon/styles/scss/theme";
+@use "@carbon/styles/scss/components/button";</code></pre></div>
+      <button type="button" class="rux--snippet-btn--expand rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost">
+        <span class="rux--snippet-btn--text">Show more</span>
+      </button>
+    </div>
+    <!-- BLOCK:END multi -->
+  </div>
+</section>

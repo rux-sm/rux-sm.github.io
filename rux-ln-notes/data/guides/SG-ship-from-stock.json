@@ -1,0 +1,4257 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "SG-ship-from-stock",
+  "title": "Ship from stock",
+  "module": "Sales · Warehousing",
+  "modules": [
+    "Sales",
+    "Warehousing"
+  ],
+  "updated": "2026-09-02",
+  "status": "approved",
+  "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
+  "order": 5,
+  "sources": [
+    "tdsls4246m000",
+    "tdsls4501m140",
+    "tdsls4534s000",
+    "tdsls4601m200",
+    "whinh0100m000",
+    "whinh0110m000",
+    "whinh0120m000",
+    "whinh2100m100",
+    "whinh2120m000",
+    "whinh2129m000",
+    "whinh2300m000",
+    "whinh4130m000",
+    "whinh4131m000",
+    "whinh4525m100",
+    "whinh4630m000",
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Confirm there is stock",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Inventory 360 shows what is physically on hand, and "
+            },
+            {
+              "t": "em",
+              "v": "Allocated"
+            },
+            {
+              "t": "text",
+              "v": " shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists."
+            }
+          ],
+          "text": "What LN is doing. Inventory 360 shows what is physically on hand, and Allocated shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the item in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Filter Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and run it"
+                    }
+                  ],
+                  "text": "Enter the item in Filter Items and run it"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Grid shows "
+                    },
+                    {
+                      "t": "field",
+                      "v": "On Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Blocked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "On Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Allocated"
+                    }
+                  ],
+                  "text": "Grid shows On Hand · Blocked · On Order · Allocated"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the item row"
+                    }
+                  ],
+                  "text": "Tick the item row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " group of the header, click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Warehouse Inventory"
+                    }
+                  ],
+                  "text": "In the Inventory group of the header, click Warehouse Inventory"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd2515m000",
+                      "name": "Warehouse - Item Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens, item carried through"
+                    }
+                  ],
+                  "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory on Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory Allocated"
+                    },
+                    {
+                      "t": "text",
+                      "v": " per warehouse"
+                    }
+                  ],
+                  "text": "Read Inventory on Hand and Inventory Allocated per warehouse"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Totals sit under the grid — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "item"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "on-hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "allocated"
+                    }
+                  ],
+                  "text": "Totals sit under the grid — item, warehouse, on-hand, allocated"
+                }
+              ],
+              "id": "0.4",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.5"
+                    }
+                  ],
+                  "text": "0.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": " if no warehouse holds enough to cover the order, replenish before continuing: "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "make it"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with "
+                    },
+                    {
+                      "t": "link",
+                      "v": "Production order",
+                      "href": "SG-manual-production-order-existing-master-data.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "move it"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with "
+                    },
+                    {
+                      "t": "link",
+                      "v": "Warehouse transfer",
+                      "href": "SG-transfer-item-between-warehouses.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", or "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "buy it in"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with "
+                    },
+                    {
+                      "t": "link",
+                      "v": "Purchase to receipt",
+                      "href": "SG-purchase-order-to-warehouse-receipt.md"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Return here at phase 1"
+                    }
+                  ],
+                  "text": "if no warehouse holds enough to cover the order, replenish before continuing: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt. Return here at phase 1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "This guide continues only once one warehouse can cover the quantity"
+                    }
+                  ],
+                  "text": "This guide continues only once one warehouse can cover the quantity"
+                }
+              ],
+              "id": "0.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Create and approve the sales order",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+      "session": "Sales Order Intake Workbench",
+      "sessionCode": "tdsls4601m200",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+            }
+          ],
+          "text": "What LN is doing. Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New",
+                      "location": "header"
+                    }
+                  ],
+                  "text": "Click New"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Sold-to Business Partner"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", press Tab"
+                    }
+                  ],
+                  "text": "Enter Sold-to Business Partner, press Tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Address"
+                    },
+                    {
+                      "t": "text",
+                      "v": " autofills"
+                    }
+                  ],
+                  "text": "Address autofills"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Type"
+                    }
+                  ],
+                  "text": "Select the Order Type"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Delivery Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Planned Receipt Date"
+                    }
+                  ],
+                  "text": "Set Planned Delivery Date and Planned Receipt Date"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.5"
+                    }
+                  ],
+                  "text": "1.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Sales Office"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Currency"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Site"
+                    }
+                  ],
+                  "text": "Confirm Sales Office, Currency, Site"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.6"
+                    }
+                  ],
+                  "text": "1.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to the warehouse recorded at 0.4"
+                    }
+                  ],
+                  "text": "Set Warehouse to the warehouse recorded at 0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.7"
+                    }
+                  ],
+                  "text": "1.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Save"
+                    }
+                  ],
+                  "text": "Click Save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Free"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "sales order number"
+                    }
+                  ],
+                  "text": "Status = Free — sales order number"
+                }
+              ],
+              "id": "1.7",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.8"
+                    }
+                  ],
+                  "text": "1.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Click New"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.8",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.9"
+                    }
+                  ],
+                  "text": "1.9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Search for and select the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Item"
+                    }
+                  ],
+                  "text": "Search for and select the Item"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.9",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.10"
+                    }
+                  ],
+                  "text": "1.10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Ordered Quantity"
+                    }
+                  ],
+                  "text": "Enter the Ordered Quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "ordered quantity"
+                    }
+                  ],
+                  "text": "ordered quantity"
+                }
+              ],
+              "id": "1.10",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.11"
+                    }
+                  ],
+                  "text": "1.11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Save"
+                    }
+                  ],
+                  "text": "Click Save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.11",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.12"
+                    }
+                  ],
+                  "text": "1.12"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the header, "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Approve"
+                    }
+                  ],
+                  "text": "In the header, Actions ➔ Approve"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "In Process"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Order Acknowledgement prints"
+                    }
+                  ],
+                  "text": "Status = In Process. Order Acknowledgement prints"
+                }
+              ],
+              "id": "1.12",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Release to warehousing",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+      "session": "Sales Order Intake Workbench",
+      "sessionCode": "tdsls4601m200",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the "
+            },
+            {
+              "t": "em",
+              "v": "Lines ready for"
+            },
+            {
+              "t": "text",
+              "v": " panel only counts."
+            }
+          ],
+          "text": "What LN is doing. Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the Lines ready for panel only counts."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.1"
+                    }
+                  ],
+                  "text": "2.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Select your order in the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " grid"
+                    }
+                  ],
+                  "text": "Select your order in the Sales Orders grid"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "2.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.2"
+                    }
+                  ],
+                  "text": "2.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Release ➔ Release to Warehousing…"
+                    }
+                  ],
+                  "text": "Actions ➔ Release ➔ Release to Warehousing…"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The release session opens"
+                    }
+                  ],
+                  "text": "The release session opens"
+                }
+              ],
+              "id": "2.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.3"
+                    }
+                  ],
+                  "text": "2.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Upto Release Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on or after the order line's "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Release Date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — it defaults to the planned delivery date minus the outbound lead time"
+                    }
+                  ],
+                  "text": "Set Upto Release Date on or after the order line's Release Date — it defaults to the planned delivery date minus the outbound lead time"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Leave the Options ticked"
+                    }
+                  ],
+                  "text": "Leave the Options ticked"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Print Errors"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Print Released Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Print to predefined Device"
+                    }
+                  ],
+                  "text": "Print Errors · Print Released Lines · Print to predefined Device"
+                }
+              ],
+              "id": "2.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.5"
+                    }
+                  ],
+                  "text": "2.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "RELEASE"
+                    }
+                  ],
+                  "text": "Click RELEASE"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Log Report prints"
+                    }
+                  ],
+                  "text": "Log Report prints"
+                }
+              ],
+              "id": "2.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.6"
+                    }
+                  ],
+                  "text": "2.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
+                    }
+                  ],
+                  "text": "Open the Order Lines tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "2.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.7"
+                    }
+                  ],
+                  "text": "2.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find your order and tick it"
+                    }
+                  ],
+                  "text": "Find your order and tick it"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "2.7",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.8"
+                    }
+                  ],
+                  "text": "2.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "References ➔ Status"
+                    }
+                  ],
+                  "text": "References ➔ Status"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tdsls4534s000",
+                      "name": "Sales Order Line Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens on "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Activities 1"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Release Sales Orders to Warehousing"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Executed"
+                    }
+                  ],
+                  "text": "Sales Order Line Status (tdsls4534s000) opens on Activities 1. Release Sales Orders to Warehousing = Executed"
+                }
+              ],
+              "id": "2.8",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Generate outbound advice",
+      "route": "Warehousing ➔ Manager Dashboard",
+      "session": "Warehouse Manager Dashboard",
+      "sessionCode": "whinh2300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the "
+            },
+            {
+              "t": "em",
+              "v": "Advised"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "em",
+              "v": "Released"
+            },
+            {
+              "t": "text",
+              "v": " columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+            }
+          ],
+          "text": "What LN is doing. Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the Advised and Released columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.1"
+                    }
+                  ],
+                  "text": "3.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the order grid at the bottom, filter "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on your sales order number"
+                    }
+                  ],
+                  "text": "In the order grid at the bottom, filter Order on your sales order number"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Sales rows read "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Origin Sales"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Type 20- SO/SC Out"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Transaction Type Issue"
+                    }
+                  ],
+                  "text": "Sales rows read Origin Sales, Type 20- SO/SC Out, Transaction Type Issue"
+                }
+              ],
+              "id": "3.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.2"
+                    }
+                  ],
+                  "text": "3.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the row, then click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Tick the row, then click Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whinh2100m100",
+                      "name": "Warehousing Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens"
+                    }
+                  ],
+                  "text": "Warehousing Order (whinh2100m100) opens"
+                }
+              ],
+              "id": "3.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.3"
+                    }
+                  ],
+                  "text": "3.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Outbound Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
+                    }
+                  ],
+                  "text": "Open the Outbound Lines tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Line Status"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Open"
+                    }
+                  ],
+                  "text": "Line Status = Open"
+                }
+              ],
+              "id": "3.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.4"
+                    }
+                  ],
+                  "text": "3.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the outbound line"
+                    }
+                  ],
+                  "text": "Tick the outbound line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "3.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.5"
+                    }
+                  ],
+                  "text": "3.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Outbound Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " toolbar, "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Advice ➔ Generate Advice"
+                    }
+                  ],
+                  "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "status",
+                      "v": "Advised"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Released"
+                    },
+                    {
+                      "t": "text",
+                      "v": " both fill — release is automatic here. Picking List by Location prints — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "Run"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "Mission"
+                    }
+                  ],
+                  "text": "Advised and Released both fill — release is automatic here. Picking List by Location prints — Run, Mission"
+                }
+              ],
+              "id": "3.5",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3.6"
+                    }
+                  ],
+                  "text": "3.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Shipment Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab and check for an early shipment"
+                    }
+                  ],
+                  "text": "Open the Shipment Lines tab and check for an early shipment"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "If projected shipments are enabled, a "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Projected"
+                    },
+                    {
+                      "t": "text",
+                      "v": " or "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Open"
+                    },
+                    {
+                      "t": "text",
+                      "v": " line may already show a value in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". If the tab is empty, continue to phase 4 — that is expected in the standard flow"
+                    }
+                  ],
+                  "text": "If projected shipments are enabled, a Projected or Open line may already show a value in Shipment. If the tab is empty, continue to phase 4 — that is expected in the standard flow"
+                }
+              ],
+              "id": "3.6",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Pick the goods",
+      "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
+      "session": "Picking List",
+      "sessionCode": "whinh4525m100",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " The picking list is the record of stock physically moving to staging, and confirming it is what fills "
+            },
+            {
+              "t": "em",
+              "v": "Picked"
+            },
+            {
+              "t": "text",
+              "v": ". The phase exists because this environment sets the "
+            },
+            {
+              "t": "em",
+              "v": "Picking List"
+            },
+            {
+              "t": "text",
+              "v": " activity to manual and the warehouse is location-controlled; change either and LN ticks "
+            },
+            {
+              "t": "em",
+              "v": "Picked"
+            },
+            {
+              "t": "text",
+              "v": " on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+            }
+          ],
+          "text": "What LN is doing. The picking list is the record of stock physically moving to staging, and confirming it is what fills Picked. The phase exists because this environment sets the Picking List activity to manual and the warehouse is location-controlled; change either and LN ticks Picked on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.1"
+                    }
+                  ],
+                  "text": "4.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Check "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Run"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the header"
+                    }
+                  ],
+                  "text": "Check Run in the header"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Already the Run from 3.5. If not, search or step with "
+                    },
+                    {
+                      "t": "button",
+                      "label": "next"
+                    },
+                    {
+                      "t": "text",
+                      "v": " / "
+                    },
+                    {
+                      "t": "button",
+                      "label": "previous"
+                    }
+                  ],
+                  "text": "Already the Run from 3.5. If not, search or step with next / previous"
+                }
+              ],
+              "id": "4.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.2"
+                    }
+                  ],
+                  "text": "4.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Confirm "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Mission"
+                    }
+                  ],
+                  "text": "Confirm Warehouse and Mission"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Mission is the Picking Mission from 3.5"
+                    }
+                  ],
+                  "text": "Mission is the Picking Mission from 3.5"
+                }
+              ],
+              "id": "4.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.3"
+                    }
+                  ],
+                  "text": "4.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the grid line"
+                    }
+                  ],
+                  "text": "Read the grid line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "field",
+                      "v": "Picked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Sequence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Item"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Serial Number"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "From Location"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Picked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " = grey dot"
+                    }
+                  ],
+                  "text": "Picked · Sequence · Item · Serial Number · From Location. Picked = grey dot"
+                }
+              ],
+              "id": "4.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.4"
+                    }
+                  ],
+                  "text": "4.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the line"
+                    }
+                  ],
+                  "text": "Tick the line"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "4.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.5"
+                    }
+                  ],
+                  "text": "4.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Pick Run"
+                    }
+                  ],
+                  "text": "Actions ➔ Pick Run"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Stock moves from "
+                    },
+                    {
+                      "t": "field",
+                      "v": "From Location"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to "
+                    },
+                    {
+                      "t": "field",
+                      "v": "To Location"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Picked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " fills on Outbound Lines. Line status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Staged"
+                    }
+                  ],
+                  "text": "Stock moves from From Location to To Location. Picked fills on Outbound Lines. Line status = Staged"
+                }
+              ],
+              "id": "4.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4.6"
+                    }
+                  ],
+                  "text": "4.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Return to the Warehousing Order and open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Shipment Lines"
+                    }
+                  ],
+                  "text": "Return to the Warehousing Order and open Shipment Lines"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A shipment line now exists in the standard flow. Read the value in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — not the shipment-line position — and record it: "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipment number"
+                    }
+                  ],
+                  "text": "A shipment line now exists in the standard flow. Read the value in Shipment — not the shipment-line position — and record it: shipment number"
+                }
+              ],
+              "id": "4.6",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Ship",
+      "route": "Warehousing ➔ Shipments ➔ Shipments",
+      "session": "Shipments",
+      "sessionCode": "whinh4130m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment."
+            }
+          ],
+          "text": "What LN is doing. Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Find your shipment, then click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In",
+                      "location": "line"
+                    }
+                  ],
+                  "text": "Find your shipment, then click Drill In"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Open"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Freeze Mandatory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ticked; "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Allow Changes to Shipment"
+                    },
+                    {
+                      "t": "text",
+                      "v": " ticked"
+                    }
+                  ],
+                  "text": "Status = Open. Freeze Mandatory ticked; Allow Changes to Shipment ticked"
+                }
+              ],
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Shipping less than picked? Change "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Shipped Quantity"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on "
+                    },
+                    {
+                      "t": "session",
+                      "code": "whinh4131m000",
+                      "name": "Shipment Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", not here"
+                    }
+                  ],
+                  "text": "Shipping less than picked? Change Shipped Quantity on Shipment Lines (whinh4131m000), not here"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "shipped quantity"
+                    }
+                  ],
+                  "text": "shipped quantity"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Freeze"
+                    },
+                    {
+                      "t": "text",
+                      "v": " (Shift+F)"
+                    }
+                  ],
+                  "text": "Actions ➔ Freeze (Shift+F)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Frozen"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Confirm"
+                    },
+                    {
+                      "t": "text",
+                      "v": " becomes available"
+                    }
+                  ],
+                  "text": "Status = Frozen. Confirm becomes available"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.4"
+                    }
+                  ],
+                  "text": "5.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Review the packing slip"
+                    }
+                  ],
+                  "text": "Review the packing slip"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "5.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.5"
+                    }
+                  ],
+                  "text": "5.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "command",
+                      "route": "Actions ➔ Confirm"
+                    },
+                    {
+                      "t": "text",
+                      "v": " (Shift+C)"
+                    }
+                  ],
+                  "text": "Actions ➔ Confirm (Shift+C)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Status = "
+                    },
+                    {
+                      "t": "status",
+                      "v": "Confirmed"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Inventory relieved"
+                    }
+                  ],
+                  "text": "Status = Confirmed. Inventory relieved"
+                }
+              ],
+              "id": "5.5",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "title": "Verify it worked",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Nothing new. This phase reads the same figures phase 0 read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
+            }
+          ],
+          "text": "What LN is doing. Nothing new. This phase reads the same figures phase 0 read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.1"
+                    }
+                  ],
+                  "text": "6.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the on-hand quantity"
+                    }
+                  ],
+                  "text": "Read the on-hand quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "on-hand after"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "difference"
+                    }
+                  ],
+                  "text": "on-hand after, difference"
+                }
+              ],
+              "id": "6.1",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "On-hand before − on-hand after must equal the shipped quantity."
+            },
+            {
+              "t": "text",
+              "v": " If it does not, the shipment was not confirmed. The guide is complete when the shipment is "
+            },
+            {
+              "t": "strong",
+              "v": "Confirmed"
+            },
+            {
+              "t": "text",
+              "v": " and this inventory check passes."
+            }
+          ],
+          "text": "On-hand before − on-hand after must equal the shipped quantity. If it does not, the shipment was not confirmed. The guide is complete when the shipment is Confirmed and this inventory check passes."
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity. "
+        },
+        {
+          "t": "strong",
+          "v": "Base guide"
+        },
+        {
+          "t": "text",
+          "v": " — situational variants build on this one. See Variants."
+        }
+      ],
+      "text": "Objective: take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity. Base guide — situational variants build on this one. See Variants."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide ends at shipped."
+        },
+        {
+          "t": "text",
+          "v": " Its completion boundary is a "
+        },
+        {
+          "t": "strong",
+          "v": "Confirmed"
+        },
+        {
+          "t": "text",
+          "v": " shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
+        }
+      ],
+      "text": "> Warning > This guide ends at shipped. Its completion boundary is a Confirmed shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Confirm stock"
+                }
+              ],
+              "text": "0 Confirm stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Know what you can actually ship"
+                }
+              ],
+              "text": "Know what you can actually ship"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Create and approve"
+                }
+              ],
+              "text": "1 Create and approve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "SO Intake Workbench"
+                }
+              ],
+              "text": "SO Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales order at "
+                },
+                {
+                  "t": "chip",
+                  "v": "In Process"
+                }
+              ],
+              "text": "Sales order at In Process"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " Release to warehousing"
+                }
+              ],
+              "text": "2 Release to warehousing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "SO Intake Workbench"
+                }
+              ],
+              "text": "SO Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing order exists"
+                }
+              ],
+              "text": "Warehousing order exists"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "3"
+                },
+                {
+                  "t": "text",
+                  "v": " Generate advice"
+                }
+              ],
+              "text": "3 Generate advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Manager Dashboard"
+                }
+              ],
+              "text": "Manager Dashboard"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN knows what to pick, and a shipment appears"
+                }
+              ],
+              "text": "LN knows what to pick, and a shipment appears"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "4"
+                },
+                {
+                  "t": "text",
+                  "v": " Pick the goods"
+                }
+              ],
+              "text": "4 Pick the goods"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Picking List"
+                }
+              ],
+              "text": "Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stock physically moves to staging"
+                }
+              ],
+              "text": "Stock physically moves to staging"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Ship"
+                }
+              ],
+              "text": "5 Ship"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment"
+                }
+              ],
+              "text": "Shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory is relieved"
+                }
+              ],
+              "text": "Inventory is relieved"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "6"
+                },
+                {
+                  "t": "text",
+                  "v": " Verify"
+                }
+              ],
+              "text": "6 Verify"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand dropped by the shipped quantity"
+                }
+              ],
+              "text": "On-hand dropped by the shipped quantity"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Read the quantity columns, not the steps, to know where you are."
+        },
+        {
+          "t": "text",
+          "v": " The Warehousing Order's "
+        },
+        {
+          "t": "strong",
+          "v": "Outbound Lines"
+        },
+        {
+          "t": "text",
+          "v": " tab fills five columns in order — "
+        },
+        {
+          "t": "strong",
+          "v": "Ordered ➔ Advised ➔ Released ➔ Picked ➔ Shipped"
+        },
+        {
+          "t": "text",
+          "v": ". That is the clearest progress indicator in the flow."
+        }
+      ],
+      "text": "Read the quantity columns, not the steps, to know where you are. The Warehousing Order's Outbound Lines tab fills five columns in order — Ordered ➔ Advised ➔ Released ➔ Picked ➔ Shipped. That is the clearest progress indicator in the flow."
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " stuck on "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                }
+              ],
+              "text": "Status stuck on Free"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not approved — "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Approve"
+                }
+              ],
+              "text": "Not approved — Actions ➔ Approve"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand looks sufficient but the order will not fill"
+                }
+              ],
+              "text": "On-hand looks sufficient but the order will not fill"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Allocated"
+                },
+                {
+                  "t": "text",
+                  "v": " — much of the on-hand may be committed elsewhere. See 0.4"
+                }
+              ],
+              "text": "Check Allocated — much of the on-hand may be committed elsewhere. See 0.4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Clicking "
+                },
+                {
+                  "t": "chip",
+                  "v": "RELEASE TO WAREHOUSING"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Lines ready for"
+                },
+                {
+                  "t": "text",
+                  "v": " does nothing"
+                }
+              ],
+              "text": "Clicking RELEASE TO WAREHOUSING in Lines ready for does nothing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "That panel counts lines; it does not act. Use "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release"
+                }
+              ],
+              "text": "That panel counts lines; it does not act. Use Actions ➔ Release"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order absent from the release selection"
+                }
+              ],
+              "text": "Order absent from the release selection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Upto Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " is earlier than the order line's "
+                },
+                {
+                  "t": "field",
+                  "v": "Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " (planned delivery date minus outbound lead time)"
+                }
+              ],
+              "text": "Upto Release Date is earlier than the order line's Release Date (planned delivery date minus outbound lead time)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No warehousing order"
+                }
+              ],
+              "text": "No warehousing order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release did not run. Check "
+                },
+                {
+                  "t": "chip",
+                  "v": "Activities 1"
+                },
+                {
+                  "t": "text",
+                  "v": " at 2.8 — if it reads "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": ", run it from "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release"
+                }
+              ],
+              "text": "Release did not run. Check Activities 1 at 2.8 — if it reads Free, run it from Actions ➔ Release"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Activity shows "
+                },
+                {
+                  "t": "chip",
+                  "v": "Automatic: No"
+                }
+              ],
+              "text": "Activity shows Automatic: No"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "That activity never fires on approval in this configuration. Run it by hand"
+                }
+              ],
+              "text": "That activity never fires on approval in this configuration. Run it by hand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Nothing under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Open"
+                }
+              ],
+              "text": "Nothing under Outbound Open"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No warehousing order — return to phase 2"
+                }
+              ],
+              "text": "No warehousing order — return to phase 2"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Your order is not in the Outbound grid"
+                }
+              ],
+              "text": "Your order is not in the Outbound grid"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Wrong "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " filter, or the release never ran — see 2.8"
+                }
+              ],
+              "text": "Wrong Order filter, or the release never ran — see 2.8"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Cannot find "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Order Lines"
+                }
+              ],
+              "text": "Cannot find Outbound Order Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+                }
+              ],
+              "text": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " greyed out on the Actions menu"
+                }
+              ],
+              "text": "Advice greyed out on the Actions menu"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "You are on the session toolbar. The advice actions live on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar — see 3.5"
+                }
+              ],
+              "text": "You are on the session toolbar. The advice actions live on the Outbound Lines toolbar — see 3.5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Generate Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " greyed out"
+                }
+              ],
+              "text": "Generate Advice greyed out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Advice already exists. Use "
+                },
+                {
+                  "t": "chip",
+                  "v": "Undo Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " to start over"
+                }
+              ],
+              "text": "Advice already exists. Use Undo Advice to start over"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Release Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " greyed out"
+                }
+              ],
+              "text": "Release Advice greyed out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No advice exists yet. Run "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " first"
+                }
+              ],
+              "text": "No advice exists yet. Run Generate Advice first"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Advice already generated before you ran it"
+                }
+              ],
+              "text": "Advice already generated before you ran it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Some configurations generate it automatically on release. Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Advised Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " first"
+                }
+              ],
+              "text": "Some configurations generate it automatically on release. Check Advised Quantity first"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order will not advise"
+                }
+              ],
+              "text": "Order will not advise"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Header "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " does not hold the stock. Recheck against 0.4"
+                }
+              ],
+              "text": "Header Warehouse does not hold the stock. Recheck against 0.4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No shipment number after releasing advice"
+                }
+              ],
+              "text": "No shipment number after releasing advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Expected in the standard flow. Continue through "
+                },
+                {
+                  "t": "chip",
+                  "v": "Pick Run"
+                },
+                {
+                  "t": "text",
+                  "v": ", then record "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " from "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " at 4.6. An early line appears only when projected-shipment behavior applies"
+                }
+              ],
+              "text": "Expected in the standard flow. Continue through Pick Run, then record Shipment from Shipment Lines at 4.6. An early line appears only when projected-shipment behavior applies"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No "
+                },
+                {
+                  "t": "chip",
+                  "v": "Picking"
+                },
+                {
+                  "t": "text",
+                  "v": " node under Warehousing"
+                }
+              ],
+              "text": "No Picking node under Warehousing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is none. Picking sits inside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound/Inspections"
+                }
+              ],
+              "text": "There is none. Picking sits inside Outbound/Inspections"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Goods still need picking after Release Advice"
+                }
+              ],
+              "text": "Goods still need picking after Release Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Expected. "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "status",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " are separate. Run phase 4"
+                }
+              ],
+              "text": "Expected. Released and Picked are separate. Run phase 4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Run"
+                },
+                {
+                  "t": "text",
+                  "v": " empty on the Picking List"
+                }
+              ],
+              "text": "Run empty on the Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Advice was never generated, so nothing was released. Return to 3.5"
+                }
+              ],
+              "text": "Advice was never generated, so nothing was released. Return to 3.5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment will not confirm"
+                }
+              ],
+              "text": "Shipment will not confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line was never picked. Check the "
+                },
+                {
+                  "t": "field",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " column on Outbound Lines, then run phase 4"
+                }
+              ],
+              "text": "The line was never picked. Check the Picked column on Outbound Lines, then run phase 4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment will not confirm, handling units involved"
+                }
+              ],
+              "text": "Shipment will not confirm, handling units involved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "field",
+                  "v": "Handling Unit Based Confirmation"
+                },
+                {
+                  "t": "text",
+                  "v": " is set on a linked line, the handling units must be confirmed first"
+                }
+              ],
+              "text": "If Handling Unit Based Confirmation is set on a linked line, the handling units must be confirmed first"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "",
+        "Sales side",
+        "Production side"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order Type"
+                }
+              ],
+              "text": "Order Type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "20 — SO/SC Out"
+                }
+              ],
+              "text": "20 — SO/SC Out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "30 — Production (Out)"
+                }
+              ],
+              "text": "30 — Production (Out)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Transaction Type"
+                }
+              ],
+              "text": "Transaction Type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Issue"
+                }
+              ],
+              "text": "Issue"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Issue"
+                }
+              ],
+              "text": "Issue"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ship-To"
+                }
+              ],
+              "text": "Ship-To"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " — your customer"
+                }
+              ],
+              "text": "Business Partner — your customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A work center"
+                }
+              ],
+              "text": "A work center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Shipping less than ordered"
+                }
+              ],
+              "text": "Shipping less than ordered"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Reduce "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipped Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " on "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4131m000",
+                  "name": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": "; see 5.2. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see 5.2. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Standalone advice sessions"
+                }
+              ],
+              "text": "Standalone advice sessions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Warehousing ➔ Outbound/Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": " holds "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " as their own sessions. Useful for a batch rather than one order"
+                }
+              ],
+              "text": "Warehousing ➔ Outbound/Inspections holds Generate Outbound Advice and Release Outbound Advice as their own sessions. Useful for a batch rather than one order"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Pick Mission / Pick Advice"
+                }
+              ],
+              "text": "Pick Mission / Pick Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Narrower scopes than Pick Run. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Narrower scopes than Pick Run. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Direct Release"
+                }
+              ],
+              "text": "Direct Release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Direct Release"
+                },
+                {
+                  "t": "text",
+                  "v": " appears to combine generate and release. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Actions ➔ Advice ➔ Direct Release appears to combine generate and release. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Advice already exists"
+                }
+              ],
+              "text": "Advice already exists"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Depends on the warehousing procedure attached to the order type. Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Advised Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " first. Source: Infor LN help for "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh0120m000",
+                  "name": "Default Order Types by Origin"
+                }
+              ],
+              "text": "Depends on the warehousing procedure attached to the order type. Check Advised Quantity first. Source: Infor LN help for Default Order Types by Origin (whinh0120m000)"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Undoing"
+                }
+              ],
+              "text": "Undoing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Undo Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "chip",
+                  "v": "Undo Release"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "chip",
+                  "v": "Undo Advice/Release"
+                },
+                {
+                  "t": "text",
+                  "v": " (Shift+Z)"
+                }
+              ],
+              "text": "Undo Advice · Undo Release · Undo Advice/Release (Shift+Z)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A variant earns its own guide only when it "
+        },
+        {
+          "t": "strong",
+          "v": "changes the phase structure"
+        },
+        {
+          "t": "text",
+          "v": ". Shipping short adds a back-order tail, so it graduates; Direct Release collapses two steps inside one phase, so it stays here. Every variant converges on the same completion test: shipment "
+        },
+        {
+          "t": "strong",
+          "v": "Confirmed"
+        },
+        {
+          "t": "text",
+          "v": ", then on-hand reduced by the shipped quantity."
+        }
+      ],
+      "text": "A variant earns its own guide only when it changes the phase structure. Shipping short adds a back-order tail, so it graduates; Direct Release collapses two steps inside one phase, so it stays here. Every variant converges on the same completion test: shipment Confirmed, then on-hand reduced by the shipped quantity."
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next guide",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The shipment is "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": " and inventory has decreased"
+                }
+              ],
+              "text": "The shipment is Confirmed and inventory has decreased"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "None — this is where the documented chain ends. Invoicing and Financials are outside the library's scope by decision, not by omission"
+                }
+              ],
+              "text": "None — this is where the documented chain ends. Invoicing and Financials are outside the library's scope by decision, not by omission"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order could not be filled from stock"
+                }
+              ],
+              "text": "The order could not be filled from stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Replenish first — see the branch at step 0.5, then start again at phase 1"
+                }
+              ],
+              "text": "Replenish first — see the branch at step 0.5, then start again at phase 1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Phase 0"
+                }
+              ],
+              "text": "Phase 0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 7
+}

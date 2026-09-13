@@ -1,0 +1,2539 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "review",
+  "id": "sales-and-production-order-training_2026-08-11",
+  "title": "Sales and Production Order Training — Review",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "tccom4110s000",
+    "tcibd0501m100",
+    "tdsls0139m000",
+    "tdsls4100m900",
+    "tdsls4246m000",
+    "tdsls4601m200",
+    "tibom3100m000",
+    "ticst0101m100",
+    "tirou4100m000",
+    "tirou4600m000",
+    "tisfc0101m100",
+    "tisfc0130m000",
+    "tisfc0204m000",
+    "tisfc0207m000",
+    "tisfc0501m000",
+    "whinh0106m000",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh2129m000",
+    "whinh4525m100",
+    "whinh4630m000",
+    "whinr1510m000",
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "objective": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order exercise covering the manufactured item's bill of material, routing, order creation, release, and material issue."
+        }
+      ],
+      "text": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order exercise covering the manufactured item's bill of material, routing, order creation, release, and material issue."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The original recording is now filed and reviewed. Visible screen state is treated as dated environment evidence; narration is recorded separately and is not used to fill values the screen does not show."
+        }
+      ],
+      "text": "The original recording is now filed and reviewed. Visible screen state is treated as dated environment evidence; narration is recorded separately and is not used to fill values the screen does not show."
+    }
+  ],
+  "attendees": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The participant panel visibly lists the following people. The transcript has no speaker labels, so facilitator, trainee, and speaker roles cannot be assigned reliably."
+        }
+      ],
+      "text": "The participant panel visibly lists the following people. The transcript has no speaker labels, so facilitator, trainee, and speaker roles cannot be assigned reliably."
+    },
+    {
+      "kind": "table",
+      "columns": [
+        "Evidence-bounded role",
+        "Count",
+        "Organisation"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Participant observed in recording"
+                }
+              ],
+              "text": "Participant observed in recording"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not documented"
+                }
+              ],
+              "text": "Not documented"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Evidence: "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Evidence: the source on file."
+    }
+  ],
+  "topics": [
+    {
+      "n": "3.1",
+      "title": "Ship from stock walkthrough",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The selected warehouse-item row for item "
+            },
+            {
+              "t": "literal",
+              "v": "9010-2010"
+            },
+            {
+              "t": "text",
+              "v": " showed "
+            },
+            {
+              "t": "strong",
+              "v": "On Hand 966"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "On Order 60"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Allocated 210"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Blocked 0"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Economic Stock 816"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "whwmd2515m000",
+              "name": "Warehouse - Item Inventory"
+            },
+            {
+              "t": "text",
+              "v": ". After the walkthrough, "
+            },
+            {
+              "t": "session",
+              "code": "whinr1510m000",
+              "name": "Inventory Transactions"
+            },
+            {
+              "t": "text",
+              "v": " showed an "
+            },
+            {
+              "t": "strong",
+              "v": "Issue 5.000"
+            },
+            {
+              "t": "text",
+              "v": " transaction and "
+            },
+            {
+              "t": "strong",
+              "v": "Inventory After Transaction 961.000"
+            },
+            {
+              "t": "text",
+              "v": ". This verifies the five-unit inventory decrease demonstrated in the recording."
+            }
+          ],
+          "text": "The selected warehouse-item row for item 9010-2010 showed On Hand 966, On Order 60, Allocated 210, Blocked 0, and Economic Stock 816 in Warehouse - Item Inventory (whwmd2515m000). After the walkthrough, Inventory Transactions (whinr1510m000) showed an Issue 5.000 transaction and Inventory After Transaction 961.000. This verifies the five-unit inventory decrease demonstrated in the recording."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Evidence: "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Evidence: the source on file; the source on file."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The process shape is independently supported by the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Sales Orders"
+            },
+            {
+              "t": "text",
+              "v": " user guide and the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Outbound and Shipments"
+            },
+            {
+              "t": "text",
+              "v": " user guide. The verified environment-specific route remains "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; this meeting does not replace it."
+            }
+          ],
+          "text": "The process shape is independently supported by the Infor LN Sales Orders user guide and the Infor LN Outbound and Shipments user guide. The verified environment-specific route remains the source on file; this meeting does not replace it."
+        }
+      ]
+    },
+    {
+      "n": "3.2",
+      "title": "Warehousing procedures control automation",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainer explained that the warehousing order type and its linked procedures determine which activities apply and whether they run manually or automatically. Infor help confirms that "
+            },
+            {
+              "t": "session",
+              "code": "whinh0106m000",
+              "name": "Activities by Procedure"
+            },
+            {
+              "t": "text",
+              "v": " selects activities for a warehousing procedure and that its "
+            },
+            {
+              "t": "em",
+              "v": "Automatic"
+            },
+            {
+              "t": "text",
+              "v": " setting determines whether an activity runs automatically after the preceding activity."
+            }
+          ],
+          "text": "The trainer explained that the warehousing order type and its linked procedures determine which activities apply and whether they run manually or automatically. Infor help confirms that Activities by Procedure (whinh0106m000) selects activities for a warehousing procedure and that its Automatic setting determines whether an activity runs automatically after the preceding activity."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Source: Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "whinh0106m000",
+              "name": "Activities by Procedure"
+            },
+            {
+              "t": "text",
+              "v": ", opening description and Field Information; the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Outbound and Shipments"
+            },
+            {
+              "t": "text",
+              "v": " user guide, chapter 2, “Automatic or manual execution of activities.” The verified Company 4100 outbound configuration is in "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": ", which carries the order-type 20 activity list."
+            }
+          ],
+          "text": "Source: Infor LN help for Activities by Procedure (whinh0106m000), opening description and Field Information; the Infor LN Outbound and Shipments user guide, chapter 2, “Automatic or manual execution of activities.” The verified Company 4100 outbound configuration is in the source on file, which carries the order-type 20 activity list."
+        }
+      ]
+    },
+    {
+      "n": "3.3",
+      "title": "Learning method: trace defaults to their source",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainer directed trainees to investigate why warehouses, prices, and automatic actions defaulted as they did, beginning with the item master and the session's Help control. This is a reusable consulting method: separate a value observed in this company from the vendor definition of the field, then use session help to establish meaning."
+            }
+          ],
+          "text": "The trainer directed trainees to investigate why warehouses, prices, and automatic actions defaulted as they did, beginning with the item master and the session's Help control. This is a reusable consulting method: separate a value observed in this company from the vendor definition of the field, then use session help to establish meaning."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "No specific default source was settled in the meeting. Item data, business-partner data, order type, sales user profile, and user profile were proposed as questions to investigate, not conclusions."
+            }
+          ],
+          "text": "No specific default source was settled in the meeting. Item data, business-partner data, order type, sales user profile, and user profile were proposed as questions to investigate, not conclusions."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Updated 2026-08-13 — one of these is now answered."
+            },
+            {
+              "t": "text",
+              "v": " For "
+            },
+            {
+              "t": "strong",
+              "v": "Sales Order Type"
+            },
+            {
+              "t": "text",
+              "v": " specifically, "
+            },
+            {
+              "t": "session",
+              "code": "tdsls4100m900"
+            },
+            {
+              "t": "text",
+              "v": "'s help confirms the default comes from the order type assigned to the "
+            },
+            {
+              "t": "session",
+              "code": "tccom4110s000",
+              "name": "Sold-to Business Partner"
+            },
+            {
+              "t": "text",
+              "v": ", falling back to the order type on the current user's "
+            },
+            {
+              "t": "session",
+              "code": "tdsls0139m000",
+              "name": "Sales User Profile"
+            },
+            {
+              "t": "text",
+              "v": " if the customer has none. See "
+            },
+            {
+              "t": "literal",
+              "v": "sales-order-warehouse-allocation-training_2026-08-04.md"
+            },
+            {
+              "t": "text",
+              "v": " section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced."
+            }
+          ],
+          "text": "Updated 2026-08-13 — one of these is now answered. For Sales Order Type specifically, tdsls4100m900's help confirms the default comes from the order type assigned to the Sold-to Business Partner (tccom4110s000), falling back to the order type on the current user's Sales User Profile (tdsls0139m000) if the customer has none. See sales-order-warehouse-allocation-training_2026-08-04.md section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced."
+        }
+      ]
+    },
+    {
+      "n": "3.4",
+      "title": "Production master-data exercise and BOM loop",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The participants created or reviewed a manufactured item, a job-shop bill of material, and a routing, then attempted to create a manual production order. "
+            },
+            {
+              "t": "strong",
+              "v": "Validate Job Shop Routing"
+            },
+            {
+              "t": "text",
+              "v": " from "
+            },
+            {
+              "t": "session",
+              "code": "tirou4100m000",
+              "name": "Job Shop Routings"
+            },
+            {
+              "t": "text",
+              "v": " produced a report for product "
+            },
+            {
+              "t": "literal",
+              "v": "9010-2010"
+            },
+            {
+              "t": "text",
+              "v": ", routing "
+            },
+            {
+              "t": "literal",
+              "v": "0"
+            },
+            {
+              "t": "text",
+              "v": ", revision "
+            },
+            {
+              "t": "literal",
+              "v": "000001"
+            },
+            {
+              "t": "text",
+              "v": ", stating "
+            },
+            {
+              "t": "strong",
+              "v": "Loop found in Multilevel BOM"
+            },
+            {
+              "t": "text",
+              "v": " and showing a loop path."
+            }
+          ],
+          "text": "The participants created or reviewed a manufactured item, a job-shop bill of material, and a routing, then attempted to create a manual production order. Validate Job Shop Routing from Job Shop Routings (tirou4100m000) produced a report for product 9010-2010, routing 0, revision 000001, stating Loop found in Multilevel BOM and showing a loop path."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Evidence: "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Evidence: the source on file."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Updated 2026-08-13 — partially resolved"
+            },
+            {
+              "t": "text",
+              "v": ", from session help filed after this review was first written. "
+            },
+            {
+              "t": "strong",
+              "v": "Approve Revision"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Use for Planning"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Use for Costing"
+            },
+            {
+              "t": "text",
+              "v": " are all real, confirmed actions/fields: "
+            },
+            {
+              "t": "em",
+              "v": "Use for Planning"
+            },
+            {
+              "t": "text",
+              "v": " and "
+            },
+            {
+              "t": "em",
+              "v": "Use for Costing"
+            },
+            {
+              "t": "text",
+              "v": " are one-at-a-time flags (one BOM per item/site for planning, one BOM per product for costing — and the equivalent rule for routings), and "
+            },
+            {
+              "t": "em",
+              "v": "Approve Revision"
+            },
+            {
+              "t": "text",
+              "v": " records who approved a revision and when. "
+            },
+            {
+              "t": "strong",
+              "v": "Still unconfirmed:"
+            },
+            {
+              "t": "text",
+              "v": " what \"Loop found in Multilevel BOM\" actually checks and the supported correction route — "
+            },
+            {
+              "t": "session",
+              "code": "tirou4100m000"
+            },
+            {
+              "t": "text",
+              "v": "'s own help does not document the Validate action or this specific message at all, so the diagnosis-and-correction question stays open. "
+            }
+          ],
+          "text": "Updated 2026-08-13 — partially resolved, from session help filed after this review was first written. Approve Revision, Use for Planning, and Use for Costing are all real, confirmed actions/fields: Use for Planning and Use for Costing are one-at-a-time flags (one BOM per item/site for planning, one BOM per product for costing — and the equivalent rule for routings), and Approve Revision records who approved a revision and when. Still unconfirmed: what \"Loop found in Multilevel BOM\" actually checks and the supported correction route — tirou4100m000's own help does not document the Validate action or this specific message at all, so the diagnosis-and-correction question stays open."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Source: Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "tibom3100m000",
+              "name": "Job Shop Bills of Material"
+            },
+            {
+              "t": "text",
+              "v": ", Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "tirou4100m000",
+              "name": "Job Shop Routings"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information."
+            }
+          ],
+          "text": "Source: Infor LN help for Job Shop Bills of Material (tibom3100m000), Infor LN help for Job Shop Routings (tirou4100m000), Field Information."
+        }
+      ]
+    },
+    {
+      "n": "3.5",
+      "title": "Clean material-issue rerun verified",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The recording provides the controlled rerun that the earlier transcript could not prove:"
+            }
+          ],
+          "text": "The recording provides the controlled rerun that the earlier transcript could not prove:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production order "
+                },
+                {
+                  "t": "literal",
+                  "v": "010000744"
+                },
+                {
+                  "t": "text",
+                  "v": " for item "
+                },
+                {
+                  "t": "literal",
+                  "v": "9010-2010"
+                },
+                {
+                  "t": "text",
+                  "v": ", quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": ", was visible in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0101m100",
+                  "name": "Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " with BOM "
+                },
+                {
+                  "t": "literal",
+                  "v": "JB0000238"
+                },
+                {
+                  "t": "text",
+                  "v": " revision "
+                },
+                {
+                  "t": "literal",
+                  "v": "000002"
+                },
+                {
+                  "t": "text",
+                  "v": ", routing "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " revision "
+                },
+                {
+                  "t": "literal",
+                  "v": "000001"
+                },
+                {
+                  "t": "text",
+                  "v": ", warehouse "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02 RAW MATERIALS"
+                },
+                {
+                  "t": "text",
+                  "v": ", two operations, and status "
+                },
+                {
+                  "t": "strong",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Production order 010000744 for item 9010-2010, quantity 1, was visible in Production Order (tisfc0101m100) with BOM JB0000238 revision 000002, routing 0 revision 000001, warehouse ADNA02 RAW MATERIALS, two operations, and status Created."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Release Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " was invoked from "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000",
+                  "name": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " — per that session's own help, filed 2026-08-13, this is literally \"release production orders to the job shop,\" and it is what changes the status to "
+                },
+                {
+                  "t": "strong",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Release Orders was invoked from Production Orders (tisfc0501m000) — per that session's own help, filed 2026-08-13, this is literally \"release production orders to the job shop,\" and it is what changes the status to Released."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100",
+                  "name": "Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", material "
+                },
+                {
+                  "t": "literal",
+                  "v": "100400"
+                },
+                {
+                  "t": "text",
+                  "v": " showed "
+                },
+                {
+                  "t": "strong",
+                  "v": "Estimated 2.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actual Qty 0.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "strong",
+                  "v": "To Issue by Warehouse 2.000"
+                },
+                {
+                  "t": "text",
+                  "v": " after release."
+                }
+              ],
+              "text": "In Material to Issue for Production Orders (ticst0101m100), material 100400 showed Estimated 2.000, Actual Qty 0.000, and To Issue by Warehouse 2.000 after release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " showed a planned production receipt and an open production issue for order "
+                },
+                {
+                  "t": "literal",
+                  "v": "010000744"
+                },
+                {
+                  "t": "text",
+                  "v": ". The Issue detail ("
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100"
+                },
+                {
+                  "t": "text",
+                  "v": ") showed order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "30- Production (Out)"
+                },
+                {
+                  "t": "text",
+                  "v": ", source "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02 RAW MATERIALS"
+                },
+                {
+                  "t": "text",
+                  "v": ", and destination work center "
+                },
+                {
+                  "t": "literal",
+                  "v": "A1000"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Warehousing Orders (whinh2100m000) showed a planned production receipt and an open production issue for order 010000744. The Issue detail (whinh2100m100) showed order type 30- Production (Out), source ADNA02 RAW MATERIALS, and destination work center A1000."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2129m000",
+                  "name": "Outbound Line Status Overview"
+                },
+                {
+                  "t": "text",
+                  "v": " showed ordered quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "strong",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " both unfinished and non-automatic. The recording then shows those two actions being run manually."
+                }
+              ],
+              "text": "Outbound Line Status Overview (whinh2129m000) showed ordered quantity 2, with Generate Outbound Advice and Release Outbound Advice both unfinished and non-automatic. The recording then shows those two actions being run manually."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Issue warehousing order reached "
+                },
+                {
+                  "t": "strong",
+                  "v": "Shipped"
+                },
+                {
+                  "t": "text",
+                  "v": " with ordered/advised quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": ". Back in "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100"
+                },
+                {
+                  "t": "text",
+                  "v": ", the production order was "
+                },
+                {
+                  "t": "strong",
+                  "v": "Active"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actual Qty 2.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "To Issue by Warehouse 0"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "strong",
+                  "v": "To Issue 0"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000"
+                },
+                {
+                  "t": "text",
+                  "v": "'s help, filed 2026-08-13, confirms "
+                },
+                {
+                  "t": "strong",
+                  "v": "Active"
+                },
+                {
+                  "t": "text",
+                  "v": " specifically means a WIP transaction — such as this material issue — has occurred against the order."
+                }
+              ],
+              "text": "The Issue warehousing order reached Shipped with ordered/advised quantity 2. Back in ticst0101m100, the production order was Active, Actual Qty 2.000, To Issue by Warehouse 0, and To Issue 0. tisfc0501m000's help, filed 2026-08-13, confirms Active specifically means a WIP transaction — such as this material issue — has occurred against the order."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Evidence: "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "; "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": "."
+            }
+          ],
+          "text": "Evidence: the source on file; the source on file; the source on file; the source on file; the source on file; the source on file; the source on file; the source on file; the source on file."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Updated 2026-08-13 — the mechanism behind step 5 is now sourced."
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "session",
+              "code": "ticst0101m100"
+            },
+            {
+              "t": "text",
+              "v": "'s help describes two check boxes that govern exactly this: "
+            },
+            {
+              "t": "em",
+              "v": "Direct Initiate Inventory Issue"
+            },
+            {
+              "t": "text",
+              "v": " (unblocks the material's warehouse order line automatically on release, versus needing "
+            },
+            {
+              "t": "strong",
+              "v": "Initiate Inventory Issue"
+            },
+            {
+              "t": "text",
+              "v": " "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0207m000"
+            },
+            {
+              "t": "text",
+              "v": " run by hand) and "
+            },
+            {
+              "t": "em",
+              "v": "Direct Process Warehouse Order Line"
+            },
+            {
+              "t": "text",
+              "v": " (runs the whole outbound procedure automatically once unblocked, versus falling back to "
+            },
+            {
+              "t": "strong",
+              "v": "Activities by Warehousing Order"
+            },
+            {
+              "t": "text",
+              "v": "'s manual/automatic settings — the same session already cited in section 3.2). Generate and Release Outbound Advice needing to be run manually here is consistent with "
+            },
+            {
+              "t": "em",
+              "v": "Direct Process Warehouse Order Line"
+            },
+            {
+              "t": "text",
+              "v": " being off for this material, but "
+            },
+            {
+              "t": "strong",
+              "v": "which check box is actually set for Company 4100 is still not confirmed"
+            },
+            {
+              "t": "text",
+              "v": " . "
+            }
+          ],
+          "text": "Updated 2026-08-13 — the mechanism behind step 5 is now sourced. ticst0101m100's help describes two check boxes that govern exactly this: Direct Initiate Inventory Issue (unblocks the material's warehouse order line automatically on release, versus needing Initiate Inventory Issue tisfc0207m000 run by hand) and Direct Process Warehouse Order Line (runs the whole outbound procedure automatically once unblocked, versus falling back to Activities by Warehousing Order's manual/automatic settings — the same session already cited in section 3.2). Generate and Release Outbound Advice needing to be run manually here is consistent with Direct Process Warehouse Order Line being off for this material, but which check box is actually set for Company 4100 is still not confirmed ."
+        }
+      ]
+    },
+    {
+      "n": "3.6",
+      "title": "Production completion was assigned, not demonstrated",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The facilitator described the remaining exercise: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
+            }
+          ],
+          "text": "The facilitator described the remaining exercise: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Infor help confirms the limited meanings that "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0130m000",
+              "name": "Report Operations Completed"
+            },
+            {
+              "t": "text",
+              "v": " records production progress and that "
+            },
+            {
+              "t": "em",
+              "v": "Quantity Delivered"
+            },
+            {
+              "t": "text",
+              "v": " is the finished-goods quantity posted to inventory. Sources: Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0130m000",
+              "name": "Report Operations Completed"
+            },
+            {
+              "t": "text",
+              "v": ", opening description and Field Information; Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0501m000",
+              "name": "Production Orders"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information."
+            }
+          ],
+          "text": "Infor help confirms the limited meanings that Report Operations Completed (tisfc0130m000) records production progress and that Quantity Delivered is the finished-goods quantity posted to inventory. Sources: Infor LN help for Report Operations Completed (tisfc0130m000), opening description and Field Information; Infor LN help for Production Orders (tisfc0501m000), Field Information."
+        },
+        {
+          "kind": "prose",
+          "tokens": [],
+          "text": ""
+        }
+      ]
+    },
+    {
+      "n": "3.7",
+      "title": "Planning before subcontracting",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A participant asked whether to study subcontracting or planning next. The group chose a full planning walkthrough first because subcontracting would require more setup and the available trainer reported limited recent subcontracting experience."
+            }
+          ],
+          "text": "A participant asked whether to study subcontracting or planning next. The group chose a full planning walkthrough first because subcontracting would require more setup and the available trainer reported limited recent subcontracting experience."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The planning discussion is partly supported by official sources: "
+            },
+            {
+              "t": "em",
+              "v": "Default Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " determines the item's default supply method when on-hand inventory is insufficient, and Enterprise Planning can generate planned production and purchase orders before transfer to execution packages. Sources: Infor LN help for "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100",
+              "name": "Item Detail"
+            },
+            {
+              "t": "text",
+              "v": ", Field Information; the Infor LN "
+            },
+            {
+              "t": "strong",
+              "v": "Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " user guide, “Selecting Supply Sources” and “Transferring Planned Orders.”"
+            }
+          ],
+          "text": "The planning discussion is partly supported by official sources: Default Supply Source determines the item's default supply method when on-hand inventory is insufficient, and Enterprise Planning can generate planned production and purchase orders before transfer to execution packages. Sources: Infor LN help for Item Detail (tcibd0501m100), Field Information; the Infor LN Order Planning user guide, “Selecting Supply Sources” and “Transferring Planned Orders.”"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The subcontracting explanation remains narration only."
+            }
+          ],
+          "text": "The subcontracting explanation remains narration only."
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "I do not have documentation for that specific process in my current knowledge base."
+                }
+              ],
+              "text": "I do not have documentation for that specific process in my current knowledge base."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Run planning end to end before beginning subcontracting training."
+            }
+          ],
+          "text": "Run planning end to end before beginning subcontracting training."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Teach execution and planning as separate learning blocks at first."
+            }
+          ],
+          "text": "Teach execution and planning as separate learning blocks at first."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Continue the production-order exercise after the meeting rather than treating receipt and completion as performed."
+            }
+          ],
+          "text": "Continue the production-order exercise after the meeting rather than treating receipt and completion as performed."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "kind": "table",
+      "columns": [
+        "#",
+        "Action",
+        "Owner",
+        "Due",
+        "Status"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Complete the operations, finished-goods receipt, and order-completion portion of the production exercise"
+                }
+              ],
+              "text": "Complete the operations, finished-goods receipt, and order-completion portion of the production exercise"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Trainee / screen sharer"
+                }
+              ],
+              "text": "Trainee / screen sharer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2026-08-13"
+                }
+              ],
+              "text": "2026-08-13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open"
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Walk planning end to end"
+                }
+              ],
+              "text": "Walk planning end to end"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Participant"
+                }
+              ],
+              "text": "Participant"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not set"
+                }
+              ],
+              "text": "Not set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open"
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "File and review the matching recording"
+                }
+              ],
+              "text": "File and review the matching recording"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Recording owner"
+                }
+              ],
+              "text": "Recording owner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not set"
+                }
+              ],
+              "text": "Not set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Completed 2026-08-11 "
+                }
+              ],
+              "text": "Completed 2026-08-11"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Export the manufacturing user guide and session help "
+                }
+              ],
+              "text": "Export the manufacturing user guide and session help"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Documentation owner"
+                }
+              ],
+              "text": "Documentation owner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not set"
+                }
+              ],
+              "text": "Not set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open"
+                }
+              ],
+              "text": "Open"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Defer subcontracting until planning is complete and a trainer with current experience is available"
+                }
+              ],
+              "text": "Defer subcontracting until planning is complete and a trainer with current experience is available"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Training owner"
+                }
+              ],
+              "text": "Training owner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not set"
+                }
+              ],
+              "text": "Not set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Deferred"
+                }
+              ],
+              "text": "Deferred"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Which Company 4100 settings caused the production Issue order to initiate when the order was released? — requires production parameter help and configuration evidence. "
+            }
+          ],
+          "text": "Which Company 4100 settings caused the production Issue order to initiate when the order was released? — requires production parameter help and configuration evidence."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "What exact BOM relationship created the multilevel loop, and what is the supported correction method? — requires BOM and routing session help. "
+            }
+          ],
+          "text": "What exact BOM relationship created the multilevel loop, and what is the supported correction method? — requires BOM and routing session help."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Did the trainee finish the production order through finished-goods receipt and inventory increase after the meeting? — not demonstrated in this recording."
+            }
+          ],
+          "text": "Did the trainee finish the production order through finished-goods receipt and inventory increase after the meeting? — not demonstrated in this recording."
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The recording establishes visible session codes, records, quantities, statuses, and actions; transcripts preserve discussion sequence and narration."
+            }
+          ],
+          "text": "The recording establishes visible session codes, records, quantities, statuses, and actions; transcripts preserve discussion sequence and narration."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Treat troubleshooting mistakes as test cases. The mismatched item/routing and BOM loop identify useful validations, but an improvised workaround is not a reusable procedure."
+            }
+          ],
+          "text": "Treat troubleshooting mistakes as test cases. The mismatched item/routing and BOM loop identify useful validations, but an improvised workaround is not a reusable procedure."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Keep the manual production-order exercise distinct from the later planning exercise."
+            }
+          ],
+          "text": "Keep the manual production-order exercise distinct from the later planning exercise."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Trace defaults rather than memorizing them: identify the observed value, locate the owning data or procedure, then use Infor help for its meaning."
+            }
+          ],
+          "text": "Trace defaults rather than memorizing them: identify the observed value, locate the owning data or procedure, then use Infor help for its meaning."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Source inventory:"
+        }
+      ],
+      "text": "Source inventory:"
+    },
+    {
+      "kind": "table",
+      "columns": [
+        "Source",
+        "Contents",
+        "SHA-256"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file (local only; manifest in the source on file)"
+                }
+              ],
+              "text": "the source on file (local only; manifest in the source on file)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "01:05:11.360 original recording; H.264 1920 × 1080; AAC"
+                }
+              ],
+              "text": "01:05:11.360 original recording; H.264 1920 × 1080; AAC"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "6d03d0397679dcc695235d54f756b0f70561ad6b6bba1922dbb3c9a9424f1425"
+                }
+              ],
+              "text": "6d03d0397679dcc695235d54f756b0f70561ad6b6bba1922dbb3c9a9424f1425"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1,159 timestamped segments with word timing; "
+                },
+                {
+                  "t": "literal",
+                  "v": "small.en"
+                },
+                {
+                  "t": "text",
+                  "v": " model"
+                }
+              ],
+              "text": "1,159 timestamped segments with word timing; small.en model"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "43e1be14897f383ecf82e843928851ce1a70d9eda1856045fc4d328b84934c6c"
+                }
+              ],
+              "text": "43e1be14897f383ecf82e843928851ce1a70d9eda1856045fc4d328b84934c6c"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1,159 subtitle cues, ending 01:05:05.640"
+                }
+              ],
+              "text": "1,159 subtitle cues, ending 01:05:05.640"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "dbb585f81a5648c8ec0637a399f9b4502415c1de6fee6aec135d5045d42041ab"
+                }
+              ],
+              "text": "dbb585f81a5648c8ec0637a399f9b4502415c1de6fee6aec135d5045d42041ab"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Alternate timestamped plain-text export"
+                }
+              ],
+              "text": "Alternate timestamped plain-text export"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "428791887a1c36336fe64e746d102f0bd6fbdc81c705aa1768715884b5331595"
+                }
+              ],
+              "text": "428791887a1c36336fe64e746d102f0bd6fbdc81c705aa1768715884b5331595"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Technical metadata and privacy handling: "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Technical metadata and privacy handling: the source on file."
+    }
+  ],
+  "sessions": [
+    {
+      "kind": "table",
+      "columns": [
+        "Session name",
+        "Code",
+        "Reference doc"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse - Item Inventory"
+                }
+              ],
+              "text": "Warehouse - Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000"
+                }
+              ],
+              "text": "whwmd2515m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory Transactions"
+                }
+              ],
+              "text": "Inventory Transactions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinr1510m000"
+                }
+              ],
+              "text": "whinr1510m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not yet authored"
+                }
+              ],
+              "text": "Not yet authored"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales Order Intake Workbench"
+                }
+              ],
+              "text": "Sales Order Intake Workbench"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4601m200"
+                }
+              ],
+              "text": "tdsls4601m200"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not yet authored"
+                }
+              ],
+              "text": "Not yet authored"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release Sales Orders to Warehousing"
+                }
+              ],
+              "text": "Release Sales Orders to Warehousing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4246m000"
+                }
+              ],
+              "text": "tdsls4246m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not yet authored"
+                }
+              ],
+              "text": "Not yet authored"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Orders"
+                }
+              ],
+              "text": "Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000"
+                }
+              ],
+              "text": "whinh2100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehousing Order"
+                }
+              ],
+              "text": "Warehousing Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m100"
+                }
+              ],
+              "text": "whinh2100m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Outbound Line Status Overview"
+                }
+              ],
+              "text": "Outbound Line Status Overview"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2129m000"
+                }
+              ],
+              "text": "whinh2129m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Activities by Procedure"
+                }
+              ],
+              "text": "Activities by Procedure"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh0106m000"
+                }
+              ],
+              "text": "whinh0106m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not yet authored"
+                }
+              ],
+              "text": "Not yet authored"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Picking List"
+                }
+              ],
+              "text": "Picking List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh4525m100"
+                }
+              ],
+              "text": "whinh4525m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shipment"
+                }
+              ],
+              "text": "Shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh4630m000"
+                }
+              ],
+              "text": "whinh4630m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000"
+                }
+              ],
+              "text": "whwmd4300m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item"
+                }
+              ],
+              "text": "Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100"
+                }
+              ],
+              "text": "tcibd0501m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop BOM"
+                }
+              ],
+              "text": "Job Shop BOM"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tibom3100m000"
+                }
+              ],
+              "text": "tibom3100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — help now filed, section 3.4"
+                }
+              ],
+              "text": "the source on file — help now filed, section 3.4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Routings"
+                }
+              ],
+              "text": "Job Shop Routings"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tirou4100m000"
+                }
+              ],
+              "text": "tirou4100m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — help now filed, section 3.4"
+                }
+              ],
+              "text": "the source on file — help now filed, section 3.4"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Job Shop Routing"
+                }
+              ],
+              "text": "Job Shop Routing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tirou4600m000"
+                }
+              ],
+              "text": "tirou4600m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Orders"
+                }
+              ],
+              "text": "Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000"
+                }
+              ],
+              "text": "tisfc0501m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production Order"
+                }
+              ],
+              "text": "Production Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0101m100"
+                }
+              ],
+              "text": "tisfc0101m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release Production Orders"
+                }
+              ],
+              "text": "Release Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000"
+                }
+              ],
+              "text": "tisfc0204m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — help now filed, section 3.5"
+                }
+              ],
+              "text": "the source on file — help now filed, section 3.5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Material to Issue for Production Orders"
+                }
+              ],
+              "text": "Material to Issue for Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ticst0101m100"
+                }
+              ],
+              "text": "ticst0101m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — help now filed, section 3.5"
+                }
+              ],
+              "text": "the source on file — help now filed, section 3.5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Initiate Inventory Issue"
+                }
+              ],
+              "text": "Initiate Inventory Issue"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0207m000"
+                }
+              ],
+              "text": "tisfc0207m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " — named by "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100"
+                },
+                {
+                  "t": "text",
+                  "v": "'s help, not independently opened"
+                }
+              ],
+              "text": "the source on file — named by ticst0101m100's help, not independently opened"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report Operations Completed"
+                }
+              ],
+              "text": "Report Operations Completed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0130m000"
+                }
+              ],
+              "text": "tisfc0130m000"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                }
+              ],
+              "text": "the source on file"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Codes above were read from visible session status bars where captured and cross-checked against existing help/library references where available."
+        }
+      ],
+      "text": "Codes above were read from visible session status bars where captured and cross-checked against existing help/library references where available."
+    }
+  ]
+}

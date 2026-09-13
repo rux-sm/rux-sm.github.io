@@ -1,0 +1,45 @@
+<section class="ks-sec" id="progress-bar">
+  <h2>Progress bar</h2><p>determinate · indeterminate · finished · error</p>
+  <!-- PROVENANCE: rendered-dom · components-progressbar--default with its
+       finished, error and small recipes, plus --determinate and
+       --indeterminate, 2026-08-28 -->
+  <!--
+    The finished and error bars each render `__status-icon` inside __label,
+    after the label text — the tick and the error mark that say which state the
+    bar is in without relying on the bar colour alone. Three rules hang off it
+    and this fragment drew neither icon.
+
+    __helper-text also holds a visually-hidden live region, which is what
+    announces progress to a screen reader.
+
+    `progress-bar--default` is emitted by the reference and dropped here: it is
+    the unclassed default size and @carbon/styles has no rule for it (§4.1.12).
+  -->
+  <div style="max-width:28rem;display:grid;gap:1.5rem">
+    <div class="rux--progress-bar rux--progress-bar--big">
+      <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">Uploading</span></div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" style="transform:scaleX(0.42)"></div></div>
+      <div class="rux--progress-bar__helper-text">42%<div class="rux--visually-hidden">Uploading, 42 percent complete</div></div>
+    </div>
+    <div class="rux--progress-bar rux--progress-bar--small rux--progress-bar--indeterminate">
+      <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">Working</span></div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar"></div></div>
+    </div>
+    <div class="rux--progress-bar rux--progress-bar--finished">
+      <div class="rux--progress-bar__label">
+        <span class="rux--progress-bar__label-text">Complete</span>
+        <svg class="rux--progress-bar__status-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+      </div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar"></div></div>
+      <div class="rux--progress-bar__helper-text">Done</div>
+    </div>
+    <div class="rux--progress-bar rux--progress-bar--error">
+      <div class="rux--progress-bar__label">
+        <span class="rux--progress-bar__label-text">Failed</span>
+        <svg class="rux--progress-bar__status-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+      </div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar"></div></div>
+      <div class="rux--progress-bar__helper-text">Upload failed</div>
+    </div>
+  </div>
+</section>

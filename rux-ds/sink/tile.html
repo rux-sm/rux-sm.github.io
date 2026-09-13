@@ -1,0 +1,183 @@
+<section class="ks-sec" id="tile">
+    <h2>Tile</h2><p>base · clickable · selectable · expandable · radio group</p>
+    <!-- PROVENANCE: rendered-dom · components-tile--default, --clickable,
+         --clickable-with-custom-icon, --selectable, --multi-select, --expandable,
+         --expandable-with-interactive and --radio, 2026-08-28 -->
+    <!--
+      `tile-content__above-the-fold` is NOT copied. React emits it in both
+      expandable stories, but @carbon/styles defines no rule for it, so
+      check-classes would reject it. The element it wraps is kept, because the
+      two-`tile-content` structure is what the below-the-fold rules select
+      against. This is the mirror of the note in overflow-menu.html, where
+      @carbon/styles defines a class React never emits.
+
+      DROPPING IT IS WHAT diff-fragment REPORTS: the primary button in the
+      interactive tile sits inside `tile-content` here and inside
+      `tile-content__above-the-fold` in the reference, because that is the
+      class we cannot write. Two findings, one cause, no defect.
+
+      Three classes stay unexercised for want of a reference, recorded rather
+      than invented: `tile--light` (the v10 light variant) and
+      `tile--disabled-icon` appear in none of the 505 harvested stories, and
+      `tile--is-expanded` is the open state of an expandable tile, which every
+      captured story renders collapsed.
+
+      The AI decorator variants — `tile--slug`, `tile--decorator` and their
+      -rounded and inner- siblings — belong to ai-label, which Phase 3 cut.
+      They are unreachable by construction, not missing markup.
+    -->
+    <div class="ks-grid">
+      <!-- BLOCK:BEGIN name=basic label="Tile" -->
+      <div class="rux--tile"><p>Base tile with some content inside it.</p></div>
+      <!-- BLOCK:END basic -->
+      <!-- BLOCK:BEGIN name=clickable label="Tile, clickable" -->
+      <a href="#tile" class="rux--tile rux--tile--clickable"><p>Clickable tile</p></a>
+      <!-- BLOCK:END clickable -->
+      <!--
+        --tile--disabled is only ever written compound with --tile--selectable
+        (:.rux--tile--disabled.rux--tile--selectable). On its own it styles
+        nothing but a nested checkmark, so both classes go on one element.
+        DELIBERATE, against an unsampled reference: check-tags reports
+        --tile--disabled on a <label> only because the sole story that
+        disables a tile is the feature-flag one, which renders the label
+        form. The CLASSIC selectable tile — components-tile--selectable —
+        is a div[role=checkbox], and this demo is the classic form.
+      -->
+      <div class="rux--tile rux--tile--selectable rux--tile--disabled" role="checkbox" aria-checked="false" aria-disabled="true">
+        <span class="rux--tile__checkmark"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg></span>
+        <p>Selectable, disabled</p>
+      </div>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">clickable with a trailing icon</div>
+    <!-- components-tile--clickable-with-custom-icon renders the icon as a direct
+         child of the anchor, which also carries `link`. -->
+    <div class="ks-grid">
+      <a href="#tile" class="rux--link rux--tile rux--tile--clickable">
+        <p>Open the deployment log</p>
+        <svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg>
+      </a>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">selectable, persistent checkmark</div>
+    <!-- components-tile--multi-select. The checkmark is `persistent` here and not
+         in the classic selectable tile above: multi-select shows it always, the
+         single selectable tile only once checked. The content is a <label>. -->
+    <div class="ks-grid" role="group" aria-label="Regions">
+      <div class="rux--tile rux--tile--selectable" role="checkbox" aria-checked="false" tabindex="0">
+        <span class="rux--tile__checkmark rux--tile__checkmark--persistent"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg></span>
+        <label class="rux--tile-content">eu-west-1</label>
+      </div>
+      <div class="rux--tile rux--tile--selectable" role="checkbox" aria-checked="true" tabindex="0">
+        <span class="rux--tile__checkmark rux--tile__checkmark--persistent"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg></span>
+        <label class="rux--tile-content">us-east-2</label>
+      </div>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">radio group</div>
+    <!-- components-tile--radio. The group is a <fieldset> with a legend.--label,
+         each tile a <label> following its own input.--tile-input, and the
+         selected one carries --tile--is-selected. -->
+    <fieldset class="rux--tile-group">
+      <legend class="rux--label">Instance size</legend>
+      <div class="ks-grid">
+        <div>
+          <input class="rux--tile-input" type="radio" name="ks-tile-size" id="ks-tile-sm" value="sm">
+          <label for="ks-tile-sm" class="rux--tile rux--tile--selectable rux--tile--radio">
+            <span class="rux--tile__checkmark"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg></span>
+            <span class="rux--tile-content">Small — 2 vCPU</span>
+          </label>
+        </div>
+        <div>
+          <input class="rux--tile-input" type="radio" name="ks-tile-size" id="ks-tile-md" value="md" checked>
+          <label for="ks-tile-md" class="rux--tile rux--tile--selectable rux--tile--radio rux--tile--is-selected">
+            <span class="rux--tile__checkmark"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg></span>
+            <span class="rux--tile-content">Medium — 4 vCPU</span>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">expandable</div>
+    <!-- components-tile--expandable. The tile is a <button> holding ONE div that
+         wraps two `tile-content` blocks with the chevron between them; the
+         below-the-fold block is the half the chevron reveals.
+
+         The chevron's `span` IS in the reference and stays, but it is EMPTY.
+         React fills it from tileCollapsedLabel/tileExpandedLabel, both unset
+         in the story. @carbon/styles gives the span no rule and sizes
+         `tile__chevron` as a 48px square around a 16px icon, so text put
+         there wins the flex space: `Details` shrank the chevron to 2.6px. -->
+    <div class="ks-grid">
+      <button type="button" class="rux--tile rux--tile--expandable" aria-expanded="false">
+        <div>
+          <div class="rux--tile-content">
+            <div>
+              <h3>Cluster status</h3>
+              <p>Three of four nodes reporting.</p>
+            </div>
+          </div>
+          <div class="rux--tile__chevron">
+            <span></span>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+          <div class="rux--tile-content">
+            <div class="rux--tile-content__below-the-fold">
+              <p>node-a · node-b · node-c reporting; node-d has not checked in since 14:02.</p>
+            </div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">expandable with interactive content</div>
+    <!-- components-tile--expandable-with-interactive. The tile becomes a <div>
+         and the CHEVRON becomes the button, because the fold now contains its
+         own controls and a button cannot nest inside a button.
+
+         THE FOLD HAS NO SPACING OF ITS OWN, AND CARBON'S DOES NOT EITHER.
+         Measured on the running story 2026-08-31: `tile-content`,
+         `__above-the-fold` and `__below-the-fold` all compute margin 0 and
+         padding 0. Carbon's own story papers over it with an INLINE STYLE --
+         its button sits in `<div style="padding-top: 1rem">` -- so the
+         component genuinely ships no rhythm and the demo supplies it.
+
+         This specimen puts a HEADING beside a BUTTON, which Carbon's story
+         never does (it renders bare divs and no heading at all), so the two
+         were flush: h3 36px hard against a 48px button with 0 between them,
+         reported from looking. `stack-vertical stack-scale-5` is 1rem, which
+         is the same 1rem Carbon's story writes by hand -- the documented
+         idiom instead of an inline style, per composing-pages §3.5. -->
+    <div class="ks-grid">
+      <div class="rux--tile rux--tile--expandable rux--tile--expandable--interactive">
+        <!-- THE OUTER STACK SPACES THE TWO FOLD HALVES, which Carbon also
+             leaves at zero: measured on the running story with the tile
+             EXPANDED, the gap between `__above-the-fold` and
+             `__below-the-fold` is 0px, and both compute padding 0 and margin
+             0. Carbon's story fills the fold with `<div style="height: 200px;
+             width: 200px">`, so once again the demo supplies what the
+             component does not.
+
+             The chevron is `position: absolute` and therefore out of flow, so
+             a grid on this wrapper spaces only the two tile-content blocks and
+             does not move it -- verified, its right and bottom edges are
+             unchanged with the stack on and off. -->
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <div class="rux--tile-content">
+            <div class="rux--stack-vertical rux--stack-scale-5">
+              <h3>Scale the deployment</h3>
+              <div><button type="button" class="rux--btn rux--btn--primary">Apply</button></div>
+            </div>
+          </div>
+          <button type="button" class="rux--tile__chevron rux--tile__chevron--interactive" aria-expanded="false" aria-label="Expand">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </button>
+          <div class="rux--tile-content">
+            <div class="rux--tile-content__below-the-fold">
+              <p>Replicas apply immediately and roll one pod at a time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

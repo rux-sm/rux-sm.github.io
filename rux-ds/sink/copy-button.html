@@ -1,0 +1,85 @@
+<section class="ks-sec" id="copy-button">
+  <h2>Copy button</h2><p>icon-only, with the tooltip that carries its feedback</p>
+  <!-- PROVENANCE: rendered-dom · components-copybutton--default and
+       `components-copybutton--default@copied`, 2026-08-31 -->
+  <!--
+    THIS FRAGMENT KEEPS THE ICON-TOOLTIP, AND IT IS THE ONLY ONE THAT DOES.
+    The standing call — sink/tooltip.html, and every TOOLTIP_CHROME entry in
+    check-ancestry's KNOWN — is that the sink demos the component and not the
+    story's HOVER HINT. Here the tooltip is not a hint about the button; it is
+    the button's only output. Carbon's copied state
+    (`components-copybutton--default@copied`) adds exactly
+    `copy-btn--animating` and `copy-btn--fade-in` to the button and changes
+    NOTHING else in the tree — the word "Copied!" appears because React swaps
+    the TOOLTIP's text. Decline the chrome and the component cannot tell you
+    it worked.
+
+    `copy-btn__feedback` IS NOT WRITTEN, though @carbon/styles gives it rules.
+    It appears in ZERO captures: it is the v10 Copy component's own bubble,
+    left behind in the stylesheet. Writing it would be markup no reference
+    attests, which is the thing fragments do not do — the mirror of the
+    §4.1.12 call, where a class Carbon RENDERS has no rule.
+
+    `snippet__icon` IS NOT WRITTEN EITHER. The capture puts it on the svg, but
+    it belongs to `code-snippet`, which Phase 3 cut, so check-classes would
+    report it STRIPPED. The icon carries no class here.
+
+    `popover--auto-align` AND `autoalign` ARE DROPPED. The capture renders both;
+    auto-align is the one popover variant that needs measurement, and
+    js/overlay.js states it has no positioning engine until a template asks for
+    one. `popover--bottom` is the static placement this sink uses throughout.
+
+    `tooltip-trigger__wrapper` IS KEPT, unlike in sink/tooltip.html where the
+    whole chrome is declined. Having chosen to keep the tooltip because it IS
+    this component's feedback, declining the wrapper inside it would be
+    half a decision — check-ancestry asked for it and the capture renders it.
+
+    THE BUTTON IS `btn--primary` HERE BECAUSE THE CAPTURE IS. A copy button
+    beside a code block is usually ghost; the reference renders primary, and a
+    fragment follows the reference.
+  -->
+  <div class="ks-row" style="gap:4rem;padding-block:2rem;align-items:center">
+
+    <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+      <div class="rux--tooltip-trigger__wrapper">
+        <button type="button"
+                class="rux--copy-btn rux--copy rux--btn rux--btn--primary rux--btn--icon-only"
+                data-rux-copy="npm install @carbon/styles"
+                aria-label="Copy install command">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
+        </button>
+      </div>
+      <span class="rux--popover">
+        <span class="rux--popover-content rux--tooltip-content">Copy</span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+
+    <!-- COPYING ANOTHER ELEMENT'S TEXT, which is the shape a code block wants:
+         `data-rux-copy-from` names the id whose textContent is copied.
+
+         IT SITS BESIDE WHAT IT COPIES. Written with the row's 4rem gap between
+         them, the button and its `<code>` read as two unrelated things and the
+         section looked like it was missing a third button — it was reported
+         exactly that way, twice. A copy button is always adjacent to its
+         subject, so the pair is its own inline group. -->
+    <span style="display:inline-flex;align-items:center;gap:.75rem">
+    <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+      <div class="rux--tooltip-trigger__wrapper">
+        <button type="button"
+                class="rux--copy-btn rux--copy rux--btn rux--btn--primary rux--btn--icon-only"
+                data-rux-copy-from="ks-copy-source"
+                aria-label="Copy the cluster id">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
+        </button>
+      </div>
+      <span class="rux--popover">
+        <span class="rux--popover-content rux--tooltip-content">Copy</span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+    <code id="ks-copy-source">cl-7f3a-9d21</code>
+    </span>
+
+  </div>
+</section>

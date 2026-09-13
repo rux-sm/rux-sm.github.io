@@ -1,0 +1,86 @@
+<section class="ks-sec" id="time-picker">
+  <h2>Time picker</h2><p>time field plus period and zone selects · invalid</p>
+  <!-- PROVENANCE: rendered-dom · components-timepicker--default with its
+       invalid, readonly, sm and lg recipes, plus --with-layer, 2026-08-28 -->
+  <!--
+    `.rux--time-picker__input-field` is a modifier over `.rux--text-input`; alone
+    the browser default shows through.
+
+    Rebuilt against the reference 2026-08-28, three ways:
+      - the LABEL sits in the form-item, BEFORE .rux--time-picker — not inside
+        __input beside the field, which is where this fragment had it. The
+        requirement goes in the form-item too, after the picker.
+      - the selects are plain: `select time-picker__select` wrapping a bare
+        select-input and the arrow. This fragment wrapped each in
+        `select--inline` + `select-input--inline__wrapper`, which the reference
+        never emits here — an inline select is a different component, and the
+        note claiming the pairing was required has gone with it.
+      - the invalid field pairs `__input-field-error` with a
+      WRONG GLYPH FIXED ON RESTORE, 2026-08-31. This carried
+      `#i-error--filled` in the `checkbox__invalid-icon` slot; Carbon draws
+      `warning--filled` there, corroborated across 6 sibling __invalid-icon
+      slots. The fragment was written before check-slots existed (2026-08-29)
+      and then sat in sink/deferred/, which NO GATE READS -- so a deferred
+      fragment can rot against a gate that arrived after it, and restoring one
+      is the only thing that finds out.
+
+        `__error__icon` holding a `checkbox__invalid-icon` svg, which this
+        fragment drew nowhere.
+  -->
+  <div class="ks-row" style="gap:3rem">
+    <div class="rux--form-item">
+      <label class="rux--label" for="tp-1">Time</label>
+      <div class="rux--time-picker rux--time-picker--lg">
+        <div class="rux--time-picker__input">
+          <input id="tp-1" class="rux--text-input rux--time-picker__input-field" type="text" value="09:30" maxlength="5">
+        </div>
+        <div class="rux--select rux--time-picker__select">
+          <select class="rux--select-input" aria-label="Period">
+            <option class="rux--select-option" value="am">AM</option>
+            <option class="rux--select-option" value="pm">PM</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        </div>
+        <div class="rux--select rux--time-picker__select">
+          <select class="rux--select-input" aria-label="Time zone">
+            <option class="rux--select-option" value="utc">UTC</option>
+            <option class="rux--select-option" value="cet">CET</option>
+          </select>
+          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="tp-4">Warning</label>
+      <div class="rux--time-picker rux--time-picker--lg rux--time-picker--warning">
+        <div class="rux--time-picker__input">
+          <input id="tp-4" class="rux--text-input rux--time-picker__input-field" type="text" value="03:00" maxlength="5">
+        </div>
+      </div>
+      <div class="rux--form-requirement">Outside business hours</div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="tp-5">Read-only</label>
+      <div class="rux--time-picker rux--time-picker--lg rux--time-picker--readonly">
+        <div class="rux--time-picker__input">
+          <input id="tp-5" class="rux--text-input rux--time-picker__input-field" type="text" value="12:00" maxlength="5" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="rux--form-item">
+      <label class="rux--label" for="tp-2">Invalid · small</label>
+      <div class="rux--time-picker rux--time-picker--sm rux--time-picker--invalid" data-invalid>
+        <div class="rux--time-picker__input">
+          <input id="tp-2" class="rux--text-input rux--time-picker__input-field rux--time-picker__input-field-error" type="text" value="99:99" data-invalid aria-invalid="true">
+          <div class="rux--time-picker__error__icon">
+            <svg class="rux--checkbox__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="rux--form-requirement">Not a valid time</div>
+    </div>
+  </div>
+</section>

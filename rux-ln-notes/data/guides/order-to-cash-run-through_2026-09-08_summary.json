@@ -1,0 +1,398 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "order-to-cash-run-through_2026-09-08_summary",
+  "title": "Order to Cash Run-through — Summary",
+  "updated": "2026-09-08",
+  "status": "draft",
+  "sources": [],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A coaching session where the trainee drove a whole order-to-cash run himself: raise a sales order, let planning turn it into a planned order, turn that into a production order, issue the material, receive and inspect it, and ship it. Before any of that, the group spent twenty minutes changing one planning setting at a time and re-running the plan to watch what each change did — which turned out to be the most useful part of the recording."
+        }
+      ],
+      "text": "A coaching session where the trainee drove a whole order-to-cash run himself: raise a sales order, let planning turn it into a planned order, turn that into a production order, issue the material, receive and inspect it, and ship it. Before any of that, the group spent twenty minutes changing one planning setting at a time and re-running the plan to watch what each change did — which turned out to be the most useful part of the recording."
+    }
+  ],
+  "topics": [
+    {
+      "title": "Why an order comes out bigger than the shortfall",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The item needed 45 more units. It got an order for 50. That is not a bug — it is the order increment doing its job."
+            }
+          ],
+          "text": "The item needed 45 more units. It got an order for 50. That is not a bug — it is the order increment doing its job."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Safety stock was 50 and there were 5 units on hand, so planning asked for 45."
+                }
+              ],
+              "text": "Safety stock was 50 and there were 5 units on hand, so planning asked for 45."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order increment was then changed from 1 to 25, meaning the item can only be ordered in blocks of 25."
+                }
+              ],
+              "text": "The order increment was then changed from 1 to 25, meaning the item can only be ordered in blocks of 25."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-running the plan produced an order for 50 instead of 45 — the 5 units already in stock do not divide into a 25-unit block, so LN rounds the whole order up to the next clean multiple."
+                }
+              ],
+              "text": "Re-running the plan produced an order for 50 instead of 45 — the 5 units already in stock do not divide into a 25-unit block, so LN rounds the whole order up to the next clean multiple."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Safety stock is a kind of demand",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Safety stock is not just a floor that gets watched. Planning treats it as a demand in its own right, the same way it treats a sales order."
+            }
+          ],
+          "text": "Safety stock is not just a floor that gets watched. Planning treats it as a demand in its own right, the same way it treats a sales order."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Drop below your safety stock and planning raises an order to top you back up, with nothing else asking for the item."
+                }
+              ],
+              "text": "Drop below your safety stock and planning raises an order to top you back up, with nothing else asking for the item."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set safety stock to zero with no orders outstanding, and a planning run correctly produces nothing at all — there is simply nothing asking for the item."
+                }
+              ],
+              "text": "Set safety stock to zero with no orders outstanding, and a planning run correctly produces nothing at all — there is simply nothing asking for the item."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The three things that can ask for an item, in the consultant's own list: safety stock, a production order that needs it as a component, and a sales order."
+                }
+              ],
+              "text": "The three things that can ask for an item, in the consultant's own list: safety stock, a production order that needs it as a component, and a sales order."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Changing a setting that refuses to change",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Setting safety stock to zero on the item appeared to do nothing, twice, and the reason is worth knowing before it costs you an afternoon."
+            }
+          ],
+          "text": "Setting safety stock to zero on the item appeared to do nothing, twice, and the reason is worth knowing before it costs you an afternoon."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item was set to use the "
+                },
+                {
+                  "t": "em",
+                  "v": "global"
+                },
+                {
+                  "t": "text",
+                  "v": " values, so editing the item's own copy changed nothing — the site record still said 50."
+                }
+              ],
+              "text": "The item was set to use the global values, so editing the item's own copy changed nothing — the site record still said 50."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A related field was simply greyed out. That grey is the screen telling you this level does not own the value; go up a level and edit it there."
+                }
+              ],
+              "text": "A related field was simply greyed out. That grey is the screen telling you this level does not own the value; go up a level and edit it there."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Running the whole chain, and the two places it went wrong",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee ran the full path start to finish. Two mistakes happened live and both are instructive."
+            }
+          ],
+          "text": "The trainee ran the full path start to finish. Two mistakes happened live and both are instructive."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An operation was reported complete before any material had been sent to the shop floor — LN allowed it. The material has to be released to warehousing and issued first."
+                }
+              ],
+              "text": "An operation was reported complete before any material had been sent to the shop floor — LN allowed it. The material has to be released to warehousing and issued first."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The shipment would not confirm until it was frozen, and the freeze control sits on the "
+                },
+                {
+                  "t": "em",
+                  "v": "lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, not the header. Freezing is mandatory in this setup."
+                }
+              ],
+              "text": "The shipment would not confirm until it was frozen, and the freeze control sits on the lines tab, not the header. Freezing is mandatory in this setup."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Cancelling a production order is done from Actions, under an Exception Handling entry — the trainee had failed to find it on a previous attempt too. The menu was captured, so this route is now written down."
+                }
+              ],
+              "text": "Cancelling a production order is done from Actions, under an Exception Handling entry — the trainee had failed to find it on a previous attempt too. The menu was captured, so this route is now written down."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No purchase orders appeared for the component items, which was correct: there was already stock on hand for both."
+                }
+              ],
+              "text": "No purchase orders appeared for the component items, which was correct: there was already stock on hand for both."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Scenarios sit above the horizons",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A scenario has its own horizon, and the item horizons work inside it. Only one scenario is the live one that the business actually plans against; the others exist to try things out without touching it."
+            }
+          ],
+          "text": "A scenario has its own horizon, and the item horizons work inside it. Only one scenario is the live one that the business actually plans against; the others exist to try things out without touching it."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "An order quantity is rounded up to the next whole increment — expect more than the shortfall whenever the increment is bigger than 1."
+            }
+          ],
+          "text": "An order quantity is rounded up to the next whole increment — expect more than the shortfall whenever the increment is bigger than 1."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Safety stock counts as demand; no safety stock and no orders means no planning result, and that is the correct result rather than a failure."
+            }
+          ],
+          "text": "Safety stock counts as demand; no safety stock and no orders means no planning result, and that is the correct result rather than a failure."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Ordering values inherit from warehouse to site to global item, and this applies to safety stock, not only to the order interval."
+            }
+          ],
+          "text": "Ordering values inherit from warehouse to site to global item, and this applies to safety stock, not only to the order interval."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Release and issue material before reporting an operation complete. Nothing stops you doing it the wrong way round."
+            }
+          ],
+          "text": "Release and issue material before reporting an operation complete. Nothing stops you doing it the wrong way round."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "If a planned quantity looks wrong, check the order increment before anything else — rounding explains most surprises of this shape."
+            }
+          ],
+          "text": "If a planned quantity looks wrong, check the order increment before anything else — rounding explains most surprises of this shape."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A greyed-out field is information, not an obstacle: it tells you which level owns the value you are trying to change."
+            }
+          ],
+          "text": "A greyed-out field is information, not an obstacle: it tells you which level owns the value you are trying to change."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Planning producing nothing is sometimes the right answer. Before hunting for a fault, check whether anything is actually asking for the item."
+            }
+          ],
+          "text": "Planning producing nothing is sometimes the right answer. Before hunting for a fault, check whether anything is actually asking for the item."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee's own answer to where he struggled was navigation, not concepts — finding the right session, and remembering that some controls live at line level rather than header level."
+            }
+          ],
+          "text": "The trainee's own answer to where he struggled was navigation, not concepts — finding the right session, and remembering that some controls live at line level rather than header level."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`order-to-cash-run-through_2026-09-08.md`",
+          "href": "order-to-cash-run-through_2026-09-08.md"
+        },
+        {
+          "t": "text",
+          "v": " — five screenshots were pulled from the recording, and the increment result, the inheritance finding, the cancel route and the component stock levels all rest on them rather than on what was said. The rest is narration and is marked as such. Read the full record before relying on any of this for implementation work."
+        }
+      ],
+      "text": "Full record: `order-to-cash-run-through_2026-09-08.md` — five screenshots were pulled from the recording, and the increment result, the inheritance finding, the cancel route and the component stock levels all rest on them rather than on what was said. The rest is narration and is marked as such. Read the full record before relying on any of this for implementation work."
+    }
+  ]
+}

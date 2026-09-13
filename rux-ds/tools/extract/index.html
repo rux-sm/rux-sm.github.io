@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rux-ds — markup extraction</title>
+<!--
+  Mounts Carbon's Lit web components and dumps their rendered shadow DOM.
+  This is a QUARRY TOOL, not part of the system: @carbon/web-components is a
+  temporary dev dependency and is removed once extraction is done (roadmap §3).
+
+  No bundler — bare specifiers resolve through the import map below, served
+  straight out of node_modules by tools/serve.mjs.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "lit": "/node_modules/lit/index.js",
+    "lit/": "/node_modules/lit/",
+    "lit-html": "/node_modules/lit-html/lit-html.js",
+    "lit-html/": "/node_modules/lit-html/",
+    "lit-element": "/node_modules/lit-element/index.js",
+    "lit-element/": "/node_modules/lit-element/",
+    "@lit/reactive-element": "/node_modules/@lit/reactive-element/reactive-element.js",
+    "@lit/reactive-element/": "/node_modules/@lit/reactive-element/",
+    "@lit-labs/ssr-dom-shim": "/node_modules/@lit-labs/ssr-dom-shim/index.js",
+    "@lit-labs/ssr-dom-shim/": "/node_modules/@lit-labs/ssr-dom-shim/",
+    "@lit/context": "/node_modules/@lit/context/index.js",
+    "@lit/context/": "/node_modules/@lit/context/",
+    "@carbon/web-components/": "/node_modules/@carbon/web-components/",
+    "@carbon/icon-helpers": "/node_modules/@carbon/icon-helpers/es/index.js",
+    "@carbon/icons/": "/node_modules/@carbon/icons/",
+    "@carbon/utilities/": "/node_modules/@carbon/utilities/",
+    "@carbon/utilities-react/": "/node_modules/@carbon/utilities-react/",
+    "@carbon/feature-flags": "/node_modules/@carbon/feature-flags/es/index.js",
+    "@floating-ui/dom": "/node_modules/@floating-ui/dom/dist/floating-ui.dom.esm.js",
+    "@floating-ui/core": "/node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
+    "@floating-ui/utils": "/node_modules/@floating-ui/utils/dist/floating-ui.utils.esm.js",
+    "@floating-ui/utils/dom": "/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.esm.js"
+  }
+}
+</script>
+<style>body{font:13px/1.5 ui-monospace,monospace;padding:1rem}#log{white-space:pre-wrap}</style>
+</head>
+<body>
+<div id="mount"></div>
+<div id="log">loading…</div>
+<script type="module">
+  // Each entry: [tag, importPath, attributes, innerHTML]
+  const SPECS = window.__SPECS ?? [];
+  const log = m => { document.getElementById('log').textContent = m; };
+  const SPEC_URL = '/tools/extract/specs.json';
+
+  // Mount one component and return the CLASS NAMES its shadow DOM emits, plus a
+  // compact structural outline. Full HTML is available via __extractHtml.
+  async function mount(tag, path) {
+    await import(`/node_modules/@carbon/web-components/es/components/${path}`);
+    const el = document.createElement(tag);
+    document.getElementById('mount').appendChild(el);
+    await customElements.whenDefined(tag);
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    return el;
+  }
+
+  // Per-element class COMBINATIONS, not a flat set. The defect class this exists to
+  // catch is a modifier used without its base, which only shows as several classes
+  // co-occurring on one element (roadmap §4.1.5).
+  const combosIn = root => {
+    const out = [];
+    root.querySelectorAll('[class]').forEach(n => {
+      const cs = String(n.getAttribute('class')).split(/\s+/).filter(c => c.startsWith('cds--'));
+      if (cs.length) out.push(cs.sort().join(' '));
+    });
+    return [...new Set(out)];
+  };
+
+  window.__extractClasses = async (from = 0, count = 40) => {
+    const specs = await (await fetch(SPEC_URL)).json();
+    const out = {};
+    for (const { tag, path } of specs.slice(from, from + count)) {
+      try {
+        const el = await mount(tag, path);
+        out[tag] = el.shadowRoot ? combosIn(el.shadowRoot) : [];
+      } catch (e) {
+        out[tag] = ['ERROR:' + (e.message || String(e)).split('\n')[0].slice(0, 60)];
+      }
+    }
+    log(`extracted ${from}..${from + count}`);
+    return out;
+  };
+
+  window.__extractHtml = async (tag, path) => {
+    const el = await mount(tag, path);
+    return el.shadowRoot ? el.shadowRoot.innerHTML : '(no shadow root)';
+  };
+
+  log('ready — __extractClasses(from, count) / __extractHtml(tag, path)');
+</script>
+</body>
+</html>
+<!--
+  TO RE-RUN THIS HARNESS:
+    npm i -D @carbon/web-components        # temporary quarry, ~34 MB
+    npm run serve
+    open http://localhost:8642/tools/extract/index.html
+    # in the console:
+    #   await __extractClasses(0, 60)        -> per-element class combinations
+    #   await __extractHtml('cds-dropdown', 'dropdown/dropdown.js')
+    npm uninstall @carbon/web-components    # put it back out
+  The package is NEVER a dependency of this system (roadmap §3). Its output lives
+  in docs/carbon-co-classes.json, which tools/check-co-classes.mjs reads in plain
+  Node — the browser is needed to PRODUCE the map, not to use it.
+-->

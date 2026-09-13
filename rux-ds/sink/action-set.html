@@ -1,0 +1,72 @@
+<section class="ks-sec" id="action-set">
+  <h2>Action set</h2><p>single · double · triple rows</p>
+  <!-- PROVENANCE: rendered-dom · the side-panel action sets in
+       components-sidepanel--slide-over and its size recipes, and
+       patterns-create-flows-createsidepanel--create-side-panel@open,
+       2026-08-28 · @carbon/react has no ActionSet; it is an ibm-products
+       component that @carbon/styles compiles -->
+  <!--
+    Two classes have no reference and are kept deliberately.
+    `action-set--row-triple` and `__action-button--ghost` are unreachable in
+    the harvest: the side-panel stories map their action count through a
+    numeric control that a URL arg never applies, so only the single and double
+    rows can be captured (recorded in tools/extract/react-dom.js). Both are
+    real CSS with rules behind them.
+
+    The ghost button in the action set is the same gap seen from the other
+    side: no sampled action set contains one.
+  -->
+  <!--
+    .rux--action-set sets align-items and justify-content but NOT display — it is
+    also a .rux--btn-set, which is what supplies display:flex (css/rux.css:2353).
+    Without it the buttons are block-level and overlap.
+
+    `--stacking` is deliberately not shown: @carbon/styles contains no rule that
+    implements it, only a `:not(.rux--action-set--stacking)` negation. Carbon's React
+    ActionSet computes the stacked layout in JS, so the class is inert in light DOM.
+  -->
+  <div style="display:grid;gap:1rem">
+    <div class="rux--action-set rux--btn-set rux--action-set--row-single rux--action-set--lg">
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">Save</button>
+    </div>
+
+    <!-- BLOCK:BEGIN name=default label="Action set" -->
+    <div class="rux--action-set rux--btn-set rux--action-set--row-double rux--action-set--lg">
+      <button type="button" class="rux--btn rux--btn--secondary rux--action-set__action-button">Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">Save</button>
+    </div>
+    <!-- BLOCK:END default -->
+
+    <div class="rux--action-set rux--btn-set rux--action-set--row-triple rux--action-set--lg">
+      <button type="button" class="rux--btn rux--btn--ghost rux--action-set__action-button rux--action-set__action-button--ghost">Discard</button>
+      <button type="button" class="rux--btn rux--btn--secondary rux--action-set__action-button">Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">Save</button>
+    </div>
+
+    <!--
+      --sm is paired with row-single deliberately. Carbon gives a width to
+      row-single+md, row-double+md|lg, row-triple+lg, xl and 2xl — and to nothing
+      at --sm (_action-set.scss:55-108). Two buttons at sm therefore keep the
+      btn-set default of full width each and run off the left of the page, which
+      is what check-rendered reported as an escape.
+    -->
+    <div class="rux--action-set rux--btn-set rux--action-set--row-single rux--action-set--sm">
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">sm · single</button>
+    </div>
+
+    <div class="rux--action-set rux--btn-set rux--action-set--row-double rux--action-set--md">
+      <button type="button" class="rux--btn rux--btn--secondary rux--action-set__action-button">Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">md</button>
+    </div>
+
+    <div class="rux--action-set rux--btn-set rux--action-set--row-double rux--action-set--xl">
+      <button type="button" class="rux--btn rux--btn--secondary rux--action-set__action-button">Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">xl</button>
+    </div>
+
+    <div class="rux--action-set rux--btn-set rux--action-set--row-double rux--action-set--2xl">
+      <button type="button" class="rux--btn rux--btn--secondary rux--action-set__action-button">Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button rux--action-set__action-button--expressive">2xl · expressive</button>
+    </div>
+  </div>
+</section>

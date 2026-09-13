@@ -1,0 +1,144 @@
+<section class="ks-sec" id="progress-indicator">
+  <h2>Progress indicator</h2><p>horizontal · vertical · clickable · disabled</p>
+  <!-- PROVENANCE: rendered-dom · components-progressindicator--default and
+       --interactive, plus components-progressindicator--default@vertical in the
+       states file, 2026-08-29 · structure and class placement are the captures';
+       the labels are this fragment's own -->
+  <!--
+    ADMITTED 2026-08-29, reversing a DEFER. inventory.md deferred this as
+    "multi-step wizard; no target shape has one"; §4.6's seventh exit attempt
+    built that shape, so the condition the deferral named was met. +0.9 KB
+    gzipped, against the 1.1 KB the deferral estimated.
+
+    THE ICON NAMES DO NOT MATCH THE STATE NAMES, and that is Carbon's rather
+    than a mistake here: a CURRENT step draws `incomplete`, a half-filled
+    circle, and an INCOMPLETE step draws `circle-dash`. The captures record
+    structure and path counts but no path data, so the mapping was resolved by
+    fingerprint -- 2 paths for complete, 5 for current, 10 for incomplete, each
+    unique among the sprite's symbols at those counts.
+
+    THE INVALID STEP IS NOT DEMOED. The default story carries a fourth kind, an
+    `--incomplete` step whose svg takes `progress__warning` and has 3 paths.
+    Three paths matches BOTH `warning--alt--filled` and
+    `warning--alt-inverted--filled`, so the fingerprint does not settle it, and
+    this project has shipped two defects from guessing which glyph a slot wants.
+    Recorded rather than guessed; `check-coverage` counts no class for it.
+
+    `aria-disabled="true"` BELONGS TO `--disabled`, NOT TO `--unclickable`, and
+    this note said the opposite until 2026-08-30. components-progressindicator
+    --default renders five unclickable buttons and puts the attribute on exactly
+    ONE of them -- the step that also carries `--progress-step--disabled`. The
+    other four are bare. Every unclickable button here carried it, so VoiceOver
+    announced "First step Complete, dimmed, button" and "Signing Current,
+    dimmed, button": a reader was told the whole indicator was unavailable.
+    Heard on 2026-08-30, then read off the capture line by line rather than
+    from the first few. `aria-current="step"` is NOT attested anywhere in the
+    story; a consumer page adding one is making an addition, not copying Carbon.
+
+    The steps are buttons even when nothing navigates, because that is what
+    Carbon renders. `--unclickable` is the modifier that says so.
+  -->
+  <div style="display:grid;gap:2.5rem">
+
+    <div>
+      <div class="ks-label">horizontal — complete · current · incomplete · disabled</div>
+      <!-- BLOCK:BEGIN name=default label="Progress indicator" -->
+      <ul class="rux--progress">
+        <li class="rux--progress-step rux--progress-step--complete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">First step</span></div>
+            <span class="rux--assistive-text">Complete</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--current">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-incomplete"/></svg>
+            <div class="rux--progress-text">
+              <span class="rux--progress-label">Second step</span>
+              <span class="rux--progress-optional">Optional</span>
+            </div>
+            <span class="rux--assistive-text">Current</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--incomplete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-circle-dash"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Third step</span></div>
+            <span class="rux--assistive-text">Not started</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--incomplete rux--progress-step--disabled">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable" aria-disabled="true">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-circle-dash"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Disabled step</span></div>
+            <span class="rux--assistive-text">Disabled</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+      </ul>
+      <!-- BLOCK:END default -->
+    </div>
+
+    <div>
+      <!-- Clickable: the interactive story drops `--unclickable` from the steps
+           that navigate and keeps it on the CURRENT one, which is where you
+           already are. -->
+      <div class="ks-label">clickable — completed steps navigate, the current one does not</div>
+      <ul class="rux--progress">
+        <li class="rux--progress-step rux--progress-step--complete">
+          <button type="button" class="rux--progress-step-button">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Reviewed</span></div>
+            <span class="rux--assistive-text">Complete</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--current">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-incomplete"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Signing</span></div>
+            <span class="rux--assistive-text">Current</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="ks-label">vertical — the variant a narrow column wants</div>
+      <!-- BLOCK:BEGIN name=vertical label="Progress indicator, vertical" -->
+      <ul class="rux--progress rux--progress--vertical">
+        <li class="rux--progress-step rux--progress-step--complete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Project basics</span></div>
+            <span class="rux--assistive-text">Complete</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--current">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-incomplete"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Configuration</span></div>
+            <span class="rux--assistive-text">Current</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+        <li class="rux--progress-step rux--progress-step--incomplete">
+          <button type="button" class="rux--progress-step-button rux--progress-step-button--unclickable">
+            <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-circle-dash"/></svg>
+            <div class="rux--progress-text"><span class="rux--progress-label">Review</span></div>
+            <span class="rux--assistive-text">Not started</span>
+            <span class="rux--progress-line"></span>
+          </button>
+        </li>
+      </ul>
+      <!-- BLOCK:END vertical -->
+    </div>
+
+  </div>
+</section>

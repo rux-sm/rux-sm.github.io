@@ -1,0 +1,115 @@
+<section class="ks-sec" id="menu">
+  <h2>Menu</h2><p>icons · shortcut · danger item — click the trigger</p>
+  <!-- PROVENANCE: rendered-dom · components-menu--default, and the open menus
+       from components-menubutton--default@open and
+       components-combobutton--default@open, 2026-08-28 -->
+  <!--
+    SELECTABLE ITEMS were missing entirely — three classes with nine rules each
+    and no element to act on. Carbon marks the whole menu
+    `menu--with-selectable-items`, groups radio items in a
+    `menu-item-radio-group` holding a bare `ul[role=group]`, and gives EVERY
+    item a `__selection-icon` slot as its first child, filled only on the
+    selected one. `menu-item-group` is the same pattern for a non-radio group.
+
+    THE SPECIMENS NOW CARRY `menu--open menu--shown`, AND HAD TO. This comment
+    claimed they were "visible at rest" and they were not: `.rux--menu` is
+    `visibility: hidden; opacity: 0` at rest, so every menu here except the
+    triggered one rendered as blank space — 177px of it for the icons demo — for
+    as long as this fragment has existed. Nothing caught it. The classes are the
+    same ones js/menu.js toggles, which is why the triggered menu below does NOT
+    have them: it starts closed and its trigger opens it.
+
+    Found by the Phase 5 keyboard pass, which asked why a `role="menu"` had no
+    reachable items and turned up a menu nobody could see either. Only the FIRST menu has a trigger and so
+    is driven by the module: `data-rux-open="<id>"`, the same idiom modal uses,
+    because a menu's surface is a <ul> elsewhere in the document. The rest are
+    static specimens of density and selection state with nothing to open them,
+    which is why they carry no trigger and no attribute. `menu-item-selectable--selected` is
+    emitted with no rule in @carbon/styles and is dropped (§4.1.12).
+
+    EVERY MENU HERE IS PINNED IN FLOW BY `style="position:relative;inset:auto"`,
+    and that is a DEMO CHOICE, not the component. Carbon's menu is
+    `position: fixed` and floats where its JS puts it — React runs floating-ui,
+    which places the surface against the trigger and flips it near a viewport
+    edge. This project has not written that, so a floating menu here would pile
+    at the page's top-left corner. Pinning it makes the specimen readable and
+    the override visible in the markup, where a reader can see it is the sink's
+    and not the system's.
+    WHAT THAT COSTS: nothing on the page shows where a menu actually LANDS. The
+    8px under the triggered menu is the ks-row's own gap, not an offset any rule
+    produces. The overflow menu next door is the opposite case and worth the
+    contrast — its list IS positioned by CSS, so js/menu.js corrects the resting
+    offset there rather than pinning it.
+  -->
+  <div class="ks-row" style="padding-block:1rem;min-height:12rem;align-items:flex-start;flex-direction:column;gap:.5rem">
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-rux-open="ks-menu" aria-haspopup="menu" aria-expanded="false">Open menu</button>
+    <ul id="ks-menu" class="rux--menu rux--menu--md rux--menu--with-icons"
+        role="menu" style="position:relative;inset:auto">
+      <li class="rux--menu-item" role="menuitem" tabindex="0">
+        <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg></div>
+        <div class="rux--menu-item__label">Open</div>
+      </li>
+      <li class="rux--menu-item" role="menuitem" tabindex="-1">
+        <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></div>
+        <div class="rux--menu-item__label">Duplicate</div>
+        <div class="rux--menu-item__shortcut">⌘D</div>
+      </li>
+      <li class="rux--menu-item-divider" role="separator"></li>
+      <li class="rux--menu-item rux--menu-item--disabled" role="menuitem" tabindex="-1" aria-disabled="true">
+        <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-download"/></svg></div>
+        <div class="rux--menu-item__label">Export (unavailable)</div>
+      </li>
+      <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="-1">
+        <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg></div>
+        <div class="rux--menu-item__label">Delete</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ks-label">selectable items · radio group</div>
+  <div class="ks-row" style="align-items:flex-start">
+    <ul class="rux--menu rux--menu--open rux--menu--shown rux--menu--md rux--menu--with-selectable-items" role="menu" style="position:relative;inset:auto">
+      <li class="rux--menu-item-radio-group" role="none">
+        <ul role="group">
+          <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1">
+            <div class="rux--menu-item__selection-icon"></div>
+            <div class="rux--menu-item__label">Ascending</div>
+          </li>
+          <li class="rux--menu-item" role="menuitemradio" aria-checked="true" tabindex="-1">
+            <div class="rux--menu-item__selection-icon">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark"/></svg>
+            </div>
+            <div class="rux--menu-item__label">Descending</div>
+          </li>
+        </ul>
+      </li>
+      <li class="rux--menu-item-divider" role="separator"></li>
+      <li class="rux--menu-item-group" role="none">
+        <ul role="group">
+          <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="true" tabindex="-1">
+            <div class="rux--menu-item__selection-icon">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark"/></svg>
+            </div>
+            <div class="rux--menu-item__label">Show archived</div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ks-label">densities · xs · sm · lg</div>
+  <div class="ks-row" style="align-items:flex-start">
+    <ul id="ks-menu-xs" class="rux--menu rux--menu--open rux--menu--shown rux--menu--xs" role="menu" style="position:relative;inset:auto">
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">xs</div></li>
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">Second</div></li>
+    </ul>
+    <ul id="ks-menu-sm" class="rux--menu rux--menu--open rux--menu--shown rux--menu--sm" role="menu" style="position:relative;inset:auto">
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">sm</div></li>
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">Second</div></li>
+    </ul>
+    <ul id="ks-menu-lg" class="rux--menu rux--menu--open rux--menu--shown rux--menu--lg" role="menu" style="position:relative;inset:auto">
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">lg</div></li>
+      <li class="rux--menu-item" role="menuitem" tabindex="-1"><div class="rux--menu-item__label">Second</div></li>
+    </ul>
+  </div>
+</section>

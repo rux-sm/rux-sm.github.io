@@ -1,0 +1,20 @@
+<section class="ks-sec" id="menu-button">
+  <h2>Menu button</h2><p>single trigger opening a menu</p>
+  <!-- PROVENANCE: rendered-dom · components-menubutton--default with its open
+       and open-lg recipes, plus --with-icons and --with-dividers, 2026-08-28 -->
+  <!--
+    One finding recorded: this demo triggers from a TERTIARY button where every
+    sampled menu button is primary. Both are Button kinds and the trigger class
+    is the same; the reference simply has no tertiary sample. The open menu
+    itself — `menu menu--open menu--shown` — is demoed in the menu fragment,
+    which owns those classes.
+  -->
+  <div class="ks-row">
+    <div class="rux--menu-button__container">
+      <button type="button" class="rux--btn rux--btn--primary rux--menu-button__trigger" aria-haspopup="true" aria-expanded="false">Actions</button>
+    </div>
+    <div class="rux--menu-button__container">
+      <button type="button" class="rux--btn rux--btn--tertiary rux--menu-button__trigger rux--menu-button__trigger--open" aria-haspopup="true" aria-expanded="true">Open</button>
+    </div>
+  </div>
+</section>

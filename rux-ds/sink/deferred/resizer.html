@@ -1,0 +1,28 @@
+<section class="ks-sec" id="resizer">
+  <h2>Resizer</h2><p>split-pane handles — no intrinsic size, they take it from the flex container</p>
+  <!-- PROVENANCE: inferred · structure read off CSS selectors · NO REFERENCE
+       EXISTS: checked 2026-08-28 against all 641 captures across both
+       Storybook origins and nothing emits `resizer`, by id or by class.
+       Roadmap §4.1.14 first recorded this and asked for a decision; the
+       harvest since has only confirmed it. This fragment stays `inferred`
+       not for want of effort but because there is nothing to diff it
+       against, and it will stay that way until Carbon ships a story. -->
+  <div class="ks-row">
+    <div>
+      <div class="ks-label">vertical handle · ew-resize · between side-by-side panes</div>
+      <div style="display:flex;inline-size:22rem;block-size:6rem;border:1px solid var(--rux-border-subtle)">
+        <div class="ks-box" style="flex:1">Left</div>
+        <div class="rux--resizer rux--resizer--vertical" style="inline-size:4px" role="separator" tabindex="0" aria-orientation="vertical"></div>
+        <div class="ks-box" style="flex:1">Right</div>
+      </div>
+    </div>
+    <div>
+      <div class="ks-label">horizontal handle · ns-resize · between stacked panes</div>
+      <div style="display:flex;flex-direction:column;inline-size:22rem;block-size:6rem;border:1px solid var(--rux-border-subtle)">
+        <div class="ks-box" style="flex:1">Top</div>
+        <div class="rux--resizer rux--resizer--horizontal" style="block-size:4px" role="separator" tabindex="0" aria-orientation="horizontal"></div>
+        <div class="ks-box" style="flex:1">Bottom</div>
+      </div>
+    </div>
+  </div>
+</section>

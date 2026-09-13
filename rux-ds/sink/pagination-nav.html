@@ -1,0 +1,112 @@
+<section class="ks-sec" id="pagination-nav">
+  <h2>Pagination nav</h2><p>numbered pages · an overflow select · previous and next</p>
+  <!-- PROVENANCE: rendered-dom · components-paginationnav--default, 2026-09-01 -->
+  <!--
+    ADMITTED 2026-09-01, §4.9 batch 3, written from the one capture Carbon has.
+    A `nav.pagination-nav` at `layout--size-lg` holds a list: a previous
+    arrow, numbered page BUTTONS each with a visually-hidden accessibility
+    label, an overflow SELECT wrapped in `pagination-nav__select` with its own
+    icon wrapper, and a next arrow. The active page carries `--active` and
+    `aria-current="page"`.
+
+    THE TWO ARROWS ARE ICON-TOOLTIPS IN THE CAPTURE, and the sink declines that
+    chrome throughout: each is written as the ghost icon-only button with an
+    aria-label, and the decline is recorded in check-ancestry. The previous
+    arrow is disabled on page 1, as the story renders it.
+
+    `pagination-nav__page--direction` and `--disabled` have rules in
+    @carbon/styles and no story renders them; the arrows are plain buttons in
+    every capture. Not written. No module drives this yet; the page buttons
+    are static.
+  -->
+  <!-- BLOCK:BEGIN name=default label="Pagination nav" -->
+  <nav class="rux--pagination-nav rux--layout--size-lg" aria-label="Pagination">
+    <ul class="rux--pagination-nav__list">
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--disabled rux--btn--icon-only" aria-label="Previous page" disabled>
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg>
+        </button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page rux--pagination-nav__page--active" aria-current="page"><span class="rux--pagination-nav__accessibility-label">page</span>1</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>2</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>3</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>4</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <div class="rux--pagination-nav__select">
+          <select class="rux--pagination-nav__page rux--pagination-nav__page--select" aria-label="Select page number">
+            <option value="" hidden></option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+          <div class="rux--pagination-nav__select-icon-wrapper">
+            <svg class="rux--pagination-nav__select-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--horizontal"/></svg>
+          </div>
+        </div>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>10</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Next page">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg>
+        </button>
+      </li>
+    </ul>
+    <div class="rux--pagination-nav__accessibility-label" aria-live="polite">Page 1 of 10</div>
+  </nav>
+  <!-- BLOCK:END default -->
+
+  <div class="ks-label" style="margin-block-start:1.5rem">current page inside the overflow — `--active` on the select AND its icon wrapper</div>
+  <!-- check-compound asked for this one: Carbon writes
+       `.pagination-nav__select-icon-wrapper.pagination-nav__page--active`, the
+       state React produces when the current page is one the select holds.
+       The first nav shows the active BUTTON; this one shows the other half.
+       check-tags records `page--active` on this <div> as a KNOWN divergence:
+       the one capture has it on a button only, because no story puts the
+       current page inside the overflow; the CSS rule is the evidence. The
+       select itself stays as captured, without the modifier. -->
+  <nav class="rux--pagination-nav rux--layout--size-lg" aria-label="Pagination, page 7">
+    <ul class="rux--pagination-nav__list">
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Previous page">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg>
+        </button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>1</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <div class="rux--pagination-nav__select">
+          <select class="rux--pagination-nav__page rux--pagination-nav__page--select" aria-label="Select page number" aria-current="page">
+            <option value="2">2</option>
+            <option value="7" selected>7</option>
+            <option value="9">9</option>
+          </select>
+          <div class="rux--pagination-nav__select-icon-wrapper rux--pagination-nav__page--active">
+            <svg class="rux--pagination-nav__select-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--horizontal"/></svg>
+          </div>
+        </div>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--pagination-nav__page"><span class="rux--pagination-nav__accessibility-label">page</span>10</button>
+      </li>
+      <li class="rux--pagination-nav__list-item">
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" aria-label="Next page">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg>
+        </button>
+      </li>
+    </ul>
+    <div class="rux--pagination-nav__accessibility-label" aria-live="polite">Page 7 of 10</div>
+  </nav>
+</section>

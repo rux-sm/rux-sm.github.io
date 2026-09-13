@@ -1,0 +1,37 @@
+<section class="ks-sec" id="slug">
+  <h2>Slug</h2><p>predecessor of AI label, kept for compatibility</p>
+  <!-- PROVENANCE: inferred · structure read off CSS selectors ·
+       NO REFERENCE EXISTS; see below -->
+  <!--
+  slug is SUPERSEDED and no story emits it. Checked 2026-08-28 across all
+      641 captures on both origins: nothing renders `cds--slug` or any of its ten
+      classes. @carbon/styles still compiles them, and the side-panel work found
+      the same thing from the other side — `--has-slug` and `__slug-and-close`
+      are defined there and never emitted, because `ai-label` replaced the whole
+      idea (roadmap, 801a8c3). This fragment therefore cannot be diffed: it is
+      shown because the CSS ships it, and labelled `inferred` because there is
+      nothing to check it against. The successor is demoed in ai-label.
+  -->
+  <div class="ks-row" style="padding-block:1rem">
+    <div class="rux--slug">
+      <button type="button" class="rux--slug__button rux--slug__button--xs rux--toggletip-button" aria-label="AI information">AI</button>
+    </div>
+    <div class="rux--slug rux--slug--revert">
+      <button type="button" class="rux--slug__button rux--toggletip-button rux--slug__button--inline" aria-label="AI information">
+        AI<span class="rux--slug__additional-text">&nbsp;generated</span>
+      </button>
+    </div>
+    <div class="rux--slug">
+      <button type="button" class="rux--slug__button rux--slug__button--sm rux--toggletip-button" aria-label="AI information">AI</button>
+    </div>
+    <div class="rux--slug">
+      <button type="button" class="rux--slug__button rux--slug__button--md rux--toggletip-button" aria-label="AI information">AI</button>
+    </div>
+    <div class="rux--slug">
+      <button type="button" class="rux--slug__button rux--slug__button--lg rux--toggletip-button" aria-label="AI information">AI</button>
+    </div>
+    <div class="rux--slug">
+      <button type="button" class="rux--slug__button rux--slug__button--xl rux--toggletip-button" aria-label="AI information">AI</button>
+    </div>
+  </div>
+</section>

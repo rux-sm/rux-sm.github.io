@@ -1,0 +1,108 @@
+<section class="ks-sec" id="file-uploader">
+  <h2>File uploader</h2><p>drop zone · browse · uploaded items</p>
+  <!-- PROVENANCE: rendered-dom · components-fileuploader--default,
+       --drop-container, --file-uploader-item with its invalid, complete and sm
+       recipes, and --drag-and-drop-upload-container-example-application.
+       Corrected 2026-08-27:
+       the drop zone is a BUTTON carrying both __drop-container and
+       file-browse-btn, with a visually-hidden label and a file-input input as
+       siblings; file-close is a button and file-complete an svg.
+       · re-diffed 2026-08-28 against --default, --drop-container and
+       --drag-and-drop-upload-container-example-application -->
+  <!--
+    ADMITTED 2026-09-01, and rebuilt against the item captures on the way. The
+    stub wrote a bare `p.file-filename` and put the state container straight
+    inside the selected-file span; Carbon renders the filename as a tooltip
+    trigger — `file-filename-container-wrap` (or `-invalid`) around the popover
+    chrome around `button.file-filename-button > p.file-filename-button` — and
+    wraps the state container in a div that carries `file-container-item` — a
+    class every capture renders and no rule in @carbon/styles styles, so on the
+    §4.1.12 precedent the div is kept and the class is not written. The invalid item also
+    carries a `form-requirement[role=alert]` after it. `diff-fragment` still
+    reports the selected files inside `file-container--drop` where the item
+    STORY mounts them at the root; that is the story's layout, and React puts
+    them in the container at runtime. `file--label--disabled`,
+    `file-browse-btn--disabled`, `file--invalid` and `file__selected-file--disabled`
+    have rules in @carbon/styles and no story renders them. check-spacing reports
+    `form-requirement` here as UNKNOWN: the only harvested variant is a
+    dropdown's, and the invalid file item's requirement was never harvested for
+    spacing. Left unknown rather than keyed KNOWN, because that key would also
+    cover the checkbox and fluid rows that are unknown for their own reasons.
+  -->
+  <!--
+    THE FILE LIST IS A SIBLING OF THE DROP ZONE, not a child of it. Carbon puts
+    both inside a `form-item`: label, description, `div.file` holding the drop
+    button and its hidden input, then `file-container file-container--drop`
+    beside it. This fragment nested the container inside .rux--file, where the
+    drop variant's own rule cannot reach it.
+  -->
+  <div style="max-width:32rem">
+    <div class="rux--form-item">
+      <p class="rux--file--label">Upload files</p>
+      <p class="rux--label-description">Max 500 KB each</p>
+      <div class="rux--file">
+        <button type="button" class="rux--file__drop-container rux--file-browse-btn">Drag and drop files here or click to upload</button>
+        <label class="rux--visually-hidden" for="fu-1">Upload files</label>
+        <input id="fu-1" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" multiple>
+      </div>
+      <div class="rux--file-container rux--file-container--drop">
+        <span class="rux--file__selected-file rux--file__selected-file--md">
+          <div class="rux--file-filename-container-wrap">
+            <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
+              <div class="rux--tooltip-trigger__wrapper">
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-1-tip"><p class="rux--file-filename-button">report-q3.pdf</p></button>
+              </div>
+              <span class="rux--popover" role="tooltip" id="fu-item-1-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">report-q3.pdf</span><span class="rux--popover-caret"></span></span>
+            </span>
+          </div>
+          <div>
+            <span class="rux--file__state-container"><svg class="rux--file-complete" role="img" aria-label="Upload complete" tabindex="-1" width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><title>Upload complete</title><use href="#i-checkmark--filled"/></svg></span>
+          </div>
+        </span>
+        <span class="rux--file__selected-file rux--file__selected-file--md rux--file__selected-file--invalid">
+          <div class="rux--file-filename-container-wrap-invalid">
+            <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
+              <div class="rux--tooltip-trigger__wrapper">
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-2-tip"><p class="rux--file-filename-button">too-large.zip</p></button>
+              </div>
+              <span class="rux--popover" role="tooltip" id="fu-item-2-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">too-large.zip</span><span class="rux--popover-caret"></span></span>
+            </span>
+          </div>
+          <div>
+            <span class="rux--file__state-container"><svg class="rux--file-invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg><button type="button" class="rux--file-close" aria-label="Delete file - too-large.zip" aria-describedby="fu-item-2-error"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+          </div>
+          <div class="rux--form-requirement" role="alert" id="fu-item-2-error">
+            <div class="rux--form-requirement__title">File exceeds 500 KB</div>
+            <p class="rux--form-requirement__supplement">Compress it or upload a smaller export.</p>
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <div style="margin-block-start:2rem">
+    <div class="rux--form-item">
+      <p class="rux--file--label rux--file--label--disabled">Upload files (disabled)</p>
+      <div class="rux--file rux--file--invalid">
+        <button type="button" class="rux--file__drop-container rux--file-browse-btn rux--file-browse-btn--disabled" disabled>Uploads are turned off for this workspace</button>
+        <label class="rux--visually-hidden" for="fu-2">Upload files (disabled)</label>
+        <input id="fu-2" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" multiple disabled>
+      </div>
+      <div class="rux--file-container rux--file-container--drop">
+        <span class="rux--file__selected-file rux--file__selected-file--sm rux--file__selected-file--disabled">
+          <div class="rux--file-filename-container-wrap">
+            <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
+              <div class="rux--tooltip-trigger__wrapper">
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-3-tip"><p class="rux--file-filename-button">archive-2019.tar</p></button>
+              </div>
+              <span class="rux--popover" role="tooltip" id="fu-item-3-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">archive-2019.tar</span><span class="rux--popover-caret"></span></span>
+            </span>
+          </div>
+          <div>
+            <span class="rux--file__state-container"><button type="button" class="rux--file-close" aria-label="Delete file - archive-2019.tar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+          </div>
+        </span>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,315 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "planning-scenarios_2026-09-03_summary",
+  "title": "Planning Scenarios — Summary",
+  "updated": "2026-09-03",
+  "status": "draft",
+  "sources": [],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An open-ended planning training session: a sales order becomes demand, MRP turns demand into planned orders, planned orders transfer into real purchase and production orders, and those get received through to put-away. Two extra wrinkles got explored along the way — a contract-based order type that behaves differently from a sales order, and a live puzzle about why a safety-stock top-up seemed to split into three orders instead of one."
+        }
+      ],
+      "text": "An open-ended planning training session: a sales order becomes demand, MRP turns demand into planned orders, planned orders transfer into real purchase and production orders, and those get received through to put-away. Two extra wrinkles got explored along the way — a contract-based order type that behaves differently from a sales order, and a live puzzle about why a safety-stock top-up seemed to split into three orders instead of one."
+    }
+  ],
+  "topics": [
+    {
+      "title": "Demand shows up before you plan for it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The moment a sales order line is saved, it's visible as demand — no planning run needed to see it. You do still need to run MRP (\"Generate Orders\") to turn that demand into an actual planned production or purchase order."
+            }
+          ],
+          "text": "The moment a sales order line is saved, it's visible as demand — no planning run needed to see it. You do still need to run MRP (\"Generate Orders\") to turn that demand into an actual planned production or purchase order."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Entering a sales order line, then finding it immediately on the planning screen."
+                }
+              ],
+              "text": "Entering a sales order line, then finding it immediately on the planning screen."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Running MRP on a component by itself doesn't pick up its parent item's needs — you have to run it from the top-level item with \"include child items\" turned on, or nothing propagates down the bill of material."
+                }
+              ],
+              "text": "Running MRP on a component by itself doesn't pick up its parent item's needs — you have to run it from the top-level item with \"include child items\" turned on, or nothing propagates down the bill of material."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Turning planned orders into real ones, and receiving them",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Planned orders (MRP's suggestions) get transferred into real purchase/production orders in a batch. Several small receiving rules got worked out live:"
+            }
+          ],
+          "text": "Planned orders (MRP's suggestions) get transferred into real purchase/production orders in a batch. Several small receiving rules got worked out live:"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Multiple planned purchase orders combined into a single real purchase order automatically."
+                }
+              ],
+              "text": "Multiple planned purchase orders combined into a single real purchase order automatically."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A brand-new purchase order can't be received until it's released — printing it is what releases it."
+                }
+              ],
+              "text": "A brand-new purchase order can't be received until it's released — printing it is what releases it."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A moment of confusion — \"why are there two purchase orders with the same number?\" — turned out to be one purchase order with two order lines, just displayed as two rows on a summary screen. Not a bug, just a screen that shows lines, not orders."
+                }
+              ],
+              "text": "A moment of confusion — \"why are there two purchase orders with the same number?\" — turned out to be one purchase order with two order lines, just displayed as two rows on a summary screen. Not a bug, just a screen that shows lines, not orders."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Receiving happens in stages: receive → confirm → (if the warehouse uses locations) advise a location → put away. Confirming isn't the same as putting away."
+                }
+              ],
+              "text": "Receiving happens in stages: receive → confirm → (if the warehouse uses locations) advise a location → put away. Confirming isn't the same as putting away."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If an item is flagged \"location controlled\" but you receive it into a warehouse that isn't set up for locations, LN just ignores the item's flag. The warehouse's setting wins."
+                }
+              ],
+              "text": "If an item is flagged \"location controlled\" but you receive it into a warehouse that isn't set up for locations, LN just ignores the item's flag. The warehouse's setting wins."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Receiving something earlier than its planned date pops a specific warning, sourced from tolerance settings on the item's purchasing data."
+                }
+              ],
+              "text": "Receiving something earlier than its planned date pops a specific warning, sourced from tolerance settings on the item's purchasing data."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "A second kind of demand: contract deliverables",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Sales orders aren't the only thing that can drive planning. A \"contract deliverable\" can too — but it behaves differently."
+            }
+          ],
+          "text": "Sales orders aren't the only thing that can drive planning. A \"contract deliverable\" can too — but it behaves differently."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Unlike a sales order (recognized by planning the instant it's created), a contract deliverable sits inactive until someone deliberately activates it. Left inactive, MRP ignores it completely, with no warning."
+                }
+              ],
+              "text": "Unlike a sales order (recognized by planning the instant it's created), a contract deliverable sits inactive until someone deliberately activates it. Left inactive, MRP ignores it completely, with no warning."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Once activated, it plans and ships the same way a sales order would, but it's tagged to a specific project the whole way through — the production order made for it is \"pegged\" to that one contract."
+                }
+              ],
+              "text": "Once activated, it plans and ships the same way a sales order would, but it's tagged to a specific project the whole way through — the production order made for it is \"pegged\" to that one contract."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The safety-stock puzzle (see the dedicated write-up)",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A safety-stock question from this same session — why setting safety stock to 50 for a test item seemed to generate three separate orders instead of one — is written up separately, since it got fully resolved afterward in a chat thread. Short version: it wasn't really a safety-stock problem at all. Only one of the three orders was actually tied to safety stock; the other two were ordinary orders for two unrelated sales orders that just happened to be sitting in the same list."
+            }
+          ],
+          "text": "A safety-stock question from this same session — why setting safety stock to 50 for a test item seemed to generate three separate orders instead of one — is written up separately, since it got fully resolved afterward in a chat thread. Short version: it wasn't really a safety-stock problem at all. Only one of the three orders was actually tied to safety stock; the other two were ordinary orders for two unrelated sales orders that just happened to be sitting in the same list."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Always run MRP from the top-level item, not a component, when you want the whole bill of material to plan."
+            }
+          ],
+          "text": "Always run MRP from the top-level item, not a component, when you want the whole bill of material to plan."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A \"two orders with the same number\" reading on a summary screen almost certainly means one order with two lines — check line-level detail before assuming a bug."
+            }
+          ],
+          "text": "A \"two orders with the same number\" reading on a summary screen almost certainly means one order with two lines — check line-level detail before assuming a bug."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Contract deliverables need their own documentation — they don't behave like sales orders and nothing in this library explained them before this session."
+            }
+          ],
+          "text": "Contract deliverables need their own documentation — they don't behave like sales orders and nothing in this library explained them before this session."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Demand appears on the planning screen the instant an order is saved; running MRP is a separate step that turns that demand into supply."
+            }
+          ],
+          "text": "Demand appears on the planning screen the instant an order is saved; running MRP is a separate step that turns that demand into supply."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A warehouse's own settings can override an item's own flag — a location-controlled item in a non-location-controlled warehouse gets treated as if it isn't."
+            }
+          ],
+          "text": "A warehouse's own settings can override an item's own flag — a location-controlled item in a non-location-controlled warehouse gets treated as if it isn't."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Not every demand source auto-plans. Sales orders do; contract deliverables have to be turned on first, silently, with nothing telling you why nothing happened if you forget."
+            }
+          ],
+          "text": "Not every demand source auto-plans. Sales orders do; contract deliverables have to be turned on first, silently, with nothing telling you why nothing happened if you forget."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`planning-scenarios_2026-09-03.md`",
+          "href": "planning-scenarios_2026-09-03.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against six frames pulled directly from the recording. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `planning-scenarios_2026-09-03.md` — sourced, dated, and cross-checked against six frames pulled directly from the recording. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<section class="ks-sec" id="badge-indicator">
+  <h2>Badge indicator</h2><p>dot · count</p>
+  <!-- PROVENANCE: rendered-dom · components-iconbutton--with-badge-indicator,
+       2026-08-28 -->
+  <!--
+    A badge is not a free-standing box. Carbon renders it as the LAST CHILD of
+    an icon-only ghost button — `btn btn--lg layout--size-lg btn--ghost
+    btn--icon-only` — after the glyph, and the button is what gives the
+    absolutely-positioned badge its containing block. This fragment used a
+    hand-rolled `position:relative` div with an inline background instead, which
+    demoed the badge's own paint but not the pairing that positions it, and put
+    sink furniture where the component should be.
+
+    `btn--lg` comes with the size pair in the reference and is dropped for
+    having no rule in @carbon/styles (§4.1.12); `layout--size-lg` carries it.
+
+    Not copied: the icon-tooltip popover the story wraps the button in. The sink
+    demos the component, not the story's hover hint (as with combo-button).
+  -->
+  <div class="ks-row">
+    <button type="button" class="rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg>
+      <div class="rux--badge-indicator"></div>
+    </button>
+    <button type="button" class="rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications, 8 unread">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg>
+      <div class="rux--badge-indicator rux--badge-indicator--count">8</div>
+    </button>
+  </div>
+</section>

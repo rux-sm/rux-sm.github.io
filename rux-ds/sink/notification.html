@@ -1,0 +1,264 @@
+<section class="ks-sec" id="notification">
+  <h2>Notification</h2><p>inline · low contrast · toast · actionable</p>
+  <!-- PROVENANCE: rendered-dom · react.carbondesignsystem.com, 2026-08-27
+     components-notifications-inline--default, --toast--default and
+     --actionable--inline. All three variants diffed and matched.
+
+     Three defects the diff found, none of which any name-based gate could see:
+
+     TOAST put its icon inside __details. __details is display:block, so the icon
+     stacked ABOVE the text instead of beside it and every toast was 38px too
+     tall. React makes the icon a direct child of the root, which is a flex row.
+
+     ACTIONABLE borrowed inline-notification__* for its wrappers. It has its own
+     __focus-wrapper, __details, __text-wrapper and __content, all with real
+     rules, and they were going unused.
+
+     The action button carried --btn--sm without --layout--size-sm. --btn--sm
+     sets border-radius and nothing else; the height comes from the layout class,
+     so a "small" button was rendering at 48px. Same trap as --btn--lg in
+     ui-shell.html: size is --layout--size-*, not --btn--<size>.
+
+     The visually-hidden sentinels are copied because React renders them, but
+     nothing here traps focus — they are markup fidelity, not behaviour, and
+     Phase 5 is where they would start doing something. -->
+  <!--
+    The actionable notification renders its internals with the INLINE classes:
+    render() emits `cds--${type}-notification__details` where type is inline|toast.
+    .rux--actionable-notification__* carries no layout of its own.
+
+    The DEFAULT inline notification is high contrast (#393939 on the white theme).
+    --low-contrast is the light one that uses --rux-notification-background-*.
+    Both are shipped states, not a bug.
+  -->
+  <div class="ks-label">inline · default (high contrast)</div>
+  <div style="display:grid;gap:.5rem;margin-block-end:2rem">
+    <!-- BLOCK:BEGIN name=inline-error label="Inline notification" -->
+    <div class="rux--inline-notification rux--inline-notification--error" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Error</div>
+          <div class="rux--inline-notification__subtitle">Something went wrong.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <!-- BLOCK:END inline-error -->
+    <div class="rux--inline-notification rux--inline-notification--warning" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Warning</div>
+          <div class="rux--inline-notification__subtitle">Check this before saving.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--inline-notification rux--inline-notification--success" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Success</div>
+          <div class="rux--inline-notification__subtitle">That worked.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--inline-notification rux--inline-notification--info" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Info</div>
+          <div class="rux--inline-notification__subtitle">Something worth knowing.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ks-label">inline · low contrast</div>
+  <div style="display:grid;gap:.5rem;margin-block-end:2rem">
+    <div class="rux--inline-notification rux--inline-notification--error rux--inline-notification--low-contrast" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Error</div>
+          <div class="rux--inline-notification__subtitle">Something went wrong.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Warning</div>
+          <div class="rux--inline-notification__subtitle">Check this before saving.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--inline-notification rux--inline-notification--success rux--inline-notification--low-contrast" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Success</div>
+          <div class="rux--inline-notification__subtitle">That worked.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
+      <div class="rux--inline-notification__details">
+        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+        <div class="rux--inline-notification__text-wrapper">
+          <div class="rux--inline-notification__title">Info</div>
+          <div class="rux--inline-notification__subtitle">Something worth knowing.</div>
+        </div>
+      </div>
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+        <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ks-label">toast</div>
+  <div style="display:grid;gap:.5rem;margin-block-end:2rem;max-width:22rem">
+    <div class="rux--toast-notification rux--toast-notification--success" role="status">
+      <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+      <div class="rux--toast-notification__details">
+        <div class="rux--toast-notification__title">Saved</div>
+        <div class="rux--toast-notification__subtitle">Your changes are live.</div>
+        <div class="rux--toast-notification__caption">just now</div>
+      </div>
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+        <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--toast-notification rux--toast-notification--error" role="status">
+      <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+      <div class="rux--toast-notification__details">
+        <div class="rux--toast-notification__title">Upload failed</div>
+        <div class="rux--toast-notification__subtitle">The connection dropped at 40%.</div>
+        <div class="rux--toast-notification__caption">just now</div>
+      </div>
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+        <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+    <div class="rux--toast-notification rux--toast-notification--warning" role="status">
+      <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+      <div class="rux--toast-notification__details">
+        <div class="rux--toast-notification__title">Storage almost full</div>
+        <div class="rux--toast-notification__subtitle">92% of your quota is in use.</div>
+        <div class="rux--toast-notification__caption">just now</div>
+      </div>
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+        <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ks-label">actionable</div>
+  <div style="display:grid;gap:.5rem">
+    <div class="rux--actionable-notification rux--actionable-notification--info" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Update available</div>
+              <div class="rux--actionable-notification__subtitle">A newer version is ready to install.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Install</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--error" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Sync failed</div>
+              <div class="rux--actionable-notification__subtitle">Three records could not be written.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Retry</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--warning" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Certificate expires Friday</div>
+              <div class="rux--actionable-notification__subtitle">Renew it to avoid an outage.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Renew</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--success" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Import finished</div>
+              <div class="rux--actionable-notification__subtitle">1,204 rows added.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">View</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+  </div>
+</section>

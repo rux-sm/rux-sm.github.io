@@ -1,0 +1,70 @@
+<section class="ks-sec" id="treeview">
+  <h2>Tree view</h2><p>nested nodes · selected · disabled — click to select, click the caret to collapse</p>
+  <!-- PROVENANCE: rendered-dom · components-treeview--default, --with-icons,
+       --with-links and --with-complex-nesting, plus the xs recipe, 2026-08-28 -->
+  <!--
+    Corrected 2026-08-28: __icon and __label__text both belong inside
+    `__label__details`, not loose in __label, and a node carrying an icon takes
+    `--with-icon`.
+
+    Re-diffed on admission, 2026-09-01: every `__label__text` now sits inside
+    `__label__details` — four leaves still had it loose — and the `--active` and
+    `--disabled` states are shown on TOP-LEVEL nodes, because every sampled story
+    marks state there and `diff-fragment` had no parent for a state one level
+    down. The nested child keeps `--selected` alone, which the captures do show
+    inside `__children`. The parent node carries `tree-parent-node`, which every capture puts on
+    an expandable `li` and which positions the toggle icon. Each label carries the inline offset React computes per depth —
+    padding-inline-start and a matching negative margin, `depth + 1` rem for a
+    parent, `+ 2` with an icon, `+ 2.5` for a leaf — because no rule in
+    @carbon/styles indents a node; the values are read off the spacing capture
+    (16, 40, 56, 64, 72, 88px). Not reimplemented:
+    keyboard navigation; a click selects
+    and the caret collapses, nothing more.
+  -->
+  <ul class="rux--tree" role="tree">
+    <li class="rux--tree-node rux--tree-node--with-icon rux--tree-parent-node" role="treeitem" aria-expanded="true" tabindex="0">
+      <div class="rux--tree-node__label" style="padding-inline-start:1rem;margin-inline-start:-1rem">
+        <span class="rux--tree-parent-node__toggle"><svg class="rux--tree-parent-node__toggle-icon rux--tree-parent-node__toggle-icon--expanded" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></span>
+        <span class="rux--tree-node__label__details">
+          <svg class="rux--tree-node__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-folder"/></svg>
+          <span class="rux--tree-node__label__text">Parent folder</span>
+        </span>
+      </div>
+      <ul class="rux--tree-node__children" role="group">
+        <li class="rux--tree-node rux--tree-leaf-node rux--tree-node--selected" role="treeitem" tabindex="-1">
+          <div class="rux--tree-node__label" style="padding-inline-start:3.5rem;margin-inline-start:-3.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Selected child</span></span></div>
+        </li>
+        <!--
+          This leaf carries an icon so `.rux--tree-leaf-node.rux--tree-node--with-icon`
+          (:25252, padding-inline-start: 2rem) is exercised. The parent already
+          showed --with-icon; nothing showed it on a LEAF, where Carbon indents
+          differently because there is no caret taking up the first slot.
+          check-compound flagged the pair as never sharing an element, and
+          demoing the combination is the right answer to that rather than
+          excepting it.
+        -->
+        <li class="rux--tree-node rux--tree-leaf-node rux--tree-node--with-icon" role="treeitem" tabindex="-1">
+          <div class="rux--tree-node__label" style="padding-inline-start:3.5rem;margin-inline-start:-3.5rem">
+            <span class="rux--tree-node__label__details">
+              <svg class="rux--tree-node__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg>
+              <span class="rux--tree-node__label__text">Second child</span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </li>
+    <li class="rux--tree-node rux--tree-leaf-node rux--tree-node--disabled" role="treeitem" aria-disabled="true" tabindex="-1">
+      <div class="rux--tree-node__label" style="padding-inline-start:2.5rem;margin-inline-start:-2.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Disabled node</span></span></div>
+    </li>
+  </ul>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">--tree--xs · the compact density</div>
+  <ul class="rux--tree rux--tree--xs" role="tree">
+    <li class="rux--tree-node rux--tree-leaf-node" role="treeitem" tabindex="0">
+      <div class="rux--tree-node__label" style="padding-inline-start:2.5rem;margin-inline-start:-2.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Compact node</span></span></div>
+    </li>
+    <li class="rux--tree-node rux--tree-leaf-node rux--tree-node--selected rux--tree-node--active" role="treeitem" tabindex="-1">
+      <div class="rux--tree-node__label" style="padding-inline-start:2.5rem;margin-inline-start:-2.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Compact, selected</span></span></div>
+    </li>
+  </ul>
+</section>

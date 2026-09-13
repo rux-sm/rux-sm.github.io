@@ -1,0 +1,97 @@
+<section class="ks-sec" id="spacing">
+  <h2>Spacing</h2><p>the thirteen steps · token · rem · px</p>
+  <!-- PROVENANCE: source · @carbon/layout/scss/generated/_spacing.scss, 2026-08-29 ·
+       $spacing-01 through -13 read from the package this build compiles, and the
+       swatches are sized by the emitted custom properties rather than by those
+       numbers, so the page checks the values rather than restating them. There is
+       no DOM capture to diff against: carbondesignsystem.com/elements/spacing is a
+       gatsby-theme-carbon docs page, and its table markup is the SITE's, not
+       Carbon's — see docs/verifying-templates.md, step 4. -->
+  <!--
+    A FOUNDATION, NOT A COMPONENT. Every other fragment here demos a compiled
+    component; this one demos the scale those components space themselves on. It
+    exists because all thirteen `--rux-spacing-*` custom properties ship in
+    css/rux.css and NOTHING on the page showed them — the scale was visible only
+    as a side effect of the stack strip, labelled by step number and in px only.
+
+    THE TOKENS ARE REFERENCED ZERO TIMES BY OUR OWN STYLESHEET, and that is
+    Carbon's design rather than a fault. Sass compiles the literal `0.125rem`
+    into every rule — `.rux--stack-scale-1` sets `--rux-stack-gap: 0.125rem`, not
+    `var(--rux-spacing-01)`. Roughly 312 of the 602 defined tokens sit the same
+    way.
+
+    WHAT CARBON DOCUMENTS IS THE SASS API, NOT THESE. Checked against
+    carbondesignsystem.com/elements/spacing/code on 2026-08-29: it describes
+    `@use '@carbon/layout'` and `layout.$spacing-05`, and its API table lists the
+    Sass exports only — no custom property appears anywhere on that page. An
+    earlier draft of this comment called these "the public API a page author
+    uses", which overstated it.
+
+    They are emitted all the same, by the THEME layer: `--rux-spacing-01` sits
+    among the colour tokens inside both the white and g100 blocks of
+    css/rux.css, with the same value in each, since spacing does not vary by
+    theme. That is Carbon's own output compiled unmodified.
+
+    So the honest claim is narrower and still the reason this section exists:
+    rux-ds ships CSS and gives its consumers no Sass, so the custom property is
+    the ONLY form in which the scale can be reached here. The documented API is
+    unavailable by construction. This project's consumer is Claude Code
+    generating pages, and these are the names such a page needs for spacing no
+    component provides.
+
+    REM IS THE VALUE; PX IS THE RENDER. Carbon defines the scale in rem, so the
+    px column is what it computes to at a 16px root and nothing more. The stack
+    strip states px alone, which quietly bakes in that root.
+
+    NO `rux--data-table` HERE, deliberately. A table would be the obvious markup
+    and it would raise data-table's coverage from a section demoing none of it —
+    the same reason the sink's own chrome carries no `rux--` classes at all
+    (roadmap §4.6, "the instrument may not be built out of the thing it
+    measures"). The layout is `ks-scale`, the harness's own grid.
+  -->
+  <div class="ks-scale">
+    <div class="ks-label">Token</div>
+    <div class="ks-label">rem</div>
+    <div class="ks-label">px</div>
+    <div class="ks-label">Example</div>
+
+    <code>--rux-spacing-01</code><div>0.125</div><div>2</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-01)"></div>
+
+    <code>--rux-spacing-02</code><div>0.25</div><div>4</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-02)"></div>
+
+    <code>--rux-spacing-03</code><div>0.5</div><div>8</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-03)"></div>
+
+    <code>--rux-spacing-04</code><div>0.75</div><div>12</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-04)"></div>
+
+    <code>--rux-spacing-05</code><div>1</div><div>16</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-05)"></div>
+
+    <code>--rux-spacing-06</code><div>1.5</div><div>24</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-06)"></div>
+
+    <code>--rux-spacing-07</code><div>2</div><div>32</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-07)"></div>
+
+    <code>--rux-spacing-08</code><div>2.5</div><div>40</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-08)"></div>
+
+    <code>--rux-spacing-09</code><div>3</div><div>48</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-09)"></div>
+
+    <code>--rux-spacing-10</code><div>4</div><div>64</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-10)"></div>
+
+    <code>--rux-spacing-11</code><div>5</div><div>80</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-11)"></div>
+
+    <code>--rux-spacing-12</code><div>6</div><div>96</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-12)"></div>
+
+    <code>--rux-spacing-13</code><div>10</div><div>160</div>
+    <div class="ks-swatch" style="--ks-swatch: var(--rux-spacing-13)"></div>
+  </div>
+</section>

@@ -1,0 +1,1049 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "kind": "summary",
+  "id": "sales-and-production-order-training_2026-08-11_summary",
+  "title": "Sales and Production Order Training — Summary",
+  "updated": "2026-09-02",
+  "status": "draft",
+  "sources": [
+    "tcibd0501m100",
+    "ticst0101m100",
+    "tirou4100m000",
+    "tisfc0101m100",
+    "tisfc0130m000",
+    "tisfc0501m000",
+    "whinh0106m000",
+    "whinh2100m000",
+    "whinh2100m100",
+    "whinh2129m000",
+    "whinr1510m000",
+    "whwmd2515m000"
+  ],
+  "covered": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Review of a trainee's earlier Ship from stock exercise, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order exercise — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
+        }
+      ],
+      "text": "Review of a trainee's earlier Ship from stock exercise, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order exercise — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
+    }
+  ],
+  "topics": [
+    {
+      "title": "Ship from stock, confirmed working",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The trainee's earlier shipment of item "
+            },
+            {
+              "t": "literal",
+              "v": "9010-2010"
+            },
+            {
+              "t": "text",
+              "v": " was checked against inventory and confirmed correct."
+            }
+          ],
+          "text": "The trainee's earlier shipment of item 9010-2010 was checked against inventory and confirmed correct."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " — starting position: "
+                },
+                {
+                  "t": "strong",
+                  "v": "On Hand"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "966"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "On Order"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "60"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Allocated"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "210"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Blocked"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Economic Stock"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "816"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) — starting position: On Hand 966, On Order 60, Allocated 210, Blocked 0, Economic Stock 816."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinr1510m000",
+                  "name": "Inventory Transactions"
+                },
+                {
+                  "t": "text",
+                  "v": " — after the shipment, an "
+                },
+                {
+                  "t": "strong",
+                  "v": "Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " transaction of "
+                },
+                {
+                  "t": "literal",
+                  "v": "5.000"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Inventory After Transaction"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "961.000"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Inventory Transactions (whinr1510m000) — after the shipment, an Issue transaction of 5.000 and Inventory After Transaction 961.000."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "966 − 961 = 5"
+                },
+                {
+                  "t": "text",
+                  "v": " — exactly the shipped quantity. The shipment worked as it should."
+                }
+              ],
+              "text": "966 − 961 = 5 — exactly the shipped quantity. The shipment worked as it should."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Why some warehousing steps are manual and others aren't",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Whether a step (generating advice, picking, confirming a shipment) runs by itself or needs someone to click it comes from the "
+            },
+            {
+              "t": "strong",
+              "v": "procedure"
+            },
+            {
+              "t": "text",
+              "v": " attached to the order's type, configured in "
+            },
+            {
+              "t": "session",
+              "code": "whinh0106m000",
+              "name": "Activities by Procedure"
+            },
+            {
+              "t": "text",
+              "v": " — an "
+            },
+            {
+              "t": "strong",
+              "v": "Automatic"
+            },
+            {
+              "t": "text",
+              "v": " setting per activity. It's a configuration choice, not a fixed rule of the software; different order types can behave completely differently."
+            }
+          ],
+          "text": "Whether a step (generating advice, picking, confirming a shipment) runs by itself or needs someone to click it comes from the procedure attached to the order's type, configured in Activities by Procedure (whinh0106m000) — an Automatic setting per activity. It's a configuration choice, not a fixed rule of the software; different order types can behave completely differently."
+        }
+      ]
+    },
+    {
+      "title": "The learning method: trace, don't memorize",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "When a field defaults to a value you didn't expect, the trainer's advice was to trace it back to where it actually comes from — the item master, business-partner data, order type, sales user profile — using the session's own "
+            },
+            {
+              "t": "strong",
+              "v": "Help"
+            },
+            {
+              "t": "text",
+              "v": " control, rather than guessing or memorizing \"it's always X.\" No single default source was actually pinned down in this session; these were framed as questions to go investigate, not answers."
+            }
+          ],
+          "text": "When a field defaults to a value you didn't expect, the trainer's advice was to trace it back to where it actually comes from — the item master, business-partner data, order type, sales user profile — using the session's own Help control, rather than guessing or memorizing \"it's always X.\" No single default source was actually pinned down in this session; these were framed as questions to go investigate, not answers."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "One of them now has an answer: a sales order's "
+            },
+            {
+              "t": "strong",
+              "v": "order type"
+            },
+            {
+              "t": "text",
+              "v": " defaults from the customer record, and if the customer has none set, falls back to the current user's sales profile."
+            }
+          ],
+          "text": "One of them now has an answer: a sales order's order type defaults from the customer record, and if the customer has none set, falls back to the current user's sales profile."
+        }
+      ]
+    },
+    {
+      "title": "A real BOM validation failure",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What was shown:"
+            }
+          ],
+          "text": "What was shown:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Built or reviewed item "
+                },
+                {
+                  "t": "literal",
+                  "v": "9010-2010"
+                },
+                {
+                  "t": "text",
+                  "v": ", its job-shop BOM, and its routing."
+                }
+              ],
+              "text": "Built or reviewed item 9010-2010, its job-shop BOM, and its routing."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ran "
+                },
+                {
+                  "t": "strong",
+                  "v": "Validate Job Shop Routing"
+                },
+                {
+                  "t": "text",
+                  "v": " from "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou4100m000",
+                  "name": "Job Shop Routings"
+                },
+                {
+                  "t": "text",
+                  "v": " for routing "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ", revision "
+                },
+                {
+                  "t": "literal",
+                  "v": "000001"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Ran Validate Job Shop Routing from Job Shop Routings (tirou4100m000) for routing 0, revision 000001."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The report came back "
+                },
+                {
+                  "t": "strong",
+                  "v": "\"Loop found in Multilevel BOM\""
+                },
+                {
+                  "t": "text",
+                  "v": ", with the loop path shown."
+                }
+              ],
+              "text": "The report came back \"Loop found in Multilevel BOM\", with the loop path shown."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is a genuine, learnable validation failure — worth recognizing if you hit it again, though exactly what LN checks to produce it isn't documented anywhere available yet."
+            }
+          ],
+          "text": "This is a genuine, learnable validation failure — worth recognizing if you hit it again, though exactly what LN checks to produce it isn't documented anywhere available yet."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The recording also showed "
+            },
+            {
+              "t": "strong",
+              "v": "Approve Revision"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "strong",
+              "v": "Use for Planning"
+            },
+            {
+              "t": "text",
+              "v": ", and "
+            },
+            {
+              "t": "strong",
+              "v": "Use for Costing"
+            },
+            {
+              "t": "text",
+              "v": " actions on the BOM/routing records. These are real: only one BOM (and one routing) per item and site can be \"used for planning\" at a time, and only one per product can be \"used for costing\" — the check box picks the winner when more than one candidate exists."
+            }
+          ],
+          "text": "The recording also showed Approve Revision, Use for Planning, and Use for Costing actions on the BOM/routing records. These are real: only one BOM (and one routing) per item and site can be \"used for planning\" at a time, and only one per product can be \"used for costing\" — the check box picks the winner when more than one candidate exists."
+        }
+      ]
+    },
+    {
+      "title": "A clean, complete material-issue run",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Unlike the earlier (2026-08-06) session's mistaken attempt, this run went cleanly end to end:"
+            }
+          ],
+          "text": "Unlike the earlier (2026-08-06) session's mistaken attempt, this run went cleanly end to end:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0101m100",
+                  "name": "Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " — order "
+                },
+                {
+                  "t": "literal",
+                  "v": "010000744"
+                },
+                {
+                  "t": "text",
+                  "v": " for item "
+                },
+                {
+                  "t": "literal",
+                  "v": "9010-2010"
+                },
+                {
+                  "t": "text",
+                  "v": ", quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": "; BOM "
+                },
+                {
+                  "t": "literal",
+                  "v": "JB0000238"
+                },
+                {
+                  "t": "text",
+                  "v": " rev "
+                },
+                {
+                  "t": "literal",
+                  "v": "000002"
+                },
+                {
+                  "t": "text",
+                  "v": ", routing "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " rev "
+                },
+                {
+                  "t": "literal",
+                  "v": "000001"
+                },
+                {
+                  "t": "text",
+                  "v": ", warehouse "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02 RAW MATERIALS"
+                },
+                {
+                  "t": "text",
+                  "v": ", two operations; status "
+                },
+                {
+                  "t": "strong",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Production Order (tisfc0101m100) — order 010000744 for item 9010-2010, quantity 1; BOM JB0000238 rev 000002, routing 0 rev 000001, warehouse ADNA02 RAW MATERIALS, two operations; status Created."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Release Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " run from "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000",
+                  "name": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " — this is literally what \"release to the job shop\" means; it's also what changes the order's status to Released."
+                }
+              ],
+              "text": "Release Orders run from Production Orders (tisfc0501m000) — this is literally what \"release to the job shop\" means; it's also what changes the order's status to Released."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ticst0101m100",
+                  "name": "Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " — material "
+                },
+                {
+                  "t": "literal",
+                  "v": "100400"
+                },
+                {
+                  "t": "text",
+                  "v": " showed "
+                },
+                {
+                  "t": "strong",
+                  "v": "Estimated"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actual Qty"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.000"
+                },
+                {
+                  "t": "text",
+                  "v": " after release."
+                }
+              ],
+              "text": "Material to Issue for Production Orders (ticst0101m100) — material 100400 showed Estimated 2.000, Actual Qty 0.000, To Issue by Warehouse 2.000 after release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " showed a planned production receipt and an open production issue for the order. The issue's detail ("
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100"
+                },
+                {
+                  "t": "text",
+                  "v": ") showed order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "30 — Production (Out)"
+                },
+                {
+                  "t": "text",
+                  "v": ", source "
+                },
+                {
+                  "t": "literal",
+                  "v": "ADNA02 RAW MATERIALS"
+                },
+                {
+                  "t": "text",
+                  "v": ", destination work center "
+                },
+                {
+                  "t": "literal",
+                  "v": "A1000"
+                },
+                {
+                  "t": "text",
+                  "v": "."
+                }
+              ],
+              "text": "Warehousing Orders (whinh2100m000) showed a planned production receipt and an open production issue for the order. The issue's detail (whinh2100m100) showed order type 30 — Production (Out), source ADNA02 RAW MATERIALS, destination work center A1000."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2129m000",
+                  "name": "Outbound Line Status Overview"
+                },
+                {
+                  "t": "text",
+                  "v": " — ordered quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "strong",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " both unfinished and non-automatic. Both were then run manually. (This is controlled by settings on the material line that decide whether the warehouse side kicks off automatically on release or needs a manual push — consistent with what was seen here, though which exact setting this environment uses wasn't pinned down.)"
+                }
+              ],
+              "text": "Outbound Line Status Overview (whinh2129m000) — ordered quantity 2, with Generate Outbound Advice and Release Outbound Advice both unfinished and non-automatic. Both were then run manually. (This is controlled by settings on the material line that decide whether the warehouse side kicks off automatically on release or needs a manual push — consistent with what was seen here, though which exact setting this environment uses wasn't pinned down.)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The issue order reached "
+                },
+                {
+                  "t": "strong",
+                  "v": "Shipped"
+                },
+                {
+                  "t": "text",
+                  "v": ", ordered/advised quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": ". Back in "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100"
+                },
+                {
+                  "t": "text",
+                  "v": ": production order "
+                },
+                {
+                  "t": "strong",
+                  "v": "Active"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "Actual Qty"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.000"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "strong",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ". (Active specifically means a real transaction — like this material issue — has happened against the order.)"
+                }
+              ],
+              "text": "The issue order reached Shipped, ordered/advised quantity 2. Back in ticst0101m100: production order Active, Actual Qty 2.000, To Issue by Warehouse 0. (Active specifically means a real transaction — like this material issue — has happened against the order.)"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "This is the version to learn the material-issue flow from — the earlier session's version is not."
+            }
+          ],
+          "text": "This is the version to learn the material-issue flow from — the earlier session's version is not."
+        }
+      ]
+    },
+    {
+      "title": "Completion left for later",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The remaining steps — completing the operations, receiving the finished item through the receipt warehousing order, and reporting the production order complete — were assigned as follow-up, not demonstrated live. "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0130m000",
+              "name": "Report Operations Completed"
+            },
+            {
+              "t": "text",
+              "v": " records production progress, and its "
+            },
+            {
+              "t": "strong",
+              "v": "Quantity Delivered"
+            },
+            {
+              "t": "text",
+              "v": " field is the finished-goods quantity posted to inventory, same as seen in the 2026-08-06 session."
+            }
+          ],
+          "text": "The remaining steps — completing the operations, receiving the finished item through the receipt warehousing order, and reporting the production order complete — were assigned as follow-up, not demonstrated live. Report Operations Completed (tisfc0130m000) records production progress, and its Quantity Delivered field is the finished-goods quantity posted to inventory, same as seen in the 2026-08-06 session."
+        }
+      ]
+    },
+    {
+      "title": "What's next: planning before subcontracting",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The group chose to walk through "
+            },
+            {
+              "t": "strong",
+              "v": "planning"
+            },
+            {
+              "t": "text",
+              "v": " next, before touching "
+            },
+            {
+              "t": "strong",
+              "v": "subcontracting"
+            },
+            {
+              "t": "text",
+              "v": " — subcontracting needs more setup and the available trainer had less recent experience with it. The "
+            },
+            {
+              "t": "strong",
+              "v": "Default Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " field on the item record ("
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100"
+            },
+            {
+              "t": "text",
+              "v": ") determines an item's default supply method when on-hand is insufficient, which is where the planning discussion picked up."
+            }
+          ],
+          "text": "The group chose to walk through planning next, before touching subcontracting — subcontracting needs more setup and the available trainer had less recent experience with it. The Default Supply Source field on the item record (tcibd0501m100) determines an item's default supply method when on-hand is insufficient, which is where the planning discussion picked up."
+        }
+      ]
+    }
+  ],
+  "decided": [
+    {
+      "kind": "list",
+      "ordered": true,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Walk through planning end-to-end before starting subcontracting training."
+            }
+          ],
+          "text": "Walk through planning end-to-end before starting subcontracting training."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Teach execution (running orders) and planning as two separate learning blocks for now."
+            }
+          ],
+          "text": "Teach execution (running orders) and planning as two separate learning blocks for now."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Finish the in-progress production-order exercise (completion and receipt) after this meeting, rather than treating it as done."
+            }
+          ],
+          "text": "Finish the in-progress production-order exercise (completion and receipt) after this meeting, rather than treating it as done."
+        }
+      ]
+    }
+  ],
+  "takeaways": [
+    {
+      "kind": "list",
+      "ordered": false,
+      "items": [
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Manual-vs-automatic warehousing behavior comes from the order type's configured procedure — always check that before assuming a step is \"supposed to\" require a click."
+            }
+          ],
+          "text": "Manual-vs-automatic warehousing behavior comes from the order type's configured procedure — always check that before assuming a step is \"supposed to\" require a click."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "When a default looks wrong or surprising, trace it to its source instead of guessing — sales order type, for example, traces to the customer record, then the user's sales profile."
+            }
+          ],
+          "text": "When a default looks wrong or surprising, trace it to its source instead of guessing — sales order type, for example, traces to the customer record, then the user's sales profile."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Only one BOM (and one routing) per item/site can be \"used for planning\" or \"used for costing\" at a time."
+            }
+          ],
+          "text": "Only one BOM (and one routing) per item/site can be \"used for planning\" or \"used for costing\" at a time."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "\"Loop found in Multilevel BOM\" is a real, learnable validation error — not a bug."
+            }
+          ],
+          "text": "\"Loop found in Multilevel BOM\" is a real, learnable validation error — not a bug."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A production order becomes "
+            },
+            {
+              "t": "strong",
+              "v": "Active"
+            },
+            {
+              "t": "text",
+              "v": " the moment a real transaction (like a material issue) happens against it, not just from being released."
+            }
+          ],
+          "text": "A production order becomes Active the moment a real transaction (like a material issue) happens against it, not just from being released."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "The material-issue run in "
+            },
+            {
+              "t": "em",
+              "v": "this"
+            },
+            {
+              "t": "text",
+              "v": " session (order "
+            },
+            {
+              "t": "literal",
+              "v": "010000744"
+            },
+            {
+              "t": "text",
+              "v": ") is the clean example to learn from; the 2026-08-06 session's version is not."
+            }
+          ],
+          "text": "The material-issue run in this session (order 010000744) is the clean example to learn from; the 2026-08-06 session's version is not."
+        },
+        {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Planning is the next topic to study; subcontracting is deferred."
+            }
+          ],
+          "text": "Planning is the next topic to study; subcontracting is deferred."
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Full record:"
+        },
+        {
+          "t": "text",
+          "v": " "
+        },
+        {
+          "t": "link",
+          "v": "`sales-and-production-order-training_2026-08-11.md`",
+          "href": "sales-and-production-order-training_2026-08-11.md"
+        },
+        {
+          "t": "text",
+          "v": " — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+        }
+      ],
+      "text": "Full record: `sales-and-production-order-training_2026-08-11.md` — sourced, dated, and cross-checked against official documentation. Read that version before relying on anything here for implementation work; this page is for orientation only."
+    }
+  ]
+}

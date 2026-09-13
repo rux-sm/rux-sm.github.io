@@ -4,6 +4,29 @@ Every dated pass and answered decision, newest first. `AGENTS.md` is the
 policy; `docs/backend-inventory.md` and `docs/screen-inventory.md` are the
 two inventories the rebuild starts from.
 
+**2026-09-13 - an unconfirmed trip is filled like every other bar.** rux: "i
+want the trips bars to have solid color background insted of only confirmed
+trips."
+
+An unconfirmed bar was hollow: the layer's own surface inside a dashed edge in
+its hue. It now takes its hue's tag fill and hover like any bar. **THE DASHED
+EDGE STAYS**, because a picked colour outranks status in `hueFor`: an
+unconfirmed trip with no picked colour is still red against confirmed blue, but
+on a teal trip the edge is now the only mark left saying unconfirmed. Whether
+the edge is wanted on a filled bar is rux's to say on seeing it.
+
+Measured on the specimen before and after, all eleven bars in all eight themes:
+exactly 16 values changed, the background of the two unconfirmed bars, and
+nothing else -- text colour, borders, padding, shadow and position identical.
+Each new fill equals `--rux-tag-background-<hue>` in every theme; hovered,
+Newport computes `--rux-tag-hover-purple`. The cost is contrast: the dark
+surface gave these bars more than a fill does, 8.8 for the destination and 5.7
+for the reference before, and the blue one now has Boston's pair, 5.9 and 4.0.
+
+Not covered: the live board needs rux's sign-in and was not opened. Its two
+unconfirmed bars in rux's screenshot of this week, Houston and Roma, are
+expected to draw solid red with a lighter dashed edge; not seen.
+
 **2026-09-11 (seventh pass) - the No bus head takes its own track's colour, and
 the divider between them pays for it.** rux: "let make the No bus header match
 the track color."

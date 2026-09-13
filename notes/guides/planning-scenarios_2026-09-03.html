@@ -48,16 +48,16 @@
    `stack-horizontal` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a `rux--` one: check-classes
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. `.rux--tag` is inline-flex already; this
@@ -84,7 +84,7 @@
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -95,7 +95,7 @@
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -104,21 +104,21 @@
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -126,11 +126,11 @@
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -138,21 +138,21 @@
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and `display: flex` keeps each
@@ -165,7 +165,7 @@
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -174,7 +174,7 @@
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -182,8 +182,8 @@
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -194,62 +194,62 @@
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its `cols`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* `hidden` alone loses to Carbon's `.rux--tile { display: block }`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -259,9 +259,9 @@
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A `rux--tile`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way `ln-q`
-   and `ln-ex-work` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are `ln-dg-node`, not `ln-tile` --
+   surface rather than sitting flush on the page background, the way `notes-q`
+   and `notes-ex-work` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are `notes-dg-node`, not `notes-tile` --
    they used to be, and nesting a real `rux--tile` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -269,7 +269,7 @@
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    `<figcaption>` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while `.ln-dg-grid` sizes to `max-content` and sets the scroll
+   VISIBLE width while `.notes-dg-grid` sizes to `max-content` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -294,7 +294,7 @@
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    `minmax(7rem, 1fr)` -- every column the same width, and every one of them
@@ -330,7 +330,7 @@
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -361,9 +361,9 @@
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -374,8 +374,8 @@
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -387,7 +387,7 @@
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   `.ln-dg-stage` lost its `border-block-end` above. That line was drawn per
+   `.notes-dg-stage` lost its `border-block-end` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -405,7 +405,7 @@
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own `boundary` flag. The band
@@ -419,7 +419,7 @@
    `align-self` IS LOAD-BEARING: the grid sets `align-items: start` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. `Enterprise Planning`
@@ -448,11 +448,11 @@
    `module: Enterprise Planning` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -461,18 +461,18 @@
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -482,12 +482,12 @@
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are `diagram.*.nodes-marked` in MEASURED now.) Its key reuses
-   `ln-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
+   `notes-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -498,7 +498,7 @@
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes `.ln-dg`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes `.notes-dg`'s
    scroll container -- `overflow-x: auto` computes `overflow-y` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -521,7 +521,7 @@
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -530,13 +530,13 @@
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -550,14 +550,14 @@
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -566,7 +566,7 @@
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -574,7 +574,7 @@
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -597,26 +597,26 @@
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -624,23 +624,23 @@
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See `field()` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line `Do` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -652,19 +652,19 @@
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   `ln-dg-node` and the same `ln-dg-cat--*` class the canvas uses, so it takes
+   `notes-dg-node` and the same `notes-dg-cat--*` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY `ln-dg-key-tile` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY `notes-dg-key-tile` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a `:not()` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* `ln-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   `ln-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above `.ln-dg-node-link`. Two rules
+/* `notes-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   `notes-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above `.notes-dg-node-link`. Two rules
    defined one class, and the legend silently inherited the mark's
    `text-transform: uppercase`, `font-weight: 600` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. `check-classes` validates `rux--*` names
@@ -675,10 +675,10 @@
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* `inline-block`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a `<span>` wearing `ln-dg-node`, which is a tile's class and expects a
+   is a `<span>` wearing `notes-dg-node`, which is a tile's class and expects a
    block box; the name inside is `display: block`. While the `li` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the `li` rule with them, the span went back to
@@ -690,8 +690,8 @@
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then `kind` chose a HUE, five
    of them, on a page with no legend -- and `decision` and `outcome` chose
@@ -739,13 +739,13 @@
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -753,18 +753,18 @@
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -781,7 +781,7 @@
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two `:not()`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   `.ln-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
+   `.notes-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -792,7 +792,7 @@
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: `:has(.ln-dg-node-code)` is the test the stripe rule
+   nothing to derive: `:has(.notes-dg-node-code)` is the test the stripe rule
    already used.
 
    NOT `layer-01`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -802,22 +802,22 @@
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -841,7 +841,7 @@
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: `.ln-dg-node.ln-dg-legend-tile` and `.ln-dg-node.ln-dg-cat--config` are
+   lost: `.notes-dg-node.notes-dg-legend-tile` and `.notes-dg-node.notes-dg-cat--config` are
    both two classes, so the later won and Setup kept `padding-inline-start: 0`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of `docs/diagram.md` records,
@@ -854,17 +854,17 @@
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. `.ln-dg` scrolls on the inline axis, so a
+   scrolling rather than a preference. `.notes-dg` scrolls on the inline axis, so a
    block child of it -- which is what a `<figcaption>` is -- is laid out at the
    VISIBLE width while the grid inside sizes to `max-content` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to `.ln-dg-grid`, which already spans the whole table, and
+   So the rule moves to `.notes-dg-grid`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -877,25 +877,25 @@
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS `position: fixed` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1201,7 +1201,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Planning Scenarios — Review</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Review</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-05</span></span>
@@ -1211,7 +1211,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-objective">
           <h2 id="s-objective">Objective</h2>
-          <p class="ln-prose-measure">Free-form training session on Enterprise Planning end to end: a sales order recognized as demand, MRP generating planned production and purchase orders, transferring planned orders to execution, receiving through to put-away, and two second-order demand sources (a project contract deliverable, and a safety-stock top-up) pegged the same way as ordinary sales demand. Unlike the guided walkthroughs this library has reviewed before, this session had no script — the trainee drove, hit real system behavior live, and the group worked several open questions out on screen as they went.</p>
+          <p class="notes-prose-measure">Free-form training session on Enterprise Planning end to end: a sales order recognized as demand, MRP generating planned production and purchase orders, transferring planned orders to execution, receiving through to put-away, and two second-order demand sources (a project contract deliverable, and a safety-stock top-up) pegged the same way as ordinary sales demand. Unlike the guided walkthroughs this library has reviewed before, this session had no script — the trainee drove, hit real system behavior live, and the group worked several open questions out on screen as they went.</p>
         </section>
 
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-attendees">
@@ -1229,77 +1229,77 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </table>
         </div>
       </div>
-          <p class="ln-prose-measure">Roles beyond the consultant (coaching language, &quot;let&#39;s see the help&quot;, &quot;the answer is on the screen&quot;) and the trainee (status bar user, screen-share owner) are confirmed by the recording itself — the video-call participant panel is visible in every frame pulled. This is stronger attendee evidence than prior reviews in this library, which relied on narration alone.</p>
+          <p class="notes-prose-measure">Roles beyond the consultant (coaching language, &quot;let&#39;s see the help&quot;, &quot;the answer is on the screen&quot;) and the trainee (status bar user, screen-share owner) are confirmed by the recording itself — the video-call participant panel is visible in every frame pulled. This is stronger attendee evidence than prior reviews in this library, which relied on narration alone.</p>
         </section>
 
       <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-topics">
           <h2 id="h-topics">Key topics discussed</h2>
           <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.1">
             <h3 id="t-3.1">3.1 Demand is recognized the instant a sales order line is entered</h3>
-            <p class="ln-prose-measure">Creating a sales order line makes it visible on <span class="ln-t-named">Item Order Plan</span> <span class="ln-t-exact">cprrp0520m000</span> immediately, before any planning run: <em>&quot;as soon as the order is entered, the demand is recognized.&quot;</em> MRP (&quot;Generate Orders...&quot;) still has to run to turn that demand into planned supply, but the demand itself needs no run to appear. Confirmed on screen for <span class="ln-t-exact">BAM-CHOP-PAIR</span>, order <span class="ln-t-exact">100000669</span>.</p>
+            <p class="notes-prose-measure">Creating a sales order line makes it visible on <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> immediately, before any planning run: <em>&quot;as soon as the order is entered, the demand is recognized.&quot;</em> MRP (&quot;Generate Orders...&quot;) still has to run to turn that demand into planned supply, but the demand itself needs no run to appear. Confirmed on screen for <span class="notes-t-exact">BAM-CHOP-PAIR</span>, order <span class="notes-t-exact">100000669</span>.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.2">
             <h3 id="t-3.2">3.2 Generate Orders only traverses the BOM from where you run it</h3>
-            <p class="ln-prose-measure">Running <strong>Generate Orders...</strong> on a <strong>component</strong> item does not pick up its <strong>parent&#39;s</strong> demand — the trainee ran it on <span class="ln-t-exact">BAM-SLEEVE</span> directly and nothing propagated up. Running it on the <strong>top-level</strong> item (<span class="ln-t-exact">BAM-CHOP-PAIR</span>) with <strong>Include Child Items</strong> selected is what walks the BOM down and generates supply for the components. The consultant&#39;s diagnosis on screen: <em>&quot;I don&#39;t know why I didn&#39;t traverse your BOM or pick up the components because I didn&#39;t run the... I generated on the child item&quot;</em> — corrected by re-running from the parent. This is a procedural trap worth a guide callout wherever generation is first taught.</p>
+            <p class="notes-prose-measure">Running <strong>Generate Orders...</strong> on a <strong>component</strong> item does not pick up its <strong>parent&#39;s</strong> demand — the trainee ran it on <span class="notes-t-exact">BAM-SLEEVE</span> directly and nothing propagated up. Running it on the <strong>top-level</strong> item (<span class="notes-t-exact">BAM-CHOP-PAIR</span>) with <strong>Include Child Items</strong> selected is what walks the BOM down and generates supply for the components. The consultant&#39;s diagnosis on screen: <em>&quot;I don&#39;t know why I didn&#39;t traverse your BOM or pick up the components because I didn&#39;t run the... I generated on the child item&quot;</em> — corrected by re-running from the parent. This is a procedural trap worth a guide callout wherever generation is first taught.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.3">
             <h3 id="t-3.3">3.3 Combine Orders, reproduced on a second item</h3>
-            <p class="ln-prose-measure"><strong>`the source on file`</strong> — status bar <span class="ln-t-exact">cprrp0520m000</span>, <span class="ln-t-exact">BAM-SLEEVE</span>, shows the same <strong>Combine Orders</strong> outcome this library already documented for <span class="ln-t-exact">BAM-ROD</span> on 2026-08-25 (<span class="ln-t-exact">the source on file</span> §9.1): multiple <strong>Purchase Order Advice</strong> rows against one <strong>Purchase Order</strong> <span class="ln-t-exact">100000688</span>. This second, independent instance corroborates the earlier finding rather than opening a new question.</p>
+            <p class="notes-prose-measure"><strong>`the source on file`</strong> — status bar <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-exact">BAM-SLEEVE</span>, shows the same <strong>Combine Orders</strong> outcome this library already documented for <span class="notes-t-exact">BAM-ROD</span> on 2026-08-25 (<span class="notes-t-exact">the source on file</span> §9.1): multiple <strong>Purchase Order Advice</strong> rows against one <strong>Purchase Order</strong> <span class="notes-t-exact">100000688</span>. This second, independent instance corroborates the earlier finding rather than opening a new question.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.4">
             <h3 id="t-3.4">3.4 A PO can&#39;t be received until it&#39;s released — and Status Overview shows why</h3>
-            <p class="ln-prose-measure">Narrated and shown: a freshly created PO cannot be received. <em>&quot;If it&#39;s created, the warehousing is not going to see it.&quot;</em> The <strong>Status Overview</strong> command (right-click a PO line, or a toolbar command) shows the document&#39;s progression — Created → Printed → Released → Warehousing sees it. The group tested this live rather than taking it as given: attempted a receipt on a <span class="ln-t-exact">Created</span> PO, confirmed it failed, printed the PO (which auto-released it), and confirmed receiving then worked.</p>
+            <p class="notes-prose-measure">Narrated and shown: a freshly created PO cannot be received. <em>&quot;If it&#39;s created, the warehousing is not going to see it.&quot;</em> The <strong>Status Overview</strong> command (right-click a PO line, or a toolbar command) shows the document&#39;s progression — Created → Printed → Released → Warehousing sees it. The group tested this live rather than taking it as given: attempted a receipt on a <span class="notes-t-exact">Created</span> PO, confirmed it failed, printed the PO (which auto-released it), and confirmed receiving then worked.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.5">
             <h3 id="t-3.5">3.5 &quot;Why are there two POs with the same number?&quot; — resolved: one PO, two lines</h3>
-            <p class="ln-prose-measure">Live, unresolved on camera (<em>&quot;I don&#39;t know why there&#39;s two, but I know that they&#39;re the same number, I don&#39;t know what that means&quot;</em>). <strong>Settled by frame, not by narration</strong>: <span class="ln-t-exact">the source on file</span> — <span class="ln-t-named">Warehouse Manager Dashboard</span> <span class="ln-t-exact">whinh2300m000</span>, Inbound Open grid, two rows both reading <span class="ln-t-exact">Purchase 100000688</span>, <strong>Line 1</strong> and <strong>Line 2</strong>, both <span class="ln-t-exact">PUI</span> &quot;Purchase Receipts&quot;, both received <span class="ln-t-exact">9/3/2026 1:22 PM</span>. <strong>It was never two purchase orders — one PO with two order lines shows as two rows in this dashboard view.</strong> This is the same &quot;how do I know what&#39;s in here&quot; pattern the consultant separately named for the Inbound Order Lines standalone session (§3.6 below) — a session built to be read at line granularity will always show more rows than there are orders.</p>
+            <p class="notes-prose-measure">Live, unresolved on camera (<em>&quot;I don&#39;t know why there&#39;s two, but I know that they&#39;re the same number, I don&#39;t know what that means&quot;</em>). <strong>Settled by frame, not by narration</strong>: <span class="notes-t-exact">the source on file</span> — <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span>, Inbound Open grid, two rows both reading <span class="notes-t-exact">Purchase 100000688</span>, <strong>Line 1</strong> and <strong>Line 2</strong>, both <span class="notes-t-exact">PUI</span> &quot;Purchase Receipts&quot;, both received <span class="notes-t-exact">9/3/2026 1:22 PM</span>. <strong>It was never two purchase orders — one PO with two order lines shows as two rows in this dashboard view.</strong> This is the same &quot;how do I know what&#39;s in here&quot; pattern the consultant separately named for the Inbound Order Lines standalone session (§3.6 below) — a session built to be read at line granularity will always show more rows than there are orders.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.6">
             <h3 id="t-3.6">3.6 Managing at order level vs. line level, and a session that isn&#39;t on the menu</h3>
-            <p class="ln-prose-measure">The consultant showed the same underlying data two ways: <strong>Warehouse Manager Dashboard</strong> / <strong>Warehousing Order</strong> header-level (one row per order, no line detail), versus a standalone <strong>Inbound Order Lines</strong> session reached only by drilling in — <em>&quot;this session is not in the menu... this is the standalone session of the inbound lines tab in your warehouse order.&quot;</em> Its <strong>second view</strong> shows every inbound line in the system regardless of which order or order-set it belongs to. <strong>This directly answers a question consultants get from clients</strong>, in the consultant&#39;s own words: <em>&quot;how do I know what&#39;s in here, or how do I get a list view — this is it.&quot;</em></p>
-            <p class="ln-prose-measure"><strong>Not documented for this release.</strong></p>
+            <p class="notes-prose-measure">The consultant showed the same underlying data two ways: <strong>Warehouse Manager Dashboard</strong> / <strong>Warehousing Order</strong> header-level (one row per order, no line detail), versus a standalone <strong>Inbound Order Lines</strong> session reached only by drilling in — <em>&quot;this session is not in the menu... this is the standalone session of the inbound lines tab in your warehouse order.&quot;</em> Its <strong>second view</strong> shows every inbound line in the system regardless of which order or order-set it belongs to. <strong>This directly answers a question consultants get from clients</strong>, in the consultant&#39;s own words: <em>&quot;how do I know what&#39;s in here, or how do I get a list view — this is it.&quot;</em></p>
+            <p class="notes-prose-measure"><strong>Not documented for this release.</strong></p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.7">
             <h3 id="t-3.7">3.7 Warehouse order sets: why one order can appear as several</h3>
-            <p class="ln-prose-measure"><strong>Named and explained, not just observed</strong>: LN groups a warehousing order&#39;s lines into separate <strong>warehouse order sets</strong> by whatever makes their receiving or shipping handling <em>unique</em> — plan receipt date, carrier, delivery terms, and similar fields. <em>&quot;It&#39;s not even the order of your lines, it&#39;s dependent by those unique receiving qualities.&quot;</em> Same customer, same item, same date collapses to one set; changing the date or the customer splits it into its own. This is a general LN mechanism, not specific to purchasing — the consultant confirmed it applies the same way to sales and production orders.</p>
-            <p class="ln-prose-measure">This section documents <em>within-order</em> line grouping, not a way to merge two independently pegged demand-driven orders into one — it rules out one plausible-sounding mechanism for whether the two sales-order-pegged supplies for <span class="ln-t-exact">BAM-CHOP-PAIR</span> could be combined, though the question is still open and was narrowed a different way, from the vendor help rather than from this section. </p>
+            <p class="notes-prose-measure"><strong>Named and explained, not just observed</strong>: LN groups a warehousing order&#39;s lines into separate <strong>warehouse order sets</strong> by whatever makes their receiving or shipping handling <em>unique</em> — plan receipt date, carrier, delivery terms, and similar fields. <em>&quot;It&#39;s not even the order of your lines, it&#39;s dependent by those unique receiving qualities.&quot;</em> Same customer, same item, same date collapses to one set; changing the date or the customer splits it into its own. This is a general LN mechanism, not specific to purchasing — the consultant confirmed it applies the same way to sales and production orders.</p>
+            <p class="notes-prose-measure">This section documents <em>within-order</em> line grouping, not a way to merge two independently pegged demand-driven orders into one — it rules out one plausible-sounding mechanism for whether the two sales-order-pegged supplies for <span class="notes-t-exact">BAM-CHOP-PAIR</span> could be combined, though the question is still open and was narrowed a different way, from the vendor help rather than from this section. </p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.8">
             <h3 id="t-3.8">3.8 Receiving early: the exact tolerance warning, quoted from the dialog</h3>
-            <p class="ln-prose-measure"><span class="ln-t-exact">the source on file</span> — status bar <span class="ln-t-exact">whinh3512m000</span>, dialog <strong>&quot;Warehouse Receipt: whinh0056&quot;</strong>:</p>
-            <blockquote class="ln-quote">Link order line to receipt: You are about to receive order line Purchase <span class="ln-t-exact">100000688 / 30 - 1</span> on a date other than planned receipt date (09-16-2026).</blockquote>
-            <p class="ln-prose-measure">Narrated cause: <span class="ln-t-named">Items - Purchase</span> <span class="ln-t-exact">tdipu0101m000</span> carries a <strong>date tolerance</strong> and a <strong>quantity tolerance</strong> field per item; this message fires because the receipt (9/3) falls outside the planned receipt date&#39;s tolerance window (9/16). The dialog offers to proceed (<span class="ln-t-exact">OK</span>), cancel, or view the full log (<span class="ln-t-exact">LOG...</span>) — one further error/information message was noted but not opened.</p>
+            <p class="notes-prose-measure"><span class="notes-t-exact">the source on file</span> — status bar <span class="notes-t-exact">whinh3512m000</span>, dialog <strong>&quot;Warehouse Receipt: whinh0056&quot;</strong>:</p>
+            <blockquote class="notes-quote">Link order line to receipt: You are about to receive order line Purchase <span class="notes-t-exact">100000688 / 30 - 1</span> on a date other than planned receipt date (09-16-2026).</blockquote>
+            <p class="notes-prose-measure">Narrated cause: <span class="notes-t-named">Items - Purchase</span> <span class="notes-t-exact">tdipu0101m000</span> carries a <strong>date tolerance</strong> and a <strong>quantity tolerance</strong> field per item; this message fires because the receipt (9/3) falls outside the planned receipt date&#39;s tolerance window (9/16). The dialog offers to proceed (<span class="notes-t-exact">OK</span>), cancel, or view the full log (<span class="notes-t-exact">LOG...</span>) — one further error/information message was noted but not opened.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.9">
             <h3 id="t-3.9">3.9 Receiving vocabulary: Receipt Open, Confirmed, and put-away are three different states</h3>
-            <p class="ln-prose-measure">Directly narrated and worth keeping as vocabulary: putting order lines on a receipt gives them status <strong>Receipt Open</strong> — <em>&quot;these lines are sitting on a receipt but they haven&#39;t been confirmed yet.&quot;</em> <strong>Confirm</strong> is what &quot;puts them away&quot; logically (moves them toward inventory); it is a distinct step from receiving. The stated order of operations for a location-controlled warehouse: <strong>Receive → Confirm → Inbound Advice → Put Away.</strong> For a <strong>non</strong>-location-controlled warehouse, there is no inbound-advice step at all: <em>&quot;inbound advice only applies when locations are involved.&quot;</em></p>
+            <p class="notes-prose-measure">Directly narrated and worth keeping as vocabulary: putting order lines on a receipt gives them status <strong>Receipt Open</strong> — <em>&quot;these lines are sitting on a receipt but they haven&#39;t been confirmed yet.&quot;</em> <strong>Confirm</strong> is what &quot;puts them away&quot; logically (moves them toward inventory); it is a distinct step from receiving. The stated order of operations for a location-controlled warehouse: <strong>Receive → Confirm → Inbound Advice → Put Away.</strong> For a <strong>non</strong>-location-controlled warehouse, there is no inbound-advice step at all: <em>&quot;inbound advice only applies when locations are involved.&quot;</em></p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.10">
             <h3 id="t-3.10">3.10 Inbound advice location selection: priority, then alphanumeric order</h3>
-            <p class="ln-prose-measure">With multiple candidate bulk locations at equal priority, LN falls back to <strong>alphanumeric order</strong> — demonstrated live by process of elimination (occupied/full checks ruled out, then the <strong>Inbound Priority</strong> field on the location, both <span class="ln-t-exact">9999</span>/tied, then <strong>Fixed Location</strong> ruled out by checking <strong>Fixed Locations</strong> (references) and finding the item wasn&#39;t in that list). The <strong>Fixed Location</strong> field&#39;s own help was read on screen: a location so flagged is <em>&quot;a fixed location for one or more items&quot;</em> set up through a fixed-location session, and <em>&quot;unbound[?] by fixed have a higher priority than those that are not fixed.&quot;</em> <strong>This transcript line is garbled by the auto-transcription</strong> (<span class="ln-t-exact">faster-whisper</span>, not a citation-grade source per principle 4) — the field help should be re-read from its own session for exact wording before this goes into a session file.</p>
+            <p class="notes-prose-measure">With multiple candidate bulk locations at equal priority, LN falls back to <strong>alphanumeric order</strong> — demonstrated live by process of elimination (occupied/full checks ruled out, then the <strong>Inbound Priority</strong> field on the location, both <span class="notes-t-exact">9999</span>/tied, then <strong>Fixed Location</strong> ruled out by checking <strong>Fixed Locations</strong> (references) and finding the item wasn&#39;t in that list). The <strong>Fixed Location</strong> field&#39;s own help was read on screen: a location so flagged is <em>&quot;a fixed location for one or more items&quot;</em> set up through a fixed-location session, and <em>&quot;unbound[?] by fixed have a higher priority than those that are not fixed.&quot;</em> <strong>This transcript line is garbled by the auto-transcription</strong> (<span class="notes-t-exact">faster-whisper</span>, not a citation-grade source per principle 4) — the field help should be re-read from its own session for exact wording before this goes into a session file.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.11">
             <h3 id="t-3.11">3.11 A location-controlled item, received into a non-location-controlled warehouse, is received as if it weren&#39;t</h3>
-            <p class="ln-prose-measure">Deliberately tested live, not just stated: the consultant added a PO line for a location-controlled item to a <strong>non</strong>-location-controlled warehouse (<span class="ln-t-exact">ADNA05</span>), received and confirmed it, and showed the item lands in inventory with <strong>no inbound advice step at all</strong> and no location assigned. <em>&quot;Even though the item&#39;s location controlled, if the warehouse isn&#39;t, it ignores that fact.&quot;</em> <strong>The warehouse&#39;s setting overrides the item&#39;s</strong>, not the reverse — worth a session-file note wherever <span class="ln-t-exact">whwmd2500m000</span>&#39;s location-control flag is documented, since a reader could reasonably assume the item&#39;s own flag always applies.</p>
+            <p class="notes-prose-measure">Deliberately tested live, not just stated: the consultant added a PO line for a location-controlled item to a <strong>non</strong>-location-controlled warehouse (<span class="notes-t-exact">ADNA05</span>), received and confirmed it, and showed the item lands in inventory with <strong>no inbound advice step at all</strong> and no location assigned. <em>&quot;Even though the item&#39;s location controlled, if the warehouse isn&#39;t, it ignores that fact.&quot;</em> <strong>The warehouse&#39;s setting overrides the item&#39;s</strong>, not the reverse — worth a session-file note wherever <span class="notes-t-exact">whwmd2500m000</span>&#39;s location-control flag is documented, since a reader could reasonably assume the item&#39;s own flag always applies.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.12">
             <h3 id="t-3.12">3.12 A second demand source: Contract Deliverable, and it does not auto-plan like a sales order</h3>
-            <p class="ln-prose-measure"><strong>The single most substantial new topic in this recording.</strong> A <strong>Project Contract</strong> (order <span class="ln-t-exact">100000011</span>) was added as demand for <span class="ln-t-exact">BAM-CHOP-PAIR</span>, alongside the item&#39;s ordinary sales orders. Two behaviors distinguish it from a sales order:</p>
+            <p class="notes-prose-measure"><strong>The single most substantial new topic in this recording.</strong> A <strong>Project Contract</strong> (order <span class="notes-t-exact">100000011</span>) was added as demand for <span class="notes-t-exact">BAM-CHOP-PAIR</span>, alongside the item&#39;s ordinary sales orders. Two behaviors distinguish it from a sales order:</p>
             <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>It is not automatically recognized by planning.</strong> <em>&quot;When you create it, it&#39;s immediately recognized by planning&quot; is true for a sales order — a contract deliverable in a &quot;Free&quot; status is not; the consultant had to</em><em>activate</em>* it before MRP would plan against it. Left in Free status, MRP ignores it entirely, silently — the same &quot;no message explains the absence&quot; pattern this library has already logged for planning-cluster rows (<span class="ln-t-exact">cprpd1100m000</span> §3) and time-fence gating.</li>
-          <li class="rux--list__item"><strong>It carries a _Specification_ / project-pegging field a sales order does not show the same way.</strong> <span class="ln-t-exact">the source on file</span> — status bar <span class="ln-t-exact">cprrp0520m000</span>, the full Overview grid for <span class="ln-t-exact">BAM-CHOP-PAIR</span>: the <span class="ln-t-exact">Project Contract</span> row (order <span class="ln-t-exact">100000011</span>, status <span class="ln-t-exact">Active</span>, demand <span class="ln-t-exact">50.0000</span>, warehouse <span class="ln-t-exact">ADNA07</span> — a <strong>different</strong> warehouse than the item&#39;s other rows, all <span class="ln-t-exact">ADNA01</span>) carries a green <strong>Specification</strong> check mark, as does its dedicated supply row, <strong>Production Order `020000034`</strong> (supply <span class="ln-t-exact">50.0000</span>, same date <span class="ln-t-exact">9/17/2026</span>). The consultant: <em>&quot;That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.&quot;</em></li>
+          <li class="rux--list__item"><strong>It is not automatically recognized by planning.</strong> <em>&quot;When you create it, it&#39;s immediately recognized by planning&quot; is true for a sales order — a contract deliverable in a &quot;Free&quot; status is not; the consultant had to</em><em>activate</em>* it before MRP would plan against it. Left in Free status, MRP ignores it entirely, silently — the same &quot;no message explains the absence&quot; pattern this library has already logged for planning-cluster rows (<span class="notes-t-exact">cprpd1100m000</span> §3) and time-fence gating.</li>
+          <li class="rux--list__item"><strong>It carries a _Specification_ / project-pegging field a sales order does not show the same way.</strong> <span class="notes-t-exact">the source on file</span> — status bar <span class="notes-t-exact">cprrp0520m000</span>, the full Overview grid for <span class="notes-t-exact">BAM-CHOP-PAIR</span>: the <span class="notes-t-exact">Project Contract</span> row (order <span class="notes-t-exact">100000011</span>, status <span class="notes-t-exact">Active</span>, demand <span class="notes-t-exact">50.0000</span>, warehouse <span class="notes-t-exact">ADNA07</span> — a <strong>different</strong> warehouse than the item&#39;s other rows, all <span class="notes-t-exact">ADNA01</span>) carries a green <strong>Specification</strong> check mark, as does its dedicated supply row, <strong>Production Order `020000034`</strong> (supply <span class="notes-t-exact">50.0000</span>, same date <span class="notes-t-exact">9/17/2026</span>). The consultant: <em>&quot;That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.&quot;</em></li>
         </ol>
-            <p class="ln-prose-measure">Release to warehousing works the same as a sales order once the deliverable is activated: <span class="ln-t-exact">the source on file</span> shows it as an outbound line, <span class="ln-t-exact">SO/SC Out (Documents=Yes)</span>, in <span class="ln-t-named">Warehouse Manager Dashboard</span> <span class="ln-t-exact">whinh2300m000</span> once released.</p>
-            <p class="ln-prose-measure"><strong>This mechanism now has a home</strong>: `the source on file`, written from this session. <strong>Not documented for this release.</strong></p>
+            <p class="notes-prose-measure">Release to warehousing works the same as a sales order once the deliverable is activated: <span class="notes-t-exact">the source on file</span> shows it as an outbound line, <span class="notes-t-exact">SO/SC Out (Documents=Yes)</span>, in <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span> once released.</p>
+            <p class="notes-prose-measure"><strong>This mechanism now has a home</strong>: `the source on file`, written from this session. <strong>Not documented for this release.</strong></p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.13">
             <h3 id="t-3.13">3.13 The safety-stock/MRP-split puzzle from earlier in the chat thread</h3>
-            <p class="ln-prose-measure">This recording is the live origin of the <span class="ln-t-exact">BAM-CHOP-PAIR</span> safety-stock-50 question mined into <span class="ln-t-exact">the source on file</span> §5. Not repeated here — see that section for the full account, including the trainer&#39;s on-camera guess (warehouse-level ordering data, explicitly left unconfirmed: <em>&quot;I don&#39;t know, look later&quot;</em>) against an attendee&#39;s later, screen-verified pegging explanation from the chat thread. The follow-up combine-orders question ran further than this recording: <span class="ln-t-exact">Combine Orders</span> was ruled out from <span class="ln-t-exact">cppat1210m000</span>&#39;s &quot;Watch out&quot; section, then the same chat thread&#39;s next round pointed at <span class="ln-t-exact">tcibd2100m000</span>&#39;s <em>Order Interval</em> instead — a generation-time mechanism, deployed at <span class="ln-t-exact">0</span> Days at the time.</p>
-            <p class="ln-prose-measure"><strong>Settled in a controlled follow-up on 2026-09-05.</strong> The baseline still showed the three planned production orders for <span class="ln-t-exact">20</span>, <span class="ln-t-exact">20</span>, and <span class="ln-t-exact">10</span>. With the global interval changed to <span class="ln-t-exact">10</span> Days through the warehouse → site → global inheritance chain, regenerating the plan replaced them with one planned production order for <span class="ln-t-exact">50</span>; <strong>Automatic Order Grouping</strong> was cleared. The project-contract supply remained separate with its Specification indicator. Sources: <span class="ln-t-exact">the source on file</span>, <span class="ln-t-exact">the source on file</span>, <span class="ln-t-exact">the source on file</span>, <span class="ln-t-exact">the source on file</span>, <span class="ln-t-exact">the source on file</span>, and <span class="ln-t-exact">the source on file</span>. </p>
+            <p class="notes-prose-measure">This recording is the live origin of the <span class="notes-t-exact">BAM-CHOP-PAIR</span> safety-stock-50 question mined into <span class="notes-t-exact">the source on file</span> §5. Not repeated here — see that section for the full account, including the trainer&#39;s on-camera guess (warehouse-level ordering data, explicitly left unconfirmed: <em>&quot;I don&#39;t know, look later&quot;</em>) against an attendee&#39;s later, screen-verified pegging explanation from the chat thread. The follow-up combine-orders question ran further than this recording: <span class="notes-t-exact">Combine Orders</span> was ruled out from <span class="notes-t-exact">cppat1210m000</span>&#39;s &quot;Watch out&quot; section, then the same chat thread&#39;s next round pointed at <span class="notes-t-exact">tcibd2100m000</span>&#39;s <em>Order Interval</em> instead — a generation-time mechanism, deployed at <span class="notes-t-exact">0</span> Days at the time.</p>
+            <p class="notes-prose-measure"><strong>Settled in a controlled follow-up on 2026-09-05.</strong> The baseline still showed the three planned production orders for <span class="notes-t-exact">20</span>, <span class="notes-t-exact">20</span>, and <span class="notes-t-exact">10</span>. With the global interval changed to <span class="notes-t-exact">10</span> Days through the warehouse → site → global inheritance chain, regenerating the plan replaced them with one planned production order for <span class="notes-t-exact">50</span>; <strong>Automatic Order Grouping</strong> was cleared. The project-contract supply remained separate with its Specification indicator. Sources: <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, and <span class="notes-t-exact">the source on file</span>. </p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.14">
             <h3 id="t-3.14">3.14 Exception Messages, briefly</h3>
-            <p class="ln-prose-measure">Named but not explored in depth: <strong>Exception Messages</strong> surface planner-facing warnings, e.g. <em>&quot;reschedule into 9/3&quot;</em> on an order running late. The consultant flagged this as &quot;a whole bunch of stuff&quot; for a future session and deferred it explicitly rather than opening it here — recorded as a deferral, not a gap.</p>
+            <p class="notes-prose-measure">Named but not explored in depth: <strong>Exception Messages</strong> surface planner-facing warnings, e.g. <em>&quot;reschedule into 9/3&quot;</em> on an order running late. The consultant flagged this as &quot;a whole bunch of stuff&quot; for a future session and deferred it explicitly rather than opening it here — recorded as a deferral, not a gap.</p>
           </section>
         </section>
 
@@ -1320,7 +1320,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Action</div></th><th scope="col"><div class="rux--table-header-label">Owner</div></th><th scope="col"><div class="rux--table-header-label">Due</div></th><th scope="col"><div class="rux--table-header-label">Status</div></th></tr></thead>
             <tbody>
-          <tr><td>1</td><td>~~Document Contract Deliverable / Project Contract as a planning demand source~~ — done, <span class="ln-t-exact">the source on file</span>; export Contract/Project module help to vendor-source the Free/Active gate</td><td>Library</td><td>—</td><td>Open </td></tr>
+          <tr><td>1</td><td>~~Document Contract Deliverable / Project Contract as a planning demand source~~ — done, <span class="notes-t-exact">the source on file</span>; export Contract/Project module help to vendor-source the Free/Active gate</td><td>Library</td><td>—</td><td>Open </td></tr>
           <tr><td>2</td><td>Re-read Fixed Location&#39;s field help directly from its session — the transcript&#39;s wording is garbled</td><td>Library</td><td>—</td><td>Open, low priority</td></tr>
           <tr><td>3</td><td>Capture the standalone Inbound Order Lines session&#39;s own status bar on a future recording</td><td>Library</td><td>—</td><td>Open </td></tr>
             </tbody>
@@ -1332,7 +1332,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-questions">
           <h2 id="s-questions">Open questions</h2>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item">What vendor source documents Contract Deliverable&#39;s Free/Active planning gate and its project-pegging mechanism? <span class="ln-t-exact">the source on file</span> covers the mechanism from this recording, unsourced from the vendor — </li>
+          <li class="rux--list__item">What vendor source documents Contract Deliverable&#39;s Free/Active planning gate and its project-pegging mechanism? <span class="notes-t-exact">the source on file</span> covers the mechanism from this recording, unsourced from the vendor — </li>
           <li class="rux--list__item">What is the standalone Inbound Order Lines session&#39;s actual code? — </li>
         </ul>
         </section>
@@ -1341,9 +1341,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h2 id="s-methodology">Methodology and process notes</h2>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>A live, unscripted session settles questions a scripted walkthrough can&#39;t raise.</strong> Every prior review in this library followed a planned procedure; this one caught the group actually being wrong on camera twice (the child-item generation trap, §3.2; the &quot;two POs&quot; misreading, §3.5) and correcting from the screen rather than from narration. <strong>This is a stronger evidentiary pattern than a rehearsed demo</strong> — the errors are real, not staged, and their corrections are traceable to a specific frame.</li>
-          <li class="rux--list__item"><strong>A spoken guess and a screen-verified finding can address the same question and disagree — record both, attributed, don&#39;t let the later one silently overwrite the earlier one.</strong> §3.13 and <span class="ln-t-exact">the source on file</span> §5 do this explicitly for the safety-stock question; it is the clearest instance yet of principle 4 in this library.</li>
+          <li class="rux--list__item"><strong>A spoken guess and a screen-verified finding can address the same question and disagree — record both, attributed, don&#39;t let the later one silently overwrite the earlier one.</strong> §3.13 and <span class="notes-t-exact">the source on file</span> §5 do this explicitly for the safety-stock question; it is the clearest instance yet of principle 4 in this library.</li>
           <li class="rux--list__item"><strong>A chat thread that grows out of a recording is itself evidence, on the recording&#39;s own timeline</strong> — the two are not independent sources to reconcile, they are one incident split across two capture mechanisms. Filing both under one narrative (here, and in the session file) rather than two disconnected write-ups kept the account coherent.</li>
-          <li class="rux--list__item"><strong>Recording:</strong> <span class="ln-t-exact">the source on file</span> — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives.</li>
+          <li class="rux--list__item"><strong>Recording:</strong> <span class="notes-t-exact">the source on file</span> — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives.</li>
         </ul>
         </section>
 
@@ -1354,21 +1354,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Session name</div></th><th scope="col"><div class="rux--table-header-label">Code</div></th><th scope="col"><div class="rux--table-header-label">Reference doc</div></th></tr></thead>
             <tbody>
-          <tr><td>Item Order Plan</td><td><span class="ln-t-exact">cprrp0520m000</span></td><td>`the source on file`</td></tr>
-          <tr><td>Planned Orders</td><td><span class="ln-t-exact">cprrp1100m000</span></td><td>`the source on file`</td></tr>
-          <tr><td>Transfer Order Planning</td><td><span class="ln-t-exact">cppat1210m000</span></td><td>—</td></tr>
-          <tr><td>Warehousing Order</td><td><span class="ln-t-exact">whinh2100m000</span></td><td>`the source on file`</td></tr>
-          <tr><td>Warehouse Manager Dashboard</td><td><span class="ln-t-exact">whinh2300m000</span></td><td>—</td></tr>
-          <tr><td>Warehouse Receipt</td><td><span class="ln-t-exact">whinh3512m000</span></td><td>`the source on file`</td></tr>
-          <tr><td>Items - Purchase</td><td><span class="ln-t-exact">tdipu0101m000</span></td><td>—</td></tr>
-          <tr><td>Item Data by Warehouse</td><td><span class="ln-t-exact">whwmd2510m000</span> or <span class="ln-t-exact">whwmd2110s000</span></td><td></td></tr>
+          <tr><td>Item Order Plan</td><td><span class="notes-t-exact">cprrp0520m000</span></td><td>`the source on file`</td></tr>
+          <tr><td>Planned Orders</td><td><span class="notes-t-exact">cprrp1100m000</span></td><td>`the source on file`</td></tr>
+          <tr><td>Transfer Order Planning</td><td><span class="notes-t-exact">cppat1210m000</span></td><td>—</td></tr>
+          <tr><td>Warehousing Order</td><td><span class="notes-t-exact">whinh2100m000</span></td><td>`the source on file`</td></tr>
+          <tr><td>Warehouse Manager Dashboard</td><td><span class="notes-t-exact">whinh2300m000</span></td><td>—</td></tr>
+          <tr><td>Warehouse Receipt</td><td><span class="notes-t-exact">whinh3512m000</span></td><td>`the source on file`</td></tr>
+          <tr><td>Items - Purchase</td><td><span class="notes-t-exact">tdipu0101m000</span></td><td>—</td></tr>
+          <tr><td>Item Data by Warehouse</td><td><span class="notes-t-exact">whwmd2510m000</span> or <span class="notes-t-exact">whwmd2110s000</span></td><td></td></tr>
             </tbody>
           </table>
         </div>
       </div>
-          <p class="ln-prose-measure"></p>
+          <p class="notes-prose-measure"></p>
         </section>
-<p class="rux--type-caption-01 ln-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
       </div>
     </div>
   </div>

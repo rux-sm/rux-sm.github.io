@@ -422,8 +422,8 @@
         <!-- THE TOOLBAR AND THE BOARD ARE ONE COMPONENT, joined 2026-09-07.
              Same join as index.html: no gap, and the toolbar takes the grid's
              own surface so the day band is the only accent between them. -->
-        <div class="sch-frame">
-        <div class="sch-toolbar">
+        <div class="scheduler-frame">
+        <div class="scheduler-toolbar">
           <!-- ORDER: MOVE, THEN READ, THEN ACT. The two arrows are neighbours
                because paging back and forth is the most repeated gesture here and
                Today between them put a 70px hop between the pair. The label sits
@@ -433,10 +433,10 @@
                week changes, moving the very buttons being clicked. New trip is
                pushed right, which is Carbon's own place for a primary action and
                keeps creating a trip clear of the paging controls. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-prev" aria-label="Previous week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-next" aria-label="Next week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="sch-today">Today</button>
-          <h2 class="sch-toolbar__range rux--type-heading-compact-02" id="sch-range">&nbsp;</h2>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prev" aria-label="Previous week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-next" aria-label="Next week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="scheduler-today">Today</button>
+          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02" id="scheduler-range">&nbsp;</h2>
           <!-- NEW TRIP IS NOT HERE YET, and a disabled primary button is a worse
                answer than none: it was the most prominent thing on the page and it
                did nothing. It comes back, right-aligned after this spacer, on the
@@ -444,123 +444,123 @@
           </div>
         </div>
         <div class="sch" id="sch" role="region" aria-label="Week of 7 September 2026">
-          <div class="sch-grid">
-      <div class="sch-corner" title="Bus number">#</div>
-      <div class="sch-day">Mon<span class="sch-day__num">7</span></div>
-      <div class="sch-day">Tue<span class="sch-day__num">8</span></div>
-      <div class="sch-day sch-day--today" aria-current="date">Wed<span class="sch-day__num">9</span></div>
-      <div class="sch-day">Thu<span class="sch-day__num">10</span></div>
-      <div class="sch-day">Fri<span class="sch-day__num">11</span></div>
-      <div class="sch-day sch-day--weekend">Sat<span class="sch-day__num">12</span></div>
-      <div class="sch-day sch-day--weekend">Sun<span class="sch-day__num">13</span></div>
-      <div class="sch-row">
-        <div class="sch-row-head" title="Bus 101 · 56 pax · Coach · Sleeper"><div class="sch-row-head__num">101</div><div class="sch-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
-        <div class="sch-track" style="--sch-lanes:2">
-        <article class="sch-bar sch-bar--blue" role="button" tabindex="0" aria-pressed="false" style="--sch-start:0;--sch-span:2;--sch-lane:0" aria-label="Boston, MA, Lincoln HS band · J. Alvarez">
-          <div class="sch-bar__row sch-bar__dest"><span>Boston, MA</span><span class="sch-bar__ref">1 of 2</span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Lincoln HS band · J. Alvarez</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>06:30 – 21:00</span><span>spot 06:00</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>56 pax · Hotel</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Ortiz · Nguyen</span></div>
+          <div class="scheduler-grid">
+      <div class="scheduler-corner" title="Bus number">#</div>
+      <div class="scheduler-day">Mon<span class="scheduler-day__num">7</span></div>
+      <div class="scheduler-day">Tue<span class="scheduler-day__num">8</span></div>
+      <div class="scheduler-day scheduler-day--today" aria-current="date">Wed<span class="scheduler-day__num">9</span></div>
+      <div class="scheduler-day">Thu<span class="scheduler-day__num">10</span></div>
+      <div class="scheduler-day">Fri<span class="scheduler-day__num">11</span></div>
+      <div class="scheduler-day scheduler-day--weekend">Sat<span class="scheduler-day__num">12</span></div>
+      <div class="scheduler-day scheduler-day--weekend">Sun<span class="scheduler-day__num">13</span></div>
+      <div class="scheduler-row">
+        <div class="scheduler-row-head" title="Bus 101 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">101</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+        <div class="scheduler-track" style="--scheduler-lanes:2">
+        <article class="scheduler-bar scheduler-bar--blue" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:2;--scheduler-lane:0" aria-label="Boston, MA, Lincoln HS band · J. Alvarez">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Boston, MA</span><span class="scheduler-bar__ref">1 of 2</span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band · J. Alvarez</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>06:30 – 21:00</span><span>spot 06:00</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>56 pax · Hotel</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz · Nguyen</span></div>
         </article>
-        <article class="sch-bar sch-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--sch-start:3;--sch-span:1;--sch-lane:0" aria-label="Foxwoods, Riverside Seniors · M. Chen">
-          <div class="sch-bar__row sch-bar__dest"><span>Foxwoods</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Riverside Seniors · M. Chen</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>08:00 – 18:30</span><span>spot 07:30</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>44 pax · ADA lift</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Ortiz</span></div>
+        <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors · M. Chen">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors · M. Chen</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>08:00 – 18:30</span><span>spot 07:30</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>44 pax · ADA lift</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz</span></div>
         </article>
-        <article class="sch-bar sch-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--sch-start:3;--sch-span:2;--sch-lane:1" aria-label="Newport, RI, Harbor Rotary · D. Reyes, unconfirmed">
-          <div class="sch-bar__row sch-bar__dest"><span>Newport, RI</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Harbor Rotary · D. Reyes</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>07:00 – 22:00</span><span>spot 06:30</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>52 pax</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>—</span></div>
-        </article>
-        </div>
-      </div>
-      <div class="sch-row">
-        <div class="sch-row-head" title="Bus 102 · 56 pax · Coach"><div class="sch-row-head__num">102</div></div>
-        <div class="sch-track" style="--sch-lanes:1">
-        <article class="sch-bar sch-bar--magenta sch-bar--from-prev" role="button" tabindex="0" aria-pressed="false" style="--sch-start:0;--sch-span:6;--sch-lane:0" aria-label="Washington, DC, continues from last week">
-          <div class="sch-bar__row sch-bar__dest"><span>Washington, DC</span><span class="sch-bar__ref">2 of 2</span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Lincoln HS band · J. Alvarez</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>Ret 23:30</span><span></span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>56 pax · Hotel · Fuel card</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Baker · Silva</span></div>
+        <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary · D. Reyes, unconfirmed">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Newport, RI</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Harbor Rotary · D. Reyes</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>07:00 – 22:00</span><span>spot 06:30</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>52 pax</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>—</span></div>
         </article>
         </div>
       </div>
-      <div class="sch-row">
-        <div class="sch-row-head" title="Bus 103 · 47 pax · Coach · ADA lift"><div class="sch-row-head__num">103</div><div class="sch-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span></div></div>
-        <div class="sch-track" style="--sch-lanes:1">
-        <article class="sch-bar sch-bar--green" role="button" tabindex="0" aria-pressed="false" style="--sch-start:2;--sch-span:1;--sch-lane:0" aria-label="Six Flags, Camp Wildwood · T. Okafor">
-          <div class="sch-bar__row sch-bar__dest"><span>Six Flags</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Camp Wildwood · T. Okafor</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>07:15 – 20:00</span><span>spot 06:45</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>47 pax · ADA lift</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Nguyen</span></div>
-        </article>
-        <article class="sch-bar sch-bar--cyan sch-bar--partial-po sch-bar--to-next" role="button" tabindex="0" aria-pressed="false" style="--sch-start:5;--sch-span:2;--sch-lane:0" aria-label="Cape Cod, continues into next week, purchase order incomplete">
-          <div class="sch-bar__row sch-bar__dest"><span>Cape Cod</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Sunrise Tours · P. Walsh</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>09:00 – —</span><span>spot 08:30</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>47 pax · PO partial</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Silva</span></div>
+      <div class="scheduler-row">
+        <div class="scheduler-row-head" title="Bus 102 · 56 pax · Coach"><div class="scheduler-row-head__num">102</div></div>
+        <div class="scheduler-track" style="--scheduler-lanes:1">
+        <article class="scheduler-bar scheduler-bar--magenta scheduler-bar--from-prev" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:6;--scheduler-lane:0" aria-label="Washington, DC, continues from last week">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Washington, DC</span><span class="scheduler-bar__ref">2 of 2</span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band · J. Alvarez</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>Ret 23:30</span><span></span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>56 pax · Hotel · Fuel card</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Baker · Silva</span></div>
         </article>
         </div>
       </div>
-      <div class="sch-row">
-        <div class="sch-row-head" title="Bus 104 · 56 pax · Coach · Sleeper"><div class="sch-row-head__num">104</div><div class="sch-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
-        <div class="sch-track" style="--sch-lanes:2">
-        <article class="sch-bar sch-bar--red" role="button" tabindex="0" aria-pressed="false" style="--sch-start:1;--sch-span:1;--sch-lane:0" aria-label="New York, NY, Metro Choir · A. Patel">
-          <div class="sch-bar__row sch-bar__dest"><span>New York, NY</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Metro Choir · A. Patel</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>05:30 – 23:00</span><span>spot 05:00</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>56 pax · Sleeper</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Baker</span></div>
+      <div class="scheduler-row">
+        <div class="scheduler-row-head" title="Bus 103 · 47 pax · Coach · ADA lift"><div class="scheduler-row-head__num">103</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span></div></div>
+        <div class="scheduler-track" style="--scheduler-lanes:1">
+        <article class="scheduler-bar scheduler-bar--green" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Six Flags, Camp Wildwood · T. Okafor">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Six Flags</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Camp Wildwood · T. Okafor</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>07:15 – 20:00</span><span>spot 06:45</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>47 pax · ADA lift</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Nguyen</span></div>
         </article>
-        <article class="sch-bar sch-bar--warm-gray sch-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--sch-start:4;--sch-span:1;--sch-lane:0" aria-label="Providence, RI, St. Anne Parish · L. Moore">
-          <div class="sch-bar__row sch-bar__dest"><span>Providence, RI</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>St. Anne Parish · L. Moore</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>08:30 – 17:00</span><span>spot 08:00</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>40 pax</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Ortiz</span></div>
-          <div class="sch-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
-        </article>
-        <article class="sch-bar sch-bar--cool-gray sch-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--sch-start:4;--sch-span:1;--sch-lane:1" aria-label="Hartford, CT, Elm Street School · R. Diaz">
-          <div class="sch-bar__row sch-bar__dest"><span>Hartford, CT</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Elm Street School · R. Diaz</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>07:45 – 16:30</span><span>spot 07:15</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>56 pax</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Nguyen</span></div>
-          <div class="sch-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+        <article class="scheduler-bar scheduler-bar--cyan scheduler-bar--partial-po scheduler-bar--to-next" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:5;--scheduler-span:2;--scheduler-lane:0" aria-label="Cape Cod, continues into next week, purchase order incomplete">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Cape Cod</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Sunrise Tours · P. Walsh</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>09:00 – —</span><span>spot 08:30</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>47 pax · PO partial</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span></div>
         </article>
         </div>
       </div>
-      <div class="sch-row">
-        <div class="sch-row-head" title="Bus 105 · 56 pax · Coach · ADA lift · Sleeper"><div class="sch-row-head__num">105</div><div class="sch-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span><span class="sch-row-head__oos" role="img" aria-label="Out of service Thursday to Sunday" title="Out of service Thursday to Sunday"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg></span></div></div>
-        <div class="sch-track" style="--sch-lanes:1">
-          <div class="sch-oos" style="--sch-start:3;--sch-span:4" role="img" aria-label="Out of service Thursday to Sunday"></div>
-        <article class="sch-bar sch-bar--gray" role="button" tabindex="0" aria-pressed="false" style="--sch-start:0;--sch-span:1;--sch-lane:0" aria-label="Albany, NY, County Office · S. Kim">
-          <div class="sch-bar__row sch-bar__dest"><span>Albany, NY</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>County Office · S. Kim</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>06:00 – 19:00</span><span>spot 05:30</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>30 pax</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>Silva</span></div>
+      <div class="scheduler-row">
+        <div class="scheduler-row-head" title="Bus 104 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">104</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+        <div class="scheduler-track" style="--scheduler-lanes:2">
+        <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:1;--scheduler-span:1;--scheduler-lane:0" aria-label="New York, NY, Metro Choir · A. Patel">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>New York, NY</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Metro Choir · A. Patel</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>05:30 – 23:00</span><span>spot 05:00</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>56 pax · Sleeper</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Baker</span></div>
+        </article>
+        <article class="scheduler-bar scheduler-bar--warm-gray scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:0" aria-label="Providence, RI, St. Anne Parish · L. Moore">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Providence, RI</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>St. Anne Parish · L. Moore</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>08:30 – 17:00</span><span>spot 08:00</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>40 pax</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz</span></div>
+          <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+        </article>
+        <article class="scheduler-bar scheduler-bar--cool-gray scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:1" aria-label="Hartford, CT, Elm Street School · R. Diaz">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Hartford, CT</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Elm Street School · R. Diaz</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>07:45 – 16:30</span><span>spot 07:15</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>56 pax</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Nguyen</span></div>
+          <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
         </article>
         </div>
       </div>
-      <div class="sch-row sch-row--unassigned sch-row--last">
-        <div class="sch-row-head" title="Trips with no bus yet"><div class="sch-row-head__num">No
+      <div class="scheduler-row">
+        <div class="scheduler-row-head" title="Bus 105 · 56 pax · Coach · ADA lift · Sleeper"><div class="scheduler-row-head__num">105</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span><span class="scheduler-row-head__oos" role="img" aria-label="Out of service Thursday to Sunday" title="Out of service Thursday to Sunday"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg></span></div></div>
+        <div class="scheduler-track" style="--scheduler-lanes:1">
+          <div class="scheduler-oos" style="--scheduler-start:3;--scheduler-span:4" role="img" aria-label="Out of service Thursday to Sunday"></div>
+        <article class="scheduler-bar scheduler-bar--gray" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:1;--scheduler-lane:0" aria-label="Albany, NY, County Office · S. Kim">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Albany, NY</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>County Office · S. Kim</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>06:00 – 19:00</span><span>spot 05:30</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>30 pax</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span></div>
+        </article>
+        </div>
+      </div>
+      <div class="scheduler-row scheduler-row--unassigned scheduler-row--last">
+        <div class="scheduler-row-head" title="Trips with no bus yet"><div class="scheduler-row-head__num">No
 bus</div></div>
-        <div class="sch-track" style="--sch-lanes:1">
-        <article class="sch-bar sch-bar--red" role="button" tabindex="0" aria-pressed="false" style="--sch-start:2;--sch-span:1;--sch-lane:0" aria-label="Mystic Aquarium, Bayview Elementary · K. Lee, unconfirmed">
-          <div class="sch-bar__row sch-bar__dest"><span>Mystic Aquarium</span><span class="sch-bar__ref"></span></div>
-          <div class="sch-bar__row sch-bar__client"><span>Bayview Elementary · K. Lee</span></div>
-          <div class="sch-bar__row sch-bar__time"><span>08:00 – 15:30</span><span>spot 07:30</span></div>
-          <div class="sch-bar__row sch-bar__reqs"><span>56 pax</span></div>
-          <div class="sch-bar__row sch-bar__drivers"><span>—</span></div>
+        <div class="scheduler-track" style="--scheduler-lanes:1">
+        <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Mystic Aquarium, Bayview Elementary · K. Lee, unconfirmed">
+          <div class="scheduler-bar__row scheduler-bar__dest"><span>Mystic Aquarium</span><span class="scheduler-bar__ref"></span></div>
+          <div class="scheduler-bar__row scheduler-bar__client"><span>Bayview Elementary · K. Lee</span></div>
+          <div class="scheduler-bar__row scheduler-bar__time"><span>08:00 – 15:30</span><span>spot 07:30</span></div>
+          <div class="scheduler-bar__row scheduler-bar__reqs"><span>56 pax</span></div>
+          <div class="scheduler-bar__row scheduler-bar__drivers"><span>—</span></div>
         </article>
         </div>
       </div>

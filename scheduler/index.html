@@ -298,12 +298,12 @@
          below is opened by this app instead, which is the one place it departs
          from how the switcher and account panels work, and the reason is that
          the trigger is Carbon's magnifier and not a header button. -->
-    <div class="sch-header-search">
-      <div class="rux--search rux--search--expandable rux--layout--size-lg" role="search" aria-labelledby="sch-search-label" id="sch-search">
-        <div class="rux--search-magnifier" role="button" tabindex="0" aria-expanded="false" aria-labelledby="sch-search-label" id="sch-search-trigger">
+    <div class="scheduler-header-search">
+      <div class="rux--search rux--search--expandable rux--layout--size-lg" role="search" aria-labelledby="scheduler-search-label" id="scheduler-search">
+        <div class="rux--search-magnifier" role="button" tabindex="0" aria-expanded="false" aria-labelledby="scheduler-search-label" id="scheduler-search-trigger">
           <svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg>
         </div>
-        <label class="rux--label rux--visually-hidden" id="sch-search-label" for="sch-search-input">Search trips</label>
+        <label class="rux--label rux--visually-hidden" id="scheduler-search-label" for="scheduler-search-input">Search trips</label>
         <!-- `combobox`, NOT the capture's `searchbox`, and the difference is the list.
              Carbon's expandable search is captured with `role=searchbox` because
              nothing hangs off it; this one owns a listbox of suggestions, and a
@@ -313,8 +313,8 @@
              and `aria-activedescendant` is how a screen reader is told, without
              focus ever leaving the field. data.js keeps `aria-expanded` and
              `aria-activedescendant` in step with what is drawn. -->
-        <input id="sch-search-input" class="rux--search-input" type="text" role="combobox" aria-expanded="false" aria-controls="sch-search-list" aria-autocomplete="list" tabindex="-1" placeholder="Destination, organization or contact…" autocomplete="off">
-        <button type="button" class="rux--search-close rux--search-close--hidden" id="sch-search-clear" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        <input id="scheduler-search-input" class="rux--search-input" type="text" role="combobox" aria-expanded="false" aria-controls="scheduler-search-list" aria-autocomplete="list" tabindex="-1" placeholder="Destination, organization or contact…" autocomplete="off">
+        <button type="button" class="rux--search-close rux--search-close--hidden" id="scheduler-search-clear" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
       <!-- RESULTS ATTACH TO THE FIELD, which is Carbon's type-ahead shape and
            what the pattern page describes for an active search: "results are
@@ -324,13 +324,13 @@
            of empty surface under 659px of results and wrapped a third of the
            rows at its fixed 16rem. Sized to the field instead, it is a menu
            under a field rather than a panel that happens to hold a list. -->
-      <div class="sch-search__results" id="sch-search-results" hidden>
+      <div class="scheduler-search__results" id="scheduler-search-results" hidden>
         <!-- THE THREE PARTS ARE STATIC AND ONLY THEIR CONTENTS CHANGE, which is
              what lets `aria-controls` above name the list: an id minted at
              runtime is an id `tools/check.mjs` cannot resolve, and it said so.
              The COUNT and the NOTE sit outside the listbox deliberately -- a
              listbox's children must be options, and neither of those is one. -->
-        <p class="sch-search__count" id="sch-search-count" hidden></p>
+        <p class="scheduler-search__count" id="scheduler-search-count" hidden></p>
         <!-- `tabindex="-1"` OPTS OUT OF THE BROWSER'S FOCUSABLE-SCROLLER RULE, and
              without it the whole list is a tab stop. rux saw it: a ring around
              all ten rows instead of around one. Chrome gives a SCROLLING region
@@ -346,8 +346,8 @@
              `aria-activedescendant` and scroll the active option into view, so
              every row can be reached without the scroller ever taking focus.
              The property reads -1 either way; only the ATTRIBUTE opts out. -->
-        <div class="rux--contained-list rux--contained-list--inset-rulers" id="sch-search-list" role="listbox" aria-label="Matching trips" tabindex="-1"></div>
-        <p class="sch-search__empty" id="sch-search-note" hidden></p>
+        <div class="rux--contained-list rux--contained-list--inset-rulers" id="scheduler-search-list" role="listbox" aria-label="Matching trips" tabindex="-1"></div>
+        <p class="scheduler-search__empty" id="scheduler-search-note" hidden></p>
       </div>
     </div>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
@@ -474,7 +474,7 @@
 </header>
 
 <main id="main-content" class="rux--content">
-<!-- BEHAVIOUR: the live week grid · 2026-09-06 · data.js fills #sch-grid
+<!-- BEHAVIOUR: the live week grid · 2026-09-06 · data.js fills #scheduler-grid
   from the same Supabase tables the rux-ui app writes -- buses, trips, their
   assignments and drivers, and out-of-service windows -- READ ONLY: nothing on
   this page writes, and no control here edits a trip. The grid and the trip bar
@@ -494,7 +494,7 @@
       <!-- An app-owned wrapper so the page can make room for the side panel
            without a rule on a rux-- class. `--with-panel` is set by
            data.js while the panel is open. -->
-      <div class="sch-page">
+      <div class="scheduler-page">
       <div class="rux--stack-vertical rux--stack-scale-5">
         <!-- THE PAGE'S NAME IS IN THE OUTLINE, NOT ON THE SCREEN. Three pieces of
              chrome already say it: the tab title, the app name in the header, and
@@ -508,7 +508,7 @@
              saying "Loading", so a page whose script never runs says something
              true rather than showing an empty grid that looks like an empty
              week. -->
-        <div id="sch-status" role="status" aria-live="polite">
+        <div id="scheduler-status" role="status" aria-live="polite">
           <div class="rux--inline-loading">
             <div class="rux--inline-loading__animation">
               <div class="rux--loading rux--loading--small">
@@ -522,10 +522,10 @@
           </div>
         </div>
 
-        <div class="sch-board">
+        <div class="scheduler-board">
         <!-- THE TOOLBAR BELONGS TO THE CALENDAR, NOT TO THE BOARD, corrected
              2026-09-07 after rux saw it spanning the driver grid as well. It
-             was put over the whole board on the argument that `.sch-board`
+             was put over the whole board on the argument that `.scheduler-board`
              keeps its width when Drivers is toggled, so the buttons would not
              move. That argument was borrowed from the week label, which moves
              on the most repeated gesture there is; toggling Drivers is a
@@ -533,8 +533,8 @@
              appears to govern two different tables was the wrong trade. The
              driver grid has its own header row -- one toolbar over two heads
              read as one table, which it is not. -->
-          <div class="sch-frame">
-          <div class="sch-toolbar">
+          <div class="scheduler-frame">
+          <div class="scheduler-toolbar">
             <!-- ORDER, REWRITTEN 2026-09-11 ON RUX'S SKETCH:
                  `Datepicker |        < > [today] [Driver] [+]`.
                  The week reads first and every control sits right. What this
@@ -546,7 +546,7 @@
 
                  THAT OBJECTION IS REAL AND THE SPACER ANSWERS IT. The buttons
                  are not "after the label in the flow" in the sense that
-                 mattered: `.sch-toolbar__spacer` is `flex: 1` between them, so
+                 mattered: `.scheduler-toolbar__spacer` is `flex: 1` between them, so
                  a wider week eats the spacer and the controls stay pinned to
                  the right edge. Measured across a narrow week and a wide one,
                  they do not move. Without the spacer the old note would still
@@ -570,21 +570,21 @@
                  same way the trip editor's date fields are. `data-rux-open` is
                  set there too, so this button carries no reference to an id that
                  does not exist until script runs. -->
-            <div class="sch-toolbar__weekrow" id="sch-weekrow">
-              <h2 class="sch-toolbar__range rux--type-heading-compact-02">
+            <div class="scheduler-toolbar__weekrow" id="scheduler-weekrow">
+              <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
                 <!-- A HEADING THAT IS ALSO A TRIGGER, which Carbon has no
                      component for, so it is this app's own and carries only
                      --rux-* tokens. The accessible name is the week itself:
                      js/date-picker.js's header makes that the consumer's
                      contract when the input is hidden -- "the trigger must
                      carry the value the input holds". -->
-                <button type="button" class="sch-weekbtn" id="sch-range" aria-haspopup="dialog" aria-expanded="false"><span id="sch-range-text">&nbsp;</span><svg class="sch-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
               </h2>
             </div>
             <!-- New trip sits after the spacer, below. It was absent rather than
                  disabled until 2026-09-06, because a disabled primary button was
                  the most prominent thing on the page and did nothing. -->
-            <div class="sch-toolbar__spacer"></div>
+            <div class="scheduler-toolbar__spacer"></div>
             <!-- MOVE, THEN ACT. The two arrows are neighbours because paging
                  back and forth is the most repeated gesture here and Today
                  between them put a 70px hop between the pair. -->
@@ -597,9 +597,9 @@
                  week changes, moving the very buttons being clicked. New trip is
                  pushed right, which is Carbon's own place for a primary action and
                  keeps creating a trip clear of the paging controls. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md sch-toolbar__lg-only" id="sch-today" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
             
             
           <!-- "Driver availability", THE SAME NAME THE OTHER TWO USE. This was
@@ -615,13 +615,13 @@
                the bar" for the bar's own driver row, and the trip editor labels
                a trip's assigned drivers "Drivers". Three different things, and
                only this one is the pane. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md sch-toolbar__lg-only" id="sch-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
             <!-- VIEW OPTIONS. screen-inventory.md section 7 left four of these
                homeless when the specimen's menu went: they change how the board
                DRAWS rather than what it holds, which is a menu's job and not a
                toolbar's. Only the two that exist are here -- a control for a
                mode this grid cannot draw would be a lie. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
             <!-- `New trip` USED TO SIT HERE AND IS IN THE MENU ABOVE, at every
                  width since 2026-09-11, on rux's call. The note it replaces read:
                  "Primary and rightmost, which is Carbon's place for the one
@@ -646,7 +646,7 @@
                  this item may be the only way to create a trip. -->
           </div>
             <div class="sch" id="sch" role="region" aria-label="Week schedule" hidden>
-              <div class="sch-grid" id="sch-grid"></div>
+              <div class="scheduler-grid" id="scheduler-grid"></div>
             </div>
           </div>
           <!-- LEFT OF THE BOARD, decided 2026-09-06 after trying it below and to
@@ -660,10 +660,10 @@
                grid off was a button in the SCHEDULE'S toolbar, across the page
                from the region it hides. That toggle stays -- it is how the grid
                is turned ON, and there is nothing here to press when it is off. -->
-          <div class="sch-aside" id="sch-aside" hidden>
-            <div class="sch-aside__head">
-              <span class="sch-aside__title">Driver availability</span>
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="sch-avail-close" aria-label="Hide driver availability">
+          <div class="scheduler-aside" id="scheduler-aside" hidden>
+            <div class="scheduler-aside__head">
+              <span class="scheduler-aside__title">Driver availability</span>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-close" aria-label="Hide driver availability">
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
               </button>
             </div>
@@ -676,7 +676,7 @@
                setting the page's padding -- the machinery that produced the
                "reserved twice" error, the mid-entrance mis-measurement and a
                transitionend refit with nothing to wait for. All of it is gone.
-               `.sch-aside` was already an in-flow companion on the left, so the
+               `.scheduler-aside` was already an in-flow companion on the left, so the
                page now has one pattern for companions instead of two.
 
                IT STILL OPENS AND CLOSES, on rux's call -- the board keeps its
@@ -684,12 +684,12 @@
                stay because every part INSIDE them is styled from that ancestor;
                only the fixed positioning is neutralised, in overrides.css,
                which is where a component rule belongs. -->
-          <div class="sch-trip" id="sch-trip" hidden>
-    <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--condensed-actions" id="sch-panel" aria-label="Trip" hidden>
+          <div class="scheduler-trip" id="scheduler-trip" hidden>
+    <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--condensed-actions" id="scheduler-panel" aria-label="Trip" hidden>
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
         <div class="rux--side-panel__title">
-          <h2 class="rux--side-panel__title-text" id="sch-panel-title">&nbsp;</h2>
-          <h2 class="rux--side-panel__collapsed-title-text" id="sch-panel-title-collapsed">&nbsp;</h2>
+          <h2 class="rux--side-panel__title-text" id="scheduler-panel-title">&nbsp;</h2>
+          <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-panel-title-collapsed">&nbsp;</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
           <!-- `--md` IS HOW THIS ONE TAKES 40px, 2026-09-10, and it is not the
@@ -700,7 +700,7 @@
                2rem square, and `.rux--btn--md.rux--side-panel__close-button`
                is the compiled variant that says 2.5rem. So the class differs
                because the component does, not because the size does. -->
-          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="sch-panel-close" aria-label="Close">
+          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-panel-close" aria-label="Close">
             <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -708,7 +708,7 @@
       <!-- TABS, and the panels are SIBLINGS of `.rux--tabs` -- that is where
            components-tabs--default puts them, and Design's detail-page template
            says the same. `tabs.js` claims the strip and drives the arrow keys. -->
-      <div class="rux--side-panel__inner-content rux--side-panel--scrolls" id="sch-panel-body">
+      <div class="rux--side-panel__inner-content rux--side-panel--scrolls" id="scheduler-panel-body">
         <!-- CONTAINED AFTER ALL, 2026-09-10, REVERSING THE ENTRY BELOW.
 
              WHAT 2026-09-07 SAID, kept because the reasoning was sound on the
@@ -750,25 +750,25 @@
         <div class="rux--tabs rux--tabs--contained rux--tabs--full-width rux--layout--size-sm">
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
           <div class="rux--tab--list" role="tablist" aria-label="Trip">
-            <button id="sch-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="sch-panel-details" tabindex="0">
+            <button id="scheduler-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-panel-details" tabindex="0">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
             </button>
-            <button id="sch-tab-billing" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="sch-panel-billing" tabindex="-1">
+            <button id="scheduler-tab-billing" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-billing" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Billing</span></div>
             </button>
-            <button id="sch-tab-fleet" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="sch-panel-fleet" tabindex="-1">
+            <button id="scheduler-tab-fleet" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-fleet" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Fleet</span></div>
             </button>
-            <button id="sch-tab-schedule" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="sch-panel-schedule" tabindex="-1">
+            <button id="scheduler-tab-schedule" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-schedule" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Schedule</span></div>
             </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
         </div>
-        <div class="rux--tab-content" role="tabpanel" id="sch-panel-details" aria-labelledby="sch-tab-details" tabindex="0"></div>
-        <div class="rux--tab-content" role="tabpanel" id="sch-panel-billing" aria-labelledby="sch-tab-billing" tabindex="0" hidden></div>
-        <div class="rux--tab-content" role="tabpanel" id="sch-panel-fleet" aria-labelledby="sch-tab-fleet" tabindex="0" hidden></div>
-        <div class="rux--tab-content" role="tabpanel" id="sch-panel-schedule" aria-labelledby="sch-tab-schedule" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-details" aria-labelledby="scheduler-tab-details" tabindex="0"></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-schedule" aria-labelledby="scheduler-tab-schedule" tabindex="0" hidden></div>
       </div>
       <!-- ONE BUTTON, BECAUSE ONE IS WHAT IS CAPTURED. `action-set--row-double`
            is compiled but no captured story shows a two-button action set, and
@@ -798,7 +798,7 @@
 
            CANCEL TRIP IS IN THIS BAR AFTER ALL, moved here 2026-09-10 when
            rux asked the question that settles it: is there a confirmation.
-           There is, and it is not a thin one -- `sch-cancel-modal` names the
+           There is, and it is not a thin one -- `scheduler-cancel-modal` names the
            trip, says it comes off the schedule and can be brought back, and
            asks for a reason before its own danger button will do anything.
            The objection to seating a destructive verb beside Save was that a
@@ -836,16 +836,16 @@
            nothing happens on this press except `Cancel this trip?` opening
            to ask, and `Reset` beside it is the button that drops edits. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--danger--ghost" id="sch-panel-cancel">Cancel</button>
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="sch-panel-reset" disabled>Reset</button>
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="sch-panel-save" disabled>Save</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--danger--ghost" id="scheduler-panel-cancel">Cancel</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
       </div>
     </aside>
           </div>
         </div>
 
-        <div class="sch sch--avail" id="sch-avail" role="region" aria-label="Driver availability" hidden>
-          <div class="sch-grid sch-avail__grid" id="sch-avail-grid"></div>
+        <div class="sch sch--avail" id="scheduler-avail" role="region" aria-label="Driver availability" hidden>
+          <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid"></div>
         </div>
       </div>
       </div>
@@ -857,7 +857,7 @@
        positioned by data.js at the pointer and opened through
        `Rux.menu.open`, which supplies Escape, outside-press and focus return.
        The module repositions only `position: fixed` surfaces, and this one is
-       absolute inside `.sch-page`, so the placement set for it is left alone. -->
+       absolute inside `.scheduler-page`, so the placement set for it is left alone. -->
   <!-- THE VIEW MENU. `--with-selectable-items` is what makes
        `__selection-icon` display at all; the checkmark itself is put in and
        taken out by data.js rather than hidden by a rule, because a rule on
@@ -866,7 +866,7 @@
        FLAT, NOT GROUPED. `rux--menu-item-group` is compiled and nests a second
        `ul`, which is more structure than two blocks of items need and more than
        the menu module is known here to walk. A divider says the same thing. -->
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="sch-view-menu" role="menu" tabindex="-1" hidden>
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- NEW TRIP LIVES HERE BELOW md, 2026-09-11 on rux's call: "mobile is for
          quick references anyway". The board is read on a phone far more than it
          is added to, so the one WRITING action is demoted and the reading
@@ -889,7 +889,7 @@
          AN ACTION IN A MENU OF CHECKBOXES is why the divider follows it and why
          the trigger is renamed below md: a button labelled "View options" that
          also creates a trip is mislabelled, so app.js calls it "More" there. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="sch-menu-new-trip">
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-new-trip">
       <!-- AN EMPTY SELECTION SLOT, and it is not decoration. This menu is
            `--with-selectable-items`, where Carbon reserves the first column
            for the checkmark on EVERY row; a row without the div lays out
@@ -903,8 +903,8 @@
     </li>
     <!-- TODAY AND DRIVERS JOIN NEW TRIP BELOW md, 2026-09-11 on rux's call, so
          the whole toolbar is one row on a phone: the week, a spacer, and
-         `< > (more)`. Both are `sch-menu-item--sm-only`; their toolbar buttons
-         are `sch-toolbar__lg-only`, so exactly one of each pair is ever in the
+         `< > (more)`. Both are `scheduler-menu-item--sm-only`; their toolbar buttons
+         are `scheduler-toolbar__lg-only`, so exactly one of each pair is ever in the
          document's accessibility tree.
 
          DRIVERS IS A CHECKBOX AND TODAY IS NOT, because one is a toggle and the
@@ -912,7 +912,7 @@
          what keeps Drivers OUT of `applyView`'s sync loop: that loop reads
          `view[key]`, and an unknown key is `undefined`, which would silently
          uncheck this row every time any other option changed. -->
-    <li class="rux--menu-item sch-menu-item--sm-only" role="menuitem" tabindex="0" id="sch-menu-today">
+    <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitem" tabindex="0" id="scheduler-menu-today">
       <!-- AN EMPTY SELECTION SLOT, and it is not decoration. This menu is
            `--with-selectable-items`, where Carbon reserves the first column
            for the checkmark on EVERY row; a row without the div lays out
@@ -924,7 +924,7 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></div>
       <div class="rux--menu-item__label">Today</div>
     </li>
-    <li class="rux--menu-item sch-menu-item--sm-only" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-act="drivers" id="sch-menu-drivers">
+    <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-act="drivers" id="scheduler-menu-drivers">
       <div class="rux--menu-item__selection-icon"></div>
       
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></div>
@@ -959,8 +959,8 @@
     </li>
   </ul>
 
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="sch-cell-menu" role="menu" tabindex="-1" hidden>
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="sch-cell-menu-new">
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="scheduler-cell-menu" role="menu" tabindex="-1" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-cell-menu-new">
       <div class="rux--menu-item__label">New trip here</div>
     </li>
   </ul>
@@ -971,14 +971,14 @@
        Two of the three are here: Open trip, and Move bus in the form it can
        take without a bus list, which is taking the bus away. Print envelope
        waits for the print pass, step 5 of the build order. -->
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="sch-bar-menu" role="menu" tabindex="-1" hidden>
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="sch-bar-menu-open">
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-open">
       <div class="rux--menu-item__label">Open trip</div>
     </li>
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="sch-bar-menu-unassign">
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-unassign">
       <div class="rux--menu-item__label">Take off this bus</div>
     </li>
-    <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="0" id="sch-bar-menu-cancel">
+    <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="0" id="scheduler-bar-menu-cancel">
       <div class="rux--menu-item__label">Cancel trip…</div>
     </li>
   </ul>
@@ -1008,20 +1008,20 @@
        room. `date-picker.js` is asked to claim this subtree when the dialog
        opens, for the same reason every other picker is -- an unclaimed one
        renders its calendar permanently open. -->
-  <div class="rux--layer-one rux--modal sch-modal--has-calendar" id="sch-payment-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="sch-payment-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+  <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-payment-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-payment-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="sch-payment-h">Add payment</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-payment-h">Add payment</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
       </div>
-      <div class="rux--modal-content" id="sch-payment-fields"></div>
+      <div class="rux--modal-content" id="scheduler-payment-fields"></div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="sch-payment-done">Done</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-payment-done">Done</button>
       </div>
     </div>
   </div>
@@ -1048,46 +1048,46 @@
 
        `Done`, NOT `Save`, exactly as the payment dialog: this writes nothing
        and the panel's own Save is what reaches `trips`. -->
-  <div class="rux--layer-one rux--modal" id="sch-po-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="sch-po-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+  <div class="rux--layer-one rux--modal" id="scheduler-po-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-po-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="sch-po-h">Add purchase order</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-po-h">Add purchase order</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
       </div>
-      <div class="rux--modal-content" id="sch-po-fields"></div>
+      <div class="rux--modal-content" id="scheduler-po-fields"></div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="sch-po-done">Done</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-po-done">Done</button>
       </div>
     </div>
   </div>
 
-  <div class="rux--layer-one rux--modal" id="sch-inv-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="sch-inv-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+  <div class="rux--layer-one rux--modal" id="scheduler-inv-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-inv-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="sch-inv-h">Add invoice</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-inv-h">Add invoice</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
       </div>
-      <div class="rux--modal-content" id="sch-inv-fields"></div>
+      <div class="rux--modal-content" id="scheduler-inv-fields"></div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="sch-inv-done">Done</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-inv-done">Done</button>
       </div>
     </div>
   </div>
 
-  <div class="rux--layer-one rux--modal" id="sch-cancel-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="sch-cancel-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+  <div class="rux--layer-one rux--modal" id="scheduler-cancel-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-cancel-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="sch-cancel-h">Cancel this trip?</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-cancel-h">Cancel this trip?</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
@@ -1095,21 +1095,21 @@
         </div>
       </div>
       <div class="rux--modal-content">
-        <p id="sch-cancel-what"></p>
+        <p id="scheduler-cancel-what"></p>
         <p>It comes off the schedule and stays on the trips list, where it can be brought back.</p>
         <div class="rux--form-item">
           <div class="rux--text-area__label-wrapper">
-            <label class="rux--label" for="sch-cancel-reason">Reason</label>
+            <label class="rux--label" for="scheduler-cancel-reason">Reason</label>
           </div>
           <div class="rux--text-area__wrapper">
-            <textarea id="sch-cancel-reason" class="rux--text-area" rows="3" placeholder="Why is it cancelled?"></textarea>
+            <textarea id="scheduler-cancel-reason" class="rux--text-area" rows="3" placeholder="Why is it cancelled?"></textarea>
             <span class="rux--text-area__counter-alert" role="alert"></span>
           </div>
         </div>
       </div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep it</button>
-        <button type="button" class="rux--btn rux--btn--danger" id="sch-cancel-confirm">Cancel trip</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-cancel-confirm">Cancel trip</button>
       </div>
     </div>
   </div>
@@ -1120,14 +1120,14 @@
        room beside it instead of letting it float over the grid. -->
 </main>
 
-<!-- WHAT A TOAST IS FOR HERE, AND WHY IT IS NOT `#sch-status`. That region sits
+<!-- WHAT A TOAST IS FOR HERE, AND WHY IT IS NOT `#scheduler-status`. That region sits
      ABOVE the board in normal flow, so anything appearing in it pushes the
      grid down and pulls it back up again -- rux saw a move shove the whole
      table. Reserving the space permanently would cost a band above a board
      whose height app.js already computes and contests.
 
      THE SPLIT IS NOT "TRANSIENT VS NOT", IT IS WHAT THE MESSAGE IS ABOUT.
-     `#sch-status` keeps the three that describe the BOARD -- loading, "Nothing
+     `#scheduler-status` keeps the three that describe the BOARD -- loading, "Nothing
      this week", and a week that would not load. Those belong in the flow they
      interrupt: they stand in for the grid rather than commenting on it, and
      moving it is honest. Everything that reports what a PERSON just did -- a
@@ -1137,7 +1137,7 @@
      EMPTY AND `hidden` UNTIL SOMETHING IS SAID; data.js fills it. It is
      outside `<main>` because it is fixed to the viewport and belongs to no
      region of the page. -->
-<div id="sch-toast" class="sch-toast" role="status" aria-live="polite" hidden></div>
+<div id="scheduler-toast" class="scheduler-toast" role="status" aria-live="polite" hidden></div>
 
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
 <script src="/design/js/overlay.js"></script>

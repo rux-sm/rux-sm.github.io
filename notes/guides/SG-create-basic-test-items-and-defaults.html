@@ -48,16 +48,16 @@
    `stack-horizontal` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a `rux--` one: check-classes
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. `.rux--tag` is inline-flex already; this
@@ -84,7 +84,7 @@
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -95,7 +95,7 @@
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -104,21 +104,21 @@
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -126,11 +126,11 @@
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -138,21 +138,21 @@
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and `display: flex` keeps each
@@ -165,7 +165,7 @@
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -174,7 +174,7 @@
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -182,8 +182,8 @@
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -194,62 +194,62 @@
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its `cols`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* `hidden` alone loses to Carbon's `.rux--tile { display: block }`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -259,9 +259,9 @@
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A `rux--tile`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way `ln-q`
-   and `ln-ex-work` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are `ln-dg-node`, not `ln-tile` --
+   surface rather than sitting flush on the page background, the way `notes-q`
+   and `notes-ex-work` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are `notes-dg-node`, not `notes-tile` --
    they used to be, and nesting a real `rux--tile` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -269,7 +269,7 @@
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    `<figcaption>` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while `.ln-dg-grid` sizes to `max-content` and sets the scroll
+   VISIBLE width while `.notes-dg-grid` sizes to `max-content` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -294,7 +294,7 @@
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    `minmax(7rem, 1fr)` -- every column the same width, and every one of them
@@ -330,7 +330,7 @@
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -361,9 +361,9 @@
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -374,8 +374,8 @@
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -387,7 +387,7 @@
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   `.ln-dg-stage` lost its `border-block-end` above. That line was drawn per
+   `.notes-dg-stage` lost its `border-block-end` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -405,7 +405,7 @@
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own `boundary` flag. The band
@@ -419,7 +419,7 @@
    `align-self` IS LOAD-BEARING: the grid sets `align-items: start` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. `Enterprise Planning`
@@ -448,11 +448,11 @@
    `module: Enterprise Planning` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -461,18 +461,18 @@
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -482,12 +482,12 @@
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are `diagram.*.nodes-marked` in MEASURED now.) Its key reuses
-   `ln-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
+   `notes-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -498,7 +498,7 @@
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes `.ln-dg`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes `.notes-dg`'s
    scroll container -- `overflow-x: auto` computes `overflow-y` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -521,7 +521,7 @@
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -530,13 +530,13 @@
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -550,14 +550,14 @@
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -566,7 +566,7 @@
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -574,7 +574,7 @@
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -597,26 +597,26 @@
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -624,23 +624,23 @@
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See `field()` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line `Do` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -652,19 +652,19 @@
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   `ln-dg-node` and the same `ln-dg-cat--*` class the canvas uses, so it takes
+   `notes-dg-node` and the same `notes-dg-cat--*` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY `ln-dg-key-tile` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY `notes-dg-key-tile` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a `:not()` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* `ln-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   `ln-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above `.ln-dg-node-link`. Two rules
+/* `notes-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   `notes-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above `.notes-dg-node-link`. Two rules
    defined one class, and the legend silently inherited the mark's
    `text-transform: uppercase`, `font-weight: 600` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. `check-classes` validates `rux--*` names
@@ -675,10 +675,10 @@
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* `inline-block`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a `<span>` wearing `ln-dg-node`, which is a tile's class and expects a
+   is a `<span>` wearing `notes-dg-node`, which is a tile's class and expects a
    block box; the name inside is `display: block`. While the `li` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the `li` rule with them, the span went back to
@@ -690,8 +690,8 @@
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then `kind` chose a HUE, five
    of them, on a page with no legend -- and `decision` and `outcome` chose
@@ -739,13 +739,13 @@
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -753,18 +753,18 @@
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -781,7 +781,7 @@
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two `:not()`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   `.ln-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
+   `.notes-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -792,7 +792,7 @@
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: `:has(.ln-dg-node-code)` is the test the stripe rule
+   nothing to derive: `:has(.notes-dg-node-code)` is the test the stripe rule
    already used.
 
    NOT `layer-01`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -802,22 +802,22 @@
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -841,7 +841,7 @@
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: `.ln-dg-node.ln-dg-legend-tile` and `.ln-dg-node.ln-dg-cat--config` are
+   lost: `.notes-dg-node.notes-dg-legend-tile` and `.notes-dg-node.notes-dg-cat--config` are
    both two classes, so the later won and Setup kept `padding-inline-start: 0`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of `docs/diagram.md` records,
@@ -854,17 +854,17 @@
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. `.ln-dg` scrolls on the inline axis, so a
+   scrolling rather than a preference. `.notes-dg` scrolls on the inline axis, so a
    block child of it -- which is what a `<figcaption>` is -- is laid out at the
    VISIBLE width while the grid inside sizes to `max-content` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to `.ln-dg-grid`, which already spans the whole table, and
+   So the rule moves to `.notes-dg-grid`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -877,25 +877,25 @@
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS `position: fixed` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1199,9 +1199,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
-<div data-ln-doc="SG-create-basic-test-items-and-defaults">        <div class="rux--stack-vertical rux--stack-scale-5">
+<div data-notes-doc="SG-create-basic-test-items-and-defaults">        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Create test items</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">11 phases</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-03</span></span>
@@ -1210,9 +1210,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="rux--type-body-02">Common · Procurement · Manufacturing · Warehousing</p>
         </div>
 
-      <p class="ln-prose-measure"><strong>Objective:</strong> create a small, isolated item family that proves two supply patterns — purchased components and a Job Shop finished product — and carry it through the engineering, costing, and stock data a quantity-one production order needs, so the finished item can be produced and received into the finished-goods warehouse.</p>
-      <p class="ln-prose-measure"><strong>Scope note:</strong> this guide <strong>builds and qualifies the training case; it does not run the production order.</strong> The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is <span class="ln-t-exact">SG-manual-production-order-existing-master-data.md</span>, which phase 10 hands off to. Do not restate its steps here.</p>
-      <p class="ln-prose-measure"><strong>The family this guide builds is [`bamboo-test-item-family.md`](the source on file):</strong> three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This guide says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it.</p>
+      <p class="notes-prose-measure"><strong>Objective:</strong> create a small, isolated item family that proves two supply patterns — purchased components and a Job Shop finished product — and carry it through the engineering, costing, and stock data a quantity-one production order needs, so the finished item can be produced and received into the finished-goods warehouse.</p>
+      <p class="notes-prose-measure"><strong>Scope note:</strong> this guide <strong>builds and qualifies the training case; it does not run the production order.</strong> The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is <span class="notes-t-exact">SG-manual-production-order-existing-master-data.md</span>, which phase 10 hands off to. Do not restate its steps here.</p>
+      <p class="notes-prose-measure"><strong>The family this guide builds is [`bamboo-test-item-family.md`](the source on file):</strong> three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This guide says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it.</p>
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-glance">
       <h2 id="s-glance">At a glance</h2>
       <div class="rux--data-table-container">
@@ -1220,77 +1220,77 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Where</div></th><th scope="col"><div class="rux--table-header-label">What it achieves</div></th></tr></thead>
             <tbody>
-          <tr><td>☐</td><td><span class="ln-t-named">0</span> Confirm the test design</td><td>Warehouses; Items</td><td>Site, warehouses, units, and unused item codes are known</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">1</span> Create two item groups</td><td>Item Groups</td><td>Purchase and Job Shop defaults remain isolated from each other</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">2</span> Configure the purchased group</td><td>Item Defaults and linked package defaults</td><td><span class="ln-t-exact">BAM-RM</span> can create Ordering, Purchase, and Warehousing data</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">3</span> Configure the made group</td><td>Item Defaults and linked package defaults</td><td><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">4</span> Verify site creation control</td><td>Item Control and Defaults by Site</td><td>Site-level creation agrees with the company defaults</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">5</span> Create the three items</td><td>Items; Items by Site</td><td>Each item inherits its group&#39;s defaults and its site row shows the intended role</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">6</span> Build the bill of material</td><td>Job Shop Bills of Material</td><td>The pair has an Approved BOM carrying both components</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">7</span> Build the routing</td><td>Job Shop Routings</td><td>The pair has an Approved routing with an operation at a work center</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">8</span> Confirm costing data</td><td>Item - Costing</td><td>Every item in the family carries the standard cost the estimate calculation reads</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">9</span> Stock the components</td><td>Inventory 360; Purchase Order Intake Workbench</td><td>The rod and sleeve are on hand at the raw-material warehouse</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">10</span> Qualify the training case</td><td>The handoff table below</td><td>The family satisfies phase 0 of the production-order guide</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">0</span> Confirm the test design</td><td>Warehouses; Items</td><td>Site, warehouses, units, and unused item codes are known</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">1</span> Create two item groups</td><td>Item Groups</td><td>Purchase and Job Shop defaults remain isolated from each other</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">2</span> Configure the purchased group</td><td>Item Defaults and linked package defaults</td><td><span class="notes-t-exact">BAM-RM</span> can create Ordering, Purchase, and Warehousing data</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">3</span> Configure the made group</td><td>Item Defaults and linked package defaults</td><td><span class="notes-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">4</span> Verify site creation control</td><td>Item Control and Defaults by Site</td><td>Site-level creation agrees with the company defaults</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">5</span> Create the three items</td><td>Items; Items by Site</td><td>Each item inherits its group&#39;s defaults and its site row shows the intended role</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">6</span> Build the bill of material</td><td>Job Shop Bills of Material</td><td>The pair has an Approved BOM carrying both components</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">7</span> Build the routing</td><td>Job Shop Routings</td><td>The pair has an Approved routing with an operation at a work center</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">8</span> Confirm costing data</td><td>Item - Costing</td><td>Every item in the family carries the standard cost the estimate calculation reads</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">9</span> Stock the components</td><td>Inventory 360; Purchase Order Intake Workbench</td><td>The rod and sleeve are on hand at the raw-material warehouse</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">10</span> Qualify the training case</td><td>The handoff table below</td><td>The family satisfies phase 0 of the production-order guide</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="ln-prose-measure"><strong>Why this order.</strong> Each phase makes what the next one needs. Item Defaults is keyed by item group, so groups come before defaults; an item inherits its subentities from the defaults, so defaults come before items; a BOM and a routing are written against an item, a cost is calculated from them, and stock is booked for a component that already has purchase data. Nothing here is alphabetical and nothing walks the menu.</p>
-      <p class="ln-prose-measure"><strong>Best progress indicator:</strong> phases 0–5 — on the saved item, confirm the intended <em>Default Supply Source</em>; on its site row, confirm the expected subentity indicators. Phases 6–10 — the family is ready when the BOM and the routing are both <strong>Approved</strong> and used for planning and costing, and both components are on hand at the raw-material warehouse.</p>
-      <p class="ln-prose-measure"><strong>Where this guide stops.</strong> Phase 10 hands a qualified training case to <span class="ln-t-exact">SG-manual-production-order-existing-master-data.md</span>. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.</p>
+      <p class="notes-prose-measure"><strong>Why this order.</strong> Each phase makes what the next one needs. Item Defaults is keyed by item group, so groups come before defaults; an item inherits its subentities from the defaults, so defaults come before items; a BOM and a routing are written against an item, a cost is calculated from them, and stock is booked for a component that already has purchase data. Nothing here is alphabetical and nothing walks the menu.</p>
+      <p class="notes-prose-measure"><strong>Best progress indicator:</strong> phases 0–5 — on the saved item, confirm the intended <em>Default Supply Source</em>; on its site row, confirm the expected subentity indicators. Phases 6–10 — the family is ready when the BOM and the routing are both <strong>Approved</strong> and used for planning and costing, and both components are on hand at the raw-material warehouse.</p>
+      <p class="notes-prose-measure"><strong>Where this guide stops.</strong> Phase 10 hands a qualified training case to <span class="notes-t-exact">SG-manual-production-order-existing-master-data.md</span>. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.</p>
       </section>
 
         <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-phases">
           <h2 id="h-phases">Phases</h2>
           <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-0">
         <h3 id="p-0">Phase 0 — Confirm the test design</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Warehouses <span class="rux--type-code-01">whwmd2500m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Warehouses <span class="rux--type-code-01">whwmd2500m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.1</th><td>Confirm the approved training company</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">training company</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.1</th><td>Confirm the approved training company</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">training company</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.1">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.1" class="rux--text-area" rows="1" data-ln-note="0.1" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.1" class="rux--text-area" rows="1" data-notes-note="0.1" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.2</th><td>Select the site that will buy, store, make, and sell the test family</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">site</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.2</th><td>Select the site that will buy, store, make, and sell the test family</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">site</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.2" class="rux--text-area" rows="1" data-ln-note="0.2" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.2" class="rux--text-area" rows="1" data-notes-note="0.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">0.3</th><td>Open <span class="ln-t-named">Warehouses</span> <span class="ln-t-exact">whwmd2500m000</span></td><td class="ln-see">The warehouse master list opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">0.4</th><td>Filter the warehouse list to the site from 0.2</td><td class="ln-see">Only candidate warehouses for that site remain</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.5</th><td>Record the approved Normal warehouse for purchased production materials</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchased-item warehouse</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">0.3</th><td>Open <span class="notes-t-named">Warehouses</span> <span class="notes-t-exact">whwmd2500m000</span></td><td class="notes-see">The warehouse master list opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">0.4</th><td>Filter the warehouse list to the site from 0.2</td><td class="notes-see">Only candidate warehouses for that site remain</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.5</th><td>Record the approved Normal warehouse for purchased production materials</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">purchased-item warehouse</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.5">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.5" class="rux--text-area" rows="1" data-ln-note="0.5" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.5" class="rux--text-area" rows="1" data-notes-note="0.5" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.6</th><td>Record the approved Normal warehouse for finished products</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished-item warehouse</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.6</th><td>Record the approved Normal warehouse for finished products</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">finished-item warehouse</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.6">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.6" class="rux--text-area" rows="1" data-ln-note="0.6" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.6" class="rux--text-area" rows="1" data-notes-note="0.6" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">0.7</th><td>Open one approved physical Product item that uses the same counting basis</td><td class="ln-see">Its global item data opens</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.8</th><td>Record its <span class="ln-t-named">Unit Set</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">Unit Set</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">0.7</th><td>Open one approved physical Product item that uses the same counting basis</td><td class="notes-see">Its global item data opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.8</th><td>Record its <span class="notes-t-named">Unit Set</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">Unit Set</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.8">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.8" class="rux--text-area" rows="1" data-ln-note="0.8" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.8" class="rux--text-area" rows="1" data-notes-note="0.8" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.9</th><td>Record its <span class="ln-t-named">Inventory Unit</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">Inventory Unit</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.9</th><td>Record its <span class="notes-t-named">Inventory Unit</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">Inventory Unit</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.9">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.9" class="rux--text-area" rows="1" data-ln-note="0.9" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.9" class="rux--text-area" rows="1" data-notes-note="0.9" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">0.10</th><td>Search <span class="ln-t-named">Items</span> for each proposed example code</td><td class="ln-see">No existing item uses any proposed code</td></tr>
+          <tr><th scope="row" class="notes-step-id">0.10</th><td>Search <span class="notes-t-named">Items</span> for each proposed example code</td><td class="notes-see">No existing item uses any proposed code</td></tr>
             </tbody>
           </table>
         </div>
@@ -1298,27 +1298,27 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-1">
         <h3 id="p-1">Phase 1 — Create two item groups</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Item Classification ➔ Item Groups</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Item Groups <span class="rux--type-code-01">tcmcs0123m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until phase 2 attaches defaults to it.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Item Classification ➔ Item Groups</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item Groups <span class="rux--type-code-01">tcmcs0123m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until phase 2 attaches defaults to it.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">1.1</th><td>Search for the proposed purchased-group code</td><td class="ln-see">No existing row uses it</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.2</th><td>Select <span class="ln-t-press">New</span></td><td class="ln-see">A blank item-group row opens</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">1.3</th><td>Enter <span class="ln-t-named">Item Group</span> and <span class="ln-t-named">Description</span> for the purchased group</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchased-supply item group</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">1.1</th><td>Search for the proposed purchased-group code</td><td class="notes-see">No existing row uses it</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.2</th><td>Select <span class="notes-t-press">New</span></td><td class="notes-see">A blank item-group row opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.3</th><td>Enter <span class="notes-t-named">Item Group</span> and <span class="notes-t-named">Description</span> for the purchased group</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">purchased-supply item group</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-1.3">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.3" class="rux--text-area" rows="1" data-ln-note="1.3" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.3" class="rux--text-area" rows="1" data-notes-note="1.3" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">1.4</th><td>Set <span class="ln-t-named">Currency</span> to the approved company currency</td><td class="ln-see">The currency is populated</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.5</th><td>Save the purchased group</td><td class="ln-see">The purchased group is available for defaults</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">1.6</th><td>Repeat 1.1–1.5 for the made group</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">made-supply item group</span> — both dedicated groups are available for defaults<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">1.4</th><td>Set <span class="notes-t-named">Currency</span> to the approved company currency</td><td class="notes-see">The currency is populated</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.5</th><td>Save the purchased group</td><td class="notes-see">The purchased group is available for defaults</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.6</th><td>Repeat 1.1–1.5 for the made group</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">made-supply item group</span> — both dedicated groups are available for defaults<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-1.6">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.6" class="rux--text-area" rows="1" data-ln-note="1.6" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.6" class="rux--text-area" rows="1" data-notes-note="1.6" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1328,35 +1328,35 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-2">
         <h3 id="p-2">Phase 2 — Configure the purchased group</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Defaults</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Item Defaults <span class="rux--type-code-01">tcibd0102m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A default combination records, per package, two separate things: whether default data exists for the subentity, shown by the indicator, and whether a new item should receive it, set by the Create check box. A green indicator with the box cleared gives a new item nothing. The Sites check box decides whether new items get a site row automatically.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Defaults</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item Defaults <span class="rux--type-code-01">tcibd0102m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A default combination records, per package, two separate things: whether default data exists for the subentity, shown by the indicator, and whether a new item should receive it, set by the Create check box. A green indicator with the box cleared gives a new item nothing. The Sites check box decides whether new items get a site row automatically.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">2.1</th><td>Open <span class="ln-t-named">Item Defaults</span> <span class="ln-t-exact">tcibd0102m000</span></td><td class="ln-see">The company-level default combinations open</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.2</th><td>Filter for <span class="ln-t-named">Item Type</span> = <span class="ln-t-exact">Product</span> and the purchased group from 1.3</td><td class="ln-see">The current test row appears if already saved; otherwise no row appears</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.3</th><td>If the test row is absent, select <span class="ln-t-press">New</span></td><td class="ln-see">A blank item-default record opens</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">2.4</th><td>Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact">Product</span>, <span class="ln-t-named">Item Group</span> to the purchased group from 1.3, and <span class="ln-t-named">Default Supply Source</span> to <span class="ln-t-exact">Purchase</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchased default supply source</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">2.1</th><td>Open <span class="notes-t-named">Item Defaults</span> <span class="notes-t-exact">tcibd0102m000</span></td><td class="notes-see">The company-level default combinations open</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.2</th><td>Filter for <span class="notes-t-named">Item Type</span> = <span class="notes-t-exact">Product</span> and the purchased group from 1.3</td><td class="notes-see">The current test row appears if already saved; otherwise no row appears</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.3</th><td>If the test row is absent, select <span class="notes-t-press">New</span></td><td class="notes-see">A blank item-default record opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">2.4</th><td>Set <span class="notes-t-named">Item Type</span> to <span class="notes-t-exact">Product</span>, <span class="notes-t-named">Item Group</span> to the purchased group from 1.3, and <span class="notes-t-named">Default Supply Source</span> to <span class="notes-t-exact">Purchase</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">purchased default supply source</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-2.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-2.4" class="rux--text-area" rows="1" data-ln-note="2.4" placeholder="The value you saw"></textarea>
+                <textarea id="n-2.4" class="rux--text-area" rows="1" data-notes-note="2.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">2.5</th><td>Set <span class="ln-t-named">Unit Set</span> and <span class="ln-t-named">Inventory Unit</span> to the values recorded at 0.8 and 0.9</td><td class="ln-see">—</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.6</th><td>Leave special-purpose typology and traceability controls at their proposed values</td><td class="ln-see">No new configuration, lot, or serial behaviour is introduced</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.7</th><td>Save the global default</td><td class="ln-see">The Product/<span class="ln-t-exact">BAM-RM</span> combination exists</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.8</th><td>Continue in the automatically opened <span class="ln-t-named">Item Defaults</span> <span class="ln-t-exact">tcibd0502m000</span></td><td class="ln-see">The multisite follow-on is active</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.9</th><td>On the <span class="ln-t-named">Sites</span> tab add the site from 0.2, set its <span class="ln-t-named">Warehouse</span> to the purchased warehouse from 0.5 and its <span class="ln-t-named">Supply Source</span> to <span class="ln-t-exact">Purchase</span>, and save</td><td class="ln-see">The site row remains stored</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.10</th><td>For <span class="ln-t-named">Ordering</span>, then <span class="ln-t-named">Purchase</span>, then <span class="ln-t-named">Warehousing</span>: open the blue link beside it</td><td class="ln-see">Its defaults session opens — <span class="ln-t-named">Item Ordering Defaults</span> <span class="ln-t-exact">tcibd2101m000</span>, <span class="ln-t-named">Items - Purchase Defaults</span> <span class="ln-t-exact">tdipu0102m000</span>, <span class="ln-t-named">Items - Warehousing Defaults</span> <span class="ln-t-exact">whwmd4101s000</span></td></tr>
-          <tr><th scope="row" class="ln-step-id">2.11</th><td>Compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select <span class="ln-t-press">OK</span></td><td class="ln-see">The defaults close without an error</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.12</th><td>Confirm the subentity indicator beside the link is active, and select the Create check box beside it</td><td class="ln-see">Default data exists, and new items are marked to receive it</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.13</th><td>After the third subentity, save <span class="ln-t-named">Item Defaults</span> <span class="ln-t-exact">tcibd0502m000</span></td><td class="ln-see">The site row and Create controls remain stored</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">2.14</th><td>Close and reopen the Product/<span class="ln-t-exact">BAM-RM</span> default</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchased global subentities</span> — three active indicators, three Create controls<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">2.5</th><td>Set <span class="notes-t-named">Unit Set</span> and <span class="notes-t-named">Inventory Unit</span> to the values recorded at 0.8 and 0.9</td><td class="notes-see">—</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.6</th><td>Leave special-purpose typology and traceability controls at their proposed values</td><td class="notes-see">No new configuration, lot, or serial behaviour is introduced</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.7</th><td>Save the global default</td><td class="notes-see">The Product/<span class="notes-t-exact">BAM-RM</span> combination exists</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.8</th><td>Continue in the automatically opened <span class="notes-t-named">Item Defaults</span> <span class="notes-t-exact">tcibd0502m000</span></td><td class="notes-see">The multisite follow-on is active</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.9</th><td>On the <span class="notes-t-named">Sites</span> tab add the site from 0.2, set its <span class="notes-t-named">Warehouse</span> to the purchased warehouse from 0.5 and its <span class="notes-t-named">Supply Source</span> to <span class="notes-t-exact">Purchase</span>, and save</td><td class="notes-see">The site row remains stored</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.10</th><td>For <span class="notes-t-named">Ordering</span>, then <span class="notes-t-named">Purchase</span>, then <span class="notes-t-named">Warehousing</span>: open the blue link beside it</td><td class="notes-see">Its defaults session opens — <span class="notes-t-named">Item Ordering Defaults</span> <span class="notes-t-exact">tcibd2101m000</span>, <span class="notes-t-named">Items - Purchase Defaults</span> <span class="notes-t-exact">tdipu0102m000</span>, <span class="notes-t-named">Items - Warehousing Defaults</span> <span class="notes-t-exact">whwmd4101s000</span></td></tr>
+          <tr><th scope="row" class="notes-step-id">2.11</th><td>Compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select <span class="notes-t-press">OK</span></td><td class="notes-see">The defaults close without an error</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.12</th><td>Confirm the subentity indicator beside the link is active, and select the Create check box beside it</td><td class="notes-see">Default data exists, and new items are marked to receive it</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.13</th><td>After the third subentity, save <span class="notes-t-named">Item Defaults</span> <span class="notes-t-exact">tcibd0502m000</span></td><td class="notes-see">The site row and Create controls remain stored</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">2.14</th><td>Close and reopen the Product/<span class="notes-t-exact">BAM-RM</span> default</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">purchased global subentities</span> — three active indicators, three Create controls<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-2.14">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-2.14" class="rux--text-area" rows="1" data-ln-note="2.14" placeholder="The value you saw"></textarea>
+                <textarea id="n-2.14" class="rux--text-area" rows="1" data-notes-note="2.14" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1366,40 +1366,40 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-3">
         <h3 id="p-3">Phase 3 — Configure the made group</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Defaults</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Item Defaults <span class="rux--type-code-01">tcibd0102m000</span></dd></div></dl>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Defaults</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item Defaults <span class="rux--type-code-01">tcibd0102m000</span></dd></div></dl>
         <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle">The Production and Sales portions of this phase were walked in Company 4100 on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact">M010</span> finished-goods defaults, and the Company 4100 reference currency. Do not reuse them in another company without repeating those checks.</div>
+      <div class="rux--inline-notification__subtitle">The Production and Sales portions of this phase were walked in Company 4100 on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="notes-t-exact">M010</span> finished-goods defaults, and the Company 4100 reference currency. Do not reuse them in another company without repeating those checks.</div>
     </div>
   </div>
 </div>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> The same mechanism as phase 2 with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The same mechanism as phase 2 with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">3.1</th><td>Repeat 2.1–2.9 for the made group from 1.6, with <span class="ln-t-named">Default Supply Source</span> = <span class="ln-t-exact">Job Shop</span> and, on the site row, the finished warehouse from 0.6 and <span class="ln-t-named">Supply Source</span> = <span class="ln-t-exact">Job Shop</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">made default supply source</span> — the Product/<span class="ln-t-exact">BAM-FG</span> combination exists with its site row<div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">3.1</th><td>Repeat 2.1–2.9 for the made group from 1.6, with <span class="notes-t-named">Default Supply Source</span> = <span class="notes-t-exact">Job Shop</span> and, on the site row, the finished warehouse from 0.6 and <span class="notes-t-named">Supply Source</span> = <span class="notes-t-exact">Job Shop</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">made default supply source</span> — the Product/<span class="notes-t-exact">BAM-FG</span> combination exists with its site row<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-3.1">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-3.1" class="rux--text-area" rows="1" data-ln-note="3.1" placeholder="The value you saw"></textarea>
+                <textarea id="n-3.1" class="rux--text-area" rows="1" data-notes-note="3.1" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">3.2</th><td>Repeat 2.10–2.12 for <span class="ln-t-named">Ordering</span> and <span class="ln-t-named">Warehousing</span>, comparing each with an approved finished Product/Job Shop reference</td><td class="ln-see">Both indicators active, both Create boxes selected, no unapproved planning value introduced</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.3</th><td>Open the blue <span class="ln-t-press">Production</span> link</td><td class="ln-see"><span class="ln-t-named">Item - Production Defaults</span> <span class="ln-t-exact">tiipd0102m100</span> opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.4</th><td>Compare every visible field with the made-group Production values in the family sheet §4 and select <span class="ln-t-press">OK</span></td><td class="ln-see">The Production defaults close without an error</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.5</th><td>Confirm the Production indicator is active and select the Create check box beside <span class="ln-t-named">Production</span></td><td class="ln-see">New items are marked to receive Production data</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.6</th><td>Open the blue <span class="ln-t-press">Sales</span> link</td><td class="ln-see"><span class="ln-t-named">Item - Sales Defaults</span> <span class="ln-t-exact">tdisa0102s000</span> opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.7</th><td>Complete the <span class="ln-t-named">Ordering</span>, <span class="ln-t-named">Price</span> and <span class="ln-t-named">Delivery</span> tabs from the made-group Sales values in the family sheet §4 and select <span class="ln-t-press">OK</span></td><td class="ln-see">The Sales defaults are saved</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.8</th><td>If asked <span class="ln-t-named">Perform Global Update of Sales Items with New Defaults?</span>, select <span class="ln-t-press">No</span>. If <span class="ln-t-named">Global Update of Item with Defaults</span> <span class="ln-t-exact">tdisa0202m000</span> opens, do not select <span class="ln-t-named">Update</span>; select <span class="ln-t-press">Close</span></td><td class="ln-see">Existing Sales items are not changed</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.9</th><td>Confirm the Sales indicator is active and select the Create check box beside <span class="ln-t-named">Sales</span></td><td class="ln-see">New items are marked to receive Sales data</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">3.10</th><td>Save <span class="ln-t-named">Item Defaults</span> <span class="ln-t-exact">tcibd0502m000</span>, close and reopen the Product/<span class="ln-t-exact">BAM-FG</span> default, and reopen Sales ➔ <span class="ln-t-named">Price</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">made global subentities</span> — four active indicators, and <span class="ln-t-exact">USD</span>, <span class="ln-t-exact">ea</span>, both <span class="ln-t-exact">S10.10</span> groups and <span class="ln-t-exact">NOTAX</span> return<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">3.2</th><td>Repeat 2.10–2.12 for <span class="notes-t-named">Ordering</span> and <span class="notes-t-named">Warehousing</span>, comparing each with an approved finished Product/Job Shop reference</td><td class="notes-see">Both indicators active, both Create boxes selected, no unapproved planning value introduced</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.3</th><td>Open the blue <span class="notes-t-press">Production</span> link</td><td class="notes-see"><span class="notes-t-named">Item - Production Defaults</span> <span class="notes-t-exact">tiipd0102m100</span> opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.4</th><td>Compare every visible field with the made-group Production values in the family sheet §4 and select <span class="notes-t-press">OK</span></td><td class="notes-see">The Production defaults close without an error</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.5</th><td>Confirm the Production indicator is active and select the Create check box beside <span class="notes-t-named">Production</span></td><td class="notes-see">New items are marked to receive Production data</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.6</th><td>Open the blue <span class="notes-t-press">Sales</span> link</td><td class="notes-see"><span class="notes-t-named">Item - Sales Defaults</span> <span class="notes-t-exact">tdisa0102s000</span> opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.7</th><td>Complete the <span class="notes-t-named">Ordering</span>, <span class="notes-t-named">Price</span> and <span class="notes-t-named">Delivery</span> tabs from the made-group Sales values in the family sheet §4 and select <span class="notes-t-press">OK</span></td><td class="notes-see">The Sales defaults are saved</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.8</th><td>If asked <span class="notes-t-named">Perform Global Update of Sales Items with New Defaults?</span>, select <span class="notes-t-press">No</span>. If <span class="notes-t-named">Global Update of Item with Defaults</span> <span class="notes-t-exact">tdisa0202m000</span> opens, do not select <span class="notes-t-named">Update</span>; select <span class="notes-t-press">Close</span></td><td class="notes-see">Existing Sales items are not changed</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.9</th><td>Confirm the Sales indicator is active and select the Create check box beside <span class="notes-t-named">Sales</span></td><td class="notes-see">New items are marked to receive Sales data</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">3.10</th><td>Save <span class="notes-t-named">Item Defaults</span> <span class="notes-t-exact">tcibd0502m000</span>, close and reopen the Product/<span class="notes-t-exact">BAM-FG</span> default, and reopen Sales ➔ <span class="notes-t-named">Price</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">made global subentities</span> — four active indicators, and <span class="notes-t-exact">USD</span>, <span class="notes-t-exact">ea</span>, both <span class="notes-t-exact">S10.10</span> groups and <span class="notes-t-exact">NOTAX</span> return<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-3.10">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-3.10" class="rux--text-area" rows="1" data-ln-note="3.10" placeholder="The value you saw"></textarea>
+                <textarea id="n-3.10" class="rux--text-area" rows="1" data-notes-note="3.10" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1409,7 +1409,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-4">
         <h3 id="p-4">Phase 4 — Verify site creation control</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Control and Defaults by Site</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Item Control and Defaults by Site <span class="rux--type-code-01">tcibd1552m000</span></dd></div></dl>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Defaults ➔ Item Control and Defaults by Site</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item Control and Defaults by Site <span class="rux--type-code-01">tcibd1552m000</span></dd></div></dl>
         <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
@@ -1419,16 +1419,16 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
     </div>
   </div>
 </div>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> The Create controls can be governed at the site instead of the company. When <em>Centrally Managed</em> is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site&#39;s own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The Create controls can be governed at the site instead of the company. When <em>Centrally Managed</em> is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site&#39;s own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">4.1</th><td>Open the row for the site from 0.2, <span class="ln-t-named">Product</span>, and the purchased group from 1.3</td><td class="ln-see">The purchased site-control row opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">4.2</th><td>Read <span class="ln-t-named">Centrally Managed</span></td><td class="ln-see">The source of the Create controls is visible</td></tr>
-          <tr><th scope="row" class="ln-step-id">4.3</th><td>If centrally managed, verify Ordering, Purchase, and Warehousing mirror phase 2 and are disabled locally; if not, select them and save</td><td class="ln-see">The purchased site is marked to create those subentities</td></tr>
-          <tr><th scope="row" class="ln-step-id">4.4</th><td>Repeat 4.1–4.3 for the made group from 1.6, with Ordering, Production, Warehousing, and Sales</td><td class="ln-see">The made site is marked to create those subentities</td></tr>
+          <tr><th scope="row" class="notes-step-id">4.1</th><td>Open the row for the site from 0.2, <span class="notes-t-named">Product</span>, and the purchased group from 1.3</td><td class="notes-see">The purchased site-control row opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">4.2</th><td>Read <span class="notes-t-named">Centrally Managed</span></td><td class="notes-see">The source of the Create controls is visible</td></tr>
+          <tr><th scope="row" class="notes-step-id">4.3</th><td>If centrally managed, verify Ordering, Purchase, and Warehousing mirror phase 2 and are disabled locally; if not, select them and save</td><td class="notes-see">The purchased site is marked to create those subentities</td></tr>
+          <tr><th scope="row" class="notes-step-id">4.4</th><td>Repeat 4.1–4.3 for the made group from 1.6, with Ordering, Production, Warehousing, and Sales</td><td class="notes-see">The made site is marked to create those subentities</td></tr>
             </tbody>
           </table>
         </div>
@@ -1436,13 +1436,13 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-5">
         <h3 id="p-5">Phase 5 — Create the three items</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Items</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Items <span class="rux--type-code-01">tcibd0501m000</span></dd></div></dl>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Master Data ➔ Items ➔ Items</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Items <span class="rux--type-code-01">tcibd0501m000</span></dd></div></dl>
         <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">All three items were created this way in Company 4100 on 2026-08-16 and their <span class="ln-t-exact">CSADNA01</span> site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. <strong>Not documented for this release.</strong></div>
+      <div class="rux--inline-notification__subtitle">All three items were created this way in Company 4100 on 2026-08-16 and their <span class="notes-t-exact">CSADNA01</span> site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. <strong>Not documented for this release.</strong></div>
     </div>
   </div>
 </div>
@@ -1451,47 +1451,47 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">The Item identifier has separate <em>Project</em> and <em>Item</em> portions. These are standard test items: leave <em>Project</em> blank and enter the <span class="ln-t-exact">BAM-*</span> code in the <em>Item</em> portion. If <span class="ln-t-named">General Projects</span> <span class="ln-t-exact">tcmcs0152s000</span> opens from the Project lookup, close it without creating a project.</div>
+      <div class="rux--inline-notification__subtitle">The Item identifier has separate <em>Project</em> and <em>Item</em> portions. These are standard test items: leave <em>Project</em> blank and enter the <span class="notes-t-exact">BAM-*</span> code in the <em>Item</em> portion. If <span class="notes-t-named">General Projects</span> <span class="notes-t-exact">tcmcs0152s000</span> opens from the Project lookup, close it without creating a project.</div>
     </div>
   </div>
 </div>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> On save, LN gives the new item the supply source, units and subentities its group&#39;s defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> On save, LN gives the new item the supply source, units and subentities its group&#39;s defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">5.1</th><td>Open <span class="ln-t-named">Items</span> <span class="ln-t-exact">tcibd0501m000</span></td><td class="ln-see">The global item overview opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">5.2</th><td>Select <span class="ln-t-press">New</span></td><td class="ln-see">A blank Item record opens</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">5.3</th><td>With <span class="ln-t-named">Project</span> blank, enter the item&#39;s code in the <span class="ln-t-named">Item</span> portion and its <span class="ln-t-named">Description</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item code</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">5.1</th><td>Open <span class="notes-t-named">Items</span> <span class="notes-t-exact">tcibd0501m000</span></td><td class="notes-see">The global item overview opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.2</th><td>Select <span class="notes-t-press">New</span></td><td class="notes-see">A blank Item record opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">5.3</th><td>With <span class="notes-t-named">Project</span> blank, enter the item&#39;s code in the <span class="notes-t-named">Item</span> portion and its <span class="notes-t-named">Description</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">item code</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-5.3">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-5.3" class="rux--text-area" rows="1" data-ln-note="5.3" placeholder="The value you saw"></textarea>
+                <textarea id="n-5.3" class="rux--text-area" rows="1" data-notes-note="5.3" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">5.4</th><td>Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact">Product</span> and <span class="ln-t-named">Item Group</span> to the item&#39;s group from phase 1</td><td class="ln-see">Supply source, Unit Set, and Inventory Unit default from phase 2 or 3</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">5.5</th><td>Complete any remaining field the screen marks required, using the family values</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item Grade, if the screen requires one</span> — the 2026-08-16 walk recorded <span class="ln-t-named">Grade</span> = <span class="ln-t-exact">FAS</span> for all three items<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">5.4</th><td>Set <span class="notes-t-named">Item Type</span> to <span class="notes-t-exact">Product</span> and <span class="notes-t-named">Item Group</span> to the item&#39;s group from phase 1</td><td class="notes-see">Supply source, Unit Set, and Inventory Unit default from phase 2 or 3</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">5.5</th><td>Complete any remaining field the screen marks required, using the family values</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">item Grade, if the screen requires one</span> — the 2026-08-16 walk recorded <span class="notes-t-named">Grade</span> = <span class="notes-t-exact">FAS</span> for all three items<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-5.5">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-5.5" class="rux--text-area" rows="1" data-ln-note="5.5" placeholder="The value you saw"></textarea>
+                <textarea id="n-5.5" class="rux--text-area" rows="1" data-notes-note="5.5" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">5.6</th><td>Save the item header before working in the <span class="ln-t-named">Sites</span> grid</td><td class="ln-see">The item header is saved</td></tr>
-          <tr><th scope="row" class="ln-step-id">5.7</th><td>In the <span class="ln-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="ln-t-exact">=</span>. If no saved row begins with the site from 0.2, run <span class="ln-t-named">Create Items by Site</span> from the tab&#39;s appropriate menu; if that produces nothing, select <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, select that site, and save the record</td><td class="ln-see">A saved site line beginning with the actual site code exists</td></tr>
-          <tr><th scope="row" class="ln-step-id">5.8</th><td>Select the saved site line and open it with the row-arrow button</td><td class="ln-see"><span class="ln-t-named">Items by Site</span> opens for this item and site</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">5.9</th><td>Verify <span class="ln-t-named">Default Supply Source</span> matches the item&#39;s role — <span class="ln-t-exact">Purchase</span> for the rod and the sleeve, <span class="ln-t-exact">Job Shop</span> for the pair</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">site supply source</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">5.6</th><td>Save the item header before working in the <span class="notes-t-named">Sites</span> grid</td><td class="notes-see">The item header is saved</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.7</th><td>In the <span class="notes-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="notes-t-exact">=</span>. If no saved row begins with the site from 0.2, run <span class="notes-t-named">Create Items by Site</span> from the tab&#39;s appropriate menu; if that produces nothing, select <span class="notes-t-press">New</span> on the <span class="notes-t-named">Sites</span> toolbar, select that site, and save the record</td><td class="notes-see">A saved site line beginning with the actual site code exists</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.8</th><td>Select the saved site line and open it with the row-arrow button</td><td class="notes-see"><span class="notes-t-named">Items by Site</span> opens for this item and site</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">5.9</th><td>Verify <span class="notes-t-named">Default Supply Source</span> matches the item&#39;s role — <span class="notes-t-exact">Purchase</span> for the rod and the sleeve, <span class="notes-t-exact">Job Shop</span> for the pair</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">site supply source</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-5.9">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-5.9" class="rux--text-area" rows="1" data-ln-note="5.9" placeholder="The value you saw"></textarea>
+                <textarea id="n-5.9" class="rux--text-area" rows="1" data-notes-note="5.9" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">5.10</th><td>Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">site subentities</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">5.10</th><td>Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">site subentities</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-5.10">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-5.10" class="rux--text-area" rows="1" data-ln-note="5.10" placeholder="The value you saw"></textarea>
+                <textarea id="n-5.10" class="rux--text-area" rows="1" data-notes-note="5.10" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">5.11</th><td>Repeat 5.2–5.10 for the remaining items, each with its own group</td><td class="ln-see">All three items and their site rows match the family sheet §1</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.11</th><td>Repeat 5.2–5.10 for the remaining items, each with its own group</td><td class="notes-see">All three items and their site rows match the family sheet §1</td></tr>
             </tbody>
           </table>
         </div>
@@ -1499,54 +1499,54 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-6">
         <h3 id="p-6">Phase 6 — Build the job shop bill of material</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Job Shop Bills of Material <span class="rux--type-code-01">tibom3100m000</span></dd></div></dl>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Job Shop Bills of Material <span class="rux--type-code-01">tibom3100m000</span></dd></div></dl>
         <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Prerequisite</div>
-      <div class="rux--inline-notification__subtitle">Phase 5 complete: all three items exist and each site row shows its intended <em>Default Supply Source</em>. <strong>Job Shop by Site</strong> must be <strong>Active</strong> or <strong>In Preparation</strong> in <span class="ln-t-named">Concept Activation</span> <span class="ln-t-exact">tcemm4600m000</span> — the same setting phase 3&#39;s Production defaults depend on. It is confirmed <strong>Active</strong> here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active.</div>
+      <div class="rux--inline-notification__subtitle">Phase 5 complete: all three items exist and each site row shows its intended <em>Default Supply Source</em>. <strong>Job Shop by Site</strong> must be <strong>Active</strong> or <strong>In Preparation</strong> in <span class="notes-t-named">Concept Activation</span> <span class="notes-t-exact">tcemm4600m000</span> — the same setting phase 3&#39;s Production defaults depend on. It is confirmed <strong>Active</strong> here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active.</div>
     </div>
   </div>
 </div>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A bill of material is written against the item, per site, and cannot be used for manufacture until its revision is approved; approval and the two use indicators, for planning and for costing, are three separate actions. The material lines carry the issuing warehouse, and the revision&#39;s effective date decides whether a production order&#39;s reference date selects it.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A bill of material is written against the item, per site, and cannot be used for manufacture until its revision is approved; approval and the two use indicators, for planning and for costing, are three separate actions. The material lines carry the issuing warehouse, and the revision&#39;s effective date decides whether a production order&#39;s reference date selects it.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">6.1</th><td>Open <span class="ln-t-named">Job Shop Bills of Material</span> <span class="ln-t-exact">tibom3100m000</span></td><td class="ln-see">The BOM overview opens for one site</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.2</th><td>Confirm <span class="ln-t-named">Site</span> is the site from 0.2</td><td class="ln-see">Only that site&#39;s bills of material are listed</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.3</th><td>Filter <span class="ln-t-named">Product</span> for the finished item from phase 5</td><td class="ln-see">No bill of material exists yet for the chopstick pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.4</th><td>Select <span class="ln-t-press">New</span></td><td class="ln-see">A blank BOM header opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.5</th><td>Set <span class="ln-t-named">Product</span> to the finished item</td><td class="ln-see"><span class="ln-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.6</th><td>Set <span class="ln-t-named">BOM Quantity</span> to 1</td><td class="ln-see">The material quantities below are the quantities for one pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.7</th><td>Set <span class="ln-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td class="ln-see">The revision will be valid on that order&#39;s reference date</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.8</th><td>Leave <span class="ln-t-named">Routing</span> blank</td><td class="ln-see">The BOM stays usable with any routing</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">6.9</th><td>Save the header</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">BOM and revision</span>; <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">6.1</th><td>Open <span class="notes-t-named">Job Shop Bills of Material</span> <span class="notes-t-exact">tibom3100m000</span></td><td class="notes-see">The BOM overview opens for one site</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.2</th><td>Confirm <span class="notes-t-named">Site</span> is the site from 0.2</td><td class="notes-see">Only that site&#39;s bills of material are listed</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.3</th><td>Filter <span class="notes-t-named">Product</span> for the finished item from phase 5</td><td class="notes-see">No bill of material exists yet for the chopstick pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.4</th><td>Select <span class="notes-t-press">New</span></td><td class="notes-see">A blank BOM header opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.5</th><td>Set <span class="notes-t-named">Product</span> to the finished item</td><td class="notes-see"><span class="notes-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.6</th><td>Set <span class="notes-t-named">BOM Quantity</span> to 1</td><td class="notes-see">The material quantities below are the quantities for one pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.7</th><td>Set <span class="notes-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td class="notes-see">The revision will be valid on that order&#39;s reference date</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.8</th><td>Leave <span class="notes-t-named">Routing</span> blank</td><td class="notes-see">The BOM stays usable with any routing</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">6.9</th><td>Save the header</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">BOM and revision</span>; <span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-6.9">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-6.9" class="rux--text-area" rows="1" data-ln-note="6.9" placeholder="The value you saw"></textarea>
+                <textarea id="n-6.9" class="rux--text-area" rows="1" data-notes-note="6.9" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">6.10</th><td>Open the saved BOM and go to its material lines</td><td class="ln-see"><span class="ln-t-named">Job Shop List of Materials</span> <span class="ln-t-exact">tibom3110m000</span> opens for this BOM and revision</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.11</th><td>Add a line: <span class="ln-t-named">Item</span> = the bamboo rod, <span class="ln-t-named">Net Quantity</span> = 2</td><td class="ln-see">Two rods per pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.12</th><td>Add a line: <span class="ln-t-named">Item</span> = the paper sleeve, <span class="ln-t-named">Net Quantity</span> = 1</td><td class="ln-see">One sleeve per pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.13</th><td>On both lines, set <span class="ln-t-named">Warehouse</span> to the raw-material warehouse from 0.5</td><td class="ln-see">Each material will be issued from the warehouse phase 9 stocks</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.14</th><td>Leave <span class="ln-t-named">Scrap Percentage</span> and <span class="ln-t-named">Scrap Quantity</span> at zero</td><td class="ln-see">No material loss is modelled in this test</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">6.15</th><td>Save the material lines</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">BOM materials stored</span> — both lines belong to this BOM revision<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">6.10</th><td>Open the saved BOM and go to its material lines</td><td class="notes-see"><span class="notes-t-named">Job Shop List of Materials</span> <span class="notes-t-exact">tibom3110m000</span> opens for this BOM and revision</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.11</th><td>Add a line: <span class="notes-t-named">Item</span> = the bamboo rod, <span class="notes-t-named">Net Quantity</span> = 2</td><td class="notes-see">Two rods per pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.12</th><td>Add a line: <span class="notes-t-named">Item</span> = the paper sleeve, <span class="notes-t-named">Net Quantity</span> = 1</td><td class="notes-see">One sleeve per pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.13</th><td>On both lines, set <span class="notes-t-named">Warehouse</span> to the raw-material warehouse from 0.5</td><td class="notes-see">Each material will be issued from the warehouse phase 9 stocks</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.14</th><td>Leave <span class="notes-t-named">Scrap Percentage</span> and <span class="notes-t-named">Scrap Quantity</span> at zero</td><td class="notes-see">No material loss is modelled in this test</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">6.15</th><td>Save the material lines</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">BOM materials stored</span> — both lines belong to this BOM revision<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-6.15">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-6.15" class="rux--text-area" rows="1" data-ln-note="6.15" placeholder="The value you saw"></textarea>
+                <textarea id="n-6.15" class="rux--text-area" rows="1" data-notes-note="6.15" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">6.16</th><td>Select the BOM row and run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span></td><td class="ln-see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.17</th><td>With the same row selected, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Planning Indicator</span></span></td><td class="ln-see"><span class="ln-t-named">Use for Planning</span> is selected on the row</td></tr>
-          <tr><th scope="row" class="ln-step-id">6.18</th><td>With the same row selected, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Costing Indicator</span></span></td><td class="ln-see"><span class="ln-t-named">Use for Costing</span> is selected on the row</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">6.19</th><td>Close and reopen the BOM</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">BOM approved and in use</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, both indicators set, both material lines present<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">6.16</th><td>Select the BOM row and run <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span></td><td class="notes-see"><span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="notes-t-named">Approved By</span> and <span class="notes-t-named">Approved On</span> are filled</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.17</th><td>With the same row selected, run <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Planning Indicator</span></span></td><td class="notes-see"><span class="notes-t-named">Use for Planning</span> is selected on the row</td></tr>
+          <tr><th scope="row" class="notes-step-id">6.18</th><td>With the same row selected, run <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Costing Indicator</span></span></td><td class="notes-see"><span class="notes-t-named">Use for Costing</span> is selected on the row</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">6.19</th><td>Close and reopen the BOM</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">BOM approved and in use</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, both indicators set, both material lines present<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-6.19">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-6.19" class="rux--text-area" rows="1" data-ln-note="6.19" placeholder="The value you saw"></textarea>
+                <textarea id="n-6.19" class="rux--text-area" rows="1" data-notes-note="6.19" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1556,49 +1556,49 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-7">
         <h3 id="p-7">Phase 7 — Build the job shop routing</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Job Shop Routings <span class="rux--type-code-01">tirou4100m000</span></dd></div></dl>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Job Shop Routings <span class="rux--type-code-01">tirou4100m000</span></dd></div></dl>
         <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Prerequisite</div>
-      <div class="rux--inline-notification__subtitle">An existing work center and an existing reference operation for the site. <strong>This guide does not create work centers, machines, or reference operations.</strong> Look them up first — <span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers</span> <span class="ln-t-exact">tirou0101m000</span> and <span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations</span> <span class="ln-t-exact">tirou4150m000</span> — and if neither has a usable entry for the site, stop and obtain one.</div>
+      <div class="rux--inline-notification__subtitle">An existing work center and an existing reference operation for the site. <strong>This guide does not create work centers, machines, or reference operations.</strong> Look them up first — <span class="notes-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers</span> <span class="notes-t-exact">tirou0101m000</span> and <span class="notes-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations</span> <span class="notes-t-exact">tirou4150m000</span> — and if neither has a usable entry for the site, stop and obtain one.</div>
     </div>
   </div>
 </div>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> The routing gives the production order operations to report complete; without one there are no estimated production costs and nothing triggers the finished-goods receipt. A reference operation is a template that carries its own times into the operation line, and the routing quantity is what makes those times the times for one pair.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The routing gives the production order operations to report complete; without one there are no estimated production costs and nothing triggers the finished-goods receipt. A reference operation is a template that carries its own times into the operation line, and the routing quantity is what makes those times the times for one pair.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">7.1</th><td>Open <span class="ln-t-named">Job Shop Routings</span> <span class="ln-t-exact">tirou4100m000</span></td><td class="ln-see">The routing overview opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.2</th><td>Confirm <span class="ln-t-named">Site</span> is the site from 0.2</td><td class="ln-see">Only that site&#39;s routings are listed</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.3</th><td>Filter <span class="ln-t-named">Product</span> for the finished item from phase 5</td><td class="ln-see">No routing exists yet for the chopstick pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.4</th><td>Select <span class="ln-t-press">New</span> and open <span class="ln-t-named">Job Shop Routing</span> <span class="ln-t-exact">tirou4600m000</span></td><td class="ln-see">A blank routing header opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.5</th><td>Set <span class="ln-t-named">Product</span> to the finished item</td><td class="ln-see"><span class="ln-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.6</th><td>Enter the <span class="ln-t-named">Routing</span> code and confirm the <span class="ln-t-named">Revision</span></td><td class="ln-see">The routing is identified; <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td></tr>
-          <tr><th scope="row" class="ln-step-id">7.7</th><td>Set <span class="ln-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td class="ln-see">The revision will be valid on that order&#39;s reference date</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.8</th><td>Set <span class="ln-t-named">Routing Quantity</span> to 1</td><td class="ln-see">Operation times entered below are the times for one pair</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.9</th><td>Retain the proposed <span class="ln-t-named">Minimum Quantity</span> and <span class="ln-t-named">Maximum Quantity</span></td><td class="ln-see">The routing is not restricted to a quantity band the test did not choose</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.10</th><td>Leave <span class="ln-t-named">Calculate</span> and the lead-time fields at their proposed values</td><td class="ln-see">No invented lead time enters the test data</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.11</th><td>On the <span class="ln-t-named">Operations</span> grid, select <span class="ln-t-press">New</span></td><td class="ln-see">A blank operation line opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.12</th><td>Enter <span class="ln-t-named">Operation</span> = <span class="ln-t-exact">10</span></td><td class="ln-see">The pair has a first operation</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">7.13</th><td>Set <span class="ln-t-named">Reference Operation</span> and <span class="ln-t-named">Work Center</span> to existing values from the prerequisite lookups</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing operation and work center</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">7.1</th><td>Open <span class="notes-t-named">Job Shop Routings</span> <span class="notes-t-exact">tirou4100m000</span></td><td class="notes-see">The routing overview opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.2</th><td>Confirm <span class="notes-t-named">Site</span> is the site from 0.2</td><td class="notes-see">Only that site&#39;s routings are listed</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.3</th><td>Filter <span class="notes-t-named">Product</span> for the finished item from phase 5</td><td class="notes-see">No routing exists yet for the chopstick pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.4</th><td>Select <span class="notes-t-press">New</span> and open <span class="notes-t-named">Job Shop Routing</span> <span class="notes-t-exact">tirou4600m000</span></td><td class="notes-see">A blank routing header opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.5</th><td>Set <span class="notes-t-named">Product</span> to the finished item</td><td class="notes-see"><span class="notes-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.6</th><td>Enter the <span class="notes-t-named">Routing</span> code and confirm the <span class="notes-t-named">Revision</span></td><td class="notes-see">The routing is identified; <span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td></tr>
+          <tr><th scope="row" class="notes-step-id">7.7</th><td>Set <span class="notes-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td class="notes-see">The revision will be valid on that order&#39;s reference date</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.8</th><td>Set <span class="notes-t-named">Routing Quantity</span> to 1</td><td class="notes-see">Operation times entered below are the times for one pair</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.9</th><td>Retain the proposed <span class="notes-t-named">Minimum Quantity</span> and <span class="notes-t-named">Maximum Quantity</span></td><td class="notes-see">The routing is not restricted to a quantity band the test did not choose</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.10</th><td>Leave <span class="notes-t-named">Calculate</span> and the lead-time fields at their proposed values</td><td class="notes-see">No invented lead time enters the test data</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.11</th><td>On the <span class="notes-t-named">Operations</span> grid, select <span class="notes-t-press">New</span></td><td class="notes-see">A blank operation line opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.12</th><td>Enter <span class="notes-t-named">Operation</span> = <span class="notes-t-exact">10</span></td><td class="notes-see">The pair has a first operation</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">7.13</th><td>Set <span class="notes-t-named">Reference Operation</span> and <span class="notes-t-named">Work Center</span> to existing values from the prerequisite lookups</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">routing operation and work center</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-7.13">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-7.13" class="rux--text-area" rows="1" data-ln-note="7.13" placeholder="The value you saw"></textarea>
+                <textarea id="n-7.13" class="rux--text-area" rows="1" data-notes-note="7.13" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">7.14</th><td>Check what the reference operation brought with it, and enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank. With <span class="ln-t-named">Use Production Rates</span> selected in the current parameter set, confirm <span class="ln-t-named">Production Rate</span> is filled, since that is the value LN uses for the operation time</td><td class="ln-see">A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.15</th><td>Save the operation line</td><td class="ln-see">The operation is stored against the routing revision</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.16</th><td>Select the routing and approve the revision from the <span class="ln-t-named">Actions</span> menu</td><td class="ln-see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.17</th><td>Set <span class="ln-t-named">Use for Planning</span> on the routing</td><td class="ln-see"><span class="ln-t-named">Use for Planning</span> is selected</td></tr>
-          <tr><th scope="row" class="ln-step-id">7.18</th><td>Set <span class="ln-t-named">Use for Costing</span> on the routing</td><td class="ln-see"><span class="ln-t-named">Use for Costing</span> is selected</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">7.19</th><td>Close and reopen the routing</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing and revision</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">7.14</th><td>Check what the reference operation brought with it, and enter <span class="notes-t-named">Cycle Time (min)</span> only if it is still blank. With <span class="notes-t-named">Use Production Rates</span> selected in the current parameter set, confirm <span class="notes-t-named">Production Rate</span> is filled, since that is the value LN uses for the operation time</td><td class="notes-see">A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.15</th><td>Save the operation line</td><td class="notes-see">The operation is stored against the routing revision</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.16</th><td>Select the routing and approve the revision from the <span class="notes-t-named">Actions</span> menu</td><td class="notes-see"><span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="notes-t-named">Approved By</span> and <span class="notes-t-named">Approved On</span> are filled</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.17</th><td>Set <span class="notes-t-named">Use for Planning</span> on the routing</td><td class="notes-see"><span class="notes-t-named">Use for Planning</span> is selected</td></tr>
+          <tr><th scope="row" class="notes-step-id">7.18</th><td>Set <span class="notes-t-named">Use for Costing</span> on the routing</td><td class="notes-see"><span class="notes-t-named">Use for Costing</span> is selected</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">7.19</th><td>Close and reopen the routing</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">routing and revision</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-7.19">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-7.19" class="rux--text-area" rows="1" data-ln-note="7.19" placeholder="The value you saw"></textarea>
+                <textarea id="n-7.19" class="rux--text-area" rows="1" data-notes-note="7.19" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1608,34 +1608,34 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-8">
         <h3 id="p-8">Phase 8 — Confirm costing data</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Item - Costing <span class="rux--type-code-01">ticpr0107m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A production order&#39;s estimate reads each material&#39;s standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until phase 9 buys them in.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item - Costing <span class="rux--type-code-01">ticpr0107m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A production order&#39;s estimate reads each material&#39;s standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until phase 9 buys them in.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">8.1</th><td>Open <span class="ln-t-named">Item - Costing</span> <span class="ln-t-exact">ticpr0107m000</span> for the bamboo rod</td><td class="ln-see">The item&#39;s costing record opens for an enterprise unit</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">8.2</th><td>Read <span class="ln-t-named">Standard Cost</span>, <span class="ln-t-named">Material Costs</span>, and <span class="ln-t-named">Costing Source</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component standard costs</span> — the rod&#39;s figures<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">8.1</th><td>Open <span class="notes-t-named">Item - Costing</span> <span class="notes-t-exact">ticpr0107m000</span> for the bamboo rod</td><td class="notes-see">The item&#39;s costing record opens for an enterprise unit</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">8.2</th><td>Read <span class="notes-t-named">Standard Cost</span>, <span class="notes-t-named">Material Costs</span>, and <span class="notes-t-named">Costing Source</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">component standard costs</span> — the rod&#39;s figures<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-8.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-8.2" class="rux--text-area" rows="1" data-ln-note="8.2" placeholder="The value you saw"></textarea>
+                <textarea id="n-8.2" class="rux--text-area" rows="1" data-notes-note="8.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">8.3</th><td>Repeat for the paper sleeve</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component standard costs</span> — the sleeve&#39;s figures<div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">8.3</th><td>Repeat for the paper sleeve</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">component standard costs</span> — the sleeve&#39;s figures<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-8.3">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-8.3" class="rux--text-area" rows="1" data-ln-note="8.3" placeholder="The value you saw"></textarea>
+                <textarea id="n-8.3" class="rux--text-area" rows="1" data-notes-note="8.3" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">8.4</th><td>Open the record for the finished item</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished-item standard cost</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">8.4</th><td>Open the record for the finished item</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">finished-item standard cost</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-8.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-8.4" class="rux--text-area" rows="1" data-ln-note="8.4" placeholder="The value you saw"></textarea>
+                <textarea id="n-8.4" class="rux--text-area" rows="1" data-notes-note="8.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">8.5</th><td>For any item whose standard cost is missing or unexpected, open <span class="ln-t-named">Item Standard Costs</span> <span class="ln-t-exact">ticpr3501m000</span> for that item and effective date</td><td class="ln-see">The actual and historical standard cost structure is shown, or confirms none exists</td></tr>
-          <tr><th scope="row" class="ln-step-id">8.6</th><td>If any of the three still has no standard cost, stop and obtain the approved cost route before continuing</td><td class="ln-see">The estimate calculation is not left to run against missing material costs</td></tr>
+          <tr><th scope="row" class="notes-step-id">8.5</th><td>For any item whose standard cost is missing or unexpected, open <span class="notes-t-named">Item Standard Costs</span> <span class="notes-t-exact">ticpr3501m000</span> for that item and effective date</td><td class="notes-see">The actual and historical standard cost structure is shown, or confirms none exists</td></tr>
+          <tr><th scope="row" class="notes-step-id">8.6</th><td>If any of the three still has no standard cost, stop and obtain the approved cost route before continuing</td><td class="notes-see">The estimate calculation is not left to run against missing material costs</td></tr>
             </tbody>
           </table>
         </div>
@@ -1643,41 +1643,41 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-9">
         <h3 id="p-9">Phase 9 — Stock the components</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">9.1</th><td>Open <span class="ln-t-named">Inventory 360</span> and filter for the bamboo rod</td><td class="ln-see">The rod appears with inventory totals</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">9.2</th><td>Click <span class="ln-t-press">Warehouse Inventory</span> and read the raw-material warehouse from 0.5</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">rod on hand before</span>, expected to be <span class="ln-t-exact">0</span> for a new item<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">9.1</th><td>Open <span class="notes-t-named">Inventory 360</span> and filter for the bamboo rod</td><td class="notes-see">The rod appears with inventory totals</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">9.2</th><td>Click <span class="notes-t-press">Warehouse Inventory</span> and read the raw-material warehouse from 0.5</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">rod on hand before</span>, expected to be <span class="notes-t-exact">0</span> for a new item<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-9.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-9.2" class="rux--text-area" rows="1" data-ln-note="9.2" placeholder="The value you saw"></textarea>
+                <textarea id="n-9.2" class="rux--text-area" rows="1" data-notes-note="9.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">9.3</th><td>Repeat 9.1–9.2 for the paper sleeve</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">sleeve on hand before</span> — both baselines recorded before anything is booked<div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">9.3</th><td>Repeat 9.1–9.2 for the paper sleeve</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">sleeve on hand before</span> — both baselines recorded before anything is booked<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-9.3">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-9.3" class="rux--text-area" rows="1" data-ln-note="9.3" placeholder="The value you saw"></textarea>
+                <textarea id="n-9.3" class="rux--text-area" rows="1" data-notes-note="9.3" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">9.4</th><td>Create a purchase order in <span class="ln-t-named">Purchase Order Intake Workbench</span> <span class="ln-t-exact">tdpur4601m200</span></td><td class="ln-see"><span class="ln-t-named">Purchase Order</span> <span class="ln-t-exact">tdpur4100m900</span> opens — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component stocking route used</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">9.4</th><td>Create a purchase order in <span class="notes-t-named">Purchase Order Intake Workbench</span> <span class="notes-t-exact">tdpur4601m200</span></td><td class="notes-see"><span class="notes-t-named">Purchase Order</span> <span class="notes-t-exact">tdpur4100m900</span> opens — <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">component stocking route used</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-9.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-9.4" class="rux--text-area" rows="1" data-ln-note="9.4" placeholder="The value you saw"></textarea>
+                <textarea id="n-9.4" class="rux--text-area" rows="1" data-notes-note="9.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">9.5</th><td>Select the <span class="ln-t-named">Buy-from Business Partner</span> through the <span class="ln-t-named">Buy-from Business Partners</span> lookup (<span class="ln-t-exact">tccom4520m000</span>)</td><td class="ln-see">The partner list opens. One run used <span class="ln-t-exact">BP4000007</span> <span class="ln-t-named">VISTA MACHINES INC.</span> from the standard test partners</td></tr>
-          <tr><th scope="row" class="ln-step-id">9.6</th><td>Set <span class="ln-t-named">Order Type</span>, <span class="ln-t-named">Purchase Office</span> and <span class="ln-t-named">Ship-to</span></td><td class="ln-see">The order takes a number. One run produced <span class="ln-t-exact">100000677</span>, Order Type <span class="ln-t-exact">IPO</span> (Inventory Purchase Order), Purchase Office <span class="ln-t-exact">401P00</span>, ship-to <span class="ln-t-exact">CSADNA01</span></td></tr>
-          <tr><th scope="row" class="ln-step-id">9.7</th><td>Book the order lines from the BOM, not from habit</td><td class="ln-see">One line per component. One run booked line 10 <span class="ln-t-exact">BAM-ROD</span> qty <span class="ln-t-exact">2.0000 ea</span> and line 20 <span class="ln-t-exact">BAM-SLEEVE</span> qty <span class="ln-t-exact">1.0000 ea</span>, both to <span class="ln-t-exact">ADNA02 RAW MATERIALS</span></td></tr>
-          <tr><th scope="row" class="ln-step-id">9.8</th><td>On the generated <span class="ln-t-named">Warehousing Order</span> <span class="ln-t-exact">whinh2100m100</span>, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receive</span></span> on the inbound lines</td><td class="ln-see">Order Type <span class="ln-t-exact">PUI</span> &quot;Purchase Receipts&quot;, ship-from the business partner, ship-to <span class="ln-t-exact">ADNA02</span></td></tr>
-          <tr><th scope="row" class="ln-step-id">9.9</th><td>Confirm the <span class="ln-t-named">Warehouse Receipt</span> <span class="ln-t-exact">whinh3512m000</span></td><td class="ln-see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> both set. One run produced receipt <span class="ln-t-exact">100001505</span>, packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">9.10</th><td>Re-read both items in <span class="ln-t-named">Inventory 360</span> at the raw-material warehouse</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">rod on hand after</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">sleeve on hand after</span> — each increased by the booked quantity<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">9.5</th><td>Select the <span class="notes-t-named">Buy-from Business Partner</span> through the <span class="notes-t-named">Buy-from Business Partners</span> lookup (<span class="notes-t-exact">tccom4520m000</span>)</td><td class="notes-see">The partner list opens. One run used <span class="notes-t-exact">BP4000007</span> <span class="notes-t-named">VISTA MACHINES INC.</span> from the standard test partners</td></tr>
+          <tr><th scope="row" class="notes-step-id">9.6</th><td>Set <span class="notes-t-named">Order Type</span>, <span class="notes-t-named">Purchase Office</span> and <span class="notes-t-named">Ship-to</span></td><td class="notes-see">The order takes a number. One run produced <span class="notes-t-exact">100000677</span>, Order Type <span class="notes-t-exact">IPO</span> (Inventory Purchase Order), Purchase Office <span class="notes-t-exact">401P00</span>, ship-to <span class="notes-t-exact">CSADNA01</span></td></tr>
+          <tr><th scope="row" class="notes-step-id">9.7</th><td>Book the order lines from the BOM, not from habit</td><td class="notes-see">One line per component. One run booked line 10 <span class="notes-t-exact">BAM-ROD</span> qty <span class="notes-t-exact">2.0000 ea</span> and line 20 <span class="notes-t-exact">BAM-SLEEVE</span> qty <span class="notes-t-exact">1.0000 ea</span>, both to <span class="notes-t-exact">ADNA02 RAW MATERIALS</span></td></tr>
+          <tr><th scope="row" class="notes-step-id">9.8</th><td>On the generated <span class="notes-t-named">Warehousing Order</span> <span class="notes-t-exact">whinh2100m100</span>, run <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receive</span></span> on the inbound lines</td><td class="notes-see">Order Type <span class="notes-t-exact">PUI</span> &quot;Purchase Receipts&quot;, ship-from the business partner, ship-to <span class="notes-t-exact">ADNA02</span></td></tr>
+          <tr><th scope="row" class="notes-step-id">9.9</th><td>Confirm the <span class="notes-t-named">Warehouse Receipt</span> <span class="notes-t-exact">whinh3512m000</span></td><td class="notes-see"><span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, <span class="notes-t-named">All Lines Final</span> and <span class="notes-t-named">All Lines Complete</span> both set. One run produced receipt <span class="notes-t-exact">100001505</span>, packing slips <span class="notes-t-exact">123</span> (rod) and <span class="notes-t-exact">124</span> (sleeve)</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">9.10</th><td>Re-read both items in <span class="notes-t-named">Inventory 360</span> at the raw-material warehouse</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">rod on hand after</span> and <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">sleeve on hand after</span> — each increased by the booked quantity<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-9.10">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-9.10" class="rux--text-area" rows="1" data-ln-note="9.10" placeholder="The value you saw"></textarea>
+                <textarea id="n-9.10" class="rux--text-area" rows="1" data-notes-note="9.10" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1688,23 +1688,23 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-10">
         <h3 id="p-10">Phase 10 — Qualify the training case</h3>
         
-        <p class="ln-prose-measure">This phase creates nothing. It checks the family against what <span class="ln-t-exact">SG-manual-production-order-existing-master-data.md</span> asks for in its phase 0, and hands over.</p>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Nothing new. This phase checks the family against what the production-order guide&#39;s phase 0 asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that guide.</p>
+        <p class="notes-prose-measure">This phase creates nothing. It checks the family against what <span class="notes-t-exact">SG-manual-production-order-existing-master-data.md</span> asks for in its phase 0, and hands over.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing new. This phase checks the family against what the production-order guide&#39;s phase 0 asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that guide.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">10.1</th><td>Confirm all three items and their site rows still show the supply sources verified at 5.9</td><td class="ln-see">The family is intact</td></tr>
-          <tr><th scope="row" class="ln-step-id">10.2</th><td>Confirm the BOM from 6.19 is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries both materials</td><td class="ln-see">The pair has a manufacturable structure</td></tr>
-          <tr><th scope="row" class="ln-step-id">10.3</th><td>Confirm the routing from 7.19 is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries its operation and work center</td><td class="ln-see">The pair has something to report complete</td></tr>
-          <tr><th scope="row" class="ln-step-id">10.4</th><td>Confirm both components are on hand at the raw-material warehouse from 9.10</td><td class="ln-see">There is material to issue</td></tr>
-          <tr><th scope="row" class="ln-step-id">10.5</th><td>Confirm the finished-item warehouse from 0.6 is the one the produced pair should be received into</td><td class="ln-see">The receiving warehouse is a decision, not a discovery made mid-order</td></tr>
-          <tr><th scope="row" class="ln-step-id">10.6</th><td>Confirm the costing figures from 8.2–8.4 are still present</td><td class="ln-see">The estimate calculation has what it reads</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">10.7</th><td>Carry every value in the handoff table below into the production-order guide, and run it there</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">training case qualified</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">10.1</th><td>Confirm all three items and their site rows still show the supply sources verified at 5.9</td><td class="notes-see">The family is intact</td></tr>
+          <tr><th scope="row" class="notes-step-id">10.2</th><td>Confirm the BOM from 6.19 is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries both materials</td><td class="notes-see">The pair has a manufacturable structure</td></tr>
+          <tr><th scope="row" class="notes-step-id">10.3</th><td>Confirm the routing from 7.19 is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries its operation and work center</td><td class="notes-see">The pair has something to report complete</td></tr>
+          <tr><th scope="row" class="notes-step-id">10.4</th><td>Confirm both components are on hand at the raw-material warehouse from 9.10</td><td class="notes-see">There is material to issue</td></tr>
+          <tr><th scope="row" class="notes-step-id">10.5</th><td>Confirm the finished-item warehouse from 0.6 is the one the produced pair should be received into</td><td class="notes-see">The receiving warehouse is a decision, not a discovery made mid-order</td></tr>
+          <tr><th scope="row" class="notes-step-id">10.6</th><td>Confirm the costing figures from 8.2–8.4 are still present</td><td class="notes-see">The estimate calculation has what it reads</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">10.7</th><td>Carry every value in the handoff table below into the production-order guide, and run it there</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">training case qualified</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-10.7">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-10.7" class="rux--text-area" rows="1" data-ln-note="10.7" placeholder="The value you saw"></textarea>
+                <textarea id="n-10.7" class="rux--text-area" rows="1" data-notes-note="10.7" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1724,22 +1724,22 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td>0</td><td>An example item code already exists</td><td>Choose another unused code; do not reuse or repurpose an existing item</td></tr>
           <tr><td>0</td><td>A candidate “raw material” warehouse is Shop Floor</td><td>Select an approved Normal warehouse; do not rely on description alone</td></tr>
           <tr><td>1</td><td>Either item-group code already exists</td><td>Use new dedicated group codes rather than changing an existing group</td></tr>
-          <tr><td>2</td><td><span class="ln-t-exact">Product</span> is unavailable</td><td>Confirm the environment&#39;s Product-active setting; do not substitute Purchased or Manufactured without approval</td></tr>
-          <tr><td>2</td><td>Ordering defaults appear to require a Warehouse, but no Warehouse field is displayed</td><td>Verify the warehouse on the parent <span class="ln-t-exact">tcibd0502m000</span> Sites row</td></tr>
+          <tr><td>2</td><td><span class="notes-t-exact">Product</span> is unavailable</td><td>Confirm the environment&#39;s Product-active setting; do not substitute Purchased or Manufactured without approval</td></tr>
+          <tr><td>2</td><td>Ordering defaults appear to require a Warehouse, but no Warehouse field is displayed</td><td>Verify the warehouse on the parent <span class="notes-t-exact">tcibd0502m000</span> Sites row</td></tr>
           <tr><td>2</td><td>Ordering defaults will not save</td><td>Confirm every visible required value and retain the proposed Economic Order Quantity</td></tr>
           <tr><td>2</td><td>Purchase defaults will not save</td><td>Confirm the units, currency, price group and statistics group in the family sheet §4</td></tr>
           <tr><td>2</td><td>Warehousing defaults show an unknown required policy value</td><td>Stop and obtain the approved value; do not invent valuation, ownership, location, lot/serial, or handling-unit policy</td></tr>
           <tr><td>2–4</td><td>A package indicator is active but the item subentity is not created</td><td>Verify the separate Create Item control at the governing global or site level</td></tr>
-          <tr><td>4</td><td>Site Create controls are disabled</td><td>Read <span class="ln-t-named">Centrally Managed</span>; when selected, correct the governing <span class="ln-t-exact">tcibd0502m000</span> control instead of the site row</td></tr>
+          <tr><td>4</td><td>Site Create controls are disabled</td><td>Read <span class="notes-t-named">Centrally Managed</span>; when selected, correct the governing <span class="notes-t-exact">tcibd0502m000</span> control instead of the site row</td></tr>
           <tr><td>5</td><td>The item code is rejected</td><td>Follow the current item-code segmentation; do not modify segmentation for the exercise</td></tr>
-          <tr><td>5</td><td>The save is refused for a field this guide does not name</td><td>Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found <span class="ln-t-named">Grade</span> this way </td></tr>
+          <tr><td>5</td><td>The save is refused for a field this guide does not name</td><td>Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found <span class="notes-t-named">Grade</span> this way </td></tr>
           <tr><td>5</td><td>A subentity is missing after save</td><td>Recheck phase 2 for a purchased item, phase 3 for the pair, and phase 4 for both</td></tr>
           <tr><td>5</td><td>Actual supply differs from the default</td><td>Check for item-level overrides and date-effective supply source before changing the default</td></tr>
-          <tr><td>6</td><td>The BOM header will not save</td><td>Confirm <span class="ln-t-named">Site</span>, <span class="ln-t-named">Product</span>, <span class="ln-t-named">BOM Quantity</span>, and <span class="ln-t-named">Effective Date</span>. Do not clear a proposed required value to make the save pass</td></tr>
-          <tr><td>6</td><td>The BOM stays at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td><td>Only Approved bills of material can be used for manufacture. Run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span> on the selected row</td></tr>
-          <tr><td>6</td><td><span class="ln-t-named">Use for Planning</span> is refused</td><td>Another BOM already holds it for this item and site — one per item and site for planning, one per product for costing</td></tr>
-          <tr><td>7</td><td><span class="ln-t-named">Work Center</span> or <span class="ln-t-named">Reference Operation</span> is rejected</td><td>Use an existing approved value. Do not create a work center, task, or machine from this guide</td></tr>
-          <tr><td>7</td><td>The operation line will not save</td><td>Every column the screen marks required must be filled — <span class="ln-t-named">Operation</span>, <span class="ln-t-named">Reference Operation</span>, and <span class="ln-t-named">Work Center</span> at minimum</td></tr>
+          <tr><td>6</td><td>The BOM header will not save</td><td>Confirm <span class="notes-t-named">Site</span>, <span class="notes-t-named">Product</span>, <span class="notes-t-named">BOM Quantity</span>, and <span class="notes-t-named">Effective Date</span>. Do not clear a proposed required value to make the save pass</td></tr>
+          <tr><td>6</td><td>The BOM stays at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td><td>Only Approved bills of material can be used for manufacture. Run <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span> on the selected row</td></tr>
+          <tr><td>6</td><td><span class="notes-t-named">Use for Planning</span> is refused</td><td>Another BOM already holds it for this item and site — one per item and site for planning, one per product for costing</td></tr>
+          <tr><td>7</td><td><span class="notes-t-named">Work Center</span> or <span class="notes-t-named">Reference Operation</span> is rejected</td><td>Use an existing approved value. Do not create a work center, task, or machine from this guide</td></tr>
+          <tr><td>7</td><td>The operation line will not save</td><td>Every column the screen marks required must be filled — <span class="notes-t-named">Operation</span>, <span class="notes-t-named">Reference Operation</span>, and <span class="notes-t-named">Work Center</span> at minimum</td></tr>
           <tr><td>8</td><td>A purchased component has no standard cost</td><td>Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one</td></tr>
           <tr><td>9</td><td>On-hand does not increase after booking</td><td>Do not book again. Find the order or transaction that was created and check its status first — a second booking doubles the error</td></tr>
           <tr><td>10</td><td>The production order opens with no BOM or routing</td><td>Compare the order&#39;s reference date with the effective dates from steps 6.7 and 7.7. A revision effective after the reference date is not selected</td></tr>
@@ -1756,12 +1756,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Variant</div></th><th scope="col"><div class="rux--table-header-label">What changes</div></th></tr></thead>
             <tbody>
-          <tr><td><span class="ln-t-named">Minimum two-item test</span></td><td>Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class</td></tr>
-          <tr><td><span class="ln-t-named">Recommended three-item test</span></td><td>Use this full guide: two purchased inputs and one Job Shop finished product</td></tr>
-          <tr><td><span class="ln-t-named">Four-item multilevel test</span></td><td>Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order</td></tr>
-          <tr><td><span class="ln-t-named">Purchased finished goods</span></td><td>Use another dedicated Product group with <span class="ln-t-named">Default Supply Source = Purchase</span>; no Job Shop Production defaults are required, and phases 6–7 do not apply</td></tr>
-          <tr><td><span class="ln-t-named">Production quantity greater than one</span></td><td>Book proportionally more component stock in phase 9 — 2 rods and 1 sleeve per pair. Nothing in the phase structure changes</td></tr>
-          <tr><td><span class="ln-t-named">Items only</span></td><td>Stop after phase 5. The family exists as master data but cannot be produced; phases 6–10 are what make it runnable</td></tr>
+          <tr><td><span class="notes-t-named">Minimum two-item test</span></td><td>Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class</td></tr>
+          <tr><td><span class="notes-t-named">Recommended three-item test</span></td><td>Use this full guide: two purchased inputs and one Job Shop finished product</td></tr>
+          <tr><td><span class="notes-t-named">Four-item multilevel test</span></td><td>Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order</td></tr>
+          <tr><td><span class="notes-t-named">Purchased finished goods</span></td><td>Use another dedicated Product group with <span class="notes-t-named">Default Supply Source = Purchase</span>; no Job Shop Production defaults are required, and phases 6–7 do not apply</td></tr>
+          <tr><td><span class="notes-t-named">Production quantity greater than one</span></td><td>Book proportionally more component stock in phase 9 — 2 rods and 1 sleeve per pair. Nothing in the phase structure changes</td></tr>
+          <tr><td><span class="notes-t-named">Items only</span></td><td>Stop after phase 5. The family exists as master data but cannot be produced; phases 6–10 are what make it runnable</td></tr>
             </tbody>
           </table>
         </div>
@@ -1779,7 +1779,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </table>
         </div>
       </div>
-      <p class="ln-prose-measure">The handoff table in phase 10 is the detail: it maps each value this guide records to the step that consumes it.</p>
+      <p class="notes-prose-measure">The handoff table in phase 10 is the detail: it maps each value this guide records to the step that consumes it.</p>
       </section>
 
         <!-- The generated verification sentence. It is NOT a substitute for
@@ -1788,39 +1788,39 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
              while the guide itself is status: draft. Both are shown. -->
         <p class="rux--type-body-01">Warning Partly verified. Phases 0, 1, 3, 6, 7, 8 have been performed against a live system and confirmed. Phases 2, 4, 5, 9, 10 have not. Follow those as a plan, not as a record.</p>
       
-      <section class="ln-notepad" aria-labelledby="h-notes">
+      <section class="notes-notepad" aria-labelledby="h-notes">
         <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
         <div class="rux--form-item">
-          <label class="rux--label" for="ln-notes">Anything else worth keeping</label>
+          <label class="rux--label" for="notes-notes">Anything else worth keeping</label>
           <div class="rux--text-area__wrapper">
-            <textarea id="ln-notes" class="rux--text-area" rows="5" data-ln-notes placeholder="What surprised you, what you would check next time"></textarea>
+            <textarea id="notes-notes" class="rux--text-area" rows="5" data-notes-notes placeholder="What surprised you, what you would check next time"></textarea>
           </div>
           <div class="rux--form__helper-text">Saved in this browser only, with the values you noted beside the steps. There is no server and no account behind this page. Export to keep them.</div>
         </div>
-        <div class="ln-notepad-actions">
-          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-ln-export>Export notes</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-ln-copy>Copy</button>
-          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-ln-clear>Clear</button>
+        <div class="notes-notepad-actions">
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export notes</button>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-copy>Copy</button>
+          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-notes-clear>Clear</button>
         </div>
       </section>
       
-      <section class="ln-key" aria-labelledby="h-key">
+      <section class="notes-key" aria-labelledby="h-key">
         <h2 id="h-key" class="rux--type-productive-heading-03">How to read a step</h2>
-        <dl class="ln-key-grid">
-          <dt><span class="ln-t-press">Press it</span></dt>
+        <dl class="notes-key-grid">
+          <dt><span class="notes-t-press">Press it</span></dt>
           <dd>A control you act on.</dd>
-          <dt><span class="ln-t-named">Named on screen</span></dt>
+          <dt><span class="notes-t-named">Named on screen</span></dt>
           <dd>A tab, panel, field or column label &mdash; something you look for.</dd>
-          <dt><span class="ln-t-exact">Exact string</span></dt>
+          <dt><span class="notes-t-exact">Exact string</span></dt>
           <dd>Type or match it character for character.</dd>
           <dt><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">A state</span></span></dt>
           <dd>Confirm you see it before moving on.</dd>
-          <dt><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
+          <dt><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
           <dd>The step yields a value worth writing down.</dd>
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 ln-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
       </div>
     </div>
   </div>

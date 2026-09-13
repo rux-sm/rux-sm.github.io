@@ -108,7 +108,7 @@ the signals stay independent.
 
 Nine `kind` values arrive from atlas; the contract lists them (§6).
 `build.mjs` folds them into the five categories and draws the categories, not
-the kinds. The tile's panel names the kind in full (`.ln-dg-kind`), and the
+the kinds. The tile's panel names the kind in full (`.notes-dg-kind`), and the
 legend names the categories (§9).
 
 ---
@@ -163,7 +163,7 @@ the page whose content is mostly gates.
 
 ### 3.3 The panel
 
-It names all nine kinds in `.ln-dg-kind` and pairs the name with the
+It names all nine kinds in `.notes-dg-kind` and pairs the name with the
 category's accent.
 
 ---
@@ -250,7 +250,7 @@ cannot tell where a lane ends. Cells and lane labels take the same top padding,
 so every tile clears the rule and the label still lines up with the first
 tile's title.
 
-**It is an element (`.ln-dg-rule`, `grid-column: 1 / -1`), not an `::after` on
+**It is an element (`.notes-dg-rule`, `grid-column: 1 / -1`), not an `::after` on
 the lane label.** A positioned label (`position: sticky`) becomes the
 containing block and the pseudo-element collapses to the label's width.
 
@@ -265,8 +265,8 @@ under it is a second thing to judge, and the rule already holds the row.
 The legend is the figure's `<figcaption>`. It names the categories, because
 otherwise their names appear only inside a tile's panel.
 
-- **Every swatch is a real tile:** `ln-dg-node`, `ln-dg-legend-tile` and the
-  same `ln-dg-cat--*` class the canvas uses. Its border, fill and name style
+- **Every swatch is a real tile:** `notes-dg-node`, `notes-dg-legend-tile` and the
+  same `notes-dg-cat--*` class the canvas uses. Its border, fill and name style
   come from the canvas rules, so a key cannot say *dashed* while the tiles are
   solid.
 - **It lists only the categories the document contains.** A key that teaches a
@@ -276,14 +276,14 @@ otherwise their names appear only inside a tile's panel.
 - **Off-sequence edges fold.** The reading-order sentence stays visible; the
   list moves into a `<details>` whose summary carries the count. Those edges
   are listed nowhere else on the site.
-- **Scope any census to `.ln-dg-grid .ln-dg-node`.** A swatch is also an
-  `.ln-dg-node`, with no panel.
+- **Scope any census to `.notes-dg-grid .notes-dg-node`.** A swatch is also an
+  `.notes-dg-node`, with no panel.
 
 ---
 
 ## 10. Each column as wide as its own content
 
-`.ln-dg-grid` is `repeat(var(--dg-cols), max-content) 1fr`. With
+`.notes-dg-grid` is `repeat(var(--dg-cols), max-content) 1fr`. With
 `minmax(7rem, 1fr)` the widest tile anywhere sets the width of every column;
 `max-content` cuts the session map's scroll width from 2612px to 1738px with no
 change in height or wrapped names. Fixed caps (12rem, 10rem) keep an even

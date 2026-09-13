@@ -48,16 +48,16 @@
    `stack-horizontal` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a `rux--` one: check-classes
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. `.rux--tag` is inline-flex already; this
@@ -84,7 +84,7 @@
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -95,7 +95,7 @@
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -104,21 +104,21 @@
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -126,11 +126,11 @@
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -138,21 +138,21 @@
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and `display: flex` keeps each
@@ -165,7 +165,7 @@
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -174,7 +174,7 @@
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -182,8 +182,8 @@
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -194,62 +194,62 @@
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its `cols`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* `hidden` alone loses to Carbon's `.rux--tile { display: block }`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -259,9 +259,9 @@
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A `rux--tile`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way `ln-q`
-   and `ln-ex-work` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are `ln-dg-node`, not `ln-tile` --
+   surface rather than sitting flush on the page background, the way `notes-q`
+   and `notes-ex-work` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are `notes-dg-node`, not `notes-tile` --
    they used to be, and nesting a real `rux--tile` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -269,7 +269,7 @@
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    `<figcaption>` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while `.ln-dg-grid` sizes to `max-content` and sets the scroll
+   VISIBLE width while `.notes-dg-grid` sizes to `max-content` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -294,7 +294,7 @@
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    `minmax(7rem, 1fr)` -- every column the same width, and every one of them
@@ -330,7 +330,7 @@
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -361,9 +361,9 @@
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -374,8 +374,8 @@
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -387,7 +387,7 @@
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   `.ln-dg-stage` lost its `border-block-end` above. That line was drawn per
+   `.notes-dg-stage` lost its `border-block-end` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -405,7 +405,7 @@
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own `boundary` flag. The band
@@ -419,7 +419,7 @@
    `align-self` IS LOAD-BEARING: the grid sets `align-items: start` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. `Enterprise Planning`
@@ -448,11 +448,11 @@
    `module: Enterprise Planning` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -461,18 +461,18 @@
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -482,12 +482,12 @@
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are `diagram.*.nodes-marked` in MEASURED now.) Its key reuses
-   `ln-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
+   `notes-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -498,7 +498,7 @@
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes `.ln-dg`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes `.notes-dg`'s
    scroll container -- `overflow-x: auto` computes `overflow-y` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -521,7 +521,7 @@
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -530,13 +530,13 @@
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -550,14 +550,14 @@
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -566,7 +566,7 @@
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -574,7 +574,7 @@
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -597,26 +597,26 @@
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -624,23 +624,23 @@
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See `field()` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line `Do` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -652,19 +652,19 @@
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   `ln-dg-node` and the same `ln-dg-cat--*` class the canvas uses, so it takes
+   `notes-dg-node` and the same `notes-dg-cat--*` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY `ln-dg-key-tile` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY `notes-dg-key-tile` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a `:not()` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* `ln-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   `ln-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above `.ln-dg-node-link`. Two rules
+/* `notes-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   `notes-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above `.notes-dg-node-link`. Two rules
    defined one class, and the legend silently inherited the mark's
    `text-transform: uppercase`, `font-weight: 600` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. `check-classes` validates `rux--*` names
@@ -675,10 +675,10 @@
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* `inline-block`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a `<span>` wearing `ln-dg-node`, which is a tile's class and expects a
+   is a `<span>` wearing `notes-dg-node`, which is a tile's class and expects a
    block box; the name inside is `display: block`. While the `li` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the `li` rule with them, the span went back to
@@ -690,8 +690,8 @@
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then `kind` chose a HUE, five
    of them, on a page with no legend -- and `decision` and `outcome` chose
@@ -739,13 +739,13 @@
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -753,18 +753,18 @@
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -781,7 +781,7 @@
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two `:not()`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   `.ln-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
+   `.notes-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -792,7 +792,7 @@
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: `:has(.ln-dg-node-code)` is the test the stripe rule
+   nothing to derive: `:has(.notes-dg-node-code)` is the test the stripe rule
    already used.
 
    NOT `layer-01`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -802,22 +802,22 @@
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -841,7 +841,7 @@
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: `.ln-dg-node.ln-dg-legend-tile` and `.ln-dg-node.ln-dg-cat--config` are
+   lost: `.notes-dg-node.notes-dg-legend-tile` and `.notes-dg-node.notes-dg-cat--config` are
    both two classes, so the later won and Setup kept `padding-inline-start: 0`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of `docs/diagram.md` records,
@@ -854,17 +854,17 @@
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. `.ln-dg` scrolls on the inline axis, so a
+   scrolling rather than a preference. `.notes-dg` scrolls on the inline axis, so a
    block child of it -- which is what a `<figcaption>` is -- is laid out at the
    VISIBLE width while the grid inside sizes to `max-content` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to `.ln-dg-grid`, which already spans the whole table, and
+   So the rule moves to `.notes-dg-grid`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -877,25 +877,25 @@
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS `position: fixed` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1199,9 +1199,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
-<div data-ln-doc="SG-transfer-item-between-warehouses">        <div class="rux--stack-vertical rux--stack-scale-5">
+<div data-notes-doc="SG-transfer-item-between-warehouses">        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Warehouse transfer</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">7 phases</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-02</span></span>
@@ -1210,7 +1210,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="rux--type-body-02">Warehousing</p>
         </div>
 
-      <p class="ln-prose-measure"><strong>Objective:</strong> move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. <strong>Base guide</strong> — this is the foundation for a future multicompany-transfer variant.</p>
+      <p class="notes-prose-measure"><strong>Objective:</strong> move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. <strong>Base guide</strong> — this is the foundation for a future multicompany-transfer variant.</p>
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-glance">
       <h2 id="s-glance">At a glance</h2>
       <div class="rux--data-table-container">
@@ -1218,48 +1218,48 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Where</div></th><th scope="col"><div class="rux--table-header-label">What it achieves</div></th></tr></thead>
             <tbody>
-          <tr><td>☐</td><td><span class="ln-t-named">0</span> Confirm stock, destination, and expected order type</td><td>Inventory 360; Default Order Types by Origin</td><td>Stock is known and the expected transfer configuration is recorded</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">1</span> Create the transfer order</td><td>Warehousing Orders</td><td>A warehousing order exists with transaction type <span class="ln-t-named">Transfer</span></td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">2</span> Confirm the processing path and create advice</td><td>Outbound Line Status Overview; Warehousing Order</td><td>Manual and automatic activities are known before processing continues</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">3</span> Pick the goods</td><td>Picking List</td><td>Stock physically moves to staging at the source</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">4</span> Ship</td><td>Shipments</td><td>Goods leave the source warehouse</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">5</span> Receive at the destination</td><td>Warehousing Order — Inbound Lines</td><td>Goods are put away in the destination warehouse</td></tr>
-          <tr><td>☐</td><td><span class="ln-t-named">6</span> Verify</td><td>Inventory 360</td><td>Source on-hand down, destination on-hand up, by the same quantity</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">0</span> Confirm stock, destination, and expected order type</td><td>Inventory 360; Default Order Types by Origin</td><td>Stock is known and the expected transfer configuration is recorded</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">1</span> Create the transfer order</td><td>Warehousing Orders</td><td>A warehousing order exists with transaction type <span class="notes-t-named">Transfer</span></td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">2</span> Confirm the processing path and create advice</td><td>Outbound Line Status Overview; Warehousing Order</td><td>Manual and automatic activities are known before processing continues</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">3</span> Pick the goods</td><td>Picking List</td><td>Stock physically moves to staging at the source</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">4</span> Ship</td><td>Shipments</td><td>Goods leave the source warehouse</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">5</span> Receive at the destination</td><td>Warehousing Order — Inbound Lines</td><td>Goods are put away in the destination warehouse</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">6</span> Verify</td><td>Inventory 360</td><td>Source on-hand down, destination on-hand up, by the same quantity</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="ln-prose-measure"><strong>One warehousing order carries the whole move.</strong> Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1.</p>
+      <p class="notes-prose-measure"><strong>One warehousing order carries the whole move.</strong> Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1.</p>
       </section>
 
         <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-phases">
           <h2 id="h-phases">Phases</h2>
           <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-0">
         <h3 id="p-0">Phase 0 — Confirm stock, destination, and expected order type</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.1</th><td>Enter the item in <span class="ln-t-named">Filter Items</span>, run it, tick the row, and open <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</td><td class="ln-see"><span class="ln-t-named">Warehouse - Item Inventory</span> <span class="ln-t-exact">whwmd2515m000</span> opens, item carried through — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">source warehouse</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">source on-hand before</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.1</th><td>Enter the item in <span class="notes-t-named">Filter Items</span>, run it, tick the row, and open <span class="notes-t-press">Warehouse Inventory</span> in the <span class="notes-t-named">Inventory</span> group</td><td class="notes-see"><span class="notes-t-named">Warehouse - Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span> opens, item carried through — <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">item</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">source warehouse</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">source on-hand before</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.1">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.1" class="rux--text-area" rows="1" data-ln-note="0.1" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.1" class="rux--text-area" rows="1" data-notes-note="0.1" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.2</th><td>In the same grid, find the row for the intended destination warehouse</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">destination warehouse</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">destination on-hand before</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.2</th><td>In the same grid, find the row for the intended destination warehouse</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">destination warehouse</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">destination on-hand before</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.2" class="rux--text-area" rows="1" data-ln-note="0.2" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.2" class="rux--text-area" rows="1" data-notes-note="0.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">0.3</th><td>Open <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Default Order Types by Origin</span></span> (<span class="ln-t-exact">whinh0120m000</span>)</td><td class="ln-see">The default-order-type table opens</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">0.4</th><td>Find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span>, and ship-to <span class="ln-t-exact">Warehouse</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">expected warehousing order type</span>; <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">Create Shipment</span>. For different source and destination warehouses, official help states <span class="ln-t-named">Create Shipment</span> = <span class="ln-t-exact">Always</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">0.3</th><td>Open <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Default Order Types by Origin</span></span> (<span class="notes-t-exact">whinh0120m000</span>)</td><td class="notes-see">The default-order-type table opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.4</th><td>Find the row with transaction type <span class="notes-t-exact">Transfer</span>, ship-from <span class="notes-t-exact">Warehouse</span>, and ship-to <span class="notes-t-exact">Warehouse</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">expected warehousing order type</span>; <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">Create Shipment</span>. For different source and destination warehouses, official help states <span class="notes-t-named">Create Shipment</span> = <span class="notes-t-exact">Always</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-0.4" class="rux--text-area" rows="1" data-ln-note="0.4" placeholder="The value you saw"></textarea>
+                <textarea id="n-0.4" class="rux--text-area" rows="1" data-notes-note="0.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1269,37 +1269,37 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-1">
         <h3 id="p-1">Phase 1 — Create the transfer order</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Orders ➔ Orders</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Warehousing Orders <span class="rux--type-code-01">whinh2100m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Orders ➔ Orders</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Warehousing Orders <span class="rux--type-code-01">whinh2100m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">1.1</th><td>Open <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></td><td class="ln-see"><span class="ln-t-named">Warehousing Orders</span> <span class="ln-t-exact">whinh2100m000</span> opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.2</th><td>Click <span class="ln-t-press">New</span></td><td class="ln-see">A blank warehousing-order header opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.3</th><td>Set <span class="ln-t-named">Order</span> origin to <span class="ln-t-exact">Transfer (Manual)</span></td><td class="ln-see">This is one of the ten manual order origins listed in the session help — section 3.1</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.4</th><td>Set <span class="ln-t-named">Inventory Transaction Type</span> to <span class="ln-t-exact">Transfer</span></td><td class="ln-see">Only settable by hand because the order has no originating package — section 3.1</td></tr>
-          <tr><th scope="row" class="ln-step-id">1.5</th><td>Set <span class="ln-t-named">Ship-From Code</span> to the source warehouse from 0.1, and <span class="ln-t-named">Ship-To Code</span> to the destination warehouse from 0.2</td><td class="ln-see">Both types read <span class="ln-t-exact">Warehouse</span> — the condition for the Transfer transaction type</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">1.6</th><td>Compare the defaulted <span class="ln-t-named">Warehousing Order Type</span> with step 0.4 and record the value actually used</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">actual warehousing order type</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">1.1</th><td>Open <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></td><td class="notes-see"><span class="notes-t-named">Warehousing Orders</span> <span class="notes-t-exact">whinh2100m000</span> opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.2</th><td>Click <span class="notes-t-press">New</span></td><td class="notes-see">A blank warehousing-order header opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.3</th><td>Set <span class="notes-t-named">Order</span> origin to <span class="notes-t-exact">Transfer (Manual)</span></td><td class="notes-see">This is one of the ten manual order origins listed in the session help — section 3.1</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.4</th><td>Set <span class="notes-t-named">Inventory Transaction Type</span> to <span class="notes-t-exact">Transfer</span></td><td class="notes-see">Only settable by hand because the order has no originating package — section 3.1</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.5</th><td>Set <span class="notes-t-named">Ship-From Code</span> to the source warehouse from 0.1, and <span class="notes-t-named">Ship-To Code</span> to the destination warehouse from 0.2</td><td class="notes-see">Both types read <span class="notes-t-exact">Warehouse</span> — the condition for the Transfer transaction type</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.6</th><td>Compare the defaulted <span class="notes-t-named">Warehousing Order Type</span> with step 0.4 and record the value actually used</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">actual warehousing order type</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-1.6">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.6" class="rux--text-area" rows="1" data-ln-note="1.6" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.6" class="rux--text-area" rows="1" data-notes-note="1.6" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">1.7</th><td>Save the header</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">transfer order number</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.7</th><td>Save the header</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">transfer order number</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-1.7">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.7" class="rux--text-area" rows="1" data-ln-note="1.7" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.7" class="rux--text-area" rows="1" data-notes-note="1.7" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">1.8</th><td>Add an order line: the item from 0.1 and the quantity to move</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">transferred quantity</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.8</th><td>Add an order line: the item from 0.1 and the quantity to move</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">transferred quantity</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-1.8">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.8" class="rux--text-area" rows="1" data-ln-note="1.8" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.8" class="rux--text-area" rows="1" data-notes-note="1.8" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">1.9</th><td>Save the line</td><td class="ln-see">—</td></tr>
+          <tr><th scope="row" class="notes-step-id">1.9</th><td>Save the line</td><td class="notes-see">—</td></tr>
             </tbody>
           </table>
         </div>
@@ -1307,25 +1307,25 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-2">
         <h3 id="p-2">Phase 2 — Confirm the processing path and create advice</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Orders ➔ Outbound Line Status Overview</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Outbound Line Status Overview <span class="rux--type-code-01">whinh2129m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Orders ➔ Outbound Line Status Overview</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Outbound Line Status Overview <span class="rux--type-code-01">whinh2129m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">2.1</th><td>Open <span class="ln-t-named">Outbound Line Status Overview</span> <span class="ln-t-exact">whinh2129m000</span></td><td class="ln-see">The outbound-line overview opens</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.2</th><td>Find the transfer order line from phase 1</td><td class="ln-see">The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from 1.6</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.3</th><td>Read every row in the <span class="ln-t-named">Activities</span> table, especially <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></td><td class="ln-see"><span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">Yes</span> means LN runs it; <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span> means it is an operator step</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">2.4</th><td>Record the activities marked <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">manual outbound activities</span>; these determine which later steps you perform<div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">2.1</th><td>Open <span class="notes-t-named">Outbound Line Status Overview</span> <span class="notes-t-exact">whinh2129m000</span></td><td class="notes-see">The outbound-line overview opens</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.2</th><td>Find the transfer order line from phase 1</td><td class="notes-see">The item and order line match; <span class="notes-t-named">Order Type</span> matches the actual value from 1.6</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.3</th><td>Read every row in the <span class="notes-t-named">Activities</span> table, especially <span class="notes-t-named">Finished</span> and <span class="notes-t-named">Automatic</span></td><td class="notes-see"><span class="notes-t-named">Automatic</span> = <span class="notes-t-exact">Yes</span> means LN runs it; <span class="notes-t-named">Automatic</span> = <span class="notes-t-exact">No</span> means it is an operator step</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">2.4</th><td>Record the activities marked <span class="notes-t-named">Automatic</span> = <span class="notes-t-exact">No</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">manual outbound activities</span>; these determine which later steps you perform<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-2.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-2.4" class="rux--text-area" rows="1" data-ln-note="2.4" placeholder="The value you saw"></textarea>
+                <textarea id="n-2.4" class="rux--text-area" rows="1" data-notes-note="2.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">2.5</th><td>If the first unfinished activity is automatic, return to the warehousing order and choose <span class="ln-t-press">Process</span></td><td class="ln-see">LN executes consecutive automatic activities and stops at the next manual activity</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.6</th><td>If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span>, select the line, and choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></td><td class="ln-see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</td></tr>
-          <tr><th scope="row" class="ln-step-id">2.7</th><td>If <span class="ln-t-named">Release Outbound Advice</span> is manual and <span class="ln-t-named">Released</span> is still blank, choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></td><td class="ln-see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.5</th><td>If the first unfinished activity is automatic, return to the warehousing order and choose <span class="notes-t-press">Process</span></td><td class="notes-see">LN executes consecutive automatic activities and stops at the next manual activity</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.6</th><td>If <span class="notes-t-named">Generate Outbound Advice</span> is manual, open <span class="notes-t-named">Outbound Lines</span>, select the line, and choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></td><td class="notes-see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.7</th><td>If <span class="notes-t-named">Release Outbound Advice</span> is manual and <span class="notes-t-named">Released</span> is still blank, choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></td><td class="notes-see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</td></tr>
             </tbody>
           </table>
         </div>
@@ -1333,21 +1333,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-3">
         <h3 id="p-3">Phase 3 — Pick the goods</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Outbound/Inspections ➔ Picking List</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Picking List <span class="rux--type-code-01">whinh4525m100</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise <em>Picked</em> fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer&#39;s own outbound line.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Outbound/Inspections ➔ Picking List</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Picking List <span class="rux--type-code-01">whinh4525m100</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise <em>Picked</em> fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer&#39;s own outbound line.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">3.1</th><td>Check the <span class="ln-t-named">Picking List</span> row recorded in phase 2</td><td class="ln-see">If absent or already finished automatically, record <span class="ln-t-exact">Automatic / not applicable</span> and skip 3.2–3.5; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.2</th><td>Find the Run for this order</td><td class="ln-see">The line for your item and source warehouse</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.3</th><td>Tick the line</td><td class="ln-see">—</td></tr>
-          <tr><th scope="row" class="ln-step-id">3.4</th><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></td><td class="ln-see">Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">3.5</th><td>Record the Run number from the header</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">picking list Run number</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">3.1</th><td>Check the <span class="notes-t-named">Picking List</span> row recorded in phase 2</td><td class="notes-see">If absent or already finished automatically, record <span class="notes-t-exact">Automatic / not applicable</span> and skip 3.2–3.5; if <span class="notes-t-named">Automatic</span> = <span class="notes-t-exact">No</span>, continue</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.2</th><td>Find the Run for this order</td><td class="notes-see">The line for your item and source warehouse</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.3</th><td>Tick the line</td><td class="notes-see">—</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.4</th><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></td><td class="notes-see">Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">3.5</th><td>Record the Run number from the header</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">picking list Run number</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-3.5">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-3.5" class="rux--text-area" rows="1" data-ln-note="3.5" placeholder="The value you saw"></textarea>
+                <textarea id="n-3.5" class="rux--text-area" rows="1" data-notes-note="3.5" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
@@ -1357,22 +1357,22 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-4">
         <h3 id="p-4">Phase 4 — Ship</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Shipments ➔ Shipments</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Shipments <span class="rux--type-code-01">whinh4130m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question phase 2&#39;s activity table answers.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Shipments ➔ Shipments</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Shipments <span class="rux--type-code-01">whinh4130m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question phase 2&#39;s activity table answers.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">4.1</th><td>Check the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row recorded in phase 2</td><td class="ln-see">If already finished automatically, record <span class="ln-t-exact">Automatic / not observed</span> and skip 4.2–4.4; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">4.2</th><td>Find the shipment for this order, then click <span class="ln-t-press" title="Drill In (line)">Drill In</span></td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipment number</span><div class="rux--form-item ln-note">
+          <tr><th scope="row" class="notes-step-id">4.1</th><td>Check the <span class="notes-t-named">Freeze/Confirm Shipments/Loads</span> row recorded in phase 2</td><td class="notes-see">If already finished automatically, record <span class="notes-t-exact">Automatic / not observed</span> and skip 4.2–4.4; if <span class="notes-t-named">Automatic</span> = <span class="notes-t-exact">No</span>, continue</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">4.2</th><td>Find the shipment for this order, then click <span class="notes-t-press" title="Drill In (line)">Drill In</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">shipment number</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-4.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-4.2" class="rux--text-area" rows="1" data-ln-note="4.2" placeholder="The value you saw"></textarea>
+                <textarea id="n-4.2" class="rux--text-area" rows="1" data-notes-note="4.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="ln-step-id">4.3</th><td>If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></td><td class="ln-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
-          <tr><th scope="row" class="ln-step-id">4.4</th><td>Choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td class="ln-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</td></tr>
+          <tr><th scope="row" class="notes-step-id">4.3</th><td>If <span class="notes-t-named">Freeze Mandatory</span> is ticked, choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></td><td class="notes-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
+          <tr><th scope="row" class="notes-step-id">4.4</th><td>Choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td class="notes-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</td></tr>
             </tbody>
           </table>
         </div>
@@ -1381,15 +1381,15 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-5">
         <h3 id="p-5">Phase 5 — Receive at the destination</h3>
         
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order&#39;s inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order&#39;s inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="ln-step-id">5.1</th><td>Open the <span class="ln-t-named">Inbound Lines</span> tab on the transfer order</td><td class="ln-see">The inbound side of the same order, ship-to = destination warehouse</td></tr>
-          <tr><th scope="row" class="ln-step-id">5.2</th><td>Select the inbound line and choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receipt</span></span></td><td class="ln-see"><span class="ln-t-named">Warehouse Receipt</span> <span class="ln-t-exact">whinh3512m000</span> opens for the transfer line</td></tr>
-          <tr><th scope="row" class="ln-step-id">5.3</th><td>Select the receipt line and choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td class="ln-see">The receipt is confirmed and the destination inventory is updated</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.1</th><td>Open the <span class="notes-t-named">Inbound Lines</span> tab on the transfer order</td><td class="notes-see">The inbound side of the same order, ship-to = destination warehouse</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.2</th><td>Select the inbound line and choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receipt</span></span></td><td class="notes-see"><span class="notes-t-named">Warehouse Receipt</span> <span class="notes-t-exact">whinh3512m000</span> opens for the transfer line</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.3</th><td>Select the receipt line and choose <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td class="notes-see">The receipt is confirmed and the destination inventory is updated</td></tr>
             </tbody>
           </table>
         </div>
@@ -1397,24 +1397,24 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-6">
         <h3 id="p-6">Phase 6 — Verify it worked</h3>
-        <dl class="ln-meta"><div class="ln-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="ln-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="ln-prose-measure"><strong>What LN is doing.</strong> Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both.</p>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr data-produces="true"><th scope="row" class="ln-step-id">6.1</th><td>Read on-hand for the item at both warehouses</td><td class="ln-see"><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">source on-hand after</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">destination on-hand after</span><div class="rux--form-item ln-note">
+          <tr data-produces="true"><th scope="row" class="notes-step-id">6.1</th><td>Read on-hand for the item at both warehouses</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">source on-hand after</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">destination on-hand after</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-6.1">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-6.1" class="rux--text-area" rows="1" data-ln-note="6.1" placeholder="The value you saw"></textarea>
+                <textarea id="n-6.1" class="rux--text-area" rows="1" data-notes-note="6.1" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
-        <p class="ln-prose-measure"><strong>Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure.</strong> The guide is complete only when both hold.</p>
+        <p class="notes-prose-measure"><strong>Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure.</strong> The guide is complete only when both hold.</p>
         <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
@@ -1435,10 +1435,10 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <thead><tr><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Symptom</div></th><th scope="col"><div class="rux--table-header-label">What to check or do</div></th></tr></thead>
             <tbody>
           <tr><td>1</td><td>No order number appears</td><td>Header not saved, or a required field is still blank — recheck 1.3–1.6</td></tr>
-          <tr><td>2</td><td><span class="ln-t-named">Advice</span> greyed out</td><td>You are on the session toolbar, not the <span class="ln-t-named">Outbound Lines</span> toolbar — see 2.6</td></tr>
-          <tr><td>3</td><td>No Run appears on the Picking List</td><td>If the order already advanced, record <span class="ln-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to phase 2</td></tr>
-          <tr><td>4</td><td>No shipment is visible for a different-warehouse transfer</td><td>Official help says <span class="ln-t-named">Create Shipment</span> is <span class="ln-t-exact">Always</span>. Check Shipment Lines and the phase 2 activity status before continuing</td></tr>
-          <tr><td>4</td><td>Confirm greyed out</td><td>Shipment not yet Frozen, or <span class="ln-t-named">Freeze Mandatory</span> requires it — run 4.3 first</td></tr>
+          <tr><td>2</td><td><span class="notes-t-named">Advice</span> greyed out</td><td>You are on the session toolbar, not the <span class="notes-t-named">Outbound Lines</span> toolbar — see 2.6</td></tr>
+          <tr><td>3</td><td>No Run appears on the Picking List</td><td>If the order already advanced, record <span class="notes-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to phase 2</td></tr>
+          <tr><td>4</td><td>No shipment is visible for a different-warehouse transfer</td><td>Official help says <span class="notes-t-named">Create Shipment</span> is <span class="notes-t-exact">Always</span>. Check Shipment Lines and the phase 2 activity status before continuing</td></tr>
+          <tr><td>4</td><td>Confirm greyed out</td><td>Shipment not yet Frozen, or <span class="notes-t-named">Freeze Mandatory</span> requires it — run 4.3 first</td></tr>
           <tr><td>6</td><td>Destination on-hand did not rise</td><td>The receipt in phase 5 was not confirmed — return to the inbound line and Warehouse Receipt</td></tr>
           <tr><td>6</td><td>Source and destination changes do not both equal the transfer quantity</td><td>Do not approve the run. Recheck the phase 0 values and investigate unrelated inventory activity </td></tr>
             </tbody>
@@ -1453,14 +1453,14 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Variant</div></th><th scope="col"><div class="rux--table-header-label">What changes</div></th></tr></thead>
             <tbody>
-          <tr><td><span class="ln-t-named">Multicompany warehouse transfer</span> — source and destination warehouses in different logistic companies</td><td>LN generates <span class="ln-t-named">two</span> warehousing orders instead of one: the ship-from company&#39;s order carries the outbound and shipment activities, the ship-to company&#39;s carries inbound and inspection. <span class="ln-t-named">Ship-to Code</span> becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own guide rather than a bullet here</td></tr>
-          <tr><td><span class="ln-t-named">Planned/automated transfer, driven by Order Planning</span></td><td><span class="ln-t-named">Transfer Order Planning</span> <span class="ln-t-exact">cppat1210m000</span>, reached via <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span>, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this guide. </td></tr>
-          <tr><td><span class="ln-t-named">Serialized or lot-controlled item</span></td><td>The order header&#39;s <span class="ln-t-named">Reclassification</span> tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base guide. Source: Infor LN help for <span class="ln-t-named">Warehousing Order</span> <span class="ln-t-exact">whinh2100m100</span>, Field Information — Reclassification (<span class="ln-t-named">Rental Product Transfer</span>, <span class="ln-t-named">Serial Number</span>)</td></tr>
+          <tr><td><span class="notes-t-named">Multicompany warehouse transfer</span> — source and destination warehouses in different logistic companies</td><td>LN generates <span class="notes-t-named">two</span> warehousing orders instead of one: the ship-from company&#39;s order carries the outbound and shipment activities, the ship-to company&#39;s carries inbound and inspection. <span class="notes-t-named">Ship-to Code</span> becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own guide rather than a bullet here</td></tr>
+          <tr><td><span class="notes-t-named">Planned/automated transfer, driven by Order Planning</span></td><td><span class="notes-t-named">Transfer Order Planning</span> <span class="notes-t-exact">cppat1210m000</span>, reached via <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span>, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this guide. </td></tr>
+          <tr><td><span class="notes-t-named">Serialized or lot-controlled item</span></td><td>The order header&#39;s <span class="notes-t-named">Reclassification</span> tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base guide. Source: Infor LN help for <span class="notes-t-named">Warehousing Order</span> <span class="notes-t-exact">whinh2100m100</span>, Field Information — Reclassification (<span class="notes-t-named">Rental Product Transfer</span>, <span class="notes-t-named">Serial Number</span>)</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="ln-prose-measure">A variant earns its own guide only when it <strong>changes the phase structure</strong>. Multicompany transfer does; the other two rows do not change this guide&#39;s phases, only which sessions and fields matter within them.</p>
+      <p class="notes-prose-measure">A variant earns its own guide only when it <strong>changes the phase structure</strong>. Multicompany transfer does; the other two rows do not change this guide&#39;s phases, only which sessions and fields matter within them.</p>
       </section>
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-downstream">
       <h2 id="s-downstream">What this unlocks</h2>
@@ -1482,39 +1482,39 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
              while the guide itself is status: draft. Both are shown. -->
         <p class="rux--type-body-01">Warning Partly verified. Phases 0, 1, 2 have been performed against a live system and confirmed. Phases 3, 4, 5, 6 have not. Follow those as a plan, not as a record.</p>
       
-      <section class="ln-notepad" aria-labelledby="h-notes">
+      <section class="notes-notepad" aria-labelledby="h-notes">
         <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
         <div class="rux--form-item">
-          <label class="rux--label" for="ln-notes">Anything else worth keeping</label>
+          <label class="rux--label" for="notes-notes">Anything else worth keeping</label>
           <div class="rux--text-area__wrapper">
-            <textarea id="ln-notes" class="rux--text-area" rows="5" data-ln-notes placeholder="What surprised you, what you would check next time"></textarea>
+            <textarea id="notes-notes" class="rux--text-area" rows="5" data-notes-notes placeholder="What surprised you, what you would check next time"></textarea>
           </div>
           <div class="rux--form__helper-text">Saved in this browser only, with the values you noted beside the steps. There is no server and no account behind this page. Export to keep them.</div>
         </div>
-        <div class="ln-notepad-actions">
-          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-ln-export>Export notes</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-ln-copy>Copy</button>
-          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-ln-clear>Clear</button>
+        <div class="notes-notepad-actions">
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export notes</button>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-copy>Copy</button>
+          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-notes-clear>Clear</button>
         </div>
       </section>
       
-      <section class="ln-key" aria-labelledby="h-key">
+      <section class="notes-key" aria-labelledby="h-key">
         <h2 id="h-key" class="rux--type-productive-heading-03">How to read a step</h2>
-        <dl class="ln-key-grid">
-          <dt><span class="ln-t-press">Press it</span></dt>
+        <dl class="notes-key-grid">
+          <dt><span class="notes-t-press">Press it</span></dt>
           <dd>A control you act on.</dd>
-          <dt><span class="ln-t-named">Named on screen</span></dt>
+          <dt><span class="notes-t-named">Named on screen</span></dt>
           <dd>A tab, panel, field or column label &mdash; something you look for.</dd>
-          <dt><span class="ln-t-exact">Exact string</span></dt>
+          <dt><span class="notes-t-exact">Exact string</span></dt>
           <dd>Type or match it character for character.</dd>
           <dt><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">A state</span></span></dt>
           <dd>Confirm you see it before moving on.</dd>
-          <dt><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
+          <dt><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
           <dd>The step yields a value worth writing down.</dd>
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 ln-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
       </div>
     </div>
   </div>

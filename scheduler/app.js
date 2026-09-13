@@ -9,15 +9,15 @@
   'use strict';
 
   document.addEventListener('click', e => {
-    const bar = e.target.closest('.sch-bar');
+    const bar = e.target.closest('.scheduler-bar');
     if (!bar) return;
     const on = bar.getAttribute('aria-pressed') === 'true';
-    for (const b of document.querySelectorAll('.sch-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
+    for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
     bar.setAttribute('aria-pressed', on ? 'false' : 'true');
   });
 
   document.addEventListener('keydown', e => {
-    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.sch-bar')) { e.preventDefault(); e.target.click(); }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.scheduler-bar')) { e.preventDefault(); e.target.click(); }
   });
 
   /* ── WHOLE-PIXEL DAY COLUMNS ──────────────────────────────────────────────
@@ -53,10 +53,10 @@
      content width, because the remainder it absorbs is non-negative.
 
      WHEN THE FLOOR BINDS this does nothing but round: the columns are already
-     at --sch-day-min and the grid scrolls, so there is no remainder to place.
+     at --scheduler-day-min and the grid scrolls, so there is no remainder to place.
 
      IT IS AN ENHANCEMENT, NOT A REQUIREMENT. With this script absent the
-     stylesheet's own `minmax(--sch-day-min, 1fr)` renders, which is what
+     stylesheet's own `minmax(--scheduler-day-min, 1fr)` renders, which is what
      shipped before today. Nothing here is load-bearing for the grid to work.
      ────────────────────────────────────────────────────────────────────────*/
   const px = (el, name) => {
@@ -91,10 +91,10 @@
     /* THE PANELS ARE MEASURED FROM THE BOARD, NOT FROM THE GRID. They used to
        start where `.sch` starts -- pushed down past the toolbar by a 2rem
        margin -- so one measurement served all three. Each region carries its
-       own head in that band now and they all begin at `.sch-board`'s top, which
+       own head in that band now and they all begin at `.scheduler-board`'s top, which
        is 32px above the grid. Measuring from `.sch` and applying it here would
        run both panels exactly one toolbar past the bottom of the board. */
-    const board = sch.closest('.sch-board');
+    const board = sch.closest('.scheduler-board');
     const panelTop = board ? board.getBoundingClientRect().top : top;
     const panelNext = `${Math.max(12 * 16, Math.round(window.innerHeight - panelTop - below))}px`;
 
@@ -106,10 +106,10 @@
        a head of its own now, so giving the pane the board's full height made the
        two of them 32px taller than everything beside them. The aside takes the
        measurement and the pane fills what is left under the head -- see
-       `.sch-aside .sch--avail`, which is `flex: 1 1 auto` with the base `.sch`
+       `.scheduler-aside .sch--avail`, which is `flex: 1 1 auto` with the base `.sch`
        cap lifted so it can. */
-    const aside = document.getElementById('sch-aside');
-    const avail = document.getElementById('sch-avail');
+    const aside = document.getElementById('scheduler-aside');
+    const avail = document.getElementById('scheduler-avail');
     if (aside && avail && !aside.hidden && aside.contains(avail)) {
       if (aside.style.blockSize !== panelNext) aside.style.blockSize = panelNext;
     } else if (aside && aside.style.blockSize) {
@@ -130,7 +130,7 @@
        to auto -- which leaves the panel's `auto 1fr auto` rows unconstrained,
        the form unscrollable and the Save bar pushed down the page instead of
        pinned to the bottom. A cap here would look right and behave wrong. */
-    const trip = document.getElementById('sch-trip');
+    const trip = document.getElementById('scheduler-trip');
     if (trip && !trip.hidden) {
       if (trip.style.blockSize !== panelNext) trip.style.blockSize = panelNext;
     } else if (trip && trip.style.blockSize) {
@@ -144,10 +144,10 @@
     // size; reading a width this function set last time would shrink the grid
     // a little further on every pass.
     sch.style.removeProperty('inline-size');
-    sch.style.removeProperty('--sch-day-track');
+    sch.style.removeProperty('--scheduler-day-track');
     // Cleared so the corner is measured at its own `max-content` again rather
     // than at the width pinned on the last pass, which would never shrink.
-    sch.style.removeProperty('--sch-head-w');
+    sch.style.removeProperty('--scheduler-head-w');
     // The pane fills the board and its `clientWidth` below is how the available
     // room is learned; nothing narrows it any more, so `flex-grow` is left to
     // the stylesheet.
@@ -156,10 +156,10 @@
     // to read, and hand-setting one would clip the day a four-digit bus number
     // appears. The corner cell IS that column, so its rendered width is the
     // base, whatever the content turns out to be.
-    const corner = sch.querySelector('.sch-corner');
+    const corner = sch.querySelector('.scheduler-corner');
     const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
-    const dayMin = px(sch, '--sch-day-min');
-    const days = parseInt(getComputedStyle(sch).getPropertyValue('--sch-days'), 10) || 7;
+    const dayMin = px(sch, '--scheduler-day-min');
+    const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return false;
 
@@ -176,13 +176,13 @@
       // since `day` was floored from the same figure.
       head = pane - day * days;
     }
-    sch.style.setProperty('--sch-day-track', `${day}px`);
+    sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // PIN THE HEAD, which is what closes the right edge. It was `max-content`
     // and kept a fractional width while the arithmetic used a ceiled one, so
     // the difference fell out as daylight to the right of Sunday: measured a
     // 42.203px corner against a reserved 43 at 1440. It now carries the
     // flooring remainder as well, so the columns sum to the pane exactly.
-    sch.style.setProperty('--sch-head-w', `${head}px`);
+    sch.style.setProperty('--scheduler-head-w', `${head}px`);
 
     /* THE ONE PLACE THAT KNOWS THE WEEK DOES NOT FIT. `crowded` is not a new
        measurement -- it is the branch above, named. The day floor binding IS
@@ -195,10 +195,10 @@
   }
 
   /* THE PANEL TAKES ITS OWN ROOM NOW, so nothing here reserves it.
-     `fitPanelRoom()` stood here and set `.sch-page`'s `padding-inline-end` to
+     `fitPanelRoom()` stood here and set `.scheduler-page`'s `padding-inline-end` to
      the measured width of a FIXED panel. The editor is a flex child of
-     `.sch-board` since 2026-09-07 and makes room by existing, so the function,
-     the `.sch-page--with-panel` class it keyed off and the stylesheet's
+     `.scheduler-board` since 2026-09-07 and makes room by existing, so the function,
+     the `.scheduler-page--with-panel` class it keyed off and the stylesheet's
      no-script fallback are all gone -- three places that had to agree about one
      number. One afternoon they did not: room reserved
      twice, a width read 320px mid-entrance, and a transitionend refit waiting
@@ -250,7 +250,7 @@
      Each of those stopped being about width. The module became Carbon's own 48
      everywhere; `Today` and `Drivers` became icon-only everywhere; `New trip`
      was hidden below `md` rather than squared off, which took
-     `.sch-toolbar__label` with it; and then `New trip` left the toolbar
+     `.scheduler-toolbar__label` with it; and then `New trip` left the toolbar
      entirely for the overflow menu, which took the last job -- renaming the
      trigger from "View options" to "More" -- because the menu holds the action
      at every width now and the markup can just say "More".

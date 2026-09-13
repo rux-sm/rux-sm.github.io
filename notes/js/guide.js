@@ -7,7 +7,7 @@
    guide; nothing is sent anywhere, and the page says so beside the box.
 
    IT READS WHAT build.mjs WROTE AND NOTHING ELSE. Three data attributes --
-   data-ln-doc, data-ln-note, data-ln-notes -- so this file never looks at
+   data-notes-doc, data-notes-note, data-notes-notes -- so this file never looks at
    guide text, never decides for itself which step yields a value, and never
    re-reads the marker contract. Which steps produce something is authored in
    atlas and arrives as `produces`; the generator turns that into a field and
@@ -25,10 +25,10 @@
    ========================================================================== */
 (() => {
   'use strict';
-  const root = document.querySelector('[data-ln-doc]');
+  const root = document.querySelector('[data-notes-doc]');
   if (!root) return;
-  const docId = root.dataset.lnDoc;
-  const KEY = `ln-guide:${docId}`;
+  const docId = root.dataset.notesDoc;
+  const KEY = `notes-guide:${docId}`;
   const $ = (sel) => Array.from(root.querySelectorAll(sel));
 
   // ---- storage ------------------------------------------------------------
@@ -53,8 +53,8 @@
   };
 
   // ---- controls -----------------------------------------------------------
-  const fields = $('textarea[data-ln-note]');
-  const notes = root.querySelector('textarea[data-ln-notes]');
+  const fields = $('textarea[data-notes-note]');
+  const notes = root.querySelector('textarea[data-notes-notes]');
 
   // A ONE-ROW BOX THAT GROWS. A noted value is usually short and occasionally
   // a sentence; a fixed box is either too big for every row on the page or
@@ -65,7 +65,7 @@
   };
 
   for (const ta of fields) {
-    const id = ta.dataset.lnNote;
+    const id = ta.dataset.notesNote;
     if (state.n[id]) ta.value = state.n[id];
     autosize(ta);
     ta.addEventListener('input', () => {
@@ -96,7 +96,7 @@
   const markdown = () => {
     const out = [];
     out.push(`# ${text(root.querySelector('h1'))}`);
-    const rev = text(document.querySelector('.ln-revision'));
+    const rev = text(document.querySelector('.notes-revision'));
     out.push(`${rev ? rev + ' · ' : ''}exported ${today()}`, '');
 
     let phase = null;
@@ -114,7 +114,7 @@
         if (out[out.length - 1] !== '') out.push('');
         out.push(`## ${phase}`, '');
       }
-      const step = text(row?.querySelector('.ln-step-id'));
+      const step = text(row?.querySelector('.notes-step-id'));
       // The instruction, not the whole answer cell: the reader wants to know
       // which step this value came from, and the answer cell now contains
       // this very field's label.
@@ -128,7 +128,7 @@
     return out.join('\n');
   };
 
-  root.querySelector('[data-ln-export]')?.addEventListener('click', () => {
+  root.querySelector('[data-notes-export]')?.addEventListener('click', () => {
     const blob = new Blob([markdown()], { type: 'text/markdown;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -137,7 +137,7 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   });
 
-  root.querySelector('[data-ln-copy]')?.addEventListener('click', async (ev) => {
+  root.querySelector('[data-notes-copy]')?.addEventListener('click', async (ev) => {
     const btn = ev.currentTarget;
     try {
       await navigator.clipboard.writeText(markdown());
@@ -146,7 +146,7 @@
     } catch { btn.textContent = 'Copy failed'; }
   });
 
-  root.querySelector('[data-ln-clear]')?.addEventListener('click', () => {
+  root.querySelector('[data-notes-clear]')?.addEventListener('click', () => {
     if (!window.confirm('Clear every value and note on this page? Export first if you want to keep them.')) return;
     state = empty();
     try { localStorage.removeItem(KEY); } catch { /* nothing to remove */ }

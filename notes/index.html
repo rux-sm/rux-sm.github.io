@@ -48,16 +48,16 @@
    `stack-horizontal` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a `rux--` one: check-classes
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. `.rux--tag` is inline-flex already; this
@@ -84,7 +84,7 @@
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -95,7 +95,7 @@
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -104,21 +104,21 @@
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -126,11 +126,11 @@
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -138,21 +138,21 @@
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and `display: flex` keeps each
@@ -165,7 +165,7 @@
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -174,7 +174,7 @@
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -182,8 +182,8 @@
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -194,62 +194,62 @@
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its `cols`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* `hidden` alone loses to Carbon's `.rux--tile { display: block }`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -259,9 +259,9 @@
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A `rux--tile`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way `ln-q`
-   and `ln-ex-work` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are `ln-dg-node`, not `ln-tile` --
+   surface rather than sitting flush on the page background, the way `notes-q`
+   and `notes-ex-work` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are `notes-dg-node`, not `notes-tile` --
    they used to be, and nesting a real `rux--tile` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -269,7 +269,7 @@
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    `<figcaption>` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while `.ln-dg-grid` sizes to `max-content` and sets the scroll
+   VISIBLE width while `.notes-dg-grid` sizes to `max-content` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -294,7 +294,7 @@
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    `minmax(7rem, 1fr)` -- every column the same width, and every one of them
@@ -330,7 +330,7 @@
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -361,9 +361,9 @@
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -374,8 +374,8 @@
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -387,7 +387,7 @@
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   `.ln-dg-stage` lost its `border-block-end` above. That line was drawn per
+   `.notes-dg-stage` lost its `border-block-end` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -405,7 +405,7 @@
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own `boundary` flag. The band
@@ -419,7 +419,7 @@
    `align-self` IS LOAD-BEARING: the grid sets `align-items: start` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. `Enterprise Planning`
@@ -448,11 +448,11 @@
    `module: Enterprise Planning` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -461,18 +461,18 @@
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -482,12 +482,12 @@
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are `diagram.*.nodes-marked` in MEASURED now.) Its key reuses
-   `ln-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
+   `notes-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -498,7 +498,7 @@
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes `.ln-dg`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes `.notes-dg`'s
    scroll container -- `overflow-x: auto` computes `overflow-y` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -521,7 +521,7 @@
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -530,13 +530,13 @@
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -550,14 +550,14 @@
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -566,7 +566,7 @@
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -574,7 +574,7 @@
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -597,26 +597,26 @@
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -624,23 +624,23 @@
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See `field()` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line `Do` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -652,19 +652,19 @@
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   `ln-dg-node` and the same `ln-dg-cat--*` class the canvas uses, so it takes
+   `notes-dg-node` and the same `notes-dg-cat--*` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY `ln-dg-key-tile` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY `notes-dg-key-tile` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a `:not()` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* `ln-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   `ln-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above `.ln-dg-node-link`. Two rules
+/* `notes-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   `notes-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above `.notes-dg-node-link`. Two rules
    defined one class, and the legend silently inherited the mark's
    `text-transform: uppercase`, `font-weight: 600` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. `check-classes` validates `rux--*` names
@@ -675,10 +675,10 @@
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* `inline-block`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a `<span>` wearing `ln-dg-node`, which is a tile's class and expects a
+   is a `<span>` wearing `notes-dg-node`, which is a tile's class and expects a
    block box; the name inside is `display: block`. While the `li` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the `li` rule with them, the span went back to
@@ -690,8 +690,8 @@
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then `kind` chose a HUE, five
    of them, on a page with no legend -- and `decision` and `outcome` chose
@@ -739,13 +739,13 @@
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -753,18 +753,18 @@
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -781,7 +781,7 @@
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two `:not()`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   `.ln-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
+   `.notes-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -792,7 +792,7 @@
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: `:has(.ln-dg-node-code)` is the test the stripe rule
+   nothing to derive: `:has(.notes-dg-node-code)` is the test the stripe rule
    already used.
 
    NOT `layer-01`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -802,22 +802,22 @@
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -841,7 +841,7 @@
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: `.ln-dg-node.ln-dg-legend-tile` and `.ln-dg-node.ln-dg-cat--config` are
+   lost: `.notes-dg-node.notes-dg-legend-tile` and `.notes-dg-node.notes-dg-cat--config` are
    both two classes, so the later won and Setup kept `padding-inline-start: 0`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of `docs/diagram.md` records,
@@ -854,17 +854,17 @@
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. `.ln-dg` scrolls on the inline axis, so a
+   scrolling rather than a preference. `.notes-dg` scrolls on the inline axis, so a
    block child of it -- which is what a `<figcaption>` is -- is laid out at the
    VISIBLE width while the grid inside sizes to `max-content` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to `.ln-dg-grid`, which already spans the whole table, and
+   So the rule moves to `.notes-dg-grid`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -877,25 +877,25 @@
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS `position: fixed` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1202,38 +1202,38 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-map">
           <h1 id="h-map">Order to shipment</h1>
-          <figure class="rux--tile ln-dg" style="--dg-cols:6">
-          <div class="ln-dg-grid">
-            <div class="ln-dg-band" style="grid-column:5;grid-row:1/span 7" aria-hidden="true"></div>
-            <div class="ln-dg-head"></div>
-            <div class="ln-dg-rule" style="grid-row:3"></div>
-          <div class="ln-dg-rule" style="grid-row:4"></div>
-          <div class="ln-dg-rule" style="grid-row:5"></div>
-          <div class="ln-dg-rule" style="grid-row:6"></div>
-          <div class="ln-dg-rule" style="grid-row:7"></div>
-            <div class="ln-dg-stage" style="grid-column:2">1 · Prepare</div>
-          <div class="ln-dg-stage" style="grid-column:3">2 · Demand</div>
-          <div class="ln-dg-stage" style="grid-column:4">3 · Plan</div>
-          <div class="ln-dg-stage ln-dg-stage--boundary" style="grid-column:5">4 · Transfer</div>
-          <div class="ln-dg-stage" style="grid-column:6">5 · Execute</div>
-            <div class="ln-dg-lane" style="grid-row:2">Master Data</div>
-          <div class="ln-dg-lane" style="grid-row:3">Sales</div>
-          <div class="ln-dg-lane" style="grid-row:4">Enterprise Planning</div>
-          <div class="ln-dg-lane" style="grid-row:5">Procurement</div>
-          <div class="ln-dg-lane" style="grid-row:6">Manufacturing</div>
-          <div class="ln-dg-lane" style="grid-row:7">Warehousing</div>
-            <div class="ln-dg-cell" style="grid-column:2;grid-row:2">
-              <details class="ln-dg-node ln-dg-node--step ln-dg-cat--config" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Items and groups</span><code class="ln-dg-node-code">tcibd0501m100</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Items and groups</span>
-                    <span class="ln-dg-kind">Setup</span><span class="ln-dg-kind-fine">step</span><code class="ln-dg-detail-code">tcibd0501m100</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span>no menu entry; tick a row in <span class="ln-t-named">Items</span> <span class="ln-t-exact">tcibd0501m000</span>, <span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span>, and drill in</p>
+          <figure class="rux--tile notes-dg" style="--dg-cols:6">
+          <div class="notes-dg-grid">
+            <div class="notes-dg-band" style="grid-column:5;grid-row:1/span 7" aria-hidden="true"></div>
+            <div class="notes-dg-head"></div>
+            <div class="notes-dg-rule" style="grid-row:3"></div>
+          <div class="notes-dg-rule" style="grid-row:4"></div>
+          <div class="notes-dg-rule" style="grid-row:5"></div>
+          <div class="notes-dg-rule" style="grid-row:6"></div>
+          <div class="notes-dg-rule" style="grid-row:7"></div>
+            <div class="notes-dg-stage" style="grid-column:2">1 · Prepare</div>
+          <div class="notes-dg-stage" style="grid-column:3">2 · Demand</div>
+          <div class="notes-dg-stage" style="grid-column:4">3 · Plan</div>
+          <div class="notes-dg-stage notes-dg-stage--boundary" style="grid-column:5">4 · Transfer</div>
+          <div class="notes-dg-stage" style="grid-column:6">5 · Execute</div>
+            <div class="notes-dg-lane" style="grid-row:2">Master Data</div>
+          <div class="notes-dg-lane" style="grid-row:3">Sales</div>
+          <div class="notes-dg-lane" style="grid-row:4">Enterprise Planning</div>
+          <div class="notes-dg-lane" style="grid-row:5">Procurement</div>
+          <div class="notes-dg-lane" style="grid-row:6">Manufacturing</div>
+          <div class="notes-dg-lane" style="grid-row:7">Warehousing</div>
+            <div class="notes-dg-cell" style="grid-column:2;grid-row:2">
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Items and groups</span><code class="notes-dg-node-code">tcibd0501m100</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Items and groups</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tcibd0501m100</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; tick a row in <span class="notes-t-named">Items</span> <span class="notes-t-exact">tcibd0501m000</span>, <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span>, and drill in</p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>hold the item every other lane reads</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>hold the item every other lane reads</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">confirm the item exists with its group, defaults and unit</li>
                     </ol>
                   </div>
@@ -1242,17 +1242,17 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--step ln-dg-cat--config" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Item - Purchase</span><code class="ln-dg-node-code">tdipu0601m000</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Item - Purchase</span>
-                    <span class="ln-dg-kind">Setup</span><span class="ln-dg-kind-fine">step</span><code class="ln-dg-detail-code">tdipu0601m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span>no menu entry; <strong>Go to Details</strong> from <span class="ln-t-named">Items - Purchase</span> <span class="ln-t-exact">tdipu0101m000</span>, <span class="ln-t-route"><span>Procurement</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Purchase</span></span></p>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Item - Purchase</span><code class="notes-dg-node-code">tdipu0601m000</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Item - Purchase</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tdipu0601m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; <strong>Go to Details</strong> from <span class="notes-t-named">Items - Purchase</span> <span class="notes-t-exact">tdipu0101m000</span>, <span class="notes-t-route"><span>Procurement</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Purchase</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>carry the buy-from partner a purchased item needs</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>carry the buy-from partner a purchased item needs</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">check the <strong>Item - Business Partner</strong> tab has a row. Without one the transfer refuses to create a purchase order at all</li>
                     </ol>
                   </div>
@@ -1261,204 +1261,204 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--outcome ln-dg-cat--config" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Bill of material and routing</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Bill of material and routing</span>
-                    <span class="ln-dg-kind">Setup</span><span class="ln-dg-kind-fine">outcome</span></p>
+              <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Bill of material and routing</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Bill of material and routing</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>define what a made item is built from and how, both Approved</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>define what a made item is built from and how, both Approved</p>
                   </div>
                   
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--outcome ln-dg-cat--config" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Planning cluster row on the item</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Planning cluster row on the item</span>
-                    <span class="ln-dg-kind">Setup</span><span class="ln-dg-kind-fine">outcome</span></p>
+              <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planning cluster row on the item</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planning cluster row on the item</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>make the item visible to order planning. Without it the item is absent from the plan rather than refused</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>make the item visible to order planning. Without it the item is absent from the plan rather than refused</p>
                   </div>
                   
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:3;grid-row:3">
-              <details class="ln-dg-node ln-dg-node--step ln-dg-cat--step" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">1</span><span class="ln-dg-node-name">Sales Order Intake Workbench</span><code class="ln-dg-node-code">tdsls4601m200</code><span class="ln-dg-node-link"><span class="ln-dg-key">Needs</span></span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">1</span><span class="ln-dg-detail-name">Sales Order Intake Workbench</span>
-                    <span class="ln-dg-kind">Step</span><span class="ln-dg-kind-fine">step</span><code class="ln-dg-detail-code">tdsls4601m200</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></p>
+            <div class="notes-dg-cell" style="grid-column:3;grid-row:3">
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">1</span><span class="notes-dg-node-name">Sales Order Intake Workbench</span><code class="notes-dg-node-code">tdsls4601m200</code><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span></span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">1</span><span class="notes-dg-detail-name">Sales Order Intake Workbench</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">tdsls4601m200</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>create the demand the rest of the chain answers</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>create the demand the rest of the chain answers</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">enter the order and approve it</li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Needs</span>Items and groups — prerequisite for everything right of it</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Items and groups — prerequisite for everything right of it</p>
                   </div>
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--decision ln-dg-cat--check" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">2</span><span class="ln-dg-node-name">Does on-hand cover it?</span><span class="ln-dg-node-link"><span class="ln-dg-key">Splits</span>10 · 3</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">2</span><span class="ln-dg-detail-name">Does on-hand cover it?</span>
-                    <span class="ln-dg-kind">Checkpoint</span><span class="ln-dg-kind-fine">decision</span></p>
+              <details class="notes-dg-node notes-dg-node--decision notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">2</span><span class="notes-dg-node-name">Does on-hand cover it?</span><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span>10 · 3</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">2</span><span class="notes-dg-detail-name">Does on-hand cover it?</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">decision</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</p>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Splits</span>10 — YES, and no planned order is generated · 3 — NO</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>10 — YES, and no planned order is generated · 3 — NO</p>
                   </div>
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:4;grid-row:4">
-              <details class="ln-dg-node ln-dg-node--gate ln-dg-cat--check" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">3</span><span class="ln-dg-node-name">Planning data exists</span><span class="ln-dg-node-link"><span class="ln-dg-key">Needs</span></span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">3</span><span class="ln-dg-detail-name">Planning data exists</span>
-                    <span class="ln-dg-kind">Checkpoint</span><span class="ln-dg-kind-fine">gate</span></p>
+            <div class="notes-dg-cell" style="grid-column:4;grid-row:4">
+              <details class="notes-dg-node notes-dg-node--gate notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">3</span><span class="notes-dg-node-name">Planning data exists</span><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span></span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">3</span><span class="notes-dg-detail-name">Planning data exists</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>decide silently whether planning can see the item and every component beneath it</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide silently whether planning can see the item and every component beneath it</p>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Needs</span>Planning cluster row on the item — what the gate looks for</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Planning cluster row on the item — what the gate looks for</p>
                   </div>
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--gate ln-dg-cat--check" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">4</span><span class="ln-dg-node-name">Inside the order horizon</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">4</span><span class="ln-dg-detail-name">Inside the order horizon</span>
-                    <span class="ln-dg-kind">Checkpoint</span><span class="ln-dg-kind-fine">gate</span></p>
+              <details class="notes-dg-node notes-dg-node--gate notes-dg-cat--check" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">4</span><span class="notes-dg-node-name">Inside the order horizon</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">4</span><span class="notes-dg-detail-name">Inside the order horizon</span>
+                    <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>decide silently whether the delivery date is near enough to plan. Counted in workdays</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide silently whether the delivery date is near enough to plan. Counted in workdays</p>
                   </div>
                   
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--read ln-dg-cat--info" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Item Order Plan</span><code class="ln-dg-node-code">cprrp0520m000</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Item Order Plan</span>
-                    <span class="ln-dg-kind">Inquiry</span><span class="ln-dg-kind-fine">read</span><code class="ln-dg-detail-code">cprrp0520m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></p>
+              <details class="notes-dg-node notes-dg-node--read notes-dg-cat--info" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Item Order Plan</span><code class="notes-dg-node-code">cprrp0520m000</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Item Order Plan</span>
+                    <span class="notes-dg-kind">Inquiry</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">cprrp0520m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">read the item&#39;s plan before the run and again after it, and compare</li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Leaves</span>nothing. It is a detour for information and the walk is the same whether or not you take it</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>nothing. It is a detour for information and the walk is the same whether or not you take it</p>
                   </div>
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--step ln-dg-cat--step" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">5</span><span class="ln-dg-node-name">Generate Order Planning (Item)</span><code class="ln-dg-node-code">cprrp1220m000</code><span class="ln-dg-node-link"><span class="ln-dg-key">Needs</span></span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">5</span><span class="ln-dg-detail-name">Generate Order Planning (Item)</span>
-                    <span class="ln-dg-kind">Step</span><span class="ln-dg-kind-fine">step</span><code class="ln-dg-detail-code">cprrp1220m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span>no menu entry; reached by drilling in. <strong>Not documented for this release.</strong></p>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">5</span><span class="notes-dg-node-name">Generate Order Planning (Item)</span><code class="notes-dg-node-code">cprrp1220m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span></span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">5</span><span class="notes-dg-detail-name">Generate Order Planning (Item)</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">cprrp1220m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; reached by drilling in. <strong>Not documented for this release.</strong></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>net demand against stock and explode the bill of material</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>net demand against stock and explode the bill of material</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">run it with <em>Include Child Items</em></li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Needs</span>Bill of material and routing — what MRP explodes</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Bill of material and routing — what MRP explodes</p>
                   </div>
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--planned ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Planned production order</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Planned production order</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">planned</span></p>
+              <details class="notes-dg-node notes-dg-node--planned notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planned production order</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planned production order</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">planned</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>propose making the shortfall. Real to nothing outside planning</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>propose making the shortfall. Real to nothing outside planning</p>
                   </div>
                   
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--planned ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Planned purchase order</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Planned purchase order</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">planned</span></p>
+              <details class="notes-dg-node notes-dg-node--planned notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Planned purchase order</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Planned purchase order</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">planned</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>propose buying the shortfall. Real to nothing outside planning</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>propose buying the shortfall. Real to nothing outside planning</p>
                   </div>
                   
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:5;grid-row:4">
-              <details class="ln-dg-node ln-dg-node--transfer ln-dg-cat--step" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">6</span><span class="ln-dg-node-name">Transfer Order Planning</span><code class="ln-dg-node-code">cppat1210m000</code><span class="ln-dg-node-link"><span class="ln-dg-key">Splits</span>7 · 9</span><span class="ln-dg-node-link"><span class="ln-dg-key">Needs</span></span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">6</span><span class="ln-dg-detail-name">Transfer Order Planning</span>
-                    <span class="ln-dg-kind">Step</span><span class="ln-dg-kind-fine">transfer</span><code class="ln-dg-detail-code">cppat1210m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></p>
+            <div class="notes-dg-cell" style="grid-column:5;grid-row:4">
+              <details class="notes-dg-node notes-dg-node--transfer notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">6</span><span class="notes-dg-node-name">Transfer Order Planning</span><code class="notes-dg-node-code">cppat1210m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Splits</span>7 · 9</span><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span></span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">6</span><span class="notes-dg-detail-name">Transfer Order Planning</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">transfer</span><code class="notes-dg-detail-code">cppat1210m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>translate a proposal into a real order in its owning module. <strong>Planning ends here</strong></p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>translate a proposal into a real order in its owning module. <strong>Planning ends here</strong></p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">confirm the planned orders first, then run it once per supply source</li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Splits</span>7 — supply source Purchase · 9 — supply source Job Shop</p><p class="ln-dg-field"><span class="ln-dg-key">Needs</span>Item - Purchase — without it the purchase half refuses</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Splits</span>7 — supply source Purchase · 9 — supply source Job Shop</p><p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Item - Purchase — without it the purchase half refuses</p>
                   </div>
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:6;grid-row:5">
-              <details class="ln-dg-node ln-dg-node--real ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">7</span><span class="ln-dg-node-name">Purchase Order</span><code class="ln-dg-node-code">tdpur4100m900</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">7</span><span class="ln-dg-detail-name">Purchase Order</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">real</span><code class="ln-dg-detail-code">tdpur4100m900</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span>no menu entry; drill in from the purchase order list</p>
+            <div class="notes-dg-cell" style="grid-column:6;grid-row:5">
+              <details class="notes-dg-node notes-dg-node--real notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">7</span><span class="notes-dg-node-name">Purchase Order</span><code class="notes-dg-node-code">tdpur4100m900</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">7</span><span class="notes-dg-detail-name">Purchase Order</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">real</span><code class="notes-dg-detail-code">tdpur4100m900</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; drill in from the purchase order list</p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>buy the components, and raise the inbound warehousing order on its own</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>buy the components, and raise the inbound warehousing order on its own</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">read the order the transfer named in its process report</li>
                     </ol>
                   </div>
@@ -1468,64 +1468,64 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:6;grid-row:6">
-              <details class="ln-dg-node ln-dg-node--real ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">9</span><span class="ln-dg-node-name">Production Orders</span><code class="ln-dg-node-code">tisfc0501m000</code><span class="ln-dg-node-link"><span class="ln-dg-key">Needs</span>8</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">9</span><span class="ln-dg-detail-name">Production Orders</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">real</span><code class="ln-dg-detail-code">tisfc0501m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></p>
+            <div class="notes-dg-cell" style="grid-column:6;grid-row:6">
+              <details class="notes-dg-node notes-dg-node--real notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">9</span><span class="notes-dg-node-name">Production Orders</span><code class="notes-dg-node-code">tisfc0501m000</code><span class="notes-dg-node-link"><span class="notes-dg-key">Needs</span>8</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">9</span><span class="notes-dg-detail-name">Production Orders</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">real</span><code class="notes-dg-detail-code">tisfc0501m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>build the item: release, issue the components, report complete</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>build the item: release, issue the components, report complete</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">open the order the transfer created and release it</li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Needs</span>8 — components on hand first</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Needs</span>8 — components on hand first</p>
                   </div>
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:3;grid-row:7">
-              <details class="ln-dg-node ln-dg-node--read ln-dg-cat--info" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Inventory 360</span><code class="ln-dg-node-code">whwmd4300m000</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Inventory 360</span>
-                    <span class="ln-dg-kind">Inquiry</span><span class="ln-dg-kind-fine">read</span><code class="ln-dg-detail-code">whwmd4300m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></p>
+            <div class="notes-dg-cell" style="grid-column:3;grid-row:7">
+              <details class="notes-dg-node notes-dg-node--read notes-dg-cat--info" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Inventory 360</span><code class="notes-dg-node-code">whwmd4300m000</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Inventory 360</span>
+                    <span class="notes-dg-kind">Inquiry</span><span class="notes-dg-kind-fine">read</span><code class="notes-dg-detail-code">whwmd4300m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">read on-hand at the shipping warehouse before the order is entered, and write the figure down</li>
                     </ol>
                   </div>
                   </div>
-                  <div class="ln-dg-zone ln-dg-zone--leaves">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Leaves</span>nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it</p>
+                  <div class="notes-dg-zone notes-dg-zone--leaves">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it</p>
                   </div>
                   
                 </div>
               </details>
             </div>
-            <div class="ln-dg-cell" style="grid-column:6;grid-row:7">
-              <details class="ln-dg-node ln-dg-node--step ln-dg-cat--step" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">8</span><span class="ln-dg-node-name">Warehouse Receipt</span><code class="ln-dg-node-code">whinh3512m000</code></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">8</span><span class="ln-dg-detail-name">Warehouse Receipt</span>
-                    <span class="ln-dg-kind">Step</span><span class="ln-dg-kind-fine">step</span><code class="ln-dg-detail-code">whinh3512m000</code></p>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Route</span>no menu entry; opens from <strong>Actions ➔ Receive</strong> on the inbound order</p>
+            <div class="notes-dg-cell" style="grid-column:6;grid-row:7">
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--step" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">8</span><span class="notes-dg-node-name">Warehouse Receipt</span><code class="notes-dg-node-code">whinh3512m000</code></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">8</span><span class="notes-dg-detail-name">Warehouse Receipt</span>
+                    <span class="notes-dg-kind">Step</span><span class="notes-dg-kind-fine">step</span><code class="notes-dg-detail-code">whinh3512m000</code></p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Route</span>no menu entry; opens from <strong>Actions ➔ Receive</strong> on the inbound order</p>
                   </div>
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>book the bought components into stock</p><div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>book the bought components into stock</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       <li class="rux--list__item">enter the packing-slip reference per line and confirm</li>
                     </ol>
                   </div>
@@ -1534,27 +1534,27 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--outcome ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">·</span><span class="ln-dg-node-name">Finished item into stock</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">·</span><span class="ln-dg-detail-name">Finished item into stock</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">outcome</span></p>
+              <details class="notes-dg-node notes-dg-node--outcome notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">·</span><span class="notes-dg-node-name">Finished item into stock</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">·</span><span class="notes-dg-detail-name">Finished item into stock</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">outcome</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>hold the built item, which is only now sellable</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>hold the built item, which is only now sellable</p>
                   </div>
                   
                   
                 </div>
               </details>
-              <details class="ln-dg-node ln-dg-node--terminal ln-dg-cat--result" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">10</span><span class="ln-dg-node-name">Advise, pick and ship</span></summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">10</span><span class="ln-dg-detail-name">Advise, pick and ship</span>
-                    <span class="ln-dg-kind">Result</span><span class="ln-dg-kind-fine">terminal</span></p>
+              <details class="notes-dg-node notes-dg-node--terminal notes-dg-cat--result" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">10</span><span class="notes-dg-node-name">Advise, pick and ship</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">10</span><span class="notes-dg-detail-name">Advise, pick and ship</span>
+                    <span class="notes-dg-kind">Result</span><span class="notes-dg-kind-fine">terminal</span></p>
                   
-                  <div class="ln-dg-zone">
-                  <p class="ln-dg-field"><span class="ln-dg-key">Does</span>take the sales order to a confirmed shipment, with on-hand down by the shipped quantity</p>
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>take the sales order to a confirmed shipment, with on-hand down by the shipped quantity</p>
                   </div>
                   
                   
@@ -1562,21 +1562,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
               </details>
             </div>
           </div>
-        <figcaption class="ln-dg-legend">
-          <span class="ln-dg-legend-label">Key</span>
-          <ul class="ln-dg-legend-list">
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--step"><span class="ln-dg-node-name">Step</span></span></li>
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--config"><span class="ln-dg-node-name">Setup</span></span></li>
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--info"><span class="ln-dg-node-name">Inquiry</span></span></li>
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--result"><span class="ln-dg-node-name">Result</span></span></li>
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--check"><span class="ln-dg-node-name">Checkpoint</span></span><span class="ln-dg-legend-gloss">decides on its own, and can stop without saying so</span></li>
+        <figcaption class="notes-dg-legend">
+          <span class="notes-dg-legend-label">Key</span>
+          <ul class="notes-dg-legend-list">
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--step"><span class="notes-dg-node-name">Step</span></span></li>
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--config"><span class="notes-dg-node-name">Setup</span></span></li>
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--info"><span class="notes-dg-node-name">Inquiry</span></span></li>
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--result"><span class="notes-dg-node-name">Result</span></span></li>
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--check"><span class="notes-dg-node-name">Checkpoint</span></span><span class="notes-dg-legend-gloss">decides on its own, and can stop without saying so</span></li>
           </ul>
-          <span class="ln-dg-legend-gloss">a filled tile is a screen you can open</span><a class="rux--link ln-dg-legend-link" href="guides/order-to-shipment-overview.html">Read the whole document</a>
+          <span class="notes-dg-legend-gloss">a filled tile is a screen you can open</span><a class="rux--link notes-dg-legend-link" href="guides/order-to-shipment-overview.html">Read the whole document</a>
         </figcaption>
         </figure>
         </section>
 
-<p class="rux--type-caption-01 ln-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
       </div>
     </div>
   </div>

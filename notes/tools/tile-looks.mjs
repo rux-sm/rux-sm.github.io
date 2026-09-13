@@ -193,12 +193,12 @@ const matchesCompound = (compound, tile) => {
 };
 
 // WHAT THE RULE IS AIMED AT. A selector is only interesting here if one of its
-// compounds is the tile itself; a rule like `.ln-dg-node-name { font-size }`
+// compounds is the tile itself; a rule like `.notes-dg-node-name { font-size }`
 // constrains the tile not at all and so applies the same way to every tile that
 // has a name, which is all of them. Those say nothing about how a CATEGORY is
 // drawn and are dropped -- structurally, by looking at the selector, not by
 // being listed.
-const TILE_CLASS = /^(ln-dg-node|ln-dg-cat--[\w-]+)$/;
+const TILE_CLASS = /^(notes-dg-node|notes-dg-cat--[\w-]+)$/;
 const target = (sel, tile) => {
   const compounds = splitCompounds(sel);
   const at = compounds.findIndex((cd) =>
@@ -277,21 +277,21 @@ const rulesOf = (css) => {
 
 // The tiles, in the order `build.mjs` emitted them. A tile is a `<details>`; its
 // own classes and the classes inside it are all any rule here is keyed on.
-const tilesOf = (fig) => fig.split('<details class="ln-dg-node').slice(1).map((part) => {
-  const classes = ('ln-dg-node' + part.slice(0, part.indexOf('"'))).split(/\s+/);
+const tilesOf = (fig) => fig.split('<details class="notes-dg-node').slice(1).map((part) => {
+  const classes = ('notes-dg-node' + part.slice(0, part.indexOf('"'))).split(/\s+/);
   const end = part.indexOf('</details>');
   const inner = new Set([...part.slice(0, end < 0 ? part.length : end)
     .matchAll(/class="([^"]*)"/g)].flatMap((m) => m[1].split(/\s+/)));
   return {
     classes: new Set(classes), inner,
-    kind: (classes.find((c) => c.startsWith('ln-dg-node--')) ?? '?').slice(12),
-    cat: (classes.find((c) => c.startsWith('ln-dg-cat--')) ?? '?').slice(11),
-    hasCode: inner.has('ln-dg-node-code'),
+    kind: (classes.find((c) => c.startsWith('notes-dg-node--')) ?? '?').slice(12),
+    cat: (classes.find((c) => c.startsWith('notes-dg-cat--')) ?? '?').slice(11),
+    hasCode: inner.has('notes-dg-node-code'),
   };
 });
 
 const figureOf = (html) => {
-  const i = html.indexOf('<figure class="rux--tile ln-dg"');
+  const i = html.indexOf('<figure class="rux--tile notes-dg"');
   if (i < 0) return null;
   return html.slice(i, html.indexOf('</figure>', i));
 };

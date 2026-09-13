@@ -17,21 +17,21 @@
    label-02, and it shipped behind a content switcher until 2026-09-06; rux
    removed it. A 14px tier bought nothing the 12px one does not -- it fits
    FEWER characters into a day column that already truncates a destination --
-   and the switcher cost a toolbar control to say so. --sch-fs and --sch-row-h
+   and the switcher cost a toolbar control to say so. --scheduler-fs and --scheduler-row-h
    stay as the derivation, not as a knob. */
 
 .sch {
-  --sch-days: 7;
+  --scheduler-days: 7;
   /* AS NARROW AS ITS CONTENT, ON A 2rem FLOOR. `max-content` is still what
      sizes this track, so a bus number wider than the floor widens the column
      and nothing is ever clipped -- a hand-set width would clip exactly the
      four-digit bus this repository has not seen yet. The floor itself is on
-     the two cells, not here; see `.sch-corner`. Measured in Plex at label-01
+     the two cells, not here; see `.scheduler-corner`. Measured in Plex at label-01
      600 with 4px of inline padding: "Bus" 28.5px, "218" 29.6px, "No bus" broken
      28px -- all under 32, so the floor decides and the corner squares. "1234"
-     is the exception at 36.8px and widens the column; see `.sch-corner`. app.js reads the rendered width rather
+     is the exception at 36.8px and widens the column; see `.scheduler-corner`. app.js reads the rendered width rather
      than this token. */
-  --sch-head-w: max-content;
+  --scheduler-head-w: max-content;
   /* THE FLOOR A DAY COLUMN WILL NOT GO BELOW, and the grid scrolls rather
      than squeezing past it. 8.5rem is the largest value that changes nothing
      on a 1440 window -- measured, the threshold is between 8.5rem where the
@@ -42,30 +42,30 @@
      two weeks of real data. It does NOT widen anything on a wide window --
      only a floor above the 1fr share could, and that forces the whole week
      to scroll. */
-  --sch-day-min: 8.5rem;
-  --sch-day-track: minmax(var(--sch-day-min), 1fr);
-  --sch-bar-rows: 5;
-  --sch-fs: var(--rux-label-01-font-size);
-  --sch-ls: var(--rux-label-01-letter-spacing);
-  --sch-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
-  --sch-bar-h: calc(var(--sch-bar-rows) * var(--sch-row-h) + 2 * var(--rux-spacing-02));
+  --scheduler-day-min: 8.5rem;
+  --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
+  --scheduler-bar-rows: 5;
+  --scheduler-fs: var(--rux-label-01-font-size);
+  --scheduler-ls: var(--rux-label-01-letter-spacing);
+  --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
+  --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
   /* THE GAP IS MEASURED TO THE BOUNDARY; THE EYE MEASURES TO THE LINE.
      Every rule is 1px painted on one side of the boundary it marks, so it
      falls INSIDE the gap on that side and outside it on the other. With one
      value on all four sides the clear space came out 3px left and bottom
      against 4px right and top -- measured 2026-09-06, and visible once you
-     look closely. Two values fix it: `--sch-gap` where the rule is inside
+     look closely. Two values fix it: `--scheduler-gap` where the rule is inside
      (the day rule sits in its column's first pixel, the row rule in its
-     row's last), `--sch-gap-clear` where it is not. Three pixels of clear
+     row's last), `--scheduler-gap-clear` where it is not. Three pixels of clear
      space on all four sides, and the bar's first character still lands at
      12px from the day boundary -- 4px plus its own 8px of padding -- which is
      where the day header's own label starts. */
-  --sch-gap: var(--rux-spacing-02);
-  --sch-gap-clear: calc(var(--sch-gap) - 1px);
+  --scheduler-gap: var(--rux-spacing-02);
+  --scheduler-gap-clear: calc(var(--scheduler-gap) - 1px);
   /* Between two stacked bars there is no rule at all, so this separates bar
      from bar and stays at the full 4px: were it 3px like the rest, two bars
      in one row would read as closer to each other than to the grid. */
-  --sch-lane-gap: var(--sch-gap);
+  --scheduler-lane-gap: var(--scheduler-gap);
   position: relative;
   overflow: auto;
   /* THE GRID IS ITS OWN SCROLL PANE, not a tall block on a scrolling page.
@@ -96,7 +96,7 @@
    display: contents so its head and its track are both grid children and
    every row shares the same columns. The track spans the days and is the
    containing block the bars are placed in by percentage. */
-.sch-grid {
+.scheduler-grid {
   position: relative;   /* the now-line's containing block: the GRID, not the
                            scroll port, so it stays on today's column when the
                            week is wider than the viewport and .sch scrolls. */
@@ -104,7 +104,7 @@
   /* The day track is a variable so app.js can replace the fluid default with
      a WHOLE NUMBER OF PIXELS; see its note. Without that script this is what
      renders, and it is what rendered until 2026-09-06. */
-  grid-template-columns: var(--sch-head-w) repeat(var(--sch-days), var(--sch-day-track));
+  grid-template-columns: var(--scheduler-head-w) repeat(var(--scheduler-days), var(--scheduler-day-track));
   /* AS WIDE AS ITS OWN COLUMNS, 2026-09-11, AND THIS IS WHAT MAKES THE BUS
      COLUMN STICK. It was `min-inline-size: 100%` alone, which makes the grid
      BOX exactly the width of the pane while its seven day columns total more
@@ -122,7 +122,7 @@
      inside the clamp; it is 705px on a phone.
 
      `max-content` with the 100% floor keeps both cases. app.js always sets
-     `--sch-day-track` to a whole number of pixels, so max-content is head plus
+     `--scheduler-day-track` to a whole number of pixels, so max-content is head plus
      seven days exactly; where the week fits, that total is under 100% and the
      floor wins, the `1fr` tracks divide the pane and nothing about the desktop
      board changes. Measured at 1440 before and after: pane 1344, grid 1344,
@@ -130,10 +130,10 @@
   inline-size: max-content;
   min-inline-size: 100%;
 }
-.sch-row { display: contents; }
+.scheduler-row { display: contents; }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty
    Unassigned row would still take a slot in the grid without this. */
-.sch-row[hidden] { display: none; }
+.scheduler-row[hidden] { display: none; }
 /* THE LAST ROW DRAWS ITS RULE AGAIN, RESTORED 2026-09-07, AND THIS IS A
    CONSEQUENCE OF REMOVING THE PANE'S BORDER RATHER THAN A CHOICE OF ITS OWN.
    It used to read: the pane's own bottom border already closes the grid, and
@@ -142,7 +142,7 @@
    with no bottom edge at all -- it simply stopped after the last bus. Carbon's
    table rules every row including its last, which is what closes it there too.
 
-   `.sch-row--last` is still set by data.js and is now unused by this
+   `.scheduler-row--last` is still set by data.js and is now unused by this
    stylesheet. It is left in place rather than removed from the JS: it marks
    the last VISIBLE row, which `:last-child` cannot do on the weeks the
    Unassigned row is hidden, and that is worth keeping for whatever next wants
@@ -152,7 +152,7 @@
    screen and dims it; clearing it would throw away something still worth
    reading, and showing nothing at all is what made two presses of the arrow
    look like a page that had not noticed. */
-.sch-grid--busy { opacity: .55; }
+.scheduler-grid--busy { opacity: .55; }
 
 /* THE HEADER BAND IS layer-accent-01, THE RULES ARE border-subtle-01, and
    both were a step too dim until 2026-09-06. Carbon's tokens are LAYER-AWARE:
@@ -162,8 +162,8 @@
    its header is `layer-accent-01`. Measured against the sink's own data table
    in g90: table header #525252 against this grid's #393939, table row rule
    #6f6f6f against this grid's #525252. Both now match the table exactly. */
-.sch-corner,
-.sch-day {
+.scheduler-corner,
+.scheduler-day {
   position: sticky;
   inset-block-start: 0;
   z-index: 3;
@@ -177,9 +177,9 @@
   /* ONE ROW OF 2rem, CARBON'S sm, AND A SQUARE CORNER.
 
      THE MODULE SPLIT IN TWO ON 2026-09-10, and this band kept the smaller
-     half. The three REGION HEADS -- the toolbar, `.sch-aside__head` and the
+     half. The three REGION HEADS -- the toolbar, `.scheduler-aside__head` and the
      trip editor's -- went to `size-md`, 40px, on rux's call that they read
-     too small. This band and the roster's `.sch-avail__day` did NOT: they
+     too small. This band and the roster's `.scheduler-avail__day` did NOT: they
      are COLUMN headers, subordinate to those titles, and the type already
      says so (`heading-compact-02` over `-01`). Giving the heads the taller
      band puts the heights in the same order the type is in.
@@ -237,7 +237,7 @@
      have split the pair the last several passes spent joining.
 
      IT COSTS A DISTINCTION THAT WAS DELIBERATE, and the comment below on
-     `.sch-day__num` used to record it: the day NAME was secondary and only the
+     `.scheduler-day__num` used to record it: the day NAME was secondary and only the
      DATE primary, so "Mon 7" read as one label with the changing half
      emphasised. At the table header type both halves are bold primary and that
      emphasis is gone. Today is still marked -- the interactive underline and
@@ -251,14 +251,14 @@
 }
 /* The corner takes the ROW HEAD's inline padding, not the day cells', so the
    word Bus starts on the same pixel as the numbers under it. */
-.sch-corner {
+.scheduler-corner {
   inset-inline-start: 0;
   z-index: 4;
   /* NO VERTICAL RULE IN THE HEADER BAND. NOT ONE, ANYWHERE, 2026-09-11.
 
      A RULE WAS PUT HERE EARLIER THE SAME DAY AND TAKEN BACK OUT, so both the
      argument and its answer are kept. It was added on the strength of the
-     2026-09-07 note on `.sch-row-head` -- "this one line comes back and the
+     2026-09-07 note on `.scheduler-row-head` -- "this one line comes back and the
      corner's with it, they are a pair" -- and the pair was the wrong unit. rux
      saw it rendered: "i dont want these vertical border to be applied on the
      header row. similar rule to weekend border. doesnt cross into header."
@@ -273,7 +273,7 @@
      THE ORIGINAL COMMENT HERE WAS ALSO WRONG, and is recorded rather than
      quietly dropped. It read: "THE HEADER BAND STAYS OPEN AT THE CORNER. The
      body keeps its divider, where it separates bus identity from trip content."
-     The body did NOT keep its divider -- `.sch-row-head` lost its rule later
+     The body did NOT keep its divider -- `.scheduler-row-head` lost its rule later
      that same 2026-09-07 -- so it described a line that had not existed for
      four days. Its first sentence is the one that survived all of this. */
   padding-inline: var(--rux-spacing-02);
@@ -295,7 +295,7 @@
 
      app.js measures this cell, so the floor reaches its arithmetic untold. */
   min-inline-size: 2rem;
-  /* The head of a centred column. `.sch-day` keeps its own start alignment --
+  /* The head of a centred column. `.scheduler-day` keeps its own start alignment --
      a day name and its date read left to right and are not centred. */
   justify-content: center;
 }
@@ -324,20 +324,20 @@
    type there is nothing left to lift it from, and declaring 14px/400 here would
    make the number LIGHTER than the name beside it. Only the tabular figures
    remain, which are its own business either way. */
-.sch-day__num { font-variant-numeric: tabular-nums; }
-.sch-day--weekend { color: var(--rux-text-placeholder); }
+.scheduler-day__num { font-variant-numeric: tabular-nums; }
+.scheduler-day--weekend { color: var(--rux-text-placeholder); }
 /* BOTH SHADOWS, because they are one property. Moving the day rule off
    border-inline-start and onto an inset shadow on 2026-09-06 meant this rule
    -- later in the file, same specificity -- replaced it, and today's column
    silently lost its left rule. */
-.sch-day--today { box-shadow: inset 0 -2px 0 var(--rux-border-interactive); }
-.sch-day--today .sch-day__num { color: var(--rux-text-primary); font-weight: 600; }
+.scheduler-day--today { box-shadow: inset 0 -2px 0 var(--rux-border-interactive); }
+.scheduler-day--today .scheduler-day__num { color: var(--rux-text-primary); font-weight: 600; }
 
 /* NO NOW-LINE, REMOVED 2026-09-06. A 2px rule down today's column was
-   positioned as a percentage of .sch-grid, and a grid container is only as
+   positioned as a percentage of .scheduler-grid, and a grid container is only as
    wide as its own containing block: at 900px the box measured 770px while its
    columns totalled 872px, so the line landed at 785px -- inside Friday, two
-   days off. Every other thing here is placed inside .sch-track, a grid ITEM
+   days off. Every other thing here is placed inside .scheduler-track, a grid ITEM
    spanning the seven day columns, whose width IS their total, which is why
    only this one drifted. It is not coming back in another form either: a
    grid placed by DAY has no position within a day to point at, so a rule down
@@ -370,7 +370,7 @@
    deletes the information rather than moving it. Out of service is different
    and stays: it is a STATE, it changes what the row can accept this week, and
    the drag already reads it as a warning. */
-.sch-row-head {
+.scheduler-row-head {
   position: sticky;
   inset-inline-start: 0;
   z-index: 2;
@@ -434,7 +434,7 @@
      "made the line start abruptly below the header band instead of running the
      frame's whole height". Both halves were restored on that reasoning and rux
      rejected it on sight -- the band is its own surface and a rule through it
-     divides something already divided. `.sch-corner` carries the full account.
+     divides something already divided. `.scheduler-corner` carries the full account.
      The body is the only place any of this board's three vertical marks now
      appears. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
@@ -471,7 +471,7 @@
      heavier than the grid it frames.
 
      THAT WAS TRUE OF THE OLD SURFACE, NOT OF THIS ONE. The head is
-     `--rux-layer` now, the same surface `.sch-track` sits on, so this is the
+     `--rux-layer` now, the same surface `.scheduler-track` sits on, so this is the
      identical pairing the track already draws and it is visible in all five:
      white #c6c6c6 on #f4f4f4, g10 #e0e0e0 on #ffffff, g90 #6f6f6f on #393939,
      g100 #525252 on #262626. One rule, one token, straight across -- which is
@@ -505,8 +505,8 @@
    border, background, the UA's own font -- and keeps only the type below. The
    container must not add a box either: this cell's height is read by the grid,
    and the whole point of the change was that this column stopped setting it. */
-.sch-row-head .rux--popover-container { display: block; }
-button.sch-row-head__num {
+.scheduler-row-head .rux--popover-container { display: block; }
+button.scheduler-row-head__num {
   appearance: none;
   padding: 0;
   border: 0;
@@ -516,8 +516,8 @@ button.sch-row-head__num {
   text-align: inherit;
 }
 /* Carbon's toggletip content is prose; these are one-line facts. */
-.sch-bus-tip p { margin: 0; }
-.sch-row-head__num {
+.scheduler-bus-tip p { margin: 0; }
+.scheduler-row-head__num {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -533,14 +533,14 @@ button.sch-row-head__num {
    thing in the cell. Three stacked icons -- a lift, a sleeper and an
    out-of-service mark -- come to 56px, well inside the 96px a single-lane row
    is already tall. */
-.sch-row-head__kit {
+.scheduler-row-head__kit {
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-02);
   color: var(--rux-text-secondary);
 }
-.sch-row-head__kit svg { display: block; }
-.sch-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
+.scheduler-row-head__kit svg { display: block; }
+.scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
 /* NOT layer-accent: that is the header band's surface since the header lifted,
    and two accent bands at opposite ends of the grid read as two headers. The
    hover step is a lift the header does not use. */
@@ -565,8 +565,8 @@ button.sch-row-head__num {
    break and does not: `border-subtle-01` was measured against `layer-hover-01`
    in all eight themes, and it is the same token
    the track beside it already draws its own bottom rule in. */
-.sch-row--unassigned .sch-row-head { background: var(--rux-layer-hover-01); }
-.sch-row--unassigned .sch-row-head__num {
+.scheduler-row--unassigned .scheduler-row-head { background: var(--rux-layer-hover-01); }
+.scheduler-row--unassigned .scheduler-row-head__num {
   /* ALWAYS TWO LINES. Left to wrap on its own the label is 53px on one line
      and sets the column's width single-handed -- wider than the bus numbers
      it sits under. Broken at the space it is 28px, and the numbers decide. */
@@ -578,39 +578,39 @@ button.sch-row-head__num {
   line-height: var(--rux-helper-text-01-line-height);
   letter-spacing: var(--rux-helper-text-01-letter-spacing);
 }
-.sch-row--unassigned .sch-track { background-color: var(--rux-layer-hover-01); }
+.scheduler-row--unassigned .scheduler-track { background-color: var(--rux-layer-hover-01); }
 
-.sch-track {
+.scheduler-track {
   position: relative;
-  grid-column: span var(--sch-days);
-  min-block-size: calc(var(--sch-gap-clear) + var(--sch-lanes, 1) * var(--sch-bar-h) + (var(--sch-lanes, 1) - 1) * var(--sch-lane-gap) + var(--sch-gap));
+  grid-column: span var(--scheduler-days);
+  min-block-size: calc(var(--scheduler-gap-clear) + var(--scheduler-lanes, 1) * var(--scheduler-bar-h) + (var(--scheduler-lanes, 1) - 1) * var(--scheduler-lane-gap) + var(--scheduler-gap));
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  /* THE DAY RULES. `--sch-day-rules` is the stop list, written by data.js
-     once per render, and `--sch-day-rule` is what those 1px stops are drawn in.
+  /* THE DAY RULES. `--scheduler-day-rules` is the stop list, written by data.js
+     once per render, and `--scheduler-day-rule` is what those 1px stops are drawn in.
 
      A BACKGROUND, SO IT NEEDS NO STACKING ORDER. `background-image` paints
      above this element's own `background-color` -- which is how it survives the
      Unassigned row's tint -- and below every child, so bars (z-index 1) and
      out-of-service stripes cover it without anything being declared. */
-  background-image: linear-gradient(90deg, var(--sch-day-rules));
+  background-image: linear-gradient(90deg, var(--scheduler-day-rules));
 }
 /* ONE TOKEN, AND THE SAME ONE ON EVERY ROW, which a FILL could not manage.
 
-   THE FILL THIS REPLACED NEEDED TWO. `.sch-row--unassigned .sch-track` is
+   THE FILL THIS REPLACED NEEDED TWO. `.scheduler-row--unassigned .scheduler-track` is
    `--rux-layer-hover-01`, and `layer-hover-01` and `layer-accent-01` are the
    SAME COLOUR in two of the eight themes -- ant-dark #1f1f1f and spotify
    #242424 -- so a filled band had to pay a different token on that row or go
    invisible in exactly those two. A hairline has no such problem: it is not a
    surface, so it does not have to differ from the surface it sits on by a step
    of the same scale, and `border-subtle-01` is already proven legible on both
-   of these backgrounds -- it is what `.sch-track` draws its own bottom rule in,
+   of these backgrounds -- it is what `.scheduler-track` draws its own bottom rule in,
    on every row and in every theme.
 
    AND IT IS THE SAME TOKEN AND WIDTH THE RULES HAD BEFORE THEY WERE REMOVED,
    which is what makes this a restoration rather than a new thing: the version
    that went on 2026-09-07 was 1px `border-subtle-01` at a period of one day,
    and the last commit carrying it is 47d3903. */
-.sch-track { --sch-day-rule: var(--rux-border-subtle-01); }
+.scheduler-track { --scheduler-day-rule: var(--rux-border-subtle-01); }
 
 /* NO DAY RULES IN THE BODY, TRIED 2026-09-07 AT RUX'S ASK. Carbon's data
    table draws horizontal rules and no vertical ones, because there a column is
@@ -631,8 +631,8 @@ button.sch-row-head__num {
    question this trial answers and the only one; if it fails, it fails on an
    empty row and not on a busy one.
 
-   THE BAR ARITHMETIC IS DELIBERATELY UNTOUCHED. `--sch-gap` (4px) on a bar's
-   start and `--sch-gap-clear` (3px) on its end existed because the day rule ate
+   THE BAR ARITHMETIC IS DELIBERATELY UNTOUCHED. `--scheduler-gap` (4px) on a bar's
+   start and `--scheduler-gap-clear` (3px) on its end existed because the day rule ate
    one pixel of the start gap; with no rule the 1px difference has nothing to be
    measured against, and collapsing the two would move every bar's width and
    re-open the whole-pixel work. If the rules stay gone, that tidy-up is a
@@ -644,16 +644,16 @@ button.sch-row-head__num {
    still goes through and the dispatcher can see what this page cannot. The
    bar being dragged dims where it sits; nothing follows the cursor, and on
    release the week is read back rather than moved optimistically. */
-.sch-track--drop { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-.sch-track--warn { box-shadow: inset 0 0 0 2px var(--rux-support-warning); }
-.sch-bar--dragging { opacity: .4; cursor: grabbing; }
+.scheduler-track--drop { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
+.scheduler-track--warn { box-shadow: inset 0 0 0 2px var(--rux-support-warning); }
+.scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
 
 /* Out of service: a striped span the bars sit over. */
-.sch-oos {
+.scheduler-oos {
   position: absolute;
   inset-block: 0;
-  inset-inline-start: calc(var(--sch-start) * (100% / var(--sch-days)));
-  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)));
+  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)));
+  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)));
   background: repeating-linear-gradient(135deg,
     transparent 0, transparent 6px,
     var(--rux-support-warning) 6px, var(--rux-support-warning) 7px);
@@ -662,23 +662,23 @@ button.sch-row-head__num {
 }
 
 /* ── the trip bar ─────────────────────────────────────────────────────── */
-.sch-bar {
-  --sch-bg: var(--rux-tag-background-gray);
-  --sch-fg: var(--rux-tag-color-gray);
-  --sch-hover: var(--rux-tag-hover-gray);
-  --sch-border: var(--rux-tag-border-gray);
+.scheduler-bar {
+  --scheduler-bg: var(--rux-tag-background-gray);
+  --scheduler-fg: var(--rux-tag-color-gray);
+  --scheduler-hover: var(--rux-tag-hover-gray);
+  --scheduler-border: var(--rux-tag-border-gray);
   position: absolute;
-  inset-block-start: calc(var(--sch-gap-clear) + var(--sch-lane, 0) * (var(--sch-bar-h) + var(--sch-lane-gap)));
-  inset-inline-start: calc(var(--sch-start) * (100% / var(--sch-days)) + var(--sch-gap));
-  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)) - var(--sch-gap) - var(--sch-gap-clear));
-  block-size: var(--sch-bar-h);
+  inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap));
+  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
+  block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
-  background: var(--sch-bg);
-  color: var(--sch-fg);
-  font-size: var(--sch-fs);
-  letter-spacing: var(--sch-ls);
-  line-height: var(--sch-row-h);
+  background: var(--scheduler-bg);
+  color: var(--scheduler-fg);
+  font-size: var(--scheduler-fs);
+  letter-spacing: var(--scheduler-ls);
+  line-height: var(--scheduler-row-h);
   font-weight: 400;
   overflow: hidden;
   cursor: pointer;
@@ -694,27 +694,27 @@ button.sch-row-head__num {
   -webkit-touch-callout: none;
   user-select: none;
 }
-.sch-bar:hover { background: var(--sch-hover); }
-.sch-bar:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-bar:hover { background: var(--scheduler-hover); }
+.scheduler-bar:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* THE SELECTION RING IS THE LAYER'S INVERSE, NOT THE INTERACTIVE BLUE.
    Once the default fill became blue -- which is what the old board used for a
    confirmed trip -- a blue ring on a blue bar was the one pairing that could
    not be seen. `layer-selected-inverse` is near-black on the light themes and
    near-white on the dark ones, so it reads on every tag tint including its
    own. Focus keeps the focus token; the two are different signals. */
-.sch-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
-.sch-bar[aria-pressed="true"]:hover { background: var(--sch-bg); }
+.scheduler-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
+.scheduler-bar[aria-pressed="true"]:hover { background: var(--scheduler-bg); }
 
-.sch-bar--gray      { --sch-bg: var(--rux-tag-background-gray);      --sch-fg: var(--rux-tag-color-gray);      --sch-hover: var(--rux-tag-hover-gray);      --sch-border: var(--rux-tag-border-gray); }
-.sch-bar--blue      { --sch-bg: var(--rux-tag-background-blue);      --sch-fg: var(--rux-tag-color-blue);      --sch-hover: var(--rux-tag-hover-blue);      --sch-border: var(--rux-tag-border-blue); }
-.sch-bar--cyan      { --sch-bg: var(--rux-tag-background-cyan);      --sch-fg: var(--rux-tag-color-cyan);      --sch-hover: var(--rux-tag-hover-cyan);      --sch-border: var(--rux-tag-border-cyan); }
-.sch-bar--teal      { --sch-bg: var(--rux-tag-background-teal);      --sch-fg: var(--rux-tag-color-teal);      --sch-hover: var(--rux-tag-hover-teal);      --sch-border: var(--rux-tag-border-teal); }
-.sch-bar--green     { --sch-bg: var(--rux-tag-background-green);     --sch-fg: var(--rux-tag-color-green);     --sch-hover: var(--rux-tag-hover-green);     --sch-border: var(--rux-tag-border-green); }
-.sch-bar--purple    { --sch-bg: var(--rux-tag-background-purple);    --sch-fg: var(--rux-tag-color-purple);    --sch-hover: var(--rux-tag-hover-purple);    --sch-border: var(--rux-tag-border-purple); }
-.sch-bar--magenta   { --sch-bg: var(--rux-tag-background-magenta);   --sch-fg: var(--rux-tag-color-magenta);   --sch-hover: var(--rux-tag-hover-magenta);   --sch-border: var(--rux-tag-border-magenta); }
-.sch-bar--red       { --sch-bg: var(--rux-tag-background-red);       --sch-fg: var(--rux-tag-color-red);       --sch-hover: var(--rux-tag-hover-red);       --sch-border: var(--rux-tag-border-red); }
-.sch-bar--cool-gray { --sch-bg: var(--rux-tag-background-cool-gray); --sch-fg: var(--rux-tag-color-cool-gray); --sch-hover: var(--rux-tag-hover-cool-gray); --sch-border: var(--rux-tag-border-cool-gray); }
-.sch-bar--warm-gray { --sch-bg: var(--rux-tag-background-warm-gray); --sch-fg: var(--rux-tag-color-warm-gray); --sch-hover: var(--rux-tag-hover-warm-gray); --sch-border: var(--rux-tag-border-warm-gray); }
+.scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }
+.scheduler-bar--blue      { --scheduler-bg: var(--rux-tag-background-blue);      --scheduler-fg: var(--rux-tag-color-blue);      --scheduler-hover: var(--rux-tag-hover-blue);      --scheduler-border: var(--rux-tag-border-blue); }
+.scheduler-bar--cyan      { --scheduler-bg: var(--rux-tag-background-cyan);      --scheduler-fg: var(--rux-tag-color-cyan);      --scheduler-hover: var(--rux-tag-hover-cyan);      --scheduler-border: var(--rux-tag-border-cyan); }
+.scheduler-bar--teal      { --scheduler-bg: var(--rux-tag-background-teal);      --scheduler-fg: var(--rux-tag-color-teal);      --scheduler-hover: var(--rux-tag-hover-teal);      --scheduler-border: var(--rux-tag-border-teal); }
+.scheduler-bar--green     { --scheduler-bg: var(--rux-tag-background-green);     --scheduler-fg: var(--rux-tag-color-green);     --scheduler-hover: var(--rux-tag-hover-green);     --scheduler-border: var(--rux-tag-border-green); }
+.scheduler-bar--purple    { --scheduler-bg: var(--rux-tag-background-purple);    --scheduler-fg: var(--rux-tag-color-purple);    --scheduler-hover: var(--rux-tag-hover-purple);    --scheduler-border: var(--rux-tag-border-purple); }
+.scheduler-bar--magenta   { --scheduler-bg: var(--rux-tag-background-magenta);   --scheduler-fg: var(--rux-tag-color-magenta);   --scheduler-hover: var(--rux-tag-hover-magenta);   --scheduler-border: var(--rux-tag-border-magenta); }
+.scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
+.scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
+.scheduler-bar--warm-gray { --scheduler-bg: var(--rux-tag-background-warm-gray); --scheduler-fg: var(--rux-tag-color-warm-gray); --scheduler-hover: var(--rux-tag-hover-warm-gray); --scheduler-border: var(--rux-tag-border-warm-gray); }
 
 /* States. A partial PO has the warning border; a leg that continues past the
    week has no edge on that side and runs to it.
@@ -724,47 +724,47 @@ button.sch-row-head__num {
    bar was hollow with a dashed edge in its hue, then filled with the edge kept
    earlier the same day, and now has neither. Given up on purpose: a trip with a
    picked colour says nothing about confirmation on the board. */
-.sch-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
+.scheduler-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
 /* A CONTINUING EDGE TAKES NO GAP, because there is nothing on that side of it
    to be separated from -- the trip runs off the week. Only the gap it keeps is
    subtracted, so a bar continuing from last week ends where every other bar in
    that day ends; subtracting both gaps left it one gap short of its own day. */
-.sch-bar--from-prev {
+.scheduler-bar--from-prev {
   inset-inline-start: 0;
-  inline-size: calc(var(--sch-span) * (100% / var(--sch-days)) - var(--sch-gap-clear));
-  border-inline-start: 3px dotted var(--sch-border);
+  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap-clear));
+  border-inline-start: 3px dotted var(--scheduler-border);
 }
-.sch-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--sch-border); }
-.sch-bar--from-prev.sch-bar--to-next { inline-size: auto; }
+.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); }
+.scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
 /* THE ROWS THE VIEW MENU CAN TURN OFF. `display: none` rather than
    `visibility: hidden`, because the point is to get the height BACK --
-   `--sch-bar-rows` drops with it and the bar shrinks, so more buses fit. The
+   `--scheduler-bar-rows` drops with it and the bar shrinks, so more buses fit. The
    destination has no toggle: a bar with no name on it is not a shorter bar, it
    is an unreadable one. */
-.sch--no-client .sch-bar__client,
-.sch--no-time .sch-bar__time,
-.sch--no-reqs .sch-bar__reqs,
-.sch--no-drivers .sch-bar__drivers { display: none; }
+.sch--no-client .scheduler-bar__client,
+.sch--no-time .scheduler-bar__time,
+.sch--no-reqs .scheduler-bar__reqs,
+.sch--no-drivers .scheduler-bar__drivers { display: none; }
 
-.sch-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--sch-row-h); white-space: nowrap; overflow: hidden; }
-.sch-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
-.sch-bar__dest { font-weight: 600; }
-.sch-bar__ref, .sch-bar__time { font-variant-numeric: tabular-nums; }
-.sch-bar__ref { opacity: .75; flex: none; }
-.sch-bar__client, .sch-bar__reqs { opacity: .85; }
+.scheduler-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; }
+.scheduler-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
+.scheduler-bar__dest { font-weight: 600; }
+.scheduler-bar__ref, .scheduler-bar__time { font-variant-numeric: tabular-nums; }
+.scheduler-bar__ref { opacity: .75; flex: none; }
+.scheduler-bar__client, .scheduler-bar__reqs { opacity: .85; }
 
 /* A double booking: a strip over the last row, in the error tokens. */
-.sch-bar__conflict {
+.scheduler-bar__conflict {
   position: absolute; inset-inline: 0; inset-block-end: 0;
-  block-size: var(--sch-row-h);
+  block-size: var(--scheduler-row-h);
   padding-inline: var(--rux-spacing-03);
   background: var(--rux-support-error);
   color: var(--rux-text-on-color);
   display: flex; align-items: center; gap: var(--rux-spacing-02);
   white-space: nowrap; overflow: hidden;
 }
-.sch-bar__conflict svg { flex: none; }
+.scheduler-bar__conflict svg { flex: none; }
 
 /* Toolbar around the grid, built from Carbon parts; only the arrangement
    is this app's. */
@@ -786,14 +786,14 @@ button.sch-row-head__num {
    the same reason.
 
    IT SPANS THE WHOLE BOARD, THE AVAILABILITY GRID INCLUDED, and that is the
-   deciding argument rather than a tidiness one: `.sch-board` is full width
+   deciding argument rather than a tidiness one: `.scheduler-board` is full width
    always, while `.sch` narrows whenever Drivers is toggled on. A toolbar over
    `.sch` alone would resize and shift every time that toggle is pressed --
    moving the very buttons being clicked, which is the same reason index.html
    gives for keeping the week label after the controls that change it. */
-.sch-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
 /* THE ASIDE STARTS WHERE THE GRID STARTS, NOT WHERE THE TOOLBAR DOES. The
-   toolbar is inside `.sch-frame` now, so without this the driver grid would
+   toolbar is inside `.scheduler-frame` now, so without this the driver grid would
    begin 48px above the bus grid and its header row would no longer sit on the
    same line as the day band -- and app.js gives the availability pane the
    SCHEDULE's measured height so the two bottoms meet, which only works if the
@@ -807,30 +807,30 @@ button.sch-row-head__num {
    objects. That is a separate piece; it needs markup the aside's script
    builds. */
 /* NO TOP OFFSET ANY MORE: the head below occupies that band. */
-.sch-aside { display: flex; flex-direction: column; }
-/* AND IT MUST SAY SO WHEN HIDDEN, for exactly the reason `.sch-row` does
+.scheduler-aside { display: flex; flex-direction: column; }
+/* AND IT MUST SAY SO WHEN HIDDEN, for exactly the reason `.scheduler-row` does
    twenty lines up: a `display` declaration beats the UA's own `[hidden]` rule,
    so `asideSlot.hidden = true` left the head on screen with nothing under it --
    a "Driver availability" bar over empty page, which is what rux saw. The
    aside had no `display` of its own until the head arrived, which is why this
    only appeared now. */
-.sch-aside[hidden] { display: none; }
+.scheduler-aside[hidden] { display: none; }
 /* THE HEAD, AT THE TOOLBAR'S OWN MODULE so the grid's column header lands on
    the schedule's day band. It takes the pane's surface rather than the header
    band's accent -- it is a title over a region, the way the schedule's toolbar
    is, and the accent belongs to the row that labels columns. */
-.sch-aside__head {
+.scheduler-aside__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--rux-spacing-03);
   /* 40px, `size-md`, 2026-09-10 -- one of the three region heads that moved
-     together. It must equal `.sch-toolbar`'s to the pixel or the two grids'
+     together. It must equal `.scheduler-toolbar`'s to the pixel or the two grids'
      COLUMN headers stop landing on one line, which is the whole reason this
-     head exists in this band. See `.sch-corner` for why the bands below
+     head exists in this band. See `.scheduler-corner` for why the bands below
      them stayed at 32.
 
-     48px, `size-lg`, 2026-09-11, with the other two. `.sch-toolbar` carries
+     48px, `size-lg`, 2026-09-11, with the other two. `.scheduler-toolbar` carries
      the argument; the rule that this must equal it to the pixel is unchanged
      and is precisely why it had to move with it.
 
@@ -838,7 +838,7 @@ button.sch-row-head__num {
      40px first row over a 32px second. **A `min-block-size` alone does not do
      it**, which is the thing worth knowing: a head is as tall as what it holds,
      so every control in it had to come down to `md` as well. Here that is the
-     close button; in the toolbar it is five icon buttons and `.sch-weekbtn`;
+     close button; in the toolbar it is five icon buttons and `.scheduler-weekbtn`;
      in the trip editor it is Carbon's own close button and its header padding.
      Measured on the way: setting only these two rules left the toolbar at 48
      and dropped the roster's column band 8px out of line with the board's. */
@@ -874,7 +874,7 @@ button.sch-row-head__num {
    THE TOOLBAR IS NOT IN THIS COMPARISON. It has no title: the week is a BUTTON
    that opens the date picker, and Carbon's data table toolbar carries no
    heading either. Three regions, two headers and a control row. */
-.sch-aside__title {
+.scheduler-aside__title {
   font-size: var(--rux-heading-03-font-size);
   font-weight: var(--rux-heading-03-font-weight);
   line-height: var(--rux-heading-03-line-height);
@@ -893,12 +893,12 @@ button.sch-row-head__num {
    dissimilar background colour to avoid the components blending in to each
    other". The board is `--rux-layer`; `.rux--side-panel` paints `layer-01`
    from its own rule, which is the same value -- so the separation here is the
-   gap `.sch-board` already puts between its children, and if that reads as too
+   gap `.scheduler-board` already puts between its children, and if that reads as too
    little the answer is a surface step on the panel, not a border.
 
    20rem MATCHES `--sm`, the size class still on the element. Both move
    together or the column and its content disagree. */
-.sch-trip {
+.scheduler-trip {
   /* SHRINKABLE, NOT FIXED. `flex: 0 0 auto` at a hard 20rem could not give way,
      so on a window too narrow to hold the board and the editor the flex row
      overflowed its grid column and the editor ran past the page's own inset --
@@ -920,7 +920,7 @@ button.sch-row-head__num {
      down to the schedule's header line was 32px of nothing above a head that
      wanted to be there. Every region on this board now begins at the board's
      top; what differs is what each puts in its first 32px. app.js measures
-     these panels from `.sch-board` rather than from `.sch` for the same
+     these panels from `.scheduler-board` rather than from `.sch` for the same
      reason. */
   /* A DEFINITE HEIGHT, AND THIS IS WHAT MAKES THE FORM SCROLL AND THE SAVE BAR
      STAY PUT. Carbon's side panel is already built for it: the panel is
@@ -943,7 +943,7 @@ button.sch-row-head__num {
      and the driver grid beside it. */
   block-size: max(24rem, calc(100dvh - 15rem));
 }
-.sch-toolbar {
+.scheduler-toolbar {
   display: flex;
   align-items: center;
   /* NO GAP BETWEEN BUTTONS, 2026-09-07. Carbon's table toolbar sets its icon
@@ -953,7 +953,7 @@ button.sch-row-head__num {
 
      THE WEEK LABEL KEEPS ITS OWN MARGIN, because it is not a button and the
      rule above is about buttons touching each other. It is the only thing in
-     this row that needs air, and `.sch-toolbar__range` carries it. */
+     this row that needs air, and `.scheduler-toolbar__range` carries it. */
   gap: 0;
   /* IT STACKS EXACTLY ONCE, 2026-09-11, AND THE NOTE THIS REPLACES WAS RIGHT
      ABOUT THE THING IT FEARED. It read: "IT DOES NOT STACK. `flex-wrap: wrap`
@@ -963,7 +963,7 @@ button.sch-row-head__num {
      always; what gives way is the label, below."
 
      WHAT MAKES IT SAFE NOW is that the wrap is no longer left to chance.
-     `.sch-toolbar__weekrow` is `flex: 1 0 100%` with `order: -1`, so there are
+     `.scheduler-toolbar__weekrow` is `flex: 1 0 100%` with `order: -1`, so there are
      exactly two rows by construction -- the week, then every control -- and
      the controls can no longer be pushed onto a third by a long label, because
      the label is not on their row. The old note's third row was the failure
@@ -986,7 +986,7 @@ button.sch-row-head__num {
      way: Carbon ties a toolbar's height to its TABLE's density, and the rows
      and day band here are still `sm`. So the chrome is md over an sm grid,
      which is a decoupling Carbon does not do. It buys the touch target the
-     note on `.sch-corner` asked for -- the paging chevrons were the two most
+     note on `.scheduler-corner` asked for -- the paging chevrons were the two most
      repeated targets on the board and were under both platforms' guidance at
      32px. 40px is still under iOS's 44 and Android's 48, but it is 8px
      closer and it is the whole module rather than a patch on two buttons.
@@ -1041,7 +1041,7 @@ button.sch-row-head__num {
    IT ALSO ENDS A BREAKPOINT DIFFERENCE rather than adding one -- below `md`
    this was already the layout, so the media block below no longer has to
    restate it. */
-.sch-toolbar__weekrow {
+.scheduler-toolbar__weekrow {
   /* IT SHARES THE ROW AGAIN ABOVE md, 2026-09-11 on rux's sketch:
      `Datepicker |        < > [today] [Driver] [+]`. It was `flex: 1 0 100%`
      with `order: -1` at every width for about an hour; the markup was reordered
@@ -1049,7 +1049,7 @@ button.sch-row-head__num {
      order reaches the week before the controls that page it.
 
      WHAT THE SPACER BUYS, because this order was argued against once: a wider
-     week eats `.sch-toolbar__spacer` rather than pushing the controls, so they
+     week eats `.scheduler-toolbar__spacer` rather than pushing the controls, so they
      stay pinned right whatever the label says. index.html carries the full
      note.
 
@@ -1071,7 +1071,7 @@ button.sch-row-head__num {
   align-content: center;
   position: relative;
 }
-.sch-toolbar__range {
+.scheduler-toolbar__range {
   font-variant-numeric: tabular-nums;
   min-inline-size: 0;
   margin: 0;
@@ -1079,13 +1079,13 @@ button.sch-row-head__num {
 /* A HEADING THAT IS ALSO A TRIGGER. Carbon ships no such component -- its date
    picker's trigger is an input and an icon -- so this is the app's own control
    and every value below is a --rux-* token. It inherits the heading's type from
-   `.sch-toolbar__range`, which is `rux--type-heading-compact-02`, so the week
+   `.scheduler-toolbar__range`, which is `rux--type-heading-compact-02`, so the week
    reads as the title it is and not as a 14px button label.
 
    16px OF INLINE PADDING IS THE ALIGNMENT the label already had: the paging
    chevron below is a 48px square holding a 16px icon, so its glyph starts at
    exactly 16 and the week's first character lands on it. */
-.sch-weekbtn {
+.scheduler-weekbtn {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-03);
@@ -1109,8 +1109,8 @@ button.sch-row-head__num {
 /* Carbon's own ghost-button feedback, by token rather than by borrowing the
    class: `--rux-background-hover` is what a ghost button takes on hover and
    `--rux-focus` is the 2px inset ring every control on this page draws. */
-.sch-weekbtn:hover { background: var(--rux-background-hover); }
-.sch-weekbtn:focus-visible {
+.scheduler-weekbtn:hover { background: var(--rux-background-hover); }
+.scheduler-weekbtn:focus-visible {
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;
 }
@@ -1120,14 +1120,14 @@ button.sch-row-head__num {
    caret is the generic disclosure mark and collides with neither.
 
    IT IS A REAL `<use>` IN THE MARKUP, NOT A MASKED PSEUDO-ELEMENT. The first
-   version of this rule drew it with `mask: var(--sch-caret)`, which invents a
+   version of this rule drew it with `mask: var(--scheduler-caret)`, which invents a
    `--sch-*` variable holding a URL -- AGENTS.md allows those "a count or a
    position only" -- and puts an icon on the page that `check.mjs` cannot see,
    since the gate resolves `<use href>` and knows nothing about masks. Every
    other glyph here comes from the inlined sprite and so does this one. */
-.sch-weekbtn__caret { flex: 0 0 auto; }
+.scheduler-weekbtn__caret { flex: 0 0 auto; }
 /* Everything before this sits left, everything after it right. */
-.sch-toolbar__spacer { flex: 1; }
+.scheduler-toolbar__spacer { flex: 1; }
 
 
 /* ── THE PAGE BESIDE THE PANEL ──────────────────────────────────────────────
@@ -1161,9 +1161,9 @@ button.sch-row-head__num {
    reserved only the overlap put the board flush against the panel, border on
    border, for about an hour on 2026-09-06. */
 /* NOTHING RESERVES ROOM FOR THE PANEL ANY MORE, and that is the point of the
-   move. `.sch-page--with-panel` set `padding-inline-end` to the panel's width
+   move. `.scheduler-page--with-panel` set `padding-inline-end` to the panel's width
    so a FIXED overlay had somewhere to sit; the editor is a flex child of
-   `.sch-board` now, so it takes its own room by existing. The rule, its
+   `.scheduler-board` now, so it takes its own room by existing. The rule, its
    no-script fallback and `fitPanelRoom()` in app.js are all gone with it --
    three places that had to agree about one number, and at times did
    not. */
@@ -1172,14 +1172,14 @@ button.sch-row-head__num {
    compiled pattern and is used for the itinerary, which is a real table; a
    trip's own fields are label-and-value pairs rather than rows of a table, so
    they are a description list, which is what they are. */
-.sch-def { display: grid; grid-template-columns: 7rem 1fr; gap: var(--rux-spacing-03) var(--rux-spacing-05); margin: 0; }
-.sch-def dt {
+.scheduler-def { display: grid; grid-template-columns: 7rem 1fr; gap: var(--rux-spacing-03) var(--rux-spacing-05); margin: 0; }
+.scheduler-def dt {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
-.sch-def dd {
+.scheduler-def dd {
   margin: 0;
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
@@ -1189,7 +1189,7 @@ button.sch-row-head__num {
    This replaces the two stacked big-numbers; Paid is now a definition row.
    Carbon still owns the number and tag styles. Wrapping keeps unusually
    long amounts readable rather than clipping them against the status. */
-.sch-billing-figures {
+.scheduler-billing-figures {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -1206,7 +1206,7 @@ button.sch-row-head__num {
    to be. The middle column takes the slack; the two outer ones are
    content-sized.
 
-   ONE RULE FOR ALL THREE LISTS, renamed from `.sch-payment-row` on 2026-09-11
+   ONE RULE FOR ALL THREE LISTS, renamed from `.scheduler-payment-row` on 2026-09-11
    when Purchase order and Invoice became lists too. The middle column holds a
    date on a payment, a reference on a PO and the number on an invoice, and
    the third is empty on an invoice -- `auto 1fr auto` handles an empty end
@@ -1214,16 +1214,16 @@ button.sch-row-head__num {
    across all three sections. That alignment is the whole reason the three
    share a class rather than having one each.
 
-   AND IT IS `listrow`, NOT `row`, BECAUSE `.sch-row` IS ALREADY THE BOARD'S.
+   AND IT IS `listrow`, NOT `row`, BECAUSE `.scheduler-row` IS ALREADY THE BOARD'S.
    The first version of this rename took the shorter name and broke the
-   schedule in the same commit: `.sch-row` is a bus row at line 110 of this
+   schedule in the same commit: `.scheduler-row` is a bus row at line 110 of this
    file, set to `display: contents` so its cells join the week grid, and a
-   second `.sch-row { display: grid }` further down the file won on order --
+   second `.scheduler-row { display: grid }` further down the file won on order --
    every bus row became a three-column grid and the board came apart. rux saw
    it before the check did, and the check cannot see it at all: both classes
    are this app's own, so nothing upstream is there to resolve them against.
    A prefix is cheap; a name shared with an existing component is not. */
-.sch-listrow {
+.scheduler-listrow {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -1231,7 +1231,7 @@ button.sch-row-head__num {
   inline-size: 100%;
 }
 /* Document rows omit the redundant type tag, giving the reference room. */
-.sch-listrow--document { grid-template-columns: minmax(0, 1fr) auto; }
+.scheduler-listrow--document { grid-template-columns: minmax(0, 1fr) auto; }
 /* A LONG REFERENCE CLIPS, IT DOES NOT WRAP, 2026-09-11. `overflow-wrap:
    anywhere` broke "MT CONV DALLAS S26-ESCAMILLA" across two lines, which made
    one PO 40px tall where every other row is 20 -- and with several POs on a
@@ -1240,18 +1240,18 @@ button.sch-row-head__num {
    ellipsis. NOTHING IS LOST BY CLIPPING: the whole string is on the row's own
    `title` and in the dialog the row opens, and a reference is matched against
    a document rather than read down a list. */
-.sch-listrow--document .sch-listrow__when {
+.scheduler-listrow--document .scheduler-listrow__when {
   min-inline-size: 0;
   overflow-wrap: normal;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.sch-listrow__when {
+.scheduler-listrow__when {
   color: var(--rux-text-secondary);
   text-align: start;
 }
-.sch-listrow__much {
+.scheduler-listrow__much {
   color: var(--rux-text-primary);
   text-align: end;
   font-variant-numeric: tabular-nums;
@@ -1282,7 +1282,7 @@ button.sch-row-head__num {
    density variable rather than hard-coding 16px keeps it correct if the list's
    size changes. Asked of Design as well, in the site's `docs/status.md`: the
    component should pad its own action, and this goes away when it does. */
-.sch-list-action {
+.scheduler-list-action {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-03);
@@ -1290,23 +1290,23 @@ button.sch-row-head__num {
 }
 
 /* A LIST'S ROWS, HIDDEN WHILE ITS SWITCH IS OFF. The rule is needed for the
-   same reason `.sch-milestone-fields[hidden]` is: the bare attribute is not
+   same reason `.scheduler-milestone-fields[hidden]` is: the bare attribute is not
    safe on an element inside a Carbon component that may set `display` on it,
    and the failure mode is silent -- the rows simply stay on screen. The
    header is never hidden, because the switch that unhides the rows is in it. */
-.sch-list-body[hidden] { display: none; }
+.scheduler-list-body[hidden] { display: none; }
 
 /* The shortfall remains explicit, but uses the existing helper-text tone.
    This replaces the red text treatment: a partial PO is a supported billing
    state, not an input error. The summary tag still identifies that state. */
-.sch-billing-section { margin-block-start: var(--rux-spacing-05); }
+.scheduler-billing-section { margin-block-start: var(--rux-spacing-05); }
 
 /* ── THE SEPARATION BETWEEN SECTIONS ────────────────────────────────────────
    Added 2026-09-11. The billing tab is five stacked blocks on one surface and
    nothing said where one ended; a heading over each was tried first and cost
    about 60px of a 320px panel. This costs 1px.
 
-   THE RULE REPLACES THE GAP RATHER THAN ADDING TO IT. `.sch-billing-section`
+   THE RULE REPLACES THE GAP RATHER THAN ADDING TO IT. `.scheduler-billing-section`
    already carries `spacing-05` above; left in place the border would sit in
    the middle of a 32px void and each section would grow by another 16. The
    margin goes to 0 and the same space becomes padding under the border, so a
@@ -1329,7 +1329,7 @@ button.sch-row-head__num {
    `spacing-03` and not another `spacing-05`: 8px is enough to part a field's
    own border from the section's, and a second 16 on four boundaries would put
    64px back into a panel this pass spent measurable effort shortening. */
-.sch-billing-rule {
+.scheduler-billing-rule {
   margin-block-start: 0;
   border-block-start: 1px solid var(--rux-border-subtle-01);
   padding-block-start: var(--rux-spacing-05);
@@ -1346,20 +1346,20 @@ button.sch-row-head__num {
    place the next row will appear rather than a button floating under the list
    at gap 0. `2.5rem` is what `--size-md` makes a contained-list row, so the
    add does not break the 40px rhythm it sits in. */
-.sch-list-additem { padding: 0; }
-.sch-list-add {
+.scheduler-list-additem { padding: 0; }
+.scheduler-list-add {
   inline-size: 100%;
   justify-content: flex-start;
   min-block-size: 2.5rem;
 }
-.sch-po-coverage { margin-block-start: var(--rux-spacing-03); }
+.scheduler-po-coverage { margin-block-start: var(--rux-spacing-03); }
 
 /* The payment dialog's fields, two to a row. `minmax` rather than `1fr 1fr`
    so the pair collapses to one column if the modal is ever narrower than the
    two fields plus their gap — and unlike the auto-fit grid this file tried on
    the billing figures, this one fires in both directions at widths the modal
    actually reaches: two columns at its 623px, one below about 400px. */
-.sch-dialog-grid {
+.scheduler-dialog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   gap: var(--rux-spacing-05);
@@ -1370,14 +1370,14 @@ button.sch-row-head__num {
    — that beats the user agent's own `[hidden] { display: none }`, so the bare
    attribute would leave the fields on screen with nothing reporting an error.
    Scoped to this app's own class, never to the Carbon one. */
-.sch-milestone-fields[hidden] { display: none; }
+.scheduler-milestone-fields[hidden] { display: none; }
 
 /* A section heading with an inline control on its right. Sized to match the
    `contained-list` header that Payments uses two sections above — same
    `size-sm` height, and `__title` already carries the same 12px/400 — so the
    billing tab reads as one rhythm even though one header is a Carbon
    component and the others are app chrome. */
-.sch-panel-section__head {
+.scheduler-panel-section__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1399,12 +1399,12 @@ button.sch-row-head__num {
    and the same number, as the sticky tab strip in `overrides.css`.
 
    The margin is on this app's wrapper, never on `.rux--contained-list`. */
-.sch-panel-section--bleed {
+.scheduler-panel-section--bleed {
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
 
-.sch-panel-section { margin-block-start: var(--rux-spacing-06); }
-.sch-panel-section__title {
+.scheduler-panel-section { margin-block-start: var(--rux-spacing-06); }
+.scheduler-panel-section__title {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -1417,8 +1417,8 @@ button.sch-row-head__num {
    answer: the board says what every BUS is doing, and a driver with no trip
    simply is not drawn. Rows are drivers, columns are the same seven days.
 
-   IT IS THE WEEK GRID AGAIN, not a third component. `.sch-avail__grid` carries
-   `.sch-grid` and inherits its column template, so the only thing these rules
+   IT IS THE WEEK GRID AGAIN, not a third component. `.scheduler-avail__grid` carries
+   `.scheduler-grid` and inherits its column template, so the only thing these rules
    add is a denser row and the three cell states. AGENTS.md names the week grid
    and the trip bar as this app's two components and that stays true.
 
@@ -1437,9 +1437,9 @@ button.sch-row-head__num {
    and sat behind it. The grid pane inside carries the same zero for the same
    reason. */
 /* THE MENUS' CONTAINING BLOCK, AND IT WAS NEVER DECLARED. `popMenuAt` in
-   data.js appends an absolutely positioned menu to `.sch-page` and offsets
+   data.js appends an absolutely positioned menu to `.scheduler-page` and offsets
    it by that element's own bounding rect -- which is only correct if
-   `.sch-page` is the containing block. It never was: its sole rule was
+   `.scheduler-page` is the containing block. It never was: its sole rule was
    `--with-panel`'s padding, and every ancestor up to `.rux--content` is
    `position: static`, so an absolute child resolved against the initial
    containing block and the offset was wrong by the page's own inset -- about
@@ -1449,9 +1449,9 @@ button.sch-row-head__num {
    Declared rather than removed, because the alternative -- deleting the wrapper
    and positioning menus against the viewport -- would make `popMenuAt` do the
    scroll arithmetic itself for no gain. */
-.sch-page { position: relative; }
+.scheduler-page { position: relative; }
 
-.sch-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
+.scheduler-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
 /* FLEX-GROW IS BOTH THE MEASUREMENT AND THE BUG, so app.js turns it off at the
    moment it stops being the first. Growing is what lets the pane fill the
    board, and `fitColumns` reads `clientWidth` off the pane to learn how much
@@ -1462,7 +1462,7 @@ button.sch-row-head__num {
    2.805px of daylight to the right of Sunday, measured at 1440 with the driver
    grid on. So the rule keeps grow for the measuring pass and app.js pins
    `flex-grow: 0` inline for the width it just set. */
-.sch-board > .sch { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-board > .sch { flex: 1 1 auto; min-inline-size: 0; }
 
 /* AS WIDE AS ITS CONTENT, MEASURED, NOT PICKED -- the same rule the bus column
    follows. The width here is only ever seven squares plus the longest driver
@@ -1491,13 +1491,13 @@ button.sch-row-head__num {
 
    BOTH SIDES ARE `flex: 0 0 auto` AND THAT IS THE POINT. This was briefly
    `0 1 auto` with `min-inline-size: 0`, to stop the row overflowing. It stopped
-   the overflow by letting the name column collapse -- `--sch-head-w` here is
+   the overflow by letting the name column collapse -- `--scheduler-head-w` here is
    `minmax(0, max-content)`, so under pressure the drivers truncated to "Jul",
    "Juv", "Lor" and the "Driver" heading vanished entirely. A silently
    unreadable roster is worse than a visible overflow, and it was not the cause
-   anyway; see `.sch-trip`.
+   anyway; see `.scheduler-trip`.
 
-   THE SCHEDULE IS THE ONE REGION BUILT TO SHRINK. `.sch-frame` is
+   THE SCHEDULE IS THE ONE REGION BUILT TO SHRINK. `.scheduler-frame` is
    `flex: 1 1 auto` with `min-inline-size: 0`, and the pane inside it is
    `overflow: auto` with a day-column floor -- narrowing it scrolls the week,
    which is a thing the board already does and the only lossless answer of the
@@ -1511,7 +1511,7 @@ button.sch-row-head__num {
    a local invention. `--rux-side-panel-modified-size` is the hook for the other
    direction and is deliberately unused: nothing here wants a width Carbon does
    not already ship. */
-.sch-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
+.scheduler-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
 
 /* XS ROWS UNDER AN SM HEAD, 2026-09-08, AND THE FLIP-FLOP ENDS ON AN ARGUMENT
    RATHER THAN A PREFERENCE. This has been 24, 32, 24, 32 and is now 24. Every
@@ -1557,9 +1557,9 @@ button.sch-row-head__num {
    THE 56px DOES NOT GO TO THE BOARD, which is the other thing that changed.
    The aside is a fixed 320 now rather than a `max-content` 331, so every pixel
    the days give up lands on the driver name inside it: 107 to 152. It buys
-   nothing for `.sch-frame`, where the week is still 323px short at 1440 with
+   nothing for `.scheduler-frame`, where the week is still 323px short at 1440 with
    both companions open, and it was never going to -- see the yield. */
-.sch--avail { --sch-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
+.sch--avail { --scheduler-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
 /* In the side slot every pixel the days do not need goes to the name, which is
    the only thing there with anything to say: 320 less seven 24s is 152, where a
    `max-content` head left it 107. `minmax(0, 1fr)` and not `1fr`: a grid
@@ -1568,8 +1568,8 @@ button.sch-row-head__num {
    value said `max-content` from the day the aside became `max-content` itself,
    which is what made the head the thing sizing the box; a fixed box lets the
    rule be what it always claimed to be. */
-.sch-aside .sch--avail {
-  --sch-head-w: minmax(0, 1fr);
+.scheduler-aside .sch--avail {
+  --scheduler-head-w: minmax(0, 1fr);
   /* THE TWO AXES SPLIT AGAIN, 2026-09-11, FOR A REASON THE OLD SPLIT DID NOT
      HAVE. This was 24x24 and rejoined on 2026-09-08 with: "The split existed so
      the head could hold three letters; the head holds two now and fits, so the
@@ -1580,7 +1580,7 @@ button.sch-row-head__num {
      room for the next size.
 
      THERE IS, AND THE MEASUREMENT IS WHY IT IS WIDTH ONLY. The aside is a fixed
-     20rem = 320px, and `--sch-head-w: minmax(0, 1fr)` above makes the name
+     20rem = 320px, and `--scheduler-head-w: minmax(0, 1fr)` above makes the name
      column the remainder -- so every pixel the days take comes off the names.
      At 32 the days take 224 and the names get 96.
 
@@ -1591,15 +1591,15 @@ button.sch-row-head__num {
      is 96, and at `spacing-05` of padding the two longest names -- "Vicente
      Solar" at 105px and "Prudenciano" at 101 -- would have ellipsed. The
      padding is `spacing-03` here now, which takes the widest to 89 and clears
-     96 with room; `.sch-avail__grid` carries the overflow half of the fix.
+     96 with room; `.scheduler-avail__grid` carries the overflow half of the fix.
 
-     HEIGHT IS THE EXPENSIVE AXIS AND IS DELIBERATELY UNTOUCHED. `--sch-avail-h`
+     HEIGHT IS THE EXPENSIVE AXIS AND IS DELIBERATELY UNTOUCHED. `--scheduler-avail-h`
      stays xs. Measured at 1440x950: all 40 drivers fit at 24px tall and 35 of
      40 at 32px, so a square would have cost five drivers below the fold --
      which is the exact currency the 2026-09-08 decision was settled in, after
      this number turned 24, 32, 24, 32, 24. Widening does not re-open it, and
      that is the whole case for doing one axis and not both. */
-  --sch-day-track: var(--rux-layout-size-height-sm);
+  --scheduler-day-track: var(--rux-layout-size-height-sm);
   /* FILLS WHAT THE HEAD LEAVES. app.js gives the ASIDE the board's height; this
      takes the remainder under the head. `max-block-size: none` lifts the base
      `.sch` cap, which is a viewport expression and would otherwise re-cap this
@@ -1609,7 +1609,7 @@ button.sch-row-head__num {
   max-block-size: none;
 }
 /* THIS GRID IS ITS PANE'S WIDTH, NEVER ITS CONTENT'S -- and it has to say so
-   itself, because it carries `.sch-grid` too and that class is
+   itself, because it carries `.scheduler-grid` too and that class is
    `inline-size: max-content` for the BOARD's sake: seven day columns that must
    be allowed to total more than the pane and scroll, which is what makes the
    bus column stick correctly.
@@ -1617,7 +1617,7 @@ button.sch-row-head__num {
    THE ROSTER IS THE OPPOSITE CASE AND INHERITED THE WRONG HALF. Its seven
    columns are a fixed token width and always fit, so nothing here ever needs to
    overflow -- but `max-content` let the NAME column refuse to shrink, and
-   `--sch-head-w: minmax(0, 1fr)` could not do its job against a box already
+   `--scheduler-head-w: minmax(0, 1fr)` could not do its job against a box already
    sized to content. Caught by measuring after widening the cells to 32: the
    grid computed 332.195px inside a 320px pane and the roster gained a 12px
    horizontal scroll that nothing asked for. At 24px it had been hidden, since
@@ -1625,20 +1625,20 @@ button.sch-row-head__num {
 
    `inline-size: 100%` pins it, the day columns take their 224, and the name
    column takes the remainder and ellipses -- which is what the note on
-   `--sch-head-w` above always claimed happened. */
-.sch-avail__grid { align-content: start; inline-size: 100%; }
-.sch-avail__days,
-.sch-avail__row { display: contents; }
+   `--scheduler-head-w` above always claimed happened. */
+.scheduler-avail__grid { align-content: start; inline-size: 100%; }
+.scheduler-avail__days,
+.scheduler-avail__row { display: contents; }
 
-.sch-avail__name,
-.sch-avail__cell,
-.sch-avail__day {
+.scheduler-avail__name,
+.scheduler-avail__cell,
+.scheduler-avail__day {
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  block-size: var(--sch-avail-h);
+  block-size: var(--scheduler-avail-h);
   display: flex;
   align-items: center;
-  font-size: var(--sch-fs);
-  letter-spacing: var(--sch-ls);
+  font-size: var(--scheduler-fs);
+  letter-spacing: var(--scheduler-ls);
 }
 /* THE NAME COLUMN IS THE PANE'S OWN SURFACE, NOT THE HEADER BAND'S, matched
    2026-09-07 to the schedule's bus column. Both were `layer-accent-01`; the
@@ -1647,8 +1647,8 @@ button.sch-row-head__num {
    and a slab in the other. Forty drivers is the same argument, and with the two
    grids beside each other the one that had not changed was the only slab left
    on the page. Still opaque, because rows scroll under it sideways. */
-.sch-avail__day,
-.sch-avail__name {
+.scheduler-avail__day,
+.scheduler-avail__name {
   position: sticky;
   inset-inline-start: 0;
   z-index: 2;
@@ -1659,7 +1659,7 @@ button.sch-row-head__num {
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
-  line-height: var(--sch-avail-h);
+  line-height: var(--scheduler-avail-h);
 }
 /* THE HEADER ROW STICKS, like the schedule's day band beside it. Added
    2026-09-07: this pane scrolls its own drivers -- forty of them against a
@@ -1674,7 +1674,7 @@ button.sch-row-head__num {
    The 32px is not new and is not free either: it matched the schedule's day
    header before the ROWS did, and it is kept explicit so a change to the row
    height cannot pull the two grids' top edges apart again. */
-.sch-avail__days > .sch-avail__day {
+.scheduler-avail__days > .scheduler-avail__day {
   block-size: 2rem;
   line-height: 2rem;
   position: sticky;
@@ -1725,11 +1725,11 @@ button.sch-row-head__num {
    the line runs the grid's whole height rather than starting below its header.
 
    AND IT STOPS AT THE HEADER ROW, exactly as the board's does.
-   `.sch-avail__day--head` is this grid's corner and briefly carried a matching
+   `.scheduler-avail__day--head` is this grid's corner and briefly carried a matching
    rule; rux rejected both at once -- "doesnt cross into header" -- and the two
    grids move together as they must, since they share seven day columns and sit
    one above the other. The band is its own surface in both. */
-.sch-avail__name { padding-inline: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
+.scheduler-avail__name { padding-inline: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
 /* The type moved up to the header ROW, where it covers the day letters too.
    What is left for this cell is set below, after the reset that would beat it. */
 
@@ -1750,13 +1750,13 @@ button.sch-row-head__num {
 
    SO THE RULE IS GONE RATHER THAN RETUNED: with nothing here, these cells
    inherit the same `heading-compact-01` the rest of the band already sets. */
-.sch-avail__days > .sch-avail__day--head {
+.scheduler-avail__days > .scheduler-avail__day--head {
   font-size: var(--rux-heading-compact-01-font-size);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
 
 /* A day label needs no padding and reads better centred over its square. */
-.sch-avail__day {
+.scheduler-avail__day {
   inset-inline-start: auto;
   position: static;
   padding-inline: 0;
@@ -1765,7 +1765,7 @@ button.sch-row-head__num {
 /* THE CORNER OF THIS GRID, sticky in BOTH axes: it is the only cell that has
    to hold its place while the drivers scroll under it and while the pane is
    scrolled sideways, so it sits one step above the header row it is part of. */
-.sch-avail__day--head {
+.scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
   z-index: 4;
@@ -1775,7 +1775,7 @@ button.sch-row-head__num {
      heading look attached to its column.
 
      BOTH HAVE TO BE DECLARED HERE rather than with the type, because
-     `.sch-avail__day`'s `padding-inline: 0` and `text-align: center` -- right
+     `.scheduler-avail__day`'s `padding-inline: 0` and `text-align: center` -- right
      for a single letter over a square, wrong for a word over a column of names
      -- sit between the two and match this cell as well at the same
      specificity. Later wins, so later is where they go. */
@@ -1786,7 +1786,7 @@ button.sch-row-head__num {
 /* THE THREE STATES, and free is the one being looked for, so it is the one
    with nothing in it. Busy and off are Carbon's own tag tints, the same
    palette the trip bar uses, so the two grids read as one system. */
-.sch-avail__cell { padding-inline: 0; overflow: hidden; }
+.scheduler-avail__cell { padding-inline: 0; overflow: hidden; }
 /* THE DAY RULES, CARRIED INTO THE ROSTER so the grid does not stop at the
    board's bottom edge. The two panes share seven columns and sit one above the
    other; ruling only the board would put the landmark on half the height of the
@@ -1800,17 +1800,17 @@ button.sch-row-head__num {
    positions have to be painted. Same token, same width, same pixel.
 
    NOT ON THE FIRST COLUMN: that edge is the name column's own rule, drawn by
-   `.sch-avail__name`, and a border here as well would double it.
+   `.scheduler-avail__name`, and a border here as well would double it.
 
    AND NEVER IN THE HEADER ROW -- this selector names `__cell`, which only body
-   rows use, so `.sch-avail__days` is untouched by construction. Both bands stay
+   rows use, so `.scheduler-avail__days` is untouched by construction. Both bands stay
    clean, which is the rule rux set: no vertical line enters a header.
 
    WHAT THIS REPLACED WAS A WEEKEND-ONLY BOUNDARY, one line where the weekend
    met a weekday. With every day ruled, that line is no longer a mark -- it is
    one of six identical ones -- so the class is gone and the weekend's only
    remaining mark is the dimmed text in the band. */
-.sch-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+.scheduler-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* THE SELECTED TRIP'S DAYS, TINTED. `--rux-layer-selected` is Carbon's own
    token for a selected surface -- what a selected row takes in its table --
    rather than a step picked by eye: #393939 against the pane's #262626.
@@ -1829,16 +1829,16 @@ button.sch-row-head__num {
    column edge -- so the band has boundaries without adding any. What this
    replaced drew four blue borders around the span, and before that a
    four-sided box on all forty cells of one column. */
-.sch-avail__cell--on-day { background-color: var(--rux-layer-selected); }
-.sch-avail__cell--busy {
+.scheduler-avail__cell--on-day { background-color: var(--rux-layer-selected); }
+.scheduler-avail__cell--busy {
   background: var(--rux-tag-background-blue);
   color: var(--rux-tag-color-blue);
 }
-.sch-avail__cell--off {
+.scheduler-avail__cell--off {
   background: var(--rux-tag-background-red);
   color: var(--rux-tag-color-red);
 }
-.sch-avail__cell > span {
+.scheduler-avail__cell > span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1846,29 +1846,29 @@ button.sch-row-head__num {
 }
 /* The side slot has no room for a destination and does not need one: the
    question there is free or not. */
-.sch-avail__cell > span { visibility: hidden; }
+.scheduler-avail__cell > span { visibility: hidden; }
 
 /* The selected trip's day, so "who is free THEN" is answered without
    counting columns. The old board did this by highlighting the row for the
    trip's date and it is worth keeping in both layouts. */
 /* THE ROSTER'S DAY LETTERS DIM, they do not band -- exactly what
-   `.sch-day--weekend` does to the board's day names. Both header bands are
+   `.scheduler-day--weekend` does to the board's day names. Both header bands are
    already their own surface and cutting notches into either would break a
    band that reads as one unit; the tint belongs in the body, where the empty
    row that cannot be counted actually is. Placed above `--on-day` so a
    selected weekend column still takes the brighter colour. */
 /* THE CHILD COMBINATOR IS WHAT THIS HAS TO BEAT, AND IT NEVER DID.
-   `.sch-avail__days > .sch-avail__day` sets `color: var(--rux-text-primary)`
+   `.scheduler-avail__days > .scheduler-avail__day` sets `color: var(--rux-text-primary)`
    for the whole band and counts as (0,2,0); this was a single class at (0,1,0)
    and lost. So the roster's weekend labels have been full-strength since the
    day they were written, while the board's -- which have no such band rule to
    fight -- dimmed correctly, and the two bands quietly disagreed.
 
    IT PASSED A TEST THAT ASKED THE WRONG QUESTION. An earlier pass here checked
-   `.sch-day--weekend` and `.sch-avail__day--weekend` were on the right cells
+   `.scheduler-day--weekend` and `.scheduler-avail__day--weekend` were on the right cells
    and reported the weekend "still dims" -- the CLASSES were right and nothing
    painted. Third time today: assert the computed colour, not the class. */
-.sch-avail__days > .sch-avail__day--weekend { color: var(--rux-text-placeholder); }
+.scheduler-avail__days > .scheduler-avail__day--weekend { color: var(--rux-text-placeholder); }
 /* THE HEADER BAND SHOWS NOTHING FOR THE SELECTED DAYS, 2026-09-11, and the
    body's tint is the whole marker. It carried
    `box-shadow: inset 0 -2px 0 var(--rux-border-interactive)` -- the underline
@@ -1878,11 +1878,11 @@ button.sch-row-head__num {
    AND THE `color: var(--rux-text-primary)` THAT WENT WITH IT IS GONE TOO,
    because measuring showed it had never changed anything: the band already
    sets `text-primary` on every label through
-   `.sch-avail__days > .sch-avail__day`, so lifting a selected one to the same
+   `.scheduler-avail__days > .scheduler-avail__day`, so lifting a selected one to the same
    value is a rule that computes to what was already there. Keeping it would
    have been a line of CSS asserting a distinction that does not exist.
 
-   `.sch-avail__day--on-day` IS STILL APPLIED and now draws nothing. It stays
+   `.scheduler-avail__day--on-day` IS STILL APPLIED and now draws nothing. It stays
    because it is the honest record of which days are selected -- the hook for a
    header cue if one is ever wanted, and what a test would assert against --
    but no rule reads it today. */
@@ -1912,7 +1912,7 @@ button.sch-row-head__num {
    `1fr` AND NOT `auto`: a time control's intrinsic width differs by browser and
    by locale, so equal fractions keep the boxes the same size as each other
    rather than each the size of its own content. */
-.sch-times {
+.scheduler-times {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--rux-spacing-03);
@@ -1923,27 +1923,27 @@ button.sch-row-head__num {
    them scrolling 327 inside 288. Every box between the cell and the control
    gets a zero minimum for the same reason a grid item needs one, and the
    control itself is told to fill rather than to be its natural size. */
-.sch-times > .rux--form-item,
-.sch-times .rux--text-input__field-outer-wrapper,
-.sch-times .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
-.sch-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
+.scheduler-times > .rux--form-item,
+.scheduler-times .rux--text-input__field-outer-wrapper,
+.scheduler-times .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
+.scheduler-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
 
 
-/* TWO FIELDS ON ONE ROW WAS `.sch-two-up`, and it is GONE as of 2026-09-10.
+/* TWO FIELDS ON ONE ROW WAS `.scheduler-two-up`, and it is GONE as of 2026-09-10.
    It paired Phone beside Email in the booking block and Name beside Phone in
    a day-of contact. Fluid ended both: a fluid field is a 64px box with its
    label floating over its value, and two of them in a 288px column leave
    about 140px each -- an email address ellipsises by its third character and
    a phone number has nowhere to sit beside a name. Both blocks stack now, so
    the class had no caller left and its rules went with it rather than staying
-   as a shape nothing makes. `.sch-times` above is the surviving grid pair;
+   as a shape nothing makes. `.scheduler-times` above is the surviving grid pair;
    it holds three SHORT time controls, which is the case this one was not. */
 
 /* ── FLUID CAME AND WENT, 2026-09-09 to 2026-09-10 ──────────────────────────
    The trip editor's fields were Carbon's FLUID style for a day: label inside
    a 64px filled block, runs of them flush against each other and bled to the
    panel's edges by a negative margin. Two rules lived here to arrange it --
-   `.sch-fluid-group { --rux-stack-gap: 0 }` and the bleed -- and both are
+   `.scheduler-fluid-group { --rux-stack-gap: 0 }` and the bleed -- and both are
    gone with it, on rux's call to return to the default style at the same
    field order.
 
@@ -2000,10 +2000,10 @@ button.sch-row-head__num {
    out 16px and read "N..". Hiding at the other breakpoint leaves Carbon's own
    display untouched at the width the row is actually used. */
 @media (min-width: 42rem) {
-  .sch-menu-item--sm-only { display: none; }
+  .scheduler-menu-item--sm-only { display: none; }
 }
 
-/* `.sch-toolbar__glyph` IS GONE, 2026-09-11. It existed so `Today` and
+/* `.scheduler-toolbar__glyph` IS GONE, 2026-09-11. It existed so `Today` and
    `Drivers` could be words on a desktop and icons on a phone, hiding one or
    the other by width. rux made both icon-only at EVERY width, so each carries
    a plain `rux--btn__icon` and `rux--btn--icon-only` in the markup and no rule
@@ -2012,11 +2012,11 @@ button.sch-row-head__num {
    the overflow menu, so no rule hides a word anywhere any more. */
 
 @media (max-width: 41.98rem) {
-  /* THE TWO COMPANIONS LEAVE THE ROW. `.sch-board` is a flex row of up to
+  /* THE TWO COMPANIONS LEAVE THE ROW. `.scheduler-board` is a flex row of up to
      three: the roster at 20rem, the board, the editor at 20rem. On a 375px
      screen the content box is 343px, so ONE 20rem companion is already wider
      than the whole row -- measured before this block, opening either one put
-     `.sch-frame` and `.sch` at 0px wide and pushed the board off the right of
+     `.scheduler-frame` and `.sch` at 0px wide and pushed the board off the right of
      the screen. The schedule did not shrink, it disappeared.
 
      The editor is handled where it belongs, in overrides.css: Carbon's own
@@ -2025,7 +2025,7 @@ button.sch-row-head__num {
      wrapper has to do is stop reserving room -- and it must give up its
      `min-inline-size` as well as its basis, which is the whole reason it was
      taking 320px out of a 343px row. */
-  .sch-trip {
+  .scheduler-trip {
     flex: 0 0 0;
     min-inline-size: 0;
     inline-size: 0;
@@ -2045,7 +2045,7 @@ button.sch-row-head__num {
      8000, so pressing Account or the app switcher with the roster open opened a
      panel nobody could see. overrides.css carries the argument and the
      whole scale. */
-  .sch-aside {
+  .scheduler-aside {
     position: fixed;
     inset: 3rem 0 0 0;
     z-index: 998;
@@ -2055,12 +2055,12 @@ button.sch-row-head__num {
     background: var(--rux-layer);
     box-shadow: 0 0.125rem 0.25rem var(--rux-overlay);
   }
-  .sch-aside .sch--avail { max-block-size: none; }
-  /* THE HEAD WAS RAISED HERE AND NO LONGER NEEDS TO BE: `.sch-aside__head` is
+  .scheduler-aside .sch--avail { max-block-size: none; }
+  /* THE HEAD WAS RAISED HERE AND NO LONGER NEEDS TO BE: `.scheduler-aside__head` is
      `size-lg` at every width since 2026-09-11, so this breakpoint has nothing
      left to say about it. Removed rather than left restating the base rule. */
   /* THE ROSTER GOES UP ONE STEP, xs TO sm, 2026-09-11 ON RUX'S ASK. Both axes
-     together: the aside's rule joins `--sch-day-track` to the row height so a
+     together: the aside's rule joins `--scheduler-day-track` to the row height so a
      day cell is a square, and that stays true here.
 
      md WAS ASKED FOR AND IS THE ONE STEP TOO FAR, by 0.2px. The cells are the
@@ -2082,13 +2082,13 @@ button.sch-row-head__num {
      an argument about a companion pane competing with the board for height.
      None of that applies to a full-width overlay, which is why this can differ
      without reopening it. */
-  .sch-aside .sch--avail {
-    --sch-avail-h: var(--rux-layout-size-height-sm);
-    --sch-day-track: var(--rux-layout-size-height-sm);
+  .scheduler-aside .sch--avail {
+    --scheduler-avail-h: var(--rux-layout-size-height-sm);
+    --scheduler-day-track: var(--rux-layout-size-height-sm);
   }
 
   /* THE WEEK LABEL TAKES ITS OWN ROW, and this is a deliberate exception to
-     the rule 40 lines above `.sch-toolbar`, not an oversight of it. That rule
+     the rule 40 lines above `.scheduler-toolbar`, not an oversight of it. That rule
      -- "It does not stack. One row, always" -- was decided against a desktop
      board "whose whole argument is vertical room", and it holds there.
 
@@ -2120,7 +2120,7 @@ button.sch-row-head__num {
      did before the row was briefly permanent.
 
      THE BAND, THE CENTRING AND THE 16px INSET ARE NOT RESTATED. Those are base
-     rules on `.sch-toolbar__weekrow` and `.sch-weekbtn` and hold at every
+     rules on `.scheduler-toolbar__weekrow` and `.scheduler-weekbtn` and hold at every
      width; only the basis is genuinely about this breakpoint. */
 
   /* ICON-ONLY, AND THE SWAP IS app.js's. The label and the glyph are both in
@@ -2141,7 +2141,7 @@ button.sch-row-head__num {
      THE FULL-WIDTH BASIS THAT WAS HERE IS GONE with it -- the week row is
      `flex: 0 1 auto` at every width now, so the toolbar is one row everywhere
      and this block no longer says anything about the layout of it. */
-  .sch-toolbar__lg-only { display: none; }
+  .scheduler-toolbar__lg-only { display: none; }
 }
 
 /* ── THE TOAST, AND ITS PLACEMENT IS OURS BECAUSE CARBON SHIPS NONE ─────────
@@ -2152,7 +2152,7 @@ button.sch-row-head__num {
    is that decision, and it is an `sch-` rule for exactly the reason AGENTS.md
    gives: it is a surface Carbon does not ship, so it is this app's own.
 
-   WHY THIS EXISTS AT ALL is in index.html beside the element: `#sch-status` is
+   WHY THIS EXISTS AT ALL is in index.html beside the element: `#scheduler-status` is
    in normal flow above the grid, so a message there pushes the board down and
    pulls it back up. rux saw a move shove the whole table.
 
@@ -2164,10 +2164,10 @@ button.sch-row-head__num {
 
    IT WAS MEASURED AGAINST ALL THREE BEFORE BEING KEPT, at 1440x950 with a
    288px card and a 16px gutter. Top right -- Carbon's own -- lands on
-   `.sch-toolbar` and its icon buttons: the week chevrons, the date picker, the
+   `.scheduler-toolbar` and its icon buttons: the week chevrons, the date picker, the
    drivers toggle and the overflow. Those are present and interactive at ALL
-   times. Bottom centre lands on `.sch-bar` -- trip bars, data rather than
-   controls. Bottom right lands on empty `.sch-track`, and the one control it
+   times. Bottom centre lands on `.scheduler-bar` -- trip bars, data rather than
+   controls. Bottom right lands on empty `.scheduler-track`, and the one control it
    can reach is the panel's action bar, which exists only while the panel is
    open and which the rule below lifts clear of.
 
@@ -2187,7 +2187,7 @@ button.sch-row-head__num {
    ABOVE THE PANEL, NOT UNDER IT. The panel is the highest thing this page
    draws; a toast reporting the save you just pressed cannot sit behind the
    button you pressed. */
-.sch-toast {
+.scheduler-toast {
   position: fixed;
   inset-block-end: var(--rux-spacing-05);
   inset-inline-end: var(--rux-spacing-05);
@@ -2200,8 +2200,8 @@ button.sch-row-head__num {
    minimum Carbon sets would otherwise decide the width on a 375px phone and
    leave the card hanging off one edge. */
 @media (max-width: 41.98rem) {
-  .sch-toast { inset-inline: var(--rux-spacing-05); }
-  .sch-toast > * { min-inline-size: 0; inline-size: 100%; max-inline-size: none; }
+  .scheduler-toast { inset-inline: var(--rux-spacing-05); }
+  .scheduler-toast > * { min-inline-size: 0; inline-size: 100%; max-inline-size: none; }
 }
 
 /* LIFTED CLEAR OF THE PANEL'S ACTION BAR WHILE THE PANEL IS OPEN. Measured at
@@ -2223,11 +2223,11 @@ button.sch-row-head__num {
    else.
 
    `:has()` RATHER THAN A CLASS THIS FILE WOULD HAVE TO KEEP IN SYNC. The panel
-   is `#sch-panel` and its open state IS `[hidden]` -- data.js sets nothing
+   is `#scheduler-panel` and its open state IS `[hidden]` -- data.js sets nothing
    else -- so the stylesheet can read it directly and there is no second source
    of truth to drift. rux.css compiles 221 `:has()` rules of its own, so it is
    already a baseline for any page loading it. */
-body:has(#sch-panel:not([hidden])) .sch-toast {
+body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05));
 }
 
@@ -2305,7 +2305,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    share one top edge and the ring has room. The 1px the control then overhangs
    at the bottom is not clipped by anything -- every ancestor is
    `overflow: visible`, measured. */
-.sch-header-search {
+.scheduler-header-search {
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -2328,8 +2328,8 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
      alignment were the first two -- and it is the same cause every time. */
   align-self: flex-start;
 }
-.sch-header-search { flex: 1 1 auto; min-inline-size: 0; }
-.sch-header-search .rux--search--expandable.rux--search--expanded { inline-size: 100%; }
+.scheduler-header-search { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-header-search .rux--search--expandable.rux--search--expanded { inline-size: 100%; }
 
 /* ── THE RESULTS, ATTACHED TO THE FIELD ─────────────────────────────────────
    A MENU UNDER A FIELD, NOT A PANEL HOLDING A LIST. This was
@@ -2347,7 +2347,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    ITS SURFACE IS THE MENU'S, because that is what it now is: `--rux-layer` over
    the page with Carbon's own menu shadow, `0 2px 6px var(--rux-shadow)`, read
    off `.rux--menu` in rux.css rather than invented. */
-.sch-search__results {
+.scheduler-search__results {
   position: absolute;
   inset-inline: 0;
   inset-block-start: 100%;
@@ -2372,14 +2372,14 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
 /* THE ONE SCROLLING CHILD. `min-block-size: 0` because a flex item will not
    shrink below its content, and without it the list pushes the box past 60vh
    instead of scrolling inside it. */
-.sch-search__results .rux--contained-list {
+.scheduler-search__results .rux--contained-list {
   overflow-y: auto;
   min-block-size: 0;
 }
 /* THE COUNT, WHICH CARBON ASKS FOR BY NAME: "Always include the number of
    search results, including for searches with no results." It sits above the
    rows and reads as a caption rather than a result. */
-.sch-search__count {
+.scheduler-search__count {
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
@@ -2393,8 +2393,8 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    computes `inline-block` -- so the direction applied to nothing and the two
    spans stayed on one line. Found by reading the computed display rather than
    by looking, since a wrong `flex-direction` shows as no change at all. */
-.sch-search__head,
-.sch-search__meta { display: block; }
+.scheduler-search__head,
+.scheduler-search__meta { display: block; }
 /* THE TITLE ROW: destination on the left, date pushed to the right edge.
 
    THE DATE IS THE ONLY FIELD THAT CAN BE A COLUMN, which is why it is the only
@@ -2404,13 +2404,13 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    the same x in every row, which is what tells seven "Dallas, TX" apart at a
    glance. `gap` rather than `justify-content` alone so a 53-character
    destination pushes against the date instead of running under it. */
-.sch-search__head {
+.scheduler-search__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--rux-spacing-05);
 }
-.sch-search__dest {
+.scheduler-search__dest {
   color: var(--rux-text-primary);
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
@@ -2424,7 +2424,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
 }
 /* NEVER SHRINKS, for the same reason: it is the column. `tabular-nums` so the
    dates line up digit for digit the way the board's own day numbers do. */
-.sch-search__when {
+.scheduler-search__when {
   flex: 0 0 auto;
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
@@ -2434,7 +2434,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
 /* ORGANIZATION, THEN THE BOOKING CONTACT WHEN THERE IS ONE. Truncated rather
    than wrapped so every row is exactly two lines and the date column stays
    straight. */
-.sch-search__meta {
+.scheduler-search__meta {
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
@@ -2451,7 +2451,7 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
 
    CARBON'S OWN `background: none` WAS WINNING.
    `.rux--contained-list-item--clickable .rux--contained-list-item__content` is
-   two classes; `.sch-search__opt--active` is one, so it lost on specificity and
+   two classes; `.scheduler-search__opt--active` is one, so it lost on specificity and
    never painted. Scoping it to the results makes it two as well, and app.css
    loads after rux.css, so the later of two equal rules wins -- no `!important`.
 
@@ -2460,16 +2460,16 @@ body:has(#sch-panel:not([hidden])) .sch-toast {
    chosen: the keyboard highlight and the mouse hover are then literally the
    same colour, and the pointermove handler in data.js keeps them from ever
    disagreeing about which row is current. */
-.sch-search__results .sch-search__opt--active { background-color: var(--rux-layer-hover); }
+.scheduler-search__results .scheduler-search__opt--active { background-color: var(--rux-layer-hover); }
 
 /* THE MATCHED RUN, WHICH IS THE ONLY THING HERE THAT EXPLAINS A ROW. Weight and
    nothing else -- no colour, no background -- so it reads as emphasis inside
    the line rather than as a second kind of text, and it inherits whichever of
    the two lines it lands in. */
-.sch-search__hit { font-weight: 600; }
+.scheduler-search__hit { font-weight: 600; }
 /* THE EMPTY AND OVER-CAP NOTES SHARE ONE RULE, because they say the same kind
    of thing: what the list is not showing you. */
-.sch-search__empty {
+.scheduler-search__empty {
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);

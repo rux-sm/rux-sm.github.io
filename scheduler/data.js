@@ -1,7 +1,7 @@
 /* ==========================================================================
    data.js — THE LIVE WEEK
    --------------------------------------------------------------------------
-   Fills #sch-grid from the tables the rux-ui app also writes, and writes
+   Fills #scheduler-grid from the tables the rux-ui app also writes, and writes
    back: a drag moves a bus, and the trip panel's Save writes the trip with
    its stops, contact, payments and bus. That database is production and
    shared with rux-ui, so nothing here is ever tried with a test record.
@@ -39,18 +39,18 @@
   const PROJECT = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
   const PUBLISHABLE = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
 
-  const gridEl = document.getElementById('sch-grid');
+  const gridEl = document.getElementById('scheduler-grid');
   const schEl = document.getElementById('sch');
-  const statusEl = document.getElementById('sch-status');
-  const toastEl = document.getElementById('sch-toast');
+  const statusEl = document.getElementById('scheduler-status');
+  const toastEl = document.getElementById('scheduler-toast');
   /* TWO ELEMENTS, AND KEEPING THEM APART IS LOAD-BEARING. `rangeEl` is the
      BUTTON -- what `data-rux-open` goes on and what the overlay anchors to --
      and `rangeTextEl` is the span inside it that holds the week. They were one
      element until the trigger gained a caret `<use>`; `setRange` writes
      `textContent`, which on the button would delete the svg on the first
      render and leave a trigger with no disclosure mark. */
-  const rangeEl = document.getElementById('sch-range');
-  const rangeTextEl = document.getElementById('sch-range-text') || rangeEl;
+  const rangeEl = document.getElementById('scheduler-range');
+  const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
   // The week picker's hidden input and the guard that tells its `change`
   // events apart: ours, from setRange, or a person's, from the calendar.
   let weekInput = null;
@@ -187,7 +187,7 @@
      `role="alertdialog"` on the root and wraps it in two visually-hidden focus
      sentinels, which together TRAP the keyboard until the notice is dealt
      with. That is right for a notification demanding a decision and wrong for
-     a board: `#sch-status` is already `role="status" aria-live="polite"`, the
+     a board: `#scheduler-status` is already `role="status" aria-live="polite"`, the
      move has already happened, and the offer is a courtesy. So the text is
      announced, the button is in the tab order after it, and nothing is
      captured. The close button is dropped for the same reason -- the next
@@ -328,7 +328,7 @@
   }
 
   /* ── SAYING IT OVER THE PAGE INSTEAD OF ABOVE THE BOARD ───────────────────
-     `say` writes into `#sch-status`, which is in normal flow above the grid, so
+     `say` writes into `#scheduler-status`, which is in normal flow above the grid, so
      every message it shows pushes the board down and every one it clears pulls
      it back. For the three messages that describe the BOARD -- loading, nothing
      this week, a week that would not load -- that is correct: they stand in for
@@ -546,7 +546,7 @@
 
   // -- drawing --------------------------------------------------------------
   const addRow = (bar, cls, ...parts) => {
-    const r = el('div', `sch-bar__row ${cls}`);
+    const r = el('div', `scheduler-bar__row ${cls}`);
     for (const p of parts) if (p != null) r.appendChild(p);
     bar.appendChild(r);
   };
@@ -568,7 +568,7 @@
   function barEl(b, driversById) {
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
-    const bar = el('article', `sch-bar sch-bar--${hue}`);
+    const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
@@ -580,18 +580,18 @@
       bar.dataset.start = place.start;
       bar.dataset.span = place.span;
     }
-    if (place.fromPrev) bar.classList.add('sch-bar--from-prev');
-    if (place.toNext) bar.classList.add('sch-bar--to-next');
-    bar.style.setProperty('--sch-start', place.start);
-    bar.style.setProperty('--sch-span', place.span);
-    bar.style.setProperty('--sch-lane', b.lane);
+    if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
+    if (place.toNext) bar.classList.add('scheduler-bar--to-next');
+    bar.style.setProperty('--scheduler-start', place.start);
+    bar.style.setProperty('--scheduler-span', place.span);
+    bar.style.setProperty('--scheduler-lane', b.lane);
 
     const count = leg.count || 1;
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
-    addRow(bar, 'sch-bar__dest', el('span', null, trip.destination || 'No destination'), el('span', 'sch-bar__ref', ref));
-    addRow(bar, 'sch-bar__client', el('span', null, trip.customer || ''));
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), el('span', 'scheduler-bar__ref', ref));
+    addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // Departure and return on one line, an en dash between them. The SPOT
     // time -- be at the yard -- is read above and deliberately not drawn: the
@@ -604,7 +604,7 @@
       : dep ? `Dep ${dep}`
       : back ? `Ret ${back}`
       : (legDays > 1 ? `${legDays} days` : '');
-    addRow(bar, 'sch-bar__time', el('span', null, when));
+    addRow(bar, 'scheduler-bar__time', el('span', null, when));
 
     const reqs = [
       trip.req_sleeper ? 'Sleeper' : null,
@@ -612,7 +612,7 @@
       trip.req_56pax ? '56 pax' : null,
       trip.trip_type && trip.trip_type !== 'round_trip' ? String(trip.trip_type).replace(/_/g, ' ') : null,
     ].filter(Boolean).join(' · ');
-    addRow(bar, 'sch-bar__reqs', el('span', null, reqs));
+    addRow(bar, 'scheduler-bar__reqs', el('span', null, reqs));
 
     const names = assign
       ? (assign.trip_drivers || [])
@@ -620,7 +620,7 @@
           .filter(Boolean)
           .map(who => who.short_name || who.name)
       : [];
-    addRow(bar, 'sch-bar__drivers', el('span', null, assign ? (names.join(' · ') || 'No driver') : 'Needs a bus'));
+    addRow(bar, 'scheduler-bar__drivers', el('span', null, assign ? (names.join(' · ') || 'No driver') : 'Needs a bus'));
 
     bar.setAttribute('aria-label', [
       trip.destination || 'No destination', trip.customer, ref,
@@ -676,7 +676,7 @@
        what set this column either. What changes is that the heading no longer
        says a word the whole grid already says. The title carries the sense for
        anyone who needs it spelled out. */
-    const corner = el('div', 'sch-corner', '#');
+    const corner = el('div', 'scheduler-corner', '#');
     corner.title = 'Bus number';
     gridEl.appendChild(corner);
 
@@ -702,12 +702,12 @@
        need it. */
     for (let i = 0; i < 7; i++) {
       const d = addDays(weekStart, i);
-      const cell = el('div', 'sch-day');
-      if (isWeekend(d)) cell.classList.add('sch-day--weekend');
-      if (iso(d) === today) { cell.classList.add('sch-day--today'); cell.setAttribute('aria-current', 'date'); todayCell = cell; }
+      const cell = el('div', 'scheduler-day');
+      if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
+      if (iso(d) === today) { cell.classList.add('scheduler-day--today'); cell.setAttribute('aria-current', 'date'); todayCell = cell; }
       cell.append(
         document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })),
-        el('span', 'sch-day__num', String(d.getDate())),
+        el('span', 'scheduler-day__num', String(d.getDate())),
       );
       gridEl.appendChild(cell);
     }
@@ -739,7 +739,7 @@
        than by insetting a repeat, so the edges are explicit instead of implied.
 
        STILL A BACKGROUND AND STILL PER TRACK, for the reasons the note on
-       `--sch-day-rule` in app.css gives: `background-image` sits above the
+       `--scheduler-day-rule` in app.css gives: `background-image` sits above the
        row's own `background-color` and below every child, and `var()` inside a
        custom property resolves where that property is COMPUTED, so the stops
        have to meet the colour on the element that owns both. Both were learned
@@ -751,7 +751,7 @@
       for (const i of ruleCols) {
         const at = `${i * 100 / 7}%`;
         parts.push(`transparent ${prev} calc(${at} - 1px)`);
-        parts.push(`var(--sch-day-rule) calc(${at} - 1px) ${at}`);
+        parts.push(`var(--scheduler-day-rule) calc(${at} - 1px) ${at}`);
         prev = at;
       }
       parts.push(`transparent ${prev} 100%`);
@@ -764,13 +764,13 @@
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
       const lanes = bars.length ? assignLanes(bars) : 1;
-      const rowEl = el('div', 'sch-row' + (r.id === UNASSIGNED ? ' sch-row--unassigned' : ''));
+      const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
       if (r.empty) rowEl.hidden = true;
 
       // THE HEAD IS THE NUMBER AND THE EQUIPMENT ICONS. Capacity, type and a
       // non-active status are not dropped, they move to the cell's title, so
       // the column can be narrow and a hover still answers "which bus is this".
-      const head = el('div', 'sch-row-head');
+      const head = el('div', 'scheduler-row-head');
       // "No bus", not "Unassigned": the word was the widest thing in the
       // column and set its width on its own. This one wraps, and the row's
       // title carries the full sense.
@@ -786,14 +786,14 @@
          else and the tip covers the week it is describing. */
       if (r.bus) {
         const tip = el('span', 'rux--popover-container rux--popover--caret rux--popover--drop-shadow rux--popover--right-start rux--toggletip');
-        const trigger = el('button', 'rux--toggletip-button sch-row-head__num');
+        const trigger = el('button', 'rux--toggletip-button scheduler-row-head__num');
         trigger.type = 'button';
         trigger.setAttribute('aria-expanded', 'false');
         trigger.setAttribute('aria-label', `Bus ${r.bus.number} details`);
         trigger.textContent = String(r.bus.number);
         const pop = el('span', 'rux--popover');
         const content = el('span', 'rux--popover-content');
-        const inner = el('div', 'rux--toggletip-content sch-bus-tip');
+        const inner = el('div', 'rux--toggletip-content scheduler-bus-tip');
         inner.appendChild(el('p', 'rux--toggletip-label', `Bus ${r.bus.number}`));
         const spec = [
           [r.bus.capacity ? `${r.bus.capacity} pax` : null, r.bus.type].filter(Boolean).join(' · '),
@@ -812,7 +812,7 @@
         tip.append(trigger, pop, el('span', 'rux--popover-caret'));
         head.appendChild(tip);
       } else {
-        head.append(el('div', 'sch-row-head__num', 'No\nbus'));
+        head.append(el('div', 'scheduler-row-head__num', 'No\nbus'));
       }
       if (!r.bus) head.title = 'Trips with no bus yet';
       if (r.bus) {
@@ -846,7 +846,7 @@
          OUT OF SERVICE STAYS IN THE COLUMN. It is a STATE, it changes what the
          row can accept this week, and the drag already reads it as a warning.
          One icon cannot make a row taller than a bar. */
-      const kit = el('div', 'sch-row-head__kit');
+      const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
         span.title = label;
@@ -858,20 +858,20 @@
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {
-        flag('#i-warning--filled', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'sch-row-head__oos');
+        flag('#i-warning--filled', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
       }
       if (kit.childElementCount) head.appendChild(kit);
 
-      const track = el('div', 'sch-track');
-      track.style.setProperty('--sch-lanes', lanes);
+      const track = el('div', 'scheduler-track');
+      track.style.setProperty('--scheduler-lanes', lanes);
       // The day rules. Per track, for the reason the note above gives.
-      track.style.setProperty('--sch-day-rules', dayRuleStops);
+      track.style.setProperty('--scheduler-day-rules', dayRuleStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       for (const w of windows) {
         const place = clip(w.start_date, w.end_date, weekStart, weekEnd);
-        const span = el('div', 'sch-oos');
-        span.style.setProperty('--sch-start', place.start);
-        span.style.setProperty('--sch-span', place.span);
+        const span = el('div', 'scheduler-oos');
+        span.style.setProperty('--scheduler-start', place.start);
+        span.style.setProperty('--scheduler-span', place.span);
         span.setAttribute('role', 'img');
         span.setAttribute('aria-label', `Out of service, ${w.reason || 'no reason given'}`);
         track.appendChild(span);
@@ -884,8 +884,8 @@
 
     // The pane's own border closes the grid, so whichever row ends up last on
     // screen must not draw a rule of its own.
-    const shownRows = [...gridEl.querySelectorAll('.sch-row')].filter(r => !r.hidden);
-    shownRows[shownRows.length - 1]?.classList.add('sch-row--last');
+    const shownRows = [...gridEl.querySelectorAll('.scheduler-row')].filter(r => !r.hidden);
+    shownRows[shownRows.length - 1]?.classList.add('scheduler-row--last');
 
     // Every bar is replaced on a render, so the panel's opener is gone. Close
     // rather than leave a panel pointing at an element no longer in the page.
@@ -900,7 +900,7 @@
     // Sunday sits on a narrow window. Only when it is actually out of view, and
     // never past the sticky bus column, which covers the pane's left edge.
     if (todayCell) {
-      const sticky = gridEl.querySelector('.sch-corner')?.offsetWidth ?? 0;
+      const sticky = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
       const visible = schEl.clientWidth;
       const left = todayCell.offsetLeft;
       const right = left + todayCell.offsetWidth;
@@ -983,12 +983,12 @@
   // week is exactly the seven days being asked about.
   function targetWarns(track, start, span) {
     if (track.dataset.unassigned) return false;
-    for (const other of track.querySelectorAll('.sch-bar')) {
+    for (const other of track.querySelectorAll('.scheduler-bar')) {
       if (overlaps(start, span, +other.dataset.start, +other.dataset.span)) return true;
     }
-    for (const oos of track.querySelectorAll('.sch-oos')) {
-      const s = parseFloat(oos.style.getPropertyValue('--sch-start'));
-      const n = parseFloat(oos.style.getPropertyValue('--sch-span'));
+    for (const oos of track.querySelectorAll('.scheduler-oos')) {
+      const s = parseFloat(oos.style.getPropertyValue('--scheduler-start'));
+      const n = parseFloat(oos.style.getPropertyValue('--scheduler-span'));
       if (overlaps(start, span, s, n)) return true;
     }
     return false;
@@ -1003,8 +1003,8 @@
      screen. `null` is the Unassigned row, which has no number to give. */
   function busLabel(busId) {
     if (!busId) return 'Unassigned';
-    const row = gridEl.querySelector(`.sch-track[data-bus-id="${CSS.escape(String(busId))}"]`);
-    const num = row?.closest('.sch-row')?.querySelector('.sch-row-head__num')?.textContent?.trim();
+    const row = gridEl.querySelector(`.scheduler-track[data-bus-id="${CSS.escape(String(busId))}"]`);
+    const num = row?.closest('.scheduler-row')?.querySelector('.scheduler-row-head__num')?.textContent?.trim();
     return num ? `bus ${num}` : 'its previous bus';
   }
 
@@ -1037,14 +1037,14 @@
         toast('info', 'Putting the trip back…', `Moving it to ${label}.`);
         try {
           schEl.setAttribute('aria-busy', 'true');
-          gridEl.classList.add('sch-grid--busy');
+          gridEl.classList.add('scheduler-grid--busy');
           await moveToBus(assignmentId, backTo);
         } catch (e) {
           toast('error', 'Could not put that trip back', String(e && e.message ? e.message : e));
           return;
         } finally {
           schEl.removeAttribute('aria-busy');
-          gridEl.classList.remove('sch-grid--busy');
+          gridEl.classList.remove('scheduler-grid--busy');
         }
         await show();
         toast('success', 'Move undone', `The trip is back on ${label}.`);
@@ -1063,7 +1063,7 @@
       let moved = false, target = null, tracks = [], unassignedRow = null, hold = 0;
 
       const clear = () => {
-        for (const { track } of tracks) track.classList.remove('sch-track--drop', 'sch-track--warn');
+        for (const { track } of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
       };
 
       // WHILE A FINGER IS CARRYING A BAR THE PAGE MUST NOT SCROLL UNDER IT.
@@ -1077,10 +1077,10 @@
       // THE BAR IS PICKED UP. The same for both pointers; only the way in differs.
       const lift = () => {
         moved = true;
-        unassignedRow = gridEl.querySelector('.sch-row--unassigned');
+        unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
-        tracks = [...gridEl.querySelectorAll('.sch-track')].map(t => ({ track: t, rect: t.getBoundingClientRect() }));
-        bar.classList.add('sch-bar--dragging');
+        tracks = [...gridEl.querySelectorAll('.scheduler-track')].map(t => ({ track: t, rect: t.getBoundingClientRect() }));
+        bar.classList.add('scheduler-bar--dragging');
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
@@ -1102,7 +1102,7 @@
         touchDragging = false;
         if (!moved) return;              // a press that never lifted still selects
         document.body.style.cursor = '';
-        bar.classList.remove('sch-bar--dragging');
+        bar.classList.remove('scheduler-bar--dragging');
         clear();
         if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
         // The browser fires a click after this; suppress the one that would
@@ -1121,18 +1121,18 @@
         let failed = null;
         try {
           schEl.setAttribute('aria-busy', 'true');
-          gridEl.classList.add('sch-grid--busy');
+          gridEl.classList.add('scheduler-grid--busy');
           await moveToBus(assignmentId, toBus);
         } catch (e) {
           failed = String(e && e.message ? e.message : e);
         } finally {
           schEl.removeAttribute('aria-busy');
-          gridEl.classList.remove('sch-grid--busy');
+          gridEl.classList.remove('scheduler-grid--busy');
         }
         /* AWAITED SO THE MESSAGE DESCRIBES A BOARD THAT IS ALREADY CORRECT.
            These go to `toast` now, which `render` does not clear, so neither
            one would be destroyed by the re-read as it was when both lived in
-           `#sch-status` -- surviving is no longer what the ordering buys. What
+           `#scheduler-status` -- surviving is no longer what the ordering buys. What
            it buys is that the undo is not offered, and a failure is not
            reported, against a grid still showing the pre-move week. The
            failure is still carried down as a string rather than spoken in the
@@ -1162,7 +1162,7 @@
         target = next;
         const sameRow = target && (target.dataset.busId ?? null) === fromBus;
         if (target && !sameRow) {
-          target.classList.add(targetWarns(target, start, span) ? 'sch-track--warn' : 'sch-track--drop');
+          target.classList.add(targetWarns(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
         }
       };
 
@@ -1188,7 +1188,7 @@
      that swallows focus on close leaves a keyboard user at the top of the
      document.
 
-     THE PAGE MAKES ROOM rather than the panel floating over it: `.sch-page`
+     THE PAGE MAKES ROOM rather than the panel floating over it: `.scheduler-page`
      takes the panel's width as end padding, and the grid follows on its own
      because it measures its pane. Carbon's slide-in variant exists for
      exactly this and drops the shadow a floating panel would carry.
@@ -1216,23 +1216,23 @@
   const SEARCH_CAP = 50;
   let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), contacts: [] };
   let panelOpener = null;
-  const panelDetails = document.getElementById('sch-panel-details');
-  const panelFleet = document.getElementById('sch-panel-fleet');
-  const panelBilling = document.getElementById('sch-panel-billing');
-  const panelSchedule = document.getElementById('sch-panel-schedule');
-  const panelSave = document.getElementById('sch-panel-save');
-  const panelReset = document.getElementById('sch-panel-reset');
-  const panelCancel = document.getElementById('sch-panel-cancel');
+  const panelDetails = document.getElementById('scheduler-panel-details');
+  const panelFleet = document.getElementById('scheduler-panel-fleet');
+  const panelBilling = document.getElementById('scheduler-panel-billing');
+  const panelSchedule = document.getElementById('scheduler-panel-schedule');
+  const panelSave = document.getElementById('scheduler-panel-save');
+  const panelReset = document.getElementById('scheduler-panel-reset');
+  const panelCancel = document.getElementById('scheduler-panel-cancel');
 
-  const panelEl = document.getElementById('sch-panel');
-  const tripEl = document.getElementById('sch-trip');
-  const panelBody = document.getElementById('sch-panel-body');
-  const panelTitle = document.getElementById('sch-panel-title');
-  const panelTitleCollapsed = document.getElementById('sch-panel-title-collapsed');
-  const pageEl = document.querySelector('.sch-page');
+  const panelEl = document.getElementById('scheduler-panel');
+  const tripEl = document.getElementById('scheduler-trip');
+  const panelBody = document.getElementById('scheduler-panel-body');
+  const panelTitle = document.getElementById('scheduler-panel-title');
+  const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
+  const pageEl = document.querySelector('.scheduler-page');
 
   const def = (rows) => {
-    const dl = el('dl', 'sch-def');
+    const dl = el('dl', 'scheduler-def');
     for (const [k, v] of rows) {
       if (!v) continue;
       // A value may be a node, so a row can carry a tag rather than a word.
@@ -1259,14 +1259,14 @@
      same 12px/400 and the same `size-sm` height, so the tab still reads as
      one system. */
   const section = (title, node, action) => {
-    const wrap = el('div', 'sch-panel-section');
+    const wrap = el('div', 'scheduler-panel-section');
     // A titleless section is still a section: it keeps the `spacing-06` above
     // it. Billing's summary opens the tab, so a "Summary" heading over the
     // first thing on screen names what is already obvious.
     if (!title) { wrap.appendChild(node); return wrap; }
-    const head = el('div', 'sch-panel-section__title', title);
+    const head = el('div', 'scheduler-panel-section__title', title);
     if (!action) { wrap.append(head, node); return wrap; }
-    const bar = el('div', 'sch-panel-section__head');
+    const bar = el('div', 'scheduler-panel-section__head');
     bar.append(head, action);
     wrap.append(bar, node);
     return wrap;
@@ -1309,7 +1309,7 @@
 
      THE HEADER IS ALSO NO LONGER THE LIST'S. `--disclosed` existed here to
      make the contained-list's own `__header` read like a section title; with
-     the label moved out to `.sch-panel-section__head` -- the line Contract
+     the label moved out to `.scheduler-panel-section__head` -- the line Contract
      signed has always used -- the list has no header to style, so the variant
      goes and `--inset-rulers` comes in to separate the rows.
 
@@ -1317,7 +1317,7 @@
      holding a live toggle must not be minted again on every row added. */
   const rowList = () => {
     const list = el('div', 'rux--contained-list rux--contained-list--inset-rulers rux--layout--size-md');
-    const body = el('ul', 'sch-list-body');
+    const body = el('ul', 'scheduler-list-body');
     body.setAttribute('role', 'list');
     list.appendChild(body);
     return { list, body };
@@ -1329,8 +1329,8 @@
      list draws this row alone instead of "No purchase order recorded." above
      an add button, which was two rows saying one thing. */
   const listAddRow = ({ label, id, onClick }) => {
-    const li = el('li', 'rux--contained-list-item sch-list-additem');
-    const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm sch-list-add');
+    const li = el('li', 'rux--contained-list-item scheduler-list-additem');
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
     btn.appendChild(svgUse('#i-add', '16', '0 0 32 32'));
@@ -1452,15 +1452,15 @@
     const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action rux--contained-list-item--clickable');
     const open = el('button', 'rux--contained-list-item__content');
     open.type = 'button';
-    const line = el('span', code ? 'sch-listrow' : 'sch-listrow sch-listrow--document');
+    const line = el('span', code ? 'scheduler-listrow' : 'scheduler-listrow scheduler-listrow--document');
     // A method distinguishes payments; the section already names PO/invoice.
     if (code) {
       const tag = el('span', `rux--tag rux--tag--sm ${tone}`, code);
       if (codeTitle) tag.title = codeTitle;
       line.appendChild(tag);
     }
-    line.append(el('span', 'sch-listrow__when', when),
-                el('span', 'sch-listrow__much', much ?? ''));
+    line.append(el('span', 'scheduler-listrow__when', when),
+                el('span', 'scheduler-listrow__much', much ?? ''));
     open.appendChild(line);
     open.title = title;
     open.setAttribute('aria-label', `Edit ${title}`);
@@ -1507,7 +1507,7 @@
     panelEl.hidden = true;
     if (tripEl) tripEl.hidden = true;
     markAvailDays(null);
-    for (const b of document.querySelectorAll('.sch-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
+    for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
     const opener = panelOpener;
     panelOpener = null;
     // THE ROSTER COMES BACK FIRST, so the fit below measures a board that
@@ -1961,20 +1961,20 @@
   const isoOrNull = v => (/^\d{4}-\d{2}-\d{2}$/.test((v || '').trim()) ? v.trim() : null);
 
   const EDITS = [
-    { key: 'destination', get: f => f['sch-f-destination'].value.trim() || null },
-    { key: 'start_date', get: f => isoOrNull(f['sch-f-start'].value) },
+    { key: 'destination', get: f => f['scheduler-f-destination'].value.trim() || null },
+    { key: 'start_date', get: f => isoOrNull(f['scheduler-f-start'].value) },
     // A BLANK END IS THE SAME DAY, not a null: `legsOf` falls back to
     // start_date anyway, and the picker CLEARS this input on the first pick of
     // a range, so a half-made range would otherwise save as a null end.
-    { key: 'end_date', get: f => isoOrNull(f['sch-f-end'].value) ?? isoOrNull(f['sch-f-start'].value) },
+    { key: 'end_date', get: f => isoOrNull(f['scheduler-f-end'].value) ?? isoOrNull(f['scheduler-f-start'].value) },
     // THE RETURN PAIR IS NULLED OFF A SPLIT, on rux's instruction: a
     // round trip carrying return dates draws a phantom second bar, because
     // `legsOf` makes a leg from them whatever the type says.
-    { key: 'return_start_date', get: f => f['sch-f-type'].value === SPLIT ? isoOrNull(f['sch-f-rstart'].value) : null },
-    { key: 'return_end_date', get: f => f['sch-f-type'].value !== SPLIT ? null
-        : (isoOrNull(f['sch-f-rend'].value) ?? isoOrNull(f['sch-f-rstart'].value)) },
-    { key: 'customer', get: f => f['sch-f-customer'].value.trim() || null },
-    { key: 'trip_type', get: f => f['sch-f-type'].value || null },
+    { key: 'return_start_date', get: f => f['scheduler-f-type'].value === SPLIT ? isoOrNull(f['scheduler-f-rstart'].value) : null },
+    { key: 'return_end_date', get: f => f['scheduler-f-type'].value !== SPLIT ? null
+        : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
+    { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
+    { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
     /* `confirmed`, `balance_paid` AND `date_paid` ARE NOT WRITTEN HERE ANY
        MORE, 2026-09-10. All three were fields on this form -- a Confirmed
        toggle, a Balance paid toggle and a Date paid picker -- and all three
@@ -2000,10 +2000,10 @@
        write. What would let this app own them honestly is editable
        payments -- the number every one of them derives from -- which is the
        next piece of work rather than this one. */
-    { key: 'req_sleeper', get: f => f['sch-f-sleeper'].checked },
-    { key: 'req_ada', get: f => f['sch-f-ada'].checked },
-    { key: 'req_56pax', get: f => f['sch-f-56pax'].checked },
-    { key: 'notes', get: f => f['sch-f-notes'].value.trim() || null },
+    { key: 'req_sleeper', get: f => f['scheduler-f-sleeper'].checked },
+    { key: 'req_ada', get: f => f['scheduler-f-ada'].checked },
+    { key: 'req_56pax', get: f => f['scheduler-f-56pax'].checked },
+    { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
     /* BILLING. Money comes back from the form as text and goes to the column as
        a number or a null -- `money()` refuses anything that is not a number
        rather than sending NaN, which Postgres rejects with a message about
@@ -2025,13 +2025,13 @@
        in hand. `invoiced` is the boolean twin of `invoice_status`; the two
        agree on all 43 Invoiced rows and this app was writing only the text
        one, which would have split them on the first save. */
-    { key: 'quoted_price', get: f => money(f['sch-f-quoted'].value) },
-    { key: 'contract_status', get: f => on(f['sch-f-contract']) ? 'Signed' : 'Pending' },
+    { key: 'quoted_price', get: f => money(f['scheduler-f-quoted'].value) },
+    { key: 'contract_status', get: f => on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
     { key: 'contract_note',
-      get: f => on(f['sch-f-contract']) ? (f['sch-f-contractnote'].value.trim() || null) : null },
+      get: f => on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
     /* THE PO AND THE INVOICE COME OFF THEIR PENDING ROW, NOT OFF A FIELD,
        2026-09-11. Both sections became `contained-list`s, so there is no
-       `sch-f-poref` or `sch-f-invnum` on the panel to read -- the values live
+       `scheduler-f-poref` or `scheduler-f-invnum` on the panel to read -- the values live
        in `poPending` / `invPending` and the inputs exist only inside a dialog
        while it is open, the same arrangement `payPending` has had since
        2026-09-10.
@@ -2047,15 +2047,15 @@
        an empty list is the state 12 of the 55 existing PO trips are in: a PO
        expected, nothing typed. That is why the switch is not merely
        `count > 0`. */
-    { key: 'po_received', get: f => on(f['sch-f-poreceived']) },
+    { key: 'po_received', get: f => on(f['scheduler-f-poreceived']) },
     { key: 'po_ref',
-      get: f => on(f['sch-f-poreceived']) ? (poPending[0]?.ref ?? null) : null },
+      get: f => on(f['scheduler-f-poreceived']) ? (poPending[0]?.ref ?? null) : null },
     { key: 'po_amount',
-      get: f => on(f['sch-f-poreceived']) ? money(String(poPending[0]?.amount ?? '')) : null },
-    { key: 'invoice_status', get: f => on(f['sch-f-invoice']) ? 'Invoiced' : 'Pending' },
-    { key: 'invoiced', get: f => on(f['sch-f-invoice']) },
+      get: f => on(f['scheduler-f-poreceived']) ? money(String(poPending[0]?.amount ?? '')) : null },
+    { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
+    { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
     { key: 'invoice_number',
-      get: f => on(f['sch-f-invoice']) ? (invPending[0]?.number ?? null) : null },
+      get: f => on(f['scheduler-f-invoice']) ? (invPending[0]?.number ?? null) : null },
     /* THE CONTACT LINKS ARE TRIP COLUMNS, so they diff here rather than with
        the contact's own fields. Read straight from the DOM and not through
        `f`: these controls exist only when a trip is open, and `readForm`
@@ -2063,7 +2063,7 @@
        Save on the create panel. `linkId` returns undefined when the field is
        absent and `patchOf` then compares undefined against the before-value,
        so a missing control is simply no change. */
-    { key: 'booking_contact_id', get: () => linkId('sch-f-cfind') },
+    { key: 'booking_contact_id', get: () => linkId('scheduler-f-cfind') },
     { key: 'trip_contact_1_id', get: () => dayLink(1) },
     { key: 'trip_contact_2_id', get: () => dayLink(2) },
     { key: 'trip_contact_3_id', get: () => dayLink(3) },
@@ -2094,8 +2094,8 @@
      not. Without it, opening a trip on a tab that never rendered these rows
      would read five nulls and wipe every day-of contact the trip had. */
   const dayLink = n => {
-    if (!document.getElementById('sch-f-d1')) return undefined;
-    return linkId(`sch-f-d${n}`) ?? null;
+    if (!document.getElementById('scheduler-f-d1')) return undefined;
+    return linkId(`scheduler-f-d${n}`) ?? null;
   };
 
   // A toggle's state lives on `aria-checked`, which is what Carbon's own
@@ -2125,7 +2125,7 @@
                       // The guard below is what turns that into a loud failure.
                       // AND A KEY ADDED TO `EDITS` MUST BE ADDED HERE TOO,
                       // 2026-09-10. The billing switches went into `EDITS`
-                      // first and not into this list, so `f['sch-f-poreceived']`
+                      // first and not into this list, so `f['scheduler-f-poreceived']`
                       // was `undefined`, `on(undefined)` returned false, and
                       // every trip with a PO opened with a phantom patch of
                       // `{po_received: false, po_ref: null, po_amount: null}`
@@ -2145,7 +2145,7 @@
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
                       'contract', 'contractnote', 'poreceived', 'invoice']) {
-      f[`sch-f-${id}`] = document.getElementById(`sch-f-${id}`);
+      f[`scheduler-f-${id}`] = document.getElementById(`scheduler-f-${id}`);
     }
     if (Object.values(f).some(v => !v)) return null;
     const out = {};
@@ -2275,11 +2275,11 @@
      has to claim, and claiming the same one twice leaves two; building fresh
      and initialising once is the shape every other picker here uses. */
   function openPaymentDialog(index) {
-    const host = document.getElementById('sch-payment-fields');
+    const host = document.getElementById('scheduler-payment-fields');
     if (!host) return;
     payEditing = index;
     const p = index === null ? { date: iso(new Date()) } : payPending[index];
-    document.getElementById('sch-payment-h').textContent =
+    document.getElementById('scheduler-payment-h').textContent =
       index === null ? 'Add payment' : 'Edit payment';
     /* TWO COLUMNS, BECAUSE THE DIALOG IS 623px WIDE FOR FOUR SHORT FIELDS.
        Stacked, it was a column of full-width boxes down the middle of a modal
@@ -2294,38 +2294,38 @@
        the calendar through the footer. On the first row it has the height of
        the dialog beneath it. A layout reason beats a semantic one when the
        semantic one costs a clipped control. */
-    const grid = el('div', 'sch-dialog-grid');
+    const grid = el('div', 'scheduler-dialog-grid');
     grid.append(
-      dateOne('sch-f-pdate', 'Date', p.date),
-      moneyField('sch-f-pamount', 'Amount', p.amount),
-      selectField('sch-f-pmethod', 'Method', p.method ?? '',
+      dateOne('scheduler-f-pdate', 'Date', p.date),
+      moneyField('scheduler-f-pamount', 'Amount', p.amount),
+      selectField('scheduler-f-pmethod', 'Method', p.method ?? '',
         [['', '—'], ...PAYMENT_METHODS.map(m => [m, m])]),
-      textField('sch-f-pref', 'Reference', p.ref),
+      textField('scheduler-f-pref', 'Reference', p.ref),
     );
     host.replaceChildren(grid);
     window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('sch-payment-modal');
+    window.Rux?.modal?.open?.('scheduler-payment-modal');
   }
 
-  document.getElementById('sch-payment-done')?.addEventListener('click', () => {
+  document.getElementById('scheduler-payment-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const row = {
-      method: val('sch-f-pmethod') || null,
-      amount: money(val('sch-f-pamount')),
-      date: isoOrNull(val('sch-f-pdate')),
-      ref: val('sch-f-pref') || null,
+      method: val('scheduler-f-pmethod') || null,
+      amount: money(val('scheduler-f-pamount')),
+      date: isoOrNull(val('scheduler-f-pdate')),
+      ref: val('scheduler-f-pref') || null,
     };
     /* AN EMPTY DIALOG ADDS NOTHING. `Done` on a blank form is the same
        intention as `Cancel`, and a $0 receipt with no method is not a
        payment anyone meant to record. An EXISTING row emptied this way is
        left alone rather than blanked -- removing it is Remove on the row's own menu. */
     if (row.amount === null && !row.method) {
-      window.Rux?.modal?.close?.('sch-payment-modal');
+      window.Rux?.modal?.close?.('scheduler-payment-modal');
       return;
     }
     if (payEditing === null) payPending.push(row);
     else Object.assign(payPending[payEditing], row);
-    window.Rux?.modal?.close?.('sch-payment-modal');
+    window.Rux?.modal?.close?.('scheduler-payment-modal');
     redrawPayments();
     refreshDirty();
   });
@@ -2349,24 +2349,24 @@
      headed "Add purchase order" has the room, and a labelled field is the
      better default whenever the space is there. */
   function openPoDialog(index) {
-    const host = document.getElementById('sch-po-fields');
+    const host = document.getElementById('scheduler-po-fields');
     if (!host) return;
     poEditing = index;
     const p = index === null ? {} : poPending[index];
-    document.getElementById('sch-po-h').textContent =
+    document.getElementById('scheduler-po-h').textContent =
       index === null ? 'Add purchase order' : 'Edit purchase order';
-    const grid = el('div', 'sch-dialog-grid');
+    const grid = el('div', 'scheduler-dialog-grid');
     grid.append(
-      textField('sch-f-oref', 'Reference', p.ref),
-      moneyField('sch-f-oamount', 'Amount', p.amount),
+      textField('scheduler-f-oref', 'Reference', p.ref),
+      moneyField('scheduler-f-oamount', 'Amount', p.amount),
     );
     host.replaceChildren(grid);
-    window.Rux?.modal?.open?.('sch-po-modal');
+    window.Rux?.modal?.open?.('scheduler-po-modal');
   }
 
-  document.getElementById('sch-po-done')?.addEventListener('click', () => {
+  document.getElementById('scheduler-po-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = { ref: val('sch-f-oref') || null, amount: money(val('sch-f-oamount')) };
+    const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')) };
     /* AN EMPTY DIALOG ADDS NOTHING, the same rule the payment dialog follows.
        `Done` on a blank form is the same intention as `Cancel`, and a PO with
        no reference and no amount is not a PO -- it is the state the switch
@@ -2374,12 +2374,12 @@
        in. An EXISTING row emptied this way is left alone rather than blanked;
        removing it is Remove on the row's own menu. */
     if (row.ref === null && row.amount === null) {
-      window.Rux?.modal?.close?.('sch-po-modal');
+      window.Rux?.modal?.close?.('scheduler-po-modal');
       return;
     }
     if (poEditing === null) { if (poPending.length < LIST_CAP) poPending.push(row); }
     else Object.assign(poPending[poEditing], row);
-    window.Rux?.modal?.close?.('sch-po-modal');
+    window.Rux?.modal?.close?.('scheduler-po-modal');
     redrawPos();
     refreshDirty();
   });
@@ -2391,27 +2391,27 @@
      one-field dialog today is the same layout as a three-field one then;
      an inline box would have to be torn out again. */
   function openInvoiceDialog(index) {
-    const host = document.getElementById('sch-inv-fields');
+    const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
     invEditing = index;
     const v = index === null ? {} : invPending[index];
-    document.getElementById('sch-inv-h').textContent =
+    document.getElementById('scheduler-inv-h').textContent =
       index === null ? 'Add invoice' : 'Edit invoice';
-    const grid = el('div', 'sch-dialog-grid');
-    grid.append(textField('sch-f-inum', 'Invoice number', v.number));
+    const grid = el('div', 'scheduler-dialog-grid');
+    grid.append(textField('scheduler-f-inum', 'Invoice number', v.number));
     host.replaceChildren(grid);
-    window.Rux?.modal?.open?.('sch-inv-modal');
+    window.Rux?.modal?.open?.('scheduler-inv-modal');
   }
 
-  document.getElementById('sch-inv-done')?.addEventListener('click', () => {
-    const number = document.getElementById('sch-f-inum')?.value.trim() || null;
+  document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
+    const number = document.getElementById('scheduler-f-inum')?.value.trim() || null;
     if (number === null) {
-      window.Rux?.modal?.close?.('sch-inv-modal');
+      window.Rux?.modal?.close?.('scheduler-inv-modal');
       return;
     }
     if (invEditing === null) { if (invPending.length < LIST_CAP) invPending.push({ number }); }
     else Object.assign(invPending[invEditing], { number });
-    window.Rux?.modal?.close?.('sch-inv-modal');
+    window.Rux?.modal?.close?.('scheduler-inv-modal');
     redrawInvoices();
     refreshDirty();
   });
@@ -2464,7 +2464,7 @@
        trip column and diffs with the rest of them. */
     // `client` left this form with the duplicate Organization field; the
     // Customers view still owns it. Phone and email are what remain editable.
-    const now = { phone: val('sch-f-cphone'), email: val('sch-f-cemail') };
+    const now = { phone: val('scheduler-f-cphone'), email: val('scheduler-f-cemail') };
     const patch = {};
     for (const k of Object.keys(now)) if (!same(now[k], editing.contact[k])) patch[k] = now[k];
     return Object.keys(patch).length ? { id: editing.contact.id, patch } : null;
@@ -2487,9 +2487,9 @@
     const p = editing.stops.pickup;
     if (p) {
       const patch = {};
-      const where = val('sch-f-pickup') || null;
-      const depart = val('sch-f-depart') || null;
-      const spot = val('sch-f-spot') || null;
+      const where = val('scheduler-f-pickup') || null;
+      const depart = val('scheduler-f-depart') || null;
+      const spot = val('scheduler-f-spot') || null;
       // The two name parts are shown joined and are edited as one string, so
       // the whole of it goes back to `name` and `address` is left alone rather
       // than guessed at from a separator the person may have typed themselves.
@@ -2500,7 +2500,7 @@
     }
     const b = editing.stops.back;
     if (b) {
-      const arrive = val('sch-f-return') || null;
+      const arrive = val('scheduler-f-return') || null;
       if (!same(arrive, b.arrive)) out.push({ id: b.id, patch: { arrive } });
     }
     return out;
@@ -2527,8 +2527,8 @@
      reads. */
   function refreshDirty() {
     const patch = patchOf();
-    const startEl = document.getElementById('sch-f-start');
-    const destEl = document.getElementById('sch-f-destination');
+    const startEl = document.getElementById('scheduler-f-start');
+    const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
     // DESTINATION IS REQUIRED because it is the bar's only label and because
     // it is not null on ANY of the 743 rows -- a null would be the first.
@@ -2765,7 +2765,7 @@
        EVERY child, fluid or not -- right for spacing one titled block from
        the next, wrong within one: Carbon's own fluid forms butt adjacent
        fields against each other with no gap at all, each field's own border
-       standing in for the seam. `.sch-fluid-group` zeroes `--rux-stack-gap`
+       standing in for the seam. `.scheduler-fluid-group` zeroes `--rux-stack-gap`
        for a run with no title between its members; the run itself is still
        one item in `form`'s own stack, so the 1rem gap before Pick-up /
        Booking contact / etc. is untouched. */
@@ -2780,9 +2780,9 @@
        Round trip and one way never carry return dates -- 0 of 731 -- so the
        pair only appears for a split. And one way is NOT a single date: 25 of
        26 run a day, but one runs three, so it keeps the range too. */
-    const returnDates = el('div', 'sch-panel-return-dates');
+    const returnDates = el('div', 'scheduler-panel-return-dates');
     returnDates.appendChild(dateRange(
-      'sch-f-rstart', 'sch-f-rend', 'Pick-up start', 'Pick-up end',
+      'scheduler-f-rstart', 'scheduler-f-rend', 'Pick-up start', 'Pick-up end',
       trip.return_start_date, trip.return_end_date || trip.return_start_date));
     returnDates.hidden = trip.trip_type !== SPLIT;
 
@@ -2811,8 +2811,8 @@
       split ? ['Drop-off start', 'Drop-off end'] : ['Start date', 'End date'];
     const setOutLabels = split => {
       const [a, b] = outLabels(split);
-      const la = panelDetails.querySelector('label[for="sch-f-start"]');
-      const lb = panelDetails.querySelector('label[for="sch-f-end"]');
+      const la = panelDetails.querySelector('label[for="scheduler-f-start"]');
+      const lb = panelDetails.querySelector('label[for="scheduler-f-end"]');
       if (la) la.textContent = a;
       if (lb) lb.textContent = b;
     };
@@ -2820,15 +2820,15 @@
 
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
-      selectField('sch-f-type', 'Type', trip.trip_type, [
+      selectField('scheduler-f-type', 'Type', trip.trip_type, [
         ['', '—'],
         ['round_trip', 'Round trip'],
         ['one_way', 'One way'],
         [SPLIT, 'Drop-off and pick-up'],
       ]),
-      dateRange('sch-f-start', 'sch-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
+      dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
       returnDates,
-      textField('sch-f-destination', 'Destination', trip.destination),
+      textField('scheduler-f-destination', 'Destination', trip.destination),
       /* ORGANIZATION, AND THERE IS ONLY ONE OF THEM NOW, 2026-09-09 on rux's
          call. This field and the booking block's `Organization or group` read
          the same on nearly every trip -- "TMS" against "TMS" -- and rux saw
@@ -2846,14 +2846,14 @@
          High School". Billed-to and travelling-group were two facts and are
          now one. `contacts.client` still holds the other and the Customers
          view still edits it; this panel simply stops showing it. */
-      textField('sch-f-customer', 'Organization', trip.customer),
+      textField('scheduler-f-customer', 'Organization', trip.customer),
       /* NOTES JOINS THE TOP RUN, 2026-09-10 on rux's call, from the foot of
          the tab where it sat beside the checkboxes. It is a fact about the
          trip like the five above it and not a thing anyone hunts for, so it
          belongs in the same flush card rather than after two contact
          sections. It is the only field here that grows: the textarea keeps
          its resize grip, and the card simply gets taller with it. */
-      notesField('sch-f-notes', 'Notes', trip.notes),
+      notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
     form.appendChild(topFields);
 
@@ -2882,7 +2882,7 @@
          often the FIRST thing known about a trip -- someone rang -- so hiding
          it until after a save had the order backwards. */
       /* THREE FULL-WIDTH ROWS, 2026-09-09 on rux's call, where Phone and
-         Email were a `sch-two-up` pair on one row. Fluid is why: a fluid
+         Email were a `scheduler-two-up` pair on one row. Fluid is why: a fluid
          field is a 64px box carrying a floating label over its value, and
          two of them in a 288px column leave each about 140px to hold both
          -- an email address in a 140px box is ellipsis by the third
@@ -2903,16 +2903,16 @@
          now say which contact they belong to on their own face. A label
          that reads `Booking contact phone` needs nothing above it. */
       /* NO WRAPPER, 2026-09-10, and the reason is the bleed. These three used
-         to sit in their own `.sch-fluid-group`; once that group was appended
+         to sit in their own `.scheduler-fluid-group`; once that group was appended
          INTO `topFields`, which is also one, the negative margin applied
          twice and the fields hung 16px off the panel's left edge with their
          labels at 0. rux saw it as missing padding, and it was -- taken by a
          rule meant to run once. A run that is already flush and already
          gapless needs no second one inside it, so the fields go straight in. */
       topFields.append(
-        contactSearch('sch-f-cfind', 'Booking contact name', 'sch-contacts', allContacts, contact),
-        textField('sch-f-cphone', 'Booking contact phone', contact?.phone),
-        textField('sch-f-cemail', 'Booking contact email', contact?.email),
+        contactSearch('scheduler-f-cfind', 'Booking contact name', 'scheduler-contacts', allContacts, contact),
+        textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
+        textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
       );
       /* THE SHARED-CONTACT NOTE IS GONE, 2026-09-10 on rux's call. It read
          "This contact books other trips too. Editing it here changes it on
@@ -2921,7 +2921,7 @@
          WARNING went; the behaviour it described is unchanged and still
          worth knowing when this block is next touched. */
       /* APPENDED INTO `topFields`, NOT AS ITS OWN BLOCK. Both runs are
-         `.sch-fluid-group`, so nesting one in the other keeps every gap at
+         `.scheduler-fluid-group`, so nesting one in the other keeps every gap at
          zero and the whole form reads as one card from Type to the last
          day-of phone. The stack that used to hold this beside a heading is
          gone with the heading. */
@@ -2973,7 +2973,7 @@
          not a phone number beside a name. A contact is two stacked rows
          now, and the run of them stays flush inside `rowsHost`.
 
-         IT ALSO ENDS `.sch-two-up`. Booking contact was its other caller;
+         IT ALSO ENDS `.scheduler-two-up`. Booking contact was its other caller;
          with both stacked the class has no user left, so its rules come out
          of app.css rather than sitting there as a shape nothing makes. */
       /* THE PREFIX IS ON THESE TOO, 2026-09-10, and for the same reason the
@@ -2986,8 +2986,8 @@
       const drawRow = (c, n) => {
         const suffix = n === 1 ? '' : ` ${n}`;
         rowsHost.append(
-          contactSearch(`sch-f-d${n}`, `Day of contact name${suffix}`, 'sch-contacts', allContacts, c),
-          textField(`sch-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
+          contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, 'scheduler-contacts', allContacts, c),
+          textField(`scheduler-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
         );
       };
       const shown = dayRows.length ? dayRows : [null];
@@ -2999,7 +2999,7 @@
          them. It stops at five because the schema does. */
       const addBtn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Add another contact');
       addBtn.type = 'button';
-      addBtn.id = 'sch-f-dadd';
+      addBtn.id = 'scheduler-f-dadd';
       /* THE ICON TRAILS AND WEARS THE CLASS, 2026-09-10. It was PREPENDED and
          carried no class at all, so it got none of Carbon's icon rules and
          sat hard against the word -- rux saw the gap as wrong, and there was
@@ -3046,7 +3046,7 @@
        never a local rule, so this stays Carbon's DEFAULT checkbox. What is
        local is giving it its own titled section rather than letting it sit
        as a bare fieldset between two fluid-boxed neighbours -- the same
-       `sch-panel-section__title` class every sibling section already carries,
+       `scheduler-panel-section__title` class every sibling section already carries,
        so "Equipment" reads as its own module rather than a stray row.
 
        IT IS `Equipment` AND NOT `Status and needs` AS OF 2026-09-10, which
@@ -3074,18 +3074,18 @@
        IT WRAPS IF THE WORDS GROW, which is the variant's own behaviour and
        the reason it is safe to use here: a fourth flag, or a longer one,
        drops to a second row rather than overflowing. */
-    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal sch-panel-section');
+    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal scheduler-panel-section');
     flags.setAttribute('aria-disabled', 'false');
-    const legend = el('legend', 'sch-panel-section__title', 'Equipment');
+    const legend = el('legend', 'scheduler-panel-section__title', 'Equipment');
     flags.append(
       legend,
-      checkField('sch-f-sleeper', 'Sleeper', trip.req_sleeper),
-      checkField('sch-f-ada', 'ADA lift', trip.req_ada),
-      checkField('sch-f-56pax', '56 pax', trip.req_56pax),
+      checkField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
+      checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
+      checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
     );
     /* EQUIPMENT SITS BESIDE THE FORM, NOT IN IT, 2026-09-10. rux asked
        whether the gap above it was standard. It was not, and it was not even
-       consistent with itself: `.sch-panel-section` carries a 24px top margin,
+       consistent with itself: `.scheduler-panel-section` carries a 24px top margin,
        and inside `form` -- a `rux--stack-vertical` -- the stack's own 16px
        row-gap added to it for 40, while the same class on Billing measured 24
        above all three of its sections because `panelBilling` is a plain tab
@@ -3114,7 +3114,7 @@
     // that was clicked, and in create mode there is no bar; showing it with
     // blanks would read as data that failed to load.
     /* SCHEDULE REPLACED A READOUT WITH THE THING ITSELF, 2026-09-09 on rux's
-       call. This was `This leg`: a `sch-def` list showing Leg, When, Departs,
+       call. This was `This leg`: a `scheduler-def` list showing Leg, When, Departs,
        Spot and Returns, 146px of text nobody could act on, sitting above a
        284px `Itinerary` structured list nobody could act on either. Between
        them they were 430px of a 729px panel -- more than the 405px the panel
@@ -3152,14 +3152,14 @@
          create the rows are inserted, and on edit the refusal stands. */
       const { pickup, back } = creating ? { pickup: null, back: null } : stopsOfLeg(trip, legName);
       const sched = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      const times = el('div', 'sch-times');
+      const times = el('div', 'scheduler-times');
       times.append(
-        timeField('sch-f-depart', 'Yard depart', pickup?.depart_prev),
-        timeField('sch-f-spot', 'Spot', pickup?.spot),
-        timeField('sch-f-return', 'Return', back?.arrive),
+        timeField('scheduler-f-depart', 'Yard depart', pickup?.depart_prev),
+        timeField('scheduler-f-spot', 'Spot', pickup?.spot),
+        timeField('scheduler-f-return', 'Return', back?.arrive),
       );
       sched.append(
-        textField('sch-f-pickup', 'Pickup location',
+        textField('scheduler-f-pickup', 'Pickup location',
           [pickup?.name, pickup?.address].filter(Boolean).join(' — ')),
         times,
       );
@@ -3169,8 +3169,8 @@
          itinerary editor's job, not this form's. An enabled input that silently
          cannot save is the fault this whole section exists to remove, so the
          missing case says so instead. */
-      for (const [id, row] of [['sch-f-pickup', pickup], ['sch-f-depart', pickup],
-                               ['sch-f-spot', pickup], ['sch-f-return', back]]) {
+      for (const [id, row] of [['scheduler-f-pickup', pickup], ['scheduler-f-depart', pickup],
+                               ['scheduler-f-spot', pickup], ['scheduler-f-return', back]]) {
         // On create there is no row YET, which is not the same as a leg that
         // has none: the save makes them. Only an existing leg disables.
         if (row || creating) continue;
@@ -3296,15 +3296,15 @@
          screen with no error anywhere. Hence the app class and its own rule
          in `app.css`, on an element this app owns. */
       const gate = (fields, help) => {
-        const box = el('div', 'rux--stack-vertical rux--stack-scale-5 sch-milestone-fields');
+        const box = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-milestone-fields');
         box.append(...fields);
         if (help) box.appendChild(help);
         return box;
       };
 
       const contract = gate(
-        [textField('sch-f-contractnote', 'Contract note', trip.contract_note, 'Note')]);
-      const contractSwitch = toggleAction('sch-f-contract', 'Contract signed',
+        [textField('scheduler-f-contractnote', 'Contract note', trip.contract_note, 'Note')]);
+      const contractSwitch = toggleAction('scheduler-f-contract', 'Contract signed',
         trip.contract_status === 'Signed');
 
       /* THE COVERAGE LINE IS THE POINT OF THE PO SWITCH. A PO confirms the
@@ -3326,10 +3326,10 @@
          balance rather than against the quoted price. There is one
          `po_amount` column and no second PO row, so "another PO" in practice
          means raising this number. */
-      const poCoverage = el('p', 'rux--form__helper-text sch-po-coverage');
-      const poSwitch = toggleAction('sch-f-poreceived', 'PO received',
+      const poCoverage = el('p', 'rux--form__helper-text scheduler-po-coverage');
+      const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
         !!trip.po_received);
-      const invoiceSwitch = toggleAction('sch-f-invoice', 'Invoice sent',
+      const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
         trip.invoice_status === 'Invoiced');
 
       /* PO AND INVOICE BECAME LISTS, 2026-09-11, and the `+` that was refused
@@ -3344,9 +3344,9 @@
          its tooltip. A control that stops at a limit is honest; one that
          accepts a row and loses it on save is not.
 
-         THE ROWS ARE THE FIELDS THAT WERE HERE. `sch-f-poref` and
-         `sch-f-poamount` were a labelless pair under this heading and
-         `sch-f-invnum` a single box under the next; all three moved into
+         THE ROWS ARE THE FIELDS THAT WERE HERE. `scheduler-f-poref` and
+         `scheduler-f-poamount` were a labelless pair under this heading and
+         `scheduler-f-invnum` a single box under the next; all three moved into
          dialogs, which is why they left `readForm`'s id list. What is on the
          tab is a 32px header and one 44px row per record instead of a header
          plus 120px of form -- and it is the same shape as Payments below,
@@ -3422,7 +3422,7 @@
            rows saying one thing in a panel that is already long. The add row
            alone says both: there is nothing here, and this is how one starts. */
         poList.body.appendChild(capRow(listAddRow({
-          label: 'Add purchase order', id: 'sch-f-poadd',
+          label: 'Add purchase order', id: 'scheduler-f-poadd',
           onClick: () => openPoDialog(null),
         }), poPending.length, CAP_NOTE.po));
         drawSummary();
@@ -3449,7 +3449,7 @@
           }));
         });
         invList.body.appendChild(capRow(listAddRow({
-          label: 'Add invoice', id: 'sch-f-invadd',
+          label: 'Add invoice', id: 'scheduler-f-invadd',
           onClick: () => openInvoiceDialog(null),
         }), invPending.length, CAP_NOTE.inv));
       };
@@ -3527,7 +3527,7 @@
         return fig;
       };
       const quotedNow = () => {
-        const raw = document.getElementById('sch-f-quoted')?.value;
+        const raw = document.getElementById('scheduler-f-quoted')?.value;
         return raw === undefined || raw === null ? null : money(String(raw));
       };
       /* THE STATUS LADDER, MIRRORED FROM rux-ui RATHER THAN INVENTED.
@@ -3604,14 +3604,14 @@
         return 'pending';
       };
 
-      const figures = el('div', 'sch-billing-figures');
+      const figures = el('div', 'scheduler-billing-figures');
       const derived = el('div');
       const confirmWhy = el('p', 'rux--form__helper-text');
       const drawSummary = () => {
         const quoted = quotedNow();
         const paid = pending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
         const price = quoted ?? 0;
-        const poOn = on(document.getElementById('sch-f-poreceived'));
+        const poOn = on(document.getElementById('scheduler-f-poreceived'));
         /* THE PO AMOUNT IS A SUM OVER THE ROWS, 2026-09-11, where it used to
            be one field's value. With the list capped at one row the two are
            the same number; written as a sum it is already Phase 6 of
@@ -3622,7 +3622,7 @@
         const remaining = Math.max(0, price - paid);
         const shortfall = Math.max(0, remaining - poAmount);
         const rung = deriveStatus({
-          contractSigned: on(document.getElementById('sch-f-contract')),
+          contractSigned: on(document.getElementById('scheduler-f-contract')),
           poReceived: poOn, poAmount, price, paid,
         });
 
@@ -3701,7 +3701,7 @@
          The summary keeps its distinct surface; the lists below now share
          the panel surface. No extra section margin above the first tile:
          the sticky tab strip already supplies that space. */
-      const tile = el('div', 'rux--tile rux--layer-two sch-panel-section--bleed');
+      const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed');
       const tileStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       tileStack.append(
         figures,
@@ -3713,7 +3713,7 @@
       const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
       summary.append(
         tile,
-        moneyField('sch-f-quoted', 'Quoted price', trip.quoted_price),
+        moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price),
       );
       panelBilling.appendChild(summary);
 
@@ -3721,7 +3721,7 @@
          one heading. `--on-page` renders its header at `heading-compact-01`
          (14px/600) on a filled band; `--disclosed` renders it at `label-01`
          (12px/400, text-secondary), which is character for character what
-         `.sch-panel-section__title` sets for Summary, Pricing & invoice and
+         `.scheduler-panel-section__title` sets for Summary, Pricing & invoice and
          Billing status. A shipped Carbon variant rather than a rule of ours,
          which is the whole reason to prefer it over restyling the header. */
       /* The layer-two header bands introduced on 2026-09-10 are removed
@@ -3732,7 +3732,7 @@
          here. `--disclosed` pins its header to a hard `block-size: 2rem`
          (`css/rux.css:10641`) where `--on-page` reads
          `--rux-layout-size-height-local`, so the band stays 32px at every
-         size and keeps matching `.sch-panel-section__head`. Measured across
+         size and keeps matching `.scheduler-panel-section__head`. Measured across
          all three: header 32/32/32, rows 32/44/52 for sm/md/lg.
 
          md FOR THE ROWS BECAUSE THEY HOLD A TAG. A `CHK` tag is 18px inside
@@ -3787,7 +3787,7 @@
            so the add row is never disabled here. It is still the empty state,
            the same as the two lists above. */
         payList.body.appendChild(listAddRow({
-          label: 'Add payment', id: 'sch-f-payadd',
+          label: 'Add payment', id: 'scheduler-f-payadd',
           onClick: () => openPaymentDialog(null),
         }).li);
         drawSummary();
@@ -3807,7 +3807,7 @@
          padded section and keeps the panel's inline margin; bleeding it too
          would run it to the panel's edges. */
       const bleed = (node) => {
-        const box = el('div', 'sch-panel-section--bleed');
+        const box = el('div', 'scheduler-panel-section--bleed');
         box.appendChild(node);
         return box;
       };
@@ -3845,11 +3845,11 @@
 
       /* THE RULE, NOT A HEADING, IS WHAT SEPARATES THEM. A heading over each
          group was tried first and cost about 60px of a 320px panel; the border
-         costs 1. `.sch-billing-rule` also zeroes the section's own top margin
+         costs 1. `.scheduler-billing-rule` also zeroes the section's own top margin
          and spends it as padding under the border -- see app.css. */
       for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
-        wrap.classList.replace('sch-panel-section', 'sch-billing-section');
-        wrap.classList.add('sch-billing-rule');
+        wrap.classList.replace('scheduler-panel-section', 'scheduler-billing-section');
+        wrap.classList.add('scheduler-billing-rule');
       }
       panelBilling.append(
         contractSection,
@@ -3869,7 +3869,7 @@
          and it means a field is never typeable in the one frame between the
          toggle firing and the block being hidden. */
       const GATES = [
-        ['sch-f-contract', ['sch-f-contractnote'], contract],
+        ['scheduler-f-contract', ['scheduler-f-contractnote'], contract],
       ];
       const syncGates = (clear) => {
         for (const [toggleId, fieldIds, box] of GATES) {
@@ -3892,8 +3892,8 @@
          `[hidden]` NEEDS A RULE HERE FOR THE SAME REASON THE FIELDS DID. The
          body is a flex/grid descendant of a Carbon component, so the user
          agent's `[hidden] { display: none }` is not safe to rely on -- see
-         `.sch-milestone-fields[hidden]`, which was written after the fields
-         stayed on screen with nothing reporting an error. `.sch-list-body`
+         `.scheduler-milestone-fields[hidden]`, which was written after the fields
+         stayed on screen with nothing reporting an error. `.scheduler-list-body`
          carries its own.
 
          CLEARING IS THE SAME BARGAIN AS THE FIELDS'. Off empties the array,
@@ -3904,8 +3904,8 @@
          arming Save to delete it. */
       const syncLists = (clear) => {
         for (const [toggleId, box, pending, redraw] of [
-          ['sch-f-poreceived', poList, poPending, drawPos],
-          ['sch-f-invoice', invList, invPending, drawInvoices]]) {
+          ['scheduler-f-poreceived', poList, poPending, drawPos],
+          ['scheduler-f-invoice', invList, invPending, drawInvoices]]) {
           const open = on(document.getElementById(toggleId));
           box.body.hidden = !open;
           if (!open && clear && pending.length) { pending.length = 0; redraw(); }
@@ -3936,7 +3936,7 @@
          entry in this loop until it moved into a dialog -- it now redraws
          through `drawPos`, which is the same arrangement the payment list has
          always had. */
-      document.getElementById('sch-f-quoted')?.addEventListener('input', drawSummary);
+      document.getElementById('scheduler-f-quoted')?.addEventListener('input', drawSummary);
       drawPos();
       drawInvoices();
       drawSummary();
@@ -3951,7 +3951,7 @@
       const onBus = createBusId ? panelIndex.buses.get(createBusId) : null;
       panelFleet.appendChild(onBus
         ? def([['Bus', `${onBus.number}`], ['Drivers', 'None yet']])
-        : el('p', 'sch-panel-hint',
+        : el('p', 'scheduler-panel-hint',
             'A new trip starts with no bus. Save it and it lands in the Unassigned row, where it can be dragged onto one.'));
     } else panelFleet.appendChild(def([
       ['Bus', bus ? `${bus.number}${(leg.count || 1) > 1 ? ` — ${(assign?.position ?? 0) + 1} of ${leg.count}` : ''}` : 'Not assigned'],
@@ -3999,7 +3999,7 @@
       else tp.setAttribute('tabindex', '0');
     }
 
-    document.getElementById('sch-f-type')?.addEventListener('change', e => {
+    document.getElementById('scheduler-f-type')?.addEventListener('change', e => {
       const split = e.target.value === SPLIT;
       returnDates.hidden = !split;
       setOutLabels(split);
@@ -4010,11 +4010,11 @@
 
     panelOpener = bar;
     /* THE WHOLE SPAN, NOT THE FIRST DAY. The bar carries both numbers and the
-       roster brackets all of them; reading only `--sch-start` here is what made
+       roster brackets all of them; reading only `--scheduler-start` here is what made
        a five-day trip light one column. */
     markAvailDays(
-      bar ? Number(bar.style.getPropertyValue('--sch-start')) : null,
-      bar ? Number(bar.style.getPropertyValue('--sch-span')) : 1,
+      bar ? Number(bar.style.getPropertyValue('--scheduler-start')) : null,
+      bar ? Number(bar.style.getPropertyValue('--scheduler-span')) : 1,
     );
     const wasOpen = !panelEl.hidden;
     panelEl.hidden = false;
@@ -4028,7 +4028,7 @@
        roster away. rux: "id rather the assigments grid not be force closed".
        A control that closes itself reads as a control that broke, and nothing
        said why. On a desktop the cost of keeping it is the board scrolling,
-       which this board is built to do: `.sch-grid` is `max-content` with a
+       which this board is built to do: `.scheduler-grid` is `max-content` with a
        sticky bus column precisely so seven days can total more than the pane.
 
        BELOW md IT STILL YIELDS, AND THERE IT IS NOT A PREFERENCE. app.css puts
@@ -4046,7 +4046,7 @@
       availYielded = true;
       placeAvailability();
     }
-    document.getElementById('sch-panel-close')?.focus();
+    document.getElementById('scheduler-panel-close')?.focus();
   }
 
   /* ── DRIVER AVAILABILITY ───────────────────────────────────────────────────
@@ -4065,10 +4065,10 @@
 
      TIME OFF IS STORED, in `driver_time_off`, and beats busy in the cell --
      a driver both assigned and away is a conflict worth seeing as away. */
-  const asideSlot = document.getElementById('sch-aside');
-  const availEl = document.getElementById('sch-avail');
-  const availGrid = document.getElementById('sch-avail-grid');
-  const availToggle = document.getElementById('sch-avail-toggle');
+  const asideSlot = document.getElementById('scheduler-aside');
+  const availEl = document.getElementById('scheduler-avail');
+  const availGrid = document.getElementById('scheduler-avail-grid');
+  const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
   /* THE ROSTER YIELDS TO THE EDITOR WHEN THE WEEK CANNOT AFFORD BOTH, added
      2026-09-08. Measured at 1440x950: the board is 1344, the roster takes 331,
@@ -4139,8 +4139,8 @@
        all seven days and no edges to hang a border on, which is why only it
        needs stops painted. */
 
-    const head = el('div', 'sch-avail__days');
-    head.appendChild(el('div', 'sch-avail__day sch-avail__day--head', 'Driver'));
+    const head = el('div', 'scheduler-avail__days');
+    head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head', 'Driver'));
     for (let i = 0; i < 7; i++) {
       const d = new Date(weekStart.getTime() + i * DAY);
       /* TWO LETTERS, 2026-09-08, AND IT IS WHAT LETS THE COLUMN BE 24px. This
@@ -4152,7 +4152,7 @@
          entry ruled single letters out and did not weigh the middle.
 
          MEASURED AT label-01, 12px/600 with 0.32px of tracking: "Wed" is 26.0
-         and will not fit a 24px cell, which is why `--sch-day-track` held at sm
+         and will not fit a 24px cell, which is why `--scheduler-day-track` held at sm
          and the cells were 32x24 rather than square. "We" is 18.4, the widest
          of the seven, and clears 24 with 5.6 to spare. The type is unchanged --
          the day cells stay label-01 where "Driver" beside them keeps the table
@@ -4162,17 +4162,17 @@
          abbreviates its own way gets its own first two characters rather than
          English ones. Spread and not `.slice(2)`: the unit is a code point. */
       const short = d.toLocaleDateString(undefined, { weekday: 'short' });
-      const cell = el('div', 'sch-avail__day', [...short].slice(0, 2).join(''));
+      const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 2).join(''));
       // The band dims its weekend TEXT and draws no vertical line, exactly as
       // the board's day header does. The boundary rule is the body's alone.
-      if (isWeekend(d)) cell.classList.add('sch-avail__day--weekend');
+      if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
       cell.dataset.day = String(i);
       head.appendChild(cell);
     }
     availGrid.appendChild(head);
 
     for (const row of rows) {
-      const r = el('div', 'sch-avail__row');
+      const r = el('div', 'scheduler-avail__row');
       /* THE FULL NAME GOES ON THE CELL'S TITLE, 2026-09-11, AND IT IS NOT A
          TOOLTIP REPEATING WHAT IS ON SCREEN. This cell renders `short_name`
          when there is one -- "Cortinas", "All Valley" -- so the long form is
@@ -4186,7 +4186,7 @@
          full names are already fetched, and nothing was using them.
 
          AND THE COLUMN IS NARROWER THAN IT WAS -- 96px against 152 since the
-         day cells went to 32 -- which is the same argument `.sch-row-head`
+         day cells went to 32 -- which is the same argument `.scheduler-row-head`
          makes on the board, where capacity and type moved to the title so the
          column could be narrow and a hover could still answer which bus it is.
          Today's widest name clears 96 by 7px; the next longer one will not, and
@@ -4204,14 +4204,14 @@
          two Bennys apart without a mouse needs something in the cell itself,
          which is a design change and not this. */
       const shown = row.driver.short_name || row.driver.name || 'Driver';
-      const nameEl = el('div', 'sch-avail__name', shown);
+      const nameEl = el('div', 'scheduler-avail__name', shown);
       if (row.driver.name && row.driver.name !== shown) nameEl.title = row.driver.name;
       r.appendChild(nameEl);
       row.days.forEach((day, i) => {
         const busy = day.trips.length > 0;
-        const cls = day.off ? 'sch-avail__cell sch-avail__cell--off'
-          : busy ? 'sch-avail__cell sch-avail__cell--busy'
-          : 'sch-avail__cell';
+        const cls = day.off ? 'scheduler-avail__cell scheduler-avail__cell--off'
+          : busy ? 'scheduler-avail__cell scheduler-avail__cell--busy'
+          : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
         cell.appendChild(el('span', null, day.off || day.trips.join(' · ')));
@@ -4248,22 +4248,22 @@
      without drawing on the body; the day rules already mark every column edge,
      so the tint has boundaries without adding any. */
   function markAvailDays(start, span) {
-    for (const c of availGrid.querySelectorAll('.sch-avail__cell--on-day, .sch-avail__day--on-day')) {
-      c.classList.remove('sch-avail__cell--on-day', 'sch-avail__day--on-day');
+    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
+      c.classList.remove('scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day');
     }
     if (start == null) return;
     const end = start + Math.max(1, span || 1) - 1;
     for (let i = start; i <= end && i < 7; i++) {
-      for (const d of availGrid.querySelectorAll(`.sch-avail__day[data-day="${i}"]`)) d.classList.add('sch-avail__day--on-day');
-      for (const c of availGrid.querySelectorAll(`.sch-avail__cell[data-day="${i}"]`)) c.classList.add('sch-avail__cell--on-day');
+      for (const d of availGrid.querySelectorAll(`.scheduler-avail__day[data-day="${i}"]`)) d.classList.add('scheduler-avail__day--on-day');
+      for (const c of availGrid.querySelectorAll(`.scheduler-avail__cell[data-day="${i}"]`)) c.classList.add('scheduler-avail__cell--on-day');
     }
   }
 
   const currentTripDay = () => {
-    const bar = document.querySelector('.sch-bar[aria-pressed="true"]');
+    const bar = document.querySelector('.scheduler-bar[aria-pressed="true"]');
     if (!bar) return null;
-    const start = Number(bar.style.getPropertyValue('--sch-start'));
-    const span = Number(bar.style.getPropertyValue('--sch-span'));
+    const start = Number(bar.style.getPropertyValue('--scheduler-start'));
+    const span = Number(bar.style.getPropertyValue('--scheduler-span'));
     return Number.isFinite(start) ? { start, span: Number.isFinite(span) ? span : 1 } : null;
   };
 
@@ -4292,7 +4292,7 @@
        the note above gives: what is announced is what is ON SCREEN, and only
        this function knows that -- a yield by the editor changes it without
        anyone pressing anything. */
-    const availItem = document.getElementById('sch-menu-drivers');
+    const availItem = document.getElementById('scheduler-menu-drivers');
     if (availItem) {
       availItem.setAttribute('aria-checked', String(shown));
       const slot = availItem.querySelector('.rux--menu-item__selection-icon');
@@ -4327,7 +4327,7 @@
      THE BAR ROWS ARE THE USEFUL HALF. A bar reserves five lines whatever it
      holds, and the requirements line is empty on nearly every trip -- 16px of
      every 88px bar spent on nothing. Turning a row off REMOVES it rather than
-     blanking it: `--sch-bar-rows` is the count, so the bar shrinks and the row
+     blanking it: `--scheduler-bar-rows` is the count, so the bar shrinks and the row
      with it, and more buses fit on screen.
 
      LOCAL, AND FORGIVING. `screen-inventory.md` says these preferences stay in
@@ -4346,14 +4346,14 @@
   // not from the first time the menu is opened.
   weekStartsSunday = view.sunday;
 
-  const viewMenu = document.getElementById('sch-view-menu');
-  const viewTrigger = document.getElementById('sch-view-trigger');
+  const viewMenu = document.getElementById('scheduler-view-menu');
+  const viewTrigger = document.getElementById('scheduler-view-trigger');
 
   function applyView() {
     weekStartsSunday = view.sunday;
     for (const r of VIEW_ROWS) schEl.classList.toggle(`sch--no-${r}`, !view[r]);
     // One for the destination, which never goes, plus whatever is left on.
-    schEl.style.setProperty('--sch-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
+    schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       /* THE ROSTER ROW IS A CHECKBOX IN THIS MENU AND IS NOT A VIEW OPTION.
@@ -4402,7 +4402,7 @@
      it OFF, next to the thing being turned off. Focus goes back to the toggle,
      because that is where the control now is and leaving it on a button that
      has just been hidden strands a keyboard user. */
-  document.getElementById('sch-avail-close')?.addEventListener('click', () => {
+  document.getElementById('scheduler-avail-close')?.addEventListener('click', () => {
     availOn = false;
     placeAvailability();
     availToggle?.focus();
@@ -4428,7 +4428,7 @@
     const hit = (panelIndex.contacts || []).find(c => contactLabel(c) === t.value);
     if (hit) t.dataset.contactId = hit.id; else delete t.dataset.contactId;
     if (!hit) return;
-    if (t.id === 'sch-f-cfind') {
+    if (t.id === 'scheduler-f-cfind') {
       const put = (id, v) => { const e2 = document.getElementById(id); if (e2) e2.value = v ?? ''; };
       const suggest = (id, v) => { const e2 = document.getElementById(id); if (e2 && !e2.value) e2.value = v ?? ''; };
       /* PHONE AND EMAIL ARE REPLACED; ORGANIZATION IS ONLY SUGGESTED. The
@@ -4443,11 +4443,11 @@
          the agency case gives: it is a TRIP column, 13 trips have one that
          differs from their contact's, and an agency booking for a school must
          not stamp itself over the school. Empty, it fills; filled, it stands. */
-      put('sch-f-cphone', hit.phone);
-      put('sch-f-cemail', hit.email);
-      suggest('sch-f-customer', hit.client);
-    } else if (/^sch-f-d\d$/.test(t.id)) {
-      const ph = document.getElementById(`sch-f-dphone${t.id.slice(-1)}`);
+      put('scheduler-f-cphone', hit.phone);
+      put('scheduler-f-cemail', hit.email);
+      suggest('scheduler-f-customer', hit.client);
+    } else if (/^scheduler-f-d\d$/.test(t.id)) {
+      const ph = document.getElementById(`scheduler-f-dphone${t.id.slice(-1)}`);
       if (ph && !ph.value) ph.value = hit.phone ?? '';
     }
   });
@@ -4458,7 +4458,7 @@
   // neither input nor change; without this a contact chosen in the new row
   // arms Save but the row appearing does not, which reads as a dead control.
   panelDetails?.addEventListener('click', e => {
-    if (e.target?.closest?.('#sch-f-dadd')) refreshDirty();
+    if (e.target?.closest?.('#scheduler-f-dadd')) refreshDirty();
   });
   /* BILLING IS A SECOND TAB AND NEEDED SAYING SO. These were on `panelDetails`
      alone, so every Billing field was dead to Save: typing a quoted price left
@@ -4490,7 +4490,7 @@
     openPanel(panelArgs.bar, panelArgs.draft);
   });
 
-  /* THE BUTTON ASKS; THE MODAL DECIDES. This opens `sch-cancel-modal` and
+  /* THE BUTTON ASKS; THE MODAL DECIDES. This opens `scheduler-cancel-modal` and
      stops -- the write lives on that dialog's own confirm, which is why
      this can sit beside Save at all. It reads `editing.id` rather than
      closing over a trip, so it is right for whichever trip the panel is
@@ -4588,8 +4588,8 @@
          there. */
       if (creating && made?.id) {
         const v = id => document.getElementById(id)?.value.trim() || null;
-        const where = v('sch-f-pickup'), dep = v('sch-f-depart'), spot = v('sch-f-spot');
-        const back = v('sch-f-return');
+        const where = v('scheduler-f-pickup'), dep = v('scheduler-f-depart'), spot = v('scheduler-f-spot');
+        const back = v('scheduler-f-return');
         const rows = [];
         if (where || dep || spot) {
           rows.push({ trip_id: made.id, leg: 'outbound', position: 0, type: 'pickup',
@@ -4694,10 +4694,10 @@
 
      THE MENU IS POSITIONED HERE AND OPENED BY THE MODULE. `Rux.menu.open`
      gives Escape, outside-press and focus return; it repositions only
-     `position: fixed` surfaces, and this one is absolute inside `.sch-page`,
+     `position: fixed` surfaces, and this one is absolute inside `.scheduler-page`,
      so the placement below stands. */
-  const cellMenu = document.getElementById('sch-cell-menu');
-  const barMenu = document.getElementById('sch-bar-menu');
+  const cellMenu = document.getElementById('scheduler-cell-menu');
+  const barMenu = document.getElementById('scheduler-bar-menu');
   let cellMenuAt = null;
   let barMenuFor = null;
 
@@ -4737,13 +4737,13 @@
   }
 
   gridEl.addEventListener('contextmenu', e => {
-    const track = e.target.closest('.sch-track');
-    if (!track || e.target.closest('.sch-bar')) return;
+    const track = e.target.closest('.scheduler-track');
+    if (!track || e.target.closest('.scheduler-bar')) return;
     if (!shown) return;
     e.preventDefault();
 
     const box = track.getBoundingClientRect();
-    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--sch-days'), 10) || 7;
+    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
     const index = Math.min(days - 1, Math.max(0, Math.floor((e.clientX - box.left) / (box.width / days))));
     cellMenuAt = {
       startDate: iso(addDays(shown, index)),
@@ -4771,7 +4771,7 @@
      among the bar's actions, so it has no home in the plan yet and this is not
      the place to invent one for an irreversible write. */
   gridEl.addEventListener('contextmenu', e => {
-    const bar = e.target.closest('.sch-bar');
+    const bar = e.target.closest('.scheduler-bar');
     if (!bar || !bar.dataset.tripId) return;
     e.preventDefault();
     e.stopPropagation();
@@ -4781,7 +4781,7 @@
     // drag wins while it is armed. The menu is unchanged for a right-click.
     if (touchDragging) return;
     barMenuFor = bar;
-    document.getElementById('sch-bar-menu-unassign').hidden =
+    document.getElementById('scheduler-bar-menu-unassign').hidden =
       !bar.dataset.assignmentId || !bar.dataset.busId;
     popMenuAt(barMenu, e);
   });
@@ -4793,14 +4793,14 @@
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
 
-    if (item.id === 'sch-bar-menu-open') { openPanel(bar); return; }
+    if (item.id === 'scheduler-bar-menu-open') { openPanel(bar); return; }
 
-    if (item.id === 'sch-bar-menu-cancel') {
+    if (item.id === 'scheduler-bar-menu-cancel') {
       openCancelModal(bar.dataset.tripId);
       return;
     }
 
-    if (item.id === 'sch-bar-menu-unassign') {
+    if (item.id === 'scheduler-bar-menu-unassign') {
       const assignmentId = bar.dataset.assignmentId;
       if (!assignmentId) return;
       toast('info', 'Taking the trip off its bus…');
@@ -4836,19 +4836,19 @@
   function openCancelModal(tripId) {
     const trip = panelIndex.trips.get(tripId);
     cancelling = tripId;
-    document.getElementById('sch-cancel-what').textContent =
+    document.getElementById('scheduler-cancel-what').textContent =
       `${trip?.destination || 'This trip'}${trip?.customer ? ` for ${trip.customer}` : ''}.`;
-    document.getElementById('sch-cancel-reason').value = '';
-    window.Rux?.modal?.open?.('sch-cancel-modal');
+    document.getElementById('scheduler-cancel-reason').value = '';
+    window.Rux?.modal?.open?.('scheduler-cancel-modal');
   }
 
   let cancelling = null;
 
-  document.getElementById('sch-cancel-confirm')?.addEventListener('click', async () => {
+  document.getElementById('scheduler-cancel-confirm')?.addEventListener('click', async () => {
     const id = cancelling;
     if (!id) return;
-    const reason = document.getElementById('sch-cancel-reason').value.trim();
-    window.Rux?.modal?.close?.('sch-cancel-modal');
+    const reason = document.getElementById('scheduler-cancel-reason').value.trim();
+    window.Rux?.modal?.close?.('scheduler-cancel-modal');
     cancelling = null;
     toast('info', 'Cancelling the trip…');
     try {
@@ -4864,7 +4864,7 @@
   });
 
   cellMenu?.addEventListener('click', e => {
-    if (!e.target.closest('#sch-cell-menu-new')) return;
+    if (!e.target.closest('#scheduler-cell-menu-new')) return;
     window.Rux?.menu?.close?.(cellMenu);
     cellMenu.hidden = true;
     if (cellMenuAt) openCreate(cellMenuAt);
@@ -4881,26 +4881,26 @@
      calls exactly what its toolbar button calls -- the button is the same
      control at a wider width, not a different one -- so there is no second
      copy of either behaviour to drift. */
-  document.getElementById('sch-menu-today')?.addEventListener('click', () => {
-    const menu = document.getElementById('sch-view-menu');
+  document.getElementById('scheduler-menu-today')?.addEventListener('click', () => {
+    const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     cursor = mondayOf(new Date());
     show();
   });
-  document.getElementById('sch-menu-drivers')?.addEventListener('click', () => {
-    const menu = document.getElementById('sch-view-menu');
+  document.getElementById('scheduler-menu-drivers')?.addEventListener('click', () => {
+    const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     if (availOn && !availYielded) { availOn = false; }
     else { availOn = true; availYielded = false; }
     placeAvailability();
   });
 
-  document.getElementById('sch-menu-new-trip')?.addEventListener('click', () => {
-    const menu = document.getElementById('sch-view-menu');
+  document.getElementById('scheduler-menu-new-trip')?.addEventListener('click', () => {
+    const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     openCreate();
   });
-  document.getElementById('sch-panel-close')?.addEventListener('click', () => closePanel());
+  document.getElementById('scheduler-panel-close')?.addEventListener('click', () => closePanel());
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && !panelEl.hidden) { e.preventDefault(); closePanel(); }
   });
@@ -4928,15 +4928,15 @@
      `--expanded` and `__action--active`, and fires `rux:header-panel-opened`.
      So this listens for that event and does not own the open state -- the same
      reason the switcher and the account panels have no code in this file. */
-  const searchWrap = document.querySelector('.sch-header-search');
-  const searchBox = document.getElementById('sch-search');
-  const searchTrigger = document.getElementById('sch-search-trigger');
-  const searchInput = document.getElementById('sch-search-input');
-  const searchResults = document.getElementById('sch-search-results');
-  const searchList = document.getElementById('sch-search-list');
-  const searchCount = document.getElementById('sch-search-count');
-  const searchNoteEl = document.getElementById('sch-search-note');
-  const searchClear = document.getElementById('sch-search-clear');
+  const searchWrap = document.querySelector('.scheduler-header-search');
+  const searchBox = document.getElementById('scheduler-search');
+  const searchTrigger = document.getElementById('scheduler-search-trigger');
+  const searchInput = document.getElementById('scheduler-search-input');
+  const searchResults = document.getElementById('scheduler-search-results');
+  const searchList = document.getElementById('scheduler-search-list');
+  const searchCount = document.getElementById('scheduler-search-count');
+  const searchNoteEl = document.getElementById('scheduler-search-note');
+  const searchClear = document.getElementById('scheduler-search-clear');
 
   /* EXPANDING AND COLLAPSING, WHICH NOTHING UPSTREAM DOES. Design ships no
      search module -- `js/` has seventeen and none of them is one -- so the
@@ -4985,8 +4985,8 @@
 
      THE TEST IS THE WRAPPER, NOT THE FIELD, AND THE COMMENT THAT WAS HERE WAS
      WRONG. It read "the results live inside it now" and tested
-     `searchBox.contains` -- but `#sch-search` is the `.rux--search` element and
-     the results are its SIBLING inside `.sch-header-search`. Checked:
+     `searchBox.contains` -- but `#scheduler-search` is the `.rux--search` element and
+     the results are its SIBLING inside `.scheduler-header-search`. Checked:
      `searchBox.contains(results)` is false. So every press on the list --
      grabbing its scrollbar, pressing the count line, starting a drag over a row
      -- collapsed the search out from under the thing being pressed. Clicking a
@@ -5093,7 +5093,7 @@
     opts.forEach((o, n) => {
       const on = n === i;
       o.setAttribute('aria-selected', String(on));
-      o.classList.toggle('sch-search__opt--active', on);
+      o.classList.toggle('scheduler-search__opt--active', on);
     });
     const cur = opts[i];
     if (cur) {
@@ -5153,7 +5153,7 @@
     if (i === -1) { span.textContent = hay; return span; }
     while (i !== -1) {
       if (i > at) span.appendChild(document.createTextNode(hay.slice(at, i)));
-      const hit = el('strong', 'sch-search__hit');
+      const hit = el('strong', 'scheduler-search__hit');
       hit.textContent = hay.slice(i, i + find.length);
       span.appendChild(hit);
       at = i + find.length;
@@ -5236,7 +5236,7 @@
       btn.type = 'button';
       btn.setAttribute('role', 'option');
       btn.setAttribute('aria-selected', 'false');
-      btn.id = `sch-search-opt-${optionAt++}`;
+      btn.id = `scheduler-search-opt-${optionAt++}`;
       btn.tabIndex = -1;
       /* THE SECOND LINE IS THE DATE AND WHO IT IS FOR, because a result may be
          on any week now: without the date, two "Austin TX" rows a year apart
@@ -5260,15 +5260,15 @@
          short and always present -- which makes it the one thing that can form
          a column down the list, and the column that tells seven "Dallas, TX"
          rows apart. */
-      const head = el('div', 'sch-search__head');
+      const head = el('div', 'scheduler-search__head');
       head.append(
-        mark(trip.destination || 'No destination', 'sch-search__dest', safe),
-        el('span', 'sch-search__when', when),
+        mark(trip.destination || 'No destination', 'scheduler-search__dest', safe),
+        el('span', 'scheduler-search__when', when),
       );
       btn.append(
         head,
         mark([trip.customer, trip.booking_contact_name].filter(Boolean).join(' · ') || 'No organization',
-          'sch-search__meta', safe),
+          'scheduler-search__meta', safe),
       );
       /* GOING TO A RESULT IS A WEEK CHANGE FIRST AND A SELECTION SECOND, and
          both halves have to wait on the read. The trip may be on any week, so
@@ -5289,7 +5289,7 @@
         if (!trip.start_date) return;
         cursor = mondayOf(parseISO(trip.start_date));
         await show();
-        const bar = gridEl.querySelector(`.sch-bar[data-trip-id="${CSS.escape(trip.id)}"]`);
+        const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(trip.id)}"]`);
         if (!bar) { toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.'); return; }
         bar.scrollIntoView({ block: 'center', inline: 'center' });
         if (bar.getAttribute('aria-pressed') === 'true') openPanel(bar);
@@ -5373,7 +5373,7 @@
     if (e.key === 'Escape' && searchOpen()) { e.preventDefault(); collapseSearch(); }
   });
   gridEl.addEventListener('click', e => {
-    const bar = e.target.closest('.sch-bar');
+    const bar = e.target.closest('.scheduler-bar');
     if (bar && bar.dataset.tripId) openPanel(bar);
   });
 
@@ -5400,7 +5400,7 @@
     const asked = cursor;
     setRange(asked, addDays(asked, 6));
     schEl.setAttribute('aria-busy', 'true');
-    gridEl.classList.add('sch-grid--busy');
+    gridEl.classList.add('scheduler-grid--busy');
 
     try {
       render(await read(asked));
@@ -5419,7 +5419,7 @@
     } finally {
       loading = false;
       schEl.removeAttribute('aria-busy');
-      gridEl.classList.remove('sch-grid--busy');
+      gridEl.classList.remove('scheduler-grid--busy');
     }
   }
 
@@ -5450,16 +5450,16 @@
      exactly there. The opener is the overlay's anchor, which is a different
      job: it is what keeps a press on the button from reading as an outside
      press (`overlay.js:122`). */
-  const weekRow = document.getElementById('sch-weekrow');
+  const weekRow = document.getElementById('scheduler-weekrow');
   if (weekRow && rangeEl) {
     const root = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--single');
-    root.id = 'sch-week-picker';
+    root.id = 'scheduler-week-picker';
     const container = el('div', DP_CONTAINER.single);
     const wrap = el('div', 'rux--date-picker-input__wrapper');
     const span = el('span');
     weekInput = el('input', 'rux--date-picker__input');
     weekInput.type = 'text';
-    weekInput.id = 'sch-week-date';
+    weekInput.id = 'scheduler-week-date';
     /* `hidden` IS ENOUGH AND THAT IS MEASURED, NOT ASSUMED -- date-picker.js's
        header says so and corrects its own earlier note that claimed otherwise:
        the UA's `[hidden] { display: none !important }` beats the author rule
@@ -5519,9 +5519,9 @@
      press would silently move a trip the board is no longer showing. Every
      other message here is spent the moment the week under it changes. */
   const go = days => { toast(null); cursor = addDays(cursor, days); show(); };
-  document.getElementById('sch-prev')?.addEventListener('click', () => go(-7));
-  document.getElementById('sch-next')?.addEventListener('click', () => go(7));
-  document.getElementById('sch-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
+  document.getElementById('scheduler-prev')?.addEventListener('click', () => go(-7));
+  document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
+  document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
   // /account.js opens the session asynchronously and these tables do not need
   // one, so the first paint does not wait for it; the client is whichever

@@ -72,7 +72,6 @@ None.
 
 ### Site
 
-- [ ] Rename class prefixes: `sch-` to `scheduler-`, `ln-` to `notes-`.
 - [ ] Rename tools to start with their action, and merge the sprite tools if
       they do one job.
 - [ ] Cut the design system's npm commands to what the root cannot do.

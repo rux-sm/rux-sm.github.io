@@ -48,16 +48,16 @@
    `stack-horizontal` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a `rux--` one: check-classes
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. `.rux--tag` is inline-flex already; this
@@ -84,7 +84,7 @@
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -95,7 +95,7 @@
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -104,21 +104,21 @@
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -126,11 +126,11 @@
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -138,21 +138,21 @@
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and `display: flex` keeps each
@@ -165,7 +165,7 @@
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -174,7 +174,7 @@
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -182,8 +182,8 @@
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -194,62 +194,62 @@
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its `cols`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* `hidden` alone loses to Carbon's `.rux--tile { display: block }`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -259,9 +259,9 @@
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A `rux--tile`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way `ln-q`
-   and `ln-ex-work` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are `ln-dg-node`, not `ln-tile` --
+   surface rather than sitting flush on the page background, the way `notes-q`
+   and `notes-ex-work` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are `notes-dg-node`, not `notes-tile` --
    they used to be, and nesting a real `rux--tile` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -269,7 +269,7 @@
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    `<figcaption>` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while `.ln-dg-grid` sizes to `max-content` and sets the scroll
+   VISIBLE width while `.notes-dg-grid` sizes to `max-content` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -294,7 +294,7 @@
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    `minmax(7rem, 1fr)` -- every column the same width, and every one of them
@@ -330,7 +330,7 @@
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -361,9 +361,9 @@
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -374,8 +374,8 @@
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -387,7 +387,7 @@
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   `.ln-dg-stage` lost its `border-block-end` above. That line was drawn per
+   `.notes-dg-stage` lost its `border-block-end` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -405,7 +405,7 @@
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own `boundary` flag. The band
@@ -419,7 +419,7 @@
    `align-self` IS LOAD-BEARING: the grid sets `align-items: start` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. `Enterprise Planning`
@@ -448,11 +448,11 @@
    `module: Enterprise Planning` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -461,18 +461,18 @@
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -482,12 +482,12 @@
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are `diagram.*.nodes-marked` in MEASURED now.) Its key reuses
-   `ln-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
+   `notes-dg-key`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -498,7 +498,7 @@
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes `.ln-dg`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes `.notes-dg`'s
    scroll container -- `overflow-x: auto` computes `overflow-y` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -521,7 +521,7 @@
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -530,13 +530,13 @@
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -550,14 +550,14 @@
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -566,7 +566,7 @@
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -574,7 +574,7 @@
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -597,26 +597,26 @@
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -624,23 +624,23 @@
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See `field()` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line `Do` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -652,19 +652,19 @@
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   `ln-dg-node` and the same `ln-dg-cat--*` class the canvas uses, so it takes
+   `notes-dg-node` and the same `notes-dg-cat--*` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY `ln-dg-key-tile` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY `notes-dg-key-tile` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a `:not()` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* `ln-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   `ln-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above `.ln-dg-node-link`. Two rules
+/* `notes-dg-legend`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   `notes-dg-key` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above `.notes-dg-node-link`. Two rules
    defined one class, and the legend silently inherited the mark's
    `text-transform: uppercase`, `font-weight: 600` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. `check-classes` validates `rux--*` names
@@ -675,10 +675,10 @@
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* `inline-block`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a `<span>` wearing `ln-dg-node`, which is a tile's class and expects a
+   is a `<span>` wearing `notes-dg-node`, which is a tile's class and expects a
    block box; the name inside is `display: block`. While the `li` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the `li` rule with them, the span went back to
@@ -690,8 +690,8 @@
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then `kind` chose a HUE, five
    of them, on a page with no legend -- and `decision` and `outcome` chose
@@ -739,13 +739,13 @@
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -753,18 +753,18 @@
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -781,7 +781,7 @@
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two `:not()`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   `.ln-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
+   `.notes-dg-cat--check:not(:has(...))` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -792,7 +792,7 @@
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: `:has(.ln-dg-node-code)` is the test the stripe rule
+   nothing to derive: `:has(.notes-dg-node-code)` is the test the stripe rule
    already used.
 
    NOT `layer-01`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -802,22 +802,22 @@
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -841,7 +841,7 @@
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: `.ln-dg-node.ln-dg-legend-tile` and `.ln-dg-node.ln-dg-cat--config` are
+   lost: `.notes-dg-node.notes-dg-legend-tile` and `.notes-dg-node.notes-dg-cat--config` are
    both two classes, so the later won and Setup kept `padding-inline-start: 0`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of `docs/diagram.md` records,
@@ -854,17 +854,17 @@
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. `.ln-dg` scrolls on the inline axis, so a
+   scrolling rather than a preference. `.notes-dg` scrolls on the inline axis, so a
    block child of it -- which is what a `<figcaption>` is -- is laid out at the
    VISIBLE width while the grid inside sizes to `max-content` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to `.ln-dg-grid`, which already spans the whole table, and
+   So the rule moves to `.notes-dg-grid`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -877,25 +877,25 @@
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS `position: fixed` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1201,7 +1201,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Order Planning Training — Review</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Review</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-03</span></span>
@@ -1211,8 +1211,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-objective">
           <h2 id="s-objective">Objective</h2>
-          <p class="ln-prose-measure">Introduce <strong>order planning</strong> — MRP — to the trainees, using the bamboo test-item family (<span class="ln-t-exact">BAM-CHOP-PAIR</span>, <span class="ln-t-exact">BAM-ROD</span>, <span class="ln-t-exact">BAM-SLEEVE</span>) already built in the 2026-08-18 walkthrough. The session answers a question asked directly on the call: <em>&quot;have you already used planning?&quot;</em> — and works forward from what an item needs before it can be planned at all, through where demand comes from, to how the <strong>order horizon</strong> decides which demand planning is willing to see.</p>
-          <p class="ln-prose-measure">This is the first recording in the library to cover Enterprise Planning. Every previous session stopped at execution level — sales orders, production orders, warehouse receipts — where supply was created by hand.</p>
+          <p class="notes-prose-measure">Introduce <strong>order planning</strong> — MRP — to the trainees, using the bamboo test-item family (<span class="notes-t-exact">BAM-CHOP-PAIR</span>, <span class="notes-t-exact">BAM-ROD</span>, <span class="notes-t-exact">BAM-SLEEVE</span>) already built in the 2026-08-18 walkthrough. The session answers a question asked directly on the call: <em>&quot;have you already used planning?&quot;</em> — and works forward from what an item needs before it can be planned at all, through where demand comes from, to how the <strong>order horizon</strong> decides which demand planning is willing to see.</p>
+          <p class="notes-prose-measure">This is the first recording in the library to cover Enterprise Planning. Every previous session stopped at execution level — sales orders, production orders, warehouse receipts — where supply was created by hand.</p>
         </section>
 
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-attendees">
@@ -1229,13 +1229,13 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </table>
         </div>
       </div>
-          <p class="ln-prose-measure"></p>
+          <p class="notes-prose-measure"></p>
           <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle"><p class="ln-prose-measure"><strong>This is a different role split from the 2026-08-18 review</strong>, which recorded a different person as the consultant running the session. Both are as-observed for their own recording; the meetings are a recurring internal training series and who drives the screen varies.</p></div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure"><strong>This is a different role split from the 2026-08-18 review</strong>, which recorded a different person as the consultant running the session. Both are as-observed for their own recording; the meetings are a recurring internal training series and who drives the screen varies.</p></div>
     </div>
   </div>
 </div>
@@ -1245,116 +1245,116 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h2 id="h-topics">Key topics discussed</h2>
           <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.1">
             <h3 id="t-3.1">3.1 An item cannot be planned until it has planning data</h3>
-            <p class="ln-prose-measure">The session opened by searching <span class="ln-t-named">Item Order Plan</span> <span class="ln-t-exact">cprrp0520m000</span> for <span class="ln-t-exact">BAM-CHOP-PAIR</span> and finding nothing: <q class="ln-quote-inline">it&#39;s not set up for planning yet</q><cite class="ln-at">03:45</cite>.</p>
-            <p class="ln-prose-measure">The reasoning given is exact and worth keeping: <q class="ln-quote-inline">This is one of the main planning screens, so it uses the items planning data. But if it&#39;s not here then you can&#39;t plan it</q><cite class="ln-at">04:39</cite>. The link between an item and its planning data is the <strong>cluster</strong> — <em>&quot;under clusters in the item master, that&#39;s where items planning is linked to the overall item.&quot;</em></p>
-            <p class="ln-prose-measure">The item&#39;s group, <span class="ln-t-exact">BAM-FG</span> &quot;Bamboo Finished Goods&quot;, had been created new for the bamboo family, so the <strong>Item Defaults</strong> template carried no cluster and the planning record was not generated automatically. It was created manually instead, after which the item appeared in the Item Order Plan (05:41).</p>
-            <p class="ln-prose-measure">The environment&#39;s planning cluster is <strong>`NA1`</strong> (&quot;Cluster NA 1&quot;) and the site is <strong>`CSADNA01`</strong> (&quot;PCG CSAD NA Site 1 Manufacturi Houston,TX&quot;) — both read from the selection block of <span class="ln-t-named">Planned Orders</span> <span class="ln-t-exact">cprrp1100m000</span>.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span>, <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">The vendor states the concept behind this: a planning cluster <em>&quot;represents one or more business locations for which planning processes are performed&quot;</em>, and <em>&quot;if the multisite concepts are activated, planning clusters and sites are mandatory&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Clusters</em> — &quot;Planning clusters in Enterprise Planning&quot; (p. 39). That a cluster was genuinely required here, rather than defaulting blank, is evidence that multisite is active in this environment — see section 6. </p>
+            <p class="notes-prose-measure">The session opened by searching <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> for <span class="notes-t-exact">BAM-CHOP-PAIR</span> and finding nothing: <q class="notes-quote-inline">it&#39;s not set up for planning yet</q><cite class="notes-at">03:45</cite>.</p>
+            <p class="notes-prose-measure">The reasoning given is exact and worth keeping: <q class="notes-quote-inline">This is one of the main planning screens, so it uses the items planning data. But if it&#39;s not here then you can&#39;t plan it</q><cite class="notes-at">04:39</cite>. The link between an item and its planning data is the <strong>cluster</strong> — <em>&quot;under clusters in the item master, that&#39;s where items planning is linked to the overall item.&quot;</em></p>
+            <p class="notes-prose-measure">The item&#39;s group, <span class="notes-t-exact">BAM-FG</span> &quot;Bamboo Finished Goods&quot;, had been created new for the bamboo family, so the <strong>Item Defaults</strong> template carried no cluster and the planning record was not generated automatically. It was created manually instead, after which the item appeared in the Item Order Plan (05:41).</p>
+            <p class="notes-prose-measure">The environment&#39;s planning cluster is <strong>`NA1`</strong> (&quot;Cluster NA 1&quot;) and the site is <strong>`CSADNA01`</strong> (&quot;PCG CSAD NA Site 1 Manufacturi Houston,TX&quot;) — both read from the selection block of <span class="notes-t-named">Planned Orders</span> <span class="notes-t-exact">cprrp1100m000</span>.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">The vendor states the concept behind this: a planning cluster <em>&quot;represents one or more business locations for which planning processes are performed&quot;</em>, and <em>&quot;if the multisite concepts are activated, planning clusters and sites are mandatory&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Clusters</em> — &quot;Planning clusters in Enterprise Planning&quot; (p. 39). That a cluster was genuinely required here, rather than defaulting blank, is evidence that multisite is active in this environment — see section 6. </p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.2">
             <h3 id="t-3.2">3.2 Demand has to exist, and the item has to be sellable</h3>
-            <p class="ln-prose-measure"><q class="ln-quote-inline">If there&#39;s no demand there won&#39;t be anything to plan. Or if there&#39;s not demand and sufficient supply, there&#39;s nothing to plan</q><cite class="ln-at">06:25</cite>. A sales order was duplicated to create demand.</p>
-            <p class="ln-prose-measure">Two execution-level obstacles surfaced before the demand could be booked, both worth recording as procedure:</p>
+            <p class="notes-prose-measure"><q class="notes-quote-inline">If there&#39;s no demand there won&#39;t be anything to plan. Or if there&#39;s not demand and sufficient supply, there&#39;s nothing to plan</q><cite class="notes-at">06:25</cite>. A sales order was duplicated to create demand.</p>
+            <p class="notes-prose-measure">Two execution-level obstacles surfaced before the demand could be booked, both worth recording as procedure:</p>
             <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>An item cannot go on a sales order without a sales-office record for the order&#39;s sales office.</strong> The error message was read out as <em>&quot;item sales by sales office not present&quot;</em>. The fix was to add the row on the <strong>Sales Offices</strong> subtab of <span class="ln-t-named">Item</span> <span class="ln-t-exact">tcibd0501m100</span>, taking the sales office from the order header.</li>
-          <li class="rux--list__item"><strong>After a master-data change, the session must be exited and re-entered before it will pick the change up</strong> — <q class="ln-quote-inline">with these things, when you do like a master data change like I just did, you got to exit that session, come back in so that it&#39;ll do a refresh</q><cite class="ln-at">07:06</cite>.</li>
+          <li class="rux--list__item"><strong>An item cannot go on a sales order without a sales-office record for the order&#39;s sales office.</strong> The error message was read out as <em>&quot;item sales by sales office not present&quot;</em>. The fix was to add the row on the <strong>Sales Offices</strong> subtab of <span class="notes-t-named">Item</span> <span class="notes-t-exact">tcibd0501m100</span>, taking the sales office from the order header.</li>
+          <li class="rux--list__item"><strong>After a master-data change, the session must be exited and re-entered before it will pick the change up</strong> — <q class="notes-quote-inline">with these things, when you do like a master data change like I just did, you got to exit that session, come back in so that it&#39;ll do a refresh</q><cite class="notes-at">07:06</cite>.</li>
         </ol>
-            <p class="ln-prose-measure">The order was booked for <strong>5 ea</strong> against <strong>1 ea</strong> on hand — <q class="ln-quote-inline">that means that there&#39;s four short</q><cite class="ln-at">07:44</cite>.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span>, which also shows the item&#39;s <strong>Order System</strong> as <strong>Planned</strong> and the full subentity set (Sales, Production, Service, Ordering, Warehousing selected; Project, Purchase, Quality, Tool not).</p>
+            <p class="notes-prose-measure">The order was booked for <strong>5 ea</strong> against <strong>1 ea</strong> on hand — <q class="notes-quote-inline">that means that there&#39;s four short</q><cite class="notes-at">07:44</cite>.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span>, which also shows the item&#39;s <strong>Order System</strong> as <strong>Planned</strong> and the full subentity set (Sales, Production, Service, Ordering, Warehousing selected; Project, Purchase, Quality, Tool not).</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.3">
             <h3 id="t-3.3">3.3 The order horizon decides which demand planning sees</h3>
-            <p class="ln-prose-measure">This was the core teaching point, and it was demonstrated as a controlled experiment rather than asserted.</p>
-            <p class="ln-prose-measure">With the sales order&#39;s delivery date set to <strong>today</strong>, the demand appeared in the Item Order Plan. Moved out to <strong>a week from now</strong> and refreshed, it disappeared: <q class="ln-quote-inline">it&#39;s gone. Why is it gone? This means planning does not recognize that demand</q><cite class="ln-at">08:25</cite>. The trainees were asked to explain it and could not — <q class="ln-quote-inline">so that is your horizons</q><cite class="ln-at">09:05</cite>.</p>
-            <p class="ln-prose-measure">The screen at that moment shows why. The <strong>Horizons</strong> block of <span class="ln-t-exact">cprrp0520m000</span> reads <strong>Order Horizon `8/20/2026`</strong> — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">The order horizon was then extended in <span class="ln-t-named">Items - Planning</span> <span class="ln-t-exact">cprpd1100m000</span> and the plan refreshed. The same session now shows <strong>Order Horizon `8/28/2026`</strong> and two rows dated <span class="ln-t-exact">8/27/2026</span>: the <strong>Sales Order</strong> <span class="ln-t-exact">100000667</span> with Demand <span class="ln-t-exact">5.0000</span>, and a <strong>Planned Production Order</strong> <span class="ln-t-exact">000000061</span> with Supply <span class="ln-t-exact">4.0000</span> and Planned Available <span class="ln-t-exact">5.0000</span> — MRP&#39;s answer to five short of one on hand.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">The definition given was <q class="ln-quote-inline">the horizon is how far out you want planning to consider demand for an item</q><cite class="ln-at">10:05</cite>, and the business reason was given plainly:</p>
-            <blockquote class="ln-quote"><q class="ln-quote-inline">If you had an order horizon of infinity, and you had a demand that&#39;s a year from now or two years from now, then planning is going to tell you you should supply that demand — but maybe this company doesn&#39;t want to supply that demand yet, because it could change, or they just cannot handle the capacity of it.</q><cite class="ln-at">15:43</cite></blockquote>
-            <p class="ln-prose-measure">A trainee&#39;s paraphrase — <em>&quot;it&#39;s like a window where they ignore everything outside of it&quot;</em> — was confirmed on the call.</p>
-            <p class="ln-prose-measure">This is consistent with the vendor, which frames the same boundary from the supply side: <em>&quot;Within the order horizon, supply is planned in the form of planned orders. Within the master-planning horizon, supply is planned in the form of a supply plan&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Supply planned by order planning and master planning; item master plan&quot; (p. 17).</p>
+            <p class="notes-prose-measure">This was the core teaching point, and it was demonstrated as a controlled experiment rather than asserted.</p>
+            <p class="notes-prose-measure">With the sales order&#39;s delivery date set to <strong>today</strong>, the demand appeared in the Item Order Plan. Moved out to <strong>a week from now</strong> and refreshed, it disappeared: <q class="notes-quote-inline">it&#39;s gone. Why is it gone? This means planning does not recognize that demand</q><cite class="notes-at">08:25</cite>. The trainees were asked to explain it and could not — <q class="notes-quote-inline">so that is your horizons</q><cite class="notes-at">09:05</cite>.</p>
+            <p class="notes-prose-measure">The screen at that moment shows why. The <strong>Horizons</strong> block of <span class="notes-t-exact">cprrp0520m000</span> reads <strong>Order Horizon `8/20/2026`</strong> — the day of the recording — with Planning Horizon and CTP Horizon on the same date, and an empty grid.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">The order horizon was then extended in <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span> and the plan refreshed. The same session now shows <strong>Order Horizon `8/28/2026`</strong> and two rows dated <span class="notes-t-exact">8/27/2026</span>: the <strong>Sales Order</strong> <span class="notes-t-exact">100000667</span> with Demand <span class="notes-t-exact">5.0000</span>, and a <strong>Planned Production Order</strong> <span class="notes-t-exact">000000061</span> with Supply <span class="notes-t-exact">4.0000</span> and Planned Available <span class="notes-t-exact">5.0000</span> — MRP&#39;s answer to five short of one on hand.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">The definition given was <q class="notes-quote-inline">the horizon is how far out you want planning to consider demand for an item</q><cite class="notes-at">10:05</cite>, and the business reason was given plainly:</p>
+            <blockquote class="notes-quote"><q class="notes-quote-inline">If you had an order horizon of infinity, and you had a demand that&#39;s a year from now or two years from now, then planning is going to tell you you should supply that demand — but maybe this company doesn&#39;t want to supply that demand yet, because it could change, or they just cannot handle the capacity of it.</q><cite class="notes-at">15:43</cite></blockquote>
+            <p class="notes-prose-measure">A trainee&#39;s paraphrase — <em>&quot;it&#39;s like a window where they ignore everything outside of it&quot;</em> — was confirmed on the call.</p>
+            <p class="notes-prose-measure">This is consistent with the vendor, which frames the same boundary from the supply side: <em>&quot;Within the order horizon, supply is planned in the form of planned orders. Within the master-planning horizon, supply is planned in the form of a supply plan&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Supply planned by order planning and master planning; item master plan&quot; (p. 17).</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.4">
             <h3 id="t-3.4">3.4 Horizons are entered as days; the dates come from the scenario</h3>
-            <p class="ln-prose-measure"><span class="ln-t-exact">cprpd1100m000</span>&#39;s <strong>Horizons</strong> tab takes each horizon as <strong>a number of days</strong> and displays the resulting date beside it. Captured values for <span class="ln-t-exact">BAM-CHOP-PAIR</span>: Order Horizon <span class="ln-t-exact">10</span> days → <span class="ln-t-exact">9/4/2026</span>; Planning Horizon <span class="ln-t-exact">365</span> days → <span class="ln-t-exact">7/9/2027</span>; Forecast Time Fence <span class="ln-t-exact">0</span> days → <span class="ln-t-exact">8/19/2026</span>; Production Schedules <span class="ln-t-exact">0</span> days → <span class="ln-t-exact">8/20/2026</span>; Operations Horizon <span class="ln-t-exact">9999</span> days → <span class="ln-t-exact">8/20/2032</span>; Time Fence <span class="ln-t-exact">0.00</span> days with <strong>Use Time Fence</strong> selected.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">This matches the vendor exactly: <em>&quot;A horizon in Enterprise Planning is defined by a figure that indicates a number of workdays&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Horizons&quot; (p. 18).</p>
-            <p class="ln-prose-measure">The dates the Item Order Plan displays are then shaped by the <strong>scenario&#39;s</strong> period settings, not by the horizon alone — <q class="ln-quote-inline">these dates are pulling in the scenario time periods</q><cite class="ln-at">10:31</cite>. The scenario in use throughout is <span class="ln-t-exact">ACT</span>, &quot;Actual Plan (Day, Weekly basis)&quot;. Changing the period settings requires <strong>Initialize, Roll, and Update Scenario</strong> before the change takes effect, which the session demonstrated after LN prompted for it (13:08).</p>
+            <p class="notes-prose-measure"><span class="notes-t-exact">cprpd1100m000</span>&#39;s <strong>Horizons</strong> tab takes each horizon as <strong>a number of days</strong> and displays the resulting date beside it. Captured values for <span class="notes-t-exact">BAM-CHOP-PAIR</span>: Order Horizon <span class="notes-t-exact">10</span> days → <span class="notes-t-exact">9/4/2026</span>; Planning Horizon <span class="notes-t-exact">365</span> days → <span class="notes-t-exact">7/9/2027</span>; Forecast Time Fence <span class="notes-t-exact">0</span> days → <span class="notes-t-exact">8/19/2026</span>; Production Schedules <span class="notes-t-exact">0</span> days → <span class="notes-t-exact">8/20/2026</span>; Operations Horizon <span class="notes-t-exact">9999</span> days → <span class="notes-t-exact">8/20/2032</span>; Time Fence <span class="notes-t-exact">0.00</span> days with <strong>Use Time Fence</strong> selected.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">This matches the vendor exactly: <em>&quot;A horizon in Enterprise Planning is defined by a figure that indicates a number of workdays&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Horizons&quot; (p. 18).</p>
+            <p class="notes-prose-measure">The dates the Item Order Plan displays are then shaped by the <strong>scenario&#39;s</strong> period settings, not by the horizon alone — <q class="notes-quote-inline">these dates are pulling in the scenario time periods</q><cite class="notes-at">10:31</cite>. The scenario in use throughout is <span class="notes-t-exact">ACT</span>, &quot;Actual Plan (Day, Weekly basis)&quot;. Changing the period settings requires <strong>Initialize, Roll, and Update Scenario</strong> before the change takes effect, which the session demonstrated after LN prompted for it (13:08).</p>
             <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle"><p class="ln-prose-measure"><strong>An eight-day order horizon resolved to a date two days further out than expected, and the discrepancy was not explained on the call.</strong> Counting from 2026-08-20, the trainer expected <span class="ln-t-exact">8/27</span> or <span class="ln-t-exact">8/28</span> and could not reconcile which — <q class="ln-quote-inline">I don&#39;t know why it&#39;s having that two-day discrepancy</q><cite class="ln-at">12:11</cite>, and later <q class="ln-quote-inline">why isn&#39;t it doing it right… I have to look at this later</q><cite class="ln-at">14:49</cite>. Workday counting, the scenario&#39;s period boundaries, and the calendar are all plausible causes and none was confirmed. <strong>Not documented for this release.</strong></p></div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure"><strong>An eight-day order horizon resolved to a date two days further out than expected, and the discrepancy was not explained on the call.</strong> Counting from 2026-08-20, the trainer expected <span class="notes-t-exact">8/27</span> or <span class="notes-t-exact">8/28</span> and could not reconcile which — <q class="notes-quote-inline">I don&#39;t know why it&#39;s having that two-day discrepancy</q><cite class="notes-at">12:11</cite>, and later <q class="notes-quote-inline">why isn&#39;t it doing it right… I have to look at this later</q><cite class="notes-at">14:49</cite>. Workday counting, the scenario&#39;s period boundaries, and the calendar are all plausible causes and none was confirmed. <strong>Not documented for this release.</strong></p></div>
     </div>
   </div>
 </div>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.5">
             <h3 id="t-3.5">3.5 Running MRP, and why components need their own planning data</h3>
-            <p class="ln-prose-measure">With the demand inside the horizon, MRP was run and produced a planned order to cover the shortfall. The point made next matters more: <q class="ln-quote-inline">not only does it do that, it also includes the materials required from your BOM</q><cite class="ln-at">17:26</cite> — but it only did so for the component that had planning data of its own. <span class="ln-t-exact">BAM-ROD</span> had none; it was given plan data and planning was rerun, <q class="ln-quote-inline">so now it&#39;s planning two items on that instead of one</q><cite class="ln-at">18:18</cite>.</p>
-            <p class="ln-prose-measure">The result reads as a chain across two sessions. On the parent&#39;s plan, the planned production order is <strong>supply</strong>. Open the component&#39;s own Item Order Plan and the same planned production order is <strong>demand</strong>, met by a planned purchase order. <q class="ln-quote-inline">The plan production order that was supply for the main item is demand for the component</q><cite class="ln-at">19:06</cite>.</p>
-            <p class="ln-prose-measure"><span class="ln-t-named">Planned Orders</span> <span class="ln-t-exact">cprrp1100m000</span> is where results are actually reviewed, because <q class="ln-quote-inline">normally you wouldn&#39;t run MRP for a single item, you would run it for all the plannable items</q><cite class="ln-at">22:55</cite>. The captured session shows the environment&#39;s existing planned orders across many items — order types <strong>Planned Purchase Order</strong> and <strong>Planned Production Order</strong>, with Order Quantity, Routing, Bill of Material and Required Date columns.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">Two framings from this part are worth carrying into any future guide:</p>
+            <p class="notes-prose-measure">With the demand inside the horizon, MRP was run and produced a planned order to cover the shortfall. The point made next matters more: <q class="notes-quote-inline">not only does it do that, it also includes the materials required from your BOM</q><cite class="notes-at">17:26</cite> — but it only did so for the component that had planning data of its own. <span class="notes-t-exact">BAM-ROD</span> had none; it was given plan data and planning was rerun, <q class="notes-quote-inline">so now it&#39;s planning two items on that instead of one</q><cite class="notes-at">18:18</cite>.</p>
+            <p class="notes-prose-measure">The result reads as a chain across two sessions. On the parent&#39;s plan, the planned production order is <strong>supply</strong>. Open the component&#39;s own Item Order Plan and the same planned production order is <strong>demand</strong>, met by a planned purchase order. <q class="notes-quote-inline">The plan production order that was supply for the main item is demand for the component</q><cite class="notes-at">19:06</cite>.</p>
+            <p class="notes-prose-measure"><span class="notes-t-named">Planned Orders</span> <span class="notes-t-exact">cprrp1100m000</span> is where results are actually reviewed, because <q class="notes-quote-inline">normally you wouldn&#39;t run MRP for a single item, you would run it for all the plannable items</q><cite class="notes-at">22:55</cite>. The captured session shows the environment&#39;s existing planned orders across many items — order types <strong>Planned Purchase Order</strong> and <strong>Planned Production Order</strong>, with Order Quantity, Routing, Bill of Material and Required Date columns.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">Two framings from this part are worth carrying into any future guide:</p>
             <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Planned orders are suggestions, not instructions.</strong> <q class="ln-quote-inline">These are only suggestions… the actual planners know their data better than we do</q><cite class="ln-at">23:11</cite>. The worked example: a suggestion to buy 101 makes no sense where the supplier sells in batches of 100, so the planner buys 200. The vendor supports this as a configurable constraint rather than a judgement call — <em>&quot;You can specify that the ordered quantity must be a multiple of 100 units. If you have a requirement for 530 units, LN generates an order for 600 units&quot;</em>, set in <span class="ln-t-named">Items - Ordering</span> <span class="ln-t-exact">tcibd2100m000</span> among others — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Lot sizing&quot; (p. 21).</li>
-          <li class="rux--list__item"><strong>A planned order becomes real by being transferred.</strong> <q class="ln-quote-inline">From here you transfer, you actualize the order</q><cite class="ln-at">23:46</cite>. <span class="ln-t-exact">cprrp1100m000</span>&#39;s own help confirms the mechanism and names the destination: a planned order carries a flag for whether it <em>&quot;is ready for transfer to the execution level&quot;</em>, and on transfer the information <em>&quot;is passed on to the Job Shop Control module and the Purchase Control module.&quot;</em> — Infor LN help for <span class="ln-t-named">Planned Orders</span> <span class="ln-t-exact">cprrp1100m000</span>, Field Information</li>
+          <li class="rux--list__item"><strong>Planned orders are suggestions, not instructions.</strong> <q class="notes-quote-inline">These are only suggestions… the actual planners know their data better than we do</q><cite class="notes-at">23:11</cite>. The worked example: a suggestion to buy 101 makes no sense where the supplier sells in batches of 100, so the planner buys 200. The vendor supports this as a configurable constraint rather than a judgement call — <em>&quot;You can specify that the ordered quantity must be a multiple of 100 units. If you have a requirement for 530 units, LN generates an order for 600 units&quot;</em>, set in <span class="notes-t-named">Items - Ordering</span> <span class="notes-t-exact">tcibd2100m000</span> among others — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Lot sizing&quot; (p. 21).</li>
+          <li class="rux--list__item"><strong>A planned order becomes real by being transferred.</strong> <q class="notes-quote-inline">From here you transfer, you actualize the order</q><cite class="notes-at">23:46</cite>. <span class="notes-t-exact">cprrp1100m000</span>&#39;s own help confirms the mechanism and names the destination: a planned order carries a flag for whether it <em>&quot;is ready for transfer to the execution level&quot;</em>, and on transfer the information <em>&quot;is passed on to the Job Shop Control module and the Purchase Control module.&quot;</em> — Infor LN help for <span class="notes-t-named">Planned Orders</span> <span class="notes-t-exact">cprrp1100m000</span>, Field Information</li>
         </ul>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.6">
             <h3 id="t-3.6">3.6 Order pegging</h3>
-            <p class="ln-prose-measure">Pegging was introduced as the answer to multi-level complexity — <q class="ln-quote-inline">like the one I&#39;m on right now, they have like 20 levels. So after an MRP run it&#39;s difficult to track and manage that. But that&#39;s what pegging is for</q><cite class="ln-at">19:51</cite>.</p>
-            <p class="ln-prose-measure">The tree captured is <span class="ln-t-named">Order Pegging</span> <span class="ln-t-exact">cprrp0740m200</span>, reached as <strong>Pegging - Upstream</strong>:</p>
-            <div class="ln-code-scroll"><pre class="rux--type-code-01"><code>Sales Order 100000667-10 | NA1 BAM-CHOP-PAIR | Free | 5 of 5 ea | 08-27-2026
+            <p class="notes-prose-measure">Pegging was introduced as the answer to multi-level complexity — <q class="notes-quote-inline">like the one I&#39;m on right now, they have like 20 levels. So after an MRP run it&#39;s difficult to track and manage that. But that&#39;s what pegging is for</q><cite class="notes-at">19:51</cite>.</p>
+            <p class="notes-prose-measure">The tree captured is <span class="notes-t-named">Order Pegging</span> <span class="notes-t-exact">cprrp0740m200</span>, reached as <strong>Pegging - Upstream</strong>:</p>
+            <div class="notes-code-scroll"><pre class="rux--type-code-01"><code>Sales Order 100000667-10 | NA1 BAM-CHOP-PAIR | Free | 5 of 5 ea | 08-27-2026
 ├─ Stock | ADNA01 | NA1 BAM-CHOP-PAIR | 1 of 1 ea
 └─ Planned Production Order 000000061 | NA1 BAM-CHOP-PAIR | Planned | 4 of 4 ea | 08-27-2026
    └─ Planned Production Order 000000061-1 | NA1 BAM-ROD | Planned | 8 of 8 ea | 08-27-2026
       ├─ Stock | ADNA02 | NA1 BAM-ROD | 2 of 2 ea
       └─ Planned Purchase Order 000000346 | NA1 BAM-ROD | Planned | 6 of 6 ea | 08-27-2026</code></pre></div>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">The tree reconciles against the BOM recorded on 2026-08-18 — <span class="ln-t-exact">BAM-ROD</span> at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. <strong>`BAM-SLEEVE` does not appear</strong>, consistent with only one component having been given planning data during the session.</p>
-            <p class="ln-prose-measure"><strong>Upstream and downstream</strong> were both demonstrated and both are real commands: <q class="ln-quote-inline">upstream is what will supply, downstream is… the demand that drove this order</q><cite class="ln-at">21:21</cite>. The vendor documents them on the same session: <em>&quot;To start the graphical browser from the Planned Orders (cprrp1100m000) session, on the appropriate menu, click Pegging - Upstream or Pegging - Downstream&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Order Based Planning</em> — &quot;Browsing order pegging relationships&quot; (p. 115).</p>
-            <p class="ln-prose-measure">The <strong>red-means-demand, green-means-supply</strong> convention stated on the call (20:32) is a reading of the tree&#39;s own icons. It is on-screen behaviour with no vendor statement found; treat it as observed, not defined.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">The tree reconciles against the BOM recorded on 2026-08-18 — <span class="notes-t-exact">BAM-ROD</span> at quantity 2 per pair — since four pairs require eight rods, of which two are in stock and six must be bought. <strong>`BAM-SLEEVE` does not appear</strong>, consistent with only one component having been given planning data during the session.</p>
+            <p class="notes-prose-measure"><strong>Upstream and downstream</strong> were both demonstrated and both are real commands: <q class="notes-quote-inline">upstream is what will supply, downstream is… the demand that drove this order</q><cite class="notes-at">21:21</cite>. The vendor documents them on the same session: <em>&quot;To start the graphical browser from the Planned Orders (cprrp1100m000) session, on the appropriate menu, click Pegging - Upstream or Pegging - Downstream&quot;</em> — the Infor LN <strong>Order Planning</strong> user guide, <em>Order Based Planning</em> — &quot;Browsing order pegging relationships&quot; (p. 115).</p>
+            <p class="notes-prose-measure">The <strong>red-means-demand, green-means-supply</strong> convention stated on the call (20:32) is a reading of the tree&#39;s own icons. It is on-screen behaviour with no vendor statement found; treat it as observed, not defined.</p>
             <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle"><p class="ln-prose-measure"><strong>The narration did not mention a prerequisite the vendor treats as mandatory.</strong> Multi-level pegging is only browsable once pegging relations have been generated — either by selecting <strong>Update Pegging Relations</strong> in <span class="ln-t-named">Generate Order Planning</span> <span class="ln-t-exact">cprrp1210m000</span>, or by running <span class="ln-t-named">Generate Pegging Relations</span> <span class="ln-t-exact">cprrp0240m000</span> — and LN only generates them out to the <strong>Pegging Horizon</strong> set in <span class="ln-t-named">Planning Parameters</span> <span class="ln-t-exact">cprpd0100m000</span>. The tree resolved on the call without this being discussed, which suggests the environment already has it configured, but that was not shown. the Infor LN <strong>Order Planning</strong> user guide, <em>Order Based Planning</em> — &quot;Pegging for planned orders&quot; (p. 113–114).</p>
-      <p class="ln-prose-measure"><strong>Shown 2026-08-25, and the answer is stronger than &quot;already configured&quot;.</strong> The next session in the series captured <span class="ln-t-exact">cprrp1220m000</span>&#39;s full option set, where <strong>Update Pegging Relations is selected _and_ read-only</strong> — <span class="ln-t-exact">the source on file</span>. Its help states <em>&quot;You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`&quot;</em>, so the disabled state means the <span class="ln-t-exact">ACT</span> scenario is <strong>not</strong> set to <span class="ln-t-exact">User Specified</span> and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See <span class="ln-t-exact">planned-order-transfer-training_2026-08-25.md</span> §3.5.</p></div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure"><strong>The narration did not mention a prerequisite the vendor treats as mandatory.</strong> Multi-level pegging is only browsable once pegging relations have been generated — either by selecting <strong>Update Pegging Relations</strong> in <span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span>, or by running <span class="notes-t-named">Generate Pegging Relations</span> <span class="notes-t-exact">cprrp0240m000</span> — and LN only generates them out to the <strong>Pegging Horizon</strong> set in <span class="notes-t-named">Planning Parameters</span> <span class="notes-t-exact">cprpd0100m000</span>. The tree resolved on the call without this being discussed, which suggests the environment already has it configured, but that was not shown. the Infor LN <strong>Order Planning</strong> user guide, <em>Order Based Planning</em> — &quot;Pegging for planned orders&quot; (p. 113–114).</p>
+      <p class="notes-prose-measure"><strong>Shown 2026-08-25, and the answer is stronger than &quot;already configured&quot;.</strong> The next session in the series captured <span class="notes-t-exact">cprrp1220m000</span>&#39;s full option set, where <strong>Update Pegging Relations is selected _and_ read-only</strong> — <span class="notes-t-exact">the source on file</span>. Its help states <em>&quot;You can modify this check box only if the `Update Pegging Relations during Order Planning` field in the Scenarios (cprpd4100m000) session is `User Specified`&quot;</em>, so the disabled state means the <span class="notes-t-exact">ACT</span> scenario is <strong>not</strong> set to <span class="notes-t-exact">User Specified</span> and pegging relations are rebuilt on every run regardless of operator intent. Nobody on the 2026-08-20 call could have turned it off, which is why the tree resolved without the prerequisite being discussed. See <span class="notes-t-exact">planned-order-transfer-training_2026-08-25.md</span> §3.5.</p></div>
     </div>
   </div>
 </div>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.7">
             <h3 id="t-3.7">3.7 Master planning and the planning horizon</h3>
-            <p class="ln-prose-measure">Master planning was covered as <q class="ln-quote-inline">the other side of it that&#39;s not used as often</q><cite class="ln-at">23:54</cite>, with explicit advice to learn MRP first.</p>
-            <p class="ln-prose-measure">The mechanism as demonstrated:</p>
+            <p class="notes-prose-measure">Master planning was covered as <q class="notes-quote-inline">the other side of it that&#39;s not used as often</q><cite class="notes-at">23:54</cite>, with explicit advice to learn MRP first.</p>
+            <p class="notes-prose-measure">The mechanism as demonstrated:</p>
             <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>Master Plan</strong> is a check box on <span class="ln-t-exact">cprpd1100m000</span>. Until it is selected, the <strong>Planning Horizon</strong> field is disabled — <q class="ln-quote-inline">you got your order horizon and planning, but it&#39;s disabled. Why? Because master planning is not enabled</q><cite class="ln-at">24:17</cite>.</li>
+          <li class="rux--list__item"><strong>Master Plan</strong> is a check box on <span class="notes-t-exact">cprpd1100m000</span>. Until it is selected, the <strong>Planning Horizon</strong> field is disabled — <q class="notes-quote-inline">you got your order horizon and planning, but it&#39;s disabled. Why? Because master planning is not enabled</q><cite class="notes-at">24:17</cite>.</li>
           <li class="rux--list__item">With it selected, the planning horizon becomes separately maintainable — 365 days against the order horizon&#39;s 10 — <em>&quot;so now you can have a separate horizon maintained outside of MRP.&quot;</em></li>
-          <li class="rux--list__item">The item master plan must then be <strong>initialized</strong> before it exists: <q class="ln-quote-inline">every time you turn on the master plan, you got to initialize the master plan… so right now, see, it&#39;s just blank, doesn&#39;t exist</q><cite class="ln-at">26:07</cite>. This is the <strong>Initialize, Roll, and Update Scenario</strong> command, visible as a toolbar button on <span class="ln-t-named">Item Master Plan</span> <span class="ln-t-exact">cprmp2101m000</span>.</li>
-          <li class="rux--list__item">Generating then produces a <strong>production plan</strong> inside the item master plan, in the scenario&#39;s <strong>time buckets</strong> — <q class="ln-quote-inline">this is why they call them buckets</q><cite class="ln-at">27:35</cite>.</li>
+          <li class="rux--list__item">The item master plan must then be <strong>initialized</strong> before it exists: <q class="notes-quote-inline">every time you turn on the master plan, you got to initialize the master plan… so right now, see, it&#39;s just blank, doesn&#39;t exist</q><cite class="notes-at">26:07</cite>. This is the <strong>Initialize, Roll, and Update Scenario</strong> command, visible as a toolbar button on <span class="notes-t-named">Item Master Plan</span> <span class="notes-t-exact">cprmp2101m000</span>.</li>
+          <li class="rux--list__item">Generating then produces a <strong>production plan</strong> inside the item master plan, in the scenario&#39;s <strong>time buckets</strong> — <q class="notes-quote-inline">this is why they call them buckets</q><cite class="notes-at">27:35</cite>.</li>
         </ol>
-            <p class="ln-prose-measure">The captured Item Master Plan shows the two horizons having genuinely diverged — <strong>Order Horizon `9/4/2026`, Planning Horizon `7/9/2027`</strong> — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan.</p>
-            <p class="ln-source">LN training environment, verified 2026-08-20 — <span class="ln-t-exact">the source on file</span></p>
-            <p class="ln-prose-measure">The purpose given was capacity and long-lead-time planning: anticipating demand far enough out to know <em>&quot;if we&#39;re capable of fulfilling this demand further out&quot;</em> — materials lead times and storage space, factory capacity, and letting order-takers know <q class="ln-quote-inline">if they can promise these delivery dates</q><cite class="ln-at">29:17</cite>.</p>
+            <p class="notes-prose-measure">The captured Item Master Plan shows the two horizons having genuinely diverged — <strong>Order Horizon `9/4/2026`, Planning Horizon `7/9/2027`</strong> — over a bucketed grid whose rows are Demand Forecast, Extra Demand, Special Demand, Nonconsumed Forecast, Independent Demand, Dependent Demand, Production Plan, Production Orders, Distribution Orders and Purchase Plan.</p>
+            <p class="notes-source">LN training environment, verified 2026-08-20 — <span class="notes-t-exact">the source on file</span></p>
+            <p class="notes-prose-measure">The purpose given was capacity and long-lead-time planning: anticipating demand far enough out to know <em>&quot;if we&#39;re capable of fulfilling this demand further out&quot;</em> — materials lead times and storage space, factory capacity, and letting order-takers know <q class="notes-quote-inline">if they can promise these delivery dates</q><cite class="notes-at">29:17</cite>.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.8">
             <h3 id="t-3.8">3.8 Where narration and vendor sources diverge</h3>
-            <p class="ln-prose-measure">Two claims need separating from the rest, because both concern the same pair of horizons and only one of them survives its source unchanged.</p>
-            <p class="ln-prose-measure"><strong>Confirmed.</strong> <q class="ln-quote-inline">If master planning is not used, then the planning horizon will always equal the order horizon</q><cite class="ln-at">24:03</cite>. This is stated almost word for word by the vendor: <em>&quot;If the item does not have an item master plan, the planning horizon is equal to the order horizon.&quot;</em> — Infor LN help for <span class="ln-t-named">Item Order Plan</span> <span class="ln-t-exact">cprrp0520m000</span>, Field Information, <em>Planning Horizon</em>. It is also visible on screen twice over: with master planning off, both horizons read <span class="ln-t-exact">8/20/2026</span> and later <span class="ln-t-exact">8/28/2026</span> together; with it on, they diverge to <span class="ln-t-exact">9/4/2026</span> and <span class="ln-t-exact">7/9/2027</span>.</p>
-            <p class="ln-prose-measure"><strong>Imprecise.</strong> <q class="ln-quote-inline">There&#39;s two horizons. The order horizon is for MRP. The planning horizon is for master planning</q><cite class="ln-at">09:51</cite>. The vendor does not treat these as a pair of siblings. The <strong>planning horizon is the total</strong>, and it <em>&quot;consists of an order horizon and/or a master-planning horizon&quot;</em>; the horizon that is specifically for master planning is the <strong>master-planning horizon</strong>, a sub-horizon, not the planning horizon — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Major horizons and time fences&quot; (p. 19).</p>
-            <p class="ln-prose-measure">The practical consequence in <span class="ln-t-exact">cprpd1100m000</span> is the same, which is why the shorthand works on a training call: the planning-horizon field is the one you extend to plan further out under master planning. But the shorthand should not be written into a guide, because it makes the planning horizon sound like it excludes the order horizon when the vendor defines it as containing it.</p>
+            <p class="notes-prose-measure">Two claims need separating from the rest, because both concern the same pair of horizons and only one of them survives its source unchanged.</p>
+            <p class="notes-prose-measure"><strong>Confirmed.</strong> <q class="notes-quote-inline">If master planning is not used, then the planning horizon will always equal the order horizon</q><cite class="notes-at">24:03</cite>. This is stated almost word for word by the vendor: <em>&quot;If the item does not have an item master plan, the planning horizon is equal to the order horizon.&quot;</em> — Infor LN help for <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span>, Field Information, <em>Planning Horizon</em>. It is also visible on screen twice over: with master planning off, both horizons read <span class="notes-t-exact">8/20/2026</span> and later <span class="notes-t-exact">8/28/2026</span> together; with it on, they diverge to <span class="notes-t-exact">9/4/2026</span> and <span class="notes-t-exact">7/9/2027</span>.</p>
+            <p class="notes-prose-measure"><strong>Imprecise.</strong> <q class="notes-quote-inline">There&#39;s two horizons. The order horizon is for MRP. The planning horizon is for master planning</q><cite class="notes-at">09:51</cite>. The vendor does not treat these as a pair of siblings. The <strong>planning horizon is the total</strong>, and it <em>&quot;consists of an order horizon and/or a master-planning horizon&quot;</em>; the horizon that is specifically for master planning is the <strong>master-planning horizon</strong>, a sub-horizon, not the planning horizon — the Infor LN <strong>Order Planning</strong> user guide, <em>Planning Concepts</em> — &quot;Major horizons and time fences&quot; (p. 19).</p>
+            <p class="notes-prose-measure">The practical consequence in <span class="notes-t-exact">cprpd1100m000</span> is the same, which is why the shorthand works on a training call: the planning-horizon field is the one you extend to plan further out under master planning. But the shorthand should not be written into a guide, because it makes the planning horizon sound like it excludes the order horizon when the vendor defines it as containing it.</p>
             <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle"><p class="ln-prose-measure"><strong>The vendor&#39;s third horizon has no matching field on the screen as deployed.</strong> <span class="ln-t-exact">cpordplanug</span> names an <strong>order horizon</strong>, a <strong>master-planning horizon</strong>, and a <strong>planning horizon</strong> that contains them; <span class="ln-t-exact">cprpd1100m000</span>&#39;s Horizons tab exposes only <strong>Order Horizon</strong> and <strong>Planning Horizon</strong>. Whether the master-planning horizon is simply the span between the two, or a field held elsewhere, is not established by anything in the folder. <strong>Not documented for this release.</strong></p></div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure"><strong>The vendor&#39;s third horizon has no matching field on the screen as deployed.</strong> <span class="notes-t-exact">cpordplanug</span> names an <strong>order horizon</strong>, a <strong>master-planning horizon</strong>, and a <strong>planning horizon</strong> that contains them; <span class="notes-t-exact">cprpd1100m000</span>&#39;s Horizons tab exposes only <strong>Order Horizon</strong> and <strong>Planning Horizon</strong>. Whether the master-planning horizon is simply the span between the two, or a field held elsewhere, is not established by anything in the folder. <strong>Not documented for this release.</strong></p></div>
     </div>
   </div>
 </div>
@@ -1364,7 +1364,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-decisions">
           <h2 id="s-decisions">Decisions made</h2>
           <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>MRP is the priority for the trainees; master planning is context.</strong> Stated twice and repeated in the closing instructions — <q class="ln-quote-inline">MRP is the number one thing that you should know and learn, but master plan is good to know too</q><cite class="ln-at">24:51</cite>, and <q class="ln-quote-inline">focus on MRP first</q><cite class="ln-at">27:05</cite>.</li>
+          <li class="rux--list__item"><strong>MRP is the priority for the trainees; master planning is context.</strong> Stated twice and repeated in the closing instructions — <q class="notes-quote-inline">MRP is the number one thing that you should know and learn, but master plan is good to know too</q><cite class="notes-at">24:51</cite>, and <q class="notes-quote-inline">focus on MRP first</q><cite class="notes-at">27:05</cite>.</li>
           <li class="rux--list__item"><strong>The bamboo family stays the training vehicle for planning</strong>, continuing from the 2026-08-18 walkthrough rather than starting a fresh item set.</li>
           <li class="rux--list__item"><strong>Michelle&#39;s plant-3 item is to be cleaned of old demand before MRP is rerun against it</strong> — a separate workstream discussed in the standup, to be settled in a meeting half an hour later (01:03). Not part of this training.</li>
         </ol>
@@ -1391,9 +1391,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <h2 id="s-questions">Open questions</h2>
           <ul class="rux--list--unordered">
           <li class="rux--list__item">How does LN resolve a horizon expressed in days to the date it displays, and what accounts for the two-day gap seen on the call? — needs a controlled re-test against the scenario&#39;s period dates and the calendar </li>
-          <li class="rux--list__item">Where does the vendor&#39;s <strong>master-planning horizon</strong> live in <span class="ln-t-exact">cprpd1100m000</span> as deployed, if anywhere? — needs session help for that session </li>
-          <li class="rux--list__item"><strong>Is the multisite concept active in this environment?</strong> This session strengthens the case considerably — a planning cluster (<span class="ln-t-exact">NA1</span>) was genuinely required before the item could be planned, and a named site (<span class="ln-t-exact">CSADNA01</span>) is a mandatory selection field on <span class="ln-t-exact">cprrp1100m000</span> — but the vendor&#39;s rule runs the other way too, and the parameter itself was never opened. </li>
-          <li class="rux--list__item">Is the red/green colour convention in the pegging tree documented anywhere, or purely a UI affordance? — needs help for <span class="ln-t-exact">cprrp0740m200</span> </li>
+          <li class="rux--list__item">Where does the vendor&#39;s <strong>master-planning horizon</strong> live in <span class="notes-t-exact">cprpd1100m000</span> as deployed, if anywhere? — needs session help for that session </li>
+          <li class="rux--list__item"><strong>Is the multisite concept active in this environment?</strong> This session strengthens the case considerably — a planning cluster (<span class="notes-t-exact">NA1</span>) was genuinely required before the item could be planned, and a named site (<span class="notes-t-exact">CSADNA01</span>) is a mandatory selection field on <span class="notes-t-exact">cprrp1100m000</span> — but the vendor&#39;s rule runs the other way too, and the parameter itself was never opened. </li>
+          <li class="rux--list__item">Is the red/green colour convention in the pegging tree documented anywhere, or purely a UI affordance? — needs help for <span class="notes-t-exact">cprrp0740m200</span> </li>
         </ul>
         </section>
 
@@ -1402,9 +1402,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>A controlled experiment beats an explanation, and it survives into the library as two frames.</strong> The order-horizon lesson was taught by moving one date and refreshing — demand present, demand gone, demand back. Because both states were captured on the same session with the horizon visible in the same block, the pair of screenshots proves the mechanism without needing the narration at all. Where a session demonstrates a cause, capture the before <strong>and</strong> the after; either one alone is just a screen.</li>
           <li class="rux--list__item"><strong>A training session is the cheapest source of &quot;what a session actually looks like&quot; for sessions nobody has exported help for.</strong> Five of the seven frames filed here are the only record in the folder of their session&#39;s field layout. That does not make them a substitute for help text — a screenshot shows a value and never tells you what it means (§2.2) — but it does mean the export list can now be written from observed field names rather than guesses. </li>
-          <li class="rux--list__item"><strong>Verify the confident-sounding claim, not just the hedged one.</strong> The two horizon claims in section 3.8 were delivered with equal confidence in the same minute; one is near-verbatim vendor text and the other conflates two defined terms. Neither could be sorted by tone. The only thing that separated them was reading <span class="ln-t-exact">cpordplanug</span> p. 19 and <span class="ln-t-exact">cprrp0520m000</span>&#39;s Field Information side by side.</li>
+          <li class="rux--list__item"><strong>Verify the confident-sounding claim, not just the hedged one.</strong> The two horizon claims in section 3.8 were delivered with equal confidence in the same minute; one is near-verbatim vendor text and the other conflates two defined terms. Neither could be sorted by tone. The only thing that separated them was reading <span class="notes-t-exact">cpordplanug</span> p. 19 and <span class="notes-t-exact">cprrp0520m000</span>&#39;s Field Information side by side.</li>
           <li class="rux--list__item"><strong>Record what the narration left out, not only what it got wrong.</strong> The pegging prerequisite in section 3.6 is not an error — nothing false was said — but a guide written from the transcript alone would produce an empty tree for anyone whose environment had not already generated pegging relations.</li>
-          <li class="rux--list__item"><strong>Recording:</strong> <span class="ln-t-exact">the source on file</span> — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives.</li>
+          <li class="rux--list__item"><strong>Recording:</strong> <span class="notes-t-exact">the source on file</span> — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives.</li>
         </ul>
         </section>
 
@@ -1415,30 +1415,30 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Session name</div></th><th scope="col"><div class="rux--table-header-label">Code</div></th><th scope="col"><div class="rux--table-header-label">Reference doc</div></th></tr></thead>
             <tbody>
-          <tr><td>Item Order Plan</td><td><span class="ln-t-exact">cprrp0520m000</span></td><td>—</td></tr>
-          <tr><td>Items - Planning</td><td><span class="ln-t-exact">cprpd1100m000</span></td><td>—</td></tr>
-          <tr><td>Planned Orders</td><td><span class="ln-t-exact">cprrp1100m000</span></td><td>—</td></tr>
-          <tr><td>Item Master Plan</td><td><span class="ln-t-exact">cprmp2101m000</span></td><td>—</td></tr>
-          <tr><td>Order Pegging</td><td><span class="ln-t-exact">cprrp0740m200</span></td><td>—</td></tr>
-          <tr><td>Select for Order Pegging</td><td><span class="ln-t-exact">cprrp0740m000</span></td><td>—</td></tr>
-          <tr><td>Generate Order Planning</td><td><span class="ln-t-exact">cprrp1210m000</span></td><td>—</td></tr>
-          <tr><td>Generate Order Planning (Item)</td><td><span class="ln-t-exact">cprrp1220m000</span></td><td>—</td></tr>
-          <tr><td>Generate Pegging Relations</td><td><span class="ln-t-exact">cprrp0240m000</span></td><td>—</td></tr>
-          <tr><td>Planning Parameters</td><td><span class="ln-t-exact">cprpd0100m000</span></td><td>—</td></tr>
-          <tr><td>Scenarios</td><td><span class="ln-t-exact">cprpd4100m000</span></td><td>—</td></tr>
-          <tr><td>Item</td><td><span class="ln-t-exact">tcibd0501m100</span></td><td>—</td></tr>
-          <tr><td>Items - Ordering</td><td><span class="ln-t-exact">tcibd2100m000</span></td><td>—</td></tr>
-          <tr><td>Item Defaults</td><td><span class="ln-t-exact">tcibd0102m000</span></td><td>—</td></tr>
-          <tr><td>Inventory 360</td><td><span class="ln-t-exact">whwmd4300m000</span></td><td><span class="ln-t-exact">the source on file</span></td></tr>
-          <tr><td>Sales Order</td><td><span class="ln-t-exact">tdsls4100m900</span></td><td>—</td></tr>
+          <tr><td>Item Order Plan</td><td><span class="notes-t-exact">cprrp0520m000</span></td><td>—</td></tr>
+          <tr><td>Items - Planning</td><td><span class="notes-t-exact">cprpd1100m000</span></td><td>—</td></tr>
+          <tr><td>Planned Orders</td><td><span class="notes-t-exact">cprrp1100m000</span></td><td>—</td></tr>
+          <tr><td>Item Master Plan</td><td><span class="notes-t-exact">cprmp2101m000</span></td><td>—</td></tr>
+          <tr><td>Order Pegging</td><td><span class="notes-t-exact">cprrp0740m200</span></td><td>—</td></tr>
+          <tr><td>Select for Order Pegging</td><td><span class="notes-t-exact">cprrp0740m000</span></td><td>—</td></tr>
+          <tr><td>Generate Order Planning</td><td><span class="notes-t-exact">cprrp1210m000</span></td><td>—</td></tr>
+          <tr><td>Generate Order Planning (Item)</td><td><span class="notes-t-exact">cprrp1220m000</span></td><td>—</td></tr>
+          <tr><td>Generate Pegging Relations</td><td><span class="notes-t-exact">cprrp0240m000</span></td><td>—</td></tr>
+          <tr><td>Planning Parameters</td><td><span class="notes-t-exact">cprpd0100m000</span></td><td>—</td></tr>
+          <tr><td>Scenarios</td><td><span class="notes-t-exact">cprpd4100m000</span></td><td>—</td></tr>
+          <tr><td>Item</td><td><span class="notes-t-exact">tcibd0501m100</span></td><td>—</td></tr>
+          <tr><td>Items - Ordering</td><td><span class="notes-t-exact">tcibd2100m000</span></td><td>—</td></tr>
+          <tr><td>Item Defaults</td><td><span class="notes-t-exact">tcibd0102m000</span></td><td>—</td></tr>
+          <tr><td>Inventory 360</td><td><span class="notes-t-exact">whwmd4300m000</span></td><td><span class="notes-t-exact">the source on file</span></td></tr>
+          <tr><td>Sales Order</td><td><span class="notes-t-exact">tdsls4100m900</span></td><td>—</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-          <p class="ln-prose-measure"></p>
-          <p class="ln-prose-measure"><strong>The split runs along module lines.</strong> Session help is filed for every Common, Sales and Warehousing session above — <span class="ln-t-exact">tcibd0501m100</span>, <span class="ln-t-exact">tcibd2100m000</span>, <span class="ln-t-exact">tcibd0102m000</span>, <span class="ln-t-exact">tdsls4100m900</span>, <span class="ln-t-exact">whwmd4300m000</span> — and for three Enterprise Planning sessions: <span class="ln-t-exact">cprrp0520m000</span>, <span class="ln-t-exact">cprrp1100m000</span>, <span class="ln-t-exact">cprrp1220m000</span>. The other eight EP sessions have none, including every session under the <span class="ln-t-exact">cprpd</span> and <span class="ln-t-exact">cprmp</span> prefixes. Those eight are named here from the vendor guide or read off the status bar. </p>
+          <p class="notes-prose-measure"></p>
+          <p class="notes-prose-measure"><strong>The split runs along module lines.</strong> Session help is filed for every Common, Sales and Warehousing session above — <span class="notes-t-exact">tcibd0501m100</span>, <span class="notes-t-exact">tcibd2100m000</span>, <span class="notes-t-exact">tcibd0102m000</span>, <span class="notes-t-exact">tdsls4100m900</span>, <span class="notes-t-exact">whwmd4300m000</span> — and for three Enterprise Planning sessions: <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-exact">cprrp1100m000</span>, <span class="notes-t-exact">cprrp1220m000</span>. The other eight EP sessions have none, including every session under the <span class="notes-t-exact">cprpd</span> and <span class="notes-t-exact">cprmp</span> prefixes. Those eight are named here from the vendor guide or read off the status bar. </p>
         </section>
-<p class="rux--type-caption-01 ln-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
       </div>
     </div>
   </div>

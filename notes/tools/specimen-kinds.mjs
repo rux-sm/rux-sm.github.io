@@ -130,16 +130,16 @@ const categoryOf = (n, off) => {
 const markOffPath = (fig, dg) => {
   const order = nodeOrder(dg), off = offPathIds(dg);
   let i = 0;
-  // The page now ships its own `ln-dg-cat--*`; match past it and replace it, so
+  // The page now ships its own `notes-dg-cat--*`; match past it and replace it, so
   // the specimen stays in charge of what every variant is labelled with.
-  const out = fig.replace(/class="ln-dg-node ln-dg-node--([a-z]+)(?: ln-dg-cat--[a-z]+)?"/g, (m, kind) => {
+  const out = fig.replace(/class="notes-dg-node notes-dg-node--([a-z]+)(?: notes-dg-cat--[a-z]+)?"/g, (m, kind) => {
     const node = order[i++];
     if (!node) throw new Error('more tiles in the figure than nodes in the data');
     if (node.kind !== kind) throw new Error(`tile ${i} is ${kind}, node ${node.id} is ${node.kind}`);
-    const extra = (off.has(node.id) ? ' ln-dg-node--off-path' : '')
-      + (node.guide ? ' ln-dg-node--has-guide' : '')
-      + ` ln-dg-cat--${categoryOf(node, off.has(node.id))}`;
-    return `class="ln-dg-node ln-dg-node--${kind}${extra}"`;
+    const extra = (off.has(node.id) ? ' notes-dg-node--off-path' : '')
+      + (node.guide ? ' notes-dg-node--has-guide' : '')
+      + ` notes-dg-cat--${categoryOf(node, off.has(node.id))}`;
+    return `class="notes-dg-node notes-dg-node--${kind}${extra}"`;
   });
   if (i !== order.length) throw new Error(`${i} tiles, ${order.length} nodes`);
   return out;
@@ -147,7 +147,7 @@ const markOffPath = (fig, dg) => {
 
 const figures = DOCS.map(([name, path, note, json]) => {
   const dg = JSON.parse(read(`data/guides/${json}.json`)).diagram;
-  const fig = slice(read(path), '<figure class="rux--tile ln-dg"', '</figure>');
+  const fig = slice(read(path), '<figure class="rux--tile notes-dg"', '</figure>');
   const off = offPathIds(dg).size;
   return [name, `${note} ${off} of ${dg.nodes.length} sit beside the path.`,
     markOffPath(fig, dg)];
@@ -155,12 +155,12 @@ const figures = DOCS.map(([name, path, note, json]) => {
 
 // A VARIANT IS CSS AND NOTHING ELSE, and `:has()` is why it can be. Whether a
 // node is a session is already in the markup -- a tile with a code renders
-// `.ln-dg-node-code` and a tile without one renders nothing -- so the third
+// `.notes-dg-node-code` and a tile without one renders nothing -- so the third
 // form is selectable without a single new class, a new attribute or a change
 // to build.mjs. If the plan is taken, build.mjs should still emit the class
 // outright rather than leaning on this; here it keeps the variants honest by
 // making the markup provably identical across all three.
-const NOT_A_SESSION = '.ln-dg-node:not(:has(.ln-dg-node-code))';
+const NOT_A_SESSION = '.notes-dg-node:not(:has(.notes-dg-node-code))';
 
 // ONE VARIANT NOW, AND THAT IS A REPOINT RATHER THAN AN EDIT. This file was
 // built to compare five ways of drawing the tile against the live site, with
@@ -229,7 +229,7 @@ const VARIANTS = [
       <b>Fill says whether there is a screen behind it.</b> A tile with a session code is
       filled; one without is an outline. That is the signal the 3px stripe used to
       carry, moved to a property that can hold it — and it costs nothing to derive,
-      because <code>:has(.ln-dg-node-code)</code> is already the test the shipped CSS
+      because <code>:has(.notes-dg-node-code)</code> is already the test the shipped CSS
       uses.
       <b>Colour says the role.</b> Neutral Step and Setup, <b>blue</b> Inquiry,
       <b>green</b> Result, <b>yellow</b> Checkpoint — on the border and the text always,
@@ -239,28 +239,28 @@ const VARIANTS = [
       outlines; the session map has 26 of 26 coded, so every tile there is filled and
       the fill axis says nothing at all on that document.`,
     css: `
-.v-roles .ln-dg-node { border: 1px solid var(--rux-border-strong-01, #8d8d8d);
+.v-roles .notes-dg-node { border: 1px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: 0; background: transparent; }
-.v-roles .ln-dg-cat--config, .v-roles .ln-dg-cat--info { border-style: dashed; }
-.v-roles .ln-dg-cat--info { border-color: var(--rux-tag-color-blue, #0043ce); }
-.v-roles .ln-dg-cat--info .ln-dg-node-name,
-.v-roles .ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.v-roles .ln-dg-cat--result { border-color: var(--rux-tag-color-green, #0e6027); }
-.v-roles .ln-dg-cat--result .ln-dg-node-name,
-.v-roles .ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.v-roles .ln-dg-cat--check { border-color: var(--rux-support-warning, #f1c21b); }
-.v-roles .ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b); }
+.v-roles .notes-dg-cat--config, .v-roles .notes-dg-cat--info { border-style: dashed; }
+.v-roles .notes-dg-cat--info { border-color: var(--rux-tag-color-blue, #0043ce); }
+.v-roles .notes-dg-cat--info .notes-dg-node-name,
+.v-roles .notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.v-roles .notes-dg-cat--result { border-color: var(--rux-tag-color-green, #0e6027); }
+.v-roles .notes-dg-cat--result .notes-dg-node-name,
+.v-roles .notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.v-roles .notes-dg-cat--check { border-color: var(--rux-support-warning, #f1c21b); }
+.v-roles .notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b); }
 
 /* the fill arrives only where there is a screen to open */
 /* NOT layer-01: that is the figure's OWN ground, so a neutral fill drawn with it
    is invisible -- measured 57,57,57 on 57,57,57 in g90. The gray tag pair is the
    neutral that differs from the surface. */
-.v-roles .ln-dg-node:has(.ln-dg-node-code) { background: var(--rux-tag-background-gray, #e0e0e0); }
-.v-roles .ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.v-roles .ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code { color: var(--rux-tag-color-gray, #161616); }
-.v-roles .ln-dg-cat--info:has(.ln-dg-node-code) { background: var(--rux-tag-background-blue, #d0e2ff); }
-.v-roles .ln-dg-cat--result:has(.ln-dg-node-code) { background: var(--rux-tag-background-green, #a7f0ba); }
-.v-roles .ln-dg-cat--check:has(.ln-dg-node-code) {
+.v-roles .notes-dg-node:has(.notes-dg-node-code) { background: var(--rux-tag-background-gray, #e0e0e0); }
+.v-roles .notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.v-roles .notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code { color: var(--rux-tag-color-gray, #161616); }
+.v-roles .notes-dg-cat--info:has(.notes-dg-node-code) { background: var(--rux-tag-background-blue, #d0e2ff); }
+.v-roles .notes-dg-cat--result:has(.notes-dg-node-code) { background: var(--rux-tag-background-green, #a7f0ba); }
+.v-roles .notes-dg-cat--check:has(.notes-dg-node-code) {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }`,
   },
 
@@ -300,18 +300,18 @@ const VARIANTS = [
 // reader must learn with no legend, and lower is better in every variant.
 const READOUT = `
 const sig = el => { const s = getComputedStyle(el);
-  const nm = getComputedStyle(el.querySelector('.ln-dg-node-name'));
+  const nm = getComputedStyle(el.querySelector('.notes-dg-node-name'));
   return [s.borderInlineStartColor, s.borderInlineStartStyle, s.borderInlineStartWidth,
           s.backgroundColor, nm.fontStyle].join('|'); };
-const kindOf = n => [...n.classList].find(c => c.startsWith('ln-dg-node--')).slice(12);
+const kindOf = n => [...n.classList].find(c => c.startsWith('notes-dg-node--')).slice(12);
 // The three groups the plan says the canvas must keep apart. A tile with a
 // code is a session; 'read' is the session you only look at.
-const registerOf = n => !n.querySelector('.ln-dg-node-code') ? 'state'
+const registerOf = n => !n.querySelector('.notes-dg-node-code') ? 'state'
   : kindOf(n) === 'read' ? 'look' : 'act';
 // Beside the path or on it -- the split D makes primary.
-const pathOf = n => n.classList.contains('ln-dg-node--off-path') ? 'beside' : 'on';
+const pathOf = n => n.classList.contains('notes-dg-node--off-path') ? 'beside' : 'on';
 // The five decided on 2026-09-10. This is the figure that ranks the variants now.
-const catOf = n => ([...n.classList].find(c => c.startsWith('ln-dg-cat--')) || '--?').slice(11);
+const catOf = n => ([...n.classList].find(c => c.startsWith('notes-dg-cat--')) || '--?').slice(11);
 function collisions(nodes, label) {
   const by = new Map();
   for (const n of nodes) {
@@ -329,7 +329,7 @@ function collisions(nodes, label) {
 // box you open, in a grid of boxes you open, reads as one. So both figures are
 // reported and neither is hidden: 'form' is the strict test, 'form+code' gives
 // today's design the benefit of the doubt.
-const sigWithCode = n => sig(n) + '|' + !!n.querySelector('.ln-dg-node-code');
+const sigWithCode = n => sig(n) + '|' + !!n.querySelector('.notes-dg-node-code');
 function collisionsBy(nodes, label, signature) {
   const by = new Map();
   for (const n of nodes) {
@@ -368,24 +368,24 @@ function perCategory(nodes) {
 //                        today; the overview never scrolls, so it is 6 of 6 there
 //                        in every variant and says nothing.
 function laneScore(scope) {
-  const fig = scope.querySelector('.ln-dg');
-  const lanes = [...scope.querySelectorAll('.ln-dg-lane')];
+  const fig = scope.querySelector('.notes-dg');
+  const lanes = [...scope.querySelectorAll('.notes-dg-lane')];
   // A LANE IS RULED IF IT HAS A RULE ELEMENT. This counted \`::after\` content
   // until the rule shipped, because the variant that proposed it drew a
   // pseudo-element -- and the shipped rule is a grid item, so the detector read
   // 0 on a page with six rules. A figure that reports the absence of something
   // plainly there is worse than no figure.
-  const ruled = scope.querySelectorAll('.ln-dg-rule').length;
+  const ruled = scope.querySelectorAll('.notes-dg-rule').length;
   const was = fig.scrollLeft;
   fig.scrollLeft = fig.scrollWidth - fig.clientWidth;
   const edge = fig.getBoundingClientRect().left;
   const held = lanes.filter(l => l.getBoundingClientRect().right > edge).length;
   fig.scrollLeft = was;
   const byCol = new Map();
-  for (const c of scope.querySelectorAll('.ln-dg-cell')) {
+  for (const c of scope.querySelectorAll('.notes-dg-cell')) {
     const col = c.style.gridColumn, row = c.style.gridRow;
     if (!byCol.has(col)) byCol.set(col, []);
-    for (const n of c.querySelectorAll('.ln-dg-node'))
+    for (const n of c.querySelectorAll('.notes-dg-node'))
       byCol.get(col).push({ row, r: n.getBoundingClientRect() });
   }
   let across = null, within = null;
@@ -400,14 +400,14 @@ function laneScore(scope) {
   return { lanes: lanes.length, ruled, held, within, across };
 }
 function score(scope) {
-  // GRID TILES ONLY. Since the legend shipped, a \`.ln-dg-node\` on the page is
+  // GRID TILES ONLY. Since the legend shipped, a \`.notes-dg-node\` on the page is
   // either a tile or a legend swatch -- the swatch carries the same classes on
   // purpose, so it cannot drift from what it describes -- and a swatch has no
   // kind class. Scoring it as a tile read \`undefined\` for its kind and took the
   // whole readout down, which is the correct failure and is fixed here rather
   // than by loosening what a tile is.
-  const nodes = [...scope.querySelectorAll('.ln-dg-grid .ln-dg-node')];
-  const fig = scope.querySelector('.ln-dg');
+  const nodes = [...scope.querySelectorAll('.notes-dg-grid .notes-dg-node')];
+  const fig = scope.querySelector('.notes-dg');
   return { tiles: nodes.length,
     appearances: new Set(nodes.map(sig)).size,
     byKind: collisions(nodes, kindOf),
@@ -419,7 +419,7 @@ function score(scope) {
     scrolls: fig.scrollWidth > fig.clientWidth,
     scrollW: fig.scrollWidth,
     col: Math.round(parseFloat(getComputedStyle(
-      scope.querySelector('.ln-dg-grid')).gridTemplateColumns.split(' ')[1])) };
+      scope.querySelector('.notes-dg-grid')).gridTemplateColumns.split(' ')[1])) };
 }
 function paint() {
   for (const box of document.querySelectorAll('[data-score]')) {

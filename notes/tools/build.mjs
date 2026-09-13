@@ -185,7 +185,7 @@ function token(t) {
       // longer exists -- a screen reader would have been sent looking for it.
       // The mark now says the step yields something worth writing down, which
       // is what a reader keeping their own notes needs from it.
-      return `<svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>`;
+      return `<svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>`;
 
     // A LINK BETWEEN GUIDES ARRIVES AS A `.md` FILENAME, because that is what
     // the guide is called in atlas. Nine of them exist across these seven and
@@ -207,7 +207,7 @@ function token(t) {
           // anything else keeps its words and loses its href, because a page
           // only its author reads should not stop over a file the site was
           // never going to carry.
-          if (PRIVATE) return `<span class="ln-unlinked">${esc(t.v)}</span>`;
+          if (PRIVATE) return `<span class="notes-unlinked">${esc(t.v)}</span>`;
           throw new Error(`link to "${href}" names no guide in data/guides/`);
         }
         href = `${md[1]}.html`;
@@ -224,12 +224,12 @@ function token(t) {
     // value must NOT carry them: atlas strips them and doubling them here
     // would show ""like this"".
     case 'quote':
-      return `<q class="ln-quote-inline">${esc(t.v)}</q>`
-        + `<cite class="ln-at">${esc(t.at)}</cite>`;
+      return `<q class="notes-quote-inline">${esc(t.v)}</q>`
+        + `<cite class="notes-at">${esc(t.at)}</cite>`;
 
     // THE IMAGE TOKEN RETIRED AT CONTRACT 7. A diagram used to arrive as an
     // SVG copied beside the guide; both diagrams are `diagram` blocks now, so
-    // nothing emits this token and nothing copies a file. `.ln-figure` goes
+    // nothing emits this token and nothing copies a file. `.notes-figure` goes
     // with it.
 
     // A CITATION IS ONE TOKEN. Since atlas f092fb1 the name rides beside the
@@ -300,9 +300,9 @@ function token(t) {
 // dialog -- is information the label does not carry.
 const REG = {
   press: (text, title) =>
-    `<span class="ln-t-press"${title ? ` title="${esc(title)}"` : ''}>${esc(text)}</span>`,
-  named: text => `<span class="ln-t-named">${esc(text)}</span>`,
-  exact: text => `<span class="ln-t-exact">${esc(text)}</span>`,
+    `<span class="notes-t-press"${title ? ` title="${esc(title)}"` : ''}>${esc(text)}</span>`,
+  named: text => `<span class="notes-t-named">${esc(text)}</span>`,
+  exact: text => `<span class="notes-t-exact">${esc(text)}</span>`,
   state: text =>
     `<span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">${esc(text)}</span></span>`,
 };
@@ -318,7 +318,7 @@ const reg = (type, text, title) => REG[REGISTER[type]](text, title);
 const ROUTE_SEP = ' \u2794 ';
 const route = raw => {
   const seg = raw.split(ROUTE_SEP);
-  return `<span class="ln-t-route">${seg.map((x, i) => (i ? `<span class="sep">\u2794</span>` : '')
+  return `<span class="notes-t-route">${seg.map((x, i) => (i ? `<span class="sep">\u2794</span>` : '')
     + (i === seg.length - 1
       ? `<span class="dest">${esc(x)}</span>`
       : `<span>${esc(x)}</span>`)).join('')}</span>`;
@@ -431,7 +431,7 @@ function table(block, { numbered = false } = {}) {
       const inner = tokens(cell.tokens);
       // The step id is the first column and is a row header, not data: it
       // labels the row for anyone navigating the table by cell.
-      if (numbered && i === 0) return `<th scope="row" class="ln-step-id">${inner}</th>`;
+      if (numbered && i === 0) return `<th scope="row" class="notes-step-id">${inner}</th>`;
       // THE LAST COLUMN OF A NUMBERED TABLE IS WHAT THE SCREEN ANSWERS, and it
       // gets a rule so the two halves of a step read as two halves. Structural
       // and not a name match: all 50 numbered tables across the seven guides
@@ -448,13 +448,13 @@ function table(block, { numbered = false } = {}) {
       // down the page. The row id is the storage key; it is authored data,
       // stable across a rebuild, and unique within a document.
       const writeHere = last && row.produces && row.id
-        ? `<div class="rux--form-item ln-note">
+        ? `<div class="rux--form-item notes-note">
               <label class="rux--label" for="n-${esc(row.id)}">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-${esc(row.id)}" class="rux--text-area" rows="1" data-ln-note="${esc(row.id)}" placeholder="The value you saw"></textarea>
+                <textarea id="n-${esc(row.id)}" class="rux--text-area" rows="1" data-notes-note="${esc(row.id)}" placeholder="The value you saw"></textarea>
               </div>
             </div>` : '';
-      return `<td${last ? ' class="ln-see"' : ''}>${inner}${writeHere}</td>`;
+      return `<td${last ? ' class="notes-see"' : ''}>${inner}${writeHere}</td>`;
     }).join('');
     // `produces` marks a step that yields a value worth noting. It is the same
     // fact the `pencil` token carries inline; the attribute lets the row be
@@ -491,8 +491,8 @@ function rblock(b) {
       // A blockquote that is not a callout. Both in the six are pull quotes of
       // speech, and the framing is the point of them.
       return b.quoted
-        ? `<blockquote class="ln-quote">${tokens(b.tokens)}</blockquote>`
-        : `<p class="ln-prose-measure">${tokens(b.tokens)}</p>`;
+        ? `<blockquote class="notes-quote">${tokens(b.tokens)}</blockquote>`
+        : `<p class="notes-prose-measure">${tokens(b.tokens)}</p>`;
 
     case 'list': {
       // NO BARE `rux--list`. Carbon compiles the modifier and the item and
@@ -533,12 +533,12 @@ function rblock(b) {
     }
 
     case 'source':
-      return `<p class="ln-source">${tokens(b.tokens)}</p>`;
+      return `<p class="notes-source">${tokens(b.tokens)}</p>`;
 
     case 'code':
       // MUST SCROLL, NEVER WRAP. All three are ASCII pegging trees, the widest
       // is 96 characters, and wrapping one destroys the only thing it conveys.
-      return `<div class="ln-code-scroll"><pre class="rux--type-code-01"><code>${esc(b.text)}</code></pre></div>`;
+      return `<div class="notes-code-scroll"><pre class="rux--type-code-01"><code>${esc(b.text)}</code></pre></div>`;
 
     case 'table':
       return table(b);
@@ -567,7 +567,7 @@ function block(b, opts) {
   if (isRows(b)) return table(b, opts);
   const c = asCallout(b);
   if (c) return callout(c);
-  return `<p class="ln-prose-measure">${tokens(b.tokens)}</p>`;
+  return `<p class="notes-prose-measure">${tokens(b.tokens)}</p>`;
 }
 
 // ---------------------------------------------------------------- sections
@@ -654,12 +654,12 @@ function phase(p) {
   // THE ROUTE IS THE THING A READER MOST NEEDS WHOLE, so it is a definition
   // list beside the heading rather than a tag: see the note on ROUTED above.
   const where = [
-    p.route ? `<div class="ln-meta-row"><dt>Route</dt><dd>${esc(p.route)}</dd></div>` : '',
-    p.session ? `<div class="ln-meta-row"><dt>Session</dt><dd>${esc(p.session)}${
+    p.route ? `<div class="notes-meta-row"><dt>Route</dt><dd>${esc(p.route)}</dd></div>` : '',
+    p.session ? `<div class="notes-meta-row"><dt>Session</dt><dd>${esc(p.session)}${
       p.sessionCode ? ` <span class="rux--type-code-01">${esc(p.sessionCode)}</span>` : ''}</dd></div>` : '',
     // The evidence stamp travels only in the internal tier; a client never
     // sees it and the generated `verification` sentence stands in for it.
-    p.stamp ? `<div class="ln-meta-row"><dt>Evidence</dt><dd>${esc(p.stamp)}</dd></div>` : '',
+    p.stamp ? `<div class="notes-meta-row"><dt>Evidence</dt><dd>${esc(p.stamp)}</dd></div>` : '',
   ].filter(Boolean).join('');
 
   // INTERNAL TIER: a phase's notes arrive as `notes` blocks after its steps.
@@ -667,7 +667,7 @@ function phase(p) {
   // disclosure here rather than printed as unlabelled paragraphs.
   const open = (p.blocks ?? []).filter(b => b.kind !== 'notes');
   const notes = (p.blocks ?? []).filter(b => b.kind === 'notes');
-  const notesHtml = notes.length ? `<details class="ln-notes"><summary>Notes on phase ${esc(p.n)}</summary>
+  const notesHtml = notes.length ? `<details class="notes-notes"><summary>Notes on phase ${esc(p.n)}</summary>
         ${notes.map(b => block(b)).join('\n        ')}
         </details>` : '';
 
@@ -678,7 +678,7 @@ function phase(p) {
   // Design's metric row putting bare numbers in the outline.
   return `<section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-${p.n}">
         <h3 id="p-${p.n}">Phase ${esc(p.n)} — ${esc(p.title)}</h3>
-        ${where ? `<dl class="ln-meta">${where}</dl>` : ''}
+        ${where ? `<dl class="notes-meta">${where}</dl>` : ''}
         ${[...open.map(b => block(b, { numbered: true })), ...(notesHtml ? [notesHtml] : [])].join('\n        ')}
       </section>`;
 }
@@ -821,7 +821,7 @@ const REVISION = (() => {
   return `rux-ln-atlas ${commit.slice(0, 7)}${contract ? ` · contract ${contract}` : ''}`;
 })();
 const revisionLine = () => REVISION
-  ? `<p class="rux--type-caption-01 ln-revision">Built from ${esc(REVISION)}</p>`
+  ? `<p class="rux--type-caption-01 notes-revision">Built from ${esc(REVISION)}</p>`
   : '';
 
 // SINCE 2026-09-10 EVERY Design RESOURCE IS
@@ -880,16 +880,16 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    \`stack-horizontal\` is NOT the fix -- it cannot wrap, and it truncates its
    children in a narrow column. Plain class, not a \`rux--\` one: check-classes
    ignores non-rux-- names, so an invented \`rux--\` one would be unpoliced. */
-.ln-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: \`.rux--card\` computes \`display: block\`, so stretching the card
    left every footer at its own content height, 16px and 32px apart within one
    row. The card becomes a flex column and the footer takes the slack. */
-.ln-card-cell { display: flex; }
-.ln-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
-.ln-card-cell .rux--card__footer { margin-block-start: auto; }
+.notes-card-cell { display: flex; }
+.notes-card-cell > .rux--card { inline-size: 100%; display: flex; flex-direction: column; }
+.notes-card-cell .rux--card__footer { margin-block-start: auto; }
 
 /* A step cell holds prose with tags in it, so the tags need to sit ON the text
    baseline rather than as blocks. \`.rux--tag\` is inline-flex already; this
@@ -916,7 +916,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .rux--tag.rux--layout--size-sm { vertical-align: .05em; }
 
 /* The step id column carries "1.10"-style ids and should not wrap or stretch. */
-.ln-step-id { inline-size: 4rem; white-space: nowrap; }
+.notes-step-id { inline-size: 4rem; white-space: nowrap; }
 
 /* A step that yields a value worth writing down. The pencil token says the same
    thing inline; this is the row-level view of it. */
@@ -927,7 +927,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* PRESS IT -- a control you act on. Bordered, because it IS a button, and at
    37 tokens site-wide it is rare enough to afford the strongest treatment. */
-.ln-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
+.notes-t-press { font-weight: 600; color: var(--rux-text-primary, #161616);
   border: 1px solid var(--rux-border-strong, #8d8d8d); border-radius: 2px;
   padding: .05em .4em; white-space: nowrap; }
 
@@ -936,21 +936,21 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    It leans on COLOUR, not weight alone: body copy is secondary and a named
    thing is primary. Three semibold phrases in a row shout, and cells carrying
    three of them are common. */
-.ln-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-named { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* EXACT STRING -- type or match it character for character. The mono family
    says that on its own, with no colour and no box. Carbon pairs size and
    line-height as one style, so this takes code-01's family and leaves the
    line box to the prose around it. */
-.ln-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
+.notes-t-exact { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', ui-monospace, monospace);
   font-size: .8125rem; color: var(--rux-text-primary, #161616); white-space: nowrap; }
 
 /* A ROUTE -- plain text, its own arrow, the destination weighted because that
    segment is the thing you press. white-space: normal is deliberate: a long
    route SHOULD wrap, and it wraps whole because every segment is inline. */
-.ln-t-route { white-space: normal; }
-.ln-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
-.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
+.notes-t-route { white-space: normal; }
+.notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
+.notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
@@ -958,11 +958,11 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    document template and corrected. A cap holds 75 characters at any width.
    Tables, diagrams and code keep the column's full width; only prose is
    capped, because only prose is read a line at a time. */
-.ln-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
+.notes-prose-measure { max-inline-size: 38rem; color: var(--rux-text-secondary, #525252); }
 
 /* PROSE IS SECONDARY SO THAT A NAMED THING CAN BE PRIMARY. This is the half of
    the named register that does the work, and it was missing when the registers
-   first landed: measured on the built page, body copy and .ln-t-named were the
+   first landed: measured on the built page, body copy and .notes-t-named were the
    SAME colour, leaving weight alone to carry the distinction -- the thing the
    whole change set out to avoid, since cells carrying three named phrases in a
    row are common. Table cells were already secondary, so only paragraphs
@@ -970,21 +970,21 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* THE TWO STEP COLUMNS DO DIFFERENT JOBS -- left is what you do, right is what
    the screen answers -- and nothing was saying so. */
-.rux--data-table td.ln-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
+.rux--data-table td.notes-see { border-inline-start: 1px solid var(--rux-border-subtle, #e0e0e0); }
 
-.ln-note { margin-block-start: .5rem; max-inline-size: 18rem; }
-.ln-note .rux--label { font-size: .6875rem; }
-.ln-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
-.ln-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
+.notes-note { margin-block-start: .5rem; max-inline-size: 18rem; }
+.notes-note .rux--label { font-size: .6875rem; }
+.notes-notepad { margin-block-start: 3rem; max-inline-size: 38rem; }
+.notes-notepad-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-block-start: 1rem; }
 
-.ln-key { margin-block-start: 3rem; padding: 1.5rem;
+.notes-key { margin-block-start: 3rem; padding: 1.5rem;
   background: var(--rux-layer, #f4f4f4); border-radius: 4px; }
-.ln-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+.notes-key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem 2rem; margin: 1rem 0 0; }
-.ln-key-grid dt { margin-block-end: .2rem; }
-.ln-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
+.notes-key-grid dt { margin-block-end: .2rem; }
+.notes-key-grid dd { margin: 0; color: var(--rux-text-secondary, #525252); font-size: .875rem; }
 
-.ln-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
+.notes-pencil { vertical-align: text-bottom; opacity: .65; margin-inline-start: .25rem; }
 
 /* Route and session, above a phase's steps. A definition list rather than
    prose because they are labelled facts, and \`display: flex\` keeps each
@@ -997,7 +997,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* A pull quote of speech. Both in the six reviews are quotations, so the rule
    is a quiet left rail rather than a decorative blockquote. */
-.ln-quote {
+.notes-quote {
   margin: 0;
   padding-inline-start: 1rem;
   border-inline-start: 2px solid var(--rux-border-subtle-01, #e0e0e0);
@@ -1006,7 +1006,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* The source attribution, 17 of them. Small and muted, and attached to the
    thing above it rather than floating between two blocks. */
-.ln-source {
+.notes-source {
   margin-block-start: -0.5rem;
   font-size: 0.75rem;
   color: var(--rux-text-secondary, #525252);
@@ -1014,8 +1014,8 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* A timestamped quotation. q supplies its own quotation marks, so the token
    value must not carry them -- atlas strips them for exactly this reason. */
-.ln-quote-inline { font-style: italic; }
-.ln-at {
+.notes-quote-inline { font-style: italic; }
+.notes-at {
   margin-inline-start: 0.25rem;
   font-size: 0.75rem;
   font-style: normal;
@@ -1026,62 +1026,62 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    the widest is 96 characters; wrapping one destroys the only thing it
    conveys. The container scrolls so the page itself never does -- a page that
    scrolls sideways is the defect this repo measured for. */
-.ln-code-scroll { overflow-x: auto; max-inline-size: 100%; }
-.ln-code-scroll pre { margin: 0; white-space: pre; }
+.notes-code-scroll { overflow-x: auto; max-inline-size: 100%; }
+.notes-code-scroll pre { margin: 0; white-space: pre; }
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
    pages so ordinary guide and review tables remain dense. */
-.ln-exercise .rux--data-table td:empty::after {
+.notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
-.ln-revision { color: var(--rux-text-secondary); margin: 0; }
+.notes-revision { color: var(--rux-text-secondary); margin: 0; }
 /* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
    16-column arithmetic for a two-column split. */
-.ln-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
+.notes-ex { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: start; }
 @media (min-width: 88rem) {
-  .ln-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
-  .ln-ex-rail { position: sticky; inset-block-start: 4rem; }
+  .notes-ex { grid-template-columns: minmax(0, 1fr) 20rem; }
+  .notes-ex-rail { position: sticky; inset-block-start: 4rem; }
 }
-.ln-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
-.ln-q-list { display: grid; gap: .75rem; }
-.ln-q { display: grid; gap: .75rem; }
-.ln-q-check { margin-block-start: -.25rem; }
-.ln-q-head { display: grid; gap: .5rem; }
-.ln-q-label { margin: 0; font-weight: 600; }
-.ln-q-fields { display: grid; gap: .75rem; }
+.notes-ex-status { margin-inline-start: .75rem; vertical-align: middle; }
+.notes-q-list { display: grid; gap: .75rem; }
+.notes-q { display: grid; gap: .75rem; }
+.notes-q-check { margin-block-start: -.25rem; }
+.notes-q-head { display: grid; gap: .5rem; }
+.notes-q-label { margin: 0; font-weight: 600; }
+.notes-q-fields { display: grid; gap: .75rem; }
 @media (min-width: 66rem) {
-  .ln-q-fields[data-cols="2"], .ln-q-fields[data-cols="3"] {
+  .notes-q-fields[data-cols="2"], .notes-q-fields[data-cols="3"] {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   }
 }
 /* Carbon sizes a text area by its \`cols\`; a worksheet space is as wide as
    its item. Measured 2026-09-06: 12rem by default, three words per line. */
-.ln-ex .rux--form-item, .ln-ex .rux--text-area__wrapper, .ln-ex .rux--text-area { inline-size: 100%; }
-.ln-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
-.ln-q-reveal { margin-block-start: .25rem; }
+.notes-ex .rux--form-item, .notes-ex .rux--text-area__wrapper, .notes-ex .rux--text-area { inline-size: 100%; }
+.notes-q .rux--text-area { min-block-size: 3.25rem; resize: vertical; }
+.notes-q-reveal { margin-block-start: .25rem; }
 /* \`hidden\` alone loses to Carbon's \`.rux--tile { display: block }\`, which
    is more specific than the UA rule; measured 2026-09-06 with every key
    open on first paint. */
-.ln-q-key { margin-block-start: .5rem; }
-.ln-q-key[hidden] { display: none; }
-.ln-q-key p { margin: 0; }
-.ln-pass .rux--checkbox-label-text { font-weight: 400; }
-.ln-ex-work { display: grid; gap: 1rem; }
-.ln-ex-work h3 { margin: 0; }
-.ln-ex-progress { margin: 0; color: var(--rux-text-secondary); }
-.ln-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta { margin: 0; }
-.ln-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
-.ln-meta dd { margin: 0; }
+.notes-q-key { margin-block-start: .5rem; }
+.notes-q-key[hidden] { display: none; }
+.notes-q-key p { margin: 0; }
+.notes-pass .rux--checkbox-label-text { font-weight: 400; }
+.notes-ex-work { display: grid; gap: 1rem; }
+.notes-ex-work h3 { margin: 0; }
+.notes-ex-progress { margin: 0; color: var(--rux-text-secondary); }
+.notes-ex-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta { margin: 0; }
+.notes-meta-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.notes-meta dt { font-weight: 600; min-inline-size: 4.5rem; }
+.notes-meta dd { margin: 0; }
 
 
 /* THE DIAGRAM. Lane and stage arrive as coordinates, so placement is a grid
@@ -1091,9 +1091,9 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    condition 3.1 of the diagram reply -- and the name is capped upstream.
 
    THE FIGURE IS A \`rux--tile\`, added 2026-09-10 so the diagram reads as one
-   surface rather than sitting flush on the page background, the way \`ln-q\`
-   and \`ln-ex-work\` already wrap the worksheet in one elsewhere on this site.
-   That is also why the node boxes below are \`ln-dg-node\`, not \`ln-tile\` --
+   surface rather than sitting flush on the page background, the way \`notes-q\`
+   and \`notes-ex-work\` already wrap the worksheet in one elsewhere on this site.
+   That is also why the node boxes below are \`notes-dg-node\`, not \`notes-tile\` --
    they used to be, and nesting a real \`rux--tile\` around a same-named custom
    class read as one thing wrapping itself. Columns were cut from 13rem to
    7rem the same day, once the collapsible shell (see the header) gave the
@@ -1101,7 +1101,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    two-line name still reads as a title and not a wrapped sentence. */
 /* THE FIGURE IS A ONE-COLUMN GRID SO ITS CAPTION IS AS WIDE AS ITS TABLE. A
    \`<figcaption>\` is a block child of a scroll container, so it is laid out at the
-   VISIBLE width while \`.ln-dg-grid\` sizes to \`max-content\` and sets the scroll
+   VISIBLE width while \`.notes-dg-grid\` sizes to \`max-content\` and sets the scroll
    width -- measured, 796px of caption under 1138px of table. No width on the
    caption can fix that, because its containing block is the frame and not the
    content.
@@ -1126,7 +1126,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    THE TILE STAYS. The decision it was added for on 2026-09-10 still holds -- the
    figure reads as one surface rather than sitting flush on the page -- and that
    is the background, not the padding. */
-.ln-dg { margin: 0; overflow-x: auto; padding: 0;
+.notes-dg { margin: 0; overflow-x: auto; padding: 0;
   display: grid; grid-template-columns: minmax(max-content, 1fr); }
 /* EACH COLUMN AS WIDE AS ITS OWN CONTENT, 2026-09-11. It was
    \`minmax(7rem, 1fr)\` -- every column the same width, and every one of them
@@ -1162,7 +1162,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    the edge exactly as they did when every column stretched. It holds nothing,
    and on a figure that overflows -- the session map -- there is no slack and it
    computes to zero. */
-.ln-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
+.notes-dg-grid { display: grid; grid-template-columns: repeat(var(--dg-cols), max-content) 1fr;
   gap: .5rem; align-items: start; min-inline-size: max-content; }
 /* THE STAGE ROW IS A TABLE HEADER, 2026-09-11. Carbon's data table gives its
    header its own ground, and this row had none: the stage names sat on the same
@@ -1193,9 +1193,9 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    tile that sits flush to its track, so 1rem on the heading alone would push every
    stage name a centimetre right of the tiles it names. Alignment with the column
    beats matching the rule. */
-.ln-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
+.notes-dg-head { grid-column: 1 / -1; grid-row: 1; align-self: stretch;
   background: var(--rux-layer-accent, #e0e0e0); }
-.ln-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
+.notes-dg-stage { grid-row: 1; block-size: 3rem; display: flex; align-items: center;
   font-size: var(--rux-heading-compact-01-font-size, .875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
   line-height: var(--rux-heading-compact-01-line-height, 1.28572);
@@ -1206,8 +1206,8 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    the cost of rules that reach it, so the label takes the padding instead --
    the cell holds the space, the rule spans the table. The grid keeps a little
    at the foot so the last lane's tiles do not sit on the edge. */
-.ln-dg-grid { padding-block-end: 1rem; }
-.ln-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
+.notes-dg-grid { padding-block-end: 1rem; }
+.notes-dg-stage--boundary { color: var(--rux-text-error, #da1e28); }
 
 /* THE LANE RULE, 2026-09-11 -- a line across the whole grid at the top of every
    lane. It is not decoration: measured on both documents at 1440, two tiles
@@ -1219,7 +1219,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    be read as a signal even by someone counting pixels.
 
    IT REPLACES THE UNDERLINE THE STAGE HEADINGS CARRIED, which is why
-   \`.ln-dg-stage\` lost its \`border-block-end\` above. That line was drawn per
+   \`.notes-dg-stage\` lost its \`border-block-end\` above. That line was drawn per
    column, so it broke at every gap; the first lane's rule is continuous, sits in
    the same place, and does the same job better. One line under the headings, not
    two 10px apart.
@@ -1237,7 +1237,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    and so is the line. Both the cell and the lane label take the same .5rem, so
    the label text still lines up with the first tile's title exactly as it did --
    the pair moved together rather than one of them moving. */
-.ln-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
+.notes-dg-rule { grid-column: 1 / -1; align-self: start; block-size: 1px;
   background: var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE TRANSFER BOUNDARY, drawn from the stage's own \`boundary\` flag. The band
@@ -1251,7 +1251,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    \`align-self\` IS LOAD-BEARING: the grid sets \`align-items: start\` so a tile
    sits at the top of its lane row, and an empty band inherits that and computes
    to ZERO height. Measured 2026-09-10 before the fix -- 295px wide, 0px tall. */
-.ln-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
+.notes-dg-band { align-self: stretch; background: var(--rux-layer-accent-01, #e0e0e0);
   border-inline-end: 2px solid var(--rux-support-error, #da1e28);
   margin-block: -.25rem; margin-inline: -.25rem; }
 /* A LANE NAME WRAPS RATHER THAN SETTING THE COLUMN ALONE. \`Enterprise Planning\`
@@ -1280,11 +1280,11 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    \`module: Enterprise Planning\` in their frontmatter, so a map calling that lane
    "Planning" would disagree with every session behind its tiles. Wrapping is
    presentation; renaming is atlas's field and a memo. */
-.ln-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-lane { grid-column: 1; font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary, #525252);
   padding-block-start: 1.1rem; padding-inline: 1rem .75rem;
   max-inline-size: 8.5rem; }
-.ln-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
+.notes-dg-cell { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 
 /* A NODE IS <details>, so the disclosure needs no script and keyboard and
    screen-reader behaviour are the platform's. */
@@ -1293,18 +1293,18 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    and both read it -- the badge inherits it because the panel is inside the
    node. Before this the accent existed only as a border colour, which meant a
    yellow bar on Item Order Plan and nothing anywhere naming it a gate. */
-.ln-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-node { position: relative; --dg-accent: var(--rux-border-strong-01, #8d8d8d);
   border: 1px solid var(--dg-accent); background: transparent; }
 /* THE NUMBER TAKES A ROW, NOT A COLUMN. It sat in a 1.25rem gutter until
    2026-09-10, which cost every tile that width for a two-character label and
    left the name a narrower column than the tile it is in. One column, one child
    per row, and the name gets the whole width back. */
-.ln-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
-.ln-dg-node > summary::marker { content: ""; }
-.ln-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-node > summary { cursor: pointer; padding: .4rem .5rem; display: grid; }
+.notes-dg-node > summary::marker { content: ""; }
+.notes-dg-node-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
-.ln-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node-name { font-size: .75rem; font-weight: 600; line-height: 1.3; }
+.notes-dg-node-code { font-size: .6875rem; color: var(--rux-text-secondary, #525252); }
 
 /* WHERE THE READING ORDER BREAKS, on the face of the node it breaks at. Only
    a node carrying an off-sequence edge gets one -- two of the twenty-four here,
@@ -1314,12 +1314,12 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    replacement first said "seven of the overview's" and made the same mistake
    the other way: seven SPANS on six nodes, because one node both splits and
    needs. Both counts are \`diagram.*.nodes-marked\` in MEASURED now.) Its key reuses
-   \`ln-dg-key\`, so "SPLITS" here and "SPLITS" in the open detail are one
+   \`notes-dg-key\`, so "SPLITS" here and "SPLITS" in the open detail are one
    typographic thing. */
-.ln-dg-node-link { display: block; font-size: .6875rem;
+.notes-dg-node-link { display: block; font-size: .6875rem;
   color: var(--rux-text-secondary, #525252); margin-block-start: .15rem; }
-.ln-dg-node-link .ln-dg-key { color: var(--rux-text-primary, #161616); }
-.ln-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
+.notes-dg-node-link .notes-dg-key { color: var(--rux-text-primary, #161616); }
+.notes-dg-node[open] { background: var(--rux-layer-02, #ffffff); z-index: 5; }
 
 /* THE OPEN DETAIL IS A PANEL ON THE RIGHT, AND THAT IS A LAYOUT FIX BEFORE IT
    IS A STYLE. In flow it is a grid item's content, so its longest prose line
@@ -1330,7 +1330,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    compete with the shape; in flow it did not compete with it, it destroyed it.
 
    OUT OF FLOW IS THE WHOLE MECHANISM: a fixed box contributes nothing to
-   intrinsic sizing, so the column cannot see it, and it also escapes \`.ln-dg\`'s
+   intrinsic sizing, so the column cannot see it, and it also escapes \`.notes-dg\`'s
    scroll container -- \`overflow-x: auto\` computes \`overflow-y\` to auto too, so
    an in-flow panel was clipped at the figure's edges. Fixed has neither problem.
 
@@ -1353,7 +1353,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    against a preview pane with no server behind it, which reported a zero-width
    viewport to script and to fixed-position layout alike. The CSS was never the
    problem, and neither reading was evidence about it. */
-.ln-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
+.notes-dg-detail { position: fixed; inset-block: 3rem 0; inset-inline-end: 0;
   inline-size: 22rem; max-inline-size: 100%; overflow-y: auto; z-index: 6000;
   padding: var(--rux-spacing-05, 1rem); background: var(--rux-layer-02, #ffffff);
   border-inline-start: 1px solid var(--rux-border-strong-01, #8d8d8d);
@@ -1362,13 +1362,13 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 /* THE PANEL SAYS WHICH NODE IT IS. Anchored under its tile the summary above it
    was the title; on the right edge the tile can be scrolled out of sight, so the
    name and code are repeated here or the panel is five unlabelled fields. */
-.ln-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
+.notes-dg-detail-head { margin: 0 0 var(--rux-spacing-05, 1rem);
   padding-block-end: var(--rux-spacing-03, .5rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
-.ln-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-detail-n { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); margin-inline-end: var(--rux-spacing-03, .5rem); }
-.ln-dg-detail-name { font-weight: 600; }
-.ln-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-detail-name { font-weight: 600; }
+.notes-dg-detail-code { display: block; font-size: .75rem; color: var(--rux-text-secondary, #525252); }
 
 /* THE CATEGORY, NAMED RATHER THAN ONLY DRAWN. The canvas teaches the five with
    form; the panel is where the word for it lives, and where a reader who has
@@ -1382,14 +1382,14 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    order -- but it is a distinction for the one place with room to state it,
    not a sixth thing to encode on a tile. Nine kinds in the panel, five
    categories on the canvas, four of them drawn. */
-.ln-dg-kind { display: inline-block; vertical-align: middle;
+.notes-dg-kind { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   padding: 0 var(--rux-spacing-02, .25rem);
   border-inline-start: 3px solid var(--dg-accent);
   font: 600 .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   text-transform: uppercase; letter-spacing: .06em;
   color: var(--rux-text-secondary, #525252); background: var(--rux-layer-01, #f4f4f4); }
-.ln-dg-kind-fine { display: inline-block; vertical-align: middle;
+.notes-dg-kind-fine { display: inline-block; vertical-align: middle;
   margin-inline-start: var(--rux-spacing-02, .25rem);
   font: .6875rem/1.5 var(--rux-code-01-font-family, ui-monospace, monospace);
   color: var(--rux-text-secondary, #525252); }
@@ -1398,7 +1398,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    gives each a different job and a different budget: Route is where to go, Does
    and Do are the work, Leaves is the result. A rule between zones does more for
    scanning than more space between every field would. */
-.ln-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
+.notes-dg-zone { padding-block-end: var(--rux-spacing-04, .75rem);
   margin-block-end: var(--rux-spacing-04, .75rem);
   border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
@@ -1406,7 +1406,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    section 2 says the handovers are where a run stalls. Styled flat it was the
    fourth of five identical paragraphs. This is the one place the panel breaks
    its own uniformity, and the document is the reason. */
-.ln-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
+.notes-dg-zone--leaves { border-inline-start: 3px solid var(--rux-border-strong-01, #8d8d8d);
   padding-inline-start: var(--rux-spacing-04, .75rem);
   background: var(--rux-layer-01, #f4f4f4); padding-block: var(--rux-spacing-03, .5rem); }
 
@@ -1429,26 +1429,26 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    outside this panel's content box and the steps read as three unnumbered
    lines with a stray full stop. 1.5rem here is the marker's own offset, not a
    number that looked right. */
-.ln-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
-.ln-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
+.notes-dg-steps { padding-inline-start: var(--rux-spacing-06, 1.5rem); }
+.notes-dg-steps > .rux--list__item + .rux--list__item { margin-block-start: var(--rux-spacing-03, .5rem); }
 
 /* A STRIP SITS ON THE TILE IT PROVES, so it is drawn as something attached to
    the outcome rather than as a sixth field. It is the one thing in the panel
    that names a DIFFERENT session from the one the panel is about, which is why
    it carries its own heading. */
-.ln-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
+.notes-dg-strip { margin-block-start: var(--rux-spacing-04, .75rem);
   padding: var(--rux-spacing-03, .5rem);
   border: 1px dashed var(--rux-border-strong-01, #8d8d8d);
   background: var(--rux-layer-02, #ffffff); }
-.ln-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
-.ln-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
-.ln-dg-strip-line + .ln-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
+.notes-dg-strip-head { margin: 0 0 var(--rux-spacing-02, .25rem); font-size: .8125rem; font-weight: 600; }
+.notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
+.notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
 /* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
-.ln-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-foot .ln-dg-field { font-size: inherit; }
+.notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-foot .notes-dg-field { font-size: inherit; }
 
 /* THE CLOSE BUTTON IS BUILT BY js/diagram.js AND NEVER SHIPPED IN THE MARKUP.
    Without the script the panel still opens and closes from its own tile, so the
@@ -1456,23 +1456,23 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    tile that may have been scrolled off. A button in the markup with no handler
    behind it would be an affordance that lies, which is the same rule the shell
    applies to its own sign-in button. */
-.ln-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
+.notes-dg-close { position: absolute; inset-block-start: var(--rux-spacing-03, .5rem);
   inset-inline-end: var(--rux-spacing-03, .5rem);
   display: flex; align-items: center; justify-content: center;
   inline-size: 1.75rem; block-size: 1.75rem; padding: 0; cursor: pointer;
   border: 0; background: transparent; color: var(--rux-text-primary, #161616); }
-.ln-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
-.ln-dg-field { margin: 0; font-size: .8125rem; }
-.ln-dg-field + .ln-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
-.ln-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+.notes-dg-close:hover { background: var(--rux-layer-hover-02, #e8e8e8); }
+.notes-dg-field { margin: 0; font-size: .8125rem; }
+.notes-dg-field + .notes-dg-field { margin-block-start: var(--rux-spacing-04, .75rem); }
+.notes-dg-key { font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
   font-size: .6875rem; color: var(--rux-text-secondary, #525252);
   margin-inline-end: var(--rux-spacing-02, .25rem); }
 
 /* THE KEY IS A BLOCK IN THE PANEL AND INLINE EVERYWHERE ELSE. See \`field()\` in
    the generator: inline, the label indented only the first line of a value, so
    a three-line \`Do\` had one edge under the label and two against the panel. */
-.ln-dg-detail .ln-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
-.ln-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
+.notes-dg-detail .notes-dg-key { display: block; margin: 0 0 var(--rux-spacing-01, .125rem); }
+.notes-dg-note { font-size: .8125rem; color: var(--rux-text-secondary, #525252); margin-block-start: .75rem; }
 
 /* THE LEGEND, 2026-09-11, AND IT REVERSES §4 OF THE PLAN. That section declined
    a key outright -- "if three forms need one, they are the wrong three" -- and
@@ -1484,19 +1484,19 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    colour. The forms carry the distinctions; the legend supplies the nouns.
 
    EVERY SWATCH IS A REAL TILE AND NOT A DRAWING OF ONE. It carries
-   \`ln-dg-node\` and the same \`ln-dg-cat--*\` class the canvas uses, so it takes
+   \`notes-dg-node\` and the same \`notes-dg-cat--*\` class the canvas uses, so it takes
    its border, its ground, its stripe and its italic from the rules above and
    CANNOT drift from them. A hand-drawn key that says "dashed" while the tiles
    turn solid is worse than no key, and it is the failure mode a legend invites.
 
-   ONE EXEMPTION, AND IT IS WHY \`ln-dg-key-tile\` EXISTS. A swatch carries no
+   ONE EXEMPTION, AND IT IS WHY \`notes-dg-key-tile\` EXISTS. A swatch carries no
    session code, so the not-a-session rule would draw the Step swatch without
    its stripe -- the single thing that swatch is there to show. The exemption is
    a \`:not()\` on that rule rather than an override after it, so the specificity
    trap §7 records cannot re-form: the rule is (0,3,0) and nothing competes. */
-/* \`ln-dg-legend\`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
-   \`ln-dg-key\` for a day, which is this project's class for the NEEDS and SPLITS
-   marks on a tile face -- see the note above \`.ln-dg-node-link\`. Two rules
+/* \`notes-dg-legend\`, AND THE NAME IS THE WHOLE POINT OF THIS COMMENT. It was
+   \`notes-dg-key\` for a day, which is this project's class for the NEEDS and SPLITS
+   marks on a tile face -- see the note above \`.notes-dg-node-link\`. Two rules
    defined one class, and the legend silently inherited the mark's
    \`text-transform: uppercase\`, \`font-weight: 600\` and letter-spacing: every gloss
    shipped shouting. Nothing caught it. \`check-classes\` validates \`rux--*\` names
@@ -1507,10 +1507,10 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    words, and the words were the only thing §4's no-legend argument was ever
    missing -- the forms teach themselves and the panel spells the category out in
    full when a tile is opened. One line instead of two. */
-.ln-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
+.notes-dg-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem;
   margin-block-start: .75rem; padding: 0; list-style: none; }
 /* \`inline-block\`, AND ITS ABSENCE IS WHY THE FIRST CUT OF THIS BROKE. A swatch
-   is a \`<span>\` wearing \`ln-dg-node\`, which is a tile's class and expects a
+   is a \`<span>\` wearing \`notes-dg-node\`, which is a tile's class and expects a
    block box; the name inside is \`display: block\`. While the \`li\` was a flex
    container the swatch was blockified as a flex item and none of that mattered.
    Dropping the glosses dropped the \`li\` rule with them, the span went back to
@@ -1522,8 +1522,8 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    numbers nothing, and “Bill of material and routing → Generate Order Planning
    (Item), what MRP explodes” held on one line overflows the figure. Only the
    arrow and the two names it joins must stay together. */
-.ln-dg-edge { display: inline-block; }
-.ln-dg-ends { white-space: nowrap; }
+.notes-dg-edge { display: inline-block; }
+.notes-dg-ends { white-space: nowrap; }
 
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then \`kind\` chose a HUE, five
    of them, on a page with no legend -- and \`decision\` and \`outcome\` chose
@@ -1571,13 +1571,13 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    says neither may grow, and it was written before there was anything to break
    it. The dashed border with no fill already says "off the line"; the indent
    was saying it a second time, for 52px of horizontal scroll. */
-.ln-dg-node.ln-dg-cat--config,
-.ln-dg-node.ln-dg-cat--info { border-style: dashed; }
-.ln-dg-node.ln-dg-cat--config .ln-dg-node-name { font-style: normal; }
-.ln-dg-node.ln-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name,
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-node.ln-dg-cat--info .ln-dg-node-name { font-style: italic; }
+.notes-dg-node.notes-dg-cat--config,
+.notes-dg-node.notes-dg-cat--info { border-style: dashed; }
+.notes-dg-node.notes-dg-cat--config .notes-dg-node-name { font-style: normal; }
+.notes-dg-node.notes-dg-cat--info { --dg-accent: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name,
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-code { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-node.notes-dg-cat--info .notes-dg-node-name { font-style: italic; }
 
 /* 4 RESULT -- on the route, and what now exists because of the step before.
    Three departures from a Step, all saying one thing: there is nothing here to
@@ -1585,18 +1585,18 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    is what says "a box you open". This is the category the diagram never had,
    and it is 10 of the 41 nodes: a planned purchase order was drawn as a box
    exactly like a step, so it read as something to go and perform. */
-.ln-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name,
-.ln-dg-cat--result .ln-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--result .ln-dg-node-name { font-style: italic; font-weight: 500; }
+.notes-dg-cat--result { --dg-accent: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name,
+.notes-dg-cat--result .notes-dg-node-code { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--result .notes-dg-node-name { font-style: italic; font-weight: 500; }
 
 /* 5 CHECKPOINT -- the only colour left in the figure. Italic because you do not
    perform a checkpoint; it passes or it quietly does not, and three of the four
    produce no message at all. It keeps the yellow WHEREVER IT STANDS, on the
    route or beside it: a silent failure is the one thing no layout can show, and
    §2 of the session map is written around it. */
-.ln-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
-.ln-dg-cat--check .ln-dg-node-name { color: var(--rux-support-warning, #f1c21b);
+.notes-dg-cat--check { --dg-accent: var(--rux-support-warning, #f1c21b); }
+.notes-dg-cat--check .notes-dg-node-name { color: var(--rux-support-warning, #f1c21b);
   font-style: italic; font-weight: 500; }
 
 /* NOT A SESSION, AND ONLY WHERE THE CATEGORY HAS NOT ALREADY DECIDED ITS OWN
@@ -1613,7 +1613,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    open on the left, found on the live site and fixed at 63094e5 by excluding
    the two categories drawn beside the route. That fix added two \`:not()\`s,
    which took this rule from (0,2,0) to (0,4,0) and so past
-   \`.ln-dg-cat--check:not(:has(...))\` at (0,2,0) -- the rule that existed to keep
+   \`.notes-dg-cat--check:not(:has(...))\` at (0,2,0) -- the rule that existed to keep
    a codeless Checkpoint's accent. Every gate on the overview is codeless, so
    the one hue the design kept was invisible on the page whose content is mostly
    gates: exactly the defect the specimen caught once already, back by
@@ -1624,7 +1624,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    code is filled; one without is an outline. That is the signal the 3px accent
    stripe used to carry -- grey for an ordinary screen, none for nothing to open
    -- moved to a property that can hold it while colour takes the role. It costs
-   nothing to derive: \`:has(.ln-dg-node-code)\` is the test the stripe rule
+   nothing to derive: \`:has(.notes-dg-node-code)\` is the test the stripe rule
    already used.
 
    NOT \`layer-01\`, WHICH IS THE FIGURE'S OWN GROUND. A neutral fill drawn with it
@@ -1634,22 +1634,22 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    THE LEGEND SWATCHES TAKE THE FILL TOO. A swatch carries no code, so it would
    otherwise show every category in its unfilled form and teach the wrong half of
    a two-state system. */
-.ln-dg-node:has(.ln-dg-node-code), .ln-dg-legend-tile {
+.notes-dg-node:has(.notes-dg-node-code), .notes-dg-legend-tile {
   background: var(--rux-tag-background-gray, #e0e0e0); }
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-node:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile .ln-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
-.ln-dg-cat--info:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--info {
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-node:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile .notes-dg-node-name { color: var(--rux-tag-color-gray, #161616); }
+.notes-dg-cat--info:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--info {
   background: var(--rux-tag-background-blue, #d0e2ff); }
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--info:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--info .ln-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
-.ln-dg-cat--result:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--result {
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--info:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--info .notes-dg-node-name { color: var(--rux-tag-color-blue, #0043ce); }
+.notes-dg-cat--result:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--result {
   background: var(--rux-tag-background-green, #a7f0ba); }
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-name,
-.ln-dg-cat--result:has(.ln-dg-node-code) .ln-dg-node-code,
-.ln-dg-legend-tile.ln-dg-cat--result .ln-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
-.ln-dg-cat--check:has(.ln-dg-node-code), .ln-dg-legend-tile.ln-dg-cat--check {
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-name,
+.notes-dg-cat--result:has(.notes-dg-node-code) .notes-dg-node-code,
+.notes-dg-legend-tile.notes-dg-cat--result .notes-dg-node-name { color: var(--rux-tag-color-green, #0e6027); }
+.notes-dg-cat--check:has(.notes-dg-node-code), .notes-dg-legend-tile.notes-dg-cat--check {
   background: color-mix(in srgb, var(--rux-support-warning, #f1c21b) 25%, var(--rux-layer-01, #f4f4f4)); }
 
 /* THE LEGEND IS THE FIGURE'S CAPTION, and until now the figure had none. It is
@@ -1673,7 +1673,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    Mono, uppercase, secondary -- the same voice as MASTER DATA and SALES above it.
 
    ITS SPACING LIVES BELOW THE CATEGORY RULES ON PURPOSE. It sat above them and
-   lost: \`.ln-dg-node.ln-dg-legend-tile\` and \`.ln-dg-node.ln-dg-cat--config\` are
+   lost: \`.notes-dg-node.notes-dg-legend-tile\` and \`.notes-dg-node.notes-dg-cat--config\` are
    both two classes, so the later won and Setup kept \`padding-inline-start: 0\`
    while its neighbours took .5rem. Source order fixes it without a third class;
    escalating specificity is what armed the trap §7 of \`docs/diagram.md\` records,
@@ -1686,17 +1686,17 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    swatches cannot teach, because every swatch is filled. A legend that teaches
    one of two axes is the half-key this one was built to avoid. */
 /* THE CLOSING RULE IS THE GRID'S, NOT THE CAPTION'S, and that is a fact about
-   scrolling rather than a preference. \`.ln-dg\` scrolls on the inline axis, so a
+   scrolling rather than a preference. \`.notes-dg\` scrolls on the inline axis, so a
    block child of it -- which is what a \`<figcaption>\` is -- is laid out at the
    VISIBLE width while the grid inside sizes to \`max-content\` and sets the scroll
    width. A border on the caption therefore stops wherever the frame happens to
    end and cannot reach the far side of the table. Measured: the line crossed
    about a third of the surface.
 
-   So the rule moves to \`.ln-dg-grid\`, which already spans the whole table, and
+   So the rule moves to \`.notes-dg-grid\`, which already spans the whole table, and
    the caption keeps only its padding. The line now closes the table at the same
    width every lane rule runs. */
-.ln-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
+.notes-dg-grid { border-block-end: 1px solid var(--rux-border-subtle-01, #e0e0e0); }
 
 /* THE LINK SHARES THE CAPTION'S ROW, pushed to the far side. A legend on the
    left and the way onward on the right is one line where it was three, and it
@@ -1709,25 +1709,25 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    label they belong to and dropped the link onto a line of its own. Measured
    before the fix. The auto margin keeps label and swatches together on the left
    and takes only the link to the far side. */
-.ln-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
+.notes-dg-legend { display: flex; align-items: baseline; flex-wrap: wrap;
   gap: .5rem 1rem; margin: 0; padding: .75rem 1rem; }
-.ln-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
+.notes-dg-legend-link { font-size: .8125rem; margin-inline-start: auto;
   white-space: nowrap; }
-.ln-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
+.notes-dg-legend-label { font: 600 .75rem/1.4 var(--rux-code-01-font-family, ui-monospace, monospace);
   letter-spacing: .08em; text-transform: uppercase;
   color: var(--rux-text-secondary, #525252); }
-.ln-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
+.notes-dg-legend-list { display: flex; align-items: center; flex-wrap: wrap;
   gap: .25rem .75rem; margin: 0; padding: 0; list-style: none; }
-.ln-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
-.ln-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
-.ln-dg-node.ln-dg-legend-tile { display: inline-flex; align-items: center;
+.notes-dg-legend-list li { display: flex; align-items: center; gap: .5rem; }
+.notes-dg-legend-gloss { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
+.notes-dg-node.notes-dg-legend-tile { display: inline-flex; align-items: center;
   justify-content: center; min-block-size: 1.5rem; padding-inline: .5rem;
   padding-block: 0; vertical-align: middle;
   font-size: var(--rux-label-01-font-size, .75rem);
   line-height: var(--rux-label-01-line-height, 1.33333);
   letter-spacing: var(--rux-label-01-letter-spacing, .32px);
   color: var(--rux-text-primary, #161616); }
-.ln-dg-legend-tile .ln-dg-node-name { display: inline; }
+.notes-dg-legend-tile .notes-dg-node-name { display: inline; }
 
 /* THE HEADER IS \`position: fixed\` AND 48px TALL, so every in-page anchor
    lands its target underneath it. Measured: jumping to a phase put the
@@ -1975,7 +1975,7 @@ function indexPage(site) {
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-map">
           <h1 id="h-map">Order to shipment</h1>
           ${diagramFigure(home.diagram, { notes: false,
-            link: `<a class="rux--link ln-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` })}
+            link: `<a class="rux--link notes-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` })}
         </section>
 ` : `
         <div class="rux--stack-vertical rux--stack-scale-5">
@@ -2051,7 +2051,7 @@ function reviewPage(r, site) {
             r.kind === 'summary' ? 'Read the full review' : 'Read the summary'}</a></p>` : '';
   const body = `        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(r.title)}</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             ${statusTag(r.status)}
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">${r.kind === 'summary' ? 'Summary' : 'Review'}</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated ${esc(r.updated)}</span></span>
@@ -2108,7 +2108,7 @@ function answerList(block, n) {
     const rowId = `${n}:${djb2(labelText)}`;
     const keys = new Map((row.key ?? []).map(k => [k.col, k]));
     const meta = fixed.slice(1).filter(i => (cells[i]?.tokens ?? []).length).map(i =>
-      `<div class="ln-meta-row"><dt>${esc(cols[i])}</dt><dd>${tokens(cells[i].tokens)}</dd></div>`).join('');
+      `<div class="notes-meta-row"><dt>${esc(cols[i])}</dt><dd>${tokens(cells[i].tokens)}</dd></div>`).join('');
     const fields = [...answers].map(i => {
       const qid = `${rowId}:${i}`;
       const fid = `f-${djb2(qid)}`;
@@ -2118,38 +2118,38 @@ function answerList(block, n) {
         ? `<label class="rux--label rux--visually-hidden" for="${fid}">${esc(cols[i])}</label>`
         : `<label class="rux--label" for="${fid}">${esc(cols[i])}</label>`;
       const reveal = key ? `
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm ln-q-reveal" data-ln-reveal="${fid}-key" aria-controls="${fid}-key" aria-expanded="false" disabled>Reveal answer</button>
-              <div class="rux--tile ln-q-key" id="${fid}-key" hidden><p>${tokens(key.tokens)}</p></div>` : '';
-      return `<div class="rux--form-item ln-q-field">
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="${fid}-key" aria-controls="${fid}-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="${fid}-key" hidden><p>${tokens(key.tokens)}</p></div>` : '';
+      return `<div class="rux--form-item notes-q-field">
               ${label}
               <div class="rux--text-area__wrapper">
-                <textarea id="${fid}" class="rux--text-area" rows="2" data-ln-answer="${qid}" data-ln-given="${esc(given)}" placeholder="${single ? esc(cols[i]) : ''}">${esc(given)}</textarea>
+                <textarea id="${fid}" class="rux--text-area" rows="2" data-notes-answer="${qid}" data-notes-given="${esc(given)}" placeholder="${single ? esc(cols[i]) : ''}">${esc(given)}</textarea>
               </div>${reveal}
             </div>`;
     }).join('\n            ');
     const box = check !== null
-      ? checkbox({ id: `c-${djb2(rowId)}`, text: 'Done', attrs: ` data-ln-check="${rowId}"`, cls: 'ln-q-check' })
+      ? checkbox({ id: `c-${djb2(rowId)}`, text: 'Done', attrs: ` data-notes-check="${rowId}"`, cls: 'notes-q-check' })
       : '';
-    return `<div class="rux--tile ln-q" data-ln-row="${rowId}">
-          <div class="ln-q-head">
-            <p class="ln-q-label" id="l-${djb2(rowId)}">${tokens(cells[labelCol]?.tokens ?? [])}</p>
-            ${meta ? `<dl class="ln-meta">${meta}</dl>` : ''}
+    return `<div class="rux--tile notes-q" data-notes-row="${rowId}">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-${djb2(rowId)}">${tokens(cells[labelCol]?.tokens ?? [])}</p>
+            ${meta ? `<dl class="notes-meta">${meta}</dl>` : ''}
           </div>
-          ${answers.size ? `<div class="ln-q-fields" data-cols="${answers.size}">
+          ${answers.size ? `<div class="notes-q-fields" data-cols="${answers.size}">
             ${fields}
           </div>` : ''}
           ${box}
         </div>`;
   }).join('\n        ');
 
-  return `<div class="ln-q-list">\n        ${items}\n        </div>`;
+  return `<div class="notes-q-list">\n        ${items}\n        </div>`;
 }
 
 // THE PASS CONDITION IS A BOX THE LEARNER TICKS. It arrives as its own block
 // kind since contract 4, so this branches on `kind` and never on a paragraph
 // that happens to open with the words.
 const passItem = (b, n) => checkbox({
-  id: `p-${n}`, attrs: ` data-ln-pass="${n}"`, cls: 'ln-pass',
+  id: `p-${n}`, attrs: ` data-notes-pass="${n}"`, cls: 'notes-pass',
   text: `<strong>Pass condition:</strong> ${tokens(b.tokens)}`,
 });
 
@@ -2164,8 +2164,8 @@ const eblock = (b, n) => {
 function exercisePage(e, site) {
   const sections = (e.assignments ?? []).map(a => {
     const id = `a-${a.n}`;
-    return `<section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="${id}" data-ln-section="${a.n}">
-          <h2 id="${id}">${esc(a.n)}. ${esc(a.title)} <span class="rux--tag rux--tag--gray ln-ex-status" data-ln-status>Not started</span></h2>
+    return `<section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="${id}" data-notes-section="${a.n}">
+          <h2 id="${id}">${esc(a.n)}. ${esc(a.title)} <span class="rux--tag rux--tag--gray notes-ex-status" data-notes-status>Not started</span></h2>
           ${(a.blocks ?? []).map(b => eblock(b, a.n)).join('\n          ')}
         </section>`;
   }).join('\n        ');
@@ -2174,29 +2174,29 @@ function exercisePage(e, site) {
   // types stays in this browser's storage until they export it -- there is no
   // server behind this page and the helper text says so. The export is the
   // report-back the exercise already asks for, as a file.
-  const rail = `<aside class="ln-ex-rail" aria-label="Your work">
-          <div class="rux--tile ln-ex-work">
+  const rail = `<aside class="notes-ex-rail" aria-label="Your work">
+          <div class="rux--tile notes-ex-work">
             <h3 class="rux--type-heading-compact-02">Your work</h3>
-            <p class="rux--type-body-compact-01 ln-ex-progress" data-ln-progress>Nothing answered yet</p>
+            <p class="rux--type-body-compact-01 notes-ex-progress" data-notes-progress>Nothing answered yet</p>
             <div class="rux--form-item">
-              <label class="rux--label" for="ln-notes">Notes</label>
+              <label class="rux--label" for="notes-notes">Notes</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="ln-notes" class="rux--text-area" rows="6" data-ln-notes placeholder="Anything worth writing down as you go"></textarea>
+                <textarea id="notes-notes" class="rux--text-area" rows="6" data-notes-notes placeholder="Anything worth writing down as you go"></textarea>
               </div>
               <div class="rux--form__helper-text">Saved in this browser only, with your answers. Export to keep or send them.</div>
             </div>
-            <div class="ln-ex-actions">
-              <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-ln-export>Export answers</button>
-              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-ln-copy>Copy</button>
-              <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-ln-clear>Clear</button>
+            <div class="notes-ex-actions">
+              <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export answers</button>
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-copy>Copy</button>
+              <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-notes-clear>Clear</button>
             </div>
           </div>
         </aside>`;
 
-  const body = `        <div class="ln-ex ln-exercise" data-ln-doc="${esc(e.id)}">
+  const body = `        <div class="notes-ex notes-exercise" data-notes-doc="${esc(e.id)}">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(e.title)}</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             ${statusTag(e.status)}
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Homework</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">${e.assignments.length} assignments</span></span>
@@ -2225,11 +2225,11 @@ function conceptPage(c, site) {
     `<span class="rux--tag rux--tag--outline"><span class="rux--tag__label">${esc(t)}</span></span>`).join('\n            ');
   const body = `        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(c.title)}</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Concept</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated ${esc(c.updated)}</span></span>
           </div>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             ${terms}
           </div>
           ${(c.intro ?? []).map(rblock).join('\n          ')}
@@ -2339,16 +2339,16 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   const row = new Map(lanes.map((l, i) => [l.name, i + 2]));
 
   const heads = stages.map(s =>
-    `<div class="ln-dg-stage${s.boundary ? ' ln-dg-stage--boundary' : ''}" style="grid-column:${col.get(s.n)}">${
+    `<div class="notes-dg-stage${s.boundary ? ' notes-dg-stage--boundary' : ''}" style="grid-column:${col.get(s.n)}">${
       esc(`${s.n} · ${s.name}`)}</div>`).join('\n          ');
 
   const laneLabels = lanes.map(l =>
-    `<div class="ln-dg-lane" style="grid-row:${row.get(l.name)}">${esc(l.name)}</div>`).join('\n          ');
+    `<div class="notes-dg-lane" style="grid-row:${row.get(l.name)}">${esc(l.name)}</div>`).join('\n          ');
 
   // ONE RULE PER LANE, SPANNING EVERY COLUMN. Emitted after the bands so it
   // paints over the transfer tint rather than disappearing into it, and before
   // the cells so a tile is never underneath a line. Why it exists and why it is
-  // an element rather than a pseudo-element is above `.ln-dg-rule` in the
+  // an element rather than a pseudo-element is above `.notes-dg-rule` in the
   // stylesheet. It is decoration in the accessibility tree's sense -- an empty
   // div with no text and no role -- and the lane it belongs to is already named
   // beside it.
@@ -2359,10 +2359,10 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // header from a body by the header's fill, not by a border. Every other lane
   // keeps its rule -- those boundaries have nothing else marking them.
   const laneRules = lanes.slice(1).map(l =>
-    `<div class="ln-dg-rule" style="grid-row:${row.get(l.name)}"></div>`).join('\n          ');
+    `<div class="notes-dg-rule" style="grid-row:${row.get(l.name)}"></div>`).join('\n          ');
 
-  // The header's ground, behind the stage names. See `.ln-dg-head`.
-  const headBand = '<div class="ln-dg-head"></div>';
+  // The header's ground, behind the stage names. See `.notes-dg-head`.
+  const headBand = '<div class="notes-dg-head"></div>';
 
   // THE BOUNDARY IS A PLACE, AND THE RENDERER IS THE ONE THAT DRAWS IT. The
   // stage carries `boundary: true` (guide-json.md section 7) precisely so this
@@ -2377,7 +2377,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // the placements below -- and `-1` resolves against the explicit grid, which
   // is one row tall. It is emitted before the cells so they paint over it.
   const bands = stages.filter(s => s.boundary).map(s =>
-    `<div class="ln-dg-band" style="grid-column:${col.get(s.n)};grid-row:1/span ${
+    `<div class="notes-dg-band" style="grid-column:${col.get(s.n)};grid-row:1/span ${
       lanes.length + 1}" aria-hidden="true"></div>`).join('\n          ');
 
   // THE LABEL SITS ABOVE ITS VALUE, not beside it. Inline, the key indented
@@ -2385,9 +2385,9 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // every one after the first started hard against the panel's left edge, so a
   // field had two left edges and the block read as ragged. The key is a block
   // in the panel and stays inline in the at-rest strip, which is one line by
-  // construction -- hence the `.ln-dg-detail` scope on that rule.
+  // construction -- hence the `.notes-dg-detail` scope on that rule.
   const field = (n, key, label) => n[key]
-    ? `<p class="ln-dg-field"><span class="ln-dg-key">${label}</span>${tokens(n[key].tokens ?? [])}</p>` : '';
+    ? `<p class="notes-dg-field"><span class="notes-dg-key">${label}</span>${tokens(n[key].tokens ?? [])}</p>` : '';
 
   // `steps` AT CONTRACT 8, AND IT IS WHY THE ASK WAS MADE. Section 5 defines
   // `Do` as "the controls, in order, with the status each produces" -- a
@@ -2402,8 +2402,8 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // before contract 8 and the day a sync lands mid-flight. They are never both
   // drawn -- that would print the sequence twice.
   const doField = n => (n.steps ?? []).length
-    ? `<div class="ln-dg-field"><span class="ln-dg-key">Do</span>
-                    <ol class="rux--list--ordered ln-dg-steps">
+    ? `<div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
                       ${n.steps.map(s => `<li class="rux--list__item">${tokens(s.tokens ?? [])}</li>`).join('\n                      ')}
                     </ol>
                   </div>`
@@ -2416,12 +2416,12 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // it IS a session you open; `reads` is what it proves about the tile it sits
   // on. It goes in the outcome zone, since what it proves is what the tile left.
   const stripBlock = n => (n.strips ?? []).length
-    ? n.strips.map(s => `<div class="ln-dg-strip">
-                    <p class="ln-dg-strip-head"><span class="ln-dg-key">Verify</span>${esc(s.session)}${
-                      s.code ? ` <code class="ln-dg-strip-code">${esc(s.code)}</code>` : ''}</p>
-                    ${s.route ? `<p class="ln-dg-field ln-dg-strip-line"><span class="ln-dg-key">Route</span>${tokens(s.route.tokens ?? [])}</p>` : ''}
-                    ${s.reads ? `<p class="ln-dg-field ln-dg-strip-line"><span class="ln-dg-key">Reads</span>${tokens(s.reads.tokens ?? [])}</p>` : ''}
-                    ${s.guide ? `<p class="ln-dg-field ln-dg-strip-line"><span class="ln-dg-key">Guide</span>${tokens(s.guide.tokens ?? [])}</p>` : ''}
+    ? n.strips.map(s => `<div class="notes-dg-strip">
+                    <p class="notes-dg-strip-head"><span class="notes-dg-key">Verify</span>${esc(s.session)}${
+                      s.code ? ` <code class="notes-dg-strip-code">${esc(s.code)}</code>` : ''}</p>
+                    ${s.route ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Route</span>${tokens(s.route.tokens ?? [])}</p>` : ''}
+                    ${s.reads ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Reads</span>${tokens(s.reads.tokens ?? [])}</p>` : ''}
+                    ${s.guide ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Guide</span>${tokens(s.guide.tokens ?? [])}</p>` : ''}
                   </div>`).join('\n                  ')
     : '';
 
@@ -2506,7 +2506,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
       .filter(t => t?.n != null).map(t => String(t.n));
     const one = (word, list, end) => {
       const ns = numberedEnds(list, end);
-      return `<span class="ln-dg-node-link"><span class="ln-dg-key">${word}</span>${
+      return `<span class="notes-dg-node-link"><span class="notes-dg-key">${word}</span>${
         ns.map(esc).join(' · ')}</span>`;
     };
     return (s.length ? one('Splits', s, e => e.to) : '')
@@ -2515,7 +2515,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   const linkField = n => {
     const s = splits.get(n.id) ?? [], f = needs.get(n.id) ?? [];
     const one = (word, list, end) => list.length
-      ? `<p class="ln-dg-field"><span class="ln-dg-key">${word}</span>${
+      ? `<p class="notes-dg-field"><span class="notes-dg-key">${word}</span>${
         list.map(e => `${esc(addressOf(end(e)))}${
           e.label ? ` — ${tokens(e.label.tokens ?? [])}` : ''}`).join(' · ')}</p>` : '';
     return one('Splits', s, e => e.to) + one('Needs', f, e => e.from);
@@ -2532,22 +2532,22 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
       // never be two panels. Nothing here needs a script for it, and a browser
       // too old for `name` ignores it and simply allows two open, which is the
       // behaviour this had all along.
-      const tiles = here.map(n => `<details class="ln-dg-node ln-dg-node--${esc(n.kind)} ln-dg-cat--${
-        esc(cat.get(n.id) ?? 'step')}" name="ln-dg-node">
-                <summary><span class="ln-dg-node-n">${esc(n.n != null ? String(n.n) : '·')}</span><span class="ln-dg-node-name">${
-                  esc(n.session)}</span>${n.code ? `<code class="ln-dg-node-code">${esc(n.code)}</code>` : ''}${strip(n)}</summary>
-                <div class="ln-dg-detail">
-                  <p class="ln-dg-detail-head"><span class="ln-dg-detail-n">${
-                    esc(n.n != null ? String(n.n) : '·')}</span><span class="ln-dg-detail-name">${esc(n.session)}</span>
-                    <span class="ln-dg-kind">${esc(CATEGORY_NAME[cat.get(n.id)] ?? 'Step')}</span><span class="ln-dg-kind-fine">${esc(n.kind)}</span>${
-                    n.code ? `<code class="ln-dg-detail-code">${esc(n.code)}</code>` : ''}</p>
-                  ${zone('ln-dg-zone', field(n, 'route', 'Route'))}
-                  ${zone('ln-dg-zone', field(n, 'does', 'Does') + doField(n))}
-                  ${zone('ln-dg-zone ln-dg-zone--leaves', field(n, 'leaves', 'Leaves') + linkField(n) + stripBlock(n))}
-                  ${zone('ln-dg-foot', field(n, 'guide', 'Guide'))}
+      const tiles = here.map(n => `<details class="notes-dg-node notes-dg-node--${esc(n.kind)} notes-dg-cat--${
+        esc(cat.get(n.id) ?? 'step')}" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">${esc(n.n != null ? String(n.n) : '·')}</span><span class="notes-dg-node-name">${
+                  esc(n.session)}</span>${n.code ? `<code class="notes-dg-node-code">${esc(n.code)}</code>` : ''}${strip(n)}</summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n">${
+                    esc(n.n != null ? String(n.n) : '·')}</span><span class="notes-dg-detail-name">${esc(n.session)}</span>
+                    <span class="notes-dg-kind">${esc(CATEGORY_NAME[cat.get(n.id)] ?? 'Step')}</span><span class="notes-dg-kind-fine">${esc(n.kind)}</span>${
+                    n.code ? `<code class="notes-dg-detail-code">${esc(n.code)}</code>` : ''}</p>
+                  ${zone('notes-dg-zone', field(n, 'route', 'Route'))}
+                  ${zone('notes-dg-zone', field(n, 'does', 'Does') + doField(n))}
+                  ${zone('notes-dg-zone notes-dg-zone--leaves', field(n, 'leaves', 'Leaves') + linkField(n) + stripBlock(n))}
+                  ${zone('notes-dg-foot', field(n, 'guide', 'Guide'))}
                 </div>
               </details>`).join('\n              ');
-      cells.push(`<div class="ln-dg-cell" style="grid-column:${col.get(s.n)};grid-row:${row.get(l.name)}">
+      cells.push(`<div class="notes-dg-cell" style="grid-column:${col.get(s.n)};grid-row:${row.get(l.name)}">
               ${tiles}
             </div>`);
     }
@@ -2568,21 +2568,21 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // legend has four entries and not five. A key that teaches a look the reader
   // will not meet is the beginning of the wall of text this replaced.
   //
-  // THE SWATCH IS A TILE. Same `ln-dg-node`, same `ln-dg-cat--*`, so the border,
+  // THE SWATCH IS A TILE. Same `notes-dg-node`, same `notes-dg-cat--*`, so the border,
   // the ground, the stripe and the italic all come from the canvas rules and the
-  // key cannot say "dashed" on a day the tiles went solid. `ln-dg-key-tile` is
+  // key cannot say "dashed" on a day the tiles went solid. `notes-dg-key-tile` is
   // the one thing it adds, and the stylesheet says what it is for.
   const present = new Set(cat.values());
   const GLOSS = { check: 'decides on its own, and can stop without saying so' };
   const key = `
-        <figcaption class="ln-dg-legend">
-          <span class="ln-dg-legend-label">Key</span>
-          <ul class="ln-dg-legend-list">${['step', 'config', 'info', 'result', 'check']
+        <figcaption class="notes-dg-legend">
+          <span class="notes-dg-legend-label">Key</span>
+          <ul class="notes-dg-legend-list">${['step', 'config', 'info', 'result', 'check']
     .filter(c => present.has(c)).map(c => `
-            <li><span class="ln-dg-node ln-dg-legend-tile ln-dg-cat--${c}"><span class="ln-dg-node-name">${
-      esc(CATEGORY_NAME[c])}</span></span>${GLOSS[c] ? `<span class="ln-dg-legend-gloss">${esc(GLOSS[c])}</span>` : ''}</li>`).join('')}
+            <li><span class="notes-dg-node notes-dg-legend-tile notes-dg-cat--${c}"><span class="notes-dg-node-name">${
+      esc(CATEGORY_NAME[c])}</span></span>${GLOSS[c] ? `<span class="notes-dg-legend-gloss">${esc(GLOSS[c])}</span>` : ''}</li>`).join('')}
           </ul>
-          <span class="ln-dg-legend-gloss">a filled tile is a screen you can open</span>${link}
+          <span class="notes-dg-legend-gloss">a filled tile is a screen you can open</span>${link}
         </figcaption>`;
 
   // THE EDGES FOLD. Nine of them on the overview and five on the map, printed as
@@ -2592,17 +2592,17 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // in no other place. A `<details>` keeps the count visible and the list one
   // click away, which is the same bargain the tiles themselves strike.
   const notes = offEdges.length ? `
-        <p class="ln-dg-note">Reading order runs left to right and ${
+        <p class="notes-dg-note">Reading order runs left to right and ${
           numbered ? 'down the numbers' : 'down the lanes'}.</p>
-        <details class="ln-dg-note ln-dg-off"><summary>${offEdges.length} edge${
+        <details class="notes-dg-note notes-dg-off"><summary>${offEdges.length} edge${
           offEdges.length === 1 ? '' : 's'} run${offEdges.length === 1 ? 's' : ''} against it</summary>
-          <p>${offEdges.map(e => `<span class="ln-dg-edge"><span class="ln-dg-ends">${
+          <p>${offEdges.map(e => `<span class="notes-dg-edge"><span class="notes-dg-ends">${
             esc(addressOf(e.from))} → ${esc(addressOf(e.to))}</span>${
             e.label ? `, ${tokens(e.label.tokens ?? [])}` : ''} <em>(${esc(e.kind)})</em></span>`).join(' · ')}</p>
         </details>` : '';
 
-  return `<figure class="rux--tile ln-dg" style="--dg-cols:${stages.length + 1}">
-          <div class="ln-dg-grid">
+  return `<figure class="rux--tile notes-dg" style="--dg-cols:${stages.length + 1}">
+          <div class="notes-dg-grid">
             ${bands}
             ${headBand}
             ${laneRules}
@@ -2627,7 +2627,7 @@ function referencePage(r, site) {
   }).join('\n        ');
   const body = `        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(r.title)}</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Reference</span></span>
             ${statusTag(r.status)}
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated ${esc(r.updated)}</span></span>
@@ -2654,18 +2654,18 @@ function referencePage(r, site) {
 // does not will look for it after the first step confuses them. Guide pages
 // only -- a summary or a review carries prose, not steps.
 const stepKey = () => `
-      <section class="ln-key" aria-labelledby="h-key">
+      <section class="notes-key" aria-labelledby="h-key">
         <h2 id="h-key" class="rux--type-productive-heading-03">How to read a step</h2>
-        <dl class="ln-key-grid">
-          <dt><span class="ln-t-press">Press it</span></dt>
+        <dl class="notes-key-grid">
+          <dt><span class="notes-t-press">Press it</span></dt>
           <dd>A control you act on.</dd>
-          <dt><span class="ln-t-named">Named on screen</span></dt>
+          <dt><span class="notes-t-named">Named on screen</span></dt>
           <dd>A tab, panel, field or column label &mdash; something you look for.</dd>
-          <dt><span class="ln-t-exact">Exact string</span></dt>
+          <dt><span class="notes-t-exact">Exact string</span></dt>
           <dd>Type or match it character for character.</dd>
           <dt><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">A state</span></span></dt>
           <dd>Confirm you see it before moving on.</dd>
-          <dt><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
+          <dt><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
           <dd>The step yields a value worth writing down.</dd>
         </dl>
       </section>`;
@@ -2685,19 +2685,19 @@ const stepKey = () => `
 // inert, the export does nothing, and every step, table and phase reads as it
 // does now. That is the same contract js/exercise.js holds.
 const notepad = () => `
-      <section class="ln-notepad" aria-labelledby="h-notes">
+      <section class="notes-notepad" aria-labelledby="h-notes">
         <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
         <div class="rux--form-item">
-          <label class="rux--label" for="ln-notes">Anything else worth keeping</label>
+          <label class="rux--label" for="notes-notes">Anything else worth keeping</label>
           <div class="rux--text-area__wrapper">
-            <textarea id="ln-notes" class="rux--text-area" rows="5" data-ln-notes placeholder="What surprised you, what you would check next time"></textarea>
+            <textarea id="notes-notes" class="rux--text-area" rows="5" data-notes-notes placeholder="What surprised you, what you would check next time"></textarea>
           </div>
           <div class="rux--form__helper-text">Saved in this browser only, with the values you noted beside the steps. There is no server and no account behind this page. Export to keep them.</div>
         </div>
-        <div class="ln-notepad-actions">
-          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-ln-export>Export notes</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-ln-copy>Copy</button>
-          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-ln-clear>Clear</button>
+        <div class="notes-notepad-actions">
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export notes</button>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-copy>Copy</button>
+          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-notes-clear>Clear</button>
         </div>
       </section>`;
 
@@ -2705,7 +2705,7 @@ function guidePage(g, site) {
   const { front, back } = splitSections(g.sections);
   const body = `        <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(g.title)}</h1>
-          <div class="ln-tag-row">
+          <div class="notes-tag-row">
             ${statusTag(g.status)}
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">${g.phases.length} phases</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated ${esc(g.updated)}</span></span>
@@ -2732,7 +2732,7 @@ function guidePage(g, site) {
       ${stepKey()}`;
 
   return page({ title: `${g.title} — Notes`, site, activeId: g.id,
-    body: `<div data-ln-doc="${esc(g.id)}">${body}
+    body: `<div data-notes-doc="${esc(g.id)}">${body}
       </div>`, depth: 1,
     scripts: ['js/guide.js'] });
 }

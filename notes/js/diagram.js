@@ -28,7 +28,7 @@
 (() => {
   'use strict';
 
-  const nodes = document.querySelectorAll('.ln-dg-node');
+  const nodes = document.querySelectorAll('.notes-dg-node');
   if (!nodes.length) return;
 
   const closeNode = node => {
@@ -38,12 +38,12 @@
   };
 
   for (const node of nodes) {
-    const panel = node.querySelector(':scope > .ln-dg-detail');
+    const panel = node.querySelector(':scope > .notes-dg-detail');
     if (!panel) continue;
 
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'ln-dg-close';
+    button.className = 'notes-dg-close';
     button.setAttribute('aria-label', 'Close');
     // The sprite is inlined into every page by the generator, so #i-close is
     // a same-document reference and needs no fetch.
@@ -54,6 +54,6 @@
 
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
-    closeNode(document.querySelector('.ln-dg-node[open]'));
+    closeNode(document.querySelector('.notes-dg-node[open]'));
   });
 })();

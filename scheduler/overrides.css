@@ -11,7 +11,7 @@
    panel` sets `display: grid`, which is an author rule and therefore beats the
    browser's own `[hidden] { display: none }`, so a static page that keeps the
    element around and marks it hidden gets an empty panel sitting open. Seen
-   2026-09-06 on the schedule, and the same trap as `.sch-row`'s
+   2026-09-06 on the schedule, and the same trap as `.scheduler-row`'s
    `display: contents`.
 
    One class, at Carbon's own specificity, no !important: `hidden` means
@@ -87,13 +87,13 @@
    rule sets never match and the entrance and exit animations are not
    suppressed so much as absent. The app owns only open and closed.
 
-   The app's own `.sch-trip` wrapper carries the width and the height; this
+   The app's own `.scheduler-trip` wrapper carries the width and the height; this
    rule deliberately sets neither, so a change to the column's size is a change
    in app.css and never here. */
 /* AND ONLY AT md AND UP, SCOPED 2026-09-11. The un-fixing above describes a
    board with three columns on it, and below Carbon's `md` (42rem) there is no
-   room for three: `.sch-trip` is a 20rem wrapper, and on a 375px screen it
-   took the whole board -- measured, `.sch-frame` and `.sch` both came out
+   room for three: `.scheduler-trip` is a 20rem wrapper, and on a 375px screen it
+   took the whole board -- measured, `.scheduler-frame` and `.sch` both came out
    0px wide with the panel's right edge 9px past the screen. Tapping a trip
    deleted the schedule.
 
@@ -160,7 +160,7 @@
        lives on `--right-placement` / `--left-placement`, and index.html
        removes both deliberately ("the app owns only open and closed"). A fixed
        box with no inline inset falls back to its static position, which is
-       inside `.sch-trip` at the far end of the board -- measured at 375px the
+       inside `.scheduler-trip` at the far end of the board -- measured at 375px the
        panel came out `position: fixed`, 375 wide, at x=663, entirely off the
        screen to the right.
 
@@ -211,7 +211,7 @@
    ZEROING THE GRID'S OWN MARGIN LEAVES THE COLUMN GUTTER AS THE INSET, which is
    already exactly 16px and, unlike the margin, has no breakpoints -- Carbon's
    `--rux-grid-gutter` is a flat 2rem at every width. So the page gets one
-   inset, 16px, at every size, matching the 16px `.sch-board` already puts
+   inset, 16px, at every size, matching the 16px `.scheduler-board` already puts
    between its three regions. One number across the whole page.
 
    THE ALTERNATIVE WAS `--rux-grid-gutter: 0`, keeping the margin. It reaches
@@ -261,7 +261,7 @@
    fix above. Compacting the header to 2rem didn't touch its layout: Carbon
    leaves `.rux--side-panel__header` at `display: block`, so the 22px title
    sat flush against the header's own top edge with the dead space below it
-   rather than split evenly, the one thing `.sch-aside__head`'s `flex` +
+   rather than split evenly, the one thing `.scheduler-aside__head`'s `flex` +
    `align-items: center` already gets right for its own title. `flex: 1` on
    `__title` keeps it at the header's full width -- `display: flex` alone
    shrinks it to the text's own width, which would pull the background fill
@@ -281,12 +281,12 @@
    other ghosts on this page are genuinely interactive -- `Today`, `Drivers`
    and `Add another contact` are actions, and they should keep the link
    colour that says so. */
-#sch-avail-close {
+#scheduler-avail-close {
   color: var(--rux-text-primary);
 }
 
 /* 40px SINCE 2026-09-10, the third of the three region heads that moved
-   together -- app.css's `.sch-corner` carries the reasoning and the two
+   together -- app.css's `.scheduler-corner` carries the reasoning and the two
    that stayed behind. Worth saying here what this number is NOT: Carbon's
    own side panel header is about 84px, `padding: 1rem` over a `2.5rem`
    min-block-size plus a 1rem transparent border under the title, with the
@@ -302,7 +302,7 @@
   padding-block: 0;
   /* 48px, `size-lg`, 2026-09-11, with the other two heads. The paragraph above
      calls 40 "a step toward Carbon's shape, not an arrival at it"; this is the
-     next step, and it is taken because app.js's `.sch-toolbar` note found that
+     next step, and it is taken because app.js's `.scheduler-toolbar` note found that
      `.rux--table-toolbar` is 48 at EVERY density and a bare `.rux--btn` is 48
      by default. The rule that all three heads are one band is unchanged -- it
      is what forced this one to move. The type in it is still `heading-03`,
@@ -312,7 +312,7 @@
      minimum for this header is already 2.5rem; what held it at 48 was 16px of
      block padding, zeroed above, and its CLOSE BUTTON -- a 48px control keeps a
      40px head at 48 whatever the minimum says, which is the same lesson the
-     toolbar's five buttons and `.sch-weekbtn` each taught in turn.
+     toolbar's five buttons and `.scheduler-weekbtn` each taught in turn.
 
      WHAT IT COSTS: the title is `heading-03` with a 28px line box, so it has
      about 6px of air in a 40px band against the 16px Carbon intends. That is
@@ -398,7 +398,7 @@
    the difference between `Schedule` losing two characters and losing four.
    The strip truncates either way -- rux chose the even grid knowing it --
    so this simply buys back as much of the label as the token scale allows. */
-#sch-panel-body .rux--tabs__nav-link {
+#scheduler-panel-body .rux--tabs__nav-link {
   padding-inline: var(--rux-spacing-03);
 }
 /* AND IT RUNS EDGE TO EDGE, 2026-09-10. `__inner-content` is
@@ -423,7 +423,7 @@
    container's label and wrapper boxes in flow, which is 40px of empty row
    under the week. Scoped to this one picker by id so the trip editor's four
    date fields -- which are meant to be seen -- are untouched. */
-#sch-week-picker .rux--date-picker-container {
+#scheduler-week-picker .rux--date-picker-container {
   display: none;
 }
 
@@ -484,7 +484,7 @@
    progress)`. It is inert here, measured 0, because that progress is driven
    by the animated-title machinery this panel runs without. A divider says
    "something is under me"; this says "nothing gets that close". */
-#sch-panel-body .rux--tabs {
+#scheduler-panel-body .rux--tabs {
   position: sticky;
   inset-block-start: 0;
   z-index: 3;
@@ -495,7 +495,7 @@
   block-size: calc(var(--rux-layout-size-height-sm) + var(--rux-spacing-05));
   max-block-size: none;
 }
-#sch-panel-body .rux--tab-content {
+#scheduler-panel-body .rux--tab-content {
   padding-block-start: 0;
 }
 
@@ -538,7 +538,7 @@
    the reserve was holding space for nothing.
 
    IT IS SCOPED TO THE PANEL'S ACTION BAR, not to `.rux--action-set` at
-   large: `sch-cancel-modal`'s footer is wide enough for Carbon's own
+   large: `scheduler-cancel-modal`'s footer is wide enough for Carbon's own
    spacing and keeps it. */
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-05);
@@ -625,7 +625,7 @@
    to a class this app puts on the one dialog that holds a calendar, rather
    than to `.rux--modal-content` at large. Any future modal with a picker gets
    the class; any modal with long content must not have it. */
-.sch-modal--has-calendar .rux--modal-content {
+.scheduler-modal--has-calendar .rux--modal-content {
   overflow: visible;
 }
 
@@ -647,11 +647,11 @@
    Scoped to the dialog's own grid, at the same three-class specificity as the
    rule it displaces, so the cascade decides it. Everywhere else — the trip
    panel's own pickers, which sit one per row — keeps Carbon's 18rem. */
-.sch-dialog-grid .rux--date-picker--single,
-.sch-dialog-grid .rux--date-picker--single .rux--date-picker-container,
-.sch-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
-.sch-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
-.sch-dialog-grid .rux--date-picker--single .rux--date-picker__input {
+.scheduler-dialog-grid .rux--date-picker--single,
+.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-container,
+.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
+.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
+.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker__input {
   inline-size: 100%;
 }
 

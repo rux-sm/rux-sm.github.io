@@ -329,8 +329,9 @@ Done when a fresh public clone builds from committed public inputs, required
 checks and pages work in the new layout, private preview leaves public tracked
 files unchanged, future apps enter the shared check and navigation without
 duplicate tooling, and local styles render without external network access.
-Check the ordinary edit/check/commit loop. Report untested
-behavior and any changes in protection honestly.
+Measure the commit hook's whole loop; on this tree it is 1.7 s with Notes'
+rebuild included, so no scope flag was needed. Report untested behavior and
+any changes in protection honestly.
 
 ## 3. Switch deployment and retire the old workflow
 

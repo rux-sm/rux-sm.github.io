@@ -18,11 +18,6 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet, four
   problems are open, and three controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
-- **Builder, repeated items:** duplicate, remove or reorder a block on the page.
-  Whether it is wanted at all is rux's call.
-- **Border contrast.** The session map's dashed Setup border reads 3.02 to 3.48
-  in Carbon's themes and 2.11 to 2.63 in the brand themes. Whether
-  `--rux-border-strong-01` must keep 3:1 everywhere is rux's call.
 
 ### Asked for by the scheduler
 
@@ -32,8 +27,6 @@ done and how.
   It needs the header's inline padding.
 - `.rux--contained-list-item__action` sits at the top of its row. It needs
   `inset-block: 0` and `align-items: center`.
-- Payment-method icons: the sprite has none for money. Add a card, a bank, a
-  note or coin and a cheque from Carbon, or rule that payment methods are text.
 - A combo box that filters as you type. `design/js/list-box.js` is select-only,
   and the trip editor picks one contact from about 200.
 - A display format for the date picker. `design/js/date-picker.js` shows ISO
@@ -47,14 +40,12 @@ done and how.
 ## Scheduler
 
 - Trip search shows the 50 newest matches, with no ranking by relevance.
-- Below the md width the board shows about two of seven days. A day view, or
-  the driver page in `scheduler/docs/screen-inventory.md`, is rux's call.
+- Below the md width the board shows about two of seven days. The phone view
+  is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
 - The board scrolls behind the full-screen panels below md, because nothing
   locks the page.
 - Weak highlights in geist: the roster tint and the keyboard highlight are
   barely visible, and no one has looked at all eight themes on screen.
-- Carbon has no amber tag, so an amber trip bar shows warm-gray. A neutral
-  amber, or one bar colour outside Carbon's tags, is rux's call.
 - **An overpaid trip.** The scheduler counts it as confirmed. The live
   `billing-workflow-v1` setting, which rux-ui reads, leaves `overpaid` out.
 

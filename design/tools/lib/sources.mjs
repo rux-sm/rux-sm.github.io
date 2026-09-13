@@ -9,7 +9,7 @@
 //   per file    check-tags, check-ancestry and check-icons read the fragments
 //               and templates themselves, because their findings name a file to
 //               EDIT — and kitchen-sink.html is generated, so naming it would
-//               send the reader to a file the next `npm run sink` overwrites.
+//               send the reader to a file the next `npm run generate` overwrites.
 //
 // This is the second one. `name` is what a finding prints and what an ignore
 // list keys on, so a template is `templates/app-shell` and not `app-shell`:

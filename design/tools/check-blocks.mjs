@@ -117,7 +117,7 @@ for (const f of markupFiles(['sink', 'templates'])) {
 }
 
 if (!existsSync(MANIFEST)) {
-  faults.push(['NO MANIFEST', MANIFEST, `not found — run \`npm run blocks\``]);
+  faults.push(['NO MANIFEST', MANIFEST, `not found — run \`npm run generate\``]);
 } else {
   let manifest;
   try { manifest = JSON.parse(readFileSync(MANIFEST, 'utf8')); }
@@ -140,22 +140,22 @@ if (!existsSync(MANIFEST)) {
     const got = new Map(manifest.blocks.map(b => [b.id, b]));
     for (const [id, b] of want) {
       const m = got.get(id);
-      if (!m) { faults.push(['STALE', MANIFEST, `${id} is marked in ${b.source} but not in the manifest — run \`npm run blocks\``]); continue; }
+      if (!m) { faults.push(['STALE', MANIFEST, `${id} is marked in ${b.source} but not in the manifest — run \`npm run generate\``]); continue; }
       for (const k of Object.keys(b)) {
         if (say(m[k]) !== say(b[k])) {
           const detail = k === 'html' ? `differs from its source region in ${b.source}:${b.line}` : `${k} is ${say(m[k])}, the source says ${say(b[k])}`;
-          faults.push(['STALE', MANIFEST, `${id}: ${detail} — run \`npm run blocks\``]);
+          faults.push(['STALE', MANIFEST, `${id}: ${detail} — run \`npm run generate\``]);
         }
       }
-      for (const k of Object.keys(m)) if (!(k in b)) faults.push(['STALE', MANIFEST, `${id}: ${k} is in the manifest and not in the source — run \`npm run blocks\``]);
+      for (const k of Object.keys(m)) if (!(k in b)) faults.push(['STALE', MANIFEST, `${id}: ${k} is in the manifest and not in the source — run \`npm run generate\``]);
     }
-    for (const id of got.keys()) if (!want.has(id)) faults.push(['STALE', MANIFEST, `${id} is in the manifest but no longer marked — run \`npm run blocks\``]);
+    for (const id of got.keys()) if (!want.has(id)) faults.push(['STALE', MANIFEST, `${id} is in the manifest but no longer marked — run \`npm run generate\``]);
     // ORDER IS PART OF THE FILE. The catalogue is offered in manifest order.
     if (say(manifest.blocks.map(b => b.id)) !== say(expected.blocks.map(b => b.id)) && want.size === got.size) {
-      faults.push(['STALE', MANIFEST, `the blocks are in a different order from their sources — run \`npm run blocks\``]);
+      faults.push(['STALE', MANIFEST, `the blocks are in a different order from their sources — run \`npm run generate\``]);
     }
     const dupes = manifest.blocks.map(b => b.id).filter((id, i, a) => a.indexOf(id) !== i);
-    for (const id of new Set(dupes)) faults.push(['DUPLICATE', MANIFEST, `${id} appears more than once in the manifest — run \`npm run blocks\``]);
+    for (const id of new Set(dupes)) faults.push(['DUPLICATE', MANIFEST, `${id} appears more than once in the manifest — run \`npm run generate\``]);
 
     // The template side, which nothing checked at all: a whole record could
     // vanish and the reassembly loop simply would not run for it.
@@ -163,9 +163,9 @@ if (!existsSync(MANIFEST)) {
       const names = t => (t ?? []).map(x => x.name);
       const missing = names(expected.templates).filter(n => !names(manifest.templates).includes(n));
       const extra = names(manifest.templates).filter(n => !names(expected.templates).includes(n));
-      for (const n of missing) faults.push(['STALE', MANIFEST, `template ${n} is marked but not in the manifest — run \`npm run blocks\``]);
-      for (const n of extra) faults.push(['STALE', MANIFEST, `template ${n} is in the manifest but no longer marked — run \`npm run blocks\``]);
-      if (!missing.length && !extra.length) faults.push(['STALE', MANIFEST, `a template record disagrees with its source — slots, offsets, containers or gaps — run \`npm run blocks\``]);
+      for (const n of missing) faults.push(['STALE', MANIFEST, `template ${n} is marked but not in the manifest — run \`npm run generate\``]);
+      for (const n of extra) faults.push(['STALE', MANIFEST, `template ${n} is in the manifest but no longer marked — run \`npm run generate\``]);
+      if (!missing.length && !extra.length) faults.push(['STALE', MANIFEST, `a template record disagrees with its source — slots, offsets, containers or gaps — run \`npm run generate\``]);
     }
 
     // Reassembly stays, because it proves something the comparison cannot: that
@@ -178,7 +178,7 @@ if (!existsSync(MANIFEST)) {
         const live = src.slots.find(x => x.name === s.name);
         if (!live) continue;
         if (assemble(s, byName) !== src.html.slice(live.start, live.end)) {
-          faults.push(['REASSEMBLY', `${t.path}:${live.line}`, `SLOT ${s.name}: the manifest's blocks and gaps do not rebuild this slot byte for byte — run \`npm run blocks\``]);
+          faults.push(['REASSEMBLY', `${t.path}:${live.line}`, `SLOT ${s.name}: the manifest's blocks and gaps do not rebuild this slot byte for byte — run \`npm run generate\``]);
         }
       }
     }
@@ -191,7 +191,7 @@ if (!existsSync(MANIFEST)) {
 // are decisions kept by hand, and what is checked about them is that they still
 // name something that exists.
 if (!existsSync(COVERAGE)) {
-  faults.push(['NO COVERAGE', COVERAGE, `not found — the catalogue's own measurement; run \`npm run blocks\``]);
+  faults.push(['NO COVERAGE', COVERAGE, `not found — the catalogue's own measurement; run \`npm run generate\``]);
 } else {
   const md = readFileSync(COVERAGE, 'utf8');
   const a = md.indexOf(BEGIN), b = md.indexOf(END);
@@ -200,7 +200,7 @@ if (!existsSync(COVERAGE)) {
   } else if (expectedBlocks) {
     const have = md.slice(a + BEGIN.length, b).trim();
     if (have !== coverageTable(expectedBlocks).trim()) {
-      faults.push(['STALE', COVERAGE, `the generated table disagrees with the repository — run \`npm run blocks\``]);
+      faults.push(['STALE', COVERAGE, `the generated table disagrees with the repository — run \`npm run generate\``]);
     }
     const shipped = new Set(fragments());
     const marked = new Set(expectedBlocks.filter(x => x.source.startsWith('sink/')).map(x => x.source.slice(5, -5)));
@@ -251,7 +251,7 @@ if (!existsSync(GUIDE)) {
       for (const s of e.suggestions ?? []) {
         const at = `${name} → ${s.block ?? '(no block)'}`;
         const b = byId.get(s.block);
-        if (!b) { faults.push(['NO BLOCK', GUIDE, `${at}: no such block in the catalogue — run \`npm run blocks\`, or the suggestion has outlived its block`]); continue; }
+        if (!b) { faults.push(['NO BLOCK', GUIDE, `${at}: no such block in the catalogue — run \`npm run generate\`, or the suggestion has outlived its block`]); continue; }
         const slot = t.slots.find(x => x.name === s.slot);
         if (!slot) { faults.push(['NO SLOT', GUIDE, `${at}: ${name} has no slot "${s.slot}" — it has ${t.slots.map(x => x.name).join(', ')}`]); continue; }
         const pair = `${s.block}@${s.slot}`;

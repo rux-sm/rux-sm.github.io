@@ -1541,16 +1541,13 @@ button.scheduler-row-head__num {
    `overflow: auto` with a day-column floor -- narrowing it scrolls the week,
    which is a thing the board already does and the only lossless answer of the
    three. A driver's name and a form field have no equivalent. */
-/* 320, THE SAME STOCK NUMBER AS THE EDITOR, 2026-09-08. It was `max-content`
-   capped at 22rem and measured 331.195: a width set by the longest driver name,
-   so the two regions flanking the board sat 11px apart for a reason nobody
-   chose, and the roster moved whenever its data did. The editor is
-   `rux--side-panel--sm`, whose compiled width is `clamp(16rem, ..., 20rem,
-   100%)`, so 20rem here is Carbon's own number reached the same way rather than
-   a local invention. `--rux-side-panel-modified-size` is the hook for the other
-   direction and is deliberately unused: nothing here wants a width Carbon does
-   not already ship. */
-.scheduler-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
+/* 256px, CARBON'S XS SIDE PANEL WIDTH. The roster is a fixed width rather than
+   its content's, so it does not move when the driver list does, and 16rem is the
+   `rux--side-panel--xs` number rather than a local one. The seven 32px day
+   columns take 224px of it and the names get the remaining 32px, cut with an
+   ellipsis, on rux's call: short names that fit are coming, and the full name is
+   on each name's hover. */
+.scheduler-aside { flex: 0 0 16rem; inline-size: 16rem; order: -1; }
 
 /* XS ROWS UNDER AN SM HEAD, 2026-09-08, AND THE FLIP-FLOP ENDS ON AN ARGUMENT
    RATHER THAN A PREFERENCE. This has been 24, 32, 24, 32 and is now 24. Every
@@ -1619,18 +1616,12 @@ button.scheduler-row-head__num {
      room for the next size.
 
      THERE IS, AND THE MEASUREMENT IS WHY IT IS WIDTH ONLY. The aside is a fixed
-     20rem = 320px, and `--scheduler-head-w: minmax(0, 1fr)` above makes the name
+     16rem = 256px, and `--scheduler-head-w: minmax(0, 1fr)` above makes the name
      column the remainder -- so every pixel the days take comes off the names.
-     At 32 the days take 224 and the names get 96.
-
-     WHICH COST THE NAME PADDING, AND A FIRST READING OF THIS WAS WRONG. The
-     probe that sized this said the name column came to 108px with nothing
-     truncating -- but 108 was the symptom of an overflow, not a fit: the grid
-     had sized to its content and run 12px past the pane. Pinned to the pane it
-     is 96, and at `spacing-05` of padding the two longest names -- "Vicente
-     Solar" at 105px and "Prudenciano" at 101 -- would have ellipsed. The
-     padding is `spacing-03` here now, which takes the widest to 89 and clears
-     96 with room; `.scheduler-avail__grid` carries the overflow half of the fix.
+     At 32 the days take 224 and the names get 32, which cuts them with an
+     ellipsis until short names that fit exist; each carries its full name as a
+     hover title. `.scheduler-avail__grid` keeps the grid pinned to the pane, so
+     a long name ellipses instead of pushing the squares out.
 
      HEIGHT IS THE EXPENSIVE AXIS AND IS DELIBERATELY UNTOUCHED. `--scheduler-avail-h`
      stays xs. Measured at 1440x950: all 40 drivers fit at 24px tall and 35 of

@@ -4211,17 +4211,12 @@
          the one pane meant to resolve it". Both pairs are in today's fleet, the
          full names are already fetched, and nothing was using them.
 
-         AND THE COLUMN IS NARROWER THAN IT WAS -- 96px against 152 since the
-         day cells went to 32 -- which is the same argument `.scheduler-row-head`
-         makes on the board, where capacity and type moved to the title so the
-         column could be narrow and a hover could still answer which bus it is.
-         Today's widest name clears 96 by 7px; the next longer one will not, and
-         then this is what makes the ellipsis recoverable.
-
-         ONLY WHEN IT ADDS SOMETHING. Where `short_name` and `name` are the same
-         string a title would duplicate the text under it, which is noise on
-         screen and, in some readers, the name announced twice. Same shape as
-         the `if (day.off || busy)` guard on the cell beside it.
+         AND THE COLUMN IS 32px, which cuts every name today: the roster is
+         Carbon's xs width and the seven 32px days take the rest. That is the
+         same argument `.scheduler-row-head` makes on the board, where capacity
+         and type moved to the title so the column could be narrow and a hover
+         could still answer which bus it is. So every name carries the title,
+         and the ellipsis stays recoverable until short names that fit exist.
 
          WHAT IT DOES NOT DO, SO NOBODY READS MORE INTO IT: `title` is hover
          only. On a non-interactive div it is not keyboard reachable and not
@@ -4231,7 +4226,7 @@
          which is a design change and not this. */
       const shown = row.driver.short_name || row.driver.name || 'Driver';
       const nameEl = el('div', 'scheduler-avail__name', shown);
-      if (row.driver.name && row.driver.name !== shown) nameEl.title = row.driver.name;
+      if (row.driver.name) nameEl.title = row.driver.name;
       r.appendChild(nameEl);
       row.days.forEach((day, i) => {
         const busy = day.trips.length > 0;

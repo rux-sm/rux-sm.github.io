@@ -37,10 +37,9 @@
 // a <use> pointing at a symbol that does not exist paints NOTHING, silently,
 // and the page still looks built.
 //
-// IT IS NOT REGISTERED AS A GATE. The registry says fourteen and three
-// documents agree with it; adding a fifteenth is a decision, not a side effect
-// of adding a page. Recorded in docs/audits.md as an unregistered build
-// invariant so it is not merely undocumented.
+// IT IS NOT REGISTERED AS A GATE. Adding one to the registry is a
+// decision, not a side effect of adding a page, so this stays an unregistered
+// build invariant, documented here.
 //
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { shell, shellHead, shellScripts } from './lib/shell.mjs';
@@ -106,14 +105,7 @@ const covHit = Object.values(coverage.components).reduce((a, c) => a + c.hit, 0)
 const covOwn = Object.values(coverage.components).reduce((a, c) => a + c.own, 0);
 const covPct = Math.round((covHit / covOwn) * 100);
 
-// THE BROWSER-GATE MATRIX IS GONE. Until 2026-09-12 this page rendered, for
-// every browser gate and every page, whether a recorded reading was still
-// current -- docs/gate-coverage.json plus tools/lib/staleness.mjs resolving
-// the commit each reading was taken at. Retired with the move into
-// rux-sm.github.io: a ledger of when one person last swept each page was
-// bookkeeping that person did not read, and the readings themselves were left
-// behind in the archived repository. The five browser gates still run, from
-// the served page; docs/verbs.md says how.
+// The five browser gates run from the served page; docs/verbs.md says how.
 
 // ── icons, asserted ─────────────────────────────────────────────────────────
 const sprite = read('assets/icons.svg').trim();

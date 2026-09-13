@@ -88,8 +88,8 @@
 
      IT ALSO RETIRES A LINE THAT HAD ALREADY COST SOMETHING. With the trip
      panel open, this border met the panel's own 1px border as a doubled edge,
-     which is what rux saw on 2026-09-06 and what the gutter entry in
-     docs/log.md was chasing. One of the two lines was always going to be the
+     which is what rux saw on 2026-09-06.
+     One of the two lines was always going to be the
      wrong one to keep; it is this one. */
 }
 /* The grid: one label column, then one column per day. A row is
@@ -115,9 +115,9 @@
      edge at the end of the week. From Wednesday on nothing said which bus a
      row was.
 
-     THIS IS THE SAME FAULT docs/log.md RECORDS FOR THE NOW-LINE on 2026-09-06
+     THIS IS THE SAME FAULT THE NOW-LINE HAD on 2026-09-06
      -- "a grid container is only as wide as its own containing block" -- fixed
-     there for the line and left standing for the grid it was drawn on. It hid
+     then for the line and left standing for the grid it was drawn on. It hid
      on a desktop window because the whole overflow is only 136px there, well
      inside the clamp; it is 705px on a phone.
 
@@ -188,7 +188,7 @@
      is what makes the corner square, and the corner IS the bus column's
      width. At 40px the column would take 8px from the day tracks, and the
      week already runs 323px short at 1440 with both companions open
-     (docs/log.md, 2026-09-08). The heads cost 8px of vertical board and
+     (measured 2026-09-08). The heads cost 8px of vertical board and
      nothing horizontal; this band would have cost the opposite.
 
      THE RULE, WHICH OUTLIVES THE NUMBER: this band and the toolbar's own
@@ -562,8 +562,8 @@ button.sch-row-head__num {
    exactly one row, which is the row that is not a bus.
 
    THE RULES STILL HAVE TO READ ON IT, which is the thing this change could
-   break and does not: `border-subtle-01` is measured against `layer-hover-01`
-   in all eight themes below the fold in docs/log.md, and it is the same token
+   break and does not: `border-subtle-01` was measured against `layer-hover-01`
+   in all eight themes, and it is the same token
    the track beside it already draws its own bottom rule in. */
 .sch-row--unassigned .sch-row-head { background: var(--rux-layer-hover-01); }
 .sch-row--unassigned .sch-row-head__num {
@@ -1165,8 +1165,8 @@ button.sch-row-head__num {
    so a FIXED overlay had somewhere to sit; the editor is a flex child of
    `.sch-board` now, so it takes its own room by existing. The rule, its
    no-script fallback and `fitPanelRoom()` in sch.js are all gone with it --
-   three places that had to agree about one number, and the log records what it
-   cost when they did not. */
+   three places that had to agree about one number, and at times did
+   not. */
 
 /* Definition rows in the panel. Carbon's structured list is the nearest
    compiled pattern and is used for the itinerary, which is a real table; a
@@ -1280,8 +1280,8 @@ button.sch-row-head__num {
    x 1036-1068 against a panel ending at 1052, on the Payments list as it has
    shipped since 2026-09-10 and on both new lists. Reading Carbon's own local
    density variable rather than hard-coding 16px keeps it correct if the list's
-   size changes. Filed against rux-ds as well -- the component should pad its
-   own action -- and this goes away when it does. */
+   size changes. Asked of rux-ds as well, in the site's `docs/status.md`: the
+   component should pad its own action, and this goes away when it does. */
 .sch-list-action {
   display: flex;
   align-items: center;
@@ -1948,7 +1948,7 @@ button.sch-row-head__num {
    field order.
 
    WHAT DECIDED IT, recorded because the argument is older than the trial:
-   docs/log.md's 2026-09-08 entry rejected fluid for one reason, which the
+   fluid was rejected on 2026-09-08 for one reason, which the
    trial then reproduced exactly -- rux-ds compiles no fluid checkbox, so
    Equipment could not follow the rest and the form mixed the two styles,
    "the one thing fluid must not do". Seen on the built page as a filled card
@@ -2078,7 +2078,7 @@ button.sch-row-head__num {
      it is open is scanning the roster.
 
      THE DESKTOP IS NOT TOUCHED. `.sch--avail` stays xs above this breakpoint;
-     docs/log.md records that number turning 24, 32, 24, 32, 24 and settling on
+     that number went 24, 32, 24, 32, 24 before settling on
      an argument about a companion pane competing with the board for height.
      None of that applies to a full-width overlay, which is why this can differ
      without reopening it. */
@@ -2174,7 +2174,7 @@ button.sch-row-head__num {
    So the departure buys covering nothing instead of covering the toolbar, and
    that is the whole of its justification. If this app's toolbar ever moves off
    the top right, Carbon's placement becomes the right one and this should go
-   back to it. `docs/log.md` carries the measurements. Judged by rux.
+   back to it. Judged by rux.
 
    THE OVERLAP WITH THE PANEL'S FOOTER IS MEASURED AND NAMED RATHER THAN
    DESIGNED AROUND. `.rux--side-panel` is on the right and
@@ -2182,7 +2182,7 @@ button.sch-row-head__num {
    the same corner. The toast is lifted clear of it rather than moved to the
    other side, because the other side is where the board's own content starts
    and a card there covers bus rows instead of three buttons that are only
-   present while the panel is open. See docs/log.md for the numbers.
+   present while the panel is open.
 
    ABOVE THE PANEL, NOT UNDER IT. The panel is the highest thing this page
    draws; a toast reporting the save you just pressed cannot sit behind the

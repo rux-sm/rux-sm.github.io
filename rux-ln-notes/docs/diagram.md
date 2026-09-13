@@ -5,8 +5,7 @@ it was measured on the rendered page or derived from the synced data at
 `data/guides/PIN`; nothing here is counted by hand.
 
 **The section numbers are load-bearing and do not move.** `build.mjs`,
-`specimen-kinds.mjs`, `tile-looks.mjs`, `docs/status.md` and two memos in
-`rux-ln-atlas` all cite §-numbers in this file. Anything new is added at the
+`specimen-kinds.mjs` and `tile-looks.mjs` cite §-numbers in this file. Anything new is added at the
 front without a number, or at the back with the next one.
 
 ---
@@ -748,9 +747,8 @@ scrolling to the far right puts the label 1053px off the left edge. **0 of 6
 lane names are readable for the right-hand half of that document.** Sticky fixed
 it, measured at 6 of 6, and it is **not taken**: a rule holds your row while your
 eye travels, which was the question asked, and an opaque label painting over
-tiles as they pass under it is a second thing to judge. Recorded in
-`docs/status.md` under *Known losses* so it is a decision rather than an
-oversight.
+tiles as they pass under it is a second thing to judge. Recorded here
+so it is a decision rather than an oversight.
 
 **The specimen's own figures are the regression view now**: `ruled` reads 6 of 6
 and `name held at far right` reads 0 of 6 on the shipped page, every run. The

@@ -2,8 +2,7 @@
 //
 // Splice rux-ds's icon sprite into every page between its SPRITE markers,
 // read from ../rux-ds, the design system's folder beside this one in the site
-// repository (or DS=<dir>). Nothing has been vendored since 2026-09-10 (rux-ds
-// roadmap §8.4 step 5).
+// repository (or DS=<dir>). Nothing is vendored.
 //
 // WHY A PAGE CANNOT JUST LINK THE SPRITE FILE. Referencing
 // `/rux-ds/assets/icons.svg#i-name` from a <use> is broken in two

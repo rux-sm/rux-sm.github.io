@@ -4,9 +4,9 @@ Turning the Billing tab's Purchase order and Invoice sections from one field
 each into `contained-list`s with an add button, the way Payments already
 works, so a trip can carry several POs and a split invoice.
 
-Written 2026-09-10. The request behind it is
-`docs/schema-requests.md`, "one PO and one invoice per trip is not enough";
-this is the sequence for doing it once that is answered.
+Written 2026-09-10. The request behind it, "one PO and one invoice per trip
+is not enough", is listed in the site's `docs/status.md`; this is the
+sequence for doing it once that is answered.
 
 **PHASE 4 IS BUILT AS OF 2026-09-11, CAPPED AT ONE ROW PER SECTION.** rux
 asked for the layout to be finalised ahead of the tables, so both sections are

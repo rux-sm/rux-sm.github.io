@@ -1,7 +1,6 @@
 // The page model — what the builder edits, and how it becomes a page. Pure
 // ES module, browser and node alike, importing only rewrites.mjs, so the
-// same code composes the preview and runs under a scratch check. Roadmap
-// §4.12, creator 3, stage 5.
+// same code composes the preview and runs under a scratch check.
 //
 // TIER. This is builder state, not a gate: nothing here decides whether a
 // check passes.

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — POPOVER and TOOLTIP                         Phase 5, roadmap §4.5
+   rux-ds — POPOVER and TOOLTIP
    --------------------------------------------------------------------------
    Requires js/overlay.js, loaded first. Load this BEFORE menu and
    overflow-menu: both are popovers with a keyboard pattern on top.

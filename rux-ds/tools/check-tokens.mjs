@@ -7,7 +7,7 @@
 // no fallback makes the whole declaration invalid, the browser drops it, and the
 // element renders with whatever it inherited. No error, no 404, no failing class.
 //
-// Roadmap §4.1.2 is the precedent — omitting @carbon/styles/scss/layout left
+// The precedent: omitting @carbon/styles/scss/layout left
 // --rux-layout-size-height-lg referenced 27 times and declared 3. The build was
 // clean, every class resolved, and buttons were collapsed to text height. Only
 // looking at the page found it. This gate would have.

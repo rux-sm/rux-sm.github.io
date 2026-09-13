@@ -20,7 +20,7 @@
 //   node tools/app-check.mjs --self-test   drive every rule red in a scratch
 //                                          app, then remove it
 //
-// EVERY APP IS SERVED, NOT VENDORED -- roadmap §8.4, done 2026-09-10. A page
+// EVERY APP IS SERVED, NOT VENDORED. A page
 // links /rux-ds/<path> on the shared origin, and this needs a checkout to
 // resolve that against: --ds, else DS, else a sibling ../rux-ds. NOT FOUND
 // IS A FAILURE, never a skip -- the wording Notes' check-ancestry settled on:
@@ -32,9 +32,7 @@
 // it did not load. That shape and everything about it -- the pin rule, the
 // tree checksum, --hash, defaultRoot()'s vendored-copy detection -- is
 // retired along with it: no app in the family carries one any more, and
-// nothing here should describe a shape nothing is in. docs/log.md has the
-// full account, including the review that found and fixed the false-green
-// defect this branching once had.
+// nothing here should describe a shape nothing is in.
 //
 // WHY IT EXISTS. Until 2026-09-05 the hub carried an eight-line class check
 // and Notes a ninety-nine-line one, and neither checked a token; the recipe

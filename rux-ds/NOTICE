@@ -8,7 +8,7 @@ Carbon Design System.
   Copyright IBM Corp. 2015, 2026
   Licensed under the Apache License, Version 2.0
 
-Specifically, and as recorded in docs/roadmap.md section 3:
+Specifically:
 
   css/rux.css and css/rux.min.css are compiled from @carbon/styles.
     The class and custom-property prefix is changed from `cds` to `rux`

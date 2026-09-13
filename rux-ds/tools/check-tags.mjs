@@ -2,9 +2,9 @@
 //
 // A class must sit on the ELEMENT TYPE Carbon renders it on.
 //
-// roadmap §4.1.11 lists what check-compound cannot see: "pairs Carbon never
+// check-compound cannot see four things: pairs Carbon never
 // writes as a compound selector, wrong nesting *order*, a missing wrapper, or
-// the wrong element type." This is the last of those four. Every name-based
+// the wrong element type. This is the last of those four. Every name-based
 // gate passes a `<div>` wearing a class Carbon renders on a `<ul>` — the class
 // resolves, the co-classes are satisfied, the compound is intact — and the
 // semantics, the ARIA tree and often the layout are all wrong.
@@ -135,7 +135,7 @@ function refElements(lines) {
 const TAGS = new Map();
 let stories = 0;
 // `_`-PREFIXED KEYS ARE METADATA, NOT STORIES. The capture files carry a `_meta`
-// recording which Carbon they came from -- see roadmap 4.8. Every reader of a
+// recording which Carbon they came from. Every reader of a
 // capture skips them, the same convention carbon-slots.json and
 // carbon-co-classes.json have always used.
 const refs = REF_PATHS.flatMap(p => Object.entries(JSON.parse(readFileSync(p, 'utf8')))

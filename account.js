@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Rux Apps — ACCOUNT                                  roadmap.md §4.13 step 5
+   Rux Apps — ACCOUNT
    --------------------------------------------------------------------------
    Loads after rux-ds's js/profile.js, which must run first and
    which this depends on for window.Rux.profile. Opens an anonymous Supabase

@@ -54,14 +54,14 @@ A domain, never a directory.
 **From Phase 3** — the component's name: `button` `dropdown` `text-input` `ui-shell`
 **From Phase 7** — a foundation document's name: `color` `type` `layout` `naming`
 
-Scope is optional. `docs: Add roadmap and README` is fine.
+Scope is optional. `docs: Rewrite the README` is fine.
 
 ## Footer
 
 ```
 BREAKING CHANGE: The g90 theme is no longer compiled.
 Closes #124
-Refs docs/roadmap.md 4.3
+Refs docs/inventory.md
 ```
 
 ## Identity

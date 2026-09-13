@@ -72,8 +72,8 @@
 <!--
   THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
   this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
+  is a COMPLETE page carrying this same shell, because a skeleton must run on
+  its own, and a file that only runs once pasted into another one is
   not runnable. templates/table-page.html is the worked example.
 
   THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
@@ -92,7 +92,7 @@
               (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
               arrangement cannot satisfy. REJECTED so the shell could have a
               hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+              replaced.
 
   WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
   that lives inside the header. `.rux--content` is only ever indented by a

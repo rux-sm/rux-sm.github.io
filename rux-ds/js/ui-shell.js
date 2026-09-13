@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — UI SHELL                                    Phase 5, roadmap §4.5
+   rux-ds — UI SHELL
    --------------------------------------------------------------------------
    Requires js/overlay.js. The side nav registers with the kernel; the
    submenus do not — they are inline disclosure, like accordion.

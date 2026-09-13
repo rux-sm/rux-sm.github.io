@@ -2,7 +2,7 @@
 // KITCHEN-SINK HARNESS ONLY. This is not the design system's behaviour layer.
 //
 // Phase 5 writes the real one: an overlay kernel owning outside-press, Escape and
-// focus trapping, with full keyboard and ARIA lifecycle (roadmap §4.5). This file
+// focus trapping, with full keyboard and ARIA lifecycle. This file
 // exists so the sink can DEMONSTRATE components rather than freeze them open — it
 // toggles the same state classes Carbon's CSS already reacts to, and does nothing
 // else. No focus management, no keyboard support beyond Escape, no aria wiring

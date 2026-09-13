@@ -7,8 +7,7 @@
 //   node tools/serve.mjs                    this folder at /. Port 8642.
 //   node tools/serve.mjs --workspace [dir]  every site on one origin, laid
 //                                           out as GitHub Pages lays them
-//                                           out. Port 8640. Added 2026-09-09,
-//                                           roadmap §8.4 step 0.
+//                                           out. Port 8640.
 //
 // WORKSPACE MODE. dir holds every checkout side by side; the default is the
 // parent of this rux-ds checkout. `/` is the hub -- the one folder named
@@ -23,9 +22,9 @@
 // WHY. An app's page links /switcher.js and fetches /switcher.json by
 // absolute path, which is right on the live origin and 404s on a per-app
 // server, where switcher.js catches it and falls back silently -- so no local
-// page has ever shown the real app list. And roadmap §8.4 has every app link
-// /rux-ds/<path> instead of a vendored copy; this is the server on which that
-// path resolves before any app stops vendoring. The mode changes nothing
+// page has ever shown the real app list. Every app links
+// /rux-ds/<path>, and this is the server on which that
+// path resolves locally. The mode changes nothing
 // about plain `npm run serve`: same port, same root, same home page.
 //
 import { createServer } from 'node:http';

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — DATA TABLE                                  Phase 5, roadmap §4.5
+   rux-ds — DATA TABLE
    --------------------------------------------------------------------------
    Requires js/overlay.js only for `autoId`. A table is not a dismissible
    surface and never joins the stack.

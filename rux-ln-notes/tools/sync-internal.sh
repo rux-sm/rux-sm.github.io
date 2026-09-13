@@ -26,7 +26,7 @@ rm -rf "$OUT"
 mkdir -p "$OUT/data" "$OUT/site"
 (cd "$ATLAS" && python3 tools/emit.py --all --reviews --exercises --references --concepts --internal --out "$OUT/data" >/dev/null)
 # The pages reach the design system at /rux-ds/ -- absolute, since 2026-09-10
-# (rux-ds roadmap §8.4 step 5) -- so the private site root gets a folder of
+# -- so the private site root gets a folder of
 # exactly that name, symlinked rather than copied, and served by rux-ds's OWN
 # serve.mjs below (its plain, non-workspace mode resolves a root-absolute
 # path against its own cwd, which is this folder).

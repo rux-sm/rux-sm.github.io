@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
 // Fail when a --rux-* value css/rux.css declares is not the value
-// docs/token-values.json recorded. Phase 8's token snapshot, roadmap §4.8.
+// docs/token-values.json recorded.
 //
 // THE ONLY GATE HERE THAT IS NOT NAME-BASED, which is the whole reason for it.
 // A Carbon bump that moves --rux-layer-01 from one grey to another changes no

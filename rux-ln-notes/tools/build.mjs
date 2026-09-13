@@ -828,7 +828,7 @@ const revisionLine = () => REVISION
   ? `<p class="rux--type-caption-01 ln-revision">Built from ${esc(REVISION)}</p>`
   : '';
 
-// SINCE 2026-09-10 (rux-ds roadmap §8.4 step 5) EVERY rux-ds RESOURCE IS
+// SINCE 2026-09-10 EVERY rux-ds RESOURCE IS
 // ABSOLUTE, `/rux-ds/…`, regardless of a page's own depth -- this project
 // vendors no copy. `up` still governs this project's OWN relative paths:
 // brand/, the two delta stylesheets, and a page's own scripts.
@@ -1782,8 +1782,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
        entries; /switcher.js at the account root replaces them with the
        shared list in switcher.json and marks the app you are on. Served
        alone -- a local tools/serve.mjs, or offline -- the shipped entries
-       stay. Both paths are root-absolute by decision (rux-ds roadmap
-       §4.12): the root is rux-sm.github.io and this site sits under it at
+       stay. Both paths are root-absolute by decision: the root
+       is rux-sm.github.io and this site sits under it at
        /rux-ln-notes/. The account panel is the standard one from rux-ds's
        template, verbatim: the local profile (js/profile.js) under the key
        every app on the origin shares, so a theme chosen here is the theme

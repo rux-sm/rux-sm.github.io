@@ -25,7 +25,7 @@
      press opens, second press, outside press and Escape close, focus stays
      put. Its entries here are real and /switcher.js replaces them from the
      root. The account panel is rux-ds's, verified there against
-     --header-w-actions-and-right-panel (rux-ds roadmap §4.13 step 3).
+     --header-w-actions-and-right-panel.
      NOT COVERED: anything about a side nav, because this page has had none
      since 2026-09-03; the 2026-08-28 reading of the hamburger against the
      2x-grid usage page left with it.
@@ -44,7 +44,7 @@
      real browser.
 -->
 <!--
-  RUX APPS IS HEADER-ONLY, and that is rux-ds roadmap §4.13 step 6: the app
+  RUX APPS IS HEADER-ONLY: the app
   grid from switcher.json and nothing else until cross-app data exists. The
   quiet Foundations link to the rux-ds repository went on 2026-09-07, rux's
   call in the same pass that stripped the page: the running system is a card
@@ -312,8 +312,7 @@
            the spacing overview has them "delegate the responsibility of
            positioning and layout to parent components", so every child of this
            column would measure margin 0 and gapToNext 0, flush against its
-           neighbour. templates/detail-page.html records the rule and roadmap
-           §4.4 records restoring `stack` on 2026-08-28 to satisfy it.
+           neighbour. templates/detail-page.html records the rule.
 
            THE FRAME SHIPPED WITHOUT IT UNTIL 2026-08-29, and that is why this
            comment is here rather than in a doc. detail-page, empty-state and
@@ -400,7 +399,7 @@
 <script src="/rux-ds/js/profile.js"></script>
 <script src="switcher.js"></script>
 
-<!-- The cloud half of the profile: supabase-js (§4.13 step 5, roadmap.md),
+<!-- The cloud half of the profile: supabase-js,
      pinned to the major version per Supabase's own CDN guidance, and
      Turnstile loaded async since account.js polls for it rather than
      blocking on it. -->

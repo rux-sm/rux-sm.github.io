@@ -38,9 +38,7 @@ body { min-height: 100vh; background: var(--rux-background);
    index moved into the page -- all of them "no visible focus change" on an
    anchor whose focused outline computes `auto`, which the gate does not count
    and this stylesheet never writes. Carbon's own idiom: 2px solid on the focus
-   token, inset so it does not shift the row. The list that stood in the left
-   column before this had no ring either and was never reported, which is its
-   own question and is written up in docs/log.md. */
+   token, inset so it does not shift the row. */
 .ks-index a:focus-visible { outline: 2px solid var(--rux-focus);
                             outline-offset: -2px; }
 .ks-count { font-size: .75rem; color: var(--rux-text-helper);

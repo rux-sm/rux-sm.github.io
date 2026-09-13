@@ -2,11 +2,11 @@
 // rux-ds — build manifest
 //
 // THIS FILE IS THE STRIP. Phase 3 pass 1 is commenting out `@use` lines below.
-// See docs/roadmap.md §4.3. No Carbon file is ever edited (§1.1 keep-core rule).
+// No Carbon file is ever edited.
 //
 
 // Namespace. Carbon threads $prefix through every selector and custom property,
-// so this one line makes Carbon emit --rux-* and .rux--* itself. Roadmap §4.1.
+// so this one line makes Carbon emit --rux-* and .rux--* itself.
 @use "@carbon/styles/scss/config" with ($prefix: "rux");
 
 // Foundations
@@ -42,7 +42,7 @@
 // tools/check-inventory.mjs now holds the three sources together: Carbon's own
 // component directory, docs/inventory.md's disposition, and this list. It fails
 // on a component with no line here, and on a line whose state disagrees with
-// its row. Roadmap §4.2.
+// its row.
 @use "@carbon/styles/scss/components/accordion";
 @use "@carbon/styles/scss/components/action-set";
 @use "@carbon/styles/scss/components/ai-label";
@@ -71,7 +71,7 @@
 // the built CSS inside AI-qualified selectors and so passes check-classes while
 // styling nothing.
 //
-// Admitted 2026-08-28 under roadmap §2.1: the table page is a named Phase 6 shape,
+// Admitted under the admission rule: the table page is a named Phase 6 shape,
 // sorting and row selection are what it is for, and nothing else in the set serves
 // them. Cost is +26 KB minified / +2.9 KB gzipped, measured. `data-table/skeleton`
 // is NOT taken — skeleton-styles already ships the loading treatment.
@@ -163,7 +163,7 @@
 @use "@carbon/styles/scss/components/user-avatar";
 
 // ---------------------------------------------------------------------------
-// Emit. Reset and type do NOT arrive with the components; see roadmap §4.1.1.
+// Emit. Reset and type do NOT arrive with the components.
 @include reset.reset;
 @include type.default-type;
 

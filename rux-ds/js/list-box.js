@@ -1,6 +1,5 @@
 /* ==========================================================================
    rux-ds — LIST BOX (dropdown, and the select-only combobox)
-                                                        Phase 5, roadmap §4.5
    --------------------------------------------------------------------------
    Requires js/overlay.js. Load after js/popover.js.
 

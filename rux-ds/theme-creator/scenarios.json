@@ -1,7 +1,7 @@
 {
   "_meta": {
     "purpose": "Named contrast scenarios for theme-creator.html's advisory readout. One row per real foreground/background pairing a token participates in, not one row per token -- several tokens serve more than one role.",
-    "confidence": "high = read directly against a rule in css/rux.css, cited by line. medium = the token's role is clear but the exact paired surface was not confirmed against rendered markup. low = a real approximation stands in for something css/rux.css does not express as a solid color (e.g. a translucent overlay). medium and low entries need a second read before this catalogue is trusted for shipping, per roadmap Phase 14.",
+    "confidence": "high = read directly against a rule in css/rux.css, cited by line. medium = the token's role is clear but the exact paired surface was not confirmed against rendered markup. low = a real approximation stands in for something css/rux.css does not express as a solid color (e.g. a translucent overlay). medium and low entries need a second read before this catalogue is trusted for shipping.",
     "fixedSurfaces": "Names prefixed 'fixed:' are not among the twenty editable tokens -- they are Carbon's own tokens this tool does not change (text-on-color, text-inverse, text-primary, background, layer, background-inverse), included so a scenario can name what it actually sits against.",
     "read": "manual grep + read of css/rux.css, 2026-09-06"
   },

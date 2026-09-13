@@ -14,7 +14,7 @@
     .rux--css-grid sets grid-template-columns: repeat(var(--rux-grid-columns),
     minmax(0,1fr)) and --rux-grid-columns is set responsively (4 / 8 / 16).
     Column tokens are emitted by @carbon/grid as literal --cds-grid-* names, which
-    tools/build.mjs renames; see roadmap §4.1.2.
+    tools/build.mjs renames.
 
     WHY THE GAPS ARE WIDER THAN THE COLUMNS, AND WHY THAT IS NOT A DEFECT.
     The gutter is margin-inline on the column (css/rux.css:280), not padding, so a
@@ -23,7 +23,7 @@
     content at 64rem, leaving ~912px of track: 912/16 = 57px per column, minus 32px
     of gutter = a ~25px box sitting in a 32px gap. Carbon's grid is drawn for a
     99rem page, not a 64rem reading column. The 4/4/8 row below measures
-    196/196/424px, which is the check that proves the grid itself (roadmap §4.1.9).
+    196/196/424px, which is the check that proves the grid itself.
 
     THE LABELS, HOWEVER, WERE A REAL BUG. These boxes carried `padding:.5rem`,
     which at a 25px column leaves a 9px content box — and "16" at body-01 (14px) is
@@ -77,7 +77,7 @@
        rule, `max-inline-size: 100%` over the default's 99rem. This sink caps
        .ks-main at 64rem, below 99rem, so here the two draw identically -- the
        difference is measurable only on a page wider than 1584px, and it was:
-       the scheduler at 2000px, 2026-09-06, docs/log.md. Offered by
+       the scheduler at 2000px. Offered by
        the builder's grid width. -->
   <!-- THE GAP IS ON THE SINK'S OWN LABEL, NOT ON THE GRID ABOVE IT. The first
        draft put `margin-block-end` on the narrow grid and check-spacing

@@ -2,7 +2,7 @@
 // `node --test` run the identical implementation. No dependency on any
 // other file here — this could be lifted out whole.
 //
-// Phase 14 (roadmap §4.14). Advisory only: nothing in this repository wires
+// Phase 14. Advisory only: nothing in this repository wires
 // this into a gate. It backs a live warning in theme-creator.html that a
 // person can see and still choose to ignore.
 

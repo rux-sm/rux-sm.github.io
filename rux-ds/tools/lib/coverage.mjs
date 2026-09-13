@@ -25,8 +25,8 @@
 // an undefined "specimen" produced two different counts for the same corpus
 // while this stage was being planned, and a number offered as evidence needs
 // the algorithm that made it. It is an UPPER BOUND on what could be marked and
-// not a forecast of blocks — roadmap §4.12's rule, "a region that can stand as
-// a direct child of a page's stack", disqualifies most of them.
+// not a forecast of blocks — the rule "a region that can stand as
+// a direct child of a page's stack" disqualifies most of them.
 import { readFileSync, readdirSync } from 'node:fs';
 import { owner, compiled, classesInMarkup, classesInJs } from './ownership.mjs';
 import { textFieldsOf, variantsOf } from '../../builder/rewrites.mjs';

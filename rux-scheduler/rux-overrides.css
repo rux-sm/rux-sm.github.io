@@ -415,23 +415,9 @@
    again. The note in index.html that offered to shorten the word is left
    standing because the offer still holds if a fifth tab ever lands. */
 /* ── THE WEEK PICKER'S INPUT, WHICH NOBODY IS MEANT TO SEE ──────────────────
-   Added 2026-09-11. The board's week label is the date picker's trigger and
-   its input carries only the value, so the input is `hidden` in the markup --
-   which `js/date-picker.js` explicitly supports: "THE INPUT MAY BE `hidden`,
-   AND THAT NEEDS NO CSS -- measured, not reasoned ... Writing `hidden` on
-   `.rux--date-picker__input` computes `display: none` and a 0x0 box on the
-   built page."
-
-   **IT DOES NOT, AND THIS RULE IS HERE BECAUSE OF THAT.** Measured on this
-   page: the input has the `hidden` attribute, computes `display: block` and
-   boxes at 288x40, and the only rule setting its display is
-   `.rux--date-picker__input { display: block }` in `rux.css` -- ONE CLASS, at
-   NORMAL priority. An author declaration beats a UA declaration whatever its
-   specificity, so `[hidden]` never gets a say. The header's own correction
-   note, which claims the UA sheet declares `[hidden] { display: none
-   !important }`, cannot be right either: an important UA declaration would
-   beat this normal author one and the input would be hidden. Filed against
-   rux-ds; this is the interim.
+   The board's week label is the date picker's trigger and its input carries
+   only the value, so the input is `hidden` in the markup, and rux-ds's own
+   `.rux--date-picker__input[hidden]` rule hides it.
 
    THE CONTAINER GOES, NOT THE INPUT. Hiding the input alone leaves the
    container's label and wrapper boxes in flow, which is 40px of empty row
@@ -448,8 +434,8 @@
    to `size-lg`: the markup carries `rux--btn--md`, Carbon compiles no `lg` for
    this button -- `.rux--btn--lg` appears nowhere in the sheet -- so 48 could
    only come from a stylesheet. Its own comment called that "a cost rather than
-   a preference: every other button says its size in the markup", and it left an
-   ask in docs/rux-ds-requests.md for a compiled `lg`.
+   a preference: every other button says its size in the markup", and it asked
+   rux-ds for a compiled `lg`.
 
    THE HEADS ARE 40 NOW, WHICH IS WHAT `rux--btn--md` ALREADY MEANS. So the
    workaround has nothing left to work around: deleting it returns this control
@@ -523,8 +509,8 @@
 
    ALL THREE WERE CORRECT AND ALL THREE ARE DEAD, because every selector
    began at a `--fluid` class this app no longer writes. The divider defect
-   they worked around is upstream and unfixed; docs/rux-ds-requests.md keeps
-   the record, so returning to fluid means writing them again rather than
+   they worked around is upstream and unfixed, so returning to
+   fluid means writing them again, from this comment rather than by
    rediscovering why. */
 
 
@@ -572,8 +558,8 @@
 
    NOT ONLY THIS APP. rux-ds's own `sink/contained-list.html` shows it as
    well -- its `size-lg` list has a 40px row holding a 22px button at 19px
-   above and 0 below. Filed in `docs/rux-ds-requests.md`; this goes away when
-   the component centres its own action.
+   above and 0 below. Asked of rux-ds in the site's
+   `docs/status.md`; this goes away when the component centres its own action.
 
    ONE CLASS DEEP, MATCHING CARBON'S OWN SELECTOR, so the cascade decides it
    and no `!important` is needed. The header's action is left alone: its band

@@ -14,7 +14,7 @@ the table has drifted or if a note below names a fragment that does not exist.
 
 **A candidate region** is an element carrying a `rux--` class none of whose
 ancestors carries one. It is an upper bound on what could be marked, not a
-forecast of blocks: the rule that governs marking is roadmap §4.12's, "a region
+forecast of blocks: the rule that governs marking is "a region
 that can stand as a direct child of a page's stack", and most candidates will
 not meet it.
 
@@ -150,7 +150,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   away. Carving the drop zone out was tried and abandoned: the file rows are
   siblings INSIDE `.rux--form-item`, so an end marker before them leaves the
   block's own `<div>` unclosed — and `check-blocks` passed that unbalanced block
-  with 0 faults, which is a gate hole recorded in the roadmap. Marking this one
+  with 0 faults, which is a gate hole. Marking this one
   needs an empty specimen in the fragment first.
 - `modal` — frame, not a stack child. `templates/wizard-page.html`
   keeps its modal at the end of `<main>`, deliberately outside every block, and

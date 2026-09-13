@@ -1,8 +1,7 @@
 // Writes theme-creator/families.json: for every Carbon hue family (the
 // neutral grays excluded — nothing about an accent theme wants gray-60 in
 // place of blue-60), the seven shade keys Phase 14's spike found actually
-// back the twenty --rux-* tokens: 20, 30, 40, 60, 70, 70Hover, 80. Roadmap
-// §4.14.
+// back the twenty --rux-* tokens: 20, 30, 40, 60, 70, 70Hover, 80.
 //
 // @carbon/colors is a direct devDependency (promoted from transitive,
 // tools/lib/gates.mjs CONTROL_FILES and package.json both record why) so

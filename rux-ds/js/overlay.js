@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — OVERLAY KERNEL                              Phase 5, roadmap §4.5
+   rux-ds — OVERLAY KERNEL
    --------------------------------------------------------------------------
    One dismiss manager for every dismissible surface: modal, menu, overflow
    menu, popover, tooltip, the list-box surfaces behind dropdown and select,

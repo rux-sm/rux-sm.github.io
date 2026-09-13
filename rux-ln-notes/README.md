@@ -95,7 +95,7 @@ something.
 
 ## Where the rest went
 
-What is outstanding is `docs/status.md`. The decisions that bind — build-time
+What is outstanding is the site's `docs/status.md`. The decisions that bind — build-time
 rendering with committed output, drafts labelled, reviews at export tier,
 what never publishes — are in `AGENTS.md`. The long record of how each was
 reached, with its measurements, is in this file's history: `git show

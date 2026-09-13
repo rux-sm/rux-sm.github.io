@@ -8,7 +8,7 @@
 // wrong, because rules that were meant to override each other land on different
 // boxes and stack instead.
 //
-// This is the tabs defect (roadmap §4.1.11). @carbon/react puts
+// This is the tabs defect. @carbon/react puts
 // `--tabs__nav-item` and `--tabs__nav-link` on one button; the fragment nested
 // them, so `--nav-item--selected`'s 2px border painted BELOW `--nav-link`'s
 // instead of replacing it, and every selected tab drew a doubled underline.

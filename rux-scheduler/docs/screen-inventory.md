@@ -9,7 +9,7 @@ a side panel, a modal or a page. Nothing is kept pixel-for-pixel.
 
 Verdicts: **keep** builds in the first pass, **later** builds after the grid
 and the record tables work, **drop** is not rebuilt. A drop can be reopened;
-say so in `docs/log.md` when it is.
+the commit that reopens it says why.
 
 Vocabulary: a *template* is one of the ten in rux-ds's `templates/`; a
 *module* is one of rux-ds's `js/*.js` behaviours; an *app component* is this
@@ -105,8 +105,7 @@ try-catch; none goes to the backend.
 
 ## 5. Order of building
 
-Each step ends with the page opened in all five themes and a dated line in
-`docs/log.md`.
+Each step ends with the page opened in every theme.
 
 1. Static grid specimen with invented trips: grid, bar, lanes, one
    multi-day bar, Unassigned, an out-of-service stripe, both bar sizes.
@@ -116,7 +115,7 @@ Each step ends with the page opened in all five themes and a dated line in
 4. Trip editor side panel, Details and Fleet tabs. Then Fleet, Drivers,
    Customers as tables with their editors.
 5. Print schedule. Requests and `request.html`. Driver page.
-6. Everything marked *later*, in the order the log records.
+6. Everything marked *later*.
 
 ## 6. Not verified
 
@@ -188,7 +187,7 @@ the schedule with the columns aligned, to the right between the board and the
 trip panel, and left. The right-hand slot put the availability grid between
 the board and the panel describing it. Left keeps the trip panel beside the
 board, at the cost of putting the selected trip's date and the squares that
-answer it at opposite edges. `docs/log.md` carries the numbers.
+answer it at opposite edges.
 
 | | |
 |---|---|

@@ -1,6 +1,6 @@
 // The page builder's transformations — the ONE place a template becomes a
 // page. Pure ES module, no imports, so the browser (builder/builder.js) and
-// node run the same code. Roadmap §4.12, creator 3.
+// node run the same code.
 //
 // UNTIL 2026-09-12 exportPage() had to reproduce the page-writing region of
 // tools/new-project.sh byte for byte, and tools/check-parity.mjs held it to
@@ -15,7 +15,7 @@
 // disagree, someone decides which is right, and that is the point of having
 // the check rather than a promise.
 //
-// SINCE 2026-09-10 (roadmap §8.4 diff C) A PAGE LINKS /rux-ds/, NOT
+// SINCE 2026-09-10 A PAGE LINKS /rux-ds/, NOT
 // vendor/rux-ds/: nothing of rux-ds is copied into a project any more. Both
 // sides changed together in the same commit that removed the copy.
 //
@@ -49,8 +49,8 @@ const everywhere = (lines, from, to) => lines.map(l => l.split(from).join(to));
 //
 // This makes the substitution literal. IT DOES NOT ESCAPE HTML, and neither
 // does the script: an answer carrying " < > or & still lands unescaped in
-// element text and in an attribute value. check-parity says so in its own
-// words, builder.html warns, and the decision is rux's — roadmap §4.12.
+// element text and in an attribute value. builder.html warns,
+// and the decision is rux's.
 function content(lines, a) {
   const P = a.prefix ?? 'Rux', N = a.name ?? 'DS', T = a.title ?? `${P} ${N}`, theme = a.theme ?? 'white';
   const gc = a.grid === 'full' ? ' rux--css-grid--full-width' : '';
@@ -334,7 +334,7 @@ const escapeAttr = s => s.split('&').join('&amp;').split('"').join('&quot;')
 // sink section, dead on any page it is placed on, and the templates' Home
 // links are `#main-content`, the page's own main. Until 2026-09-06 every `#`
 // was skipped, which shipped those three dead links through a promoted
-// suggestion (roadmap §4.12, stage 12's composed outputs); rux ruled to
+// suggestion; rux ruled to
 // narrow the skip. Measured before narrowing: no block carried an in-block
 // fragment at all, and none of the seven with out-of-block ones offered any
 // other link, so no draft's link index moves.
@@ -509,7 +509,7 @@ export function applyVariants(html, variants) {
 // duplicated, and a duplicate id does not error — it MIS-BINDS: `<label
 // for="stl-1">` resolves to the FIRST #stl-1 in the document, so the second
 // copy's label drives the first copy's radio. instanceOf(html, n) gives copy n
-// its own identity; it is the rewrite roadmap §4.12 declined to ship before it
+// its own identity; it was held back until it
 // was measured. Measured 2026-09-05 over all 33 blocks: 51 ids in 9 blocks;
 // every for, aria-controls and aria-labelledby (49) names an id inside its own
 // block; the one data-rux-open ("wizard-cancel") and every href="#…" (52

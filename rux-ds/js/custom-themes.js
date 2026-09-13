@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — CUSTOM THEMES                              Phase 16, roadmap §4.16
+   rux-ds — CUSTOM THEMES
    --------------------------------------------------------------------------
    Owns localStorage['rux.custom-themes']: the list of themes someone saved
    in theme-creator.html, shared with every app on the origin the same way
@@ -34,8 +34,8 @@
   // The list was the point of this file — twenty names, then twenty-nine —
   // and its own comment already named the cost: the same table is written
   // out in tools/build-theme-creator.mjs and again in theme-creator.js, a
-  // duplication roadmap §4.14 accepted because this file cannot import from
-  // theme-creator/, which is not vendored into consumer projects.
+  // duplication accepted because this file cannot import from
+  // theme-creator/, which the apps do not load.
   //
   // §4.17 made every one of the 311 colour tokens css/rux.css declares
   // editable, and three hand-kept copies of 311 names is not a list, it is a
@@ -118,7 +118,7 @@
   // `geist`/`linear`/`ant-dark`/`spotify` — widened from Phase 14's
   // export-only RESERVED set, since a saved, persistent, cross-app
   // theme shadowing a shipped theme is worth closing now that saving
-  // means more than exporting a snippet (roadmap §4.16).
+  // means more than exporting a snippet.
   const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist', 'linear', 'ant-dark', 'spotify']);
 
   // Same id + same kind: update in place. Same id + different kind, or a

@@ -34,7 +34,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, relative, resolve } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-// Since 2026-09-10 (rux-ds roadmap §8.4 step 5) this project vendors nothing:
+// Since 2026-09-10 this project vendors nothing:
 // the sibling checkout on main, or DS=<dir>.
 const CSS = join(resolve(ROOT, process.env.DS ?? '../rux-ds'), 'css/rux.css');
 

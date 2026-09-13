@@ -1,6 +1,5 @@
 /* ==========================================================================
    rux-ds — DATE PICKER (the --next variant: single, range, simple)
-                                                        Phase 5, roadmap §4.5
    --------------------------------------------------------------------------
    Requires js/overlay.js. Load after js/popover.js.
 

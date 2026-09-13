@@ -196,7 +196,7 @@ const KNOWN = {
   'dropdown:list-box__invalid-icon': [['dropdown__wrapper'],
     '@carbon/styles defines `dropdown__wrapper` only in its --inline form, so outside '
     + 'that variant it styles nothing; `list-box__wrapper` is the styled wrapper and is '
-    + 'present. Recorded in the fragment (roadmap §4.1.12).'],
+    + 'present. Recorded in the fragment.'],
   'list-box:list-box__invalid-icon': [['dropdown__wrapper', 'dropdown'],
     'same as dropdown: the wrapper class is unstyled outside --inline, and this '
     + 'fragment demos the list-box on its own rather than as a dropdown.'],

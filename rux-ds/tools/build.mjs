@@ -46,8 +46,8 @@ function verify(css, label) {
 // copyright and attribution notices from the source form, and section 4(b) to mark
 // changed files. Carbon's Sass carries `// Copyright IBM Corp.` headers on every
 // partial — and Sass STRIPS `//` comments, so before 2026-08-29 the built stylesheet
-// carried none of them. css/rux.css is committed and served from a raw URL by design
-// (roadmap section 8.1), which is distribution, so the notice has to be put back here.
+// carried none of them. css/rux.css is committed and served from a raw URL by design,
+// which is distribution, so the notice has to be put back here.
 //
 // It goes AFTER `@charset`, which only takes effect as the very first thing in the
 // file. `/*!` rather than `/*` so a minifier treats it as a loud comment and keeps it.
@@ -97,7 +97,7 @@ const comps = compiled().size;
 
 // THE BEHAVIOUR LAYER IS MEASURED HERE TOO, and it did not used to be.
 //
-// Roadmap 4.5 carried a "<=90 KB of behaviour JS" budget from the start and
+// A "<=90 KB of behaviour JS" budget was set from the start and
 // NOTHING EVER MEASURED IT. The figure lived in prose, was re-derived by hand
 // each time somebody wondered, and drifted: it read 83.5 KB at finding 14 and
 // 119.2 KB when it was next checked, with the whole difference being comment.
@@ -131,7 +131,7 @@ const JS_TRIPWIRE_KB = 60;
 // in memory against the CURRENT @carbon/styles: all 83 components and all four
 // themes are 93.955 KB gzipped; batch 5 and four themes are 92.423 KB. 96 is one
 // clear integer step above the full-Carbon ceiling without the unsupported room
-// 100 would add. Roadmap 2.1 carries the measurement and decision.
+// 100 would add.
 //
 // THIS CHANGES WHAT THE ALARM MEANS. It no longer notices the full component set
 // being re-enabled; completeness makes that a legitimate state. It notices this
@@ -169,12 +169,12 @@ if (cssGzip > CSS_TRIPWIRE_KB) {
   console.error('  This is a smoke alarm, not a thermostat. Something structural has');
   console.error('  changed -- most likely a component family re-enabled. A theme');
   console.error('  does NOT reach this; see the note above. Re-open the set rather');
-  console.error('  than the number. Roadmap 2.1.');
+  console.error('  than the number.');
   process.exit(1);
 }
 if (jsGzip > JS_TRIPWIRE_KB) {
   console.error(`  TRIPWIRE: js/ is ${jsGzip.toFixed(1)} KB gzipped, over ${JS_TRIPWIRE_KB}.`);
   console.error('  This is a smoke alarm, not a thermostat. Something structural has');
-  console.error('  changed -- most likely a library vendored into js/. Roadmap 4.5.');
+  console.error('  changed -- most likely a library vendored into js/.');
   process.exit(1);
 }

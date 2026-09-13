@@ -2,7 +2,7 @@
 // REACT DOM QUARRY — paste into the console at https://react.carbondesignsystem.com
 //
 // Companion to tools/extract/index.html, which quarries the WEB COMPONENTS. This
-// one quarries @carbon/react, and roadmap §4.1.11 is why both exist: for light-DOM
+// one quarries @carbon/react, and both exist because for light-DOM
 // class placement React is authoritative, because @carbon/styles is the CSS React
 // consumes. The web components render into shadow DOM with different structure —
 // cds-tab emits an <a> and never emits --nav-item at all.
@@ -413,7 +413,7 @@
     const role = el.getAttribute('role');
     // WIDENED 2026-08-30, from four attributes to thirteen. The old list --
     // expanded, selected, invalid, disabled -- had blocked adjudication three
-    // times on record: aria-hidden and tabindex in roadmap 4.5's batch-actions
+    // times on record: aria-hidden and tabindex in the batch-actions
     // finding, and aria-labelledby for the toggle defect the screen-reader pass
     // found. Each time the capture's silence was indistinguishable from Carbon
     // not setting the attribute, and one of those nearly shipped as a wrong
@@ -421,8 +421,7 @@
     // answerable and invented anything-else was not.
     //
     // THIS CHANGES NOTHING UNTIL A RE-CAPTURE, and re-capturing is not currently
-    // safe -- see roadmap 4.8, "the captures carry no version". Read that before
-    // running this script.
+    // safe, because the captures carry no version.
     const aria = ['aria-expanded', 'aria-selected', 'aria-invalid', 'aria-disabled',
                   'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-hidden',
                   'aria-current', 'aria-sort', 'aria-haspopup', 'aria-modal', 'tabindex']
@@ -925,7 +924,6 @@
   // reported could not be attributed to us or to Carbon having moved. A sidecar
   // file was the alternative and was rejected: the fault being fixed IS drift
   // between a claim and the thing it describes, and a sidecar can drift.
-  // Roadmap 4.8 has the reasoning.
   stamp(payload);
 
   const blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json' });

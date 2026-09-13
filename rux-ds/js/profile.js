@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — PROFILE                          Phase 13, roadmap §4.13; §4.16
+   rux-ds — PROFILE
    --------------------------------------------------------------------------
    Requires js/theme.js, linked in <head>. Claims the account panel by its id,
    `#rux-account-panel`: a header panel the Account action opens through

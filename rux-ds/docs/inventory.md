@@ -1,8 +1,8 @@
 # Phase 2 — Inventory
 
 Every one of Carbon's components, with what it costs, what it drags in, and a
-disposition. Roadmap §4.2 asks for exactly this and calls the exit "75 rows, every row
-decided." **There were 75 when that was written; Carbon 1.114 ships 83.** The eight new
+disposition. The exit is every row
+decided. **There were 75 when that was written; Carbon 1.114 ships 83.** The eight new
 ones have rows as of 2026-08-31 but seven are still undecided, so the exit is not met —
 see "The eight that arrived with Carbon 1.114".
 
@@ -14,7 +14,7 @@ hand from here. Regenerating it would overwrite the decisions, which are the poi
 
 ## What a component actually costs
 
-Per-component sizes cannot be added up. Roadmap §2 measured the sum at 3,534 KB against a
+Per-component sizes cannot be added up. Summed, they came to 3,534 KB against a
 real 837 KB bundle — a 4.2× overcount — because every component drags its transitive
 `@use` graph and those graphs overlap. `tools/measure.mjs` exists to price a real subset
 by compiling it. **Shipped and Full Carbon re-measured 2026-08-31**; the Foundation and
@@ -54,7 +54,7 @@ Lean rows still read 2026-08-28 and are understated — see the third note below
 > baseline moved for TWO reasons at once, 881 → 939 KB: eight new components, and the
 > type utilities the tool had been omitting. **This document's own exit criterion — "75
 > rows, every row decided" — is no longer met at 83.** Those eight are undecided, and
-> deciding them is not a measurement; nobody has made that call. Roadmap §4.2.
+> deciding them is not a measurement; nobody has made that call.
 >
 > **The Foundation and Lean rows were NOT re-measured.** Foundation has no mode in
 > `measure.mjs` — the tool prices full, shipped, or an ad-hoc component list, and a
@@ -71,7 +71,7 @@ Lean rows still read 2026-08-28 and are understated — see the third note below
 > `table-sort` and `table-expand__button` had no rules at all, and `table-sort`
 > passed check-classes only because it survives inside AI-qualified selectors.
 > The sink found it by trying to demo sorting. All three were admitted on
-> 2026-08-28 under roadmap §2.1's admission rule at **+26 KB minified / +2.9 KB
+> 2026-08-28 under the admission rule at **+26 KB minified / +2.9 KB
 > gzipped**; `data-table/skeleton` was not, because skeleton-styles already
 > ships the loading treatment. The full-Carbon baseline moved for the same
 > reason — `tools/measure.mjs` was reading a directory listing, which cannot see
@@ -333,7 +333,7 @@ reads 71 KB and costs **+0.3**.
 **So no row is deferred on price any more, and none should be argued on price
 again.** Every DEFER row now carries its measured marginal cost, and the reason
 each is still out is NEED: no page shape in `templates/` asks for it. That is the
-line roadmap §5 draws — a component is admitted to serve a page shape, never a
+admission rule: a component is admitted to serve a page shape, never a
 page shape invented to justify a component.
 
 **The one genuine cost is not in this table.** `date-picker` and `time-picker`
@@ -351,7 +351,7 @@ These are judgement, not evidence, and I have proposed rather than decided. **Th
 also no longer urgent:** Phase 4 moved to the end of the sequence on 2026-08-28, so a
 DEFER row that says "decide in Phase 5" or "decide in Phase 6" can now actually be
 decided there, with a template in front of you, instead of being frozen by a devendor
-that used to run first. Roadmap §4.4.
+that used to run first.
 A fourth — the ≤40 KB target — is **settled**: §2.1 removed the KB target on 2026-08-28
 rather than amending it to ≤55 KB as this document originally recommended. The measured
 floor for a set that builds all six page shapes is 52.7 KB, and the reason the number
@@ -403,7 +403,7 @@ went rather than moved is recorded in §2.1 and above.
    **The template carries a `<style>` block standing in for it today**, using the same
    grid mechanism. That is the wrong home for it: it must be repeated in every
    template that holds a form, and a design system whose spacing lives in its
-   templates is not the source of its own spacing. Roadmap §4.4 carries the plan.
+   templates is not the source of its own spacing.
 
    **Price: 1 KB, 15 classes, 0 tokens** — the cheapest row in this table, and the
    §2.1 KB target that would have argued against it no longer exists.

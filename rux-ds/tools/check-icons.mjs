@@ -2,7 +2,7 @@
 //
 // Every <use> in a shipped fragment must point at a symbol the sprite carries.
 //
-// @carbon/styles ships no icons (roadmap §4.1.3), so a component whose visual
+// @carbon/styles ships no icons, so a component whose visual
 // identity IS an icon draws it out of assets/icons.svg through a
 // <use href="#i-name">. A <use> whose target does not exist is VALID SVG that
 // paints nothing — no parse error, no console warning, no failed request,
@@ -43,8 +43,8 @@
 // chevron the right way round for the wrong reason, and the bottom-border rule
 // hanging off the same attribute gave it away instead. Two defects, one cell,
 // and this gate closes exactly one of them. The other still needs a person
-// opening the page, or a diff against the captures in docs/. Roadmap §4.5
-// keeps that decision open, and this tool does not close it.
+// opening the page, or a diff against the captures in docs/, and this tool does
+// not close that.
 //
 // COMMENTS ARE STRIPPED BEFORE SCANNING. sink/deferred/icon-indicator.html
 // explains the shadow-tree problem in prose that contains a literal

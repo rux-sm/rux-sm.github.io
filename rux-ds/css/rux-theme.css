@@ -1,7 +1,5 @@
 /*
-  rux-theme.css — themes above the compiled four. Roadmap §4.10
-  (2026-09-02), superseded 2026-09-09, extended 2026-09-10 three times
-  (see docs/roadmap.md for all four dated entries).
+  rux-theme.css — themes above the compiled four.
 
   TOKEN OVERRIDES, LAYERED ON A COMPILED THEME. Link it after css/rux.css.
   Four theme blocks live here, `[data-theme="geist"]`,
@@ -24,7 +22,7 @@
   when the active theme map equals ONE OF Carbon's own registered
   snapshots exactly; change one key in a copy and every component-token
   lookup for it falls through to white, silently. A first attempt to add
-  a theme this size as a compiled Sass map (roadmap §4.15) was killed in
+  a theme this size as a compiled Sass map was killed in
   review on exactly that finding before any file was touched. So every
   block stays what the original twenty-token rux accent already proved:
   Carbon's Sass never sees `geist`, `linear`, `ant-dark` or `spotify` —

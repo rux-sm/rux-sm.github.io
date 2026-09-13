@@ -1,5 +1,5 @@
 // WHAT THE REPOSITORY HAS SEEN, AND WHAT IT HAS NOT — placement evidence for
-// the page builder. Roadmap §4.12, creator 3, stage 11.
+// the page builder.
 //
 // PURE ESM WITH NO IMPORTS, on builder/rewrites.mjs's exact footing and for the
 // same reason: builder.js imports it in the browser and tools/check-blocks.mjs

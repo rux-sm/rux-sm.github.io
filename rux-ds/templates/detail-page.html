@@ -75,7 +75,7 @@
   the rest of this comment.
 
   THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
-  duplicated. Roadmap §4.6 asks for "complete, runnable page skeletons", and a
+  duplicated, because a template has to run on its own, and a
   skeleton that only runs once pasted into another file is not one. If the
   shell changes, it changes in each template — that is the cost of the word
   "runnable", and it is paid once per template rather than by every page built
@@ -97,7 +97,7 @@
               (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
               arrangement cannot satisfy. REJECTED so the shell could have a
               hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+              replaced.
 
   WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
   that lives inside the header. `.rux--content` is only ever indented by a
@@ -453,7 +453,7 @@
              margin and instead delegate the responsibility of positioning and
              layout to parent components" — so before `stack` was restored every
              child of this column measured margin 0 and gapToNext 0, flush against
-             its neighbour. `stack` came back on 2026-08-28, roadmap §4.4.
+             its neighbour.
 
              NO LAYOUT CLASSES OF ITS OWN, and the first draft of this file is why.
              It carried tpl-detail-head, -title, -sub and -actions with no CSS

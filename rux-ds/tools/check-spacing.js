@@ -144,8 +144,8 @@
 //      indented. Ours is deliberate and theirs is a different page.
 //   2  `table-header-label` and `tag--blue`, both already on this list from the
 //      sink — same class set, different ancestor.
-//   1  `form-item.checkbox-wrapper` at 3px against 6px, already adjudicated in
-//      roadmap §4.6: both values are Carbon's own, 0.375rem for the class and
+//   1  `form-item.checkbox-wrapper` at 3px against 6px, already adjudicated:
+//      both values are Carbon's own, 0.375rem for the class and
 //      0.1875rem for `:last-of-type`, and the page reported its LAST wrapper
 //      against a recorded non-last one. Position is the dimension the key
 //      cannot hold.
@@ -197,7 +197,7 @@
   const sortSig = sig => sig.split('.').filter(Boolean).sort().join('.');
   const reference = {};
   for (const [key, variants] of Object.entries(rawReference)) {
-    // `_`-prefixed keys are provenance, not class signatures -- roadmap 4.8.
+    // `_`-prefixed keys are provenance, not class signatures.
     if (key.startsWith('_')) continue;
     const k = sortSig(key);
     // Two raw keys can normalise onto one. Concatenate rather than overwrite:

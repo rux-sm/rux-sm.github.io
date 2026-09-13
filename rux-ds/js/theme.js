@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — THEME                          Phase 13, roadmap §4.13; §4.16
+   rux-ds — THEME
    --------------------------------------------------------------------------
    Linked in <head>, after the stylesheets and after js/custom-themes.js, and
    does one thing synchronously: reads the profile js/profile.js keeps in

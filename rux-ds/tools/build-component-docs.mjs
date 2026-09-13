@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
 // Write docs/component-docs.json: one reference per compiled component, for the
-// component index Phase 7 asks for (roadmap §4.7).
+// component index Phase 7 asks for.
 //
 // WHY THIS IS A COMMITTED FILE AND NOT A LOOKUP AT BUILD TIME. It is derived
 // from carbon-website/, which is a QUARRY: gitignored, cloned on no machine by

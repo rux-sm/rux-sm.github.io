@@ -47,7 +47,7 @@
 // Carbon renames — that arrives as one `phantom` and one `unrowed` with nothing
 // tying them together, which is a finding either way.
 //
-// Roadmap §4.2. Its exit is now count-free for the reason this gate enforces.
+// Its exit is now count-free for the reason this gate enforces.
 //
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 

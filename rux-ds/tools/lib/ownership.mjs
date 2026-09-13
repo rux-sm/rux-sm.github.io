@@ -65,7 +65,7 @@ export function owner(cls) {
 }
 
 // The strip is src/app.scss, so the manifest is read directly rather than
-// mirrored in a list here (roadmap §4.3, and the same reasoning as check-coverage).
+// mirrored in a list here.
 //
 // A COMPONENT CAN BE SEVERAL MODULES. data-table is compiled as four @use lines —
 // the base plus sort, expandable and action — and Carbon namespaces all of their

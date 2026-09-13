@@ -2,8 +2,8 @@
 //
 // What does a candidate component set actually cost?
 //
-// Roadmap §2 cites this file and Phase 2 is where it was owed. It exists because
-// the inventory's per-component sizes CANNOT be added up: §2 measured the sum at
+// It exists because the inventory's per-component sizes CANNOT be added up:
+// summed, they came to
 // 3,534 KB against a real 837 KB bundle, a 4.2x overcount, because every
 // component drags its transitive `@use` graph and the graphs overlap heavily.
 // The only honest way to price a subset is to compile that subset.
@@ -52,7 +52,7 @@ const PROPOSED = compiledModules();
 // 2-theme figure it produced priced white + g10 — while src/app.scss has shipped
 // white + g100 since Phase 3 pass 3 chose "the furthest point from" white. g10 is
 // a near-neighbour of white and compresses against it far better, so the numbers
-// this tool fed into docs/inventory.md and roadmap §2.1 were ~1.3 KB gzipped
+// this tool fed into docs/inventory.md were ~1.3 KB gzipped
 // optimistic for the SHIPPED configuration: 51.5 KB where the built artifact is
 // 52.7 KB. The tool that prices every decision must price what actually ships,
 // so the pair is read from the manifest for the same reason check-coverage reads
@@ -61,7 +61,7 @@ const PROPOSED = compiledModules();
 // `--themes N` still works for comparing configurations. Asking for MORE themes
 // than ship measures a hypothetical, so that case uses Carbon's canonical order
 // instead — order changes gzip (a theme adjacent to its near-neighbour compresses
-// better), and the 4-theme baseline in roadmap §2 was measured that way.
+// better), and the 4-theme baseline was measured that way.
 const CANONICAL = ['white', 'g10', 'g90', 'g100'];
 
 function shippedThemes() {

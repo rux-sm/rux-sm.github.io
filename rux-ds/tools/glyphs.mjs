@@ -4,7 +4,7 @@
 //
 // WHY A SNAPSHOT AND NOT A DIRECT READ. check-glyphs could open
 // node_modules/@carbon/icons on every run, and for as long as the package is
-// vendored that would be simpler. Phase 4 removes it — roadmap's one-way door —
+// vendored that would be simpler. Devendoring would remove it,
 // and a gate that dies at devendor is a gate that gets deleted at devendor. The
 // captures in docs/ exist for exactly this reason; this file joins them.
 //

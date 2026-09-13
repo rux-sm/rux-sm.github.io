@@ -3,7 +3,7 @@
 // A PAGE MUST OFFER A HEADING OUTLINE. Every page carries exactly one <h1>, and
 // no page skips a level on the way down.
 //
-// THE TWENTIETH GATE, admitted 2026-08-31 (roadmap §4.8). It is the first gate
+// THE TWENTIETH GATE, admitted 2026-08-31. It is the first gate
 // whose unit is the FILE rather than an occurrence, and that shape was the whole
 // hesitation: every other gate here asks "is this class / element / property
 // right", and none of them can ask "does this document, taken whole, offer

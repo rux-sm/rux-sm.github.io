@@ -16,7 +16,7 @@
 // classes, which check-classes already does; the duplication is left rather
 // than removed, because deleting a gate to tidy up is not this change's job.
 //
-// SINCE 2026-09-10 (rux-ds roadmap §8.4 step 5) THIS PROJECT VENDORS NOTHING.
+// SINCE 2026-09-10 THIS PROJECT VENDORS NOTHING.
 // It reads whichever rux-ds it finds: locally the sibling on main, in CI the
 // checkout at the newest tag -- what is live at /rux-ds/. A class added on
 // main passes locally and fails in CI until it is tagged; that is the right

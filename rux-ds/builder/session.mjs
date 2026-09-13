@@ -1,7 +1,7 @@
 // The builder's session: what can be undone, and what survives a reload.
 // Pure ES module, no imports, so the browser (builder/builder.js) and node
 // (a scratch check) run the same code — the contract rewrites.mjs and
-// page.mjs already keep. Roadmap §4.12, creator 3, stage 6.
+// page.mjs already keep.
 //
 // TIER. Session state, not a gate: nothing here decides whether a check
 // passes. Not in CONTROL_FILES, the same call page.mjs records, and rux's

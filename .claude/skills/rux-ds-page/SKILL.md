@@ -158,8 +158,8 @@ accessible grouping.
   and need no network. `node tools/diff-fragment.mjs <name>`.
 - **Behaviour Carbon does not have.** Modules make Carbon's components work;
   they do not add interactions Carbon declines.
-- **Decisions.** Roadmap §1.1, §2.1, §4.4, §4.6 record choices *with their
-  rejected alternatives*. Ask before reopening one.
+- **Decisions.** `AGENTS.md` and the design system README carry choices
+  already made. Ask before reopening one.
 
 ## 6. IBM's own pattern guidance
 

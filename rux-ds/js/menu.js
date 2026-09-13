@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — MENU and OVERFLOW MENU                      Phase 5, roadmap §4.5
+   rux-ds — MENU and OVERFLOW MENU
    --------------------------------------------------------------------------
    Requires js/overlay.js. Load after js/popover.js.
 

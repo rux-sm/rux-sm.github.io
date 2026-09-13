@@ -65,7 +65,7 @@ const external = href => href === '' || href.startsWith('#')
 
 // A ROOT-ABSOLUTE REFERENCE IS THE ACCOUNT ROOT'S, NOT THIS REPOSITORY'S.
 // Since 2026-09-02 the shell links /switcher.js and lists /, /rux-ln-notes/
-// (rux-ds roadmap §4.12): paths served by rux-sm.github.io, where this site
+// — paths served by rux-sm.github.io, where this site
 // sits under /rux-ln-notes/. No file here answers them, so they are counted
 // and printed rather than resolved. Before this rule `/` passed by accident
 // -- join(dir, '/') is dir -- and /switcher.js would have failed as

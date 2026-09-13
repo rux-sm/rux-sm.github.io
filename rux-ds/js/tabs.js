@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — TABS                                        Phase 5, roadmap §4.5
+   rux-ds — TABS
    --------------------------------------------------------------------------
    Requires js/overlay.js only for `autoId`; tabs are not a dismissible
    surface and never join the stack. Nothing here opens or closes.

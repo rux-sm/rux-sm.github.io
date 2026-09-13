@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — SCROLL GRADIENT                             Phase 5, roadmap §4.5
+   rux-ds — SCROLL GRADIENT
    --------------------------------------------------------------------------
    Requires nothing. Paint over a scroller, not a surface over the page, so it
    never joins the dismiss stack.

@@ -80,8 +80,7 @@ already painting `layer` — a tab panel, for instance. On a plain page
 Copying the idiom out of `detail-page.html` faithfully is what produced the
 failure — the idiom is right, the context was not.
 
-*Recorded: roadmap §4.6, first exit attempt. `detail-page.html` states the
-condition in its own source.*
+*`detail-page.html` states the condition in its own source.*
 
 ### 3.2 Nothing offsets the content for a nav inside the header
 
@@ -196,8 +195,6 @@ with the side-by-side layout unchanged at `lg`.
 > one grid into two to work around the absence. The absence was not real. The
 > two-grid split still stands on its own merit, because those rows want
 > different spacing from the gutter, but it was not forced.
-
-*Recorded: roadmap §4.6, fourth exit attempt; the grid-row half, seventh.*
 
 ### 3.6 Sink specimens are deliberately not operable
 
@@ -359,6 +356,19 @@ at your narrowest breakpoint. This is Carbon's own responsive behaviour, not a d
 and it is exactly the kind of thing that looks finished until someone resizes.
 
 ---
+
+### 3.14 A toast has no region, so the app writes one
+
+rux-ds compiles the toast card and nothing about where it sits: `@carbon/styles`
+ships no `position`, `inset`, `z-index` or stacking rule for it, and there can be
+no `rux--toast-region`, because every `rux--` class comes from Carbon. So an app
+that shows toasts writes the region itself, under its own prefix, with every value
+a `--rux-*` token. Keep the shape the same in every app: toasts sit at the top
+right, stack with `--rux-spacing-03` between them, and the newest is on top. The
+corner is a default. The scheduler puts its toasts bottom right, because Carbon's
+corner lands on its toolbar buttons. The fixed position, the gutter, the z-index
+and a narrow-width rule, so an 18rem card does not decide a 375px layout, are the
+app's.
 
 ## 4. Where IBM's own guidance fits
 

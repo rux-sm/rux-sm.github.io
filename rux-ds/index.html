@@ -151,8 +151,7 @@
        /switcher.json from the account root and rewrites every ul.rux--switcher
        on the page, marking the one you are on; the entries below are the
        FALLBACK it leaves in place when that fetch fails — a module served
-       alone, or offline. docs/consumer-policy.md §5: nothing but the hub lists
-       apps.
+       alone, or offline. Nothing but the hub lists apps.
 
        THEY MATCH switcher.json's ORDER AND NAMES AS OF 2026-09-12, deliberately
        rather than approximately. The hardcoded list this replaces said
@@ -315,33 +314,16 @@
           </div>
         </section>
 
-        <!-- THE TWO QUIET LINKS OUT, and they go to the repository on purpose.
-             docs/starting-a-project.md is the consumer-facing recipe and
-             docs/roadmap.md is the decision log; both read fine on GitHub, and
-             §4.7 already ruled that IBM's documentation is the documentation.
-             Growing a docs site here would be reopening that. Inline, because
-             a bare link on its own line reads as a call to action and these
-             are footnotes. -->
+        <!-- THE QUIET LINKS OUT go to the repository on purpose: the site
+             README's "A new app" is the recipe, and IBM's own documentation is
+             the component documentation, so there is no docs site here.
+             Inline, because a bare link on its own line reads as a call to
+             action and these are footnotes. -->
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="start">
           <h2 id="start">Starting a project</h2>
-          <p>One command from a checkout at a tag writes a project: the vendored stylesheet, the two customization files, a <code>PIN</code> naming the tag it came from, and a first page from whichever template you name.</p>
-          <p><a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/blob/main/README.md#a-new-app">Starting a project</a> is the recipe, including how to move the pin later. <a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/tree/main/rux-ds">The repository</a> holds the source, the gates and <a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/blob/main/rux-ds/docs/roadmap.md">the decision log</a>.</p>
+          <p>A new app is a folder in the site repository, named for its URL: an <code>index.html</code> started from a template or the builder's download, and one entry in <code>switcher.json</code>.</p>
+          <p><a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/blob/main/README.md#a-new-app">Starting a project</a> is the recipe. <a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/tree/main/rux-ds">The repository</a> holds the source and the gates.</p>
         </section>
-
-        <!-- THE BUILD STAMP. Since 2026-09-09 (roadmap §8.4 diff B, decided in
-             §8.6) this site deploys on a release tag, and an app that links
-             /rux-ds/ reads that same release. The tag is the honest answer to
-             "which version is live" -- git describe on a checkout names the
-             newest tag, not the deployed one -- so it is on the page.
-
-             THE PLACEHOLDER IS THE HONEST LOCAL ANSWER. .github/workflows/
-             pages.yml substitutes the tag, the short SHA and the date into
-             this span before it uploads, and does NOT commit the result: a
-             stamp written into the file at build time would make index.html
-             dirty on every single commit, which is the churn portal.html
-             avoids by only changing when its data does. Served from a
-             checkout, it reads "working tree", which is what it is. -->
-        <p>Serving <span id="build-commit">the working tree</span>. This site deploys on a release tag, and an app built on it that links <code>/rux-ds/</code> reads the same release.</p>
 
       </div>
     </div>

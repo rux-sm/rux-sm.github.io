@@ -13,9 +13,3 @@ things:
 same shared check as every other; `npm run serve` serves it at its path; a
 push to `main` publishes it. No repository, policy file, hooks or workflow of
 its own.
-
-The scaffold this document used to describe, `tools/new-project.sh` with
-`tools/app-skeleton/`, created a repository per app with a vendored copy of
-this design system and later a live link to it. It left with the
-consolidation; `docs/log.md`, 2026-09-12, has the record, and the archived
-rux-ds repository at `fdab509` has the script.

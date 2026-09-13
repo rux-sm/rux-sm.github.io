@@ -3,7 +3,7 @@
 //
 // A browser tool for the same reason as check-a11y.js and check-rendered.js: the
 // question needs a page that has RUN, and automating it means a headless-browser
-// dependency this project does not have (roadmap §4.8, README "Gates").
+// dependency this project does not have.
 //
 // WHAT IT ANSWERS. check-coverage reads files. It parses kitchen-sink.html and
 // counts the `rux--*` classes it finds, which is the only thing a Node tool can

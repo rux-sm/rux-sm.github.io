@@ -17,7 +17,7 @@
 //
 // SCOPE MATCHES pages.yml EXACTLY: guides/ and index.html, the two things
 // build.mjs writes. Not MEASURED -- the commit hook already regenerates and
-// stages that on its own, for a different reason (docs/log.md, 2026-09-02).
+// stages that on its own, for a different reason.
 //
 // UNSTAGED ONLY, AND IT MUST BE. `git status --porcelain` was tried first and
 // is wrong: it reports a file the WAY IT ALREADY IS relative to HEAD, so a

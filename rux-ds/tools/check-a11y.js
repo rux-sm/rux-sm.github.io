@@ -4,7 +4,7 @@
 // A browser tool, not a Node one, for the same reason as check-rendered.js:
 // answering these questions needs a layout and an accessibility tree, and
 // automating it means adding a headless-browser dependency this project has
-// none of (roadmap §4.8, README "Gates").
+// none of.
 //
 // WHAT IT CANNOT TELL YOU, said first so the pass is not mistaken for a
 // clean bill of health:
@@ -249,7 +249,7 @@
   //
   // AN ENTRY EARNS ITS PLACE BY A MEASUREMENT, recorded where the adjudication
   // happened -- README's gate section for progress-step-button, and
-  // docs/gate-coverage.json for the fluid list box, whose ring was measured
+  // the fluid list box, whose ring was measured
   // moving from `outline: none` to `rgb(15,98,254) solid 2px` on the WRAPPER,
   // where this tool cannot look. If an entry cannot name that measurement it
   // does not belong here.

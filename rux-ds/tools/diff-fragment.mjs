@@ -3,8 +3,8 @@
 // Where does a fragment's NESTING disagree with Carbon's rendered DOM?
 //
 // check-tags answers "is this class on the right element type". This answers
-// the next question in roadmap §4.1.11's list of what a name-based gate cannot
-// see: "wrong nesting *order*, a missing wrapper". It is the machine half of
+// the next thing a name-based gate cannot
+// see: wrong nesting *order*, a missing wrapper. It is the machine half of
 // the reference diff that promoted multiselect and ui-shell to `rendered-dom`,
 // and it exists because doing that by eye for 51 fragments is how the first
 // pass got tabs wrong.

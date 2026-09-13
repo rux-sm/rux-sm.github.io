@@ -1,6 +1,5 @@
 /* ==========================================================================
    rux-ds — FORM CONTROL STATE
-                                                        Phase 5, roadmap §4.5
    --------------------------------------------------------------------------
    Requires js/overlay.js only to share the `window.Rux` namespace. None of
    these overlays anything, so none of them joins the dismiss stack.

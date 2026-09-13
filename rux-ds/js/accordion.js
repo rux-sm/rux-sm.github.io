@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — ACCORDION                                   Phase 5, roadmap §4.5
+   rux-ds — ACCORDION
    --------------------------------------------------------------------------
    Requires js/overlay.js only for `autoId`. An accordion is not a dismissible
    surface: it does not overlay anything, Escape does not close it, and a

@@ -1,9 +1,10 @@
 /* ==========================================================================
-   sch-data.js — THE LIVE WEEK, READ ONLY
+   sch-data.js — THE LIVE WEEK
    --------------------------------------------------------------------------
-   Fills #sch-grid from the tables the rux-ui app already writes. Nothing here
-   writes: no insert, no update, no delete, and the New trip button ships
-   disabled. Step 2 of docs/screen-inventory.md section 5.
+   Fills #sch-grid from the tables the rux-ui app also writes, and writes
+   back: a drag moves a bus, and the trip panel's Save writes the trip with
+   its stops, contact, payments and bus. That database is production and
+   shared with rux-ui, so nothing here is ever tried with a test record.
 
    THE CLIENT IS THE ACCOUNT'S, NOT A SECOND ONE. /account.js at the hub root
    opens the session and exposes window.Rux.account.client; two clients on one
@@ -84,8 +85,9 @@
   // rux-ui stores a colour NAME, and its own module maps retired names to live
   // ones (orange and yellow to amber, cyan to teal). Carbon's tag palette has
   // no amber, so amber is the one colour that cannot be honoured and renders
-  // warm-gray; it is also the most-used one. Recorded in docs/log.md as rux's
-  // call: a neutral amber, or one bar hue that is not a Carbon tag.
+  // warm-gray; it is also the most-used one. It is rux's call,
+  // listed in the site's docs/status.md: a neutral amber, or one bar hue
+  // that is not a Carbon tag.
   const HUES = {
     teal: 'teal', cyan: 'teal', green: 'green', purple: 'purple',
     pink: 'magenta', magenta: 'magenta', blue: 'blue', red: 'red',
@@ -394,8 +396,8 @@
     // `po_received` and `invoiced` are booleans, never null on any of the 779
     // rows; `contract_note` is free text and non-null on 18, all of them signed.
     'contract_note,po_received,invoiced',
-    // 34 rows across the table today. Read-only here: the old app REWRITES every
-    // row of a trip on save, which is an editor of its own, not a panel field.
+    // 34 rows across the table today. The old app REWRITES every row of a
+    // trip on save; Save here inserts, updates and deletes one row at a time.
     'trip_payments(id,position,amount,method,date,ref)',
     'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot)',
   ].join(',');
@@ -1007,8 +1009,8 @@
   }
 
   /* ── UNDOING A MOVE ───────────────────────────────────────────────────────
-     docs/log.md asked for this on 2026-09-07 and three times since: "No undo
-     on a bus move." It also said where it would come from -- "the write to
+     ASKED FOR on 2026-09-07 and three times since: "No undo on a bus
+     move." The ask also said where it would come from -- "the write to
      reverse it is the one `moveToBus` already makes" -- and that is exactly
      what this is. One column, written back to the value the drag closure had
      already captured before it moved.
@@ -1176,7 +1178,7 @@
   }
 
   /* ── THE TRIP PANEL ───────────────────────────────────────────────────────
-     READ ONLY for now: it shows a trip, it changes nothing. Editing goes in
+     IT SHOWS A TRIP AND EDITS IT, and Save writes it back. Editing went in
      field by field, the way the drag went in.
 
      NO rux-ds MODULE CLAIMS `side-panel`, so opening and closing it is this
@@ -1251,7 +1253,7 @@
      `<ul>` of `contained-list-item`s, and Contract, PO and Invoice hold FORM
      FIELDS, not rows. Putting a text input in a list item would be borrowing
      a component's shell for content it was not built for -- the same fault
-     `docs/rux-ds-requests.md` records for `rux--date-picker__icon` and for
+     already refused for `rux--date-picker__icon` and for
      `rux--time-picker`. Payments stays a real contained-list because it
      genuinely has rows; these three get app chrome that MATCHES it, at the
      same 12px/400 and the same `size-sm` height, so the tab still reads as
@@ -1588,7 +1590,7 @@
      is a different component -- a `__input-field` beside a `rux--select-input`
      for AM/PM, which is why `.rux--time-picker .rux--select-input` is compiled
      and nothing there styles a `rux--text-input` -- so the class was a Carbon
-     name hung on markup that is not that component. `docs/rux-ds-requests.md`
+     name hung on markup that is not that component. This app
      already refuses exactly this move for `rux--date-picker__icon`, and it
      would have been the same fault: a page inventing a component's insides.
 
@@ -2162,7 +2164,7 @@
      in `parse()`, and writes ISO back into the field on every pick. A field
      showing mm/dd/yyyy would be a field the module could not read -- no
      calendar position, no range arithmetic -- so that half is a request to
-     rux-ds rather than a format applied here. See docs/rux-ds-requests.md.
+     rux-ds rather than a format applied here, in the site's docs/status.md.
 
      STRING WORK, NOT `new Date()`. A bare `new Date('2026-07-06')` is parsed
      as UTC midnight and then printed in local time, which is the previous day
@@ -2197,8 +2199,8 @@
 
   /* A COLOURED TAG WHERE rux ASKED FOR AN ICON, and the substitution is
      deliberate rather than a shortfall quietly dressed up. rux-ds's sprite is
-     63 symbols and not one of them means money -- counted 2026-09-10 and filed
-     in docs/rux-ds-requests.md -- so `Check` would have to borrow `i-document`
+     63 symbols and not one of them means money -- counted 2026-09-10 and asked
+     of rux-ds -- so `Check` would have to borrow `i-document`
      and `Card` `i-copy`, glyphs that say something else. A tag says the true
      thing in a word AND carries the colour that makes the column scannable,
      which is what the icons were wanted for. The moment the sprite grows a
@@ -2857,9 +2859,8 @@
 
     /* ── BOOKING CONTACT ────────────────────────────────────────────────────
        Rebuilt 2026-09-09 against three orderings rux collected. The structure
-       is the third's and two behaviours are the first's; the reasoning is in
-       docs/log.md, and the two things all three got wrong are recorded there
-       rather than argued again here.
+       is the third's and two behaviours are the first's; the reasons are
+       counts from the live data, not taste.
 
        THE LABELS DROP THE PREFIX because the section heading carries it. In a
        320px panel that is width rather than tidiness: "Booking contact phone"
@@ -3482,7 +3483,7 @@
          THE METHOD IS A WORD AND NOT A GLYPH, for now. rux asked for icons
          and Carbon's `--with-icon` variant is built for it, but rux-ds's
          whole sprite is 63 symbols and none of them means money -- counted,
-         and filed in docs/rux-ds-requests.md. Pressing `i-document` or
+         and asked of rux-ds. Pressing `i-document` or
          `i-copy` into service would be a glyph that lies. The word costs a
          reader nothing to learn, which four near-neighbour methods --
          Check, ACH, Card, Cash are all "money arrived" -- otherwise would.
@@ -3751,7 +3752,7 @@
          THE METHOD IS A WORD AND NOT A GLYPH, for now. rux asked for icons
          and Carbon's `--with-icon` variant is built for it, but rux-ds's
          whole sprite is 63 symbols and none of them means money -- counted,
-         and filed in docs/rux-ds-requests.md. Pressing `i-document` or
+         and asked of rux-ds. Pressing `i-document` or
          `i-copy` into service would be a glyph that lies. The word costs a
          reader nothing to learn, which four near-neighbour methods --
          Check, ACH, Card, Cash are all "money arrived" -- otherwise would.
@@ -4179,7 +4180,7 @@
          The busy cell beside it has carried `driver.name` for exactly this
          reason since it was written.
 
-         IT ANSWERS THE DUPLICATE NAMES docs/log.md has carried since
+         IT ANSWERS THE DUPLICATE NAMES noted since
          2026-09-07: "two Bennys, two Ernestos ... make the roster ambiguous in
          the one pane meant to resolve it". Both pairs are in today's fleet, the
          full names are already fetched, and nothing was using them.

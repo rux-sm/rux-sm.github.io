@@ -2,8 +2,7 @@
 //
 // A Carbon modifier used without the base class that supplies its appearance is
 // invisible to every other gate: the class resolves, the component is "covered",
-// and the element silently renders with the browser's default chrome
-// (roadmap §4.1.5 — the UI-shell hamburger and the time-picker field).
+// and the element silently renders with the browser's default chrome.
 //
 // docs/carbon-co-classes.json records which classes @carbon/web-components ALWAYS
 // emits together, extracted once from 219 rendered components. This checker is

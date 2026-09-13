@@ -62,7 +62,7 @@ export const GATES = [
     baseline: 'cds leakage: none',
   },
   {
-    // REGISTERED 2026-08-31 (roadmap 4.8). It was real, ran in npm run verify, and
+    // REGISTERED 2026-08-31. It was real, ran in npm run verify, and
     // sat outside the registry for three re-numberings of its own open question --
     // fifteenth, then eighteenth, then nineteenth. Same shape as build-namespace
     // above: a gate carried by a build tool with no check-* file of its own.
@@ -320,7 +320,7 @@ export const GATES = [
     knownGap: 'cannot recognise a rename as a rename',
   },
   {
-    // THE TWENTIETH, admitted 2026-08-31 (roadmap 4.8) -- the first gate whose
+    // THE TWENTIETH, admitted 2026-08-31 -- the first gate whose
     // unit is the FILE rather than an occurrence. table-page.html shipped with
     // no h1-h6 at all and passed all seventeen gates that existed; a person
     // walking the tab order found it. Its first run found the label/value
@@ -340,7 +340,7 @@ export const GATES = [
     baseline: '11 pages · 0 findings',
   },
   {
-    // THE TWENTY-FIRST, admitted 2026-08-31 (roadmap 4.8), and the first thing
+    // THE TWENTY-FIRST, admitted 2026-08-31, and the first thing
     // here that reads the captures' ATTRIBUTE data -- recorded as [role=x]{aria-y}
     // since the first harvest and never looked at. Written for the role="menu"
     // on the side nav's ul (643a20e), which every class gate was blind to by
@@ -400,8 +400,7 @@ export const GATES = [
   // agree with.
 
   {
-    // The same shape as build-builder-icons, one page over. Phase 14,
-    // roadmap §4.14.
+    // The same shape as build-builder-icons, one page over.
     id: 'build-theme-creator-icons',
     tool: 'tools/build-theme-creator.mjs',
     kind: 'node',

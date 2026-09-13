@@ -29,7 +29,7 @@
 // already has — a stack, a grid column — and holds blocks and blank lines and
 // NOTHING ELSE: that is what lets "the frame plus the blocks" reproduce the
 // file byte for byte, which check-blocks asserts. Nothing sits inside a block.
-// Roadmap §4.12, creator 3.
+//
 //
 // BYTE RANGES ARE EXACT. A block's `start` is the index after the newline that
 // ends its BEGIN line; its `end` is the index where its END line begins. So
@@ -265,7 +265,7 @@ export const provenanceIndex = html => {
 // block. So an href="#…" moves exactly when it points inward, and
 // data-rux-open="wizard-cancel" stays as it is although the attribute is
 // listed here: its dialog is frame, and suffixing by attribute name alone
-// would break the wizard's Cancel. Measured 2026-09-05, roadmap §4.12.
+// would break the wizard's Cancel.
 export const REF_ATTRS = ['aria-controls', 'aria-labelledby', 'aria-describedby', 'for', 'data-rux-open'];
 
 export function idsIn(html) {

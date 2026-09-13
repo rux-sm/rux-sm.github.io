@@ -1,5 +1,5 @@
 /* ==========================================================================
-   rux-ds — TILE                                        Phase 5, roadmap §4.5
+   rux-ds — TILE
    --------------------------------------------------------------------------
    Requires js/overlay.js only for `autoId`. A tile is part of the page, not a
    surface over it, so it never joins the dismiss stack.

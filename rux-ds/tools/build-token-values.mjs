@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
 // Write docs/token-values.json: every --rux-* value css/rux.css DECLARES, keyed
-// by the context that declares it. Phase 8's token snapshot, roadmap §4.8.
+// by the context that declares it.
 //
 // WHY THIS GATE EXISTS AND WHY IT IS THE ONE MOST LIKELY TO BE SKIPPED. Every
 // other gate here is NAME-based. check-classes asks whether a class resolves,

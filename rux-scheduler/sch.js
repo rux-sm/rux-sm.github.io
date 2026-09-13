@@ -189,8 +189,8 @@
        "seven days need more room than the pane has", and sch-data.js needs to
        know it to decide which companion yields. Returning it keeps that
        arithmetic in one place: the last function that reserved room for a
-       panel by computing it a second time is the one docs/log.md records an
-       afternoon of disagreeing with itself. */
+       panel by computing it a second time spent an
+       afternoon disagreeing with itself. */
     return crowded;
   }
 
@@ -200,7 +200,7 @@
      `.sch-board` since 2026-09-07 and makes room by existing, so the function,
      the `.sch-page--with-panel` class it keyed off and the stylesheet's
      no-script fallback are all gone -- three places that had to agree about one
-     number. docs/log.md records the afternoon they did not: room reserved
+     number. One afternoon they did not: room reserved
      twice, a width read 320px mid-entrance, and a transitionend refit waiting
      on an animation that had been removed. */
 

@@ -3,8 +3,8 @@
  * references this file, and a consumer who does not link it gets Carbon's own
  * fallback stack exactly as before.
  *
- * WHY THIS FILE EXISTS RATHER THAN Carbon's. Roadmap 4.1.1 left $css--font-face
- * off and gave the reason: it emits 90 rules across every script, each pointing
+ * WHY THIS FILE EXISTS RATHER THAN Carbon's. Carbon's $css--font-face stays
+ * off, for a reason: it emits 90 rules across every script, each pointing
  * at url("~@ibm/plex/...woff2"), and the ~ is a bundler convention that 404s in
  * a browser. That objection was to CARBON'S EMITTER, not to the typeface, and
  * the same entry names this as the way out: "a self-hosted woff2 subset".
@@ -14,13 +14,12 @@
  * WHY IT IS WORTH LOADING. Carbon's type scale is metric-tuned for Plex --
  * body-01 carries letter-spacing: 0.16px, an optical correction for this face
  * specifically. Rendering it in system-ui applies Plex's corrections to whatever
- * the machine happens to have. Roadmap 4.1.1 states that cost and this pays it.
+ * the machine happens to have. This file pays that cost.
  *
  * WHY THERE IS NO local() SOURCE, though Carbon's own CSS has one. local() lets
  * a machine with Plex installed use ITS copy, which is a different file from
  * this one and can be a different version. That is precisely the machine-to-
- * machine variance check-spacing already suffers from -- see the 2026-09-01
- * entry in docs/gate-coverage.json. Every machine loads the same bytes here.
+ * machine variance check-spacing already suffers from. Every machine loads the same bytes here.
  *
  * WHY font-display IS optional AND NOT swap (2026-09-02). Under swap every load
  * painted first in system-ui and then redrew in Plex once the file landed,

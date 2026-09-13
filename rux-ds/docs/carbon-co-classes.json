@@ -1,5 +1,5 @@
 {
- "_": "Classes @carbon/web-components ALWAYS emits together, extracted from the rendered shadow DOM of 219 tags via tools/extract/. Regenerate by re-installing @carbon/web-components and re-running the harness; see roadmap §4.1.7.",
+ "_": "Classes @carbon/web-components ALWAYS emits together, extracted from the rendered shadow DOM of 219 tags via tools/extract/. Regenerate by re-installing @carbon/web-components and re-running the harness.",
  "_ignored": {
   "cds--popover--top": "mutual with --high-contrast; only one sample, not a real requirement",
   "cds--popover--high-contrast": "mutual with --top; sample artifact",

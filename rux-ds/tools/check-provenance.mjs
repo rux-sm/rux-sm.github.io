@@ -5,7 +5,7 @@
 // The other gates ask whether the markup resolves. None of them can ask the
 // question that actually matters for structure: was this shape ever compared
 // against something Carbon renders, or was it guessed from a selector? Guessing
-// is what produced the tabs defect (roadmap §4.1.11) — a fragment that passed
+// is what produced the tabs defect — a fragment that passed
 // every gate and still drew a doubled underline, because the classes were real
 // and merely in the wrong places.
 //
@@ -13,7 +13,7 @@
 // messages, and the reconstruction was wrong: f9f5414 claims nine fragments
 // match the rendered React DOM, and only two of them record a reference. That
 // is the failure this gate prevents — not bad markup, but markup whose
-// trustworthiness is unknowable without archaeology. Roadmap §4.1.13.
+// trustworthiness is unknowable without archaeology.
 //
 // WHAT IT CHECKS. Presence, vocabulary, position, and that a claim of
 // verification names what it was verified against:

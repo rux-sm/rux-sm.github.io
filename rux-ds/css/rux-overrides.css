@@ -1,5 +1,5 @@
 /*
-  rux-overrides.css — component-level changes. Roadmap §4.10, 2026-09-02.
+  rux-overrides.css — component-level changes.
 
   THE ONLY PLACE A COMPONENT'S LOOK IS CHANGED. Link it after css/rux.css and
   after css/rux-theme.css, so its rules win on equal specificity with no
@@ -12,8 +12,7 @@
   !important is aimed at the wrong selector. No Carbon file is touched, and
   `git diff css/rux.css` after any edit here is empty.
 
-  FIVE RULES ARE LIVE, from 2026-09-02, 2026-09-03 and 2026-09-11 (roadmap
-  §4.13, §4.10). Nothing else has been decided about rux's look beyond
+  FIVE RULES ARE LIVE. Nothing else has been decided about rux's look beyond
   Carbon's, and a rule that moves a captured component away from its capture
   does not belong here — every rule below repairs a box that renders wrong,
   and none of them changes a decision Carbon made. The example below is the

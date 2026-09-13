@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
 // Writes builder/blocks.json — the page builder's catalogue — from the BLOCK
-// and SLOT markers in sink/*.html and templates/*.html. Roadmap §4.12, creator 3.
+// and SLOT markers in sink/*.html and templates/*.html.
 //   node tools/build-blocks.mjs        (npm run blocks)
 //
 // WHY A MANIFEST AND NOT THE FRAGMENTS. A sink fragment is a demo catalogue —

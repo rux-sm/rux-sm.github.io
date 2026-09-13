@@ -1,4 +1,4 @@
-// theme-creator.html's behaviour. Phase 14 (roadmap §4.14), the Surfaces
+// theme-creator.html's behaviour. Phase 14, the Surfaces
 // section (§4.15), saved themes (§4.16), and rebuilt as one list 2026-09-10
 // (§4.17).
 //

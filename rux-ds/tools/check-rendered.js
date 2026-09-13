@@ -1,7 +1,7 @@
 //
 // RENDER CHECK — paste into the kitchen sink's devtools console, or run via a
 // headless browser later. Deliberately NOT a Node tool: automating it needs a
-// browser dependency, and this project has none (roadmap §1).
+// browser dependency, and this project has none.
 //
 // It catches what the other three gates cannot. `npm run verify` proves classes
 // resolve and components are exercised; none of that proves anything RENDERS.
@@ -9,7 +9,7 @@
 //
 //   uaStyled   a Carbon modifier applied without its base class, so the browser's
 //              default form-control chrome shows through. Found the UI-shell menu
-//              toggle and the time-picker field this way (roadmap §4.1.5).
+//              toggle and the time-picker field this way.
 //   collapsed  a section whose tallest Carbon-classed element is under 8px — the
 //              layout-module bug (§4.1.2), which compiled clean and passed every
 //              name check. Reported ONLY when the section has such elements; a

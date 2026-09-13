@@ -1,7 +1,7 @@
 // Writes theme-creator/tokens.json: every colour-valued --rux-* token the
 // build actually declares, with its value in each of the four compiled
 // bases, the level the theme creator shows it at, and — where Carbon or the
-// stylesheet can answer for it — what the token is tied to. Roadmap §4.17.
+// stylesheet can answer for it — what the token is tied to.
 //
 // WHY THIS EXISTS. Until 2026-09-10 the theme creator carried its own two
 // hand-written token tables: twenty accent rows (§4.14) and twenty-nine

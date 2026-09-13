@@ -92,8 +92,7 @@ unskippable at a moment when skipping is tempting.
 2026-09-01 — that no hook existed and `CLAUDE.md`'s claim was a corrupted
 variable — and by then the hook had existed for days. The paragraph describing
 the corruption was itself the stale line, which is the failure mode this
-document warns about, arriving from inside it. `docs/adoption-audit.md` finding 5
-recorded the contradiction; nobody corrected the sentence.
+document warns about, arriving from inside it.
 
 **When to add one.** When a defect could recur silently, and the question that
 would have caught it can be answered mechanically from files in the repo. Both
@@ -237,8 +236,8 @@ of rot found in this repo has been volatile state written as prose: "seventeen
 gates", "six templates", "enforced by a hook". Prose is where an agent looks and
 prose is what nothing can check.
 
-**Where it already works here.** `docs/gate-coverage.json`, `docs/inventory.json`
-and `docs/coverage.json` are exactly this, and the gates that read them are why
+**Where it already works here.** `docs/inventory.json` and
+`docs/coverage.json` are exactly this, and the gates that read them are why
 those numbers do not rot. Where it does NOT yet work is the surrounding prose:
 `tools/lib/gates.mjs`'s own header is the counterexample at the top of this
 document.
@@ -288,9 +287,9 @@ gaming it. Where that is impossible, the check is not ready — record what the
 attempt learned and leave the rule unenforced.
 
 **A decision with no recorded rejected alternative looks OPEN.** An agent will
-reopen it, in good faith, every session, for free. Roadmap §1.1, §2.1, §4.4 and
-§4.6 record choices *with what was rejected and why*, and README's "Open decisions"
-section is the inverse — an explicit list of what must not be settled quietly.
+reopen it, in good faith, every session, for free. `AGENTS.md` and the README
+record choices already made, and the site's `docs/status.md` is the inverse — an
+explicit list of what must not be settled quietly.
 Those two sections do more to keep an agent on course than any gate here.
 
 ## What this document does not cover

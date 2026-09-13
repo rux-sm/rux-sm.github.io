@@ -77,8 +77,8 @@
 <!--
   THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
   this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because roadmap §4.6 asks for
-  runnable skeletons and a file that only runs once pasted into another one is
+  is a COMPLETE page carrying this same shell, because a skeleton must run on
+  its own, and a file that only runs once pasted into another one is
   not runnable. templates/table-page.html is the worked example.
 
   THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
@@ -97,7 +97,7 @@
               (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
               arrangement cannot satisfy. REJECTED so the shell could have a
               hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+              replaced.
 
   WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
   that lives inside the header. `.rux--content` is only ever indented by a
@@ -641,8 +641,11 @@
                  and no blue in it at all: creating a trip is one press further
                  away and less discoverable. rux's argument is that the board is
                  read far more than it is added to, and the prefilled path is
-                 better anyway. docs/log.md carries the two facts that keep the
-                 menu item from being dropped entirely. -->
+                 better anyway. Two facts keep the menu item from being dropped
+                 entirely: the Unassigned row hides when empty, so a quiet week
+                 has no cell to right-click for a trip with a date and no bus;
+                 and iOS Safari opens no menu on a long press, so on an iPhone
+                 this item may be the only way to create a trip. -->
           </div>
             <div class="sch" id="sch" role="region" aria-label="Week schedule" hidden>
               <div class="sch-grid" id="sch-grid"></div>
@@ -1033,8 +1036,8 @@
 
        CAPPED AT ONE ROW EACH, AND THE CAP IS THE SCHEMA'S. `trips` holds one
        `po_ref`, one `po_amount` and one `invoice_number`; `trip_pos` and
-       `trip_invoices` do not exist -- probed live, both 404, and written up in
-       docs/schema-requests.md with the migration in
+       `trip_invoices` do not exist -- probed live, both 404; the migration
+       that adds them is planned in
        docs/po-invoice-lists-plan.md. So the layout is the one the lists will
        have and the `+` disables at the row the database can store, which is
        the honest version of a control that would otherwise promise a second

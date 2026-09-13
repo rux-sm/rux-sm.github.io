@@ -12,7 +12,7 @@
 // is visible to a gate that reads a file, and `check-runtime-classes` declares
 // itself blind to "anything behind an interaction."
 //
-// THE THIRD ANSWER. Roadmap §4.8 frames this as a choice between adding a
+// THE THIRD ANSWER. This looked like a choice between adding a
 // headless browser — "a real change to what the project is" — and accepting that
 // behaviour regressions are caught by people. There is a third option, and it is
 // the one this file takes: write the assertions as a BROWSER TOOL, like the four
@@ -373,7 +373,7 @@
   })();
 
   // ── ui-shell: two panels in one header, each action opens its own ────────
-  // Added 2026-09-02 with the account panel (roadmap §4.13). js/ui-shell.js
+  // Added 2026-09-02 with the account panel. js/ui-shell.js
   // resolves a panel through aria-controls when the action names one; the
   // Account action must open #rux-account-panel and leave the switcher's
   // closed, and opening the switcher must close it, because the kernel keeps

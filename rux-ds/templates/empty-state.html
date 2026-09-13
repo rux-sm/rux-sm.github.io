@@ -61,7 +61,7 @@
   the rest of this comment.
 
   THE SHELL IS THE SAME MARKUP AS templates/app-shell.html, deliberately
-  duplicated. Roadmap §4.6 asks for "complete, runnable page skeletons", and a
+  duplicated, because a template has to run on its own, and a
   skeleton that only runs once pasted into another file is not one. If the
   shell changes, it changes in each template — that is the cost of the word
   "runnable", and it is paid once per template rather than by every page built
@@ -83,7 +83,7 @@
               (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
               arrangement cannot satisfy. REJECTED so the shell could have a
               hamburger; a template built on it shipped in f5f1bef and was
-              replaced. Roadmap §4.6.
+              replaced.
 
   WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
   that lives inside the header. `.rux--content` is only ever indented by a

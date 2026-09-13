@@ -2,9 +2,8 @@
 
 Everything done to the design system is one of three tasks, and each ends
 by opening the page. `README.md` "Picking this up" is the current state,
-`docs/roadmap.md` the decisions, `docs/log.md` the dated record. Since
-2026-09-12 this folder lives inside `rux-sm.github.io`; the commands below
-run from that repository's root unless they say `rux-ds/`.
+and the site's `docs/status.md` is what is open. The commands below run
+from the repository's root unless they say `rux-ds/`.
 
 Check the **exit code** of every check, never its output. The gates cannot
 see everything; five shipped defects passed all of them.
@@ -65,7 +64,4 @@ wrong answers: `check-a11y` skips its focus-ring check when the document has
 no focus, so press Tab once first and confirm `focusRingChecked: true`; and a
 reading taken with the wrong theme active is a reading of that theme.
 
-Until 2026-09-12 a ledger, `docs/gate-coverage.json`, recorded which page
-each gate had last been run against and `npm run gates` aged the readings
-by commit. Retired: the readings stayed in the archived repository, and the
-gates run whenever a page changes, from the page.
+The browser gates run whenever a page changes, from the page.

@@ -5,7 +5,7 @@
 // role on that class. If the class is attested and NEVER carries the role, the
 // role was invented.
 //
-// THE TWENTY-FIRST GATE, admitted 2026-08-31 (roadmap §4.8), and the FIRST THING
+// THE TWENTY-FIRST GATE, admitted 2026-08-31, and the FIRST THING
 // IN THIS REPOSITORY THAT READS THE CAPTURES' ATTRIBUTE DATA. Every other gate
 // reads classes, elements or computed boxes. The captures have recorded
 // attributes as `[role=x]{aria-y=z}` beside the element all along and nothing
@@ -52,7 +52,7 @@ const KNOWN = {
     + 'and that is not one of them. So the capture cannot distinguish "Carbon announces '
     + 'nothing here" from "Carbon announces it by a means we never recorded". Removing '
     + 'the role on this evidence would be deciding the question the wrong way round. '
-    + 'Widen the extractor and this entry can be settled; roadmap §4.8.',
+    + 'Widen the extractor and this entry can be settled.',
 };
 
 // ---------------------------------------------------------------------------

@@ -3,9 +3,8 @@
 // WHY IT EXISTS. The diagram draws five categories, and the figure that says
 // whether each one is drawn exactly ONE way lived only in
 // `tools/specimen-kinds.mjs` -- in a browser, on a page under `build/`, which is
-// git-ignored. So it existed while a person was looking at it and not otherwise,
-// and `docs/status.md` has carried "the collision figures belong in measure.mjs"
-// as decided-and-not-built since. This is that, so a diff catches it.
+// git-ignored. So it existed while a person was looking at it and not otherwise.
+// This writes the figures to a file, so a diff catches them.
 //
 // THE FIGURE IT PORTS IS `one category, one look`, WHICH IS THE ONE THAT WAS
 // MISSING. `63094e5` shipped two of the six Prerequisites as three-sided boxes,

@@ -100,8 +100,7 @@
        /switcher.json from the account root and rewrites every ul.rux--switcher
        on the page, marking the one you are on; the entries below are the
        FALLBACK it leaves in place when that fetch fails — a module served
-       alone, or offline. docs/consumer-policy.md §5: nothing but the hub lists
-       apps.
+       alone, or offline. Nothing but the hub lists apps.
 
        THEY MATCH switcher.json's ORDER AND NAMES AS OF 2026-09-12, deliberately
        rather than approximately. The hardcoded list this replaces said
@@ -676,7 +675,7 @@
 <section class="ks-sec" id="text-input">
   <h2>Text input</h2><p>default · invalid · warning · readonly · disabled</p>
   <!-- PROVENANCE: source · cds-text-input shadow DOM
-       · superseded reference for light-DOM class placement (roadmap §4.1.11) -->
+       · superseded reference for light-DOM class placement -->
   <!--
     Root is `form-item text-input-wrapper` on ONE element, then __label-wrapper and
     __field-outer-wrapper — extracted from cds-text-input's shadow DOM.
@@ -865,7 +864,7 @@
     @carbon/styles and none had an element here.
 
     The counter text is static — keeping it in sync with typing is a behaviour,
-    and behaviours are Phase 5 (roadmap §4.5). The markup is the contract that
+    and behaviours are Phase 5. The markup is the contract that
     module will drive.
 
     `__label-counter` is NOT here, though the reference emits it: the Phase 3
@@ -1687,8 +1686,7 @@
     2026-08-30, fixed on 2026-08-31. Carbon renders
     `span.cds--toggle__text{aria-hidden=true}`, which the captures could not show
     until the extractor's aria allowlist widened from four attributes to
-    thirteen; the finding sat open for a day for exactly that reason. Roadmap
-    4.8.
+    thirteen; the finding sat open for a day for exactly that reason.
   -->
   <div class="ks-row" style="gap:3rem">
     <div class="rux--toggle">
@@ -2698,8 +2696,8 @@
       as an author's call at a measured +1.2 KB gzipped. `docs/inventory.md`
       carries that in the open rather than dressed as a rule-2 pass.
 
-      THE ROW IT REPLACED SAID "Carbon has no Card". That was true when
-      roadmap 4.1.14 wrote it and Carbon has since promoted the component:
+      THE ROW IT REPLACED SAID "Carbon has no Card". That was true once,
+      and Carbon has since promoted the component:
       `@carbon/styles` 1.114 ships a 474-line `components/card`, and this
       Storybook renders 17 `preview-preview-card--*` stories. The old reason
       survived because nothing re-reads a CUT row's evidence.
@@ -3285,7 +3283,7 @@
       This is why tabs had no "extracted from cds-tabs" provenance note and no
       entry in docs/carbon-co-classes.json: it was inferred from the CSS rather
       than quarried, and inferring nesting from a descendant selector is exactly
-      the mistake roadmap §4.1.7 exists to prevent. Note also that the WEB
+      the mistake to avoid. Note also that the WEB
       COMPONENT is not the reference here — cds-tab renders an <a> in shadow DOM
       and never emits --nav-item at all. For tabs, @carbon/react is the structure
       @carbon/styles is written against.
@@ -3976,7 +3974,7 @@
     .rux--css-grid sets grid-template-columns: repeat(var(--rux-grid-columns),
     minmax(0,1fr)) and --rux-grid-columns is set responsively (4 / 8 / 16).
     Column tokens are emitted by @carbon/grid as literal --cds-grid-* names, which
-    tools/build.mjs renames; see roadmap §4.1.2.
+    tools/build.mjs renames.
 
     WHY THE GAPS ARE WIDER THAN THE COLUMNS, AND WHY THAT IS NOT A DEFECT.
     The gutter is margin-inline on the column (css/rux.css:280), not padding, so a
@@ -3985,7 +3983,7 @@
     content at 64rem, leaving ~912px of track: 912/16 = 57px per column, minus 32px
     of gutter = a ~25px box sitting in a 32px gap. Carbon's grid is drawn for a
     99rem page, not a 64rem reading column. The 4/4/8 row below measures
-    196/196/424px, which is the check that proves the grid itself (roadmap §4.1.9).
+    196/196/424px, which is the check that proves the grid itself.
 
     THE LABELS, HOWEVER, WERE A REAL BUG. These boxes carried `padding:.5rem`,
     which at a 25px column leaves a 9px content box — and "16" at body-01 (14px) is
@@ -4039,7 +4037,7 @@
        rule, `max-inline-size: 100%` over the default's 99rem. This sink caps
        .ks-main at 64rem, below 99rem, so here the two draw identically -- the
        difference is measurable only on a page wider than 1584px, and it was:
-       the scheduler at 2000px, 2026-09-06, docs/log.md. Offered by
+       the scheduler at 2000px. Offered by
        the builder's grid width. -->
   <!-- THE GAP IS ON THE SINK'S OWN LABEL, NOT ON THE GRID ABOVE IT. The first
        draft put `margin-block-end` on the narrow grid and check-spacing
@@ -4100,9 +4098,9 @@
 
     NO `rux--data-table` HERE, deliberately. A table would be the obvious markup
     and it would raise data-table's coverage from a section demoing none of it —
-    the same reason the sink's own chrome carries no `rux--` classes at all
-    (roadmap §4.6, "the instrument may not be built out of the thing it
-    measures"). The layout is `ks-scale`, the harness's own grid.
+    the same reason the sink's own chrome carries no `rux--` classes at all:
+    the instrument may not be built out of the thing it
+    measures. The layout is `ks-scale`, the harness's own grid.
   -->
   <div class="ks-scale">
     <div class="ks-label">Token</div>
@@ -4156,7 +4154,7 @@
   <!-- PROVENANCE: rendered-dom · the --skeleton story on each host component
        (accordion, tag, slider, structuredlist and the rest), 2026-08-28 -->
   <!--
-    Skeleton is not a component of its own: roadmap §4.1.14 records that it is a
+    Skeleton is not a component of its own: it is a
     `--skeleton` story on 32 others. So the omissions report lists whole host
     components — accordion, data-table, tile — because those stories ARE the
     reference. What this fragment owns is the skeleton classes themselves, and
@@ -4215,7 +4213,7 @@
        2026-08-28 · both render `div.stack-<axis>.stack-scale-N` around bare divs and
        nothing else; the children carry no class of their own. -->
   <!--
-    RESTORED 2026-08-28, roadmap §4.4. Phase 3 cut it and two templates then found
+    RESTORED. Phase 3 cut it and two templates then found
     the same gap: Carbon components carry NO vertical margin on purpose — the
     spacing overview says so outright, "components ... not use margin and instead
     delegate the responsibility of positioning and layout to parent components" —
@@ -4370,7 +4368,7 @@
        docs/carbon-react-states.json, harvested 2026-08-27 -->
   <!--
     Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
-    extraction this fragment used to carry (roadmap §4.1.11: the web components
+    extraction this fragment used to carry (the web components
     are the wrong reference for light-DOM structure). What the rendered DOM
     corrected:
       - everything sits in one wrapper div with the label inside it
@@ -6170,7 +6168,7 @@
        2026-08-27 -->
   <!--
     Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
-    extraction (roadmap §4.1.11). What the rendered DOM corrected:
+    extraction. What the rendered DOM corrected:
       - the root is `combo-box list-box` ONLY — no `--dropdown`, no size and no
         layout class; the shadow DOM's `--dropdown` pairing was the web
         component's, not React's
@@ -6219,7 +6217,7 @@
 <section class="ks-sec" id="multiselect">
   <h2>Multiselect</h2><p>selection tag · open with checkboxes · filterable</p>
   <!-- PROVENANCE: rendered-dom · react.carbondesignsystem.com components-multiselect--default, 2026-08-26
-       · filterable variant still undiffed (roadmap §4.1.11) -->
+       · filterable variant still undiffed -->
   <!--
     ADMITTED 2026-09-01. `multi-select__wrapper` is rendered by every capture and
     has no rule in @carbon/styles — the §4.1.12 precedent — so it is not written
@@ -7906,7 +7904,7 @@
         Carbon puts __action-toolbar-button on all three of these and
         __action-toolbar-leading-button on the first as well. @carbon/styles has
         no rule for __action-toolbar-button, so check-classes would reject it and
-        it is left off — roadmap §4.1.12. The leading class is kept; it has one.
+        it is left off. The leading class is kept; it has one.
       -->
       <div class="rux--side-panel__action-toolbar">
         <button type="button" class="rux--side-panel__action-toolbar-leading-button rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Primary action</button>

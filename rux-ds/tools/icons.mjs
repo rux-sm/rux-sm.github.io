@@ -4,7 +4,7 @@
 //
 // @carbon/styles ships no icons, and components whose visual identity IS an icon
 // render blank without them: dropdown chevrons, checkbox ticks, progress steps, the
-// two-handle slider thumbs (roadmap §4.1.3). @carbon/icons is 123 MB / 2,828 files
+// two-handle slider thumbs. @carbon/icons is 123 MB / 2,828 files
 // and is NOT a dependency (§3) — it is quarried here, and the 5 KB sprite is committed.
 //
 // Carbon ships only 68 icons at 16px and 18 unsized; the full set is at 32px. SVG

@@ -6,7 +6,7 @@
 <!--
   Mounts Carbon's Lit web components and dumps their rendered shadow DOM.
   This is a QUARRY TOOL, not part of the system: @carbon/web-components is a
-  temporary dev dependency and is removed once extraction is done (roadmap §3).
+  temporary dev dependency and is removed once extraction is done.
 
   No bundler — bare specifiers resolve through the import map below, served
   straight out of node_modules by tools/serve.mjs.
@@ -63,7 +63,7 @@
 
   // Per-element class COMBINATIONS, not a flat set. The defect class this exists to
   // catch is a modifier used without its base, which only shows as several classes
-  // co-occurring on one element (roadmap §4.1.5).
+  // co-occurring on one element.
   const combosIn = root => {
     const out = [];
     root.querySelectorAll('[class]').forEach(n => {
@@ -106,7 +106,7 @@
     #   await __extractClasses(0, 60)        -> per-element class combinations
     #   await __extractHtml('cds-dropdown', 'dropdown/dropdown.js')
     npm uninstall @carbon/web-components    # put it back out
-  The package is NEVER a dependency of this system (roadmap §3). Its output lives
+  The package is NEVER a dependency of this system. Its output lives
   in docs/carbon-co-classes.json, which tools/check-co-classes.mjs reads in plain
   Node — the browser is needed to PRODUCE the map, not to use it.
 -->

@@ -8,8 +8,8 @@
 // KEEP/CUT/DEFER inventory). Writes docs/inventory.json.
 //
 // Phase 2 wants three things per component: size, the `@use` graph, and the
-// tokens it consumes. Size alone is famously misleading here — roadmap §2 warns
-// that per-component figures are DEPENDENCY weight, and summing them overcounts
+// tokens it consumes. Size alone is famously misleading here, because
+// per-component figures are DEPENDENCY weight, and summing them overcounts
 // the real bundle 4.2x — so the graph is what says whether cutting a component
 // actually removes anything. `deps` is the transitive closure over sibling
 // components; `exclusive` is the part of it nothing else needs, which is the

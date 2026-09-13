@@ -1,16 +1,19 @@
 # rux-scheduler
 
-Fleet scheduling and dispatch — one app on [rux-ds](https://github.com/rux-sm/rux-ds),
+Fleet scheduling and dispatch — one app on [rux-ds](../rux-ds/),
 served at **rux-sm.github.io/rux-scheduler/**.
 
-The repository root's `AGENTS.md` is the policy. `docs/status.md` here is
-where this app stands. `docs/log.md` is every dated pass.
+The repository root's `AGENTS.md` is the policy. The site's `docs/status.md`
+lists what is unfinished here.
 
 ## What it is
 
 A week board: buses down the side, days across, one bar per assignment. It
 reads and writes the Supabase tables the `rux-ui` app already writes — trips,
 assignments, stops, drivers, buses — and is that app's replacement, mid-flight.
+
+That database is production and shared with `rux-ui`, so nothing here is
+ever tried with a test record.
 
 The schedule grid and the trip bar are this app's own, prefixed `sch-`; Carbon
 has neither. Everything else is rux-ds's, linked live at `/rux-ds/…` with no

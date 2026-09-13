@@ -1,6 +1,5 @@
 /* ==========================================================================
    rux-ds — DISMISSIBLE: NOTIFICATIONS AND FILTER TAGS
-                                                        Phase 5, roadmap §4.5
    --------------------------------------------------------------------------
    Requires js/overlay.js only to share the `window.Rux` namespace. Neither of
    these overlays anything, so neither joins the dismiss stack — the kernel

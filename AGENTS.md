@@ -123,16 +123,40 @@ name plans, because the plans folder is the list.
   options go in the commit message.
 - **A correction replaces the wrong sentence.** It never adds a note beside it.
 - **Code and its document change in the same commit.**
-- **Names people choose are lowercase.** A name a tool or a convention fixes
-  keeps its spelling: `README.md`, `AGENTS.md`, `CLAUDE.md`, `LICENSE`,
-  `NOTICE`, `SKILL.md`, `ORDER` and `PIN`.
 - **No other kind.** No logs, audits, memos or decision records.
 - **Comments too.** A code comment says what the code does and why, in the
   present tense.
 
+## Names
+
+Every app has one word, and its names derive from it.
+
+| App | Folder and address | Header | Class prefix | Commit scope |
+| :--- | :--- | :--- | :--- | :--- |
+| Home | `/` | Rux Home | none | `home` |
+| Design | `design/` | Rux Design | `rux--` | `design` |
+| Notes | `notes/` | Rux Notes | `notes-` | `notes` |
+| Scheduler | `scheduler/` | Rux Scheduler | `scheduler-` | `scheduler` |
+
+- **Names people read are sentence case.** A page title is `Page — App`, and
+  an app's front page is titled with the app name alone.
+- **Names the computer reads are lowercase.** Hyphens join words, and an
+  underscore separates the parts of a name, such as a topic and a date:
+  `order-planning-training_2026-08-20`.
+- **Every app uses the same file names:** `index.html`, `app.js`, `data.js`,
+  `app.css`, `theme.css`, `overrides.css`, `brand/`, `docs/` and `README.md`.
+  Design keeps its library layout.
+- **A name a tool or a convention fixes keeps its spelling:** `README.md`,
+  `AGENTS.md`, `CLAUDE.md`, `LICENSE`, `NOTICE`, `SKILL.md`, `ORDER`, `PIN`,
+  and Design's `design/css/rux-theme.css` and `design/css/rux-overrides.css`.
+- **A tool's name starts with its action,** such as `build-`, `check-` or
+  `sync-`. A `.js` file runs in the browser and a `.mjs` file on the Mac.
+- **Stored browser keys and the exported theme format tag keep their names,**
+  so nobody loses a saved theme or setting.
+
 ## Commits
 
 `type(scope): Subject`, imperative, authored by rux alone with no AI
-attribution. The scope is the app the change is in: `home`, `design`,
-`notes` or `scheduler`, or `site` for shared files. No hook checks the typography any more; the pre-commit hook
+attribution. The scope is the app's commit scope from
+Names, or `site` for shared files. No hook checks the typography any more; the pre-commit hook
 checks what matters.

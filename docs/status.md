@@ -96,3 +96,8 @@ closing the database's open access rules wait on it.
   have given 58, 91 and 108.
 - Cross-guide references arrive in two shapes, 13 as links and 28 as literal
   file names, and atlas hasn't been told the new figures.
+
+## Only rux can do
+
+- Delete the archived GitHub repositories, and decide whether `trip-board`
+  stays.

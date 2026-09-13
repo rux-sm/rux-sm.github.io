@@ -11,13 +11,26 @@ documents stay small and current without anyone remembering to tidy them.
 
 ## Decisions
 
-- **Six kinds of document:** readme, rules, status, how-to, reference, plan.
-  `README.md`, `AGENTS.md`, `CLAUDE.md` and `docs/status.md` are known by their
-  names. Every other document says its kind in a `type:` header line. Atlas
-  content keeps its own types.
-- **No orphans.** Every project document is linked from a README in its
-  folder or a parent folder, or from a generated index. Atlas content is
-  exempt.
+**Six kinds of document, each with one place.** A how-to answers "how do I do
+this?" A reference answers "what is true about this?"
+
+| Kind | Where it lives | What it is for |
+| :--- | :--- | :--- |
+| readme | `README.md` at the root and in each app folder | what this is, and how to run and check it |
+| rules | `AGENTS.md`, which `CLAUDE.md` imports | the rules, each with one line of reason |
+| status | the site's `docs/status.md`; atlas's `issues.md` | open work |
+| how-to | the owning folder's `docs/` | the steps to perform a task |
+| reference | the owning folder's `docs/`; atlas's `standards/` | a contract, spec or inventory to look up |
+| plan | the repository's `docs/plans/` | a change being decided or built |
+
+Readme, rules and status files are known by their names. Every other document
+says its kind in a `type:` header line. Atlas content keeps its own types.
+
+- **Everything is reachable from the root README.** Every project document is
+  found by following links from its repository's root `README.md`, and a link
+  to a folder covers the files directly in it. The root README links each
+  app's README, the status list and `docs/plans/`, so the plans folder is its
+  own list and nothing lists plans by hand. Atlas content is exempt.
 - **Every file a document names exists.** The site gets the check atlas has.
   Plans are skipped, because they name files that do not exist yet. Paths into
   atlas are checked only when atlas sits beside the site, and the check says
@@ -64,15 +77,20 @@ None.
 ### Site
 
 - [ ] Rewrite the Documents section of `AGENTS.md` with these decisions.
+- [ ] Link the status list and `docs/plans/` from the root `README.md`, and
+      replace its outdated description of `docs/`.
 - [ ] Move the naming plan and the PO and invoice lists plan into
       `docs/plans/`, reshape both into the four parts, fix every link to them,
       and drop plan lines from `docs/status.md`.
 - [ ] Add a `type:` line to every site document that is not known by its name.
 - [ ] Build `tools/check-docs.mjs` and run it from `npm run check`: kinds,
-      orphans, named files outside plans with atlas paths checked only when
+      reachability from the root README, named files outside plans with atlas paths checked only when
       atlas is present, lengths, status item length, plan shape and place,
       ticked or empty plans, stale plans as a local-only warning, and history
       phrases as a warning.
+- [ ] Test `tools/check-docs.mjs` against fixtures: a valid and an invalid
+      example for each rule, a plan naming a file that does not exist yet, and
+      a run with atlas missing. `npm run check` runs the fixtures too.
 - [ ] Fix everything the new check reports.
 - [ ] Move the design system's JSON data files to `rux-ds/data/` and update
       every tool and document that reads them.

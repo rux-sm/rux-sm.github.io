@@ -8,9 +8,7 @@ type: plan
 
 A trip can carry several POs and several invoices, edited in either app. The
 scheduler and rux-ui both stay live and in use throughout, so every step leaves
-both working. Both apps now edit PO and invoice lists and write them by id;
-the scheduler's change waits on a branch until rux-ui's old tabs are
-refreshed.
+both working. Both apps now edit PO and invoice lists and write them by id.
 
 ## Decisions
 
@@ -45,9 +43,6 @@ refreshed.
   Contract stays one switch and one note.
 - Each app step reverts with its own commit, and the old columns are never
   dropped, so stopping between steps is safe.
-- The scheduler's change is built on the `po-invoice-lists` branch in a
-  worktree, because another session is editing `scheduler/`, and merges to
-  `main` after rux's refresh.
 - **Access:** both tables have row level security on, with one `dev_all`
   policy matching `trips`, so closing access later is one change across every
   trip table.
@@ -68,10 +63,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux uses rux-ui's Settings, "Force refresh all users", at least ten
-      minutes after rux-ui's deploy, so no open tab keeps the old editor.
-- [ ] Merge `po-invoice-lists` into `main` and push, which publishes the
-      scheduler's lists, then remove the worktree.
 - [ ] Both apps, on rux's real trip: two POs added in the scheduler survive a
       save in rux-ui; one deleted in rux-ui is gone in the scheduler after a
       reload; `po_amount` equals the sum and `po_ref` the first row.

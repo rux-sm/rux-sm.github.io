@@ -1454,7 +1454,6 @@ window.RuxBuilder = {
   state,
   page: async () => exportPage((await composed()).page, answers()),
   main: async () => bodyOnly(exportPage((await composed()).page, answers())),
-  command,
   fileName: normalisePage,
   download: downloadPage,
   roundTrip: async () => (await composed()).roundTrip,

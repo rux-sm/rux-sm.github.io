@@ -46,8 +46,9 @@ consumer of the DS release process is known outside the family.
 ## Routes served today
 
 Every tracked file of each public repository is served at its path. The full
-lists are in `~/Developer/migration-baseline/inventory/`, outside any
-repository.
+lists were in `~/Developer/migration-baseline/inventory/`, outside any
+repository. That folder has since been removed; the table below is the
+record.
 
 | Repository | Tracked files | Top level |
 | --- | --- | --- |
@@ -82,7 +83,8 @@ repository.
 
 ## Renders
 
-`~/Developer/migration-baseline/computed-values.json`: nine pages served from
+`~/Developer/migration-baseline/computed-values.json`, since removed with its
+folder, so this section is the record: nine pages served from
 a tracked-files copy of the four sites with cloud sync disabled in the copy's
 `account.js`, so nothing wrote to production. Body, header, h1 and button
 values, element and class counts, fonts loaded, failed resources (none).

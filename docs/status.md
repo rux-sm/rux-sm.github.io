@@ -47,6 +47,12 @@ done and how.
 - Weak highlights in geist: the roster tint and the keyboard highlight are
   barely visible, and no one has looked at all eight themes on screen.
 
+## The database
+
+- **Anyone with the public key can read and change trip data.** `trips`,
+  `trip_stops` and `contacts` allow everyone everything; four more tables have
+  no access rules. Closing them waits on sign-in for both apps.
+
 ## Notes owes atlas
 
 - **The overview diagram** draws no shortage, partial availability or failed

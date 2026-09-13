@@ -19,7 +19,10 @@ rux-ui edits one PO and one invoice on the `trips` row.
   rux-ui's unused `payment_ref_1/2/3` columns are that approach, already
   abandoned.
 - The database is production and shared by both apps. Each change is applied
-  through the Supabase connection as a named migration, on rux's yes.
+  through the Supabase connection as a named migration, on rux's yes. The
+  tables, their access rules, their realtime publication and the backfill are
+  applied: `create_trip_pos_and_trip_invoices` and
+  `backfill_trip_pos_and_trip_invoices`.
 - The tables copy `trip_payments`: primary key, `trip_id` foreign key with
   `on delete cascade`, a `trip_id` index. Amounts are `numeric(12,2)`, matching
   `trips.po_amount`. The `date` column holds the date.
@@ -28,7 +31,7 @@ rux-ui edits one PO and one invoice on the `trips` row.
   rux-ui's payments delete everything and reinsert, which changes every id; the
   new lists do not copy that, because the scheduler edits rows by id.
 - **The old single columns stay, and both apps keep them true on every save**,
-  from the rows (question 2). An old copy of either app in an open browser tab
+  from the rows. An old copy of either app in an open browser tab
   still reads and writes them until it reloads.
 - **Order:** tables and backfill, then rux-ui, then the scheduler raises
   `LIST_CAP`. Until rux-ui ships, no app can hold a second row, so no save can
@@ -44,71 +47,25 @@ rux-ui edits one PO and one invoice on the `trips` row.
   dropped, so stopping between steps is safe.
 - The scheduler step works in a worktree, because another session is editing
   `scheduler/`.
+- **Access:** both tables have row level security on, with one `dev_all`
+  policy matching `trips`, so closing access later is one change across every
+  trip table.
+- **Mirror:** `po_received` is at least one PO row, `po_ref` the first PO's
+  `ref` by `position`, `po_amount` the sum of PO amounts (rux-ui's `po_partial`
+  rung compares it with the balance), `invoice_number` the first invoice's
+  `number`, and `invoiced` and `invoice_status` at least one invoice row.
+- **rux-ui's editor** gets PO and Invoice lists with add, edit and delete, like
+  its Payments card. The trip bar, printed schedule and history show the first
+  PO or invoice and a count, such as `PO 4471 +1`.
+- **Testing without test records:** automated tests and every check short of
+  saving run first; rux then adds, edits and deletes POs on one real trip of
+  their choosing in both apps, with SQL confirming the rows after each step.
 
 ## Questions
 
-1. **Access rules.** `trips` lets everyone do everything and `trip_payments`
-   has no rules. Proposed: rules on for both new tables, with one policy
-   matching `trips`'s `dev_all`, so closing access later is one change across
-   every trip table.
-2. **What the old columns mirror.** Proposed:
-
-   | Old column | Mirrored from |
-   |---|---|
-   | `po_received` | at least one PO row |
-   | `po_ref` | the first PO's `ref`, by `position` |
-   | `po_amount` | the sum of PO amounts, because rux-ui's `po_partial` rung compares it with the balance |
-   | `invoice_number` | the first invoice's `number`, by `position` |
-   | `invoiced`, `invoice_status` | at least one invoice row |
-
-3. **rux-ui's editor.** Proposed: PO and Invoice lists with add, edit and
-   delete, like its Payments card. The trip bar, printed schedule and history
-   show the first PO or invoice and a count, such as `PO 4471 +1`.
-4. **Testing without test records.** Proving it means saving trips in both
-   apps. Proposed: automated tests and every check short of saving run here,
-   and rux adds, edits and deletes POs on one real trip of their choosing in
-   both apps, with the SQL to confirm the rows after each step.
+None open.
 
 ## Tasks
-
-- [ ] Database: create both tables, with the access rules from question 1 and
-      both tables added to `supabase_realtime`:
-
-      ```sql
-      create table public.trip_pos (
-        id uuid primary key default gen_random_uuid(),
-        trip_id uuid not null references public.trips(id) on delete cascade,
-        position integer not null default 0,
-        ref text,
-        amount numeric(12,2),
-        date date,
-        created_at timestamptz default now()
-      );
-      create index idx_trip_pos_trip_id on public.trip_pos(trip_id);
-      create table public.trip_invoices (
-        id uuid primary key default gen_random_uuid(),
-        trip_id uuid not null references public.trips(id) on delete cascade,
-        position integer not null default 0,
-        number text,
-        amount numeric(12,2),
-        date date,
-        created_at timestamptz default now()
-      );
-      create index idx_trip_invoices_trip_id on public.trip_invoices(trip_id);
-      ```
-
-- [ ] Database: backfill one row per trip with a PO or an invoice, counting the
-      `select` first and the inserted rows after:
-
-      ```sql
-      insert into public.trip_pos (trip_id, position, ref, amount)
-      select id, 0, po_ref, po_amount from public.trips
-      where po_received or po_ref is not null or po_amount is not null;
-
-      insert into public.trip_invoices (trip_id, position, number)
-      select id, 0, invoice_number from public.trips
-      where invoiced or invoice_number is not null;
-      ```
 
 - [ ] rux-ui load: `fetchTrips` in `js/data/trip-db.js` loads both tables beside
       `trip_payments`, grouped per trip and sorted by `position`.

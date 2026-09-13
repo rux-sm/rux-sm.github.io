@@ -21,9 +21,8 @@
      and nonzero, and both count 97.
      Whole pixel sizes are exact at any multiple of 16, which is what the
      port bought and what the 67 unit export could not offer at any size.
-     Not generated from the logo; tools/make-marks.mjs reads this file and
-     checks it, and writes nothing here. The two files are kept identical by
-     hand, and nothing enforces it.
+     Not generated from the logo. Every app's brand folder carries this
+     same file, kept identical by hand.
      Self themed because a favicon gets no CSS from the page: gray-100 on
      a light tab strip, gray-10 on a dark one. -->
 <style>

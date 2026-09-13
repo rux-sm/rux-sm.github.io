@@ -1,16 +1,15 @@
-# Backend inventory
+# Database inventory
 
-Written 2026-09-06 from the schema snapshot in `rux-backend`, archived 2026-09-13,
-(`supabase/migrations/20260903160350_remote_schema.sql`, pulled 2026-09-03
-from project `udnmqhayzhrbltxzzhjw`) and the old app's data layer
-(`rux-ui/js/data/*.js`). This app is a frontend replacement: it reads and
-writes the tables below as they are. Nothing here is a schema change.
+The tables of Supabase project `udnmqhayzhrbltxzzhjw` that this app and the
+old app's data layer (`rux-ui/js/data/*.js`) use. This app is a frontend
+replacement: it reads and writes the tables below as they are. Nothing here is
+a schema change.
 
 The live project is the contract. When it and this page disagree, read the
 live tables through the Supabase connection and fix this page; do not fix
 the schema to match the page.
 
-## 1. How the old app reaches the backend, and what that means here
+## 1. How the old app reaches the database, and what that means here
 
 - **No sign-in.** `rux-ui/js/data/supabase.js` creates one client with the
   anon key and never calls any auth method. Every request is anon-role.
@@ -30,18 +29,16 @@ the schema to match the page.
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
 
-**What this settles for the new app.** Because every open policy is
-permissive `to public`, an authenticated session passes them exactly as the
-anon role does. The new app can therefore sign in through the platform
-(`platform.profiles`, anonymous or GitHub, already live) from its first
-commit without breaking the old app, which keeps running unauthenticated
-against the same rows. Tightening any policy to `authenticated` or to an
-owner is a cutover step, taken only when the old app is retired, and it is a
-migration applied through the Supabase connection, never a change from here.
+**What this means for this app.** Every open policy is permissive
+`to public`, so an authenticated session passes them exactly as the anon role
+does. This app signs in through the platform (`platform.profiles`) without
+breaking the old app, which runs unauthenticated against the same rows.
+Tightening any policy to `authenticated` or to an owner is a cutover step,
+taken only when the old app is retired, as a migration applied through the
+Supabase connection.
 
-The new app should talk to the Supabase host directly. Supabase serves CORS
-itself; the Worker earns its place only for `/ai/extract`, which belongs to
-the deferred intake page.
+This app talks to the Supabase host directly. The Worker is needed only for
+`/ai/extract`, which belongs to the deferred intake page.
 
 ## 2. Tables
 
@@ -107,9 +104,8 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 ### Storage buckets
 
 `trip-documents` (paths under the trip id), `driver-photos`,
-`profile-photos`, `trip-request-uploads` (private, signed URLs; no storage
-policy in the snapshot). Bucket creation is not in the snapshot either, so
-public and size settings are only visible in the dashboard.
+`profile-photos`, `trip-request-uploads` (private, signed URLs). Their public,
+size and policy settings are visible only in the dashboard.
 
 ### Realtime
 
@@ -117,11 +113,11 @@ The old app subscribes to `postgres_changes` on `trips`, `trip_stops`,
 `trip_assignments`, `trip_documents`, `trip_payments`, `trip_passengers`,
 `trip_ticket_options` for the grid, and separately on notifications, chat,
 dev notes and the game. `trip_drivers` is not subscribed; a 30-second poll
-covers it. Realtime is not needed for the first read-only grid here.
+covers it. This app does not subscribe.
 
 ## 3. Table to screen
 
-Which screen of the new app reads and writes each table. Screens are named
+Which screen of this app reads and writes each table. Screens are named
 as in `screen-inventory.md`.
 
 | Table | Read by | Written by |
@@ -147,10 +143,9 @@ as in `screen-inventory.md`.
 
 - `rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
   and `list_trip_request_documents`, and cites a `trip_request_documents`
-  table. None of that is in the snapshot. Either the live project moved past
-  2026-09-03 or the snapshot missed it. Read the live tables through the
+  table, none of which is listed here. Read the live tables through the
   Supabase connection before building Requests.
-- No `grant` or `revoke` on the RPCs appears in the snapshot, so the execute
-  rights of `anon` on the security-definer functions are the Postgres
-  default, not a decision. Confirm in the dashboard before the driver page.
+- Whether `anon` may execute the security-definer functions has not been
+  decided; it may be the Postgres default. Confirm in the dashboard before the
+  driver page.
 - Bucket settings and the `trip-request-uploads` policy are dashboard-only.

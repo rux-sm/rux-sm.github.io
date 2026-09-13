@@ -238,8 +238,7 @@
        following, so the file's own aspect governs -- do not pin a width.
        currentColor does not reach into an img, so the file carries its own
        colours; the header ground is #161616 in every theme, so one
-       colourway serves. assets/brand/ is the generated favicon and
-       app-icon set and is NOT this file. -->
+       colourway serves. -->
   <a class="rux--header__name" href="./"><img src="../brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;DS</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
@@ -554,11 +553,9 @@
                   <input id="w-depart" class="rux--text-input" type="text" placeholder="DD / MM / YYYY">
                 </div>
               </div>
-              <!-- `date-picker` IS DEFERRED in docs/inventory.md — it needs a
-                   calendar written in vanilla JS, the largest single behaviour
-                   cost in the catalogue. A text input is the honest stand-in
-                   until that is bought; do not add a calendar glyph to this,
-                   which would promise a picker that is not there. -->
+              <!-- A plain text input. `date-picker` is compiled and could replace it;
+                   until it does, add no calendar glyph, which would promise a picker
+                   that is not there. -->
               <div class="rux--form__helper-text">The day the coach leaves the depot.</div>
             </div>
 

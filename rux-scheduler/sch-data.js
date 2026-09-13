@@ -2188,7 +2188,7 @@
      serve more than one trip and the busiest serves 18, so correcting a phone
      number here corrects it on all 18. That is what a contact IS -- one person
      who books repeatedly -- and it is how the old app already works, per
-     `backend-inventory.md`, which lists `contacts` as written by both the
+     `docs/database-inventory.md`, which lists `contacts` as written by both the
      customer editor and the trip editor. The section says so on screen rather
      than letting it be discovered. */
   /* THE SIX rux-ui OFFERS, in its order. Not a guess and not this app's
@@ -4906,7 +4906,7 @@
   });
 
   /* ── SEARCHING THE WEEK ON SCREEN ─────────────────────────────────────────
-     `screen-inventory.md` line 51 plans a trip finder -- a floating palette on
+     `docs/screen-inventory.md` plans a trip finder -- a floating palette on
      Cmd-K, "Header search from the shell, results in a data table on a page".
      The page is not built. What is built here is the half that needs no page:
      the header icon, the shortcut, and a search over the week already loaded

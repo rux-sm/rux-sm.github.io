@@ -212,15 +212,10 @@
         <!-- A TABLE, NOT A PARAGRAPH, and the difference is the whole specimen.
              `--full-width` sets `padding: 0` on modal-content so something can
              bleed to the container edge; both of Carbon's full-width stories put
-             a structured-list there for exactly that reason. This fragment used
-             to hold a <p>, which put body text flush against the edge and read
-             as a MISSING RULE rather than as the point of the variant — asked
-             about twice from the page on 2026-08-29.
-             structured-list is CUT (docs/inventory.md: "overlaps data-table"),
-             so the substitute is the component it was cut in favour of. The
-             explanation moved to `modal-header__label`, which is inside the
-             header and therefore still padded — text in the content area is the
-             one thing this variant cannot show without looking broken. -->
+             a structured-list there for exactly that reason, and a data table
+             serves the same role here. A paragraph would sit flush against the
+             edge and read as a missing rule. The explanation sits in
+             `modal-header__label`, which is inside the header and still padded. -->
         <div class="rux--layer-two rux--modal-content rux--modal-scroll-content--no-fade">
           <div class="rux--data-table-content">
             <table class="rux--data-table">

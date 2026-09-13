@@ -40,8 +40,7 @@
   //                                    already inlines -- <use> inherits the
   //                                    tile's own text colour, no file, no mask
   //   "icon": "/rux-ds/brand/icon.svg" the app's own drawn mark, masked over
-  //                                    that same colour (brand/README.md,
-  //                                    "App tile icons")
+  //                                    that same colour
   //
   // A sprite id only works where that symbol is inlined, which is why a path is
   // the general answer and an id is the shortcut for the hub's own grid. If the

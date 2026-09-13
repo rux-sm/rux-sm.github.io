@@ -248,8 +248,7 @@
        following, so the file's own aspect governs -- do not pin a width.
        currentColor does not reach into an img, so the file carries its own
        colours; the header ground is #161616 in every theme, so one
-       colourway serves. assets/brand/ is the generated favicon and
-       app-icon set and is NOT this file. -->
+       colourway serves. -->
   <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Scheduler</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries
@@ -480,10 +479,9 @@
   assignments and drivers, and out-of-service windows -- READ ONLY: nothing on
   this page writes, and no control here edits a trip. The grid and the trip bar
   are this app's own components (sch.css); the toolbar, shell and notification
-  are Carbon parts from the pinned rux.css. Every state the grid CAN draw is on
+  are Carbon parts from rux.css. Every state the grid CAN draw is on
   specimen.html, which needs no network; this page draws only what the week
-  holds. Not covered: no drag, no editor, no time-aligned mode, no realtime, no
-  conflict marking (day granularity cannot tell a morning trip from an
+  holds. Not covered: no time-aligned mode, no realtime, no conflict marking (day granularity cannot tell a morning trip from an
   afternoon one on the same bus, so marking those would be a false alarm). -->
   <!-- FULL WIDTH, which is Carbon's own modifier for a data-dense page. The
        grid's default caps content at 99rem and centres it, a reading width;

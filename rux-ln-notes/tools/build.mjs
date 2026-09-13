@@ -156,10 +156,6 @@ const REGISTER = {
 //      a slash, so its route rendered with three visible separators of which
 //      two were separators.
 //
-// AND `template-candidate.html` HAD IT RIGHT ALL ALONG -- three routes, plain
-// text, the arrow kept, in `type-helper-text-01`. It was written before the
-// ruling existed and the generated pages had diverged away from it.
-//
 // What is given up by staying plain is real and is the reason the question was
 // asked twice: a route has no visual distinction from the prose around it,
 // where the other seven types do. The answer to that is not a component around
@@ -1763,12 +1759,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
 
   <!-- The logo is brand/logo.svg, one file, this project's own. Swap it and
-       every page here picks it up on reload: no rebuild, no markup edit, no
-       re-pin. It is an img, not inline SVG, which is what makes that swap
+       every page here picks it up on reload: no rebuild, no markup edit.
+       It is an img, not inline SVG, which is what makes that swap
        free and costs nothing: the shell header is #161616 with #f4f4f4 text
        in all four themes, so one colourway serves every theme. Sized by
-       HEIGHT so the file's own aspect governs. rux-ds brand/README.md is the
-       contract, and nothing overwrites a logo you replaced. -->
+       HEIGHT so the file's own aspect governs, and nothing overwrites a logo
+       you replaced. -->
   <a class="rux--header__name" href="${up || './'}"><img src="${up}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none">LN Notes</a>
 
   <!-- NO __nav: one product. __global carries the two actions every app has
@@ -2895,14 +2891,7 @@ for (const r of references) {
 // The sprite is inlined by the tool that owns that job, on the files just
 // written. Linking `/rux-ds/assets/icons.svg#i-name` instead is blank in
 // Safari and blocked over file://, both silently.
-//
-// HAND-WRITTEN PAGES THAT CARRY THE MARKERS GET THE SAME SPRITE. Until
-// 2026-09-02 template-candidate.html was re-inlined by hand after every
-// the pin move, which is a step a person remembers or does not; a stale sprite
-// there is the silent-blank-icon failure with a later date. Listed rather than
-// swept, so a page that never asked for icons is not rewritten.
-const HAND = PRIVATE ? [] : ['template-candidate.html'].map(f => join(ROOT, f)).filter(existsSync);
-execFileSync(process.execPath, [join(ROOT, 'tools/inline-sprite.mjs'), ...written, ...HAND],
+execFileSync(process.execPath, [join(ROOT, 'tools/inline-sprite.mjs'), ...written],
   { stdio: 'inherit' });
 
 console.log(`\n  built ${written.length} page(s) from ${guides.length} guide(s)`);

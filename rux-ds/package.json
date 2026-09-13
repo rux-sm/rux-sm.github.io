@@ -9,7 +9,6 @@
   "scripts": {
     "build": "node tools/build.mjs",
     "icons": "node tools/icons.mjs",
-    "marks": "node tools/make-marks.mjs",
     "sink": "node tools/build-sink.mjs",
     "portal": "node tools/build-portal.mjs",
     "readme": "node tools/build-readme.mjs",

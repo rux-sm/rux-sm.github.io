@@ -116,10 +116,7 @@
 @use "@carbon/styles/scss/components/pagination-nav";
 @use "@carbon/styles/scss/components/popover";
 @use "@carbon/styles/scss/components/progress-bar";
-// ADMITTED 2026-08-29 under §2.1, reversing its own DEFER. inventory.md deferred
-// it as "multi-step wizard; NO TARGET SHAPE HAS ONE -- measured +1.1 KB
-// gzipped", and §4.6's seventh exit attempt built exactly that shape. The
-// condition attached to the deferral has been met, so the deferral goes.
+// Compiled for the wizard template's multi-step shape.
 //
 // WHAT THE SUBSTITUTE COST. Without it that page composed a step list by hand
 // out of an ordered list and `rux--tag`, and both of the traps recorded at

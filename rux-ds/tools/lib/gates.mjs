@@ -25,11 +25,9 @@
 // below says why patching it would be worse than leaving it.
 //
 // GATE IS NOT THE SAME WORD AS TOOL, and four documents disagreed because of
-// it: `build.mjs` and `build-portal.mjs` each carry a gate with a row in
-// README's table and no check-* file of its own. THIS HEADER STATES NO
-// COUNTS. It read 14 gates, 10 in verify, 4 in a browser against a registry
-// below of 21, 16 and 5 — docs/agent-tooling.md cites that very drift as its
-// opening example. `npm run gates` prints the numbers from the registry.
+// it: `build.mjs` and `build-portal.mjs` each carry a gate and no check-*
+// file of its own. THIS HEADER STATES NO
+// COUNTS; the registry below is the only one.
 //
 // TWO KINDS OF FIGURE, and only one of them may ever be auto-verified.
 // Counts derivable from the repo — gate membership, KNOWN entries, the coverage
@@ -38,9 +36,8 @@
 // all. Those live in the ledger with a date and go stale like anything else.
 // `baseline` below is the second kind: a record, never an assertion.
 //
-// INVENT NOTHING HERE. Every field is copied from a source: `catches` and
-// `blindTo` from README's gate table, `blindSpots` and `sideEffects` from each
-// tool's own header, `redRun` from .claude/skills/sink-check/SKILL.md. Where a
+// INVENT NOTHING HERE. `blindSpots` and `sideEffects` are copied from each
+// tool's own header. Where a
 // tool states nothing, the value is `null` — which is a finding about the tool,
 // not a blank to fill in with a guess.
 //
@@ -485,7 +482,7 @@ export const GATES = [
     // cannot move: proved for brand/ on 2026-09-05 by rendering a broken mark
     // 300px wide and reading 63/63 with 0 stripped, unchanged.
     redRun: 'remove a class from the live DOM by hand; it reports that class stripped',
-    // Condition 5 of the sink-check skill, and it conflicts with condition 1:
+    // It conflicts with check-a11y:
     // the click check-a11y needs for document.hasFocus() is the kind of press
     // the overlay kernel acts on. Run this FIRST, on an untouched page.
     sideEffects: null,
@@ -527,7 +524,7 @@ export const GATES = [
     // to the document where it does not, and a component the page does not
     // carry is `skipped` rather than failed.
     // TEMPLATES STAY OFF, DELIBERATELY. Flipping `templates` to true would make
-    // `npm run gates` demand a cell for all ten of them (gates.mjs cells(), and
+    // the registry demand a cell for all ten of them (gates.mjs cells(), and
     // the N/A row in check-gates.mjs), and those cells would be almost entirely
     // skips — ten more sweeps to keep current in exchange for recording what a
     // template does not contain. Off the sink this tool is a diagnostic a person

@@ -17,8 +17,9 @@ done and how.
   tracked record in rux-ds that any visitor can pick in any app's theme picker
   once pushed. Today `js/custom-themes.js` saves only to the browser, and
   nothing writes to the repository. Required, not built.
-- Two screen-reader tasks: flip a toggle; open a modal and a popover
-  (`rux-ds/docs/screen-reader-pass.md`).
+- **Screen-reader pass.** Toggle, modal and popover are not heard yet. Four
+  problems are open and three controls need hearing again; the list is in
+  `rux-ds/docs/screen-reader-pass.md`.
 - Whether `templates/settings-page.html`'s `col-span-4/8/8` is deliberate.
 - **Builder stage 13, repeated items:** duplicate, remove or reorder a sibling
   block, re-suffixing its ids. The first question is whether it is wanted, or
@@ -93,6 +94,9 @@ and so does closing the database's open access rules.
 
 ## Notes owes atlas
 
+- **The overview diagram** leaves out three things atlas must author, and its
+  title is atlas's to change. The list is in `rux-ln-notes/docs/diagram.md`,
+  "Scope".
 - Whether session codes with no coverage publish name-only or are omitted. It
   blocks atlas's screen-reference emitter.
 - The session-code count: agree the scope first, then the number. Three scopes

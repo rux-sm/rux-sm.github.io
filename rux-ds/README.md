@@ -8,14 +8,14 @@ System"; the site serves the working tree, not a tag.
 **An agent starts at `AGENTS.md`** — the policy. This file is the current state,
 how to work, and where things are. `docs/roadmap.md` holds the decisions and the
 open proposals; `docs/log.md` holds every dated pass and measurement. Counts live
-in `npm run gates` and `portal.html`, never in prose. Anything dated that used to
+in `portal.html`, never in prose. Anything dated that used to
 sit here has moved to the log — twice now, 2026-09-02 and 2026-09-09 — because a
 README that narrates its own history goes stale, and this one did.
 
 ## Picking this up
 
-**2026-09-10.** Clean tree. `npm run verify` exits 0; `npm run gates` reads every
-cell current. **A twelfth template landed today**, `search-results-page`, and
+**2026-09-10.** Clean tree. `npm run verify` exits 0. **A twelfth template
+landed today**, `search-results-page`, and
 finishing it cost a control change and one real defect — `docs/log.md` has the
 account.
 
@@ -66,7 +66,7 @@ The full routine, with what to look at afterwards, is `docs/verbs.md`.
 | Edit a colour or token value | `css/rux-theme.css`, inside a `[data-theme]` block | |
 | Edit how a component looks | `css/rux-overrides.css`, at Carbon's own specificity | |
 | Edit which components or themes compile | `src/app.scss` | `npm run build` |
-| Verify | `npm run verify` — **check the exit code, not the output** | the browser gates: skill `sink-check`; `npm run gates` says which page each was last run against |
+| Verify | `npm run verify` — **check the exit code, not the output** | the five browser gates, from the served page's console — `docs/verbs.md` |
 | Release | none of its own since 2026-09-12: `npm run verify`, commit, and a push to the repository's `main` publishes the design system with every app that uses it | a class that left fails the app's check in the same push |
 
 **`npm install --ignore-scripts` before `npm run verify`, after any pull that
@@ -94,8 +94,8 @@ old Carbon and exits 0. The log has the day that happened.
 ## Figures
 
 **Current figures are generated, not typed.** The table below is rewritten on
-every `npm run verify`; `portal.html` is the component set and `npm run gates`
-the browser sweep. The two capture-backed gates print this, re-measured
+every `npm run verify`; `portal.html` is the component set. The two
+capture-backed gates print this, re-measured
 2026-09-02, still 0 findings on both:
 
     check-tags      669 stories · 2208 classes · 81 with no reference · 10 known · 0 on a different element
@@ -146,7 +146,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `brand/` | `logo.svg` and `favicon.svg`, hand-owned; swap the file and every shell follows. `brand/README.md` has the sizes |
 | `assets/brand/` | two app icons generated from the logo by `npm run marks`, never hand-edited |
 | `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site. `new-project.sh` and `app-skeleton/` stay because `check-parity` reads them; a new app is a folder beside this one, not a new repository |
-| `tools/lib/gates.mjs` | the gate registry and `CONTROL_FILES` — tier 2 |
+| `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
 | `docs/*.md` | `roadmap.md` decisions · `log.md` the record · `verbs.md` the routine · `choices.md` what an app may choose · `starting-a-project.md` · `verifying-templates.md` · `composing-pages.md` · `screen-reader-pass.md` · `inventory.md` every component's disposition · `audits.md` · `commits.md` |
 | `docs/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `gate-coverage.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
 | `docs/operating-card.html` · `docs/rux.code-workspace` | the printable card for rux, and the VS Code workspace seed it tells you to copy to `~/Developer` |
@@ -164,7 +164,7 @@ One documented exception, enforced on every build: `tools/build.mjs` renames
 
 ## Gates
 
-None is sufficient alone — roadmap §4.1.2 has the bug that proved it — and `npm run gates` prints how many there are and which page each has been run against.
+None is sufficient alone — roadmap §4.1.2 has the bug that proved it. `portal.html` lists them.
 
 | Gate | Catches | Blind to |
 |---|---|---|
@@ -194,9 +194,10 @@ None is sufficient alone — roadmap §4.1.2 has the bug that proved it — and 
 | `check-behaviour.js` | a behaviour module that stops doing what its own header claims — the state a click produces | anything landing in a microtask: focus destination, focus restoration, the order two surfaces close in |
 | `check-a11y.js` | dangling idrefs · composites with many tab stops · unnamed controls · roles missing required state | what a screen reader announces · focus-ring contrast · whether the tab order makes sense · **an ARIA role Carbon never renders** · **a page carrying no heading at all** |
 
-`npm run gates` prints how many gates run in `npm run verify` and how many need a
-browser, and which page each browser gate has been run against; the `sink-check`
-skill runs the browser ones. Every gate's history — what it was written after, what
+The five browser gates run from the served page's console; `docs/verbs.md`
+has the one-liner. Until 2026-09-12 a ledger recorded which page each had
+last been run against; retired, since a record of the last sweep was
+bookkeeping nobody read. Every gate's history — what it was written after, what
 its first run found, what was adjudicated and why — is in `docs/log.md`, "Gates".
 **None of them catches a component that compiles, resolves, and still renders wrong.**
 Only looking does. That is why the kitchen sink exists, and why every phase ends by

@@ -4,8 +4,8 @@
 // the design system.
 //
 // WHY IT IS GENERATED. Every figure on this page already exists in a file the
-// gates read: docs/inventory.json, docs/coverage.json, docs/gate-coverage.json
-// and tools/lib/gates.mjs. A hand-written status page would be a SECOND copy of
+// gates read: docs/inventory.json, docs/coverage.json and tools/lib/gates.mjs.
+// A hand-written status page would be a SECOND copy of
 // all of them, and README records what happened the last time a count lived in
 // two places — its own Status block drifted, and f726cf1 exists to have fixed
 // the same class of defect across four documents. So nothing here is typed by
@@ -45,9 +45,8 @@
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { shell, shellHead, shellScripts } from './lib/shell.mjs';
 import { gzipSync } from 'node:zlib';
-import { GATES, browserGates, cells } from './lib/gates.mjs';
+import { GATES, browserGates } from './lib/gates.mjs';
 import { markupFiles } from './lib/sources.mjs';
-import { cellStates } from './lib/staleness.mjs';
 import { compiled } from './lib/ownership.mjs';
 import { stats } from './lib/stats.mjs';
 
@@ -63,7 +62,6 @@ const kbz = n => `${Math.floor(n / 1024)} KB`;
 const inventory = json('docs/inventory.json');
 const componentDocs = json('docs/component-docs.json').components;
 const coverage = json('docs/coverage.json');
-const ledger = json('docs/gate-coverage.json');
 const css = read('css/rux.css');
 
 const COMPILED = compiled();
@@ -108,61 +106,14 @@ const covHit = Object.values(coverage.components).reduce((a, c) => a + c.hit, 0)
 const covOwn = Object.values(coverage.components).reduce((a, c) => a + c.own, 0);
 const covPct = Math.round((covHit / covOwn) * 100);
 
-// Browser-gate matrix: every cell the registry says a sweep has to fill.
-//
-// STATE COMES FROM tools/lib/staleness.mjs, NOT FROM "is there a row in the
-// ledger". The first version of this page asked the weaker question and
-// answered "25 / 25 · 0 never run" while `npm run gates` reported 22 stale in
-// the same tree — a status page contradicting the tool it reports on. A reading
-// whose inputs have moved since is not coverage; `js/` changing invalidates
-// every browser cell, which is how 22 of them went stale in one commit.
-// DIRTY IS RENDERED AS STALE, AND THE REASON IS THAT THIS FILE IS COMMITTED.
-// A cell is DIRTY when an input has uncommitted changes -- true of the working
-// tree at build time, never true of the commit the page is committed in. On
-// 2026-09-01 (32818b0) the page was built on a dirty tree, committed with 38
-// "dirty" tags, and CI rebuilt it on a clean checkout as 38 "stale": a 76-line
-// diff and a red run for a page that described a moment rather than a commit.
-// `npm run gates` still says dirty; the committed page says what the commit
-// can say.
-const matrix = cellStates().map(r => {
-  const rec = ledger[r.id]?.[r.page];
-  // AND THE REASON IS A CONSTANT, for the same reason. 2583f4a mapped the state
-  // but carried the dirty reason's wording ("css/rux.css, js changed since")
-  // where a clean checkout computes "css/rux.css changed since": another
-  // 76-line diff and another red run. What moved is `npm run gates`' to say.
-  if (r.state === 'DIRTY' || r.state === 'STALE') r = { ...r, state: 'STALE', why: 'an input changed since' };
-  return { gate: r.id, page: r.page, state: r.state, why: r.why,
-           current: r.state === 'ok', date: rec?.date ?? null, result: rec?.result ?? null };
-});
-
-// THIS PAGE CANNOT RENDER THE STATE OF ITS OWN BROWSER CELLS. portal.html is
-// generated from this matrix and is itself an input to each cell swept on it.
-// Commit 2529e48 recorded the a3f25e1 sweep, rebuilt all 38 rows, and thereby
-// changed portal.html after the three portal readings it recorded: they were
-// stale in the commit that introduced them. Repeating the sweep and record
-// would repeat the change forever.
-//
-// The page remains an input in staleness.mjs. That is what makes a real portal
-// change age its three readings, and removing it would reopen the under-ageing
-// d63771c fixed. Instead, the self-cell set is derived from the registry and
-// its state, date and result are omitted from this output. The invariant row
-// below tells the reader where the complete answer lives. Changing
-// any other rendered row still changes portal.html and ages the three cells,
-// so a full sweep terminates in two passes: record the other pages, commit,
-// then sweep and record the final portal.
-const PORTAL_PAGE = 'portal.html';
-const portalCellKeys = new Set(cells()
-  .filter(({ page }) => page === PORTAL_PAGE)
-  .map(({ gate, page }) => `${gate}\0${page}`));
-const isPortalCell = cell => portalCellKeys.has(`${cell.gate}\0${cell.page}`);
-const shownMatrix = matrix.filter(cell => !isPortalCell(cell));
-const portalCellCount = portalCellKeys.size;
-const currentCells = shownMatrix.filter(c => c.current).length;
-// "Stale" here is everything that is neither current nor never run, which is
-// the set `npm run gates` tells you to re-sweep. NO COMMIT and UNKNOWN COMMIT
-// used to fall into no bucket at all and vanished from the tile.
-const staleCells = shownMatrix.filter(c => !c.current && c.state !== 'NEVER RUN').length;
-const neverRun = shownMatrix.filter(c => c.state === 'NEVER RUN').length;
+// THE BROWSER-GATE MATRIX IS GONE. Until 2026-09-12 this page rendered, for
+// every browser gate and every page, whether a recorded reading was still
+// current -- docs/gate-coverage.json plus tools/lib/staleness.mjs resolving
+// the commit each reading was taken at. Retired with the move into
+// rux-sm.github.io: a ledger of when one person last swept each page was
+// bookkeeping that person did not read, and the readings themselves were left
+// behind in the archived repository. The five browser gates still run, from
+// the served page; docs/verbs.md says how.
 
 // ── icons, asserted ─────────────────────────────────────────────────────────
 const sprite = read('assets/icons.svg').trim();
@@ -228,22 +179,6 @@ const gateRows = GATES.map(g =>
                   <td>${g.inVerify ? tag('in verify', 'green') : tag('by hand', 'warm-gray')}</td>
                   <td>${esc(g.catches)}</td>
                   <td>${esc(g.blindTo ?? '—')}</td>
-                </tr>`).join('\n');
-
-const STATE_TAG = { 'ok': ['current', 'green'], 'STALE': ['stale', 'red'],
-  'DIRTY': ['dirty', 'magenta'], 'NEVER RUN': ['never run', 'red'],
-  'NO COMMIT': ['no commit', 'warm-gray'], 'UNKNOWN COMMIT': ['unknown commit', 'warm-gray'] };
-const matrixRows = shownMatrix.map(c => {
-  const [label, colour] = STATE_TAG[c.state] ?? [c.state, 'cool-gray'];
-  return `                <tr>
-                  <td>${esc(c.gate)}</td>
-                  <td>${esc(c.page)}</td>
-                  <td>${tag(label, colour)}</td>
-                  <td>${esc(c.date ?? '—')}</td>
-                  <td>${esc(c.why || c.result || 'no result recorded')}</td>
-                </tr>`;
-}).concat(`                <tr>
-                  <td colspan="5">${portalCellCount} ${portalCellCount === 1 ? 'cell' : 'cells'} for <code>${PORTAL_PAGE}</code> ${portalCellCount === 1 ? 'is' : 'are'} reported by <code>npm run gates</code> only. Rendering ${portalCellCount === 1 ? 'its' : 'their'} state here would change the page ${portalCellCount === 1 ? 'it measures' : 'they measure'}.</td>
                 </tr>`).join('\n');
 
 const templateCards = templates.map(t =>
@@ -325,8 +260,8 @@ ${shellHead()}
 </head>
 <body>
 <!-- GENERATED by tools/build-portal.mjs — do not edit. Every figure is read
-     from docs/inventory.json, docs/coverage.json, docs/gate-coverage.json,
-     tools/lib/gates.mjs and the files on disk. Edit the generator. -->
+     from docs/inventory.json, docs/coverage.json, tools/lib/gates.mjs and the
+     files on disk. Edit the generator. -->
 
 ${sprite}
 
@@ -367,7 +302,6 @@ ${shell('portal')}
 ${tile('Components compiled', `${COMPILED.size} / ${allComponents.length}`, `${allComponents.length - COMPILED.size} cut or deferred`)}
 ${tile('Class coverage', `${covPct}%`, `${covHit} of ${covOwn} classes exercised`)}
 ${tile('Stylesheet', kbz(gzipSize), `${kb(cssSize)} raw · ${kb(minSize)} minified`)}
-${tile('Browser gates current', `${currentCells} of ${shownMatrix.length} shown`, `${portalCellCount} portal ${portalCellCount === 1 ? 'cell' : 'cells'} reported by npm run gates only`)}
           </div>
         </div>
 
@@ -409,7 +343,7 @@ ${templateCards}
 
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h2 id="gates">Gates</h2>
-          <p>${GATES.length} gates. ${GATES.filter(g => g.inVerify).length} run in <code>npm run verify</code>; ${browserGates().length} need a browser and are recorded by hand in <code>docs/gate-coverage.json</code>.</p>
+          <p>${GATES.length} gates. ${GATES.filter(g => g.inVerify).length} run in <code>npm run verify</code>; ${browserGates().length} need a browser and run from the served page's console — <code>docs/verbs.md</code> says how.</p>
           <section class="rux--data-table-container">
             <div class="rux--data-table-header">
               <div>
@@ -430,29 +364,6 @@ ${templateCards}
                 </thead>
                 <tbody>
 ${gateRows}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
-
-        <div class="rux--stack-vertical rux--stack-scale-5">
-          <h3>Browser gate coverage</h3>
-          <p>A gate never run against a target is indistinguishable from one that passed, and a reading whose inputs have moved since is not coverage either. Of the cells this page can report without describing itself, ${currentCells} of ${shownMatrix.length} are current; ${staleCells} not current, ${neverRun} never run. <code>npm run gates</code> reports all ${matrix.length}, including ${portalCellCount} for this portal that are omitted below to prevent self-invalidation.</p>
-          <section class="rux--data-table-container">
-            <div class="rux--data-table-content">
-              <table class="rux--data-table rux--data-table--lg">
-                <thead>
-                  <tr>
-                    <th scope="col"><div class="rux--table-header-label">Gate</div></th>
-                    <th scope="col"><div class="rux--table-header-label">Page</div></th>
-                    <th scope="col"><div class="rux--table-header-label">State</div></th>
-                    <th scope="col"><div class="rux--table-header-label">Last run</div></th>
-                    <th scope="col"><div class="rux--table-header-label">Result or reason</div></th>
-                  </tr>
-                </thead>
-                <tbody>
-${matrixRows}
                 </tbody>
               </table>
             </div>
@@ -494,4 +405,4 @@ ${shellScripts()}
 `;
 
 writeFileSync('portal.html', page);
-console.log(`  portal.html — ${COMPILED.size}/${allComponents.length} components · ${GATES.length} gates · ${currentCells} of ${shownMatrix.length} shown browser cells current, ${staleCells} not current, ${neverRun} never run · ${portalCellCount} portal cells in npm run gates only`);
+console.log(`  portal.html — ${COMPILED.size}/${allComponents.length} components · ${GATES.length} gates, ${browserGates().length} of them run from the page`);

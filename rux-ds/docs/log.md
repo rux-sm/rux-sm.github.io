@@ -9,6 +9,21 @@ not be. A new pass or an answered decision goes at the top of the block below.
 
 ---
 
+**2026-09-12 — the browser-reading ledger and the control list are retired.**
+Gone: `docs/gate-coverage.json`, the readings; `tools/lib/staleness.mjs`,
+which aged them by resolving the commit each was taken at; `tools/check-gates.mjs`
+and `npm run gates`, which reported them and failed on a cell never run;
+`CONTROL_FILES` in `tools/lib/gates.mjs` and `tools/check-controls.mjs`, the
+visibility list CI printed and nothing blocked on; and the per-gate ledger
+fields in the registry (`pageTargets`, `canRun`, `sharedInputs`,
+`pageInputs`). `portal.html` keeps the gate table and loses the sweep matrix
+and its tile. Why: the family is one repository maintained by one person
+since today, and both mechanisms simulated a reviewer that person does not
+have — the ledger recorded when its keeper last looked, the control list told
+its keeper what its keeper had changed. The five browser gates are unchanged
+and `docs/verbs.md` says how to run them. The old readings stay in the
+archived rux-ds repository at `fdab509`.
+
 **2026-09-12 — two paragraphs left the startup files for this log, under the
 consolidation plan's stage 1 (`rux-sm.github.io/docs/platform-consolidation-plan.md`).**
 From `AGENTS.md`, verbatim: *"Nothing pins, and this sentence said it did

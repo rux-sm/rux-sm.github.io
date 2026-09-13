@@ -72,7 +72,7 @@ npm run check                    # every gate here, plus the rest of the family
 ```
 
 The names list that `check-publishable` reads comes from `../../rux-ln-atlas`,
-cloned beside the repository (or `ATLAS=<dir>`). Atlas's `SETUP.md` covers
+cloned beside the repository (or `ATLAS=<dir>`). Atlas's `README.md` covers
 its own once-per-machine steps.
 
 ## How it deploys

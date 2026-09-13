@@ -118,10 +118,6 @@ if [ -n "$OLD" ] && [ "$OLD" != "$SHA" ]; then
   echo
   echo "atlas moved $(git -C "$ATLAS" rev-list --count "$OLD..$SHA") commit(s) since the previous pin:"
   git -C "$ATLAS" log --oneline --no-decorate "$OLD..$SHA" | sed 's/^/  /'
-  R="$(git -C "$ATLAS" log --name-only --format= "$OLD..$SHA" -- '_standards/*-reply.md' | sort -u)"
-  [ -n "$R" ] && { echo "  replies touched in that range:"; echo "$R" | sed 's/^/    /'; }
-  echo
-  echo "  Replies to this side land in $ATLAS/_standards/*-reply.md."
 elif [ -z "$OLD" ]; then
   echo "  (no previous PIN -- nothing to compare against)"
 fi

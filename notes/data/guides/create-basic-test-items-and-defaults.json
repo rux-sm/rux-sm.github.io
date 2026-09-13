@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-create-basic-test-items-and-defaults",
+  "id": "create-basic-test-items-and-defaults",
   "title": "Create test items",
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -5982,14 +5982,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-manual-production-order-existing-master-data.md"
+              "v": "manual-production-order-existing-master-data.md"
             },
             {
               "t": "text",
               "v": " asks for in its phase 0, and hands over."
             }
           ],
-          "text": "This phase creates nothing. It checks the family against what SG-manual-production-order-existing-master-data.md asks for in its phase 0, and hands over."
+          "text": "This phase creates nothing. It checks the family against what manual-production-order-existing-master-data.md asks for in its phase 0, and hands over."
         },
         {
           "kind": "prose",
@@ -6315,14 +6315,14 @@
         },
         {
           "t": "literal",
-          "v": "SG-manual-production-order-existing-master-data.md"
+          "v": "manual-production-order-existing-master-data.md"
         },
         {
           "t": "text",
           "v": ", which phase 10 hands off to. Do not restate its steps here."
         }
       ],
-      "text": "Scope note: this guide builds and qualifies the training case; it does not run the production order. The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is SG-manual-production-order-existing-master-data.md, which phase 10 hands off to. Do not restate its steps here."
+      "text": "Scope note: this guide builds and qualifies the training case; it does not run the production order. The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is manual-production-order-existing-master-data.md, which phase 10 hands off to. Do not restate its steps here."
     },
     {
       "kind": "prose",
@@ -6898,14 +6898,14 @@
         },
         {
           "t": "literal",
-          "v": "SG-manual-production-order-existing-master-data.md"
+          "v": "manual-production-order-existing-master-data.md"
         },
         {
           "t": "text",
           "v": ". Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here."
         }
       ],
-      "text": "Where this guide stops. Phase 10 hands a qualified training case to SG-manual-production-order-existing-master-data.md. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here."
+      "text": "Where this guide stops. Phase 10 hands a qualified training case to manual-production-order-existing-master-data.md. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here."
     },
     {
       "kind": "troubleshooting",
@@ -7923,7 +7923,7 @@
                 {
                   "t": "link",
                   "v": "Production order",
-                  "href": "SG-manual-production-order-existing-master-data.md"
+                  "href": "manual-production-order-existing-master-data.md"
                 }
               ],
               "text": "Production order"

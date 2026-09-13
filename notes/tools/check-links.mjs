@@ -5,7 +5,7 @@
 // WHY IT EXISTS, AND IT IS NOT HYPOTHETICAL. The first build of the generated
 // guides shipped TEN dead references and every other check was green:
 //
-//   * NINE cross-guide links pointing at `SG-….md`. Guides reference each
+//   * NINE cross-guide links pointing at a guide's `.md` file. Guides reference each
 //     other by their atlas filename, and atlas's files are Markdown. Emitted
 //     verbatim into HTML they are nine links to nothing.
 //   * ONE image, `order-to-shipment-flowchart.svg`, referenced relative to the

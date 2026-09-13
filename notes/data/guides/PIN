@@ -1,9 +1,9 @@
-commit   b5d4c8efe5963a794522702ad99e61b0fac34996
-date     2026-09-13T20:46:16Z
-subject  refactor: Rename the standards and inbox folders
+commit   03259af1b4a0e1e291c9d23058e7e2399ef807f5
+date     2026-09-13T21:13:29Z
+subject  refactor: Drop type prefixes from atlas names
 contract 8 
 tier     export
-sha256   fda4fa6434278a8f6bbe55f4155e8254799225108eb022cbfcebeaa19cdb0638
+sha256   dadc85121bc82905413fbf7f51d932afccbff4f967d214de71e75ca460c343c7
 
 Emitted by tools/sync-guides.sh via atlas tools/emit.py --all --reviews --exercises --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

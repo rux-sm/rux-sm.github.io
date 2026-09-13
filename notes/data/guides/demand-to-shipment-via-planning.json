@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-demand-to-shipment-via-planning",
+  "id": "demand-to-shipment-via-planning",
   "title": "Plan to shipment",
   "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -73,7 +73,7 @@
             },
             {
               "t": "literal",
-              "v": "SG-create-basic-test-items-and-defaults.md"
+              "v": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
@@ -81,14 +81,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-run-order-planning-for-one-item.md"
+              "v": "run-order-planning-for-one-item.md"
             },
             {
               "t": "text",
               "v": " phase 0 adds the planning data."
             }
           ],
-          "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, SG-create-basic-test-items-and-defaults.md builds it and SG-run-order-planning-for-one-item.md phase 0 adds the planning data."
+          "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, create-basic-test-items-and-defaults.md builds it and run-order-planning-for-one-item.md phase 0 adds the planning data."
         },
         {
           "kind": "prose",
@@ -357,14 +357,14 @@
                     },
                     {
                       "t": "literal",
-                      "v": "SG-run-order-planning-for-one-item.md"
+                      "v": "run-order-planning-for-one-item.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 0.3–0.5"
                     }
                   ],
-                  "text": "For any item that does not appear, add its cluster row per SG-run-order-planning-for-one-item.md steps 0.3–0.5"
+                  "text": "For any item that does not appear, add its cluster row per run-order-planning-for-one-item.md steps 0.3–0.5"
                 },
                 {
                   "tokens": [
@@ -440,7 +440,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "SG-ship-from-stock.md"
+                      "v": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
@@ -455,7 +455,7 @@
                       "v": " = the warehouse from 0.2"
                     }
                   ],
-                  "text": "Create a sales order for BAM-CHOP-PAIR per SG-ship-from-stock.md steps 1.1–1.11, with Warehouse = the warehouse from 0.2"
+                  "text": "Create a sales order for BAM-CHOP-PAIR per ship-from-stock.md steps 1.1–1.11, with Warehouse = the warehouse from 0.2"
                 },
                 {
                   "tokens": [
@@ -2148,14 +2148,14 @@
                     },
                     {
                       "t": "literal",
-                      "v": "SG-manual-production-order-existing-master-data.md"
+                      "v": "manual-production-order-existing-master-data.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 4.2–4.7"
                     }
                   ],
-                  "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per SG-manual-production-order-existing-master-data.md steps 4.2–4.7"
+                  "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per manual-production-order-existing-master-data.md steps 4.2–4.7"
                 },
                 {
                   "tokens": [
@@ -2440,14 +2440,14 @@
                     },
                     {
                       "t": "literal",
-                      "v": "SG-ship-from-stock.md"
+                      "v": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 2.2–2.5"
                     }
                   ],
-                  "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per SG-ship-from-stock.md steps 2.2–2.5"
+                  "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per ship-from-stock.md steps 2.2–2.5"
                 },
                 {
                   "tokens": [
@@ -4417,14 +4417,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-ship-from-stock.md"
+                  "v": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
                   "v": ". MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
                 }
               ],
-              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to SG-ship-from-stock.md. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
+              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to ship-from-stock.md. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
             }
           ]
         },
@@ -4447,7 +4447,7 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-transfer-item-between-warehouses.md"
+                  "v": "transfer-item-between-warehouses.md"
                 },
                 {
                   "t": "text",
@@ -4470,7 +4470,7 @@
                   "v": ", so this does not arise"
                 }
               ],
-              "text": "Insert SG-transfer-item-between-warehouses.md between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
+              "text": "Insert transfer-item-between-warehouses.md between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
             }
           ]
         },
@@ -4515,7 +4515,7 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-manual-production-order-existing-master-data.md"
+                  "v": "manual-production-order-existing-master-data.md"
                 },
                 {
                   "t": "text",
@@ -4530,7 +4530,7 @@
                   "v": " — it is the fallback if step 3.6 fails"
                 }
               ],
-              "text": "Skip step 3.6 and create the production order directly per SG-manual-production-order-existing-master-data.md phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
+              "text": "Skip step 3.6 and create the production order directly per manual-production-order-existing-master-data.md phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
             }
           ]
         }

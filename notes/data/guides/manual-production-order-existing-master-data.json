@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-manual-production-order-existing-master-data",
+  "id": "manual-production-order-existing-master-data",
   "title": "Production order",
   "module": "Manufacturing · Warehousing",
   "modules": [
@@ -3375,7 +3375,7 @@
                 {
                   "t": "link",
                   "v": "Ship from stock",
-                  "href": "SG-ship-from-stock.md"
+                  "href": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
@@ -3411,7 +3411,7 @@
                 {
                   "t": "link",
                   "v": "Warehouse transfer",
-                  "href": "SG-transfer-item-between-warehouses.md"
+                  "href": "transfer-item-between-warehouses.md"
                 }
               ],
               "text": "Warehouse transfer"

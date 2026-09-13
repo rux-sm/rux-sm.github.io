@@ -79,10 +79,6 @@ carries an owner prefix, because the GitHub account already is one.
 
 ### Atlas
 
-- [ ] Drop the `SG-`, `HOMEWORK-`, `RUN-SHEET-` and `LC-` prefixes from file
-      names and ids, teach atlas's tools to find scenario guides by type, and
-      fix every reference. If two documents would end up with the same name,
-      stop and ask. Run the check and self-test, commit and push.
 - [ ] Once question 1 is answered, rename reviews and their summaries to match.
 - [ ] Rename the GitHub repository to `atlas`, or hand rux the command if
       GitHub refuses it. Rename the local folder, relink its memory, and update

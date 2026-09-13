@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-transfer-item-between-warehouses",
+  "id": "transfer-item-between-warehouses",
   "title": "Warehouse transfer",
   "module": "Warehousing",
   "modules": [
@@ -2795,7 +2795,7 @@
                 {
                   "t": "link",
                   "v": "Ship from stock",
-                  "href": "SG-ship-from-stock.md"
+                  "href": "ship-from-stock.md"
                 },
                 {
                   "t": "text",

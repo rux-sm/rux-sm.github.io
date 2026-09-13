@@ -2,7 +2,7 @@
   "contract": 8,
   "tier": "export",
   "kind": "exercise",
-  "id": "HOMEWORK-production-and-planning",
+  "id": "production-and-planning",
   "title": "Homework — understand a production result",
   "updated": "2026-09-06",
   "status": "draft",
@@ -261,7 +261,7 @@
             {
               "t": "link",
               "v": "Create basic test items and defaults",
-              "href": "SG-create-basic-test-items-and-defaults.md"
+              "href": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
@@ -476,7 +476,7 @@
             {
               "t": "link",
               "v": "Manual production order from existing master data",
-              "href": "SG-manual-production-order-existing-master-data.md"
+              "href": "manual-production-order-existing-master-data.md"
             },
             {
               "t": "text",
@@ -1223,7 +1223,7 @@
             {
               "t": "link",
               "v": "Run order planning for one item",
-              "href": "SG-run-order-planning-for-one-item.md"
+              "href": "run-order-planning-for-one-item.md"
             },
             {
               "t": "text",
@@ -1232,7 +1232,7 @@
             {
               "t": "link",
               "v": "Demand to shipment via planning",
-              "href": "SG-demand-to-shipment-via-planning.md"
+              "href": "demand-to-shipment-via-planning.md"
             },
             {
               "t": "text",

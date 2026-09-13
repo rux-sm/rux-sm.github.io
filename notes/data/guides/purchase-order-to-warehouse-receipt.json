@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-purchase-order-to-warehouse-receipt",
+  "id": "purchase-order-to-warehouse-receipt",
   "title": "Purchase to receipt",
   "module": "Procurement · Warehousing",
   "modules": [
@@ -58,14 +58,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-create-basic-test-items-and-defaults.md"
+              "v": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
               "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this guide selects one, it does not create one."
             }
           ],
-          "text": "> Prerequisite > The materials exist as items with purchase defaults, and the receiving warehouse exists. SG-create-basic-test-items-and-defaults.md phases 2 and 5 build both. A buy-from business partner must also exist — this guide selects one, it does not create one."
+          "text": "> Prerequisite > The materials exist as items with purchase defaults, and the receiving warehouse exists. create-basic-test-items-and-defaults.md phases 2 and 5 build both. A buy-from business partner must also exist — this guide selects one, it does not create one."
         },
         {
           "kind": "prose",
@@ -1712,14 +1712,14 @@
         },
         {
           "t": "literal",
-          "v": "SG-create-basic-test-items-and-defaults.md"
+          "v": "create-basic-test-items-and-defaults.md"
         },
         {
           "t": "text",
           "v": ", which walked it inside a master-data guide. "
         }
       ],
-      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base guide — this is the atomic \"buy it in\" process. It was extracted from phase 9 of SG-create-basic-test-items-and-defaults.md, which walked it inside a master-data guide."
+      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base guide — this is the atomic \"buy it in\" process. It was extracted from phase 9 of create-basic-test-items-and-defaults.md, which walked it inside a master-data guide."
     },
     {
       "kind": "glance",
@@ -2375,14 +2375,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-create-basic-test-items-and-defaults.md"
+                  "v": "create-basic-test-items-and-defaults.md"
                 },
                 {
                   "t": "text",
                   "v": " phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
                 }
               ],
-              "text": "The adjustment route the notes of SG-create-basic-test-items-and-defaults.md phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
+              "text": "The adjustment route the notes of create-basic-test-items-and-defaults.md phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
             }
           ]
         }
@@ -2412,7 +2412,7 @@
                 {
                   "t": "link",
                   "v": "Production order",
-                  "href": "SG-manual-production-order-existing-master-data.md"
+                  "href": "manual-production-order-existing-master-data.md"
                 },
                 {
                   "t": "text",
@@ -2448,7 +2448,7 @@
                 {
                   "t": "link",
                   "v": "Warehouse transfer",
-                  "href": "SG-transfer-item-between-warehouses.md"
+                  "href": "transfer-item-between-warehouses.md"
                 }
               ],
               "text": "Warehouse transfer"

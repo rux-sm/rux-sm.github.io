@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ship from stock — Notes</title>
+<title>Run order planning — Notes</title>
 <!-- PLEX FIRST, THEN rux.css, WHICH IS THE ORDER Design USES IN ITS OWN
      TEMPLATES. rux.css names IBM Plex Sans sixty-seven times and declares no
      @font-face; the faces live here. Linking the stylesheet without this one
@@ -1134,13 +1134,13 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu">
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-ship-from-stock.html" aria-current="page"><span class="rux--side-nav__link-text">Ship from stock</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="SG-demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="run-order-planning-for-one-item.html" aria-current="page"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="ship-from-stock.html"><span class="rux--side-nav__link-text">Ship from stock</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
         </ul>
       </li>
 
@@ -1153,8 +1153,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="HOMEWORK-enterprise-planning-foundations.html"><span class="rux--side-nav__link-text">Homework — learn Enterprise Planning as a consultant</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="HOMEWORK-production-and-planning.html"><span class="rux--side-nav__link-text">Homework — understand a production result</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="enterprise-planning-foundations.html"><span class="rux--side-nav__link-text">Homework — learn Enterprise Planning as a consultant</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="production-and-planning.html"><span class="rux--side-nav__link-text">Homework — understand a production result</span></a></li>
         </ul>
       </li>
 
@@ -1199,24 +1199,24 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
-<div data-notes-doc="SG-ship-from-stock">        <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Ship from stock</h1>
+<div data-notes-doc="run-order-planning-for-one-item">        <div class="rux--stack-vertical rux--stack-scale-5">
+          <h1>Run order planning</h1>
           <div class="notes-tag-row">
-            <span class="rux--tag rux--tag--green"><span class="rux--tag__label">Approved</span></span>
-            <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">7 phases</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-02</span></span>
+            <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
+            <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">6 phases</span></span>
+            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-03</span></span>
             <span class="rux--tag rux--tag--magenta" title="7 open issues recorded against this document"><span class="rux--tag__label">7 open</span></span>
           </div>
-          <p class="rux--type-body-02">Sales · Warehousing</p>
+          <p class="rux--type-body-02">Enterprise Planning · Sales</p>
         </div>
 
-      <p class="notes-prose-measure"><strong>Objective:</strong> take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity. <strong>Base guide</strong> — situational variants build on this one. See Variants.</p>
+      <p class="notes-prose-measure"><strong>Objective:</strong> make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree. <strong>Base guide</strong> — the first Enterprise Planning guide in the library. Everything before this created supply by hand; this is where the system proposes it.</p>
       <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle"><strong>This guide ends at shipped.</strong> Its completion boundary is a <strong>Confirmed</strong> shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint.</div>
+      <div class="rux--inline-notification__subtitle"><strong>This guide ends at reviewed planned orders.</strong> Its completion boundary is a planned supply chain that covers the shortfall <strong>and reconciles arithmetically</strong> against the BOM and stock in the pegging tree. <strong>Transferring a planned order to execution is out of scope</strong> — that is the opening move of the planned-production-order guide, which does not exist yet. A planned order is a suggestion; nothing in this guide creates a real order. </div>
     </div>
   </div>
 </div>
@@ -1227,198 +1227,184 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Where</div></th><th scope="col"><div class="rux--table-header-label">What it achieves</div></th></tr></thead>
             <tbody>
-          <tr><td>☐</td><td><span class="notes-t-named">0</span> Confirm stock</td><td>Inventory 360</td><td>Know what you can actually ship</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">1</span> Create and approve</td><td>SO Intake Workbench</td><td>Sales order at <span class="notes-t-named">In Process</span></td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">2</span> Release to warehousing</td><td>SO Intake Workbench</td><td>Warehousing order exists</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">3</span> Generate advice</td><td>Manager Dashboard</td><td>LN knows what to pick, and a shipment appears</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">4</span> Pick the goods</td><td>Picking List</td><td>Stock physically moves to staging</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">5</span> Ship</td><td>Shipment</td><td>Inventory is relieved</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">6</span> Verify</td><td>Inventory 360</td><td>On-hand dropped by the shipped quantity</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">0</span> Make the item visible to planning</td><td>Item Order Plan; Item</td><td>The finished item and every BOM component have planning data</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">1</span> Create demand</td><td>Inventory 360; SO Intake Workbench</td><td>A sales order exists for more than is on hand</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">2</span> Put the demand inside the horizon</td><td>Items - Planning; Item Order Plan</td><td>Planning can see the demand</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">3</span> Run MRP</td><td>Generate Order Planning (Item)</td><td>Planned orders exist covering the shortfall, with pegging relations</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">4</span> Review the result</td><td>Item Order Plan; Planned Orders</td><td>The planned supply is read on both the parent and the component</td></tr>
+          <tr><td>☐</td><td><span class="notes-t-named">5</span> Read the pegging tree</td><td>Planned Orders ➔ Order Pegging</td><td>The whole chain reconciles: demand, stock, planned make, planned buy</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="notes-prose-measure"><strong>Read the quantity columns, not the steps, to know where you are.</strong> The Warehousing Order&#39;s <strong>Outbound Lines</strong> tab fills five columns in order — <strong>Ordered ➔ Advised ➔ Released ➔ Picked ➔ Shipped</strong>. That is the clearest progress indicator in the flow.</p>
+      <p class="notes-prose-measure"><strong>The Item Order Plan is the progress indicator.</strong> Phase 0 ends when the item appears in it at all; phase 2 ends when the demand row appears; phase 3 ends when a planned supply row appears beside it. If a phase did not change what that session shows, the phase did not work.</p>
       </section>
 
         <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-phases">
           <h2 id="h-phases">Phases</h2>
           <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-0">
-        <h3 id="p-0">Phase 0 — Confirm there is stock</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Inventory 360 shows what is physically on hand, and <em>Allocated</em> shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists.</p>
+        <h3 id="p-0">Phase 0 — Make the item visible to planning</h3>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Planning ➔ Order Planning ➔ Item Order Plan</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Item Order Plan <span class="rux--type-code-01">cprrp0520m000</span></dd></div></dl>
+        <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Prerequisite</div>
+      <div class="rux--inline-notification__subtitle">A finished item with an <strong>Approved</strong> BOM and routing, components, and stock data — the qualified training case from <span class="notes-t-exact">create-basic-test-items-and-defaults.md</span>. The 2026-08-20 session used <span class="notes-t-exact">BAM-CHOP-PAIR</span> with components <span class="notes-t-exact">BAM-ROD</span> and <span class="notes-t-exact">BAM-SLEEVE</span>.</div>
+    </div>
+  </div>
+</div>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The planning screens read an item&#39;s planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">0.1</th><td>Enter the item in <span class="notes-t-named">Filter Items</span> and run it</td><td class="notes-see">Grid shows <span class="notes-t-named">On Hand</span> · <span class="notes-t-named">Blocked</span> · <span class="notes-t-named">On Order</span> · <span class="notes-t-named">Allocated</span></td></tr>
-          <tr><th scope="row" class="notes-step-id">0.2</th><td>Tick the item row</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">0.3</th><td>In the <span class="notes-t-named">Inventory</span> group of the header, click <span class="notes-t-press">Warehouse Inventory</span></td><td class="notes-see"><span class="notes-t-named">Warehouse - Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span> opens, item carried through</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">0.4</th><td>Read <span class="notes-t-named">Inventory on Hand</span> and <span class="notes-t-named">Inventory Allocated</span> per warehouse</td><td class="notes-see">Totals sit under the grid — <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">item</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">warehouse</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">on-hand</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">allocated</span><div class="rux--form-item notes-note">
+          <tr><th scope="row" class="notes-step-id">0.1</th><td>Open <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span></td><td class="notes-see">The plan selection screen</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.2</th><td>Search for the finished item</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">finished item</span> — if it appears, planning data exists: go to 0.6. If it does not, the item is invisible to planning: continue<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-0.2">Write it down</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="n-0.2" class="rux--text-area" rows="1" data-notes-note="0.2" placeholder="The value you saw"></textarea>
+              </div>
+            </div></td></tr>
+          <tr><th scope="row" class="notes-step-id">0.3</th><td>Open <span class="notes-t-named">Items</span> <span class="notes-t-exact">tcibd0501m000</span> via <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span> and drill into the finished item</td><td class="notes-see"><span class="notes-t-named">Item</span> <span class="notes-t-exact">tcibd0501m100</span> opens</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.4</th><td>On the <span class="notes-t-named">Clusters</span> tab, add a row with the environment&#39;s planning cluster</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">planning cluster</span> and <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">site</span> — the observed environment uses <span class="notes-t-exact">NA1</span> and <span class="notes-t-exact">CSADNA01</span><div class="rux--form-item notes-note">
               <label class="rux--label" for="n-0.4">Write it down</label>
               <div class="rux--text-area__wrapper">
                 <textarea id="n-0.4" class="rux--text-area" rows="1" data-notes-note="0.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">0.5</th><td> if no warehouse holds enough to cover the order, replenish before continuing: <span class="notes-t-named">make it</span> with <a class="rux--link" href="SG-manual-production-order-existing-master-data.html">Production order</a>, <span class="notes-t-named">move it</span> with <a class="rux--link" href="SG-transfer-item-between-warehouses.html">Warehouse transfer</a>, or <span class="notes-t-named">buy it in</span> with <a class="rux--link" href="SG-purchase-order-to-warehouse-receipt.html">Purchase to receipt</a>. Return here at phase 1</td><td class="notes-see">This guide continues only once one warehouse can cover the quantity</td></tr>
+          <tr><th scope="row" class="notes-step-id">0.5</th><td>Save, then reopen <span class="notes-t-named">Item Order Plan</span> and search again</td><td class="notes-see">The item now appears — an empty plan, but a plan</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">0.6</th><td>Repeat 0.2–0.5 for <span class="notes-t-named">every component in the BOM</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">components given plan data</span> — each appears in its own Item Order Plan<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-0.6">Write it down</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="n-0.6" class="rux--text-area" rows="1" data-notes-note="0.6" placeholder="The value you saw"></textarea>
+              </div>
+            </div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-1">
-        <h3 id="p-1">Phase 1 — Create and approve the sales order</h3>
+        <h3 id="p-1">Phase 1 — Create demand</h3>
         <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Sales ➔ Orders ➔ Order Intake Workbench</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Sales Order Intake Workbench <span class="rux--type-code-01">tdsls4601m200</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit.</p>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">1.1</th><td>Click <span class="notes-t-press" title="New (header)">New</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.2</th><td>Enter <span class="notes-t-named">Sold-to Business Partner</span>, press Tab</td><td class="notes-see"><span class="notes-t-named">Address</span> autofills</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.3</th><td>Select the <span class="notes-t-named">Order Type</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.4</th><td>Set <span class="notes-t-named">Planned Delivery Date</span> and <span class="notes-t-named">Planned Receipt Date</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.5</th><td>Confirm <span class="notes-t-named">Sales Office</span>, <span class="notes-t-named">Currency</span>, <span class="notes-t-named">Site</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.6</th><td>Set <span class="notes-t-named">Warehouse</span> to the warehouse recorded at 0.4</td><td class="notes-see">—</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">1.7</th><td>Click <span class="notes-t-press">Save</span></td><td class="notes-see"><span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span> — <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">sales order number</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-1.7">Write it down</label>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.1</th><td>In <span class="notes-t-named">Inventory 360</span> <span class="notes-t-exact">whwmd4300m000</span>, read the finished item&#39;s on-hand at its warehouse</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">finished item on-hand before</span> — the demand must exceed this<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-1.1">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.7" class="rux--text-area" rows="1" data-notes-note="1.7" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.1" class="rux--text-area" rows="1" data-notes-note="1.1" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">1.8</th><td>Click <span class="notes-t-press" title="New (line)">New</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.9</th><td>Search for and select the <span class="notes-t-named">Item</span></td><td class="notes-see">—</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">1.10</th><td>Enter the <span class="notes-t-named">Ordered Quantity</span></td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">ordered quantity</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-1.10">Write it down</label>
+          <tr><th scope="row" class="notes-step-id">1.2</th><td>Create a sales order for the finished item, following <span class="notes-t-exact">ship-from-stock.md</span> phase 1 steps 1.1–1.11</td><td class="notes-see">An order exists at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span></td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">1.3</th><td>Set <span class="notes-t-named">Ordered Quantity</span> above the on-hand from 1.1, and the <span class="notes-t-named">Planned Delivery Date</span> no more than a few days out</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">sales order number</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">ordered quantity</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">planned delivery date</span> — the observed run booked <span class="notes-t-exact">5</span> <span class="notes-t-exact">ea</span> against <span class="notes-t-exact">1</span> on hand<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-1.3">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-1.10" class="rux--text-area" rows="1" data-notes-note="1.10" placeholder="The value you saw"></textarea>
+                <textarea id="n-1.3" class="rux--text-area" rows="1" data-notes-note="1.3" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">1.11</th><td>Click <span class="notes-t-press">Save</span></td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.12</th><td>In the header, <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve</span></span></td><td class="notes-see"><span class="notes-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">In Process</span></span>. Order Acknowledgement prints</td></tr>
             </tbody>
           </table>
         </div>
       </div>
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-2">
-        <h3 id="p-2">Phase 2 — Release to warehousing</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Sales ➔ Orders ➔ Order Intake Workbench</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Sales Order Intake Workbench <span class="rux--type-code-01">tdsls4601m200</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order&#39;s number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the <em>Lines ready for</em> panel only counts.</p>
+        <h3 id="p-2">Phase 2 — Put the demand inside the horizon</h3>
+        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Planning ➔ Master Data ➔ Items ➔ Items - Planning</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Items - Planning <span class="rux--type-code-01">cprpd1100m000</span></dd></div></dl>
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item&#39;s warehouse, so the date it shows is the one to trust.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">2.1</th><td>Select your order in the <span class="notes-t-named">Sales Orders</span> grid</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.2</th><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span>Release</span><span class="sep">➔</span><span class="dest">Release to Warehousing…</span></span></td><td class="notes-see">The release session opens</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.3</th><td>Set <span class="notes-t-named">Upto Release Date</span> on or after the order line&#39;s <span class="notes-t-named">Release Date</span> — it defaults to the planned delivery date minus the outbound lead time</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.4</th><td>Leave the Options ticked</td><td class="notes-see"><span class="notes-t-named">Print Errors</span> · <span class="notes-t-named">Print Released Lines</span> · <span class="notes-t-named">Print to predefined Device</span></td></tr>
-          <tr><th scope="row" class="notes-step-id">2.5</th><td>Click <span class="notes-t-press">RELEASE</span></td><td class="notes-see">Log Report prints</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.6</th><td>Open the <span class="notes-t-named">Order Lines</span> tab</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.7</th><td>Find your order and tick it</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">2.8</th><td><span class="notes-t-route"><span>References</span><span class="sep">➔</span><span class="dest">Status</span></span></td><td class="notes-see"><span class="notes-t-named">Sales Order Line Status</span> <span class="notes-t-exact">tdsls4534s000</span> opens on <span class="notes-t-named">Activities 1</span>. <span class="notes-t-named">Release Sales Orders to Warehousing</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Executed</span></span></td></tr>
+          <tr><th scope="row" class="notes-step-id">2.1</th><td>Open <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span> for the finished item, <span class="notes-t-named">Horizons</span> tab</td><td class="notes-see"><span class="notes-t-named">Order Horizon</span> as a number of days, with the resulting date beside it</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">2.2</th><td>If the delivery date from 1.3 falls beyond the horizon date, raise the <span class="notes-t-named">Order Horizon</span> days until it falls inside</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">order horizon</span> — record both the days entered and the date displayed<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-2.2">Write it down</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="n-2.2" class="rux--text-area" rows="1" data-notes-note="2.2" placeholder="The value you saw"></textarea>
+              </div>
+            </div></td></tr>
+          <tr><th scope="row" class="notes-step-id">2.3</th><td>Save, and reopen <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> for the item</td><td class="notes-see">The <span class="notes-t-named">Horizons</span> block shows the new <span class="notes-t-named">Order Horizon</span> date</td></tr>
+          <tr><th scope="row" class="notes-step-id">2.4</th><td>Find the demand in the grid</td><td class="notes-see">A <span class="notes-t-named">Sales Order</span> row with your order number and quantity as <span class="notes-t-named">Demand</span></td></tr>
             </tbody>
           </table>
         </div>
       </div>
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-3">
-        <h3 id="p-3">Phase 3 — Generate outbound advice</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Manager Dashboard</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Warehouse Manager Dashboard <span class="rux--type-code-01">whinh2300m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the <em>Advised</em> and <em>Released</em> columns and prints the picking list. That is a property of the order type&#39;s procedure, not of LN.</p>
+        <h3 id="p-3">Phase 3 — Run MRP</h3>
+        
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what phase 5 reads.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">3.1</th><td>In the order grid at the bottom, filter <span class="notes-t-named">Order</span> on your sales order number</td><td class="notes-see">Sales rows read <span class="notes-t-named">Origin Sales</span>, <span class="notes-t-named">Type 20- SO/SC Out</span>, <span class="notes-t-named">Transaction Type Issue</span></td></tr>
-          <tr><th scope="row" class="notes-step-id">3.2</th><td>Tick the row, then click <span class="notes-t-press" title="Drill In (line)">Drill In</span></td><td class="notes-see"><span class="notes-t-named">Warehousing Order</span> <span class="notes-t-exact">whinh2100m100</span> opens</td></tr>
-          <tr><th scope="row" class="notes-step-id">3.3</th><td>Open the <span class="notes-t-named">Outbound Lines</span> tab</td><td class="notes-see"><span class="notes-t-named">Line Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span></td></tr>
-          <tr><th scope="row" class="notes-step-id">3.4</th><td>Tick the outbound line</td><td class="notes-see">—</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">3.5</th><td>On the <span class="notes-t-named">Outbound Lines</span> toolbar, <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></td><td class="notes-see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill — release is automatic here. Picking List by Location prints — <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">Run</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">Mission</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-3.5">Write it down</label>
-              <div class="rux--text-area__wrapper">
-                <textarea id="n-3.5" class="rux--text-area" rows="1" data-notes-note="3.5" placeholder="The value you saw"></textarea>
-              </div>
-            </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">3.6</th><td>Open the <span class="notes-t-named">Shipment Lines</span> tab and check for an early shipment</td><td class="notes-see">If projected shipments are enabled, a <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Projected</span></span> or <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span> line may already show a value in <span class="notes-t-named">Shipment</span>. If the tab is empty, continue to phase 4 — that is expected in the standard flow</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.1</th><td>Open <span class="notes-t-named">Generate Order Planning (Item)</span> <span class="notes-t-exact">cprrp1220m000</span> for the finished item</td><td class="notes-see"><span class="notes-t-named">Scenario</span> and <span class="notes-t-named">Plan Item</span> are set</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.2</th><td>Select <span class="notes-t-named">Include Child Items</span></td><td class="notes-see">The run will also plan the BOM components — multi-level, top-down</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.3</th><td>Confirm <span class="notes-t-named">Update Pegging Relations</span> is selected, where the field is open</td><td class="notes-see">Phase 5 depends on it — see the notes</td></tr>
+          <tr><th scope="row" class="notes-step-id">3.4</th><td>Run the generation</td><td class="notes-see">The run completes; exception messages print or store if selected</td></tr>
             </tbody>
           </table>
         </div>
       </div>
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-4">
-        <h3 id="p-4">Phase 4 — Pick the goods</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Outbound/Inspections ➔ Picking List</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Picking List <span class="rux--type-code-01">whinh4525m100</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The picking list is the record of stock physically moving to staging, and confirming it is what fills <em>Picked</em>. The phase exists because this environment sets the <em>Picking List</em> activity to manual and the warehouse is location-controlled; change either and LN ticks <em>Picked</em> on release and the phase disappears. Once a line is staged, LN creates the shipment line.</p>
+        <h3 id="p-4">Phase 4 — Review the result</h3>
+        
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> One planned order plays two roles: it is supply on the parent&#39;s plan and demand on the component&#39;s, and the component&#39;s own plan has already answered it. Planned quantities equal the raw shortfall only when the item&#39;s ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">4.1</th><td>Check <span class="notes-t-named">Run</span> in the header</td><td class="notes-see">Already the Run from 3.5. If not, search or step with <span class="notes-t-press">next</span> / <span class="notes-t-press">previous</span></td></tr>
-          <tr><th scope="row" class="notes-step-id">4.2</th><td>Confirm <span class="notes-t-named">Warehouse</span> and <span class="notes-t-named">Mission</span></td><td class="notes-see">Mission is the Picking Mission from 3.5</td></tr>
-          <tr><th scope="row" class="notes-step-id">4.3</th><td>Read the grid line</td><td class="notes-see"><span class="notes-t-named">Picked</span> · <span class="notes-t-named">Sequence</span> · <span class="notes-t-named">Item</span> · <span class="notes-t-named">Serial Number</span> · <span class="notes-t-named">From Location</span>. <span class="notes-t-named">Picked</span> = grey dot</td></tr>
-          <tr><th scope="row" class="notes-step-id">4.4</th><td>Tick the line</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">4.5</th><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></td><td class="notes-see">Stock moves from <span class="notes-t-named">From Location</span> to <span class="notes-t-named">To Location</span>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines. Line status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span></td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">4.6</th><td>Return to the Warehousing Order and open <span class="notes-t-named">Shipment Lines</span></td><td class="notes-see">A shipment line now exists in the standard flow. Read the value in <span class="notes-t-named">Shipment</span> — not the shipment-line position — and record it: <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">shipment number</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-4.6">Write it down</label>
+          <tr><th scope="row" class="notes-step-id">4.1</th><td>Reopen the finished item&#39;s <span class="notes-t-named">Item Order Plan</span></td><td class="notes-see">The sales order row now has a companion</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">4.2</th><td>Read the planned supply row</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">planned production order number</span> and <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">planned production quantity</span> — a <span class="notes-t-named">Planned Production Order</span> whose <span class="notes-t-named">Supply</span> equals ordered quantity minus on-hand<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-4.2">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-4.6" class="rux--text-area" rows="1" data-notes-note="4.6" placeholder="The value you saw"></textarea>
+                <textarea id="n-4.2" class="rux--text-area" rows="1" data-notes-note="4.2" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
+          <tr><th scope="row" class="notes-step-id">4.3</th><td>Open the <span class="notes-t-named">component&#39;s</span> Item Order Plan</td><td class="notes-see">The same planned production order appears — as <span class="notes-t-named">Demand</span></td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">4.4</th><td>Read the component&#39;s planned supply row</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">component planned purchase order</span> and <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">component planned quantity</span> — a <span class="notes-t-named">Planned Purchase Order</span> covering what stock does not<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-4.4">Write it down</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="n-4.4" class="rux--text-area" rows="1" data-notes-note="4.4" placeholder="The value you saw"></textarea>
+              </div>
+            </div></td></tr>
+          <tr><th scope="row" class="notes-step-id">4.5</th><td>Open <span class="notes-t-named">Planned Orders</span> <span class="notes-t-exact">cprrp1100m000</span> for the cluster and site from 0.4</td><td class="notes-see">Both planned orders listed, <span class="notes-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></td></tr>
             </tbody>
           </table>
         </div>
       </div>
       </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-5">
-        <h3 id="p-5">Phase 5 — Ship</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Shipments ➔ Shipments</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Shipments <span class="rux--type-code-01">whinh4130m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Freezing fixes the shipment&#39;s contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment.</p>
+        <h3 id="p-5">Phase 5 — Read the pegging tree</h3>
+        
+        <p class="notes-prose-measure"><strong>What LN is doing.</strong> The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
             <tbody>
-          <tr><th scope="row" class="notes-step-id">5.1</th><td>Find your shipment, then click <span class="notes-t-press" title="Drill In (line)">Drill In</span></td><td class="notes-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>. <span class="notes-t-named">Freeze Mandatory</span> ticked; <span class="notes-t-named">Allow Changes to Shipment</span> ticked</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">5.2</th><td>Shipping less than picked? Change <span class="notes-t-named">Shipped Quantity</span> on <span class="notes-t-named">Shipment Lines</span> <span class="notes-t-exact">whinh4131m000</span>, not here</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">shipped quantity</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-5.2">Write it down</label>
+          <tr><th scope="row" class="notes-step-id">5.1</th><td>In <span class="notes-t-named">Planned Orders</span>, select the planned production order from 4.5</td><td class="notes-see">—</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.2</th><td>Run <span class="notes-t-named">Pegging - Upstream</span></td><td class="notes-see"><span class="notes-t-named">Order Pegging</span> <span class="notes-t-exact">cprrp0740m200</span> opens as a tree</td></tr>
+          <tr><th scope="row" class="notes-step-id">5.3</th><td>Read the tree from the top</td><td class="notes-see">The sales order, then each level of stock and planned supply beneath it</td></tr>
+          <tr data-produces="true"><th scope="row" class="notes-step-id">5.4</th><td>Check the arithmetic at every level against the BOM and the stock figures</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">pegging arithmetic check</span> — each level&#39;s children sum to its requirement<div class="rux--form-item notes-note">
+              <label class="rux--label" for="n-5.4">Write it down</label>
               <div class="rux--text-area__wrapper">
-                <textarea id="n-5.2" class="rux--text-area" rows="1" data-notes-note="5.2" placeholder="The value you saw"></textarea>
-              </div>
-            </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">5.3</th><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span> (Shift+F)</td><td class="notes-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>. <span class="notes-t-named">Confirm</span> becomes available</td></tr>
-          <tr><th scope="row" class="notes-step-id">5.4</th><td>Review the packing slip</td><td class="notes-see">—</td></tr>
-          <tr><th scope="row" class="notes-step-id">5.5</th><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span> (Shift+C)</td><td class="notes-see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory relieved</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-6">
-        <h3 id="p-6">Phase 6 — Verify it worked</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing new. This phase reads the same figures phase 0 read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved.</p>
-        <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
-            <tbody>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">6.1</th><td>Read the on-hand quantity</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">on-hand after</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">difference</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-6.1">Write it down</label>
-              <div class="rux--text-area__wrapper">
-                <textarea id="n-6.1" class="rux--text-area" rows="1" data-notes-note="6.1" placeholder="The value you saw"></textarea>
+                <textarea id="n-5.4" class="rux--text-area" rows="1" data-notes-note="5.4" placeholder="The value you saw"></textarea>
               </div>
             </div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
-        <p class="notes-prose-measure"><strong>On-hand before − on-hand after must equal the shipped quantity.</strong> If it does not, the shipment was not confirmed. The guide is complete when the shipment is <strong>Confirmed</strong> and this inventory check passes.</p>
       </section>
         </section>
 
@@ -1429,41 +1415,16 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Symptom</div></th><th scope="col"><div class="rux--table-header-label">What to check or do</div></th></tr></thead>
             <tbody>
-          <tr><td>1</td><td><span class="notes-t-named">Status</span> stuck on <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span></td><td>Not approved — <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve</span></span></td></tr>
-          <tr><td>1</td><td>On-hand looks sufficient but the order will not fill</td><td>Check <span class="notes-t-named">Allocated</span> — much of the on-hand may be committed elsewhere. See 0.4</td></tr>
-          <tr><td>2</td><td>Clicking <span class="notes-t-named">RELEASE TO WAREHOUSING</span> in <span class="notes-t-named">Lines ready for</span> does nothing</td><td>That panel counts lines; it does not act. Use <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></td></tr>
-          <tr><td>2</td><td>Order absent from the release selection</td><td><span class="notes-t-named">Upto Release Date</span> is earlier than the order line&#39;s <span class="notes-t-named">Release Date</span> (planned delivery date minus outbound lead time)</td></tr>
-          <tr><td>2</td><td>No warehousing order</td><td>Release did not run. Check <span class="notes-t-named">Activities 1</span> at 2.8 — if it reads <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span>, run it from <span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></td></tr>
-          <tr><td>2</td><td>Activity shows <span class="notes-t-named">Automatic: No</span></td><td>That activity never fires on approval in this configuration. Run it by hand</td></tr>
-          <tr><td>3</td><td>Nothing under <span class="notes-t-named">Outbound Open</span></td><td>No warehousing order — return to phase 2</td></tr>
-          <tr><td>3</td><td>Your order is not in the Outbound grid</td><td>Wrong <span class="notes-t-named">Order</span> filter, or the release never ran — see 2.8</td></tr>
-          <tr><td>3</td><td>Cannot find <span class="notes-t-named">Outbound Order Lines</span></td><td>There is no such menu entry. Filter the Manager Dashboard&#39;s order grid and drill in</td></tr>
-          <tr><td>3</td><td><span class="notes-t-named">Advice</span> greyed out on the Actions menu</td><td>You are on the session toolbar. The advice actions live on the <span class="notes-t-named">Outbound Lines</span> toolbar — see 3.5</td></tr>
-          <tr><td>3</td><td><span class="notes-t-named">Generate Advice</span> greyed out</td><td>Advice already exists. Use <span class="notes-t-named">Undo Advice</span> to start over</td></tr>
-          <tr><td>3</td><td><span class="notes-t-named">Release Advice</span> greyed out</td><td>No advice exists yet. Run <span class="notes-t-named">Generate Advice</span> first</td></tr>
-          <tr><td>3</td><td>Advice already generated before you ran it</td><td>Some configurations generate it automatically on release. Check <span class="notes-t-named">Advised Quantity</span> first</td></tr>
-          <tr><td>3</td><td>Order will not advise</td><td>Header <span class="notes-t-named">Warehouse</span> does not hold the stock. Recheck against 0.4</td></tr>
-          <tr><td>3</td><td>No shipment number after releasing advice</td><td>Expected in the standard flow. Continue through <span class="notes-t-named">Pick Run</span>, then record <span class="notes-t-named">Shipment</span> from <span class="notes-t-named">Shipment Lines</span> at 4.6. An early line appears only when projected-shipment behavior applies</td></tr>
-          <tr><td>4</td><td>No <span class="notes-t-named">Picking</span> node under Warehousing</td><td>There is none. Picking sits inside <span class="notes-t-named">Outbound/Inspections</span></td></tr>
-          <tr><td>4</td><td>Goods still need picking after Release Advice</td><td>Expected. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> are separate. Run phase 4</td></tr>
-          <tr><td>4</td><td><span class="notes-t-named">Run</span> empty on the Picking List</td><td>Advice was never generated, so nothing was released. Return to 3.5</td></tr>
-          <tr><td>5</td><td>Shipment will not confirm</td><td>The line was never picked. Check the <span class="notes-t-named">Picked</span> column on Outbound Lines, then run phase 4</td></tr>
-          <tr><td>5</td><td>Shipment will not confirm, handling units involved</td><td>If <span class="notes-t-named">Handling Unit Based Confirmation</span> is set on a linked line, the handling units must be confirmed first</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-reference">
-      <h2 id="s-reference">Reference</h2>
-      <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Sales side</div></th><th scope="col"><div class="rux--table-header-label">Production side</div></th></tr></thead>
-            <tbody>
-          <tr><td>Order Type</td><td><span class="notes-t-named">20 — SO/SC Out</span></td><td>30 — Production (Out)</td></tr>
-          <tr><td>Transaction Type</td><td><span class="notes-t-named">Issue</span></td><td>Issue</td></tr>
-          <tr><td>Ship-To</td><td><span class="notes-t-named">Business Partner</span> — your customer</td><td>A work center</td></tr>
+          <tr><td>0</td><td>The item is not in the Item Order Plan</td><td>It has no planning data — no cluster row, no plan. Steps 0.3–0.5. Not an error state; nothing will tell you</td></tr>
+          <tr><td>1</td><td>LN refuses the item on the sales order — &quot;item sales by sales office not present&quot;</td><td>The item has no row for the order&#39;s sales office. Add it on the <span class="notes-t-named">Sales Offices</span> tab of <span class="notes-t-named">Item</span> <span class="notes-t-exact">tcibd0501m100</span>, then close and reopen the order session</td></tr>
+          <tr><td>1</td><td>A master-data fix appears to have no effect</td><td>The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20</td></tr>
+          <tr><td>2</td><td>The demand does not appear in the Item Order Plan</td><td>The delivery date is beyond the <span class="notes-t-named">Order Horizon</span> date. Step 2.2 — and remember the date is not today plus your days </td></tr>
+          <tr><td>3</td><td>The run plans the parent but not a component</td><td>The component has no planning data of its own. Step 0.6 — MRP skips it silently</td></tr>
+          <tr><td>3</td><td>The run produces nothing at all, or nothing propagates to the parent</td><td>Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 3.1</td></tr>
+          <tr><td>4</td><td>A planned quantity does not equal the raw shortfall</td><td>Order-quantity rules in <span class="notes-t-named">Items - Ordering</span> <span class="notes-t-exact">tcibd2100m000</span> round it — &quot;Lot sizing&quot;, <span class="notes-t-exact">cpordplanug</span> p. 21</td></tr>
+          <tr><td>4</td><td>An expected planned purchase order is missing entirely</td><td>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <span class="notes-t-exact">cprrp1100m000</span> help</td></tr>
+          <tr><td>5</td><td>The pegging tree is empty</td><td>Pegging relations were not generated, or the demand lies beyond the <span class="notes-t-named">Pegging Horizon</span> <span class="notes-t-exact">cprpd0100m000</span>. See the phase 5 Prerequisite</td></tr>
+          <tr><td>3</td><td>A component was given planning data and still does not appear</td><td>It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component&#39;s own <span class="notes-t-named">Item Order Plan</span> and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 </td></tr>
             </tbody>
           </table>
         </div>
@@ -1476,17 +1437,13 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Variant</div></th><th scope="col"><div class="rux--table-header-label">What changes</div></th></tr></thead>
             <tbody>
-          <tr><td><span class="notes-t-named">Shipping less than ordered</span></td><td>Reduce <span class="notes-t-named">Shipped Quantity</span> on <span class="notes-t-named">Shipment Lines</span> <span class="notes-t-exact">whinh4131m000</span>; see 5.2. <strong>Not documented for this release.</strong></td></tr>
-          <tr><td><span class="notes-t-named">Standalone advice sessions</span></td><td><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Outbound/Inspections</span></span> holds <span class="notes-t-named">Generate Outbound Advice</span> and <span class="notes-t-named">Release Outbound Advice</span> as their own sessions. Useful for a batch rather than one order</td></tr>
-          <tr><td><span class="notes-t-named">Pick Mission / Pick Advice</span></td><td>Narrower scopes than Pick Run. <strong>Not documented for this release.</strong></td></tr>
-          <tr><td><span class="notes-t-named">Direct Release</span></td><td><span class="notes-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Direct Release</span></span> appears to combine generate and release. <strong>Not documented for this release.</strong></td></tr>
-          <tr><td><span class="notes-t-named">Advice already exists</span></td><td>Depends on the warehousing procedure attached to the order type. Check <span class="notes-t-named">Advised Quantity</span> first. Source: Infor LN help for <span class="notes-t-named">Default Order Types by Origin</span> <span class="notes-t-exact">whinh0120m000</span></td></tr>
-          <tr><td><span class="notes-t-named">Undoing</span></td><td><span class="notes-t-named">Undo Advice</span> · <span class="notes-t-named">Undo Release</span> · <span class="notes-t-named">Undo Advice/Release</span> (Shift+Z)</td></tr>
+          <tr><td><span class="notes-t-named">Run planning for all items</span></td><td><span class="notes-t-named">Generate Order Planning</span> <span class="notes-t-exact">cprrp1210m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Generate Order Planning</span></span>, runs ranges instead of one item — the production habit. No help is filed for it, so its options are not assumed to match <span class="notes-t-exact">cprrp1220m000</span>&#39;s </td></tr>
+          <tr><td><span class="notes-t-named">Net change instead of regenerative</span></td><td><span class="notes-t-named">Run a Net Change Planning</span> in the generate session — simulates only from the first net-change date. A value change inside one step, not a phase change</td></tr>
+          <tr><td><span class="notes-t-named">Master planning</span></td><td>A different mechanism, not a value change: enabling <span class="notes-t-named">Master Plan</span> on <span class="notes-t-exact">cprpd1100m000</span> splits the horizons, and the item master plan must be initialized before it exists. <span class="notes-t-named">Own guide when written</span> — it needs <span class="notes-t-exact">cprpd</span>/<span class="notes-t-exact">cprmp</span> session help first </td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <p class="notes-prose-measure">A variant earns its own guide only when it <strong>changes the phase structure</strong>. Shipping short adds a back-order tail, so it graduates; Direct Release collapses two steps inside one phase, so it stays here. Every variant converges on the same completion test: shipment <strong>Confirmed</strong>, then on-hand reduced by the shipped quantity.</p>
       </section>
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-downstream">
       <h2 id="s-downstream">What this unlocks</h2>
@@ -1495,19 +1452,21 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Now that…</div></th><th scope="col"><div class="rux--table-header-label">Next guide</div></th><th scope="col"><div class="rux--table-header-label">Start at</div></th></tr></thead>
             <tbody>
-          <tr><td>The shipment is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span> and inventory has decreased</td><td>None — this is where the documented chain ends. Invoicing and Financials are outside the library&#39;s scope by decision, not by omission</td><td>—</td></tr>
-          <tr><td>The order could not be filled from stock</td><td>Replenish first — see the branch at step 0.5, then start again at phase 1</td><td>Phase 0</td></tr>
+          <tr><td>Planned orders cover the shortfall and reconcile in the pegging tree</td><td><strong>Not documented for this release.</strong></td><td>—</td></tr>
+          <tr><td>The planned quantities look wrong against supplier reality</td><td>Adjust order-quantity rules in <span class="notes-t-named">Items - Ordering</span> <span class="notes-t-exact">tcibd2100m000</span> and rerun phase 3</td><td>Phase 3</td></tr>
             </tbody>
           </table>
         </div>
       </div>
+      <p class="notes-prose-measure"><strong>What is known about the step after this guide</strong>, so the boundary is a handover rather than a cliff. <span class="notes-t-named">Transfer Order Planning</span> <span class="notes-t-exact">cppat1210m000</span> turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the <strong>purchase</strong> half was walked on 2026-08-25: two planned purchase orders for <span class="notes-t-exact">BAM-ROD</span> became purchase order <span class="notes-t-exact">100000682</span>. Full reference in <span class="notes-t-exact">the source on file</span>. Three things from that walk matter to anyone leaving this guide:</p>
+      <p class="notes-prose-measure">- <strong>A purchased component will not transfer without buy-from business partner data.</strong> The transfer fails and prints <em>&quot;Buy-from BP cannot be determined for item … ; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data.&quot;</em> The fix is a row on the <strong>Item - Business Partner</strong> tab of the item&#39;s purchase data. <strong>Nothing in this guide&#39;s phases surfaces this</strong>, because a planned purchase order is generated happily without it — the gap only appears at transfer. <strong>Not documented for this release.</strong></p>
       </section>
 
         <!-- The generated verification sentence. It is NOT a substitute for
              the status badge and README says why: one guide's sentence claims
              every phase was performed against a live system and confirmed
              while the guide itself is status: draft. Both are shown. -->
-        <p class="rux--type-body-01">Note Every phase of this procedure has been performed against a live system and its result confirmed.</p>
+        <p class="rux--type-body-01">Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.</p>
       
       <section class="notes-notepad" aria-labelledby="h-notes">
         <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
@@ -1541,7 +1500,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas b5d4c8e · contract 8</p>
+<p class="rux--type-caption-01 notes-revision">Built from rux-ln-atlas 03259af · contract 8</p>
       </div>
     </div>
   </div>

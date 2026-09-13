@@ -543,7 +543,7 @@
                 },
                 {
                   "t": "literal",
-                  "v": "<img class=\"ln-figure\">"
+                  "v": "<img class=\"notes-figure\">"
                 },
                 {
                   "t": "text",
@@ -559,14 +559,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "rux-ds"
+                  "v": "design"
                 },
                 {
                   "t": "text",
                   "v": ", and this file is written to be read on its own rather than as a caption."
                 }
               ],
-              "text": "This map is never drawn as an SVG. The site renders a diagram as <img class=\"ln-figure\">, which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The map is the diagram block, rendered as HTML and CSS from rux-ds, and this file is written to be read on its own rather than as a caption."
+              "text": "This map is never drawn as an SVG. The site renders a diagram as <img class=\"notes-figure\">, which is inert — no click target and no disclosure — so a static figure cannot be the tile in section 5, only a worse imitation of it. The map is the diagram block, rendered as HTML and CSS from design, and this file is written to be read on its own rather than as a caption."
             }
           ]
         },
@@ -1783,14 +1783,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-run-order-planning-for-one-item.md"
+                  "v": "run-order-planning-for-one-item.md"
                 },
                 {
                   "t": "text",
                   "v": " 0.3–0.5"
                 }
               ],
-              "text": "Guide — 0.5 · the steps are SG-run-order-planning-for-one-item.md 0.3–0.5"
+              "text": "Guide — 0.5 · the steps are run-order-planning-for-one-item.md 0.3–0.5"
             }
           ]
         },
@@ -2339,14 +2339,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-ship-from-stock.md"
+                  "v": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
                   "v": " 1.1–1.12"
                 }
               ],
-              "text": "Guide — 1.1–1.3 · order entry owned by SG-ship-from-stock.md 1.1–1.12"
+              "text": "Guide — 1.1–1.3 · order entry owned by ship-from-stock.md 1.1–1.12"
             }
           ]
         },
@@ -2461,14 +2461,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-ship-from-stock.md"
+                  "v": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
                   "v": " 2.1–2.8"
                 }
               ],
-              "text": "Guide — 6.1 · owned by SG-ship-from-stock.md 2.1–2.8"
+              "text": "Guide — 6.1 · owned by ship-from-stock.md 2.1–2.8"
             }
           ]
         },
@@ -2590,14 +2590,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-run-order-planning-for-one-item.md"
+                  "v": "run-order-planning-for-one-item.md"
                 },
                 {
                   "t": "text",
                   "v": " phases 1–2"
                 }
               ],
-              "text": "Guide — 1.4–1.5 · owned by SG-run-order-planning-for-one-item.md phases 1–2"
+              "text": "Guide — 1.4–1.5 · owned by run-order-planning-for-one-item.md phases 1–2"
             }
           ]
         },
@@ -3802,14 +3802,14 @@
                 },
                 {
                   "t": "literal",
-                  "v": "SG-manual-production-order-existing-master-data.md"
+                  "v": "manual-production-order-existing-master-data.md"
                 },
                 {
                   "t": "text",
                   "v": " 4.2–4.7"
                 }
               ],
-              "text": "Guide — 5.4 · owned by SG-manual-production-order-existing-master-data.md 4.2–4.7"
+              "text": "Guide — 5.4 · owned by manual-production-order-existing-master-data.md 4.2–4.7"
             }
           ]
         },
@@ -6988,14 +6988,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-run-order-planning-for-one-item.md"
+              "v": "run-order-planning-for-one-item.md"
             },
             {
               "t": "text",
               "v": " 0.3–0.5"
             }
           ],
-          "text": "0.5 · the steps are SG-run-order-planning-for-one-item.md 0.3–0.5"
+          "text": "0.5 · the steps are run-order-planning-for-one-item.md 0.3–0.5"
         },
         "do": {
           "tokens": [
@@ -7310,14 +7310,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-ship-from-stock.md"
+              "v": "ship-from-stock.md"
             },
             {
               "t": "text",
               "v": " 1.1–1.12"
             }
           ],
-          "text": "1.1–1.3 · order entry owned by SG-ship-from-stock.md 1.1–1.12"
+          "text": "1.1–1.3 · order entry owned by ship-from-stock.md 1.1–1.12"
         },
         "do": {
           "tokens": [
@@ -7538,14 +7538,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-ship-from-stock.md"
+              "v": "ship-from-stock.md"
             },
             {
               "t": "text",
               "v": " 2.1–2.8"
             }
           ],
-          "text": "6.1 · owned by SG-ship-from-stock.md 2.1–2.8"
+          "text": "6.1 · owned by ship-from-stock.md 2.1–2.8"
         },
         "do": {
           "tokens": [
@@ -7664,14 +7664,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-run-order-planning-for-one-item.md"
+              "v": "run-order-planning-for-one-item.md"
             },
             {
               "t": "text",
               "v": " phases 1–2"
             }
           ],
-          "text": "1.4–1.5 · owned by SG-run-order-planning-for-one-item.md phases 1–2"
+          "text": "1.4–1.5 · owned by run-order-planning-for-one-item.md phases 1–2"
         },
         "do": {
           "tokens": [
@@ -8842,14 +8842,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-manual-production-order-existing-master-data.md"
+              "v": "manual-production-order-existing-master-data.md"
             },
             {
               "t": "text",
               "v": " 4.2–4.7"
             }
           ],
-          "text": "5.4 · owned by SG-manual-production-order-existing-master-data.md 4.2–4.7"
+          "text": "5.4 · owned by manual-production-order-existing-master-data.md 4.2–4.7"
         },
         "do": {
           "tokens": [

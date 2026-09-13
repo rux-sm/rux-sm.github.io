@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-ship-from-stock",
+  "id": "ship-from-stock",
   "title": "Ship from stock",
   "module": "Sales · Warehousing",
   "modules": [
@@ -358,7 +358,7 @@
                     {
                       "t": "link",
                       "v": "Production order",
-                      "href": "SG-manual-production-order-existing-master-data.md"
+                      "href": "manual-production-order-existing-master-data.md"
                     },
                     {
                       "t": "text",
@@ -375,7 +375,7 @@
                     {
                       "t": "link",
                       "v": "Warehouse transfer",
-                      "href": "SG-transfer-item-between-warehouses.md"
+                      "href": "transfer-item-between-warehouses.md"
                     },
                     {
                       "t": "text",
@@ -392,7 +392,7 @@
                     {
                       "t": "link",
                       "v": "Purchase to receipt",
-                      "href": "SG-purchase-order-to-warehouse-receipt.md"
+                      "href": "purchase-order-to-warehouse-receipt.md"
                     },
                     {
                       "t": "text",

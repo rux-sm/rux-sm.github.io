@@ -2045,14 +2045,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-ship-from-stock"
+              "v": "ship-from-stock"
             },
             {
               "t": "text",
               "v": " phase 5 rests on came from the shipment rather than from a line, and marks the session uncaptured. This corroborates the behaviour and still does not capture the line. "
             }
           ],
-          "text": "The first live instance in this library of a mandatory freeze being enforced. the source on file records that the Freeze Mandatory reading SG-ship-from-stock phase 5 rests on came from the shipment rather than from a line, and marks the session uncaptured. This corroborates the behaviour and still does not capture the line."
+          "text": "The first live instance in this library of a mandatory freeze being enforced. the source on file records that the Freeze Mandatory reading ship-from-stock phase 5 rests on came from the shipment rather than from a line, and marks the session uncaptured. This corroborates the behaviour and still does not capture the line."
         }
       ]
     },

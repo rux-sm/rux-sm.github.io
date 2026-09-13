@@ -898,14 +898,14 @@
             },
             {
               "t": "literal",
-              "v": "SG-ship-from-stock.md"
+              "v": "ship-from-stock.md"
             },
             {
               "t": "text",
               "v": "."
             }
           ],
-          "text": "the source on file is a useful topic map but not a runnable guide. It summarizes narration as fact, references image assets that were not supplied, includes invoicing outside the current library scope, and describes picking/shipping even though this recording never completed those stages. It remains a TR source and must not override SG-ship-from-stock.md."
+          "text": "the source on file is a useful topic map but not a runnable guide. It summarizes narration as fact, references image assets that were not supplied, includes invoicing outside the current library scope, and describes picking/shipping even though this recording never completed those stages. It remains a TR source and must not override ship-from-stock.md."
         }
       ]
     }

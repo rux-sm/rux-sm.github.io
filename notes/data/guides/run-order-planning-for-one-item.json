@@ -1,7 +1,7 @@
 {
   "contract": 8,
   "tier": "export",
-  "id": "SG-run-order-planning-for-one-item",
+  "id": "run-order-planning-for-one-item",
   "title": "Run order planning",
   "module": "Enterprise Planning · Sales",
   "modules": [
@@ -65,7 +65,7 @@
             },
             {
               "t": "literal",
-              "v": "SG-create-basic-test-items-and-defaults.md"
+              "v": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
@@ -96,7 +96,7 @@
               "v": "."
             }
           ],
-          "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from SG-create-basic-test-items-and-defaults.md. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+          "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from create-basic-test-items-and-defaults.md. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
         },
         {
           "kind": "prose",
@@ -537,14 +537,14 @@
                     },
                     {
                       "t": "literal",
-                      "v": "SG-ship-from-stock.md"
+                      "v": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
                       "v": " phase 1 steps 1.1–1.11"
                     }
                   ],
-                  "text": "Create a sales order for the finished item, following SG-ship-from-stock.md phase 1 steps 1.1–1.11"
+                  "text": "Create a sales order for the finished item, following ship-from-stock.md phase 1 steps 1.1–1.11"
                 },
                 {
                   "tokens": [

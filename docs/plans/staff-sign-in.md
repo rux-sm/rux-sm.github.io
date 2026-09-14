@@ -54,7 +54,8 @@ function, including the ones that create share links.
   open to the key; and the maintenance signal triggers. `staff_identity_link`
   is applied: the seven accounts exist on the `staff.invalid` domain, a
   reserved name nobody can own, and each is linked to its profile, with
-  `sees_all_apps` on rux's.
+  `sees_all_apps` on rux's. rux-ui's driver, maintenance and document link
+  pages read those functions and the signal, not the tables.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
@@ -78,12 +79,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux-ui link pages: `js/pages/driver-share.js` reads
-      `get_driver_share_trips` instead of `trips`, `trip_documents` and
-      `settings`; `doc.html` reads `get_trip_document`;
-      `js/pages/maintenance-share.js` listens for the signal instead of
-      `postgres_changes`; a test feeds the new shape to `normalizeAssignment`;
-      cache busters bumped.
 - [ ] Migration `staff_policies_add`: a `staff_all` policy for staff on every
       trip, reference, settings, chat, notification and dev-note table; staff
       read on `profiles` with update of the own row only; staff versions of

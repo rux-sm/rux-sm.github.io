@@ -396,6 +396,8 @@
        something to say for the other 459. */
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
+    // The trip's own copy of the booking contact, which rux-ui reads and writes.
+    'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
     /* THE DAY-OF CONTACTS, five columns because the schema has five. Counted:
        64 trips carry a first, 7 a second, and one carries all five, so 687 of
        751 have none at all -- which is why the section renders one row and not
@@ -406,6 +408,9 @@
     'c1:trip_contact_1_id(id,name,phone)', 'c2:trip_contact_2_id(id,name,phone)',
     'c3:trip_contact_3_id(id,name,phone)', 'c4:trip_contact_4_id(id,name,phone)',
     'c5:trip_contact_5_id(id,name,phone)',
+    'trip_contact_1_name', 'trip_contact_1_phone', 'trip_contact_2_name', 'trip_contact_2_phone',
+    'trip_contact_3_name', 'trip_contact_3_phone', 'trip_contact_4_name', 'trip_contact_4_phone',
+    'trip_contact_5_name', 'trip_contact_5_phone',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     'contract_status,invoice_status,balance_paid,date_paid',
     // The three the billing switches gate, added 2026-09-10 with them.
@@ -566,6 +571,35 @@
     return lastEnd.length || 1;
   }
 
+  /* A CONTACT AS THE TRIP RECORDS IT. rux-ui keeps each contact's name, phone
+     and email on the trip itself and links the contact beside them, so the
+     trip's own copy comes first; a trip with only a link shows the linked
+     contact. Slot 0 is the booking contact, 1 to 5 the day-of ones. */
+  function tripContact(trip, slot) {
+    const pre = slot === 0 ? 'booking_contact' : `trip_contact_${slot}`;
+    const linked = slot === 0 ? trip.contacts : trip[`c${slot}`];
+    const name = trip[`${pre}_name`];
+    if (name) {
+      return { id: trip[`${pre}_id`] ?? null, name, phone: trip[`${pre}_phone`] ?? null,
+               email: slot === 0 ? trip.booking_contact_email ?? null : null };
+    }
+    return linked ? { id: linked.id, name: linked.name ?? '', phone: linked.phone ?? null, email: linked.email ?? null } : null;
+  }
+
+  // The contact columns as the editor shows them on opening, so an untouched
+  // panel has nothing to save. Day-of rows are drawn without gaps, so they are.
+  function contactColumnsOf(trip) {
+    const b = tripContact(trip, 0);
+    const out = { booking_contact_name: b?.name || null, booking_contact_phone: b?.phone || null,
+                  booking_contact_email: b?.email || null };
+    const days = [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).filter(Boolean);
+    for (let n = 1; n <= 5; n++) {
+      out[`trip_contact_${n}_name`] = days[n - 1]?.name || null;
+      out[`trip_contact_${n}_phone`] = days[n - 1]?.phone || null;
+    }
+    return out;
+  }
+
   // -- drawing --------------------------------------------------------------
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
@@ -646,9 +680,9 @@
     addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null, warn('dest'));
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
-    // THE BOOKING CONTACT the editor links, from the joined `contacts` row. The
-    // phone keeps its width and the name gives way.
-    const contact = trip.contacts;
+    // THE BOOKING CONTACT as the trip records it. The phone keeps its width and
+    // the name gives way.
+    const contact = tripContact(trip, 0);
     const who = el('span', null, contact?.name || '');
     if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
     addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', contact.phone) : null);
@@ -1837,7 +1871,7 @@
     input.autocomplete = NO_AUTOFILL;
     input.placeholder = 'Search contacts';
     input.value = current?.name ?? '';
-    if (current) input.dataset.contactId = current.id;
+    if (current?.id) input.dataset.contactId = current.id;
     const clear = el('button', 'rux--list-box__selection');
     clear.type = 'button';
     clear.tabIndex = -1;
@@ -1856,7 +1890,7 @@
     menu.setAttribute('role', 'listbox');
     menu.hidden = true;
     for (const c of contacts) {
-      const on = !!current && String(c.id) === String(current.id);
+      const on = !!current?.id && String(c.id) === String(current.id);
       const option = el('li', on
         ? 'rux--list-box__menu-item rux--list-box__menu-item--active scheduler-contact-option'
         : 'rux--list-box__menu-item scheduler-contact-option');
@@ -2241,6 +2275,17 @@
     { key: 'trip_contact_3_id', get: () => dayLink(3) },
     { key: 'trip_contact_4_id', get: () => dayLink(4) },
     { key: 'trip_contact_5_id', get: () => dayLink(5) },
+    /* THE TRIP'S OWN COPY of each contact, which rux-ui reads and writes: the
+       name, phone and email as this trip has them. `undefined` when the field
+       is not on screen, as above. The ids are settled at save by
+       `linkContacts`, which needs the database. */
+    { key: 'booking_contact_name', get: () => fieldVal('scheduler-f-cfind') },
+    { key: 'booking_contact_phone', get: () => fieldVal('scheduler-f-cphone') },
+    { key: 'booking_contact_email', get: () => fieldVal('scheduler-f-cemail') },
+    ...[1, 2, 3, 4, 5].flatMap(n => [
+      { key: `trip_contact_${n}_name`, get: () => dayVal(`scheduler-f-d${n}`) },
+      { key: `trip_contact_${n}_phone`, get: () => dayVal(`scheduler-f-dphone${n}`) },
+    ]),
   ];
 
   // The id a search field resolved to, or null when the box was cleared or
@@ -2269,6 +2314,95 @@
     if (!document.getElementById('scheduler-f-d1')) return undefined;
     return linkId(`scheduler-f-d${n}`) ?? null;
   };
+
+  // A contact field's text: null when blank, undefined when not on screen.
+  const fieldVal = id => {
+    const e = document.getElementById(id);
+    return e ? (e.value.trim() || null) : undefined;
+  };
+  // A day-of field, null for a row not drawn while the rows are, as `dayLink`.
+  const dayVal = id => {
+    if (!document.getElementById('scheduler-f-d1')) return undefined;
+    return fieldVal(id) ?? null;
+  };
+
+  /* LINKING A TRIP'S CONTACTS, as rux-ui does it. A contact picked from the
+     list keeps its id while the name, phone or email still agrees with it;
+     anything else is matched against the contacts list by phone, then email,
+     then exact name, and added to the list when nothing matches -- which is
+     what puts a name typed once into the search on the next trip. The
+     contact's own record is never changed from here: phone and email are this
+     trip's copy. */
+  const CONTACT_SLOTS = [
+    { idKey: 'booking_contact_id', name: 'scheduler-f-cfind', phone: 'scheduler-f-cphone',
+      email: 'scheduler-f-cemail', client: 'scheduler-f-customer',
+      copy: { name: 'booking_contact_name', phone: 'booking_contact_phone', email: 'booking_contact_email' } },
+    ...[1, 2, 3, 4, 5].map(n => ({ idKey: `trip_contact_${n}_id`, name: `scheduler-f-d${n}`,
+                                  phone: `scheduler-f-dphone${n}`,
+                                  copy: { name: `trip_contact_${n}_name`, phone: `trip_contact_${n}_phone` } })),
+  ];
+  const phoneDigits = v => String(v ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+  const folded = v => String(v ?? '').trim().toLowerCase();
+  const samePerson = (c, p) => [
+    [phoneDigits(c.phone), phoneDigits(p.phone)],
+    [folded(c.email), folded(p.email)],
+    [folded(c.name), folded(p.name)],
+  ].some(([a, b]) => a && a === b);
+  // `ilike` with nothing wild in it: an exact match, case aside.
+  const likeExact = v => String(v).trim().replace(/[\\%_]/g, m => `\\${m}`);
+
+  async function matchOrAddContact(p) {
+    const cols = 'id,name,phone,email,client';
+    const first = async query => {
+      const { data, error } = await withTimeout(query.limit(1).then(r => r));
+      if (error) throw new Error(error.message);
+      return data?.[0] ?? null;
+    };
+    const hit = (p.phone && await first(client.from('contacts').select(cols).eq('phone', p.phone)))
+      || (p.email && await first(client.from('contacts').select(cols).ilike('email', likeExact(p.email))))
+      || await first(client.from('contacts').select(cols).ilike('name', likeExact(p.name)));
+    if (hit) return hit;
+    const { data, error } = await withTimeout(client.from('contacts')
+      .insert({ name: p.name, phone: p.phone, email: p.email, client: p.client })
+      .select(cols).single().then(r => r));
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  // Settles every on-screen contact id into `row`, which is the insert or the
+  // patch. Returns the names that could not be linked; each keeps the link the
+  // trip already had.
+  async function linkContacts(row, creating) {
+    const failed = [];
+    const val = id => (id && document.getElementById(id)?.value.trim()) || null;
+    for (const s of CONTACT_SLOTS) {
+      const box = document.getElementById(s.name);
+      if (!box) continue;
+      const p = { name: box.value.trim() || null, phone: val(s.phone), email: val(s.email), client: val(s.client) };
+      const before = creating ? null : (editing.before[s.idKey] ?? null);
+      let id = null;
+      if (p.name) {
+        try {
+          const picked = box.dataset.contactId;
+          const known = picked && (panelIndex.contacts || []).find(c => String(c.id) === picked);
+          id = known ? (samePerson(known, p) ? known.id : (await matchOrAddContact(p)).id)
+            : picked || (await matchOrAddContact(p)).id;
+          box.dataset.contactId = id;
+        } catch {
+          failed.push(p.name);
+          id = before;
+        }
+      }
+      if (creating || !same(id, before)) row[s.idKey] = id; else delete row[s.idKey];
+      /* THE COPY IS WRITTEN WHOLE. A trip showing its linked contact has no copy
+         yet, so a phone edited alone would save a phone with no name beside it,
+         and the next open would show the linked contact's phone again. */
+      if (s.idKey in row || Object.values(s.copy).some(k => k in row)) {
+        for (const [field, key] of Object.entries(s.copy)) row[key] = p[field];
+      }
+    }
+    return failed;
+  }
 
   // A toggle's state lives on `aria-checked`, which is what Carbon's own
   // markup carries -- there is no `.checked` to read.
@@ -2353,17 +2487,6 @@
   // 600 -- so cents would be two characters of noise on every row.
   const usd = n => `$${Math.round(n).toLocaleString('en-US')}`;
 
-  /* WHAT THE CUSTOMER SECTION WOULD WRITE. Same shape as `stopsPatch`: one
-     update for one row, empty when nothing moved.
-
-     IT EDITS A RECORD SHARED BY OTHER TRIPS, and that is a fact about the data
-     rather than a flaw in the form. Measured: 55 of the 162 linked contacts
-     serve more than one trip and the busiest serves 18, so correcting a phone
-     number here corrects it on all 18. That is what a contact IS -- one person
-     who books repeatedly -- and it is how the old app already works, per
-     `docs/database-inventory.md`, which lists `contacts` as written by both the
-     customer editor and the trip editor. The section says so on screen rather
-     than letting it be discovered. */
   /* THE SIX rux-ui OFFERS, in its order. Not a guess and not this app's
      choice to make: `trip_payments.method` is free text, both apps write it,
      and a seventh spelling here would be a value the other app's menu cannot
@@ -2655,22 +2778,6 @@
   }
 
 
-  function contactPatch() {
-    if (!editing?.contact) return null;
-    const val = id => document.getElementById(id)?.value.trim() || null;
-    /* NAME IS NOT IN THIS DIFF ANY MORE. It used to be its own field; the
-       search replaced it, and a search FINDS a contact rather than renaming
-       one -- its value is "Name - Organisation - Phone", not a name. Renaming
-       belongs to the Customers view, which owns the record. Picking a
-       different contact is a change to `trips.booking_contact_id`, which is a
-       trip column and diffs with the rest of them. */
-    // `client` left this form with the duplicate Organization field; the
-    // Customers view still owns it. Phone and email are what remain editable.
-    const now = { phone: val('scheduler-f-cphone'), email: val('scheduler-f-cemail') };
-    const patch = {};
-    for (const k of Object.keys(now)) if (!same(now[k], editing.contact[k])) patch[k] = now[k];
-    return Object.keys(patch).length ? { id: editing.contact.id, patch } : null;
-  }
 
   /* WHAT THE SCHEDULE SECTION WOULD WRITE, as one update per row and only for
      rows that changed. Returns [] when nothing moved, which is what lets Save
@@ -2731,7 +2838,7 @@
   function changed() {
     if (!editing) return false;
     const patch = patchOf();
-    return stopsPatch().length > 0 || !!contactPatch() || !!paymentsPatch()?.work
+    return stopsPatch().length > 0 || !!paymentsPatch()?.work
       || !!posPatch()?.work || !!invoicesPatch()?.work
       || (!!patch && Object.keys(patch).length > 0);
   }
@@ -2924,6 +3031,7 @@
       trip_contact_3_id: trip.trip_contact_3_id ?? null,
       trip_contact_4_id: trip.trip_contact_4_id ?? null,
       trip_contact_5_id: trip.trip_contact_5_id ?? null,
+      ...contactColumnsOf(trip),
     } };
 
     /* THE SCHEDULE'S BEFORE IS KEPT APART FROM THE TRIP'S, because it is a
@@ -2931,17 +3039,6 @@
        fields are rows in `trip_stops`, so they diff separately and write
        separately. Folding them into one patch object would have `trips.update`
        sent columns it does not have. */
-    /* THE CONTACT'S BEFORE IS A THIRD TABLE, kept apart from the trip's and the
-       stops' for the same reason: `EDITS`/`patchOf` build a patch for `trips`,
-       and sending it a `name` or a `client` would be sending `trips` columns it
-       does not have. */
-    editing.contact = (creating || !trip.contacts) ? null : {
-      id: trip.contacts.id,
-      name: trip.contacts.name ?? null,
-      phone: trip.contacts.phone ?? null,
-      email: trip.contacts.email ?? null,
-      client: trip.contacts.client ?? null,
-    };
 
     /* THE ROWS AS THEY WERE, so `paymentsPatch` has something to diff
        against. Same shape as `editing.stops` and for the same reason: the
@@ -3101,7 +3198,7 @@
        `client` ("Mission CISD" books for "Vaquero Indoor"), so an agency
        booking for a school is a real shape here and a hard autofill would
        stamp the agency onto trips that are not theirs. */
-    const contact = creating ? null : trip.contacts;
+    const contact = creating ? null : tripContact(trip, 0);
     const allContacts = panelIndex.contacts || [];
     {
       /* THE CONTACT BLOCKS RENDER ON A NEW TRIP, 2026-09-09 on rux's ask, and
@@ -3143,12 +3240,9 @@
         textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
         textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
       );
-      /* THE SHARED-CONTACT NOTE IS GONE, 2026-09-10 on rux's call. It read
-         "This contact books other trips too. Editing it here changes it on
-         all of them." and it was true -- `contacts` rows are shared, so an
-         edit here reaches every trip that books the same person. Only the
-         WARNING went; the behaviour it described is unchanged and still
-         worth knowing when this block is next touched. */
+      /* PHONE AND EMAIL ARE THIS TRIP'S COPY. Editing them changes the trip,
+         never the shared contact record; `linkContacts` says how the link is
+         kept. */
       /* APPENDED INTO `topFields`, NOT AS ITS OWN BLOCK. Both runs are
          `.scheduler-fluid-group`, so nesting one in the other keeps every gap at
          zero and the whole form reads as one card from Type to the last
@@ -3170,7 +3264,7 @@
          SAME AS BOOKING IS THE COMMONEST CASE AND IS A CHECKBOX. 34 of the 64
          first day-of contacts ARE the booking contact -- 53% of the ones that
          exist are that person retyped. */
-      const dayRows = [1, 2, 3, 4, 5].map(i => trip[`c${i}`]).filter(Boolean);
+      const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
       /* THIS CHECKBOX GOES THROUGH `checkField` LIKE THE OTHER FIVE,
          2026-09-10. It was a hand-rolled copy of that helper's markup and
          had drifted from it in the one way that shows: the label text sat
@@ -4777,8 +4871,8 @@
   // and typing it back out again disables Save rather than leaving it armed.
   /* A PICKED CONTACT LINKS AND FILLS; TYPING UNLINKS. `js/list-box.js`
      announces a pick with its option, and a cleared or broken selection with
-     `option: null`. Any keystroke in the field drops the link as well, so a
-     name typed freehand saves no contact.
+     `option: null`. Any keystroke in the field drops the link as well, and
+     Save then finds or adds the contact by what was typed (`linkContacts`).
 
      SUGGESTS, NEVER LOCKS. Choosing a booking contact fills organisation,
      phone and email and leaves all three editable -- 13 trips have a customer
@@ -4932,6 +5026,8 @@
          value that derivation would produce, once, and never touches it
          again. */
       const row = creating ? { ...form, bus_count: 1, confirmed: false } : patch;
+      // Contacts are linked, and added to the list, before the trip is written.
+      const unlinked = await linkContacts(row, creating);
       const wantBus = creating ? createBusId : null;
       /* TWO WRITES WHEN A CELL ASKED FOR A BUS, and they cannot be one:
          the assignment needs the trip's id, which only exists after the
@@ -4965,11 +5061,6 @@
          the assignment write below already takes: the trip is saved, the time
          is not, and the message says which rather than claiming everything
          failed. */
-      /* THE CONTACT IS A THIRD WRITE and goes last, after the trip and before
-         nothing. Its own row, its own table, and a failure here leaves the
-         trip saved -- said plainly rather than reported as a whole-save
-         failure, which is the rule the stop write and the assignment write
-         below both already follow. */
       /* THE FIRST STOPS, WRITTEN ONLY ON CREATE. A pickup row carries the
          location, the yard departure and the spot; a return row carries the
          arrival. Neither is written unless something was typed into it --
@@ -4997,13 +5088,6 @@
           const { error: stErr } = await withTimeout(client.from('trip_stops').insert(rows).then(r => r));
           if (stErr) throw new Error(`The trip was created, but its schedule was not: ${stErr.message}`);
         }
-      }
-
-      const cWork = creating ? null : contactPatch();
-      if (cWork) {
-        const { error: cErr } = await withTimeout(
-          client.from('contacts').update(cWork.patch).eq('id', cWork.id).then(r => r));
-        if (cErr) throw new Error(`The trip saved, but the customer did not: ${cErr.message}`);
       }
 
       /* PAYMENTS, THEN THE AGGREGATE THEY ADD UP TO. `deposit_amount` is not
@@ -5084,7 +5168,9 @@
       // READ IT BACK rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (creating) toast('success', wantBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
+      if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
+        `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
+      else if (creating) toast('success', wantBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
       return true;
     } catch (e) {

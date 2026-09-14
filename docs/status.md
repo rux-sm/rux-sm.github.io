@@ -38,6 +38,10 @@ done and how.
 ## Scheduler
 
 - Trip search shows the 50 newest matches, with no ranking by relevance.
+- The quote calculator's nine spreadsheet quirks are kept until decided. The
+  list is in `scheduler/docs/quote-calculator.md`.
+- The quote calculator doesn't warn when dead miles are more than the trip
+  miles, which makes the mileage charge negative.
 - Below the md width the board shows about two of seven days. The phone view
   is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
 - Weak highlights in geist: the roster tint and the keyboard highlight are

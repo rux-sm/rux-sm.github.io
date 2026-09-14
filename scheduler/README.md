@@ -17,8 +17,10 @@ That database is production and shared with `rux-ui`, so nothing here is
 ever tried with a test record.
 
 Its second page, `quote.html`, is the quote calculator: the office spreadsheet's
-formulas in `quote.js`, with rates kept in the `quote_rates` and
-`quote_mileage_rates` tables, which only a staff session can read or change.
+formulas in `quote.js`. Its rates are edited on `quote-rates.html` and kept in
+the `quote_rates` and `quote_mileage_rates` tables, which only a staff session
+can read or change. `docs/quote-calculator.md` lists where it copies the
+spreadsheet's quirks.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here and

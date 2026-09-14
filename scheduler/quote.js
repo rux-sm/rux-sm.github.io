@@ -1,20 +1,24 @@
 /* ==========================================================================
-   quote.js — THE QUOTE CALCULATOR
+   quote.js — THE QUOTE CALCULATOR AND ITS RATES
    --------------------------------------------------------------------------
    The office spreadsheet's Calculator tab, formula for formula, quirks
-   included; the Notes tab on the page lists them. The rates are rows in
-   `quote_rates` and `quote_mileage_rates`, which only a staff session can read
-   or write, so no rate is written in this public file.
+   included; scheduler/docs/quote-calculator.md lists them. One script for two
+   pages: quote.html works a quote out, and quote-rates.html edits the rates it
+   uses. The rates are rows in `quote_rates` and `quote_mileage_rates`, which
+   only a staff session can read or write, so no rate is written in this
+   public file.
 
-   A local preview has no account layer: the calculator still draws, with
-   every rate blank, so the page can be looked at, and nothing saves.
+   A local preview has no account layer. Both pages still draw, and rates
+   saved on the rates page are kept in this browser tab only, so the
+   calculator can be tried without the database.
    ========================================================================== */
 (() => {
   'use strict';
 
   const MAX_DAYS = 20;
+  const PREVIEW_KEY = 'rux.scheduler.quote-preview';
 
-  // Every named rate, in the order the Rates tab shows them. `key` is the
+  // Every named rate, in the order the rates page shows them. `key` is the
   // `quote_rates` row; `unit` decides the field's hint.
   const RATE_FIELDS = {
     trip: [
@@ -101,7 +105,7 @@
   window.Rux = window.Rux || {};
   window.Rux.quote = { tripQuote, driverPay, tripFreeDays, driverFreeDays };
 
-  /* ── THE PAGE ─────────────────────────────────────────────────────────── */
+  /* ── SHARED BY BOTH PAGES ─────────────────────────────────────────────── */
 
   const $ = id => document.getElementById(id);
   const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -114,7 +118,6 @@
 
   const rates = Object.fromEntries([...RATE_FIELDS.trip, ...RATE_FIELDS.driver].map(f => [f.key, 0]));
   let mileage = [];          // [{ id, rate, note, is_default }] as saved
-  let dayCount = 1;
   let client = null;
   let canSave = false;
 
@@ -145,185 +148,6 @@
     return item;
   };
 
-  /* ── Calculator ── */
-
-  const driversChosen = () => parseInt($('scheduler-quote-drivers').value, 10) || 0;
-
-  const drawDays = () => {
-    const rows = $('scheduler-quote-day-rows');
-    const kept = [...rows.querySelectorAll('input')].reduce((m, i) => (m[i.id] = i.value, m), {});
-    rows.replaceChildren();
-    for (let d = 1; d <= dayCount; d++) {
-      const row = document.createElement('div');
-      row.className = 'scheduler-quote-days__row';
-      const day = document.createElement('span');
-      day.className = 'scheduler-quote-days__day';
-      day.textContent = d;
-      row.append(day);
-      for (const [col, name] of [['trip', 'trip miles'], ['d1', 'driver 1 miles'], ['d2', 'driver 2 miles']]) {
-        const id = `scheduler-quote-${col}-${d}`;
-        const field = textField({ id, label: `Day ${d} ${name}`, hidden: true, value: kept[id] ?? '', placeholder: '0' });
-        if (col !== 'trip') field.dataset.driver = col === 'd1' ? '1' : '2';
-        row.append(field);
-      }
-      rows.append(row);
-    }
-    $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
-    $('scheduler-quote-remove-day').disabled = dayCount <= 1;
-    showDrivers();
-  };
-
-  const showDrivers = () => {
-    const n = driversChosen();
-    const grid = $('scheduler-quote-days');
-    grid.style.setProperty('--scheduler-quote-cols', String(1 + n));
-    for (const el of grid.querySelectorAll('[data-driver]')) el.hidden = Number(el.dataset.driver) > n;
-    $('scheduler-quote-church-item').hidden = n === 0;
-  };
-
-  const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
-
-  // Dead miles and other charges count only while their switch is on.
-  const extrasOn = () => $('scheduler-quote-extras').getAttribute('aria-checked') === 'true';
-
-  const compute = () => {
-    const n = driversChosen();
-    const extras = extrasOn();
-    $('scheduler-quote-extras-fields').hidden = !extras;
-    const trip = tripQuote({ miles: column('trip'), rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
-    const driver = n === 0 ? null : driverPay({
-      driver1: column('d1'),
-      driver2: n === 2 ? column('d2') : column('d2').map(() => 0),
-      drivers: n,
-      church: $('scheduler-quote-church').checked,
-    }, rates);
-    const other = extras ? num($('scheduler-quote-other').value) : 0;
-    const total = other + (trip.amount ?? 0) + (driver?.amount ?? 0);
-
-    $('scheduler-quote-miles-out').textContent = trip.days === null ? '—' : count.format(trip.total);
-    $('scheduler-quote-miles-note').textContent = trip.days === null ? 'Enter miles for at least one day' : plural(trip.days, 'day', 'days');
-
-    $('scheduler-quote-mileage').textContent = trip.amount === null ? '—' : money.format(trip.amount);
-    $('scheduler-quote-mileage-note').textContent =
-      trip.days === null ? 'No miles yet'
-      : trip.local ? `Local · ${plural(trip.days, 'day', 'days')} at the daily rate`
-      : trip.free === null ? 'Past the free-day table, counted as $0'
-      : `${plural(trip.free, 'free day', 'free days')} · ${plural(trip.extra, 'extra day', 'extra days')}`;
-
-    $('scheduler-quote-driver').textContent = driver?.amount == null ? '—' : money.format(driver.amount);
-    const driverMiles = driver ? plural(driver.total, 'mile', 'miles') : '';
-    const meal = driver?.meal == null ? '' : ` · meals ${money.format(driver.meal)}, not included`;
-    $('scheduler-quote-driver-note').textContent =
-      !driver ? 'No drivers on this quote'
-      : driver.days === null ? 'Enter driver miles for at least one day'
-      : driver.band === 'church' ? `${driverMiles} · local church${meal}`
-      : driver.band === 'under200' ? `${driverMiles} · under 200 miles${meal}`
-      : driver.band === 'under430' ? `${driverMiles} · 200 to 429 miles${meal}`
-      : driver.amount === null ? 'Past the free-day table, counted as $0'
-      : `${driverMiles} · ${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
-
-    $('scheduler-quote-total').textContent = money.format(total);
-    $('scheduler-quote-total-note').textContent = other ? `Includes ${money.format(other)} other charges` : 'Mileage and driver pay';
-  };
-
-  // Keeps the chosen rate while it still exists; `fresh` starts from the default.
-  const drawRateSelect = (fresh = false) => {
-    const select = $('scheduler-quote-rate');
-    const current = fresh ? '' : select.value;
-    const sorted = [...mileage].sort((a, b) => a.rate - b.rate);
-    select.replaceChildren(...sorted.map(m => Object.assign(document.createElement('option'), {
-      className: 'rux--select-option',
-      value: String(m.rate),
-      textContent: `${money.format(m.rate)}${m.note ? ` · ${m.note}` : ''}`,
-    })));
-    const keep = sorted.find(m => String(m.rate) === current) ?? sorted.find(m => m.is_default) ?? sorted[0];
-    if (keep) select.value = String(keep.rate);
-    select.disabled = !sorted.length;
-  };
-
-  /* ── Rates tab ── */
-
-  const drawRates = () => {
-    for (const group of ['trip', 'driver']) {
-      $(`scheduler-quote-rates-${group}`).replaceChildren(...RATE_FIELDS[group].map(f =>
-        textField({ id: `scheduler-quote-r-${f.key}`, label: `${f.label} (${f.unit})`, value: String(rates[f.key] ?? 0) })));
-    }
-    $('scheduler-quote-mileage-rows').replaceChildren();
-    for (const m of mileage) addRateRow(m);
-    if (!mileage.length) addRateRow();
-    showResult(null);
-  };
-
-  let rowSeq = 0;
-  const addRateRow = (m = { id: null, rate: '', note: '', is_default: false }) => {
-    const n = ++rowSeq;
-    const row = document.createElement('div');
-    row.className = 'scheduler-quote-mileage__row';
-    row.dataset.id = m.id ?? '';
-    const rate = textField({ id: `scheduler-quote-m-rate-${n}`, label: 'Rate in dollars per mile', hidden: true, value: m.rate === '' ? '' : String(m.rate), placeholder: '0.00' });
-    const note = textField({ id: `scheduler-quote-m-note-${n}`, label: 'Note', hidden: true, value: m.note });
-    note.querySelector('input').inputMode = 'text';
-
-    const radio = document.createElement('div');
-    radio.className = 'rux--radio-button-wrapper scheduler-quote-mileage__default';
-    const input = Object.assign(document.createElement('input'), {
-      id: `scheduler-quote-m-default-${n}`, className: 'rux--radio-button', type: 'radio', name: 'scheduler-quote-default', checked: !!m.is_default,
-    });
-    const label = document.createElement('label');
-    label.className = 'rux--radio-button__label';
-    label.htmlFor = input.id;
-    label.innerHTML = '<span class="rux--radio-button__appearance"></span><span class="rux--radio-button__label-text rux--visually-hidden">Default rate</span>';
-    radio.append(input, label);
-
-    const remove = document.createElement('button');
-    remove.type = 'button';
-    remove.className = 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm';
-    remove.setAttribute('aria-label', 'Remove rate');
-    remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>';
-    remove.addEventListener('click', () => row.remove());
-
-    row.append(rate, note, radio, remove);
-    $('scheduler-quote-mileage-rows').append(row);
-    return row;
-  };
-
-  // Whole class names, so the check can find each one in this file.
-  const RESULT_CLASS = {
-    success: 'rux--inline-notification rux--inline-notification--success',
-    error: 'rux--inline-notification rux--inline-notification--error',
-  };
-  const showResult = (kind, text) => {
-    $('scheduler-quote-rates-result').hidden = !kind;
-    if (!kind) return;
-    $('scheduler-quote-rates-result-box').className = RESULT_CLASS[kind];
-    $('scheduler-quote-rates-result-icon').setAttribute('href', kind === 'success' ? '#i-checkmark--filled' : '#i-error--filled');
-    $('scheduler-quote-rates-result-text').textContent = text;
-  };
-
-  // The Rates tab's fields as rows to save, or a sentence saying what is wrong.
-  const readRates = () => {
-    const named = [];
-    for (const f of [...RATE_FIELDS.trip, ...RATE_FIELDS.driver]) {
-      const raw = $(`scheduler-quote-r-${f.key}`).value.trim();
-      const value = Number(raw.replace(/[$,]/g, ''));
-      if (raw === '' || !Number.isFinite(value) || value < 0) return { problem: `${f.label} needs a number of 0 or more.` };
-      named.push({ key: f.key, value });
-    }
-    const list = [];
-    for (const row of $('scheduler-quote-mileage-rows').children) {
-      const inputs = row.querySelectorAll('input');
-      const raw = inputs[0].value.trim();
-      const note = inputs[1].value.trim();
-      if (raw === '' && note === '') continue;
-      const rate = Number(raw.replace(/[$,]/g, ''));
-      if (raw === '' || !Number.isFinite(rate) || rate < 0) return { problem: 'Every mileage rate needs a number of 0 or more.' };
-      list.push({ id: row.dataset.id || crypto.randomUUID(), rate, note, is_default: inputs[2].checked });
-    }
-    if (!list.length) return { problem: 'Add at least one mileage rate.' };
-    if (!list.some(m => m.is_default)) list[0].is_default = true;
-    return { named, list };
-  };
-
   const load = async () => {
     const [named, miles] = await Promise.all([
       client.from('quote_rates').select('key,value'),
@@ -334,89 +158,333 @@
     mileage = miles.data.map(m => ({ ...m, rate: Number(m.rate) })).sort((a, b) => a.rate - b.rate);
   };
 
-  const save = async () => {
-    const { problem, named, list } = readRates();
-    if (problem) return showResult('error', problem);
-    // A local preview has no database: the rates apply to this visit only.
-    if (!client) {
-      for (const { key, value } of named) rates[key] = value;
-      mileage = list.sort((a, b) => a.rate - b.rate);
-      drawRates();
-      drawRateSelect();
-      compute();
-      return showResult('success', 'Applied to this visit only. Nothing was saved.');
-    }
-    const button = $('scheduler-quote-rates-save');
-    button.disabled = true;
+  // A local preview keeps its rates in sessionStorage, which a browser may
+  // refuse, so a failed read leaves the rates blank and a failed write says so.
+  const loadPreview = () => {
     try {
-      const keep = new Set(list.map(m => m.id));
-      const gone = mileage.filter(m => !keep.has(m.id)).map(m => m.id);
-      const chosen = list.find(m => m.is_default).id;
-      // The old default is cleared first: at most one row may be the default,
-      // and the database checks that row by row.
-      const steps = [
-        () => client.from('quote_rates').upsert(named),
-        () => client.from('quote_mileage_rates').update({ is_default: false }).eq('is_default', true).neq('id', chosen),
-        () => gone.length ? client.from('quote_mileage_rates').delete().in('id', gone) : { error: null },
-        () => client.from('quote_mileage_rates').upsert(list),
-      ];
-      for (const step of steps) {
-        const { error } = await step();
-        if (error) throw new Error(error.message);
-      }
-      await load();
-      drawRates();
-      drawRateSelect();
-      compute();
-      showResult('success', 'Rates saved.');
+      const saved = JSON.parse(sessionStorage.getItem(PREVIEW_KEY) || 'null');
+      if (!saved) return;
+      for (const key in rates) if (Number.isFinite(saved.rates?.[key])) rates[key] = saved.rates[key];
+      if (Array.isArray(saved.mileage)) mileage = saved.mileage;
+    } catch { /* the rates stay blank */ }
+  };
+  const savePreview = () => {
+    try {
+      sessionStorage.setItem(PREVIEW_KEY, JSON.stringify({ rates, mileage }));
+      return true;
     } catch {
-      showResult('error', "The rates didn't save. Try again.");
-    } finally {
-      button.disabled = !canSave;
+      return false;
     }
   };
 
-  /* ── Wiring ── */
+  /* ── THE CALCULATOR (quote.html) ──────────────────────────────────────── */
 
-  const form = $('scheduler-quote-form');
-  form.addEventListener('input', compute);
-  form.addEventListener('change', compute);
-  // js/form-controls.js flips the switch and says so with `rux:toggle`.
-  form.addEventListener('rux:toggle', compute);
-  form.addEventListener('reset', () => setTimeout(() => {
-    window.Rux.formControls?.toggle($('scheduler-quote-extras-toggle'), false);
-    dayCount = 1;
-    $('scheduler-quote-day-rows').replaceChildren();
-    drawDays();
-    // A reset puts the select on its first option, the cheapest rate.
-    drawRateSelect(true);
-    compute();
-  }));
-  $('scheduler-quote-drivers').addEventListener('change', showDrivers);
-  $('scheduler-quote-add-day').addEventListener('click', () => {
-    if (dayCount >= MAX_DAYS) return;
-    dayCount++;
-    drawDays();
-    $(`scheduler-quote-trip-${dayCount}`)?.focus();
-    compute();
-  });
-  $('scheduler-quote-remove-day').addEventListener('click', () => {
-    if (dayCount <= 1) return;
-    dayCount--;
-    drawDays();
-    compute();
-  });
-  $('scheduler-quote-add-rate').addEventListener('click', () => addRateRow().querySelector('input').focus());
-  $('scheduler-quote-rates-form').addEventListener('submit', e => { e.preventDefault(); save(); });
-  $('scheduler-quote-rates-revert').addEventListener('click', drawRates);
+  const calculator = () => {
+    const form = $('scheduler-quote-form');
+    let dayCount = 1;
 
-  const start = () => {
-    $('scheduler-quote-app').hidden = false;
-    drawDays();
-    drawRates();
-    drawRateSelect();
-    compute();
-    $('scheduler-quote-rates-save').disabled = !canSave;
+    const driversChosen = () => parseInt($('scheduler-quote-drivers').value, 10) || 0;
+
+    const drawDays = () => {
+      const rows = $('scheduler-quote-day-rows');
+      const kept = [...rows.querySelectorAll('input')].reduce((m, i) => (m[i.id] = i.value, m), {});
+      rows.replaceChildren();
+      for (let d = 1; d <= dayCount; d++) {
+        const row = document.createElement('div');
+        row.className = 'scheduler-quote-days__row';
+        const day = document.createElement('span');
+        day.className = 'scheduler-quote-days__day';
+        day.textContent = d;
+        row.append(day);
+        for (const [col, name] of [['trip', 'trip miles'], ['d1', 'driver 1 miles'], ['d2', 'driver 2 miles']]) {
+          const id = `scheduler-quote-${col}-${d}`;
+          const field = textField({ id, label: `Day ${d} ${name}`, hidden: true, value: kept[id] ?? '', placeholder: '0' });
+          if (col !== 'trip') field.dataset.driver = col === 'd1' ? '1' : '2';
+          row.append(field);
+        }
+        rows.append(row);
+      }
+      $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
+      $('scheduler-quote-remove-day').disabled = dayCount <= 1;
+      showDrivers();
+    };
+
+    const showDrivers = () => {
+      const n = driversChosen();
+      const grid = $('scheduler-quote-days');
+      grid.style.setProperty('--scheduler-quote-cols', String(1 + n));
+      for (const el of grid.querySelectorAll('[data-driver]')) el.hidden = Number(el.dataset.driver) > n;
+      $('scheduler-quote-church-item').hidden = n === 0;
+    };
+
+    const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
+
+    // An empty driver box counts that day's trip miles.
+    const driverColumn = (col, trip) => trip.map((miles, i) => {
+      const raw = $(`scheduler-quote-${col}-${i + 1}`)?.value.trim() ?? '';
+      return raw === '' ? miles : Math.max(0, num(raw));
+    });
+
+    // Dead miles and other charges count only while their switch is on.
+    const extrasOn = () => $('scheduler-quote-extras').getAttribute('aria-checked') === 'true';
+
+    const compute = () => {
+      const n = driversChosen();
+      const extras = extrasOn();
+      $('scheduler-quote-extras-fields').hidden = !extras;
+
+      const trip = column('trip');
+      // Each driver box shows, in gray, the trip miles it counts while empty.
+      for (let d = 1; d <= dayCount; d++) {
+        const hint = trip[d - 1] ? count.format(trip[d - 1]) : '0';
+        for (const col of ['d1', 'd2']) $(`scheduler-quote-${col}-${d}`).placeholder = hint;
+      }
+
+      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
+      const driver = n === 0 ? null : driverPay({
+        driver1: driverColumn('d1', trip),
+        driver2: n === 2 ? driverColumn('d2', trip) : trip.map(() => 0),
+        drivers: n,
+        church: $('scheduler-quote-church').checked,
+      }, rates);
+      const other = extras ? num($('scheduler-quote-other').value) : 0;
+      const total = other + (quote.amount ?? 0) + (driver?.amount ?? 0);
+
+      const miles = plural(quote.total, 'mile', 'miles');
+      $('scheduler-quote-mileage').textContent = quote.amount === null ? '—' : money.format(quote.amount);
+      $('scheduler-quote-mileage-note').textContent =
+        quote.days === null ? 'No miles yet'
+        : quote.local ? `${miles} · ${plural(quote.days, 'local day', 'local days')}`
+        : quote.free === null ? `${miles} · past the free-day table, counted as $0`
+        : `${miles} · ${plural(quote.days, 'day', 'days')} · ${plural(quote.free, 'free day', 'free days')} · ${plural(quote.extra, 'extra day', 'extra days')}`;
+
+      $('scheduler-quote-driver-line').hidden = !driver;
+      if (driver) {
+        const driverMiles = plural(driver.total, 'mile', 'miles');
+        const meal = driver.meal == null ? '' : ` · meals ${money.format(driver.meal)} not included`;
+        $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
+        $('scheduler-quote-driver-note').textContent =
+          driver.days === null ? 'No driver miles yet'
+          : driver.band === 'church' ? `${driverMiles} · church rate${meal}`
+          : driver.band === 'under200' ? `${driverMiles} · under-200 rate${meal}`
+          : driver.band === 'under430' ? `${driverMiles} · 200-to-429 rate${meal}`
+          : driver.amount === null ? `${driverMiles} · past the free-day table, counted as $0`
+          : `${driverMiles} · ${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
+      }
+
+      $('scheduler-quote-other-line').hidden = !extras;
+      $('scheduler-quote-other-out').textContent = money.format(other);
+
+      // Two totals, one showing at each width: the quote's own, and the bar's.
+      $('scheduler-quote-total').textContent = money.format(total);
+      $('scheduler-quote-bar-total').textContent = money.format(total);
+    };
+
+    // Keeps the chosen rate while it still exists; `fresh` starts from the default.
+    const drawRateSelect = (fresh = false) => {
+      const select = $('scheduler-quote-rate');
+      const current = fresh ? '' : select.value;
+      const sorted = [...mileage].sort((a, b) => a.rate - b.rate);
+      select.replaceChildren(...sorted.map(m => Object.assign(document.createElement('option'), {
+        className: 'rux--select-option',
+        value: String(m.rate),
+        textContent: `${money.format(m.rate)}${m.note ? ` · ${m.note}` : ''}`,
+      })));
+      const keep = sorted.find(m => String(m.rate) === current) ?? sorted.find(m => m.is_default) ?? sorted[0];
+      if (keep) select.value = String(keep.rate);
+      select.disabled = !sorted.length;
+    };
+
+    form.addEventListener('input', compute);
+    form.addEventListener('change', compute);
+    // js/form-controls.js flips the switch and says so with `rux:toggle`.
+    form.addEventListener('rux:toggle', compute);
+    form.addEventListener('reset', () => setTimeout(() => {
+      window.Rux.formControls?.toggle($('scheduler-quote-extras-toggle'), false);
+      dayCount = 1;
+      $('scheduler-quote-day-rows').replaceChildren();
+      drawDays();
+      // A reset puts the select on its first option, the cheapest rate.
+      drawRateSelect(true);
+      compute();
+    }));
+    $('scheduler-quote-drivers').addEventListener('change', showDrivers);
+    $('scheduler-quote-add-day').addEventListener('click', () => {
+      if (dayCount >= MAX_DAYS) return;
+      dayCount++;
+      drawDays();
+      $(`scheduler-quote-trip-${dayCount}`)?.focus();
+      compute();
+    });
+    $('scheduler-quote-remove-day').addEventListener('click', () => {
+      if (dayCount <= 1) return;
+      dayCount--;
+      drawDays();
+      compute();
+    });
+
+    return {
+      app: form,
+      preview: 'This preview has no log-in, so the rates are blank until they are saved on the rates page. Add ?cloud to the address to load the real ones.',
+      start: () => {
+        drawDays();
+        drawRateSelect();
+        compute();
+      },
+    };
+  };
+
+  /* ── THE RATES (quote-rates.html) ─────────────────────────────────────── */
+
+  const ratesPage = () => {
+    const form = $('scheduler-quote-rates-form');
+
+    let rowSeq = 0;
+    const addRateRow = (m = { id: null, rate: '', note: '', is_default: false }) => {
+      const n = ++rowSeq;
+      const row = document.createElement('div');
+      row.className = 'scheduler-quote-mileage__row';
+      row.dataset.id = m.id ?? '';
+      const rate = textField({ id: `scheduler-quote-m-rate-${n}`, label: 'Rate in dollars per mile', hidden: true, value: m.rate === '' ? '' : String(m.rate), placeholder: '0.00' });
+      const note = textField({ id: `scheduler-quote-m-note-${n}`, label: 'Note', hidden: true, value: m.note });
+      note.querySelector('input').inputMode = 'text';
+
+      const radio = document.createElement('div');
+      radio.className = 'rux--radio-button-wrapper scheduler-quote-mileage__default';
+      const input = Object.assign(document.createElement('input'), {
+        id: `scheduler-quote-m-default-${n}`, className: 'rux--radio-button', type: 'radio', name: 'scheduler-quote-default', checked: !!m.is_default,
+      });
+      const label = document.createElement('label');
+      label.className = 'rux--radio-button__label';
+      label.htmlFor = input.id;
+      label.innerHTML = '<span class="rux--radio-button__appearance"></span><span class="rux--radio-button__label-text rux--visually-hidden">Default rate</span>';
+      radio.append(input, label);
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm';
+      remove.setAttribute('aria-label', 'Remove rate');
+      remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>';
+      remove.addEventListener('click', () => row.remove());
+
+      row.append(rate, note, radio, remove);
+      $('scheduler-quote-mileage-rows').append(row);
+      return row;
+    };
+
+    // Whole class names, so the check can find each one in this file.
+    const RESULT_CLASS = {
+      success: 'rux--inline-notification rux--inline-notification--success',
+      error: 'rux--inline-notification rux--inline-notification--error',
+    };
+    const showResult = (kind, text) => {
+      $('scheduler-quote-rates-result').hidden = !kind;
+      if (!kind) return;
+      $('scheduler-quote-rates-result-box').className = RESULT_CLASS[kind];
+      $('scheduler-quote-rates-result-icon').setAttribute('href', kind === 'success' ? '#i-checkmark--filled' : '#i-error--filled');
+      $('scheduler-quote-rates-result-text').textContent = text;
+    };
+
+    const drawRates = () => {
+      for (const group of ['trip', 'driver']) {
+        $(`scheduler-quote-rates-${group}`).replaceChildren(...RATE_FIELDS[group].map(f =>
+          textField({ id: `scheduler-quote-r-${f.key}`, label: `${f.label} (${f.unit})`, value: String(rates[f.key] ?? 0) })));
+      }
+      $('scheduler-quote-mileage-rows').replaceChildren();
+      for (const m of mileage) addRateRow(m);
+      if (!mileage.length) addRateRow();
+      showResult(null);
+    };
+
+    // The page's fields as rows to save, or a sentence saying what is wrong.
+    const readRates = () => {
+      const named = [];
+      for (const f of [...RATE_FIELDS.trip, ...RATE_FIELDS.driver]) {
+        const raw = $(`scheduler-quote-r-${f.key}`).value.trim();
+        const value = Number(raw.replace(/[$,]/g, ''));
+        if (raw === '' || !Number.isFinite(value) || value < 0) return { problem: `${f.label} needs a number of 0 or more.` };
+        named.push({ key: f.key, value });
+      }
+      const list = [];
+      for (const row of $('scheduler-quote-mileage-rows').children) {
+        const inputs = row.querySelectorAll('input');
+        const raw = inputs[0].value.trim();
+        const note = inputs[1].value.trim();
+        if (raw === '' && note === '') continue;
+        const rate = Number(raw.replace(/[$,]/g, ''));
+        if (raw === '' || !Number.isFinite(rate) || rate < 0) return { problem: 'Every mileage rate needs a number of 0 or more.' };
+        list.push({ id: row.dataset.id || crypto.randomUUID(), rate, note, is_default: inputs[2].checked });
+      }
+      if (!list.length) return { problem: 'Add at least one mileage rate.' };
+      if (!list.some(m => m.is_default)) list[0].is_default = true;
+      return { named, list };
+    };
+
+    const save = async () => {
+      const { problem, named, list } = readRates();
+      if (problem) return showResult('error', problem);
+      // A local preview has no database: the rates go to this browser tab.
+      if (!client) {
+        for (const { key, value } of named) rates[key] = value;
+        mileage = list.sort((a, b) => a.rate - b.rate);
+        const kept = savePreview();
+        drawRates();
+        return showResult('success', kept
+          ? 'Kept in this browser tab for the calculator. Nothing was saved.'
+          : 'Applied to this page only. Nothing was saved.');
+      }
+      const button = $('scheduler-quote-rates-save');
+      button.disabled = true;
+      try {
+        const keep = new Set(list.map(m => m.id));
+        const gone = mileage.filter(m => !keep.has(m.id)).map(m => m.id);
+        const chosen = list.find(m => m.is_default).id;
+        // The old default is cleared first: at most one row may be the default,
+        // and the database checks that row by row.
+        const steps = [
+          () => client.from('quote_rates').upsert(named),
+          () => client.from('quote_mileage_rates').update({ is_default: false }).eq('is_default', true).neq('id', chosen),
+          () => gone.length ? client.from('quote_mileage_rates').delete().in('id', gone) : { error: null },
+          () => client.from('quote_mileage_rates').upsert(list),
+        ];
+        for (const step of steps) {
+          const { error } = await step();
+          if (error) throw new Error(error.message);
+        }
+        await load();
+        drawRates();
+        showResult('success', 'Rates saved.');
+      } catch {
+        showResult('error', "The rates didn't save. Try again.");
+      } finally {
+        button.disabled = !canSave;
+      }
+    };
+
+    $('scheduler-quote-add-rate').addEventListener('click', () => addRateRow().querySelector('input').focus());
+    form.addEventListener('submit', e => { e.preventDefault(); save(); });
+    $('scheduler-quote-rates-revert').addEventListener('click', drawRates);
+
+    return {
+      app: form,
+      preview: 'This preview has no log-in, so rates saved here stay in this browser tab. Add ?cloud to the address to load the real ones.',
+      start: () => {
+        drawRates();
+        $('scheduler-quote-rates-save').disabled = !canSave;
+      },
+    };
+  };
+
+  /* ── THE STAFF GATE ───────────────────────────────────────────────────── */
+
+  const page = $('scheduler-quote-form') ? calculator()
+    : $('scheduler-quote-rates-form') ? ratesPage()
+    : null;
+  if (!page) return;
+
+  const show = () => {
+    page.app.hidden = false;
+    page.start();
   };
 
   // The same staff gate as the schedule, which is where a log-in happens.
@@ -429,9 +497,10 @@
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {
-      say('This preview has no log-in, so the rates start blank and apply to this visit only. Add ?cloud to the address to load them.');
+      say(page.preview);
+      loadPreview();
       canSave = true;
-      start();
+      show();
       return;
     }
     let staff = null;
@@ -449,10 +518,10 @@
     } catch {
       say("The rates didn't load. Reload the page to try again.");
     }
-    start();
+    show();
     account.onAuthChange(event => {
       if (event !== 'SIGNED_OUT') return;
-      $('scheduler-quote-app').hidden = true;
+      page.app.hidden = true;
       for (const btn of headerBtns) btn.hidden = true;
       say('You were logged out.', true);
     });

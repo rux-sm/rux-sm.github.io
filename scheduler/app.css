@@ -2672,89 +2672,89 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-header-search[hidden],
 .scheduler-menu-trigger[hidden] { display: none; }
 
-/* ── THE QUOTE CALCULATOR (quote.html) ─────────────────────────────────────
-   A dashboard of three tiles. The summary spans the top: miles, mileage,
-   driver pay and the total, four across. Under it the miles table sits on the
-   left and the quote's options on the right. Stacked below lg the options come
-   before the miles, because the drivers decide the table's columns. */
-.scheduler-quote-panel { padding-block-start: var(--rux-spacing-07); }
-/* overrides.css takes the page's padding away below md, which suits the
-   full-bleed board. This page is a form with prose, so it keeps a gutter. */
-@media (max-width: 41.98rem) {
-  .scheduler-quote-page {
-    padding: var(--rux-spacing-05) max(var(--rux-spacing-05), var(--scheduler-safe-right)) var(--rux-spacing-07) max(var(--rux-spacing-05), var(--scheduler-safe-left));
-  }
-}
-.scheduler-quote {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(18rem, 3fr);
-  grid-template-areas: "head head" "summary summary" "miles options";
-  gap: var(--rux-spacing-05);
-}
-.scheduler-quote__head {
-  grid-area: head;
+/* ── THE QUOTE CALCULATOR (quote.html) AND ITS RATES (quote-rates.html) ────
+   The calculator is two tiles: the inputs, in the order a quote is built, and
+   beside them the quote, sticky, so its lines and total stay in view while the
+   miles table grows. Below lg the quote follows the inputs, and its total is a
+   bar pinned to the bottom of the screen until the page reaches the quote. */
+.scheduler-quote-title {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+  max-inline-size: 76rem;
 }
-.scheduler-quote__summary { grid-area: summary; }
-.scheduler-quote__miles { grid-area: miles; min-inline-size: 0; }
-.scheduler-quote__options { grid-area: options; }
-@media (max-width: 65.98rem) {
-  .scheduler-quote {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "head" "summary" "options" "miles";
-  }
+.scheduler-quote {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr);
+  grid-template-areas: "inputs quote";
+  align-items: start;
+  gap: var(--rux-spacing-05);
+  max-inline-size: 76rem;
+}
+/* Each of these has a display rule that beats the browser's [hidden]. */
+.scheduler-quote[hidden],
+.scheduler-quote-line[hidden],
+.scheduler-quote__fields[hidden],
+.scheduler-quote__church[hidden],
+.scheduler-quote-days [data-driver][hidden],
+.scheduler-quote-rates__form[hidden] { display: none; }
+.scheduler-quote__inputs { grid-area: inputs; min-inline-size: 0; }
+.scheduler-quote__quote {
+  grid-area: quote;
+  position: sticky;
+  inset-block-start: calc(3rem + var(--rux-spacing-05));
 }
 
-/* The summary's four figures: across at lg, two by two below it. */
-.scheduler-quote-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--rux-spacing-07) var(--rux-spacing-05);
-}
-@media (max-width: 65.98rem) {
-  .scheduler-quote-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-.scheduler-quote-metric__value { font-variant-numeric: tabular-nums; }
-.scheduler-quote-metric__note {
-  margin-block-start: var(--rux-spacing-02);
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-helper-text-01-font-size);
-  line-height: var(--rux-helper-text-01-line-height);
-}
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
-.scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
+.scheduler-quote__group > legend {
+  display: flex;
+  align-items: center;
+  margin-block-end: var(--rux-spacing-05);
+}
+/* The number before each group's name: the order a quote is built in. */
+.scheduler-quote__step {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-inline-end: var(--rux-spacing-03);
+  border: 1px solid var(--rux-border-strong-01);
+  border-radius: 50%;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-quote__pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--rux-spacing-05);
+}
 .scheduler-quote__fields {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
   gap: var(--rux-spacing-05);
   align-items: end;
 }
-/* The grid's display beats the browser's [hidden]. */
-.scheduler-quote__fields[hidden] { display: none; }
-/* The checkbox wrapper's own display rule beats the browser's [hidden]. */
-.scheduler-quote__church[hidden] { display: none; }
-.scheduler-quote__lede,
-.scheduler-quote__notes { max-inline-size: 42rem; }
-.scheduler-quote__day-actions {
+.scheduler-quote__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--rux-spacing-03);
   margin-block-start: var(--rux-spacing-03);
 }
 
-/* The miles table: a day number, then one column per mileage column showing. */
+/* The miles table: a day number, then one column per mileage column showing,
+   each capped at a width a number reads at. */
 .scheduler-quote-days {
   --scheduler-quote-cols: 1;
-  max-inline-size: calc(3rem + var(--scheduler-quote-cols) * 12rem);
+  max-inline-size: calc(2.5rem + var(--scheduler-quote-cols) * 12rem);
 }
 .scheduler-quote-days__head,
 .scheduler-quote-days__row {
   display: grid;
-  grid-template-columns: 3rem repeat(var(--scheduler-quote-cols), minmax(0, 1fr));
+  grid-template-columns: 2.5rem repeat(var(--scheduler-quote-cols), minmax(0, 1fr));
   gap: var(--rux-spacing-03);
   align-items: center;
 }
@@ -2771,11 +2771,40 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   font-size: var(--rux-body-compact-01-font-size);
   font-variant-numeric: tabular-nums;
 }
-.scheduler-quote-days [data-driver][hidden] { display: none; }
 .scheduler-quote-days__row .rux--text-input { font-variant-numeric: tabular-nums; }
 
-/* The Rates tab's mileage list: rate, note, the default radio, remove. */
-.scheduler-quote-mileage { max-inline-size: 42rem; }
+/* The quote: a line for each part of the price, then the total. */
+.scheduler-quote-lines { display: grid; gap: var(--rux-spacing-05); margin: 0; }
+.scheduler-quote-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--rux-spacing-05);
+  align-items: baseline;
+}
+.scheduler-quote-line dd { margin: 0; }
+.scheduler-quote-line__value { font-variant-numeric: tabular-nums; text-align: end; }
+.scheduler-quote-line__note {
+  grid-column: 1 / -1;
+  margin-block-start: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+}
+.scheduler-quote-total {
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--rux-spacing-05);
+}
+.scheduler-quote__total {
+  display: flex;
+  padding-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-quote-total__value { font-variant-numeric: tabular-nums; }
+.scheduler-quote-bar { display: none; }
+
+/* The rates page: its mileage list is rate, note, the default radio, remove. */
+.scheduler-quote-rates { max-inline-size: 48rem; }
 .scheduler-quote-mileage__head,
 .scheduler-quote-mileage__row {
   display: grid;
@@ -2793,3 +2822,33 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 .scheduler-quote-mileage__default { justify-content: center; }
 
+@media (max-width: 65.98rem) {
+  .scheduler-quote-title { max-inline-size: 42rem; }
+  .scheduler-quote {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "inputs" "quote" "bar";
+    max-inline-size: 42rem;
+  }
+  .scheduler-quote__quote { position: static; }
+  .scheduler-quote__total { display: none; }
+  /* The bar is the quote's last line. The gap above it is taken back, so it
+     lands flush under the quote's tile, in the tile's colour, and it clears
+     the phone's home bar while pinned. */
+  .scheduler-quote-bar {
+    grid-area: bar;
+    display: flex;
+    position: sticky;
+    inset-block-end: 0;
+    margin-block-start: calc(-1 * var(--rux-spacing-05));
+    padding: var(--rux-spacing-04) var(--rux-spacing-05) calc(var(--rux-spacing-04) + var(--scheduler-safe-bottom));
+    background: var(--rux-layer-01);
+    border-block-start: 1px solid var(--rux-border-subtle-01);
+  }
+}
+/* overrides.css takes the page's padding away below md, which suits the
+   full-bleed board. These pages are forms, so they keep a gutter. */
+@media (max-width: 41.98rem) {
+  .scheduler-quote-page {
+    padding: var(--rux-spacing-05) max(var(--rux-spacing-05), var(--scheduler-safe-right)) var(--rux-spacing-07) max(var(--rux-spacing-05), var(--scheduler-safe-left));
+  }
+}

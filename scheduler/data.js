@@ -1847,40 +1847,67 @@
     return item;
   }
 
-  /* THE TRIP'S COLOUR, as Carbon's radio button group with one choice per
-     row of `TRIP_COLORS` after Standard. Carbon has no swatch, so each label
-     carries a `scheduler-swatch` chip wearing the hue class the bar wears,
-     which shows the fill the board paints rather than an approximation of it.
-     The fieldset carries `id`, which is what `readForm` looks up. */
+  /* THE TRIP'S COLOUR, as Carbon's dropdown with one option per row of
+     `TRIP_COLORS` after Standard. Carbon has no swatch, so the field and each
+     option carry a `scheduler-swatch` chip wearing the hue class the bar
+     wears, which shows the fill the board paints rather than an approximation
+     of it. The chosen option wears the checkmark Carbon's combo box draws, so
+     the list reads like the bar menu's Color submenu.
+
+     `js/list-box.js` opens it, runs the keyboard and moves the selection. A
+     pick writes the option's text into the field, which drops the chip, so
+     the field is repainted here. It opens upward, Carbon's `--list-box--up`,
+     because it is the last field in Details and a list opening down runs
+     under the action bar. The root carries `id`, which is what `readForm`
+     looks up. */
   function colorField(id, trip) {
-    const item = el('div', 'rux--form-item scheduler-panel-section');
-    // Vertical, Carbon's own variant: six choices in one row overflow the
-    // panel's column, and the horizontal group does not wrap.
-    const group = el('fieldset', 'rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical');
-    group.id = id;
-    group.appendChild(el('legend', 'scheduler-panel-section__title', 'Trip color'));
     const chosen = tripColorOf(trip) ?? '';
     const choices = [{ value: '', label: 'Standard', hue: standardHueOf(trip) }, ...TRIP_COLORS];
-    for (const { value, label, hue } of choices) {
-      const wrap = el('div', 'rux--radio-button-wrapper');
-      const input = el('input', 'rux--radio-button');
-      input.type = 'radio';
-      input.name = id;
-      input.id = `${id}-${value || 'standard'}`;
-      input.value = value;
-      input.checked = value === chosen;
-      const lab = el('label', 'rux--radio-button__label');
-      lab.setAttribute('for', input.id);
-      const chip = el('span', `scheduler-swatch scheduler-bar--${hue}`);
-      chip.setAttribute('aria-hidden', 'true');
-      const text = el('span', 'rux--radio-button__label-text');
-      text.append(chip, label);
-      lab.append(el('span', 'rux--radio-button__appearance'), text);
-      wrap.append(input, lab);
-      group.appendChild(wrap);
+    const chip = hue => {
+      const c = el('span', `scheduler-swatch scheduler-bar--${hue}`);
+      c.setAttribute('aria-hidden', 'true');
+      return c;
+    };
+    const lab = el('label', 'rux--label', 'Trip color');
+    lab.id = `${id}-label`;
+    const root = el('div', 'rux--dropdown rux--list-box rux--list-box--up rux--layout--size-md');
+    root.id = id;
+    const field = el('button', 'rux--list-box__field');
+    field.type = 'button';
+    field.setAttribute('role', 'combobox');
+    field.setAttribute('aria-labelledby', lab.id);
+    field.setAttribute('aria-expanded', 'false');
+    field.setAttribute('aria-haspopup', 'listbox');
+    const shown = el('span', 'rux--list-box__label');
+    const caret = el('div', 'rux--list-box__menu-icon');
+    caret.appendChild(svgUse('#i-chevron--down', '16', '0 0 16 16'));
+    field.append(shown, caret);
+    const paint = choice => shown.replaceChildren(chip(choice.hue), choice.label);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    for (const choice of choices) {
+      const on = choice.value === chosen;
+      const option = el('li', on ? 'rux--list-box__menu-item rux--list-box__menu-item--active' : 'rux--list-box__menu-item');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.color = choice.value;
+      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      tick.classList.add('rux--list-box__menu-item__selected-icon');
+      const body = el('div', 'rux--list-box__menu-item__option');
+      body.append(chip(choice.hue), choice.label, tick);
+      option.appendChild(body);
+      menu.appendChild(option);
+      if (on) paint(choice);
     }
-    item.append(group, el('div', 'rux--form__helper-text',
+    root.append(field, menu);
+    root.addEventListener('rux:listbox-selected', e =>
+      paint(choices.find(c => c.value === e.detail.option.dataset.color)));
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root, el('div', 'rux--form__helper-text',
       'A color replaces the standard blue, and the red of an unconfirmed trip.'));
+    const item = el('div', 'rux--form-item scheduler-panel-section');
+    item.appendChild(wrap);
     return item;
   }
 
@@ -2057,7 +2084,7 @@
     { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
     // Standard is the empty value and stores null.
-    { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('input:checked')?.value || null },
+    { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     /* `confirmed`, `balance_paid` AND `date_paid` ARE NOT WRITTEN HERE ANY
        MORE, 2026-09-10. All three were fields on this form -- a Confirmed
        toggle, a Balance paid toggle and a Date paid picker -- and all three
@@ -4697,6 +4724,8 @@
 
   panelDetails?.addEventListener('input', refreshDirty);
   panelDetails?.addEventListener('change', refreshDirty);
+  // A dropdown is a <button>, so a pick fires neither; list-box.js announces it.
+  panelDetails?.addEventListener('rux:listbox-selected', refreshDirty);
   // The add button reveals a row rather than changing a value, so it fires
   // neither input nor change; without this a contact chosen in the new row
   // arms Save but the row appearing does not, which reads as a dead control.

@@ -25,9 +25,10 @@ the same on both boards while both are in use.
   text says so.
 - **One table in `scheduler/data.js`, `TRIP_COLORS`,** feeds the board, the
   editor and the bar menu.
-- **The editor uses Carbon's radio button group** in the Details tab, after
-  Equipment, with a `scheduler-swatch` chip per choice wearing the bar's hue
-  class. Standard's chip is the trip's status colour.
+- **The editor uses Carbon's dropdown** in the Details tab, after Equipment,
+  so its list reads like the bar menu's: a `scheduler-swatch` chip wearing the
+  bar's hue class in the field and on each option, and a checkmark on the
+  chosen one. Standard's chip is the trip's status colour.
 - **The bar menu has one Color item with a submenu**, Carbon's menu radio
   group with the same chips, so the menu stays short. The item's chip is the
   trip's colour, and a pick saves at once, like Take off this bus. Color is

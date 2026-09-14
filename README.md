@@ -20,11 +20,21 @@ https://rux-sm.github.io/. The folders are the site:
 git clone https://github.com/rux-sm/rux-sm.github.io.git
 cd rux-sm.github.io
 git config core.hooksPath .githooks        # the privacy sweep and the fast check, before every commit
-(cd Design && npm ci --ignore-scripts)     # Carbon and Sass, for Design's build and verify
+(cd design && npm ci --ignore-scripts)     # Carbon and Sass, for Design's build and verify
+git clone --depth 1 https://github.com/carbon-design-system/carbon-website.git design/carbon-website
 ```
 
-Notes work also needs the private library cloned beside this repository:
-`../atlas`. Database work needs no checkout; `AGENTS.md` says how.
+`design/carbon-website/` is gitignored and named by a document, so the docs
+check fails without it.
+
+Notes work also needs the private library cloned beside this repository, under
+the name every tool looks for:
+
+```sh
+git clone https://github.com/rux-sm/rux-ln-atlas.git ../atlas
+```
+
+Database work needs no checkout; `AGENTS.md` says how.
 
 ## Every day
 

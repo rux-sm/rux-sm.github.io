@@ -45,7 +45,10 @@ function, including the ones that create share links.
   rollback written beside it. `staff_identity_add` is applied: the profile
   columns `user_id` and `sees_all_apps`, closed to the publishable key; the
   staff check functions; `get_driver_share_trips` and `get_trip_document`,
-  open to the key; and the maintenance signal triggers.
+  open to the key; and the maintenance signal triggers. `staff_identity_link`
+  is applied: the seven accounts exist on the `staff.invalid` domain, a
+  reserved name nobody can own, and each is linked to its profile, with
+  `sees_all_apps` on rux's.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
@@ -69,10 +72,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux creates the seven accounts, the display's first to prove the staff
-      domain; migration `staff_identity_link` sets each `profiles.user_id` and
-      `sees_all_apps` on rux's profile only, and a query shows seven linked,
-      none anonymous.
 - [ ] rux-ui link pages: `js/pages/driver-share.js` reads
       `get_driver_share_trips` instead of `trips`, `trip_documents` and
       `settings`; `doc.html` reads `get_trip_document`;

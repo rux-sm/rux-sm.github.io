@@ -22,8 +22,11 @@ function, including the ones that create share links.
 - **Seven accounts**, one for each current rux-ui profile, the wall display
   included, each linked to its `public.profiles` row so names, colours and
   photos stay. rux's own account is a username and password like the rest.
-- **The same login works in both apps and shows the same data.** There is no
-  per-person app setting, and the switcher does not change.
+- **The same login works in both apps and shows the same data.** A team
+  account is for the scheduler and rux-ui only: the site header hides the app
+  switcher for it, which leaves its profile icon farthest right. rux's account
+  keeps the switcher, still the rightmost icon as Carbon's header orders it.
+  Hiding it only tidies the menu; Notes and Design stay public pages.
 - **Sign-in replaces "Who's this?".** Identity and the trip-history name come
   from the session; changing person is sign out, then sign in.
 - **The display account has full staff access** and stays signed in, because
@@ -44,8 +47,7 @@ function, including the ones that create share links.
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
 - **Later plans:** per-person chat rules, trip history naming the actor from
-  the session, private storage, private realtime channels, a per-person app
-  menu.
+  the session, private storage, private realtime channels.
 
 ## Questions
 
@@ -58,7 +60,8 @@ function, including the ones that create share links.
 ## Tasks
 
 - [ ] Migration `staff_identity_add`: `profiles.user_id` (unique, references
-      `auth.users`, on delete set null); security-definer `staff_profile_id()`,
+      `auth.users`, on delete set null) and `profiles.sees_all_apps` (not null,
+      default false); security-definer `staff_profile_id()`,
       `is_staff()`, `assert_staff()` and `my_staff_profile()`, revoked from
       `public` and `anon` and granted to `authenticated`;
       `get_driver_share_trips(p_token)` returning the trips, stops,
@@ -68,8 +71,9 @@ function, including the ones that create share links.
       sends `maintenance-schedule-signal` through `realtime.send` and can never
       fail a save.
 - [ ] rux creates the seven accounts, the display's first to prove the staff
-      domain; migration `staff_identity_link` sets each `profiles.user_id`, and
-      a query shows seven linked, none anonymous.
+      domain; migration `staff_identity_link` sets each `profiles.user_id` and
+      `sees_all_apps` on rux's profile only, and a query shows seven linked,
+      none anonymous.
 - [ ] rux-ui link pages: `js/pages/driver-share.js` reads
       `get_driver_share_trips` instead of `trips`, `trip_documents` and
       `settings`; `doc.html` reads `get_trip_document`;
@@ -90,7 +94,9 @@ function, including the ones that create share links.
       deploy.
 - [ ] Scheduler sign-in: `account.js` skips the anonymous session on a page
       marked `data-auth="staff"` and adds `signInStaff`, `staffProfile` and
-      `onAuthChange`; `scheduler/data.js` shows the form for no session, an
+      `onAuthChange`, and on every page it loads it hides the app switcher
+      button and panel for a staff session whose profile lacks
+      `sees_all_apps`; `scheduler/data.js` shows the form for no session, an
       anonymous one or a non-staff account, reads an empty fleet as a lost
       sign-in, and reports a write that returns no row as not saved.
 - [ ] Watch for at least seven days, until three business days in a row show

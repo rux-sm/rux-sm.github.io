@@ -807,29 +807,46 @@ button.scheduler-row-head__num {
 .scheduler-bar__dest { font-weight: 600; }
 .scheduler-bar__ref, .scheduler-bar__time { font-variant-numeric: tabular-nums; }
 .scheduler-bar__ref { opacity: .75; flex: none; }
-/* The pencil on each bar of the trip open in the editor. That trip is locked on
-   the board, and the mark says why its bars do not drag. */
-.scheduler-bar__editing { vertical-align: -0.125rem; margin-inline-start: var(--rux-spacing-02); }
-
-/* OPEN TRIP ON THE SELECTED BAR, placed by data.js straight after that bar with
-   the bottom and right edges of the bar's first day, and inset from them by the
-   bar's padding.
-   2rem is the small icon button. Hidden with `visibility` while not wanted, so
-   a press on that corner reaches the bar; shown while the selected bar or the
-   button is hovered or focused, and always where nothing can hover. */
-.scheduler-bar-open {
+/* OPEN AND CLOSE TRIP, IN THE TOP CORNER OF A BAR'S FIRST DAY. data.js puts
+   each straight after its bar with the top of the bar and the right edge of its
+   first day, and this insets both by the bar's padding. 2rem is the small icon
+   button. */
+.scheduler-bar-open,
+.scheduler-bar-close {
   position: absolute;
   z-index: 2;
-  inset-block-start: calc(var(--scheduler-open-bottom, 0px) - 2rem - var(--rux-spacing-02));
+  inset-block-start: calc(var(--scheduler-open-top, 0px) + var(--rux-spacing-02));
   inset-inline-start: calc(var(--scheduler-open-end, 0px) - 2rem - var(--rux-spacing-02));
-  visibility: hidden;
 }
+/* Open trip hides with `visibility` while not wanted, so a press on that corner
+   reaches the bar. It shows while the selected bar or the button is hovered or
+   focused, and always where nothing can hover. */
+.scheduler-bar-open { visibility: hidden; }
 .scheduler-bar[aria-pressed="true"]:is(:hover, :focus-visible) + .scheduler-bar-open,
 .scheduler-bar-open:is(:hover, :focus-visible) { visibility: visible; }
 @media (hover: none) {
   .scheduler-bar[aria-pressed="true"] + .scheduler-bar-open { visibility: visible; }
 }
 .scheduler-bar--dragging + .scheduler-bar-open { visibility: hidden; }
+/* CLOSE TRIP IS OPEN TRIP SWITCHED ON: the same pencil in the same corner, on
+   every bar of the trip in the editor, always shown, and filled with the
+   selection ring's colour so it reads on every bar colour. Carbon has no filled
+   inverse icon button, so this one is the app's own. Its focus ring is the
+   inverse focus colour, because the plain one matches the fill on dark themes. */
+.scheduler-bar-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  border: 0;
+  background: var(--rux-layer-selected-inverse);
+  color: var(--rux-icon-inverse);
+  cursor: pointer;
+}
+.scheduler-bar-close:hover { background: var(--rux-background-inverse-hover); }
+.scheduler-bar-close:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-bar__client, .scheduler-bar__reqs { opacity: .85; }
 
 /* A double booking: a strip over the last row, in the error tokens. */

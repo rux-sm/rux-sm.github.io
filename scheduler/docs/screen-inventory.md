@@ -139,12 +139,14 @@ menu.
 ### Selecting is not opening
 
 A click selects a trip bar: its outline, and its days in the driver grid. The
-open button in the selected bar's corner, Enter or the bar's right-click menu
-loads it into the panel. The panel keeps its trip through week changes and other selections, so
+pencil button in the top corner of the selected bar's first day, Enter or the
+bar's right-click menu loads it into the panel. The panel keeps its trip through week changes and other selections, so
 a call about another trip does not cost an edit in progress, and it asks
 before unsaved changes are lost.
 
 While a trip is in the panel its bars are locked on the board: they do not
-drag and cannot be taken off their bus, so its bus changes in one place. Save
+drag and cannot be taken off their bus, so its bus changes in one place. Each
+shows the pencil filled in, in the same corner, and pressing it closes the
+trip. Save
 checks the trip's `updated_at` against the value the panel opened with and
 asks before replacing a change someone else saved in between.

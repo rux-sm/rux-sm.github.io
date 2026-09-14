@@ -4394,48 +4394,64 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* THE OPEN BUTTON FOLLOWS THE SELECTION. It goes straight after the selected
-     bar, so app.css can show it from that bar's own hover and focus, and takes
-     the bottom and right edges of the bar's FIRST DAY in its track, which
-     app.css turns into a corner. A week-long trip would otherwise put it six
-     days from the destination it opens.
+  /* A TRIP BUTTON SITS IN THE TOP CORNER OF ITS BAR'S FIRST DAY. It goes
+     straight after its bar, so app.css can show it from that bar's own hover
+     and focus, and takes the top of the bar and the right edge of the bar's
+     FIRST DAY in its track, which app.css turns into a corner. A week-long trip
+     would otherwise put it six days from the destination it opens.
 
      THE FIRST DAY ENDS WHERE A ONE-DAY BAR WOULD. A bar is `span` days wide
      less its two gaps, so those gaps are `span * day - width`, and the first
-     day's edge is one day from the bar's start less the same gaps.
+     day's edge is one day from the bar's start less the same gaps. */
+  function placeAtCorner(btn, bar) {
+    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
+    const day = bar.parentElement.clientWidth / days;
+    const span = Math.max(1, +bar.dataset.span || 1);
+    const gaps = Math.max(0, span * day - bar.offsetWidth);
+    const end = Math.min(bar.offsetLeft + bar.offsetWidth, bar.offsetLeft + day - gaps);
+    btn.style.setProperty('--scheduler-open-top', `${bar.offsetTop}px`);
+    btn.style.setProperty('--scheduler-open-end', `${end}px`);
+  }
 
-     There is none on any bar of the trip in the editor: those carry the
-     pencil already, and a second pencil on the other leg would read as two
-     marks for one state. */
+  // Open trip follows the selection, except onto the trip in the editor, whose
+  // bars carry Close trip in the same corner.
   function placeBarOpen(bar = selectedBar()) {
     if (!barOpenBtn) return;
     const none = !bar?.dataset.tripId || isEditorTrip(bar);
     barOpenBtn.hidden = none;
     if (none) return;
     if (barOpenBtn.previousElementSibling !== bar) bar.after(barOpenBtn);
-    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
-    const day = bar.parentElement.clientWidth / days;
-    const span = Math.max(1, +bar.dataset.span || 1);
-    const gaps = Math.max(0, span * day - bar.offsetWidth);
-    const end = Math.min(bar.offsetLeft + bar.offsetWidth, bar.offsetLeft + day - gaps);
-    barOpenBtn.style.setProperty('--scheduler-open-bottom', `${bar.offsetTop + bar.offsetHeight}px`);
-    barOpenBtn.style.setProperty('--scheduler-open-end', `${end}px`);
+    placeAtCorner(barOpenBtn, bar);
+  }
+
+  /* CLOSE TRIP ON EVERY BAR OF THE TRIP IN THE EDITOR. Those bars are locked,
+     and the filled pencil says why they do not drag. A bar keeps its button
+     from one call to the next, so focus on the button survives a selection
+     change. */
+  function placeBarClose() {
+    const keep = new Set();
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
+      if (!isEditorTrip(bar)) continue;
+      let btn = bar.nextElementSibling;
+      if (!btn?.matches('.scheduler-bar-close')) {
+        btn = el('button', 'scheduler-bar-close');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Close trip');
+        btn.appendChild(svgUse('#i-edit', '16', '0 0 32 32'));
+        bar.after(btn);
+      }
+      placeAtCorner(btn, bar);
+      keep.add(btn);
+    }
+    for (const btn of gridEl.querySelectorAll('.scheduler-bar-close')) if (!keep.has(btn)) btn.remove();
   }
 
   function syncSelection() {
     const bar = selectedBar();
     placeBarOpen(bar);
+    placeBarClose();
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
-    // A pencil on each locked bar says why it does not drag.
-    for (const b of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
-      const mark = b.querySelector('.scheduler-bar__editing');
-      if (!isEditorTrip(b)) { mark?.remove(); continue; }
-      if (mark) continue;
-      const icon = svgUse('#i-edit', '12', '0 0 32 32');
-      icon.setAttribute('class', 'scheduler-bar__editing');
-      b.querySelector('.scheduler-bar__ref')?.appendChild(icon);
-    }
   }
 
   /* THE TRIP CHANGED UNDER THE EDITOR. Reload trip drops the editor's changes
@@ -4524,9 +4540,12 @@
   });
 
   barOpenBtn?.addEventListener('click', openSelected);
+  gridEl.addEventListener('click', e => {
+    if (e.target.closest('.scheduler-bar-close')) whenSafe(() => closePanel());
+  });
   // The panel and the whole-pixel day columns change a bar's corner, a frame
   // after the grid's own size changes.
-  if (barOpenBtn) new ResizeObserver(() => requestAnimationFrame(() => placeBarOpen())).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBarClose(); })).observe(gridEl);
 
   // Enter on a selected bar opens it. This runs before app.js's handler, so the
   // first Enter on an unselected bar only selects it.
@@ -5057,7 +5076,7 @@
 
   gridEl.addEventListener('contextmenu', e => {
     const track = e.target.closest('.scheduler-track');
-    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-open')) return;
+    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-open, .scheduler-bar-close')) return;
     if (!shown) return;
     e.preventDefault();
 
@@ -5743,9 +5762,9 @@
     if (e.key === 'Escape' && searchOpen()) { e.preventDefault(); collapseSearch(); }
   });
   // A click on empty board space puts the selection down. A click on a bar is
-  // app.js's toggle and opens nothing.
+  // app.js's toggle and opens nothing; a click on a bar's button is the button's.
   gridEl.addEventListener('click', e => {
-    if (e.target.closest('.scheduler-bar') || !e.target.closest('.scheduler-track')) return;
+    if (e.target.closest('.scheduler-bar, .scheduler-bar-open, .scheduler-bar-close') || !e.target.closest('.scheduler-track')) return;
     clearSelection();
   });
 

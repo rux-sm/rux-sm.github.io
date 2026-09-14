@@ -48,6 +48,8 @@ done and how.
 - **Anyone with the public key can read and change trip data.** Every trip,
   fleet, driver, contact and billing table keeps an open rule beside its staff
   rule. Closing them waits until nothing uses the key alone.
+- **Trip documents and photos are open to anyone.** All three storage buckets
+  are public, and the public key can upload to and delete from each.
 
 ## Notes owes atlas
 

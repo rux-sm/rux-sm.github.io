@@ -1223,12 +1223,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Homework</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">7 assignments</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-06</span></span>
+            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">8 assignments</span></span>
+            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-13</span></span>
             <span class="rux--tag rux--tag--blue"><span class="rux--tag__label">Answer key</span></span>
           </div>
           <p class="notes-prose-measure"><strong>Goal:</strong> explain an LN planning result from demand through execution, identify the effective configuration that caused it, predict the result of one controlled change, and prove the explanation with Item Order Plan and Order Pegging.</p>
-          <p class="notes-prose-measure">This is a six-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown.</p>
+          <p class="notes-prose-measure">This is a seven-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown.</p>
           <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
@@ -1778,6 +1778,103 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item">Generate from a component only and record whether parent demand is included.</li>
           <li class="rux--list__item">Generate from the top-level item with <strong>Include Child Items</strong> selected and record which components are planned.</li>
         </ol>
+          <p class="notes-prose-measure">Then run the four tests that decide whether the item is planned at all. Change one value, rerun planning, record what happened, and restore the baseline before the next. In three of the four LN plans nothing and says nothing, so check the cluster row before blaming the field under test.</p>
+          <div class="notes-q-list">
+        <div class="rux--tile notes-q" data-notes-row="4:1fswvq7">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1mytwaa">Cluster row</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Remove the item&#39;s row on the <span class="notes-t-named">Clusters</span> tab of <span class="notes-t-named">Item</span> <span class="notes-t-exact">tcibd0501m100</span>, rerun, then restore it</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-3ok2qm">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-3ok2qm" class="rux--text-area" rows="2" data-notes-answer="4:1fswvq7:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-3ok2qm-key" aria-controls="f-3ok2qm-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-3ok2qm-key" hidden><p>The item disappears from planning results, and no message says why</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-3ok2qn">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-3ok2qn" class="rux--text-area" rows="2" data-notes-answer="4:1fswvq7:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-3ok2qn-key" aria-controls="f-3ok2qn-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-3ok2qn-key" hidden><p>Verified twice, for <span class="notes-t-exact">BAM-CHOP-PAIR</span> on 2026-08-20 and <span class="notes-t-exact">BAM-SLEEVE</span> on 2026-08-25. The row is necessary but not sufficient: restoring it did not make <span class="notes-t-exact">BAM-SLEEVE</span> plan. <strong>Not documented for this release.</strong></p></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="4:91have">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-vqx1gh">Order horizon</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Move the sales line&#39;s delivery date past the item&#39;s <span class="notes-t-named">Order Horizon</span></dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1g8qgst">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1g8qgst" class="rux--text-area" rows="2" data-notes-answer="4:91have:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1g8qgst-key" aria-controls="f-1g8qgst-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1g8qgst-key" hidden><p>No planned order for that demand: planning generates orders only inside the order horizon</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1g8qgsu">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1g8qgsu" class="rux--text-area" rows="2" data-notes-answer="4:91have:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="4:ki6lza">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1t6ekys">Order system</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Set <span class="notes-t-named">Order System</span> from <span class="notes-t-named">Planned</span> to <span class="notes-t-named">SIC</span></dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-ivlg7k">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-ivlg7k" class="rux--text-area" rows="2" data-notes-answer="4:ki6lza:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-ivlg7k-key" aria-controls="f-ivlg7k-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-ivlg7k-key" hidden><p>MRP stops driving the item&#39;s supply, and replenishment comes from the reorder point instead. <strong>Not documented for this release.</strong></p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-ivlg7l">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-ivlg7l" class="rux--text-area" rows="2" data-notes-answer="4:ki6lza:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="4:16ghoid">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-rnmejp">Time fence</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Clear <span class="notes-t-named">Use Time Fence</span> while <span class="notes-t-named">Generate within</span> stays selected</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-gytqp">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-gytqp" class="rux--text-area" rows="2" data-notes-answer="4:16ghoid:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-gytqp-key" aria-controls="f-gytqp-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-gytqp-key" hidden><p>LN plans within the time fence and can plan into the past: a demand dated yesterday plans to yesterday with the fence cleared, and to today with it in force</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-gytqq">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-gytqq" class="rux--text-area" rows="2" data-notes-answer="4:16ghoid:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        </div>
           <p class="notes-prose-measure">Captures to hand in:</p>
           <div class="notes-q-list">
         <div class="rux--tile notes-q" data-notes-row="4:osyn">
@@ -1823,6 +1920,23 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="a-5" data-notes-section="5">
           <h2 id="a-5">5. Sitting 5 — order quantity laboratory <span class="rux--tag rux--tag--gray notes-ex-status" data-notes-status>Not started</span></h2>
           <p class="notes-prose-measure">Use the same demand baseline for every run. Change one value at a time and restore it before the next test.</p>
+          <p class="notes-prose-measure">Every test is the same loop on <span class="notes-t-named">Items - Ordering</span> <span class="notes-t-exact">tcibd2100m000</span>, <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Miscellaneous</span><span class="sep">➔</span><span class="dest">Items - Ordering</span></span>:</p>
+          <ol class="rux--list--ordered">
+          <li class="rux--list__item">Change the one field the test names, and save.</li>
+          <li class="rux--list__item">Run <strong>Generate Order Planning (Item)</strong> for <span class="notes-t-exact">BAM-CHOP-PAIR</span> with <em>Include Child Items</em> selected.</li>
+          <li class="rux--list__item">Read <strong>Planned Orders</strong> for how many orders and the quantity of each, and <strong>Item Order Plan</strong> for the shortfall they cover.</li>
+          <li class="rux--list__item">Restore the field and save before the next test.</li>
+        </ol>
+          <p class="notes-prose-measure">A test needs a shortfall. Raise a sales order above on-hand, with a delivery date inside the order horizon, and read the shortfall in <strong>Item Order Plan</strong> before changing anything. Set every test value against that shortfall, never against the numbers in Infor&#39;s worked examples.</p>
+          <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Note</div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure">Read <em>Lot Size Calculation Allowed</em> before trusting the lot-size fields. Where it is selected, a batch update overwrites the minimum, maximum, fixed and increment values, so a change can vanish before the run.</p></div>
+    </div>
+  </div>
+</div>
           <div class="notes-q-list">
         <div class="rux--tile notes-q" data-notes-row="5:lu9kxy">
           <div class="notes-q-head">
@@ -1985,6 +2099,124 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
               </div>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-17n31mo-key" aria-controls="f-17n31mo-key" aria-expanded="false" disabled>Reveal answer</button>
               <div class="rux--tile notes-q-key" id="f-17n31mo-key" hidden><p>The top-up pegs to the safety-stock requirement, not to a sales order — that is how you tell it from ordinary supply</p></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="5:ks49ze">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1nw6mla">Lot for lot</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>Baseline</dt><dd><span class="notes-t-exact">Lot for Lot</span>, no quantity limits</dd></div><div class="notes-meta-row"><dt>One change</dt><dd>None: read the baseline</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="3">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-i731u3">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-i731u3" class="rux--text-area" rows="2" data-notes-answer="5:ks49ze:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-i731u3-key" aria-controls="f-i731u3-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-i731u3-key" hidden><p>One planned order per requirement, sized to the shortfall. This is the deployed baseline, so it is read rather than set</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-i731u4">Actual planned orders</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-i731u4" class="rux--text-area" rows="2" data-notes-answer="5:ks49ze:4" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-i731u5">Pegging reconciled?</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-i731u5" class="rux--text-area" rows="2" data-notes-answer="5:ks49ze:5" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-i731u5-key" aria-controls="f-i731u5-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-i731u5-key" hidden><p>Each order pegs to exactly one requirement</p></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="5:l9azl9">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1nfjc2h">Economic order quantity</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>Baseline</dt><dd><span class="notes-t-exact">Lot for Lot</span></dd></div><div class="notes-meta-row"><dt>One change</dt><dd>Method set to <span class="notes-t-named">Economic Order Quantity</span></dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="3">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-bua4sm">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-bua4sm" class="rux--text-area" rows="2" data-notes-answer="5:l9azl9:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-bua4sm-key" aria-controls="f-bua4sm-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-bua4sm-key" hidden><p>The order is adjusted to the economic quantity: in the help&#39;s example, an economic quantity of 30 with a minimum of 25 plans an order of 30. That example runs with <span class="notes-t-named">Order System</span> at SIC, so run sitting 4&#39;s order system test first</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-bua4sn">Actual planned orders</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-bua4sn" class="rux--text-area" rows="2" data-notes-answer="5:l9azl9:4" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-bua4so">Pegging reconciled?</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-bua4so" class="rux--text-area" rows="2" data-notes-answer="5:l9azl9:5" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="5:1eh9tty">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-jcvbxo">Order increment</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>Baseline</dt><dd><span class="notes-t-exact">1</span></dd></div><div class="notes-meta-row"><dt>One change</dt><dd>A larger increment</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="3">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1j6fu8p">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1j6fu8p" class="rux--text-area" rows="2" data-notes-answer="5:1eh9tty:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1j6fu8p-key" aria-controls="f-1j6fu8p-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1j6fu8p-key" hidden><p>LN checks each quantity against the increment when it generates planned orders</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1j6fu8q">Actual planned orders</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1j6fu8q" class="rux--text-area" rows="2" data-notes-answer="5:1eh9tty:4" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1j6fu8r">Pegging reconciled?</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1j6fu8r" class="rux--text-area" rows="2" data-notes-answer="5:1eh9tty:5" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="5:1xuwdio">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-vy2het">Replenish to maximum</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>Baseline</dt><dd><span class="notes-t-exact">Lot for Lot</span></dd></div><div class="notes-meta-row"><dt>One change</dt><dd>Method set to <span class="notes-t-named">Replenish to Maximum Inventory</span></dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="3">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1jh1wgi">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1jh1wgi" class="rux--text-area" rows="2" data-notes-answer="5:1xuwdio:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1jh1wgi-key" aria-controls="f-1jh1wgi-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1jh1wgi-key" hidden><p>Orders are sized to reach <span class="notes-t-named">Maximum Inventory</span>, not to cover the shortfall</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1jh1wgj">Actual planned orders</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1jh1wgj" class="rux--text-area" rows="2" data-notes-answer="5:1xuwdio:4" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1jh1wgk">Pegging reconciled?</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1jh1wgk" class="rux--text-area" rows="2" data-notes-answer="5:1xuwdio:5" data-notes-given="" placeholder=""></textarea>
+              </div>
             </div>
           </div>
           
@@ -2179,6 +2411,78 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure">For purchase supply, compare generation-time Order Interval with transfer-time <strong>Combine Orders</strong> in <span class="notes-t-named">Transfer Order Planning</span> <span class="notes-t-exact">cppat1210m000</span>, reached from selected rows in Planned Orders. Explain why they can both reduce the number of visible orders while acting at different stages.</p>
           <p class="notes-prose-measure">For production supply, treat the transfer as a test: it has not been walked end to end in this environment. Capture the transfer report or exact error and the resulting production order. <strong>Not documented for this release.</strong></p>
           <p class="notes-prose-measure"><strong>Not documented for this release.</strong></p>
+          <p class="notes-prose-measure">Then run the three transfer tests. Each starts from planned orders already generated, so rerun sitting 5&#39;s loop first if none exist.</p>
+          <div class="notes-q-list">
+        <div class="rux--tile notes-q" data-notes-row="6:getdna">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1flaf9k">No supplier</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Transfer a planned purchase order for an item with no buy-from partner data</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1wlch2s">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1wlch2s" class="rux--text-area" rows="2" data-notes-answer="6:getdna:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1wlch2t">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1wlch2t" class="rux--text-area" rows="2" data-notes-answer="6:getdna:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1wlch2t-key" aria-controls="f-1wlch2t-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1wlch2t-key" hidden><p>The transfer fails and LN names the missing data</p></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="6:w4jro1">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1ozagnw">Combine orders</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Transfer two planned purchase orders with <span class="notes-t-named">Combine Orders</span> selected, then again with it cleared</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1soav7s">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1soav7s" class="rux--text-area" rows="2" data-notes-answer="6:w4jro1:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1soav7t">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1soav7t" class="rux--text-area" rows="2" data-notes-answer="6:w4jro1:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1soav7t-key" aria-controls="f-1soav7t-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1soav7t-key" hidden><p>Selected, the planned orders become one purchase order. Cleared, each planned order becomes its own order line</p></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="6:1qqpfw1">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-1nnjiqu">Production transfer</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Transfer a planned production order</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-14wjxsi">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-14wjxsi" class="rux--text-area" rows="2" data-notes-answer="6:1qqpfw1:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-14wjxsj">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-14wjxsj" class="rux--text-area" rows="2" data-notes-answer="6:1qqpfw1:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-14wjxsj-key" aria-controls="f-14wjxsj-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-14wjxsj-key" hidden><p>A real production order, of the kind the production walkthrough starts from</p></div>
+            </div>
+          </div>
+          
+        </div>
+        </div>
           <p class="notes-prose-measure">Captures to hand in:</p>
           <div class="notes-q-list">
         <div class="rux--tile notes-q" data-notes-row="6:rpqng3">
@@ -2232,7 +2536,72 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </div>
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="a-7" data-notes-section="7">
-          <h2 id="a-7">7. Consultant report-back <span class="rux--tag rux--tag--gray notes-ex-status" data-notes-status>Not started</span></h2>
+          <h2 id="a-7">7. Sitting 7 — which branch an order takes <span class="rux--tag rux--tag--gray notes-ex-status" data-notes-status>Not started</span></h2>
+          <p class="notes-prose-measure">Two tests change the route an order takes through the chain rather than the quantity planned.</p>
+          <div class="notes-q-list">
+        <div class="rux--tile notes-q" data-notes-row="7:b83r2b">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-15yfdah">Supply source</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>Set <span class="notes-t-named">Default Supply Source</span> on <span class="notes-t-exact">BAM-CHOP-PAIR</span> from <span class="notes-t-named">Job Shop</span> to <span class="notes-t-named">Purchase</span> in <span class="notes-t-named">Items by Site</span> <span class="notes-t-exact">tcibd1550m000</span></dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-hjht6d">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-hjht6d" class="rux--text-area" rows="2" data-notes-answer="7:b83r2b:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-hjht6d-key" aria-controls="f-hjht6d-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-hjht6d-key" hidden><p>Planning yields a planned purchase order instead of a planned production order, and the transfer crosses on the purchase side. Where the supply source is Repetitive for a site, <span class="notes-t-named">Order System</span> must be Planned, so the two fields are not independent</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-hjht6e">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-hjht6e" class="rux--text-area" rows="2" data-notes-answer="7:b83r2b:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="rux--tile notes-q" data-notes-row="7:4eymoc">
+          <div class="notes-q-head">
+            <p class="notes-q-label" id="l-d3vwmf">Covered by stock</p>
+            <dl class="notes-meta"><div class="notes-meta-row"><dt>One change</dt><dd>In <span class="notes-t-named">Sales Order Intake Workbench</span> <span class="notes-t-exact">tdsls4601m200</span>, order a quantity that on-hand plus on-order already covers, then run planning</dd></div></dl>
+          </div>
+          <div class="notes-q-fields" data-cols="2">
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1wdmwk3">Prediction</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1wdmwk3" class="rux--text-area" rows="2" data-notes-answer="7:4eymoc:2" data-notes-given="" placeholder=""></textarea>
+              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm notes-q-reveal" data-notes-reveal="f-1wdmwk3-key" aria-controls="f-1wdmwk3-key" aria-expanded="false" disabled>Reveal answer</button>
+              <div class="rux--tile notes-q-key" id="f-1wdmwk3-key" hidden><p>Planning runs and generates no planned orders, and the order takes the ship-from-stock route</p></div>
+            </div>
+            <div class="rux--form-item notes-q-field">
+              <label class="rux--label" for="f-1wdmwk4">What happened</label>
+              <div class="rux--text-area__wrapper">
+                <textarea id="f-1wdmwk4" class="rux--text-area" rows="2" data-notes-answer="7:4eymoc:3" data-notes-given="" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        </div>
+          <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Warning</div>
+      <div class="rux--inline-notification__subtitle"><p class="notes-prose-measure">Switching the supply source changes what the item is. <span class="notes-t-exact">BAM-CHOP-PAIR</span> has a BOM and a routing, and as a purchased item it has no buy-from partner, so expect sitting 6&#39;s no-supplier failure as a side effect. Restore it before anything else.</p></div>
+    </div>
+  </div>
+</div>
+          <div class="rux--form-item rux--checkbox-wrapper notes-pass">
+            <input id="p-7" class="rux--checkbox" type="checkbox" data-notes-pass="7">
+            <label for="p-7" class="rux--checkbox-label"><div class="rux--checkbox-label-text"><strong>Pass condition:</strong> before running planning, you can say which branch an order will take and which field decides it.</div></label>
+          </div>
+        </section>
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="a-8" data-notes-section="8">
+          <h2 id="a-8">8. Consultant report-back <span class="rux--tag rux--tag--gray notes-ex-status" data-notes-status>Not started</span></h2>
           <p class="notes-prose-measure">Present one surprising result to the team in this format:</p>
           <div class="notes-code-scroll"><pre class="rux--type-code-01"><code>Question tested:
 Demand and required date:
@@ -2270,7 +2639,7 @@ Baseline restored and confirmed:</code></pre></div>
           </div>
         </aside>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 475b8bf · contract 10</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas ad98ecf · contract 10</p>
       </div>
     </div>
   </div>

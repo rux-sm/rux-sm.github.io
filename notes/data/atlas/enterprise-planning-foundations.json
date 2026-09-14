@@ -4,7 +4,7 @@
   "kind": "experiment",
   "id": "enterprise-planning-foundations",
   "title": "Homework — learn Enterprise Planning as a consultant",
-  "updated": "2026-09-06",
+  "updated": "2026-09-13",
   "status": "draft",
   "summary": "explain an LN planning result from demand through execution, identify the effective configuration that caused it, predict the result of one controlled change, and prove the explanation with Item Order Plan and Order Pegging.",
   "sources": [
@@ -14,8 +14,11 @@
     "cprrp0520m000",
     "cprrp1100m000",
     "cprrp1220m000",
+    "tcibd0501m100",
+    "tcibd1550m000",
     "tcibd2100m000",
     "tcibd2150m000",
+    "tdsls4601m200",
     "whinh2300m000",
     "whwmd4101s000"
   ],
@@ -40,10 +43,10 @@
       "tokens": [
         {
           "t": "text",
-          "v": "This is a six-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
+          "v": "This is a seven-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
         }
       ],
-      "text": "This is a six-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
+      "text": "This is a seven-sitting curriculum for the planning processes documented in this library. Complete it in order. Do not continue when a result is unexplained: capture it, restore the baseline if safe, and report what remains unknown."
     },
     {
       "kind": "callout",
@@ -1755,6 +1758,298 @@
           "tokens": [
             {
               "t": "text",
+              "v": "Then run the four tests that decide whether the item is planned at all. Change one value, rerun planning, record what happened, and restore the baseline before the next. In three of the four LN plans nothing and says nothing, so check the cluster row before blaming the field under test."
+            }
+          ],
+          "text": "Then run the four tests that decide whether the item is planned at all. Change one value, rerun planning, record what happened, and restore the baseline before the next. In three of the four LN plans nothing and says nothing, so check the cluster row before blaming the field under test."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Test",
+            "One change",
+            "Prediction",
+            "What happened"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Cluster row"
+                    }
+                  ],
+                  "text": "Cluster row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Remove the item's row on the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Clusters"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab of "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tcibd0501m100",
+                      "name": "Item"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", rerun, then restore it"
+                    }
+                  ],
+                  "text": "Remove the item's row on the Clusters tab of Item (tcibd0501m100), rerun, then restore it"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The item disappears from planning results, and no message says why"
+                    }
+                  ],
+                  "text": "The item disappears from planning results, and no message says why"
+                },
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Verified twice, for "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on 2026-08-20 and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on 2026-08-25. The row is necessary but not sufficient: restoring it did not make "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-SLEEVE"
+                    },
+                    {
+                      "t": "text",
+                      "v": " plan. "
+                    },
+                    {
+                      "t": "strong",
+                      "v": "Not documented for this release."
+                    }
+                  ],
+                  "text": "Verified twice, for BAM-CHOP-PAIR on 2026-08-20 and BAM-SLEEVE on 2026-08-25. The row is necessary but not sufficient: restoring it did not make BAM-SLEEVE plan. Not documented for this release."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order horizon"
+                    }
+                  ],
+                  "text": "Order horizon"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Move the sales line's delivery date past the item's "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order Horizon"
+                    }
+                  ],
+                  "text": "Move the sales line's delivery date past the item's Order Horizon"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "No planned order for that demand: planning generates orders only inside the order horizon"
+                    }
+                  ],
+                  "text": "No planned order for that demand: planning generates orders only inside the order horizon"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order system"
+                    }
+                  ],
+                  "text": "Order system"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order System"
+                    },
+                    {
+                      "t": "text",
+                      "v": " from "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Planned"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "SIC"
+                    }
+                  ],
+                  "text": "Set Order System from Planned to SIC"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "MRP stops driving the item's supply, and replenishment comes from the reorder point instead. "
+                    },
+                    {
+                      "t": "strong",
+                      "v": "Not documented for this release."
+                    }
+                  ],
+                  "text": "MRP stops driving the item's supply, and replenishment comes from the reorder point instead. Not documented for this release."
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Time fence"
+                    }
+                  ],
+                  "text": "Time fence"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Clear "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Use Time Fence"
+                    },
+                    {
+                      "t": "text",
+                      "v": " while "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Generate within"
+                    },
+                    {
+                      "t": "text",
+                      "v": " stays selected"
+                    }
+                  ],
+                  "text": "Clear Use Time Fence while Generate within stays selected"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "LN plans within the time fence and can plan into the past: a demand dated yesterday plans to yesterday with the fence cleared, and to today with it in force"
+                    }
+                  ],
+                  "text": "LN plans within the time fence and can plan into the past: a demand dated yesterday plans to yesterday with the fence cleared, and to today with it in force"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2,
+            3
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
               "v": "Captures to hand in:"
             }
           ],
@@ -1881,6 +2176,157 @@
             }
           ],
           "text": "Use the same demand baseline for every run. Change one value at a time and restore it before the next test."
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Every test is the same loop on "
+            },
+            {
+              "t": "session",
+              "code": "tcibd2100m000",
+              "name": "Items - Ordering"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering"
+            },
+            {
+              "t": "text",
+              "v": ":"
+            }
+          ],
+          "text": "Every test is the same loop on Items - Ordering (tcibd2100m000), Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering:"
+        },
+        {
+          "kind": "list",
+          "ordered": true,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Change the one field the test names, and save."
+                }
+              ],
+              "text": "Change the one field the test names, and save."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "strong",
+                  "v": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " with "
+                },
+                {
+                  "t": "em",
+                  "v": "Include Child Items"
+                },
+                {
+                  "t": "text",
+                  "v": " selected."
+                }
+              ],
+              "text": "Run Generate Order Planning (Item) for BAM-CHOP-PAIR with Include Child Items selected."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "strong",
+                  "v": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " for how many orders and the quantity of each, and "
+                },
+                {
+                  "t": "strong",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " for the shortfall they cover."
+                }
+              ],
+              "text": "Read Planned Orders for how many orders and the quantity of each, and Item Order Plan for the shortfall they cover."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Restore the field and save before the next test."
+                }
+              ],
+              "text": "Restore the field and save before the next test."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A test needs a shortfall. Raise a sales order above on-hand, with a delivery date inside the order horizon, and read the shortfall in "
+            },
+            {
+              "t": "strong",
+              "v": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " before changing anything. Set every test value against that shortfall, never against the numbers in Infor's worked examples."
+            }
+          ],
+          "text": "A test needs a shortfall. Raise a sales order above on-hand, with a delivery date inside the order horizon, and read the shortfall in Item Order Plan before changing anything. Set every test value against that shortfall, never against the numbers in Infor's worked examples."
+        },
+        {
+          "kind": "callout",
+          "variant": "note",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "em",
+                  "v": "Lot Size Calculation Allowed"
+                },
+                {
+                  "t": "text",
+                  "v": " before trusting the lot-size fields. Where it is selected, a batch update overwrites the minimum, maximum, fixed and increment values, so a change can vanish before the run."
+                }
+              ],
+              "text": "Read Lot Size Calculation Allowed before trusting the lot-size fields. Where it is selected, a batch update overwrites the minimum, maximum, fixed and increment values, so a change can vanish before the run."
+            }
+          ]
         },
         {
           "kind": "table",
@@ -2309,6 +2755,264 @@
                     }
                   ],
                   "text": "The top-up pegs to the safety-stock requirement, not to a sales order — that is how you tell it from ordinary supply"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Lot for lot"
+                    }
+                  ],
+                  "text": "Lot for lot"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "Lot for Lot"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", no quantity limits"
+                    }
+                  ],
+                  "text": "Lot for Lot, no quantity limits"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "None: read the baseline"
+                    }
+                  ],
+                  "text": "None: read the baseline"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One planned order per requirement, sized to the shortfall. This is the deployed baseline, so it is read rather than set"
+                    }
+                  ],
+                  "text": "One planned order per requirement, sized to the shortfall. This is the deployed baseline, so it is read rather than set"
+                },
+                {
+                  "col": 5,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each order pegs to exactly one requirement"
+                    }
+                  ],
+                  "text": "Each order pegs to exactly one requirement"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Economic order quantity"
+                    }
+                  ],
+                  "text": "Economic order quantity"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "Lot for Lot"
+                    }
+                  ],
+                  "text": "Lot for Lot"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Method set to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Economic Order Quantity"
+                    }
+                  ],
+                  "text": "Method set to Economic Order Quantity"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The order is adjusted to the economic quantity: in the help's example, an economic quantity of 30 with a minimum of 25 plans an order of 30. That example runs with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order System"
+                    },
+                    {
+                      "t": "text",
+                      "v": " at SIC, so run sitting 4's order system test first"
+                    }
+                  ],
+                  "text": "The order is adjusted to the economic quantity: in the help's example, an economic quantity of 30 with a minimum of 25 plans an order of 30. That example runs with Order System at SIC, so run sitting 4's order system test first"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order increment"
+                    }
+                  ],
+                  "text": "Order increment"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A larger increment"
+                    }
+                  ],
+                  "text": "A larger increment"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "LN checks each quantity against the increment when it generates planned orders"
+                    }
+                  ],
+                  "text": "LN checks each quantity against the increment when it generates planned orders"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Replenish to maximum"
+                    }
+                  ],
+                  "text": "Replenish to maximum"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "literal",
+                      "v": "Lot for Lot"
+                    }
+                  ],
+                  "text": "Lot for Lot"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Method set to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Replenish to Maximum Inventory"
+                    }
+                  ],
+                  "text": "Method set to Replenish to Maximum Inventory"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Orders are sized to reach "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Maximum Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", not to cover the shortfall"
+                    }
+                  ],
+                  "text": "Orders are sized to reach Maximum Inventory, not to cover the shortfall"
                 }
               ]
             }
@@ -2836,6 +3540,165 @@
           "tokens": [
             {
               "t": "text",
+              "v": "Then run the three transfer tests. Each starts from planned orders already generated, so rerun sitting 5's loop first if none exist."
+            }
+          ],
+          "text": "Then run the three transfer tests. Each starts from planned orders already generated, so rerun sitting 5's loop first if none exist."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Test",
+            "One change",
+            "Prediction",
+            "What happened"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "No supplier"
+                    }
+                  ],
+                  "text": "No supplier"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer a planned purchase order for an item with no buy-from partner data"
+                    }
+                  ],
+                  "text": "Transfer a planned purchase order for an item with no buy-from partner data"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The transfer fails and LN names the missing data"
+                    }
+                  ],
+                  "text": "The transfer fails and LN names the missing data"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Combine orders"
+                    }
+                  ],
+                  "text": "Combine orders"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer two planned purchase orders with "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Combine Orders"
+                    },
+                    {
+                      "t": "text",
+                      "v": " selected, then again with it cleared"
+                    }
+                  ],
+                  "text": "Transfer two planned purchase orders with Combine Orders selected, then again with it cleared"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Selected, the planned orders become one purchase order. Cleared, each planned order becomes its own order line"
+                    }
+                  ],
+                  "text": "Selected, the planned orders become one purchase order. Cleared, each planned order becomes its own order line"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Production transfer"
+                    }
+                  ],
+                  "text": "Production transfer"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer a planned production order"
+                    }
+                  ],
+                  "text": "Transfer a planned production order"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 3,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A real production order, of the kind the production walkthrough starts from"
+                    }
+                  ],
+                  "text": "A real production order, of the kind the production walkthrough starts from"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2,
+            3
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
               "v": "Captures to hand in:"
             }
           ],
@@ -2962,6 +3825,209 @@
     },
     {
       "n": 7,
+      "title": "Sitting 7 — which branch an order takes",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "Two tests change the route an order takes through the chain rather than the quantity planned."
+            }
+          ],
+          "text": "Two tests change the route an order takes through the chain rather than the quantity planned."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "Test",
+            "One change",
+            "Prediction",
+            "What happened"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Supply source"
+                    }
+                  ],
+                  "text": "Supply source"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Set "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Default Supply Source"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "BAM-CHOP-PAIR"
+                    },
+                    {
+                      "t": "text",
+                      "v": " from "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Job Shop"
+                    },
+                    {
+                      "t": "text",
+                      "v": " to "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Purchase"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tcibd1550m000",
+                      "name": "Items by Site"
+                    }
+                  ],
+                  "text": "Set Default Supply Source on BAM-CHOP-PAIR from Job Shop to Purchase in Items by Site (tcibd1550m000)"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Planning yields a planned purchase order instead of a planned production order, and the transfer crosses on the purchase side. Where the supply source is Repetitive for a site, "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Order System"
+                    },
+                    {
+                      "t": "text",
+                      "v": " must be Planned, so the two fields are not independent"
+                    }
+                  ],
+                  "text": "Planning yields a planned purchase order instead of a planned production order, and the transfer crosses on the purchase side. Where the supply source is Repetitive for a site, Order System must be Planned, so the two fields are not independent"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Covered by stock"
+                    }
+                  ],
+                  "text": "Covered by stock"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In "
+                    },
+                    {
+                      "t": "session",
+                      "code": "tdsls4601m200",
+                      "name": "Sales Order Intake Workbench"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", order a quantity that on-hand plus on-order already covers, then run planning"
+                    }
+                  ],
+                  "text": "In Sales Order Intake Workbench (tdsls4601m200), order a quantity that on-hand plus on-order already covers, then run planning"
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                },
+                {
+                  "tokens": [],
+                  "text": ""
+                }
+              ],
+              "key": [
+                {
+                  "col": 2,
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Planning runs and generates no planned orders, and the order takes the ship-from-stock route"
+                    }
+                  ],
+                  "text": "Planning runs and generates no planned orders, and the order takes the ship-from-stock route"
+                }
+              ]
+            }
+          ],
+          "answers": [
+            2,
+            3
+          ]
+        },
+        {
+          "kind": "callout",
+          "variant": "warning",
+          "blocks": [
+            {
+              "kind": "prose",
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Switching the supply source changes what the item is. "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " has a BOM and a routing, and as a purchased item it has no buy-from partner, so expect sitting 6's no-supplier failure as a side effect. Restore it before anything else."
+                }
+              ],
+              "text": "Switching the supply source changes what the item is. BAM-CHOP-PAIR has a BOM and a routing, and as a purchased item it has no buy-from partner, so expect sitting 6's no-supplier failure as a side effect. Restore it before anything else."
+            }
+          ]
+        },
+        {
+          "kind": "pass",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "before running planning, you can say which branch an order will take and which field decides it."
+            }
+          ],
+          "text": "before running planning, you can say which branch an order will take and which field decides it."
+        }
+      ]
+    },
+    {
+      "n": 8,
       "title": "Consultant report-back",
       "blocks": [
         {

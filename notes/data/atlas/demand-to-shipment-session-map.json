@@ -76,22 +76,14 @@
         },
         {
           "t": "text",
-          "v": ", "
-        },
-        {
-          "t": "literal",
-          "v": "the source on file"
-        },
-        {
-          "t": "text",
-          "v": " and the spine walkthrough all point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: "
+          "v": " and the spine walkthrough both point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: "
         },
         {
           "t": "strong",
           "v": "which session, reached how, and what do I actually do in it."
         }
       ],
-      "text": "It is a level-2 companion, not a replacement. the source on file is level 1 — six lanes, six stages, master data through shipment — and docs/start-here.md, the source on file and the spine walkthrough all point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: which session, reached how, and what do I actually do in it."
+      "text": "It is a level-2 companion, not a replacement. the source on file is level 1 — six lanes, six stages, master data through shipment — and docs/start-here.md and the spine walkthrough both point at it. This one starts where that one's stage 2 starts, at sales demand, and answers a different question: which session, reached how, and what do I actually do in it."
     },
     {
       "kind": "prose",

@@ -1,9 +1,9 @@
-commit   475b8bf7ed056ac7edb7f49e0b9273b513e2f95e
-date     2026-09-14T03:04:37Z
-subject  refactor: Rename exercise to experiment
+commit   ad98ecf655e2fcb31476a3013a0ca6459089c9e0
+date     2026-09-14T03:20:53Z
+subject  docs(experiments): Attest the folded planning keys
 contract 10 
 tier     export
-sha256   3e7589b65d71521a31cc6345d42fb8057b59d75f68ee6a6f1d961c13a14a82cc
+sha256   4aeb11bf34be475573a07bda7d13cbd046d627dea8e5843f303b86e9cf910bad
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

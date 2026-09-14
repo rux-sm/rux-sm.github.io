@@ -33,10 +33,9 @@ meeting updates the outputs, and every fact keeps one home.
   the walkthrough that builds it, `create-basic-test-items-and-defaults.md`.
 - **Concept** stays the name and becomes published. Each concept is attested by
   rux before it publishes, which is what closes OI-274.
-- **Experiment** replaces both exercise and test, in atlas and on Notes: a
-  question, a prediction, one change, what happened, and the explanation. An
-  answer publishes only once rux has attested it, as an exercise's answer key
-  does today.
+- An **experiment** is a question, a prediction, one change, what happened, and
+  the explanation. Its answer key publishes only once rux has attested it, and
+  the result of a run is written into that key with its captures cited.
 - **Meeting summary** is titled `Meeting summary · YYYY-MM-DD · Topic` and has
   three parts: what was discussed, the steps shown or agreed, and what was left
   open. Its id and address do not change. The full meeting reviews stop
@@ -52,9 +51,9 @@ None open.
 
 ## Tasks
 
-- [ ] Merge exercises and tests into experiments: one type and folder in atlas,
-      its rules and checks, and one Notes section.
-- [ ] Fold the bamboo test item family into the walkthrough that builds it.
+- [ ] Fold the bamboo test item family into the walkthrough that builds it,
+      then retire atlas's `tests/` folder and its `test` type, which hold
+      nothing else.
 - [ ] Move each walkthrough's long phase notes into the concept or screen file
       that owns them, and attest and publish the concepts.
 - [ ] Turn the planning route into a map route, moving what only it holds into

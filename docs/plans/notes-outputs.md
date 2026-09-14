@@ -2,52 +2,57 @@
 type: plan
 ---
 
-# Plan: three outputs — the map, walkthroughs and meeting summaries
+# Plan: five outputs — map, walkthrough, concept, experiment, meeting summary
 
 ## Goal
 
-Notes is rux's own training and learning tool. It publishes three things built
-from atlas's knowledge base: the overview map, where each tile is a quick
-to-do; walkthroughs, the full steps for one goal; and meeting summaries.
-Exercises stay. The session map and the full meeting reviews stop being
-outputs, and each test run feeds its results back into the knowledge base.
+Notes is rux's own learning tool, and it publishes five kinds of output built
+from atlas's knowledge base, each with one job and no overlap: the **map** of
+the whole process, **walkthroughs** that give the steps, **concepts** that
+explain why, **experiments** that test understanding, and **meeting
+summaries**. Everything else stays private as the working layer: screen files,
+issues, walks, ledgers, meeting reviews and evidence. Each walk, experiment and
+meeting updates the outputs, and every fact keeps one home.
 
 ## Decisions
 
-- One map. The session map is retired: its own text says it composes and owns
-  nothing, and its steps live in the planning walkthrough and the screen
-  files. Its four "fails with no message" notes are confirmed in that
-  walkthrough, line by line, before it goes.
-- The detailed step-by-step type is renamed **walkthrough** everywhere: Notes'
-  pages, navigation and addresses, and atlas's type, folder, rules and checks.
-- A map tile with a walkthrough links to it, and a lookup tile links to the
-  inventory walkthrough.
+- All five outputs publish on Notes. The export tier still carries no gaps,
+  issue ids or environment detail.
+- **Map.** The overview. The session map retires: its own text says it composes
+  and owns nothing, and its four "fails with no message" notes are confirmed in
+  a walkthrough, line by line, before it goes. A tile links to its walkthrough,
+  and a lookup tile links to the inventory walkthrough.
+- **Walkthrough** replaces guide everywhere: Notes' pages, navigation and
+  addresses, and atlas's type, folder, rules and checks. A walkthrough holds the
+  steps and one short "What LN is doing" paragraph per phase. A walk is one run
+  of it.
+- The long notes under each phase, about 45% of a guide today, move into
+  concepts or the screen files that own them, so a walkthrough is quick to scan
+  during a run.
+- The planning route, `demand-to-shipment-via-planning.md`, stops being its own
+  document. It becomes a route on the map that links the walkthroughs in
+  order, and anything only it holds moves into the walkthrough that owns it.
+- The bamboo test item family, today a reference beside the tests, folds into
+  the walkthrough that builds it, `create-basic-test-items-and-defaults.md`.
 - A new walkthrough, **Check an item's inventory**, holds the inventory lookup
   once: Inventory 360, the per-warehouse view, and on hand, blocked, on order
   and allocated. It is written from `ship-from-stock.md` phase 0, which is
-  walked, and the screen files. The walkthroughs that read on-hand today link
-  to it as their first step instead of repeating it.
-- A meeting summary is titled `Meeting summary · YYYY-MM-DD · Topic` and has
+  walked, and the screen files. Walkthroughs that read on-hand link to it as
+  their first step instead of repeating it.
+- **Concept** stays the name and becomes published. Each concept is attested by
+  rux before it publishes, which is what closes OI-274.
+- **Experiment** replaces both exercise and test, in atlas and on Notes: a
+  question, a prediction, one change, what happened, and the explanation. An
+  answer publishes only once rux has attested it, as an exercise's answer key
+  does today.
+- **Meeting summary** is titled `Meeting summary · YYYY-MM-DD · Topic` and has
   three parts: what was discussed, the steps shown or agreed, and what was left
-  open. Its id and address do not change.
-- The full meeting reviews leave the website and stay in atlas, where they
-  remain the source each summary is written from.
-- A walk gains a **Notes** column for comments, errors and tile feedback. No
-  walk exists yet, so nothing migrates.
-- The walk form is a page on the private preview, `npm run serve -- --private`,
-  which is never published. It shows a walkthrough's steps one at a time, with
-  a result and notes for each.
-- The form saves through the private preview server, which listens only on
-  this Mac: the walk into atlas's `walks/`, screenshots into its `inbox/`. It
-  works wherever both repositories are cloned side by side and current.
-- A screenshot is dropped or pasted onto its step. The server names it
-  `SS_{code}_{what}_{YYYY-MM-DD}.png` from the step's session code and a short
-  description rux can edit, never from a step number, and writes the name into
-  that step's Evidence cell.
-- After each walk one checklist carries the results into the knowledge base:
-  correct the walkthrough where LN differed, stamp the phase walked, update the
-  screen files, close or open issues, and complete any map placeholder. It is a
-  how-to in atlas's `docs/handoff.md`.
+  open. Its id and address do not change. The full meeting reviews stop
+  publishing and stay in atlas as the source each summary is written from.
+- Each walkthrough phase and map tile shows when it was last walked in LN, or
+  that it has not been, which is what closes OI-275.
+- Walks use the form on the private preview and the after-a-walk checklist in
+  atlas's `docs/handoff.md`, both built.
 
 ## Questions
 
@@ -57,13 +62,22 @@ None open.
 
 - [ ] Write the inventory walkthrough in atlas, and link it from the lookup
       tiles and from each walkthrough that reads on-hand.
-- [ ] Rename the type everywhere to the chosen name: atlas's type, folder,
-      rules and checks, and Notes' pages, addresses, navigation and prose.
+- [ ] Rename guide to walkthrough everywhere: atlas's type, folder, rules and
+      checks, and Notes' pages, addresses, navigation and prose.
+- [ ] Merge exercises and tests into experiments: one type and folder in atlas,
+      its rules and checks, and one Notes section.
+- [ ] Fold the bamboo test item family into the walkthrough that builds it.
+- [ ] Move each walkthrough's long phase notes into the concept or screen file
+      that owns them, and attest and publish the concepts.
+- [ ] Turn the planning route into a map route, moving what only it holds into
+      the walkthroughs.
 - [ ] Reshape the eight meeting summaries to the standard title and three
       parts, and stop publishing the full reviews.
-- [ ] Confirm the session map's four silent-failure notes in the planning
-      walkthrough, then retire the map: delete it in atlas, remove its page and
-      links, and drop it from `notes/docs/diagram.md`,
-      `notes/tools/build-tile-looks.mjs` and the specimen.
+- [ ] Confirm the session map's four silent-failure notes in a walkthrough,
+      then retire the map: delete it in atlas, remove its page and links, and
+      drop it from `notes/docs/diagram.md`, `notes/tools/build-tile-looks.mjs`
+      and the specimen.
+- [ ] Carry each phase's walked date into the export and show it on
+      walkthrough phases and map tiles.
 - [ ] Publish with `npm run export`, and update `docs/status.md` where an item
       changes.

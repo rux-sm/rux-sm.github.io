@@ -780,8 +780,8 @@ button.scheduler-row-head__num {
 .scheduler-contact-option__body { block-size: auto; }
 
 /* THE COPY BUTTON IN A CONTACT FIELD, over the field's end: a 2rem button
-   centred in the 2.5rem field, 0.25rem in. On a combo box it sits clear of
-   the clear button, whose box Carbon puts 2.8125rem to 4.3125rem from the end.
+   centred in the 2.5rem field, 0.25rem in, the same on a text input and on a
+   contact search, which draws no clear or open button of its own.
    TWO CLASSES DEEP, from the host `withCopy` marks: the tooltip container is
    `position: relative` at two classes (`.rux--popover-container:not(...)`),
    which one class loses to, and then the button flows after the field instead
@@ -793,7 +793,6 @@ button.scheduler-row-head__num {
   inset-inline-end: 0.25rem;
   transform: translateY(-50%);
 }
-.scheduler-copy-host > .scheduler-copy--combo { inset-inline-end: 4.5rem; }
 .scheduler-copy-host > .scheduler-copy[hidden] { display: none; }
 .scheduler-contact-option__name,
 .scheduler-contact-option__detail {

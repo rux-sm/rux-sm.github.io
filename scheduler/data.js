@@ -1872,20 +1872,12 @@
     input.placeholder = 'Search contacts';
     input.value = current?.name ?? '';
     if (current?.id) input.dataset.contactId = current.id;
-    const clear = el('button', 'rux--list-box__selection');
-    clear.type = 'button';
-    clear.tabIndex = -1;
-    clear.hidden = !input.value;
-    clear.title = 'Clear selected item';
-    clear.setAttribute('aria-label', 'Clear selected item');
-    clear.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
-    const caret = el('button', 'rux--list-box__menu-icon');
-    caret.type = 'button';
-    caret.tabIndex = -1;
-    caret.setAttribute('aria-label', 'Open');
-    caret.setAttribute('aria-expanded', 'false');
-    caret.appendChild(svgUse('#i-chevron--down', '16', '0 0 16 16'));
-    field.append(input, clear, caret);
+    /* NO CLEAR OR OPEN BUTTON, on rux's call for a quieter form: the field's
+       only button is its copy button. Nothing is lost -- `js/list-box.js`
+       opens the list on a click in the field and on typing, filters as you
+       type, and a name deleted by hand unlinks like the clear button did. The
+       module looks both buttons up optionally, so their absence is supported. */
+    field.append(input);
     const menu = el('ul', 'rux--list-box__menu');
     menu.setAttribute('role', 'listbox');
     menu.hidden = true;
@@ -1921,8 +1913,8 @@
      which says Copied once the value lands. `js/copy-button.js` copies the
      button's `data-rux-copy`, which `syncCopy` keeps equal to the field, so
      what is copied is what is on screen, saved or not. It shows only while the
-     field has a value, and stays out of the tab order like the combo box's
-     clear button beside it.
+     field has a value, and stays out of the tab order: the field itself already
+     selects and copies from the keyboard.
 
      ON A COMBO BOX IT GOES IN THE ROOT, NOT THE FIELD. `js/list-box.js` opens
      the menu on any click inside `__field`, so a copy button there would open
@@ -1935,7 +1927,7 @@
     if (!host) return item;
     host.classList.add('scheduler-copy-host');
     const tip = el('span', 'rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--left '
-      + `rux--popover--caret rux--popover--high-contrast scheduler-copy${combo ? ' scheduler-copy--combo' : ''}`);
+      + 'rux--popover--caret rux--popover--high-contrast scheduler-copy');
     tip.dataset.copyFor = id;
     const trigger = el('div', 'rux--tooltip-trigger__wrapper');
     const btn = el('button', 'rux--copy-btn rux--copy rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
@@ -1958,8 +1950,7 @@
     const value = input?.value.trim() || '';
     tip.hidden = !value;
     tip.querySelector('.rux--copy-btn').dataset.ruxCopy = value;
-    const room = tip.classList.contains('scheduler-copy--combo') ? 'scheduler-copy-on--combo' : 'scheduler-copy-on';
-    tip.parentElement?.classList.toggle(room, !!value);
+    tip.parentElement?.classList.toggle('scheduler-copy-on', !!value);
   }
   const syncCopy = () => {
     for (const tip of document.querySelectorAll('.scheduler-copy')) {

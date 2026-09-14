@@ -179,7 +179,6 @@
     grid.style.setProperty('--scheduler-quote-cols', String(1 + n));
     for (const el of grid.querySelectorAll('[data-driver]')) el.hidden = Number(el.dataset.driver) > n;
     $('scheduler-quote-church-item').hidden = n === 0;
-    $('scheduler-quote-driver-row').hidden = n === 0;
   };
 
   const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
@@ -191,7 +190,6 @@
     const n = driversChosen();
     const extras = extrasOn();
     $('scheduler-quote-extras-fields').hidden = !extras;
-    $('scheduler-quote-other-row').hidden = !extras;
     const trip = tripQuote({ miles: column('trip'), rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
     const driver = n === 0 ? null : driverPay({
       driver1: column('d1'),
@@ -202,28 +200,30 @@
     const other = extras ? num($('scheduler-quote-other').value) : 0;
     const total = other + (trip.amount ?? 0) + (driver?.amount ?? 0);
 
-    $('scheduler-quote-total').textContent = money.format(total);
-    $('scheduler-quote-other-out').textContent = money.format(other);
+    $('scheduler-quote-miles-out').textContent = trip.days === null ? '—' : count.format(trip.total);
+    $('scheduler-quote-miles-note').textContent = trip.days === null ? 'Enter miles for at least one day' : plural(trip.days, 'day', 'days');
 
     $('scheduler-quote-mileage').textContent = trip.amount === null ? '—' : money.format(trip.amount);
     $('scheduler-quote-mileage-note').textContent =
-      trip.days === null ? 'Enter miles for at least one day.'
-      : trip.local ? `${plural(trip.total, 'mile', 'miles')} · local · ${plural(trip.days, 'day', 'days')} at the daily rate`
-      : trip.free === null ? `${plural(trip.total, 'mile', 'miles')} · past the free-day table, counted as $0`
-      : `${plural(trip.total, 'mile', 'miles')} · ${plural(trip.days, 'day', 'days')} · ${plural(trip.free, 'free day', 'free days')} · ${plural(trip.extra, 'extra day', 'extra days')}`;
+      trip.days === null ? 'No miles yet'
+      : trip.local ? `Local · ${plural(trip.days, 'day', 'days')} at the daily rate`
+      : trip.free === null ? 'Past the free-day table, counted as $0'
+      : `${plural(trip.free, 'free day', 'free days')} · ${plural(trip.extra, 'extra day', 'extra days')}`;
 
-    if (driver) {
-      $('scheduler-quote-driver').textContent = driver.amount === null ? '—' : money.format(driver.amount);
-      const base = driver.days === null ? null : `${plural(driver.total, 'mile', 'miles')} · ${plural(driver.days, 'day', 'days')}`;
-      const meal = driver.meal === null ? '' : ` · meals ${money.format(driver.meal)}, not included`;
-      $('scheduler-quote-driver-note').textContent =
-        driver.days === null ? 'Enter driver miles for at least one day.'
-        : driver.band === 'church' ? `${base} · local church${meal}`
-        : driver.band === 'under200' ? `${base} · under 200 miles${meal}`
-        : driver.band === 'under430' ? `${base} · 200 to 429 miles${meal}`
-        : driver.amount === null ? `${base} · past the free-day table, counted as $0`
-        : `${base} · ${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
-    }
+    $('scheduler-quote-driver').textContent = driver?.amount == null ? '—' : money.format(driver.amount);
+    const driverMiles = driver ? plural(driver.total, 'mile', 'miles') : '';
+    const meal = driver?.meal == null ? '' : ` · meals ${money.format(driver.meal)}, not included`;
+    $('scheduler-quote-driver-note').textContent =
+      !driver ? 'No drivers on this quote'
+      : driver.days === null ? 'Enter driver miles for at least one day'
+      : driver.band === 'church' ? `${driverMiles} · local church${meal}`
+      : driver.band === 'under200' ? `${driverMiles} · under 200 miles${meal}`
+      : driver.band === 'under430' ? `${driverMiles} · 200 to 429 miles${meal}`
+      : driver.amount === null ? 'Past the free-day table, counted as $0'
+      : `${driverMiles} · ${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
+
+    $('scheduler-quote-total').textContent = money.format(total);
+    $('scheduler-quote-total-note').textContent = other ? `Includes ${money.format(other)} other charges` : 'Mileage and driver pay';
   };
 
   const drawRateSelect = () => {

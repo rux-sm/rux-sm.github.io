@@ -206,7 +206,7 @@
         </div>
 
         <div class="scheduler-quote-app" id="scheduler-quote-app" hidden>
-          <div class="rux--tabs">
+          <div class="rux--tabs rux--tabs--contained rux--layout--size-lg">
             <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
             <div class="rux--tab--list" role="tablist" aria-label="Quote calculator">
               <button id="scheduler-quote-tab-calc" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-quote-panel-calc" tabindex="0">
@@ -224,29 +224,108 @@
 
           <!-- CALCULATOR ─────────────────────────────────────────────────── -->
           <div class="rux--tab-content scheduler-quote-panel" role="tabpanel" id="scheduler-quote-panel-calc" aria-labelledby="scheduler-quote-tab-calc" tabindex="0">
-            <!-- Three tiles: the miles on the left; the trip's rate and drivers,
-                 then the total, on the right. Stacked below lg they read in the
-                 order a quote is built: trip, miles, total. Tile contents sit in
-                 `layer-two`, so their fields stand off the tile. -->
-            <form class="scheduler-quote" id="scheduler-quote-form" novalidate>
+            <!-- A dashboard of three tiles: the quote's summary across the top,
+                 then the miles on the left and the options on the right. The tab
+                 panel paints `layer`, so the form is `layer-two` and the fields
+                 inside a tile are `layer-three`: each stands off the one under it. -->
+            <form class="rux--layer-two scheduler-quote" id="scheduler-quote-form" novalidate>
+
+              <div class="scheduler-quote__head">
+                <h2 class="rux--type-heading-03">Summary</h2>
+                <!-- Clear empties the whole quote, so it sits with the summary,
+                     away from the day buttons. -->
+                <button type="reset" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
+              </div>
+
+              <!-- Each figure is Design's big number, which pairs its label with
+                   its value; the note under each is this app's. -->
+              <div class="rux--tile scheduler-quote__summary">
+                <div class="scheduler-quote-metrics">
+                  <div>
+                    <figure class="rux--big-number">
+                      <span class="rux--big-number__row"><figcaption class="rux--big-number__label">Miles</figcaption></span>
+                      <span class="rux--big-number__row" role="math"><span class="rux--big-number__value scheduler-quote-metric__value" id="scheduler-quote-miles-out">—</span></span>
+                    </figure>
+                    <p class="scheduler-quote-metric__note" id="scheduler-quote-miles-note"></p>
+                  </div>
+                  <div>
+                    <figure class="rux--big-number">
+                      <span class="rux--big-number__row"><figcaption class="rux--big-number__label">Mileage</figcaption></span>
+                      <span class="rux--big-number__row" role="math"><span class="rux--big-number__value scheduler-quote-metric__value" id="scheduler-quote-mileage">—</span></span>
+                    </figure>
+                    <p class="scheduler-quote-metric__note" id="scheduler-quote-mileage-note"></p>
+                  </div>
+                  <div>
+                    <figure class="rux--big-number">
+                      <span class="rux--big-number__row"><figcaption class="rux--big-number__label">Driver pay</figcaption></span>
+                      <span class="rux--big-number__row" role="math"><span class="rux--big-number__value scheduler-quote-metric__value" id="scheduler-quote-driver">—</span></span>
+                    </figure>
+                    <p class="scheduler-quote-metric__note" id="scheduler-quote-driver-note"></p>
+                  </div>
+                  <div aria-live="polite">
+                    <figure class="rux--big-number">
+                      <span class="rux--big-number__row"><figcaption class="rux--big-number__label">Trip total</figcaption></span>
+                      <span class="rux--big-number__row" role="math"><span class="rux--big-number__value scheduler-quote-metric__value" id="scheduler-quote-total">$0.00</span></span>
+                    </figure>
+                    <p class="scheduler-quote-metric__note" id="scheduler-quote-total-note"></p>
+                  </div>
+                </div>
+              </div>
 
               <div class="rux--tile scheduler-quote__miles">
-                <div class="rux--layer-two rux--stack-vertical rux--stack-scale-6">
-                  <fieldset class="scheduler-quote__group">
-                    <legend class="rux--type-heading-compact-02">Miles</legend>
-                    <!-- quote.js draws the rows. Column 1 is the day, then trip
-                         miles, then one column per driver; `--scheduler-quote-cols`
-                         says how many mileage columns show. -->
-                    <div class="scheduler-quote-days" id="scheduler-quote-days" style="--scheduler-quote-cols: 1">
-                      <div class="scheduler-quote-days__head" aria-hidden="true">
-                        <span>Day</span><span>Trip miles</span><span data-driver="1">Driver 1</span><span data-driver="2">Driver 2</span>
-                      </div>
-                      <div id="scheduler-quote-day-rows"></div>
+                <fieldset class="rux--layer-three scheduler-quote__group">
+                  <legend class="rux--type-heading-compact-02">Miles</legend>
+                  <!-- quote.js draws the rows. Column 1 is the day, then trip
+                       miles, then one column per driver; `--scheduler-quote-cols`
+                       says how many mileage columns show. -->
+                  <div class="scheduler-quote-days" id="scheduler-quote-days" style="--scheduler-quote-cols: 1">
+                    <div class="scheduler-quote-days__head" aria-hidden="true">
+                      <span>Day</span><span>Trip miles</span><span data-driver="1">Driver 1</span><span data-driver="2">Driver 2</span>
                     </div>
-                    <div class="rux--form__helper-text">Days count up to the last day with miles.</div>
-                    <div class="scheduler-quote__day-actions">
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
+                    <div id="scheduler-quote-day-rows"></div>
+                  </div>
+                  <div class="rux--form__helper-text">Days count up to the last day with miles.</div>
+                  <div class="scheduler-quote__day-actions">
+                    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
+                    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
+                  </div>
+                </fieldset>
+              </div>
+
+              <!-- The options: set once a quote. The drivers decide which
+                   mileage columns the miles table shows. -->
+              <div class="rux--tile scheduler-quote__options">
+                <div class="rux--layer-three rux--stack-vertical rux--stack-scale-6">
+                  <fieldset class="scheduler-quote__group">
+                    <legend class="rux--type-heading-compact-02">Options</legend>
+                    <div class="rux--stack-vertical rux--stack-scale-5">
+                      <div class="rux--form-item">
+                        <div class="rux--select">
+                          <label class="rux--label" for="scheduler-quote-rate">Mileage rate</label>
+                          <div class="rux--select-input__wrapper">
+                            <select id="scheduler-quote-rate" class="rux--select-input"></select>
+                            <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="rux--form-item">
+                        <div class="rux--select">
+                          <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
+                          <div class="rux--select-input__wrapper">
+                            <select id="scheduler-quote-drivers" class="rux--select-input">
+                              <option class="rux--select-option" value="0">None</option>
+                              <option class="rux--select-option" value="1">1 driver</option>
+                              <option class="rux--select-option" value="2">2 drivers</option>
+                            </select>
+                            <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="rux--form-item rux--checkbox-wrapper scheduler-quote__church" id="scheduler-quote-church-item" hidden>
+                        <input id="scheduler-quote-church" class="rux--checkbox" type="checkbox">
+                        <label for="scheduler-quote-church" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Local church</div></label>
+                        <div class="rux--checkbox__validation-msg"></div>
+                      </div>
                     </div>
                   </fieldset>
 
@@ -286,77 +365,12 @@
                 </div>
               </div>
 
-              <div class="scheduler-quote__side">
-                <!-- The rate and the drivers: set once a quote. The drivers
-                     decide which mileage columns the miles table shows. -->
-                <div class="rux--tile scheduler-quote__trip">
-                  <fieldset class="rux--layer-two scheduler-quote__group">
-                    <legend class="rux--type-heading-compact-02">Trip</legend>
-                    <div class="rux--stack-vertical rux--stack-scale-5">
-                      <div class="rux--form-item">
-                        <div class="rux--select">
-                          <label class="rux--label" for="scheduler-quote-rate">Mileage rate</label>
-                          <div class="rux--select-input__wrapper">
-                            <select id="scheduler-quote-rate" class="rux--select-input"></select>
-                            <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="rux--form-item">
-                        <div class="rux--select">
-                          <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
-                          <div class="rux--select-input__wrapper">
-                            <select id="scheduler-quote-drivers" class="rux--select-input">
-                              <option class="rux--select-option" value="0">None</option>
-                              <option class="rux--select-option" value="1">1 driver</option>
-                              <option class="rux--select-option" value="2">2 drivers</option>
-                            </select>
-                            <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="rux--form-item rux--checkbox-wrapper scheduler-quote__church" id="scheduler-quote-church-item" hidden>
-                        <input id="scheduler-quote-church" class="rux--checkbox" type="checkbox">
-                        <label for="scheduler-quote-church" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Local church</div></label>
-                        <div class="rux--checkbox__validation-msg"></div>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-
-                <aside class="rux--tile scheduler-quote__total" aria-labelledby="scheduler-quote-total-label">
-                  <div class="rux--stack-vertical rux--stack-scale-5">
-                    <div>
-                      <p class="rux--label" id="scheduler-quote-total-label">Trip total</p>
-                      <p class="rux--type-productive-heading-05" id="scheduler-quote-total" aria-live="polite">$0.00</p>
-                    </div>
-                    <dl class="scheduler-quote-lines">
-                      <div class="scheduler-quote-lines__row">
-                        <dt>Mileage</dt><dd id="scheduler-quote-mileage">—</dd>
-                        <p class="scheduler-quote-lines__note" id="scheduler-quote-mileage-note"></p>
-                      </div>
-                      <div class="scheduler-quote-lines__row" id="scheduler-quote-driver-row" hidden>
-                        <dt>Driver pay</dt><dd id="scheduler-quote-driver">—</dd>
-                        <p class="scheduler-quote-lines__note" id="scheduler-quote-driver-note"></p>
-                      </div>
-                      <div class="scheduler-quote-lines__row" id="scheduler-quote-other-row" hidden>
-                        <dt>Other charges</dt><dd id="scheduler-quote-other-out">$0.00</dd>
-                      </div>
-                    </dl>
-                    <!-- Clear empties the whole quote, so it sits with the total,
-                         away from the day buttons. -->
-                    <div>
-                      <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
-                    </div>
-                  </div>
-                </aside>
-              </div>
             </form>
           </div>
 
           <!-- RATES ──────────────────────────────────────────────────────── -->
           <div class="rux--tab-content scheduler-quote-panel" role="tabpanel" id="scheduler-quote-panel-rates" aria-labelledby="scheduler-quote-tab-rates" tabindex="0" hidden>
-            <form id="scheduler-quote-rates-form" novalidate>
+            <form class="rux--layer-two" id="scheduler-quote-rates-form" novalidate>
               <div class="rux--stack-vertical rux--stack-scale-7">
                 <p class="rux--type-body-01 scheduler-quote__lede">Rates are shared by every staff account. Changes apply to the calculator once saved.</p>
                 <fieldset class="scheduler-quote__group">

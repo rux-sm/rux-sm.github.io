@@ -13,50 +13,55 @@ The live project is the contract. When it and this page disagree, read the
 live tables through the Supabase connection and fix this page; do not fix
 the schema to match the page.
 
-## 1. How the old app reaches the database, and what that means here
+## 1. How the two apps reach the database
 
-- **No sign-in.** `../rux-ui/js/data/supabase.js` creates one client with the
-  anon key and never calls any auth method. Every request is anon-role.
-- **Through a proxy.** The client's URL is a Cloudflare Worker
-  (`../rux-ui/worker/`), a transparent pass-through to the Supabase host plus
-  one route of its own, `/ai/extract`, used only by the intake page.
-- **The core tables are open to that key.** `trips`, `buses`, `drivers`,
-  `trip_assignments`, `trip_drivers` and `trip_stops` each carry one policy
-  named `dev_all`: `for all to public using (true)`. `bus_out_of_service`,
-  `contacts`, `driver_time_off`, passengers, tickets, notifications, chat and
-  profiles carry the same effect as a public-select plus manage-all pair.
-- **Four tables have no RLS at all:** `settings`, `trip_documents`,
-  `trip_itineraries`, `trip_payments`.
-- **Eight tables have RLS and no policy**, so they are reachable only through
+- **Both log in as staff.** Each app has its own log-in screen for a Supabase
+  Auth user, and a user is staff when a `public.profiles` row carries its id
+  in `user_id`. `my_staff_profile()` returns that row. This app's client is
+  the site's `account.js`; the old app's is `../rux-ui/js/data/supabase.js`.
+- **The old app goes through a proxy.** Its client's URL is a Cloudflare
+  Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
+  route of its own, `/ai/extract`, used only by the intake page. This app
+  talks to the Supabase host directly.
+- **Every table has row level security, and most still let the publishable
+  key in.** Each carries a `staff_all` rule for a staff session beside an open
+  one: `dev_all` on `trips`, `buses`, `drivers`, `trip_assignments`,
+  `trip_drivers`, `trip_stops`, `trip_pos` and `trip_invoices`; a
+  public-select and manage-all pair on `contacts`, `driver_time_off`,
+  passengers, tickets, notifications, team chat and dev notes; full access on
+  `bus_out_of_service`; and `transition_open` on `settings`,
+  `trip_documents`, `trip_itineraries` and `trip_payments`. `profiles` is open
+  to read and manage, but neither role can write its `user_id` or
+  `sees_all_apps`. The game tables are public to read and to join.
+- **Two tables are staff only:** `quote_rates` and `quote_mileage_rates`.
+- **Eight tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_requests`, `trip_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
+- **The publishable key can run 35 of the 40 `security definer` functions.**
+  The five it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
+  `my_staff_profile` and `signal_maintenance_schedule`.
 
-**What this means for this app.** Every open policy is permissive
-`to public`, so an authenticated session passes them exactly as the anon role
-does. This app signs in through the platform (`platform.profiles`) without
-breaking the old app, which runs unauthenticated against the same rows.
-Tightening any policy to `authenticated` or to an owner is a cutover step,
-taken only when the old app is retired, as a migration applied through the
-Supabase connection.
-
-This app talks to the Supabase host directly. The Worker is needed only for
-`/ai/extract`, which belongs to the deferred intake page.
+**What this means for this app.** A staff session and the publishable key
+alone reach the same rows until the open rules come down. That is a cutover
+step, taken once nothing uses the key alone, as a migration applied through
+the Supabase connection. `platform.profiles` is a separate table that holds a
+staff member's name and theme across the site.
 
 ## 2. Tables
 
-Column lists are complete for the six tables the schedule grid depends on;
-the rest name the columns that matter to a screen. Enumerations are `check`
+Column lists are complete, apart from `created_at`, for the six tables the
+schedule grid depends on; the rest name the columns that matter to a screen. Enumerations are `check`
 constraints, not types; there are no views.
 
 ### The grid's six
 
 | Table | Key and links | Columns |
 |---|---|---|
-| `trips` | `id`; `booking_contact_id` and `trip_contact_1..5_id` to `contacts` | 88 columns. Scheduling: `destination`, `customer`, `start_date`, `end_date`, `departure_time`, `spot_time`, `return_time`, `return_start_date`, `return_end_date`, `bus_count`, `return_bus_count`, `trip_type` (round_trip, one_way, dropoff_pickup), `trip_bar_color`. Contacts: booking plus five trip contacts, each name, phone, email, id. Money: `quoted_price`, `deposit_amount`, `invoice_number`, `po_ref`, `po_amount`, `contract_status`, `invoice_status`, `balance_paid`, `date_paid`. Needs: `req_sleeper`, `req_56pax`, `req_ada`, `need_hotel`, `need_fuel_card`, `trip_reqs` jsonb. Per-leg workflow booleans: `driver_contact_sent_*`, `trip_reminder_sent_*`, `envelope_printed_*`, `fuel_card_assigned_*`, `hotel_booked_*`, `itinerary_printed_*`, `hos_form_printed_*` for outbound and return. Audit: `created_at`, `updated_at` (trigger), `cancelled_at`, `cancellation_reason`, `itinerary_confirmed`, `confirmed`. |
+| `trips` | `id`; `trip_ref`; `booking_contact_id` and `trip_contact_1..5_id` to `contacts` | 93 columns. Scheduling: `destination`, `customer`, `notes`, `start_date`, `end_date`, `departure_time`, `spot_time`, `return_time`, `return_start_date`, `return_end_date`, `bus_count`, `return_bus_count`, `trip_type` (round_trip, one_way, dropoff_pickup), `trip_bar_color`, `is_self_organized`. Contacts: `booking_contact_name`, `_phone`, `_email`, `_missive_url`; `trip_contact_1..5_name` and `_phone`; `contact_not_needed`. Money: `quoted_price`, `deposit_amount`, `contract_status`, `contract_note`, `po_received`, `po_ref`, `po_amount`, `invoiced`, `invoice_status`, `invoice_number`, `balance_paid`, `date_paid`, `payment_ref_1..3`. Needs: `req_sleeper`, `req_56pax`, `req_ada`, `need_hotel`, `need_fuel_card`, `trip_reqs` jsonb. Distance: `pickup_address`, `est_miles`, `actual_miles`, `driving_hours`, `on_duty_hours`. Per-leg workflow, `_outbound` and `_return`: `driver_contact_sent`, `trip_reminder_sent`, `envelope_printed`, `fuel_card_assigned`, `fuel_card_number`, `hotel_booked`, `hotel_itinerary_number`, `itinerary_printed`, `hos_form_printed`. After the trip: `post_trip_survey_sent`, `post_trip_survey_message`, `post_trip_incident`, `post_trip_note`. Status: `updated_at` (trigger), `confirmed`, `itinerary_confirmed`, `itinerary_not_needed`, `cancelled_at`, `cancellation_reason`. |
 | `buses` | `id`; `bus_ref` generated `BUS-###` by trigger | `number`, `capacity`, `type`, `ada_lift`, `sleeper`, `status` (active, inactive), `make`, `model`, `year`, `vin`, `color`, `mileage`, `last_service`, `next_service`, `insurance_exp`, `registration_exp`, `inspection_exp`, `sort_order`, `notes` |
-| `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, address fields, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes` |
+| `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, `address`, `city`, `address_state`, `zip`, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes` |
 | `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `dwell_reset`, `route_status` |
 | `trip_assignments` | `id`; `trip_id` to `trips` cascade; `bus_id` to `buses` set null | `position`, `leg` (outbound, return), `active_roles` text[] |
 | `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, `trip_reminder_sent`, `envelope_printed` |
@@ -72,20 +77,22 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | Table | Used by | Notes |
 |---|---|---|
 | `contacts` | trip editor, Customers view | `name`, `phone`, `email`, `client` |
-| `trip_payments` | trip editor Billing tab | `trip_id`, `position`, `amount`, `method`, `date`, `ref`. No RLS. Old app rewrites all rows on save. |
+| `trip_payments` | trip editor Billing tab | `trip_id`, `position`, `amount`, `method`, `date`, `ref`. Old app rewrites all rows on save. |
+| `trip_pos` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `ref`, `amount`, `date` |
+| `trip_invoices` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `number`, `amount`, `date` |
 | `trip_ticket_options` | trip editor, manifest | `trip_id`, `position`, `label`, `price` |
 | `trip_passengers` | manifest | 17 columns: `name`, `phone`, `email`, `seat`, `status`, `ticket_option_id`, `amount_owed`, `amount_paid`, `group_label`, `pickup_location` |
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
-| `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. No RLS. Files in bucket `trip-documents`. |
-| `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label`. No RLS. |
+| `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. |
+| `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
 | `trip_requests` | Requests view, `../rux-ui/request.html` | `reference` (`REQ-` plus six), `status`, `source`, `contact` jsonb, `payload` jsonb, `trip_id`. RPC only. |
 | `trip_history` | History tab | `trip_id`, `trip_ref`, `action` (nine values), `changes` jsonb, `metadata` jsonb. RPC only. |
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`. RPC only. |
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
 | `maintenance_schedule_shares` | `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
-| `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements and billing defaults live here. No RLS. |
-| `profiles` | old app's local identity | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`. **Not the platform profile.** Unrelated to `platform.profiles` and replaced by it in this app. |
+| `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements and billing defaults live here. |
+| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; `sees_all_apps`, which opens every app on the site. Not `platform.profiles`. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
 | `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
 | `dev_notes` | dev notes popover | dropped |
@@ -109,17 +116,18 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 
 ### Storage buckets
 
-`trip-documents` (paths under the trip id), `driver-photos`,
-`profile-photos`, `trip-request-uploads` (private, signed URLs). Their public,
-size and policy settings are visible only in the dashboard.
+`trip-documents` (paths under the trip id), `driver-photos` and
+`profile-photos`. All three are public, with no size or file-type limit, and
+the publishable key can upload to and delete from each.
 
 ### Realtime
 
 The old app subscribes to `postgres_changes` on `trips`, `trip_stops`,
-`trip_assignments`, `trip_documents`, `trip_payments`, `trip_passengers`,
-`trip_ticket_options` for the grid, and separately on notifications, chat,
-dev notes and the game. `trip_drivers` is not subscribed; a 30-second poll
-covers it. This app does not subscribe.
+`trip_assignments`, `trip_documents`, `trip_payments`, `trip_pos`,
+`trip_invoices`, `trip_passengers` and `trip_ticket_options` for the grid,
+and separately on notifications, team chat, dev notes and the game. A
+30-second poll backs the grid up, and is the only thing that picks up
+`trip_drivers`. This app does not subscribe.
 
 ## 3. Table to screen
 
@@ -134,7 +142,7 @@ as in `screen-inventory.md`.
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |
 | `contacts` | Trip editor, Customers | Customer editor, trip editor |
-| `trip_payments`, `trip_ticket_options` | Trip editor Billing | Trip editor |
+| `trip_payments`, `trip_pos`, `trip_invoices`, `trip_ticket_options` | Trip editor Billing | Trip editor |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
 | `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor |
 | `trip_requests` (RPC) | Requests, `../rux-ui/request.html` | `../rux-ui/request.html` submits; Requests changes status and links |
@@ -145,13 +153,9 @@ as in `screen-inventory.md`.
 | `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
 | `trip_itineraries` | Itineraries, deferred | intake, deferred |
 
-## 4. Unknowns, to resolve before the write paths
+## 4. What the old app names that the project lacks
 
-- `../rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
-  and `list_trip_request_documents`, and cites a `trip_request_documents`
-  table, none of which is listed here. Read the live tables through the
-  Supabase connection before building Requests.
-- Whether `anon` may execute the security-definer functions has not been
-  decided; it may be the Postgres default. Confirm in the dashboard before the
-  driver page.
-- Bucket settings and the `trip-request-uploads` policy are dashboard-only.
+`../rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
+and `list_trip_request_documents` and uploads to a `trip-request-uploads`
+bucket. None of the three exists in the live project, and neither does a
+`trip_request_documents` table.

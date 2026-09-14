@@ -8,9 +8,10 @@ lists what is unfinished here.
 
 ## What it is
 
-A week board: buses down the side, days across, one bar per assignment. It
-reads and writes the Supabase tables the `rux-ui` app already writes — trips,
-assignments, stops, drivers, buses — and is that app's replacement, mid-flight.
+A week board: buses down the side, days across, one bar per assignment, behind
+a staff log-in. It reads and writes the Supabase tables the `rux-ui` app also
+writes — trips and their stops, bus assignments, contacts, payments, POs and
+invoices — and is that app's replacement, mid-flight.
 
 That database is production and shared with `rux-ui`, so nothing here is
 ever tried with a test record.
@@ -19,9 +20,9 @@ Its second page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`, with rates kept in the `quote_rates` and
 `quote_mileage_rates` tables, which only a staff session can read or change.
 
-The schedule grid and the trip bar are this app's own, prefixed `sch-`; Carbon
-has neither. Everything else is Design's, linked live at `/design/…` with no
-copy here and no pin to move.
+The schedule grid and the trip bar are this app's own; Carbon has neither.
+Everything else is Design's, linked live at `/design/…` with no copy here and
+no pin to move.
 
 ## Run and check it
 

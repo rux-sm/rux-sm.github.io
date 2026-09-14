@@ -13,9 +13,8 @@ Verdicts: **keep** builds next, **later** builds after the record tables work,
 **decide** is open, **drop** is not rebuilt. A drop can be reopened; the commit
 that reopens it says why.
 
-A *template* is one of the ten in `design/templates/`; a *module* is one of
-Design's `js/*.js` behaviours; an *app component* is this app's own, prefixed
-`sch-`.
+A *template* is one of the twelve in `design/templates/`; a *module* is one
+of Design's `js/*.js` behaviours; an *app component* is this app's own.
 
 ## 1. Views
 

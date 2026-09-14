@@ -22,9 +22,8 @@ function, including the ones that create share links.
   Claude never types or handles a password.
 - **Seven accounts**, one for each current rux-ui profile, the wall display
   included, each linked to its `public.profiles` row so names, colours and
-  photos stay. rux's app login moves to rux's real email. The Supabase
-  dashboard login is already an email account, and it gets two-factor
-  sign-in.
+  photos stay. rux's app login is rux's real email. The Supabase dashboard
+  login is already an email account, and it gets two-factor sign-in.
 - **Each scheduling app has its own full login screen.** Staff receive a link
   to each app separately and sign in to each one with the same username and
   password; signing in to one does not sign in to the other.
@@ -56,6 +55,11 @@ function, including the ones that create share links.
   reserved name nobody can own, and each is linked to its profile, with
   `sees_all_apps` on rux's. rux-ui's driver, maintenance and document link
   pages read those functions and the signal, not the tables.
+  `staff_policies_add` is applied: a `staff_all` rule on every trip, reference,
+  settings, chat, notification and dev-note table, staff read and own-row
+  update on `profiles`, staff game rules, and row level security on
+  `settings`, `trip_documents`, `trip_itineraries` and `trip_payments` with a
+  temporary `transition_open` rule.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
@@ -79,13 +83,7 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `staff_policies_add`: a `staff_all` policy for staff on every
-      trip, reference, settings, chat, notification and dev-note table; staff
-      read on `profiles` with update of the own row only; staff versions of
-      the game policies; the four tables with row level security off get it
-      on, with `staff_all` and a temporary `transition_open` policy.
-- [ ] rux changes the `sergio` app login to rux's real email and turns on
-      two-factor sign-in for the dashboard login.
+- [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
 - [ ] rux-ui login screen: `js/core/staff-username.js` with a test,
       `js/data/auth-db.js`, and a full login screen with a Turnstile token
       shown before the app loads when there is no staff session;

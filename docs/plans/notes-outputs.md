@@ -55,7 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the after-a-walk checklist in atlas's `docs/handoff.md`.
 - [ ] Write the inventory walkthrough in atlas, and link it from the lookup
       tiles and from each walkthrough that reads on-hand.
 - [ ] Rename the type everywhere to the chosen name: atlas's type, folder,

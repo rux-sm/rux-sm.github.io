@@ -29,11 +29,18 @@ meeting updates the outputs, and every fact keeps one home.
 - The planning route, `demand-to-shipment-via-planning.md`, stops being its own
   document. It becomes a route on the map that links the walkthroughs in
   order, and anything only it holds moves into the walkthrough that owns it.
-- **Concept** stays the name and becomes published. Each concept is attested by
-  rux before it publishes, which is what closes OI-274.
+- **Concept** stays the name and becomes published, labelled Not reviewed
+  until rux approves it, which is what closes OI-274.
+- **Everything publishes with its review status**, and rux reviews on Notes
+  itself, per `docs/plans/notes-online.md`.
+- The long phase notes hold about 11,300 words of explanation, 4,400 of gaps and
+  internal markers, and 2,200 of source lines. The explanation moves to the
+  concept or screen file that owns it and publishes; gaps and sources stay in
+  the notes, which never publish.
 - An **experiment** is a question, a prediction, one change, what happened, and
-  the explanation. Its answer key publishes only once rux has attested it, and
-  the result of a run is written into that key with its captures cited.
+  the explanation. Its answer key publishes labelled Not reviewed until rux
+  approves it, and the result of a run is written into that key with its
+  captures cited.
 - **Meeting summary** is titled `Meeting summary · YYYY-MM-DD · Topic` and has
   three parts: what was discussed, the steps shown or agreed, and what was left
   open. Its id and address do not change. The full meeting reviews stop
@@ -49,8 +56,12 @@ None open.
 
 ## Tasks
 
-- [ ] Move each walkthrough's long phase notes into the concept or screen file
-      that owns them, and attest and publish the concepts.
+- [ ] Publish concepts and unattested answer keys, each labelled Not reviewed:
+      atlas's exporters carry them, and Notes renders a concept page and its
+      menu group.
+- [ ] Move the explanations in Ship from stock's notes into the concept or
+      screen file that owns each, as the trial; then the other seven
+      walkthroughs, one at a time.
 - [ ] Turn the planning route into a map route, moving what only it holds into
       the walkthroughs.
 - [ ] Reshape the eight meeting summaries to the standard title and three

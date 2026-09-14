@@ -46,16 +46,18 @@ function, including the ones that create share links.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
+- **Captcha protection is on and covers sign-in**, so both sign-in forms send
+  a Turnstile token with the site key `account.js` already uses. The email
+  provider is enabled.
+- **Sign-ups stay on.** A self-made account gets nothing, because staff needs a
+  profile rux links, and the home page's anonymous sessions go through the
+  same sign-up endpoint.
 - **Later plans:** per-person chat rules, trip history naming the actor from
   the session, private storage, private realtime channels.
 
 ## Questions
 
-1. Is Captcha protection on for sign-in? If so, both sign-in forms send a
-   Turnstile token.
-2. Is the email provider enabled in Authentication?
-3. Can "Allow new users to sign up" be turned off without stopping the home
-   page's anonymous sessions?
+None open.
 
 ## Tasks
 
@@ -86,14 +88,16 @@ function, including the ones that create share links.
       the game policies; the four tables with row level security off get it
       on, with `staff_all` and a temporary `transition_open` policy.
 - [ ] rux-ui sign-in: `js/core/staff-username.js` with a test,
-      `js/data/auth-db.js` and `js/components/staff-sign-in.js`;
+      `js/data/auth-db.js` and `js/components/staff-sign-in.js` with a
+      Turnstile token;
       `index.html` signs in before the first load, drops the profile picker,
       and turns "Switch profile" into "Sign out"; a lost session reopens the
       sign-in over the app; `js/core/profile.js` keeps its three exports;
       `js/pages/trip-intake.js` signs in first; forced refresh after the
       deploy.
 - [ ] Scheduler sign-in: `account.js` skips the anonymous session on a page
-      marked `data-auth="staff"` and adds `signInStaff`, `staffProfile` and
+      marked `data-auth="staff"` and adds `signInStaff` with a Turnstile token,
+      `staffProfile` and
       `onAuthChange`, and on every page it loads it hides the app switcher
       button and panel for a staff session whose profile lacks
       `sees_all_apps`; `scheduler/data.js` shows the form for no session, an

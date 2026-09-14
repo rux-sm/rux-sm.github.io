@@ -18,10 +18,10 @@ outputs, and each test run feeds its results back into the knowledge base.
   nothing, and its steps live in the planning walkthrough and the screen
   files. Its four "fails with no message" notes are confirmed in that
   walkthrough, line by line, before it goes.
-- **Walkthrough** is the name readers see for a guide, on every Notes page and
-  in the overview's prose. A walk is one run of a walkthrough.
+- The detailed step-by-step type is renamed everywhere to one name: Notes'
+  pages, navigation and addresses, and atlas's type, folder, rules and checks.
 - A map tile with a walkthrough links to it, and a lookup tile links to the
-  inventory walkthrough.
+  inventory walkthrough. "Walkthrough" in this plan stands for the chosen name.
 - A new walkthrough, **Check an item's inventory**, holds the inventory lookup
   once: Inventory 360, the per-warehouse view, and on hand, blocked, on order
   and allocated. It is written from `ship-from-stock.md` phase 0, which is
@@ -36,7 +36,14 @@ outputs, and each test run feeds its results back into the knowledge base.
   walk exists yet, so nothing migrates.
 - The walk form is a page on the private preview, `npm run serve -- --private`,
   which is never published. It shows a walkthrough's steps one at a time, with
-  a result, notes and a screenshot for each.
+  a result and notes for each.
+- The form saves through the private preview server, which listens only on
+  this Mac: the walk into atlas's `walks/`, screenshots into its `inbox/`. It
+  works wherever both repositories are cloned side by side and current.
+- A screenshot is dropped or pasted onto its step. The server names it
+  `SS_{code}_{what}_{YYYY-MM-DD}.png` from the step's session code and a short
+  description rux can edit, never from a step number, and writes the name into
+  that step's Evidence cell.
 - After each walk one checklist carries the results into the knowledge base:
   correct the walkthrough where LN differed, stamp the phase walked, update the
   screen files, close or open issues, and complete any map placeholder. It is a
@@ -44,25 +51,22 @@ outputs, and each test run feeds its results back into the knowledge base.
 
 ## Questions
 
-1. Does the rename reach atlas's own files? Recommended: no. Readers see
-   Walkthrough everywhere; atlas keeps `type: guide`, its `guides/` folder and
-   every page address, because renaming those touches every check and link and
-   changes nothing a reader sees.
-2. How does the walk form save? Recommended: straight into atlas's `inbox/`
-   through the private preview server, which listens only on this Mac. The
-   alternative is a file download handed to a session.
+1. Which name? Recommended: **Walkthrough**, which pairs with a walk, one run
+   of it. **Procedure** is the plain alternative. How-to, exercise, test and
+   reference are taken by other types.
 
 ## Tasks
 
 - [ ] Add the Notes column to walks: `WALK_HEADER` in atlas's
       `tools/_walks.py`, `tools/newwalk.py`, the selftest and
       `standards/walk-rules.md`.
-- [ ] Build the walk form on the private preview, saving as question 2 decides.
+- [ ] Build the walk form on the private preview, with dropped or pasted
+      screenshots named and saved into atlas's `inbox/`.
 - [ ] Write the after-a-walk checklist in atlas's `docs/handoff.md`.
 - [ ] Write the inventory walkthrough in atlas, and link it from the lookup
       tiles and from each walkthrough that reads on-hand.
-- [ ] Rename guide to walkthrough on Notes: headings, navigation, page titles
-      and the overview's prose.
+- [ ] Rename the type everywhere to the chosen name: atlas's type, folder,
+      rules and checks, and Notes' pages, addresses, navigation and prose.
 - [ ] Reshape the eight meeting summaries to the standard title and three
       parts, and stop publishing the full reviews.
 - [ ] Confirm the session map's four silent-failure notes in the planning

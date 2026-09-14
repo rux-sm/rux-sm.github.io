@@ -650,6 +650,23 @@
   background-color: var(--rux-field-02);
 }
 
+/* ROOM FOR THE COPY BUTTON at the end of a contact field, while it shows, so
+   a long value runs under nothing. A text input's button ends 2.25rem in; a
+   combo box's ends 6.5rem in, past Carbon's clear and open buttons. data.js
+   sets the class only while the field has a value. Two classes, Carbon's own
+   specificity for `.rux--list-box__field .rux--text-input`, and later. */
+.scheduler-copy-on .rux--text-input { padding-inline-end: 2.5rem; }
+.scheduler-copy-on--combo .rux--text-input { padding-inline-end: 6.75rem; }
+
+/* THE COPY BUTTON TAKES THE FIELD'S SURFACE. `.rux--copy-btn` paints
+   `--rux-layer`, a darker square inside a `field-02` field in the side panel;
+   inside a field it is transparent, like the combo box's clear button beside
+   it, and hovers with the field's own hover token. */
+.scheduler-copy .rux--copy-btn { background-color: transparent; }
+@media (any-hover: hover) {
+  .scheduler-copy .rux--copy-btn:hover { background-color: var(--rux-field-hover-02); }
+}
+
 /* A DATE PICKER INSIDE A MODAL IS CLIPPED BY THE MODAL, 2026-09-10.
    `.rux--modal-content` is `overflow-y: auto` (`css/rux.css:20593`) and
    Design's calendar is deliberately NOT portaled -- its own header says so,

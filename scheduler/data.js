@@ -1917,6 +1917,56 @@
     return wrap;
   }
 
+  /* A COPY BUTTON IN A CONTACT FIELD: Design's copy button in its tooltip,
+     which says Copied once the value lands. `js/copy-button.js` copies the
+     button's `data-rux-copy`, which `syncCopy` keeps equal to the field, so
+     what is copied is what is on screen, saved or not. It shows only while the
+     field has a value, and stays out of the tab order like the combo box's
+     clear button beside it.
+
+     ON A COMBO BOX IT GOES IN THE ROOT, NOT THE FIELD. `js/list-box.js` opens
+     the menu on any click inside `__field`, so a copy button there would open
+     the list as well; placed over the field from the root, the click is the
+     copy button's alone. */
+  function withCopy(item, id, label) {
+    const input = item.querySelector(`#${id}`);
+    const combo = input?.closest('.rux--combo-box');
+    const host = combo || input?.closest('.rux--text-input__field-wrapper');
+    if (!host) return item;
+    host.classList.add('scheduler-copy-host');
+    const tip = el('span', 'rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--left '
+      + `rux--popover--caret rux--popover--high-contrast scheduler-copy${combo ? ' scheduler-copy--combo' : ''}`);
+    tip.dataset.copyFor = id;
+    const trigger = el('div', 'rux--tooltip-trigger__wrapper');
+    const btn = el('button', 'rux--copy-btn rux--copy rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+    btn.type = 'button';
+    btn.tabIndex = -1;
+    btn.setAttribute('aria-label', `Copy ${label.charAt(0).toLowerCase()}${label.slice(1)}`);
+    btn.appendChild(svgUse('#i-copy', '16', '0 0 32 32'));
+    trigger.appendChild(btn);
+    const pop = el('span', 'rux--popover');
+    pop.append(el('span', 'rux--popover-content rux--tooltip-content', 'Copy'), el('span', 'rux--popover-caret'));
+    tip.append(trigger, pop);
+    host.appendChild(tip);
+    syncCopyTip(tip, input);
+    return item;
+  }
+
+  // Shows or hides one copy button for its field's value, and gives the field
+  // room for it while it shows (overrides.css).
+  function syncCopyTip(tip, input) {
+    const value = input?.value.trim() || '';
+    tip.hidden = !value;
+    tip.querySelector('.rux--copy-btn').dataset.ruxCopy = value;
+    const room = tip.classList.contains('scheduler-copy--combo') ? 'scheduler-copy-on--combo' : 'scheduler-copy-on';
+    tip.parentElement?.classList.toggle(room, !!value);
+  }
+  const syncCopy = () => {
+    for (const tip of document.querySelectorAll('.scheduler-copy')) {
+      syncCopyTip(tip, document.getElementById(tip.dataset.copyFor));
+    }
+  };
+
   function selectField(id, label, value, options) {
     const box = el('div', 'rux--select');
     const lab = el('label', 'rux--label', label);
@@ -3236,9 +3286,12 @@
          rule meant to run once. A run that is already flush and already
          gapless needs no second one inside it, so the fields go straight in. */
       topFields.append(
-        contactSearch('scheduler-f-cfind', 'Booking contact name', allContacts, contact),
-        textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
-        textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
+        withCopy(contactSearch('scheduler-f-cfind', 'Booking contact name', allContacts, contact),
+          'scheduler-f-cfind', 'Booking contact name'),
+        withCopy(textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
+          'scheduler-f-cphone', 'Booking contact phone'),
+        withCopy(textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
+          'scheduler-f-cemail', 'Booking contact email'),
       );
       /* PHONE AND EMAIL ARE THIS TRIP'S COPY. Editing them changes the trip,
          never the shared contact record; `linkContacts` says how the link is
@@ -3309,8 +3362,10 @@
       const drawRow = (c, n) => {
         const suffix = n === 1 ? '' : ` ${n}`;
         rowsHost.append(
-          contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, allContacts, c),
-          textField(`scheduler-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
+          withCopy(contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, allContacts, c),
+            `scheduler-f-d${n}`, `Day of contact name${suffix}`),
+          withCopy(textField(`scheduler-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
+            `scheduler-f-dphone${n}`, `Day of contact phone${suffix}`),
         );
       };
       const shown = dayRows.length ? dayRows : [null];
@@ -4919,6 +4974,10 @@
   panelDetails?.addEventListener('change', refreshDirty);
   // A dropdown is a <button>, so a pick fires neither; list-box.js announces it.
   panelDetails?.addEventListener('rux:listbox-selected', refreshDirty);
+  // The copy buttons follow their fields, a pick that fills phone and email
+  // included: that handler is registered above, so this runs after it.
+  panelDetails?.addEventListener('input', syncCopy);
+  panelDetails?.addEventListener('rux:listbox-selected', syncCopy);
   // The add button reveals a row rather than changing a value, so it fires
   // neither input nor change; without this a contact chosen in the new row
   // arms Save but the row appearing does not, which reads as a dead control.

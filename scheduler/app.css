@@ -52,7 +52,7 @@
      to scroll. */
   --scheduler-day-min: 8.5rem;
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
-  --scheduler-bar-rows: 5;
+  --scheduler-bar-rows: 6;
   --scheduler-fs: var(--rux-label-01-font-size);
   --scheduler-ls: var(--rux-label-01-letter-spacing);
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
@@ -817,15 +817,21 @@ button.scheduler-row-head__num {
    destination has no toggle: a bar with no name on it is not a shorter bar, it
    is an unreadable one. */
 .sch--no-client .scheduler-bar__client,
+.sch--no-contact .scheduler-bar__contact,
 .sch--no-time .scheduler-bar__time,
-.sch--no-reqs .scheduler-bar__reqs,
+.sch--no-notes .scheduler-bar__notes,
 .sch--no-drivers .scheduler-bar__drivers { display: none; }
 
 .scheduler-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; }
 .scheduler-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
+/* The first part of a row gives way; whatever sits right of it keeps its width. */
+.scheduler-bar__row > :first-child { flex: 0 1 auto; min-inline-size: 0; }
 .scheduler-bar__dest { font-weight: 600; }
-.scheduler-bar__ref, .scheduler-bar__time { font-variant-numeric: tabular-nums; }
-.scheduler-bar__ref { opacity: .75; flex: none; }
+.scheduler-bar__ref, .scheduler-bar__time, .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
+.scheduler-bar__ref, .scheduler-bar__phone { flex: none; }
+/* The phone sits straight after the name rather than at the bar's far end. */
+.scheduler-bar__contact { justify-content: flex-start; }
+.scheduler-bar__ref { opacity: .75; }
 /* OPEN AND CLOSE TRIP, IN THE TOP CORNER OF A BAR'S FIRST DAY. data.js puts
    each straight after its bar with the top of the bar and the right edge of its
    first day, and this insets both by the bar's padding. 2rem is the small icon
@@ -866,7 +872,26 @@ button.scheduler-row-head__num {
 }
 .scheduler-bar-close:hover { background: var(--rux-background-inverse-hover); }
 .scheduler-bar-close:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
-.scheduler-bar__client, .scheduler-bar__reqs { opacity: .85; }
+.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__notes { opacity: .85; }
+
+/* A REQUIREMENT THE BUS FAILS: the missing item's icon on the warning colour,
+   in the text colour that reads on it, so it shows on every bar tint. The copy
+   on the destination row shows only while the drivers row is turned off. */
+.scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
+.scheduler-bar__warn--dest { display: none; }
+.sch--no-drivers .scheduler-bar__warn--dest { display: flex; }
+.scheduler-bar__warn-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--scheduler-row-h);
+  block-size: var(--scheduler-row-h);
+  background: var(--rux-support-warning);
+  color: var(--scheduler-on-warning);
+}
+.scheduler-bar__warn-chip svg { display: block; }
+/* On an amber bar the chip would vanish into its own fill. */
+.scheduler-bar--amber .scheduler-bar__warn-chip { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 
 /* A double booking: a strip over the last row, in the error tokens. */
 .scheduler-bar__conflict {

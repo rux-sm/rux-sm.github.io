@@ -587,7 +587,7 @@
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
   };
 
-  function barEl(b, driversById) {
+  function barEl(b, driversById, busesById) {
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
     const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
@@ -617,8 +617,41 @@
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), el('span', 'scheduler-bar__ref', ref));
+    /* A REQUIREMENT IS DRAWN ONLY WHEN THE BUS FAILS IT. A trip that needs a
+       sleeper on a sleeper bus has nothing to say, so the flags cost no row; a
+       trip on a bus without one shows the missing item as a warning icon. No
+       bus means nothing to compare, and an unrecorded capacity is not a
+       shortfall. */
+    const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
+    const lacks = bus ? [
+      trip.req_sleeper && !bus.sleeper ? { href: '#i-hotel', label: `Needs a sleeper, bus ${bus.number} has none` } : null,
+      trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
+      trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
+    ].filter(Boolean) : [];
+    // Drawn on the drivers row and again on the destination row; app.css shows
+    // the second only while the drivers row is turned off, so hiding a row
+    // never hides the warning. The bar's label carries it for a screen reader.
+    const warn = where => {
+      if (!lacks.length) return null;
+      const box = el('span', `scheduler-bar__warn scheduler-bar__warn--${where}`);
+      for (const w of lacks) {
+        const chip = el('span', 'scheduler-bar__warn-chip');
+        chip.title = w.label;
+        chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
+        box.appendChild(chip);
+      }
+      return box;
+    };
+
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null, warn('dest'));
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
+
+    // THE BOOKING CONTACT the editor links, from the joined `contacts` row. The
+    // phone keeps its width and the name gives way.
+    const contact = trip.contacts;
+    const who = el('span', null, contact?.name || '');
+    if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
+    addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', contact.phone) : null);
 
     // Departure and return on one line, an en dash between them. The SPOT
     // time -- be at the yard -- is read above and deliberately not drawn: the
@@ -633,13 +666,10 @@
       : (legDays > 1 ? `${legDays} days` : '');
     addRow(bar, 'scheduler-bar__time', el('span', null, when));
 
-    const reqs = [
-      trip.req_sleeper ? 'Sleeper' : null,
-      trip.req_ada ? 'ADA lift' : null,
-      trip.req_56pax ? '56 pax' : null,
-      trip.trip_type && trip.trip_type !== 'round_trip' ? String(trip.trip_type).replace(/_/g, ' ') : null,
-    ].filter(Boolean).join(' · ');
-    addRow(bar, 'scheduler-bar__reqs', el('span', null, reqs));
+    // The trip's note on one line, cut with an ellipsis; the whole of it on hover.
+    const note = el('span', null, trip.notes || '');
+    if (trip.notes) note.title = trip.notes;
+    addRow(bar, 'scheduler-bar__notes', note);
 
     const names = assign
       ? (assign.trip_drivers || [])
@@ -647,13 +677,14 @@
           .filter(Boolean)
           .map(who => who.short_name || who.name)
       : [];
-    addRow(bar, 'scheduler-bar__drivers', el('span', null, assign ? (names.join(' · ') || 'No driver') : 'Needs a bus'));
+    addRow(bar, 'scheduler-bar__drivers', el('span', null, assign ? (names.join(' · ') || 'No driver') : 'Needs a bus'), warn('drivers'));
 
     bar.setAttribute('aria-label', [
       trip.destination || 'No destination', trip.customer, ref,
       place.fromPrev ? 'continues from the previous week' : null,
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
+      ...lacks.map(w => w.label),
     ].filter(Boolean).join(', '));
     return bar;
   }
@@ -664,7 +695,8 @@
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
     // for nothing.
-    panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: new Map(buses.map(b => [b.id, b])), driversById, contacts: contacts || [] };
+    const busesById = new Map(buses.map(b => [b.id, b]));
+    panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, contacts: contacts || [] };
 
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
@@ -903,7 +935,7 @@
         span.setAttribute('aria-label', `Out of service, ${w.reason || 'no reason given'}`);
         track.appendChild(span);
       }
-      for (const b of bars) { const el = barEl(b, driversById); installDrag(el); track.appendChild(el); }
+      for (const b of bars) { const el = barEl(b, driversById, busesById); installDrag(el); track.appendChild(el); }
 
       rowEl.append(head, track);
       gridEl.appendChild(rowEl);
@@ -4656,17 +4688,17 @@
      be a switch attached to nothing -- worse than its absence, because it
      promises a mode that does not exist.
 
-     THE BAR ROWS ARE THE USEFUL HALF. A bar reserves five lines whatever it
-     holds, and the requirements line is empty on nearly every trip -- 16px of
-     every 88px bar spent on nothing. Turning a row off REMOVES it rather than
+     THE BAR ROWS ARE THE USEFUL HALF. A bar reserves six lines whatever it
+     holds, and the booking contact line is empty on most trips -- 16px of
+     every 104px bar spent on nothing. Turning a row off REMOVES it rather than
      blanking it: `--scheduler-bar-rows` is the count, so the bar shrinks and the row
      with it, and more buses fit on screen.
 
      LOCAL, AND FORGIVING. `screen-inventory.md` says these preferences stay in
      `localStorage` and are read with a try-catch; a browser that refuses
      storage gets the defaults and no error. */
-  const VIEW_ROWS = ['client', 'time', 'reqs', 'drivers'];
-  const view = { client: true, time: true, reqs: true, drivers: true, sunday: false };
+  const VIEW_ROWS = ['client', 'contact', 'time', 'notes', 'drivers'];
+  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {

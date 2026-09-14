@@ -50,6 +50,7 @@ From the repository root:
 
 ```sh
 npm run serve -- --private   # atlas's working tree, internal tier, into build/ on :8644; never published
+                             # the walk form at /walk/ saves into atlas through tools/serve-walk.mjs on :8645
 npm run export               # sync-guides.sh from ../../atlas, then build and check
 npm run serve                # the whole site on :8640, this app at /notes/
 npm run check                # every gate here, plus the rest of the site

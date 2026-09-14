@@ -18,10 +18,10 @@ outputs, and each test run feeds its results back into the knowledge base.
   nothing, and its steps live in the planning walkthrough and the screen
   files. Its four "fails with no message" notes are confirmed in that
   walkthrough, line by line, before it goes.
-- The detailed step-by-step type is renamed everywhere to one name: Notes'
+- The detailed step-by-step type is renamed **walkthrough** everywhere: Notes'
   pages, navigation and addresses, and atlas's type, folder, rules and checks.
 - A map tile with a walkthrough links to it, and a lookup tile links to the
-  inventory walkthrough. "Walkthrough" in this plan stands for the chosen name.
+  inventory walkthrough.
 - A new walkthrough, **Check an item's inventory**, holds the inventory lookup
   once: Inventory 360, the per-warehouse view, and on hand, blocked, on order
   and allocated. It is written from `ship-from-stock.md` phase 0, which is
@@ -51,17 +51,10 @@ outputs, and each test run feeds its results back into the knowledge base.
 
 ## Questions
 
-1. Which name? Recommended: **Walkthrough**, which pairs with a walk, one run
-   of it. **Procedure** is the plain alternative. How-to, exercise, test and
-   reference are taken by other types.
+None open.
 
 ## Tasks
 
-- [ ] Add the Notes column to walks: `WALK_HEADER` in atlas's
-      `tools/_walks.py`, `tools/newwalk.py`, the selftest and
-      `standards/walk-rules.md`.
-- [ ] Build the walk form on the private preview, with dropped or pasted
-      screenshots named and saved into atlas's `inbox/`.
 - [ ] Write the after-a-walk checklist in atlas's `docs/handoff.md`.
 - [ ] Write the inventory walkthrough in atlas, and link it from the lookup
       tiles and from each walkthrough that reads on-hand.

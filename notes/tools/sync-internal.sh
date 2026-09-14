@@ -39,6 +39,11 @@ ln -s "$HERE/brand" "$OUT/site/brand"
 # design's own by every page; without them the viewer 404s twice per page.
 ln -s "$HERE/theme.css" "$OUT/site/theme.css"
 ln -s "$HERE/overrides.css" "$OUT/site/overrides.css"
+# The walk form, at /walk/. It saves through tools/serve-walk.mjs, which
+# `npm run serve -- --private` starts beside this site.
+mkdir -p "$OUT/site/walk"
+ln -s "$HERE/tools/walk-form.html" "$OUT/site/walk/index.html"
+ln -s "$HERE/tools/walk-form.js" "$OUT/site/walk/walk-form.js"
 LN_DATA="$OUT/data" LN_OUT="$OUT/site/guides" DS="$DS" node "$HERE/tools/build.mjs"
 
 echo "  private site: $OUT/site  (git-ignored, never published)"

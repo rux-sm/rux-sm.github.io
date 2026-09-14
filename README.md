@@ -30,7 +30,7 @@ Notes work also needs the private library cloned beside this repository:
 
 ```sh
 npm run serve                  # http://localhost:8640/ — the whole site, loopback only
-npm run serve -- --private     # atlas's internal tier on :8644, never published
+npm run serve -- --private     # atlas's internal tier and the walk form on :8644, never published
 npm run build                  # regenerate what is committed but derived
 npm run check                  # every app, Notes' gates, the names sweep; --full adds Design verify
 npm test                       # the same check, under the name every tool expects

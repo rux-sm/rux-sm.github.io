@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "serve", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs"], "port": 8640, "autoPort": true }
+    { "name": "serve", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs"], "port": 8640, "autoPort": true },
+    { "name": "serve-private", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs", "--private"], "port": 8644 }
   ]
 }

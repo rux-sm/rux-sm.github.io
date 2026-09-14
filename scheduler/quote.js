@@ -184,16 +184,22 @@
 
   const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
 
+  // Dead miles and other charges count only while their switch is on.
+  const extrasOn = () => $('scheduler-quote-extras').getAttribute('aria-checked') === 'true';
+
   const compute = () => {
     const n = driversChosen();
-    const trip = tripQuote({ miles: column('trip'), rate: num($('scheduler-quote-rate').value), dead: num($('scheduler-quote-dead').value) }, rates);
+    const extras = extrasOn();
+    $('scheduler-quote-extras-fields').hidden = !extras;
+    $('scheduler-quote-other-row').hidden = !extras;
+    const trip = tripQuote({ miles: column('trip'), rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
     const driver = n === 0 ? null : driverPay({
       driver1: column('d1'),
       driver2: n === 2 ? column('d2') : column('d2').map(() => 0),
       drivers: n,
       church: $('scheduler-quote-church').checked,
     }, rates);
-    const other = num($('scheduler-quote-other').value);
+    const other = extras ? num($('scheduler-quote-other').value) : 0;
     const total = other + (trip.amount ?? 0) + (driver?.amount ?? 0);
 
     $('scheduler-quote-total').textContent = money.format(total);
@@ -374,7 +380,10 @@
   const form = $('scheduler-quote-form');
   form.addEventListener('input', compute);
   form.addEventListener('change', compute);
+  // js/form-controls.js flips the switch and says so with `rux:toggle`.
+  form.addEventListener('rux:toggle', compute);
   form.addEventListener('reset', () => setTimeout(() => {
+    window.Rux.formControls?.toggle($('scheduler-quote-extras-toggle'), false);
     dayCount = 1;
     $('scheduler-quote-day-rows').replaceChildren();
     drawDays();

@@ -2674,10 +2674,10 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-menu-trigger[hidden] { display: none; }
 
 /* ── THE QUOTE CALCULATOR (quote.html) ─────────────────────────────────────
-   A form beside its total. The form is capped at a width its fields read at,
-   and the summary sits against it, sticky, so the total stays in view while
-   the miles table grows. Where the two no longer fit side by side, the summary
-   follows the form. */
+   Three tiles. The miles tile is on the left, capped at a width its fields
+   read at; the trip tile and the total stack on the right, sticky, so the total
+   stays in view while the miles table grows. Below lg the three stack in the
+   order a quote is built: trip, miles, total. */
 .scheduler-quote-panel { padding-block-start: var(--rux-spacing-07); }
 /* overrides.css takes the page's padding away below md, which suits the
    full-bleed board. This page is a form with prose, so it keeps a gutter. */
@@ -2688,18 +2688,28 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 .scheduler-quote {
   display: grid;
-  grid-template-columns: minmax(0, 36rem) minmax(16rem, 20rem);
+  grid-template-columns: minmax(0, 40rem) minmax(18rem, 22rem);
   align-items: start;
-  gap: var(--rux-spacing-07);
+  gap: var(--rux-spacing-05);
 }
-.scheduler-quote__form { min-inline-size: 0; }
-.scheduler-quote__summary {
+.scheduler-quote__miles { min-inline-size: 0; }
+.scheduler-quote__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-05);
   position: sticky;
   inset-block-start: calc(3rem + var(--rux-spacing-05));
+/* Stacked, the side column dissolves so the trip tile can lead. */
 }
 @media (max-width: 65.98rem) {
-  .scheduler-quote { grid-template-columns: minmax(0, 36rem); }
-  .scheduler-quote__summary { position: static; }
+  .scheduler-quote {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-inline-size: 40rem;
+  }
+  .scheduler-quote__side { display: contents; }
+  .scheduler-quote__trip { order: -1; }
 }
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
 .scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
@@ -2709,7 +2719,8 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   gap: var(--rux-spacing-05);
   align-items: end;
 }
-.scheduler-quote__church { align-self: center; }
+/* The grid's display beats the browser's [hidden]. */
+.scheduler-quote__fields[hidden] { display: none; }
 /* The checkbox wrapper's own display rule beats the browser's [hidden]. */
 .scheduler-quote__church[hidden] { display: none; }
 .scheduler-quote__lede,

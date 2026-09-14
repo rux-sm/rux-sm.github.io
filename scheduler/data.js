@@ -1268,8 +1268,8 @@
   const panelTitle = document.getElementById('scheduler-panel-title');
   const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
   const pageEl = document.querySelector('.scheduler-page');
-  // Open trip: the words on a desktop, the icon alone on a phone.
-  const openTripBtns = [...document.querySelectorAll('[data-scheduler-open-trip]')];
+  // Open trip, placed on the selected bar by placeBarOpen.
+  const barOpenBtn = document.getElementById('scheduler-bar-open');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   const def = (rows) => {
@@ -4367,10 +4367,37 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
+  /* THE OPEN BUTTON FOLLOWS THE SELECTION. It goes straight after the selected
+     bar, so app.css can show it from that bar's own hover and focus, and takes
+     the bottom and right edges of the bar's FIRST DAY in its track, which
+     app.css turns into a corner. A week-long trip would otherwise put it six
+     days from the destination it opens.
+
+     THE FIRST DAY ENDS WHERE A ONE-DAY BAR WOULD. A bar is `span` days wide
+     less its two gaps, so those gaps are `span * day - width`, and the first
+     day's edge is one day from the bar's start less the same gaps.
+
+     There is none on any bar of the trip in the editor: those carry the
+     pencil already, and a second pencil on the other leg would read as two
+     marks for one state. */
+  function placeBarOpen(bar = selectedBar()) {
+    if (!barOpenBtn) return;
+    const none = !bar?.dataset.tripId || isEditorTrip(bar);
+    barOpenBtn.hidden = none;
+    if (none) return;
+    if (barOpenBtn.previousElementSibling !== bar) bar.after(barOpenBtn);
+    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
+    const day = bar.parentElement.clientWidth / days;
+    const span = Math.max(1, +bar.dataset.span || 1);
+    const gaps = Math.max(0, span * day - bar.offsetWidth);
+    const end = Math.min(bar.offsetLeft + bar.offsetWidth, bar.offsetLeft + day - gaps);
+    barOpenBtn.style.setProperty('--scheduler-open-bottom', `${bar.offsetTop + bar.offsetHeight}px`);
+    barOpenBtn.style.setProperty('--scheduler-open-end', `${end}px`);
+  }
+
   function syncSelection() {
     const bar = selectedBar();
-    const hide = !bar?.dataset.tripId || isEditorBar(bar);
-    for (const b of openTripBtns) b.hidden = hide;
+    placeBarOpen(bar);
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
     // A pencil on each locked bar says why it does not drag.
@@ -4469,7 +4496,10 @@
     if (unsavedWork()) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  for (const b of openTripBtns) b.addEventListener('click', openSelected);
+  barOpenBtn?.addEventListener('click', openSelected);
+  // The panel and the whole-pixel day columns change a bar's corner, a frame
+  // after the grid's own size changes.
+  if (barOpenBtn) new ResizeObserver(() => requestAnimationFrame(() => placeBarOpen())).observe(gridEl);
 
   // Enter on a selected bar opens it. This runs before app.js's handler, so the
   // first Enter on an unselected bar only selects it.
@@ -4998,7 +5028,7 @@
 
   gridEl.addEventListener('contextmenu', e => {
     const track = e.target.closest('.scheduler-track');
-    if (!track || e.target.closest('.scheduler-bar')) return;
+    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-open')) return;
     if (!shown) return;
     e.preventDefault();
 

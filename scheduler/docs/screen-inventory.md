@@ -138,9 +138,9 @@ menu.
 
 ### Selecting is not opening
 
-A click selects a trip bar: its outline, and its days in the driver grid. Open
-trip in the toolbar, Enter or the bar's right-click menu loads it into the
-panel. The panel keeps its trip through week changes and other selections, so
+A click selects a trip bar: its outline, and its days in the driver grid. The
+open button in the selected bar's corner, Enter or the bar's right-click menu
+loads it into the panel. The panel keeps its trip through week changes and other selections, so
 a call about another trip does not cost an edit in progress, and it asks
 before unsaved changes are lost.
 

@@ -626,12 +626,6 @@
                 <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
               </h2>
             </div>
-            <!-- Shown while a selected trip bar is not the one in the editor.
-                 data.js opens that trip, asking first about unsaved changes.
-                 The words fit a desktop toolbar; a phone's row has room for the
-                 icon alone, so exactly one of the pair shows at each width. -->
-            <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-open-trip" data-scheduler-open-trip hidden>Open trip<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--tertiary rux--btn--icon-only rux--layout--size-md scheduler-toolbar__sm-only" id="scheduler-open-trip-sm" data-scheduler-open-trip aria-label="Open trip" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
             <div class="scheduler-toolbar__spacer"></div>
             <!-- MOVE, THEN ACT. The two arrows are neighbours because paging
                  back and forth is the most repeated gesture here and Today
@@ -1088,6 +1082,15 @@
       <div class="rux--menu-item__label">New trip here</div>
     </li>
   </ul>
+
+  <!-- OPEN TRIP ON THE SELECTED BAR. data.js places this one button straight
+       after the selected bar, in the corner of the bar's first day, and
+       app.css shows it while that bar is hovered or focused, or always where
+       nothing can hover. A sibling and not a child, because the bar is itself
+       a button. Carbon's secondary icon button, because its solid fill reads
+       on every bar colour. The pencil, because it is the mark the trip then
+       carries on the board while it is open in the editor. -->
+  <button type="button" class="rux--btn rux--btn--secondary rux--btn--icon-only rux--layout--size-sm scheduler-bar-open" id="scheduler-bar-open" aria-label="Open trip" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
 
   <!-- THE BAR'S CONTEXT MENU. `screen-inventory.md` section 5 keeps three of
        the old bar's five icons -- Open trip, Move bus, Print envelope -- and

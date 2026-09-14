@@ -75,8 +75,8 @@ function, including the ones that create share links.
   aim is a wall between the public and staff, not between staff. It must meet
   the project's minimum password length.
 - **The scheduler's log-in is live:** `account.js` holds a staff session only,
-  hides the switcher for a team account and sends it from Home to the
-  scheduler, and `scheduler/data.js` shows the log-in form until a staff
+  hides the switcher for a team account, `funnel.js` sends a team account to
+  the scheduler from every other page on the site, and `scheduler/data.js` shows the log-in form until a staff
   account is in, reading an empty fleet as an ended log-in.
 - **Later plans:** per-person chat rules, trip history naming the actor from
   the session, private storage, private realtime channels, and reporting a

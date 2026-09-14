@@ -10,8 +10,9 @@
 
    WITH A STAFF SESSION the name and theme sync to platform.profiles, cloud
    first on load and local edits pushed up after, debounced. A team account,
-   one whose profile lacks sees_all_apps, is for the scheduling apps only:
-   the app switcher is hidden for it, and Home sends it to the scheduler.
+   one whose profile lacks sees_all_apps, uses only the scheduler on this
+   site: the app switcher is hidden for it, and /funnel.js sends it to the
+   scheduler from every other page.
 
    THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS. Both are
    meant to sit in client code; the paired secret keys stay in the Supabase
@@ -41,8 +42,12 @@
   // name on the reserved staff domain, which nobody can own; a full email
   // address is used as typed.
   const STAFF_EMAIL_DOMAIN = 'staff.invalid';
+  // Both keys are read by /funnel.js by name. STORAGE_KEY is supabase-js's
+  // own default for this project, named so the two files cannot drift.
+  const STORAGE_KEY = 'sb-udnmqhayzhrbltxzzhjw-auth-token';
+  const TEAM_KEY = 'rux.team-account';
 
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: STORAGE_KEY } });
   const profiles = () => sb.schema('platform').from('profiles');
 
   const usernameToEmail = input => {
@@ -129,15 +134,20 @@
     if (!staff || staffReady) return;
     staffReady = true;
 
-    // A TEAM ACCOUNT STAYS IN THE SCHEDULING APPS.
+    // A TEAM ACCOUNT STAYS IN THE SCHEDULER. The record lets /funnel.js send
+    // it back from any other page before that page draws.
     if (!staff.sees_all_apps) {
-      if (location.pathname === '/' || location.pathname === '/index.html') {
+      try { localStorage.setItem(TEAM_KEY, session.user.id); } catch {}
+      if (!location.pathname.startsWith('/scheduler/')) {
         location.replace('/scheduler/');
         return;
       }
       document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
       document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
-    } else if (panelButton) {
+    } else {
+      try { localStorage.removeItem(TEAM_KEY); } catch {}
+    }
+    if (staff.sees_all_apps && panelButton) {
       // THE ONE DOOR INTO THE FULLER ACCOUNT PAGE, for the account that sees
       // every app; a team account has no reason to leave the scheduler.
       const link = document.createElement('a');
@@ -183,6 +193,7 @@
   // awaited inside its own auth callback.
   sb.auth.onAuthStateChange((event, next) => {
     if (event === 'SIGNED_IN') setTimeout(() => setupStaff(next), 0);
+    if (event === 'SIGNED_OUT') try { localStorage.removeItem(TEAM_KEY); } catch {}
   });
 
   let session;

@@ -79,6 +79,19 @@ if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
 console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps.length} in switcher.json${bad ? '' : ', every path and icon well formed'}`);
 if (bad) failed.push('switcher');
 
+// THE FUNNEL RULE. A page that forgets /funnel.js is a door a team account
+// can walk through, and nothing on it looks wrong. Every full page outside
+// the scheduler loads it before any other script, so it runs before the page
+// draws; the scheduler is where the funnel leads.
+console.log('\n── funnel');
+const pages = text.filter(p => p.endsWith('.html') && !p.startsWith('scheduler/'))
+  .map(p => [p, readFileSync(join(ROOT, p), 'utf8')])
+  .filter(([, s]) => s.includes('<head>'));
+const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<script src="/funnel.js">').map(([p]) => p);
+for (const p of open) console.log(`  FAIL  ${p}: its first script is not <script src="/funnel.js">`);
+console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages outside the scheduler${open.length ? '' : ', each loads /funnel.js first'}`);
+if (open.length) failed.push('funnel');
+
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
 
 console.log('');

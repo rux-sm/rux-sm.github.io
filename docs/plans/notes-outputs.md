@@ -29,8 +29,6 @@ meeting updates the outputs, and every fact keeps one home.
 - The planning route, `demand-to-shipment-via-planning.md`, stops being its own
   document. It becomes a route on the map that links the walkthroughs in
   order, and anything only it holds moves into the walkthrough that owns it.
-- The bamboo test item family, today a reference beside the tests, folds into
-  the walkthrough that builds it, `create-basic-test-items-and-defaults.md`.
 - **Concept** stays the name and becomes published. Each concept is attested by
   rux before it publishes, which is what closes OI-274.
 - An **experiment** is a question, a prediction, one change, what happened, and
@@ -51,9 +49,6 @@ None open.
 
 ## Tasks
 
-- [ ] Fold the bamboo test item family into the walkthrough that builds it,
-      then retire atlas's `tests/` folder and its `test` type, which hold
-      nothing else.
 - [ ] Move each walkthrough's long phase notes into the concept or screen file
       that owns them, and attest and publish the concepts.
 - [ ] Turn the planning route into a map route, moving what only it holds into

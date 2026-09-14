@@ -2071,20 +2071,18 @@ button.scheduler-row-head__num {
     order: 0;
     /* A card on the page's background, 16px in from every edge, so the row
        lines end at the card's edges. The overlay scrolls rather than the grid,
-       which puts the phone's scroll bar in the gutter at the screen's edge
-       instead of over the last day's squares. Block rather than flex: with the
-       overlay scrolling, the pane no longer fills a remainder. */
+       so the phone draws its scroll bar in the gutter, clear of the squares.
+       Block, because the pane is as tall as its rows. */
     display: block;
     padding: 0 var(--rux-spacing-05) var(--rux-spacing-05);
     overflow-y: auto;
     overscroll-behavior: contain;
     background: var(--rux-background);
   }
-  /* The head sticks at the top and the day row under it, 48px down, both over
-     the grid's own layers, the highest of which is the corner cell at 4.
-     The gap above the card is the head's margin and scrolls away with the
-     list. As the overlay's padding it held the head 16px down, and the rows
-     showed through that strip as they scrolled past. */
+  /* The head sticks at the top, above the grid's highest layer, the corner
+     cell at 4, and the day row sticks 48px under it. The gap above the card
+     is the head's margin, because a sticky head stops below its scroller's
+     padding and rows would show above it. */
   .scheduler-aside__head {
     position: sticky;
     inset-block-start: 0;

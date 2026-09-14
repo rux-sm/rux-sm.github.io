@@ -1,6 +1,6 @@
-commit   ad98ecf655e2fcb31476a3013a0ca6459089c9e0
-date     2026-09-14T03:20:53Z
-subject  docs(experiments): Attest the folded planning keys
+commit   488bea5dbdd01ad3f556853079004daaa8a7892b
+date     2026-09-14T03:27:38Z
+subject  refactor: Retire tests, move bamboo to config
 contract 10 
 tier     export
 sha256   4aeb11bf34be475573a07bda7d13cbd046d627dea8e5843f303b86e9cf910bad

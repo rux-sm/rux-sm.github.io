@@ -18,15 +18,20 @@ function, including the ones that create share links.
 - **Each person signs in with their own username and password.** rux creates
   the accounts in the Supabase dashboard, confirmed at creation and sending no
   email, and resets passwords there. The app turns a username into a stand-in
-  email on a staff domain. Claude never types or handles a password.
+  email on a staff domain, and a full email address is accepted as typed.
+  Claude never types or handles a password.
 - **Seven accounts**, one for each current rux-ui profile, the wall display
   included, each linked to its `public.profiles` row so names, colours and
-  photos stay. rux's own account is a username and password like the rest.
-- **The same login works in both apps and shows the same data.** A team
-  account is for the scheduler and rux-ui only: the site header hides the app
-  switcher for it, which leaves its profile icon farthest right. rux's account
-  keeps the switcher, still the rightmost icon as Carbon's header orders it.
-  Hiding it only tidies the menu; Notes and Design stay public pages.
+  photos stay. rux's app login moves to rux's real email, and rux moves the
+  Supabase dashboard login from GitHub to that email.
+- **Each scheduling app has its own full login screen.** Staff receive a link
+  to each app separately and sign in to each one with the same username and
+  password; signing in to one does not sign in to the other.
+- **A team account stays inside the app it signed in to:** no app switcher,
+  no link to Home, to another app, or between the scheduler and rux-ui. Home
+  sends a signed-in team account to the scheduler. rux's account keeps the
+  switcher, the rightmost header icon as Carbon orders it, and opens every
+  app. Notes and Design stay public pages anyone can open by address.
 - **Sign-in replaces "Who's this?".** Identity and the trip-history name come
   from the session; changing person is sign out, then sign in.
 - **The display account has full staff access** and stays signed in, because
@@ -52,7 +57,7 @@ function, including the ones that create share links.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
-- **Captcha protection is on and covers sign-in**, so both sign-in forms send
+- **Captcha protection is on and covers sign-in**, so both login screens send
   a Turnstile token with the site key `account.js` already uses. The email
   provider is enabled.
 - **Anonymous sign-in ends everywhere.** Home, Notes and Design open with no
@@ -83,26 +88,28 @@ None open.
       read on `profiles` with update of the own row only; staff versions of
       the game policies; the four tables with row level security off get it
       on, with `staff_all` and a temporary `transition_open` policy.
-- [ ] rux-ui sign-in: `js/core/staff-username.js` with a test,
-      `js/data/auth-db.js` and `js/components/staff-sign-in.js` with a
-      Turnstile token;
-      `index.html` signs in before the first load, drops the profile picker,
-      and turns "Switch profile" into "Sign out"; a lost session reopens the
-      sign-in over the app; `js/core/profile.js` keeps its three exports;
-      `js/pages/trip-intake.js` signs in first; forced refresh after the
-      deploy.
-- [ ] Scheduler sign-in: `account.js` never signs in anonymously, drops the
-      GitHub and Google buttons, syncs a theme only for a staff session, and
-      adds `signInStaff` with a Turnstile token, `staffProfile` and
-      `onAuthChange`, and on every page it loads it hides the app switcher
-      button and panel for a staff session whose profile lacks
-      `sees_all_apps`; `scheduler/data.js` shows the form for no session, an
-      anonymous one or a non-staff account, reads an empty fleet as a lost
-      sign-in, and reports a write that returns no row as not saved.
+- [ ] rux changes the `sergio` app login to rux's real email, deleting the old
+      GitHub app account first if it holds that address, and moves the
+      dashboard login to it.
+- [ ] rux-ui login screen: `js/core/staff-username.js` with a test,
+      `js/data/auth-db.js`, and a full login screen with a Turnstile token
+      shown before the app loads when there is no staff session;
+      `index.html` drops the profile picker and turns "Switch profile" into
+      "Sign out", which returns to the login screen; a lost session returns to
+      it without discarding unsaved work; `js/core/profile.js` keeps its three
+      exports; `js/pages/trip-intake.js` requires the same sign-in; forced
+      refresh after the deploy.
+- [ ] Scheduler login screen: `account.js` never signs in anonymously, drops
+      the GitHub and Google buttons, syncs a theme only for a staff session,
+      and adds `signInStaff` with a Turnstile token, `staffProfile` and
+      `onAuthChange`; on every site page it loads, a staff session whose
+      profile lacks `sees_all_apps` hides the app switcher, and Home sends it
+      to `/scheduler/`; `scheduler/data.js` shows a full login screen for no
+      session, an anonymous one or a non-staff account, reads an empty fleet
+      as a lost sign-in, and reports a write that returns no row as not saved.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
-      dashboard once that deploy is live; a migration deletes the anonymous
-      users, whose theme rows go with them, and rux deletes the old GitHub
-      account.
+      dashboard once both login screens are live; a migration deletes the
+      anonymous users, whose theme rows go with them.
 - [ ] Watch for at least seven days, until three business days in a row show
       every account signed in, no `anon` realtime subscription, and no anon or
       non-staff table request in the edge logs; a dry run inside a rolled-back

@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <!-- viewport-fit=cover makes a phone report its safe areas, the home bar and the
-     camera cutout, to CSS; app.css reads them as --scheduler-safe-*. -->
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+     camera cutout, to CSS; app.css reads them as --scheduler-safe-*.
+     maximum-scale=1 stops an iPhone zooming in when a field under 16px is
+     tapped; iOS still lets a person pinch to zoom. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Scheduler</title>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">

@@ -5752,9 +5752,17 @@
   const appEl = document.getElementById('scheduler-app');
   const searchEl = document.getElementById('scheduler-search')?.closest('.scheduler-header-search');
   const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
+  const headerBtns = [
+    document.querySelector('.scheduler-menu-trigger'),
+    document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
+  ].filter(Boolean);
   let started = false;
-  // Only an account whose profile sees every app gets the app switcher.
-  const showSwitcher = staff => { if (switcherBtn) switcherBtn.hidden = !staff?.sees_all_apps; };
+  // The menu and account buttons are for a logged-in staff account; the app
+  // switcher only for one whose profile sees every app.
+  const showHeader = staff => {
+    for (const btn of headerBtns) btn.hidden = !staff;
+    if (switcherBtn) switcherBtn.hidden = !staff?.sees_all_apps;
+  };
 
   const loginSay = text => {
     if (!loginError) return;
@@ -5762,7 +5770,7 @@
     loginError.hidden = !text;
   };
   const showLogin = text => {
-    showSwitcher(null);
+    showHeader(null);
     if (loginEl) loginEl.hidden = false;
     if (appEl) appEl.hidden = true;
     if (searchEl) searchEl.hidden = true;
@@ -5791,7 +5799,7 @@
       if (problem) {
         loginSay(problem);
       } else {
-        showSwitcher(await account.staffProfile().catch(() => null));
+        showHeader(await account.staffProfile().catch(() => null));
         startBoard();
       }
     } catch {
@@ -5811,7 +5819,7 @@
     let staff = null;
     try { staff = await account.staffProfile(); } catch { /* the form shows */ }
     if (staff) {
-      showSwitcher(staff);
+      showHeader(staff);
       startBoard();
     } else {
       showLogin();

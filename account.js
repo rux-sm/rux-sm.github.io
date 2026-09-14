@@ -116,17 +116,8 @@
     onAuthChange: callback => sb.auth.onAuthStateChange((event, session) => callback(event, session)),
   };
 
-  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in Design's
-  // markup, because the panel's contents are the account layer's business.
   const panel = document.getElementById('rux-account-panel');
   const panelButton = panel?.querySelector('#rux-profile-sign-in');
-  if (panelButton) {
-    const link = document.createElement('a');
-    link.className = 'rux--link rux--link--inline';
-    link.href = '/account/';
-    link.textContent = 'Account settings';
-    panelButton.insertAdjacentElement('afterend', link);
-  }
 
   let session;
   try { ({ data: { session } } = await sb.auth.getSession()); } catch { return; }
@@ -150,6 +141,14 @@
     }
     document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
     document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
+  } else if (panelButton) {
+    // THE ONE DOOR INTO THE FULLER ACCOUNT PAGE, for the account that sees
+    // every app; a team account has no reason to leave the scheduler.
+    const link = document.createElement('a');
+    link.className = 'rux--link rux--link--inline';
+    link.href = '/account/';
+    link.textContent = 'Account settings';
+    panelButton.insertAdjacentElement('afterend', link);
   }
 
   const uid = session.user.id;

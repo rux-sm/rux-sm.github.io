@@ -45,9 +45,9 @@ done and how.
 
 ## The database
 
-- **Anyone with the public key can read and change trip data.** `trips`,
-  `trip_stops` and `contacts` allow everyone everything; four more tables have
-  no access rules. Closing them waits on sign-in for both apps.
+- **Anyone with the public key can read and change trip data.** Every trip,
+  fleet, driver, contact and billing table keeps an open rule beside its staff
+  rule. Closing them waits until nothing uses the key alone.
 
 ## Notes owes atlas
 

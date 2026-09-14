@@ -42,8 +42,6 @@ done and how.
 - Trip search shows the 50 newest matches, with no ranking by relevance.
 - Below the md width the board shows about two of seven days. The phone view
   is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
-- The board scrolls behind the full-screen panels below md, because nothing
-  locks the page.
 - Weak highlights in geist: the roster tint and the keyboard highlight are
   barely visible, and no one has looked at all eight themes on screen.
 

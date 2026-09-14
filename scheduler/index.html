@@ -1095,14 +1095,73 @@
        Two of the three are here: Open trip, and Move bus in the form it can
        take without a bus list, which is taking the bus away. Print envelope
        waits for the print pass, step 5 of the build order. -->
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
+    <!-- EVERY ITEM CARRIES THE SELECTION AND ICON SLOTS, empty where unused,
+         as Carbon renders them in a menu with selectable items and icons: the
+         item is a grid, and a label with no slots before it lands in the
+         checkmark column and truncates. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-open">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">Open trip</div>
     </li>
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-unassign">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">Take off this bus</div>
     </li>
+    <!-- THE TRIP'S COLOUR, one Color item whose submenu is Carbon's menu
+         radio group, so the menu stays four rows. A pick saves at once.
+         data.js paints the item's chip with the bar's colour, checks the
+         trip's colour, paints Standard with the trip's status hue, and hides
+         the item for the trip open in the editor. The chips wear the bar's own
+         hue classes. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" aria-haspopup="true" aria-expanded="false" id="scheduler-bar-menu-color" data-color-part>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--blue" aria-hidden="true"></span></div>
+      <div class="rux--menu-item__label">Color</div>
+      <div class="rux--menu-item__shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></div>
+      <ul class="rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items" role="menu" aria-label="Trip color" tabindex="-1">
+        <li class="rux--menu-item-radio-group" role="none">
+          <ul role="group" aria-label="Trip color">
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--blue" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Standard</div>
+            </li>
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="teal">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--teal" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Teal</div>
+            </li>
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="green">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--green" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Green</div>
+            </li>
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="purple">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--purple" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Purple</div>
+            </li>
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="amber">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--amber" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Amber</div>
+            </li>
+            <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1" data-color="pink">
+              <div class="rux--menu-item__selection-icon"></div>
+              <div class="rux--menu-item__icon"><span class="scheduler-swatch scheduler-bar--magenta" aria-hidden="true"></span></div>
+              <div class="rux--menu-item__label">Pink</div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
     <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="0" id="scheduler-bar-menu-cancel">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">Cancel trip…</div>
     </li>
   </ul>

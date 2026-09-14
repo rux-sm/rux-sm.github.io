@@ -40,6 +40,12 @@
    NOT COVERED: collision handling. Carbon runs floating-ui and flips the list above the
    trigger near a viewport edge; this sets the resting offset only. The menu half of this
    file (rux--menu) was not compared against a running page at all.
+   SUBMENUS: source · packages/react/src/components/Menu/MenuItem.tsx and Menu.tsx, read
+   2026-09-14, markup from components-menu--default in data/carbon-react-dom.json. An item
+   with aria-haspopup="true" holds its submenu as a `.rux--menu` child. It opens on a 100ms
+   hover, a click, Enter, Space or ArrowRight, beside the item and flipped left where there
+   is no room; ArrowLeft and Escape close it with focus back on the item.
+   NOT COVERED: right-to-left, and Carbon's safe-polygon pointer path.
    ========================================================================== */
 (() => {
   'use strict';
@@ -84,6 +90,18 @@
   function anchor(surface, trigger) {
     if (!trigger) return;
     if (getComputedStyle(surface).position !== 'fixed') return;
+    // A SUBMENU OPENS BESIDE ITS ITEM, Carbon's `right-start`: its first item
+    // level with the parent item, flipped to the left where there is no room.
+    if (trigger.matches(ITEMS)) {
+      const t = trigger.getBoundingClientRect();
+      const box = surface.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(surface).paddingBlockStart) || 0;
+      const left = t.right + box.width <= window.innerWidth ? t.right : Math.max(0, t.left - box.width);
+      const top = Math.max(0, Math.min(t.top - pad, window.innerHeight - box.height));
+      surface.style.insetBlockStart = `${Math.round(top)}px`;
+      surface.style.insetInlineStart = `${Math.round(left)}px`;
+      return;
+    }
     // ALIGN TO THE COMBO CONTAINER WHERE THERE IS ONE. Carbon calls the
     // surface `combo-button__bottom` -- it sits under the WHOLE control, not
     // under the chevron that opens it, and anchoring to the trigger left the
@@ -159,8 +177,16 @@
   };
 
   const kindOf = surface => Object.values(KINDS).find(k => k.match(surface)) || null;
+  // A SURFACE'S OWN ITEMS. A submenu's items sit inside the parent item that
+  // holds it, so without this the arrows would rove into a closed submenu.
+  const SURFACES = '.rux--menu, .rux--overflow-menu-options';
+  const ownSurface = el => el.closest(SURFACES);
+  const isDisabled = el => el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true';
   const items = surface => [...surface.querySelectorAll(ITEMS)]
-    .filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-disabled') !== 'true');
+    .filter(el => ownSurface(el) === surface && !isDisabled(el));
+  // An item's submenu is the `.rux--menu` it holds, as Carbon renders it.
+  const submenuOf = item => (item?.getAttribute('aria-haspopup') === 'true'
+    ? item.querySelector(':scope > .rux--menu') : null);
 
   function rove(surface, to) {
     const list = items(surface);
@@ -173,6 +199,10 @@
   function close(surface, options = {}) {
     const state = live.get(surface);
     if (!state) return;
+    // An open submenu closes with the menu that holds it, innermost first.
+    for (const inner of [...live.keys()].reverse()) {
+      if (inner !== surface && surface.contains(inner)) close(inner);
+    }
     live.delete(surface);
     state.kind.hide(surface, state.trigger);
     state.registration?.release();
@@ -185,7 +215,8 @@
     const kind = kindOf(surface);
     if (!kind) return;
 
-    if (trigger) {
+    // A submenu's item keeps Carbon's own `aria-haspopup="true"`.
+    if (trigger && !trigger.matches(ITEMS)) {
       trigger.setAttribute('aria-haspopup', 'menu');
       trigger.setAttribute('aria-controls', overlay.autoId(surface, 'rux-menu'));
     }
@@ -233,12 +264,46 @@
       }
     }
 
-    // Activating an item closes the menu it belongs to.
+    // Activating an item closes the menu it belongs to, and every menu around it.
     const item = event.target.closest(ITEMS);
     if (!item) return;
+    // A press on a submenu's own padding is on no item of that submenu, and
+    // closest() would find the parent item holding it instead.
+    if (ownSurface(event.target) !== ownSurface(item)) return;
+    // An item with a submenu opens it, and focuses its first item if open already.
+    const sub = submenuOf(item);
+    if (sub) {
+      event.preventDefault();
+      if (isDisabled(item)) return;
+      if (!live.has(sub)) open(sub, item);
+      else if (items(sub)[0]) rove(sub, items(sub)[0]);
+      return;
+    }
     for (const surface of [...live.keys()]) {
       if (surface.contains(item)) close(surface, { restoreFocus: true });
     }
+  });
+
+  /* ── submenus on hover ────────────────────────────────────────────────── */
+  // Carbon's hover delay: a pointer resting 100ms on an item opens its submenu
+  // and closes any other submenu open in the same menu. Touch has no hover; a
+  // tap arrives as the click above.
+  const HOVER_DELAY = 100;
+  let hoverTimer = 0;
+  document.addEventListener('pointerover', event => {
+    if (!live.size || event.pointerType === 'touch' || !(event.target instanceof Element)) return;
+    clearTimeout(hoverTimer);
+    const item = event.target.closest(ITEMS);
+    const menu = item && ownSurface(item);
+    if (!menu || !live.has(menu) || ownSurface(event.target) !== menu) return;
+    hoverTimer = setTimeout(() => {
+      if (!live.has(menu)) return;
+      const sub = submenuOf(item);
+      for (const inner of [...live.keys()].reverse()) {
+        if (inner !== menu && inner !== sub && menu.contains(inner)) close(inner);
+      }
+      if (sub && !live.has(sub) && !isDisabled(item)) open(sub, item, { focus: false });
+    }, HOVER_DELAY);
   });
 
   /* ── the keyboard pattern ─────────────────────────────────────────────── */
@@ -249,7 +314,11 @@
     // does every key when a caller opens with `focus: false`. Matching only on
     // the surface left the arrows dead in exactly the window where a fast
     // keyboard user is pressing them.
-    const surface = [...live.entries()]
+    // THE INNERMOST SURFACE: the one whose own item the key came from, else
+    // the one it is the trigger of. A submenu sits inside its parent menu, so
+    // the first surface containing the target would be the wrong one.
+    const own = ownSurface(event.target);
+    const surface = live.has(own) ? own : [...live.entries()]
       .find(([el, st]) => el.contains(event.target) || st.trigger?.contains(event.target))?.[0];
     if (!surface) return;
 
@@ -277,11 +346,33 @@
         event.preventDefault();
         rove(surface, event.key === 'Home' ? list[0] : list[list.length - 1]);
         break;
-      case 'Tab':
-        // Not preventDefault: Tab should leave the menu AND move on, which is
-        // what a sighted keyboard user means by it.
-        close(surface, { restoreFocus: false });
+      case 'ArrowRight': {
+        // Opens the focused item's submenu and moves into it.
+        const item = event.target.closest(ITEMS);
+        const sub = item && ownSurface(item) === surface ? submenuOf(item) : null;
+        if (!sub || isDisabled(item)) break;
+        event.preventDefault();
+        if (!live.has(sub)) open(sub, item);
+        else if (items(sub)[0]) rove(sub, items(sub)[0]);
         break;
+      }
+      case 'ArrowLeft':
+        // Only a submenu closes on ArrowLeft, back to the item that opened it.
+        if (!live.get(surface).trigger?.matches(ITEMS)) break;
+        event.preventDefault();
+        close(surface, { restoreFocus: true });
+        break;
+      case 'Tab': {
+        // Not preventDefault: Tab should leave the menu AND move on, which is
+        // what a sighted keyboard user means by it. It leaves every level, so
+        // the outermost open menu closes and takes its submenus with it.
+        let outer = surface;
+        while (live.has(ownSurface(live.get(outer).trigger ?? document.body) ?? null)) {
+          outer = ownSurface(live.get(outer).trigger);
+        }
+        close(outer, { restoreFocus: false });
+        break;
+      }
       case 'Enter':
       case ' ': {
         const item = event.target.closest(ITEMS);

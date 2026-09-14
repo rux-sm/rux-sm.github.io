@@ -152,6 +152,43 @@
       list.style.insetBlockStart === '', `left "${list.style.insetBlockStart}"`);
   })();
 
+  // ── menu: a submenu opens beside its item and closes back to it ───────────
+  // An item with aria-haspopup holds its submenu, as Carbon renders it, so the
+  // arrows have to rove the parent's own items and never the submenu's.
+  (() => {
+    const root = fixture('#menu');
+    const item = root.querySelector('.rux--menu > .rux--menu-item[aria-haspopup="true"]');
+    const sub = item?.querySelector(':scope > .rux--menu');
+    const menu = item?.closest('.rux--menu');
+    const trigger = menu?.id ? document.querySelector(`[data-rux-open="${menu.id}"]`) : null;
+    if (!item) return skip('menu', 'submenu', 'no menu item with a submenu on this page');
+    if (!sub) return record('menu', 'submenu', false, 'an item with aria-haspopup and no .rux--menu inside it');
+    if (!trigger) return skip('menu', 'submenu', 'the menu holding the submenu has no trigger');
+
+    click(trigger);
+    key(item, 'ArrowRight');
+    const ir = item.getBoundingClientRect(), sr = sub.getBoundingClientRect();
+    record('menu', 'ArrowRight opens the submenu and marks its item expanded',
+      has(sub, 'rux--menu--open') && item.getAttribute('aria-expanded') === 'true',
+      `open=${has(sub, 'rux--menu--open')} aria-expanded=${item.getAttribute('aria-expanded')}`);
+    record('menu', 'the submenu opens beside its item, not over it',
+      Math.round(sr.left) === Math.round(ir.right) || Math.round(sr.right) === Math.round(ir.left),
+      `item ${Math.round(ir.left)}-${Math.round(ir.right)}, submenu ${Math.round(sr.left)}-${Math.round(sr.right)}`);
+
+    key(sub.querySelector('[role^="menuitem"]'), 'ArrowLeft');
+    record('menu', 'ArrowLeft closes the submenu and returns focus to its item',
+      !has(sub, 'rux--menu--open') && item.getAttribute('aria-expanded') === 'false'
+      && document.activeElement === item,
+      `open=${has(sub, 'rux--menu--open')} focus on the item=${document.activeElement === item}`);
+
+    key(item, 'ArrowDown');
+    record('menu', 'the arrows rove the parent menu and never into the closed submenu',
+      document.activeElement?.closest('.rux--menu') === menu,
+      `focus in ${document.activeElement?.closest('.rux--menu')?.getAttribute('aria-label') ?? 'the parent menu'}`);
+
+    click(trigger);
+  })();
+
   // ── tabs: roving tabindex, and the panel follows ──────────────────────────
   (() => {
     const root = fixture('#tabs');

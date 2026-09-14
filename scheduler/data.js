@@ -82,15 +82,32 @@
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
 
   // -- the palette ----------------------------------------------------------
-  // rux-ui stores a colour NAME, and its own module maps retired names to live
-  // ones (orange and yellow to amber, cyan to teal). Carbon's tag palette has
-  // no amber, so amber is the one bar hue that is not a tag: `scheduler-bar--amber`
-  // in app.css paints it with the warning colour.
-  const HUES = {
-    teal: 'teal', cyan: 'teal', green: 'green', purple: 'purple',
-    pink: 'magenta', magenta: 'magenta', blue: 'blue', red: 'red',
-    amber: 'amber', yellow: 'amber', orange: 'amber',
+  /* THE ONE TABLE OF TRIP COLOURS, read by the board, the editor and the bar
+     menu. `value` is what `trips.trip_bar_color` stores, and its check
+     constraint allows these five, null, and the retired names below; `hue` is
+     the `scheduler-bar--*` class that paints it. Carbon's tag palette has no
+     amber, so `scheduler-bar--amber` in app.css paints it with the warning
+     colour, and pink is Carbon's magenta.
+
+     RETIRED NAMES ARE MAPPED ON READ, NEVER REWRITTEN, which is rux-ui's own
+     rule: orange and yellow paint as amber and cyan as teal, and a row keeps
+     what it stores until someone picks a colour. */
+  const TRIP_COLORS = [
+    { value: 'teal', label: 'Teal', hue: 'teal' },
+    { value: 'green', label: 'Green', hue: 'green' },
+    { value: 'purple', label: 'Purple', hue: 'purple' },
+    { value: 'amber', label: 'Amber', hue: 'amber' },
+    { value: 'pink', label: 'Pink', hue: 'magenta' },
+  ];
+  const RETIRED_COLORS = { orange: 'amber', cyan: 'teal', yellow: 'amber' };
+  // The colour a trip paints as, by its current name, or null for standard.
+  const tripColorOf = trip => {
+    const stored = String(trip.trip_bar_color || '').toLowerCase();
+    const name = RETIRED_COLORS[stored] ?? stored;
+    return TRIP_COLORS.some(c => c.value === name) ? name : null;
   };
+  // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
+  const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
 
   // THREE LEVELS, WHICH IS RUX-UI'S OWN RULE. Its `--_tone` reads
   // `var(--_trip-bar-color, var(--sched-trip-bar-confirmed-tone))` with a
@@ -100,8 +117,8 @@
   // wired here until 2026-09-06, and 679 of 743 trips carry none, so
   // virtually every bar came out grey -- a bar saying nothing where the old
   // board said "confirmed, nothing to look at".
-  const hueFor = trip => HUES[String(trip.trip_bar_color || '').toLowerCase()]
-    ?? (trip.confirmed === false ? 'red' : 'blue');
+  const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
+    ?? standardHueOf(trip);
 
   const UNASSIGNED = ' unassigned';
 
@@ -574,6 +591,9 @@
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
     const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
+    // The bar menu reads both to check the trip's colour and paint Standard.
+    bar.dataset.tripColor = tripColorOf(trip) ?? '';
+    bar.dataset.standardHue = standardHueOf(trip);
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
@@ -1827,6 +1847,43 @@
     return item;
   }
 
+  /* THE TRIP'S COLOUR, as Carbon's radio button group with one choice per
+     row of `TRIP_COLORS` after Standard. Carbon has no swatch, so each label
+     carries a `scheduler-swatch` chip wearing the hue class the bar wears,
+     which shows the fill the board paints rather than an approximation of it.
+     The fieldset carries `id`, which is what `readForm` looks up. */
+  function colorField(id, trip) {
+    const item = el('div', 'rux--form-item scheduler-panel-section');
+    // Vertical, Carbon's own variant: six choices in one row overflow the
+    // panel's column, and the horizontal group does not wrap.
+    const group = el('fieldset', 'rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical');
+    group.id = id;
+    group.appendChild(el('legend', 'scheduler-panel-section__title', 'Trip color'));
+    const chosen = tripColorOf(trip) ?? '';
+    const choices = [{ value: '', label: 'Standard', hue: standardHueOf(trip) }, ...TRIP_COLORS];
+    for (const { value, label, hue } of choices) {
+      const wrap = el('div', 'rux--radio-button-wrapper');
+      const input = el('input', 'rux--radio-button');
+      input.type = 'radio';
+      input.name = id;
+      input.id = `${id}-${value || 'standard'}`;
+      input.value = value;
+      input.checked = value === chosen;
+      const lab = el('label', 'rux--radio-button__label');
+      lab.setAttribute('for', input.id);
+      const chip = el('span', `scheduler-swatch scheduler-bar--${hue}`);
+      chip.setAttribute('aria-hidden', 'true');
+      const text = el('span', 'rux--radio-button__label-text');
+      text.append(chip, label);
+      lab.append(el('span', 'rux--radio-button__appearance'), text);
+      wrap.append(input, lab);
+      group.appendChild(wrap);
+    }
+    item.append(group, el('div', 'rux--form__helper-text',
+      'A color replaces the standard blue, and the red of an unconfirmed trip.'));
+    return item;
+  }
+
   function notesField(id, label, value) {
     const item = el('div', 'rux--form-item');
     const lw = el('div', 'rux--text-area__label-wrapper');
@@ -1999,6 +2056,8 @@
         : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
     { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
+    // Standard is the empty value and stores null.
+    { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('input:checked')?.value || null },
     /* `confirmed`, `balance_paid` AND `date_paid` ARE NOT WRITTEN HERE ANY
        MORE, 2026-09-10. All three were fields on this form -- a Confirmed
        toggle, a Balance paid toggle and a Date paid picker -- and all three
@@ -2153,7 +2212,8 @@
                       // `EDITS` above, which read no element at all.
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
-                      'contract', 'contractnote', 'poreceived', 'invoice']) {
+                      'contract', 'contractnote', 'poreceived', 'invoice',
+                      'color']) {
       f[`scheduler-f-${id}`] = document.getElementById(`scheduler-f-${id}`);
     }
     if (Object.values(f).some(v => !v)) return null;
@@ -2728,6 +2788,9 @@
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       trip_type: trip.trip_type ?? null,
+      // The name it paints as, so a trip still storing `cyan` opens on Teal
+      // with nothing changed, and saves nothing until another colour is picked.
+      trip_bar_color: tripColorOf(trip),
       req_sleeper: !!trip.req_sleeper,
       req_ada: !!trip.req_ada,
       req_56pax: !!trip.req_56pax,
@@ -3161,6 +3224,7 @@
        CSS to say the same thing and leaves the two tabs built differently. */
     panelDetails.appendChild(form);
     panelDetails.appendChild(flags);
+    panelDetails.appendChild(colorField('scheduler-f-color', trip));
 
     /* CANCEL TRIP MOVED TO THE ACTION BAR, 2026-09-10, and is static markup
        there rather than built here -- index.html carries it and the reason.
@@ -4979,12 +5043,32 @@
     barMenuFor = bar;
     document.getElementById('scheduler-bar-menu-unassign').hidden =
       !bar.dataset.assignmentId || !bar.dataset.busId || isEditorTrip(bar);
+    /* THE COLOURS HIDE FOR THE TRIP OPEN IN THE EDITOR, as Take off this bus
+       does: the editor has its own colour field, and a write from here would
+       move `updated_at` under it and turn its next Save into a conflict. */
+    const locked = isEditorTrip(bar);
+    for (const part of barMenu.querySelectorAll('[data-color-part]')) part.hidden = locked;
+    // The Color item's chip is the colour the bar paints now.
+    const hue = TRIP_COLORS.find(c => c.value === bar.dataset.tripColor)?.hue ?? bar.dataset.standardHue ?? 'blue';
+    barMenu.querySelector('#scheduler-bar-menu-color > .rux--menu-item__icon .scheduler-swatch')
+      .className = `scheduler-swatch scheduler-bar--${hue}`;
+    for (const item of barMenu.querySelectorAll('[data-color]')) {
+      const on = item.dataset.color === (bar.dataset.tripColor || '');
+      item.setAttribute('aria-checked', String(on));
+      item.querySelector('.rux--menu-item__selection-icon')
+        .replaceChildren(...(on ? [svgUse('#i-checkmark', '16', '0 0 20 20')] : []));
+      if (!item.dataset.color) {
+        item.querySelector('.scheduler-swatch').className = `scheduler-swatch scheduler-bar--${bar.dataset.standardHue || 'blue'}`;
+      }
+    }
     popMenuAt(barMenu, e);
   });
 
   barMenu?.addEventListener('click', async e => {
     const item = e.target.closest('.rux--menu-item');
     if (!item || !barMenuFor) return;
+    // The Color item opens its submenu, which Design's menu does; it is no action.
+    if (item.getAttribute('aria-haspopup') === 'true') return;
     const bar = barMenuFor;
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
@@ -4998,6 +5082,24 @@
 
     if (item.id === 'scheduler-bar-menu-cancel') {
       openCancelModal(bar.dataset.tripId);
+      return;
+    }
+
+    // A COLOUR SAVES AT ONCE, like Take off this bus: one column, no form.
+    if (item.dataset.color != null) {
+      const value = item.dataset.color || null;
+      if (value === (bar.dataset.tripColor || null)) return;
+      const label = item.querySelector('.rux--menu-item__label').textContent.trim();
+      toast('info', 'Changing the trip color…');
+      try {
+        const { error } = await withTimeout(
+          client.from('trips').update({ trip_bar_color: value }).eq('id', bar.dataset.tripId).then(r => r));
+        if (error) throw new Error(error.message);
+        await show();
+        toast('success', value ? `The trip is ${label.toLowerCase()} now.` : 'The trip has its standard color again.');
+      } catch (err) {
+        toast('error', `The color did not change. ${err.message}`);
+      }
       return;
     }
 
@@ -5018,7 +5120,8 @@
       }
     }
   });
-  barMenu?.addEventListener('rux:menu-closed', () => { barMenu.hidden = true; });
+  // The Color submenu's own close bubbles here too, and must not hide the menu.
+  barMenu?.addEventListener('rux:menu-closed', e => { if (e.target === barMenu) barMenu.hidden = true; });
 
   /* CANCEL IS NOT DELETE, and the difference is the whole point of it. The row
      stays; `cancelled_at` takes it off the board and the trips page is where

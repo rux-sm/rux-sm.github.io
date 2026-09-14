@@ -756,7 +756,22 @@ button.scheduler-row-head__num {
    (`--scheduler-on-warning`, set in theme.css). The warning colour has no
    hover step, so a hovered amber bar shows an inner outline instead. */
 .scheduler-bar--amber     { --scheduler-bg: var(--rux-support-warning);          --scheduler-fg: var(--scheduler-on-warning);      --scheduler-hover: var(--rux-support-warning);     --scheduler-border: var(--scheduler-on-warning); }
-.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+
+/* A TRIP COLOUR CHIP, in the editor's colour field and the bar menu. It wears
+   a `scheduler-bar--*` hue class for its custom properties, so it shows the
+   fill and edge the bar paints. */
+.scheduler-swatch {
+  display: inline-block;
+  flex: none;
+  inline-size: var(--rux-spacing-05);
+  block-size: var(--rux-spacing-05);
+  margin-inline-end: var(--rux-spacing-03);
+  vertical-align: middle;
+  background: var(--scheduler-bg);
+  box-shadow: inset 0 0 0 1px var(--scheduler-border);
+}
+.rux--menu-item__icon .scheduler-swatch { margin-inline-end: 0; }
 
 /* States. A partial PO has the warning border; a leg that continues past the
    week has no edge on that side and runs to it. Confirmation is not a state

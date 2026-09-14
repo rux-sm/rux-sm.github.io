@@ -4,6 +4,12 @@
        from components-menubutton--default@open and
        components-combobutton--default@open, 2026-08-28 -->
   <!--
+    A SUBMENU is a `.rux--menu` inside the item that opens it, as
+    components-menu--default renders it in data/carbon-react-dom.json: the item
+    carries `aria-haspopup="true"` and `aria-expanded`, and a caret in
+    `__shortcut`. Only the triggered menu has one, because js/menu.js places a
+    submenu beside its item when it opens, and a pinned specimen opens nothing.
+
     SELECTABLE ITEMS were missing entirely — three classes with nine rules each
     and no element to act on. Carbon marks the whole menu
     `menu--with-selectable-items`, groups radio items in a
@@ -53,6 +59,31 @@
         <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></div>
         <div class="rux--menu-item__label">Duplicate</div>
         <div class="rux--menu-item__shortcut">⌘D</div>
+      </li>
+      <li class="rux--menu-item" role="menuitem" tabindex="-1" aria-haspopup="true" aria-expanded="false">
+        <div class="rux--menu-item__icon"></div>
+        <div class="rux--menu-item__label">Share with</div>
+        <div class="rux--menu-item__shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></div>
+        <ul class="rux--menu rux--menu--md rux--menu--with-selectable-items" role="menu" aria-label="Share with" tabindex="-1">
+          <li class="rux--menu-item-radio-group" role="none">
+            <ul role="group" aria-label="Share with">
+              <li class="rux--menu-item" role="menuitemradio" aria-checked="true" tabindex="-1">
+                <div class="rux--menu-item__selection-icon">
+                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark"/></svg>
+                </div>
+                <div class="rux--menu-item__label">None</div>
+              </li>
+              <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1">
+                <div class="rux--menu-item__selection-icon"></div>
+                <div class="rux--menu-item__label">Product team</div>
+              </li>
+              <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="-1">
+                <div class="rux--menu-item__selection-icon"></div>
+                <div class="rux--menu-item__label">Organization</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </li>
       <li class="rux--menu-item-divider" role="separator"></li>
       <li class="rux--menu-item rux--menu-item--disabled" role="menuitem" tabindex="-1" aria-disabled="true">

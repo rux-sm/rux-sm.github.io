@@ -20,6 +20,14 @@
    and the switcher cost a toolbar control to say so. --scheduler-fs and --scheduler-row-h
    stay as the derivation, not as a knob. */
 
+/* The phone's safe areas: the home bar under the page, and the camera cutout
+   beside it in landscape. Zero everywhere else. */
+:root {
+  --scheduler-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --scheduler-safe-left: env(safe-area-inset-left, 0px);
+  --scheduler-safe-right: env(safe-area-inset-right, 0px);
+}
+
 .sch {
   --scheduler-days: 7;
   /* AS NARROW AS ITS CONTENT, ON A 2rem FLOOR. `max-content` is still what
@@ -2074,10 +2082,23 @@ button.scheduler-row-head__num {
        so the phone draws its scroll bar in the gutter, clear of the squares.
        Block, because the pane is as tall as its rows. */
     display: block;
-    padding: 0 var(--rux-spacing-05) var(--rux-spacing-05);
+    padding: 0 var(--rux-spacing-05);
     overflow-y: auto;
     overscroll-behavior: contain;
     background: var(--rux-background);
+  }
+  /* The gap under the card, above the home bar. A spacer rather than padding,
+     so the gap is part of the list's scroll height in every browser. */
+  .scheduler-aside::after {
+    content: "";
+    display: block;
+    block-size: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+  }
+  /* The board's last row scrolls up past the home bar the same way. */
+  .sch:not(.sch--avail)::after {
+    content: "";
+    display: block;
+    block-size: var(--scheduler-safe-bottom);
   }
   /* The head sticks at the top, above the grid's highest layer, the corner
      cell at 4, and the day row sticks 48px under it. The gap above the card
@@ -2231,8 +2252,8 @@ button.scheduler-row-head__num {
    button you pressed. */
 .scheduler-toast {
   position: fixed;
-  inset-block-end: var(--rux-spacing-05);
-  inset-inline-end: var(--rux-spacing-05);
+  inset-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+  inset-inline-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-right));
   z-index: 9000;
   display: flex;
   justify-content: flex-end;
@@ -2270,7 +2291,8 @@ button.scheduler-row-head__num {
    of truth to drift. rux.css compiles 221 `:has()` rules of its own, so it is
    already a baseline for any page loading it. */
 body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
-  inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05));
+  /* Plus the home bar, which the action bar grows by on a phone. */
+  inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 
 /* ── THE HEADER SEARCH ──────────────────────────────────────────────────────

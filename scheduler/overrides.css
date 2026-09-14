@@ -565,6 +565,13 @@
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-05);
 }
+/* On a phone the bar sits on the screen's bottom edge, so its buttons keep
+   above the home bar and the bar's surface fills the space under them. */
+@media (max-width: 41.98rem) {
+  .rux--side-panel .rux--side-panel__actions-container {
+    padding-block-end: var(--scheduler-safe-bottom);
+  }
+}
 
 
 /* THE ROW ACTION NEVER CENTRES IN A ROW TALLER THAN ITSELF, 2026-09-10.
@@ -760,6 +767,17 @@
 @media (max-width: 41.98rem) {
   .rux--content {
     padding: 0;
+  }
+}
+
+/* A phone in landscape has its camera cutout beside the page, so the header
+   and the page keep clear of it. */
+.rux--header {
+  padding-inline: var(--scheduler-safe-left) var(--scheduler-safe-right);
+}
+@media (min-width: 42rem) {
+  .rux--content {
+    padding-inline: max(var(--rux-spacing-07), var(--scheduler-safe-left)) max(var(--rux-spacing-07), var(--scheduler-safe-right));
   }
 }
 

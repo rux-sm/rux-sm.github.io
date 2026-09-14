@@ -42,7 +42,10 @@ function, including the ones that create share links.
 - **Every step adds beside what exists, and the open rules come down last**,
   after a watch of at least seven days shows nothing still uses the key alone.
   Each database step is a named migration, applied on rux's yes, with its
-  rollback written beside it.
+  rollback written beside it. `staff_identity_add` is applied: the profile
+  columns `user_id` and `sees_all_apps`, closed to the publishable key; the
+  staff check functions; `get_driver_share_trips` and `get_trip_document`,
+  open to the key; and the maintenance signal triggers.
 - **The grants and function definitions a rollback needs are read immediately
   before each change**, because a snapshot taken days earlier goes stale, and
   they are kept out of this public repository.
@@ -66,17 +69,6 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `staff_identity_add`: `profiles.user_id` (unique, references
-      `auth.users`, on delete set null) and `profiles.sees_all_apps` (not null,
-      default false); security-definer `staff_profile_id()`,
-      `is_staff()`, `assert_staff()` and `my_staff_profile()`, revoked from
-      `public` and `anon` and granted to `authenticated`;
-      `get_driver_share_trips(p_token)` returning the trips, stops,
-      assignments, drivers, documents and requirements a driver link shows,
-      and `get_trip_document(p_id)`, both granted to `anon`; a statement
-      trigger on `trips`, `trip_assignments`, `trip_stops` and `buses` that
-      sends `maintenance-schedule-signal` through `realtime.send` and can never
-      fail a save.
 - [ ] rux creates the seven accounts, the display's first to prove the staff
       domain; migration `staff_identity_link` sets each `profiles.user_id` and
       `sees_all_apps` on rux's profile only, and a query shows seven linked,

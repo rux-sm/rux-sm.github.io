@@ -1614,12 +1614,20 @@
     return item;
   };
 
+  /* NO BROWSER AUTOFILL ON A TRIP'S FIELDS. They hold a customer's data, never
+     the person typing, yet Chrome reads labels like `Booking contact name` or
+     `Pickup location` and offers the user's own saved address. Chrome ignores
+     `off` for address autofill, so the value is a token it does not recognise,
+     which it treats as a field it should not fill. */
+  const NO_AUTOFILL = 'scheduler-trip-field';
+
   function textField(id, label, value, placeholder) {
     const outer = el('div', 'rux--text-input__field-outer-wrapper');
     const wrap = el('div', 'rux--text-input__field-wrapper');
     const input = el('input', 'rux--text-input');
     input.type = 'text';
     input.id = id;
+    input.autocomplete = NO_AUTOFILL;
     input.value = value ?? '';
     wrap.appendChild(input);
     outer.appendChild(wrap);
@@ -1779,7 +1787,7 @@
     input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-haspopup', 'listbox');
     input.setAttribute('aria-expanded', 'false');
-    input.autocomplete = 'off';
+    input.autocomplete = NO_AUTOFILL;
     input.placeholder = 'Search contacts';
     input.value = current?.name ?? '';
     if (current) input.dataset.contactId = current.id;

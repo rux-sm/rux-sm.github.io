@@ -11,7 +11,7 @@
   "updated": "2026-09-02",
   "status": "draft",
   "summary": "buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received.",
-  "order": 2,
+  "order": 3,
   "sources": [
     "tccom4120s000",
     "tccom4520m000",
@@ -1720,6 +1720,33 @@
         }
       ],
       "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base guide — this is the atomic \"buy it in\" process. It was extracted from phase 9 of create-basic-test-items-and-defaults.md, which walked it inside a master-data guide."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
     },
     {
       "kind": "glance",

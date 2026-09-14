@@ -1734,6 +1734,24 @@
               "tokens": [
                 {
                   "t": "strong",
+                  "v": "Guide"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Check an item's inventory",
+                  "href": "check-item-inventory.md"
+                }
+              ],
+              "text": "Guide — Check an item's inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
                   "v": "Leaves"
                 },
                 {
@@ -4136,6 +4154,16 @@
             "text": "read on-hand at the shipping warehouse before the order is entered, and write the figure down"
           }
         ],
+        "guide": {
+          "tokens": [
+            {
+              "t": "link",
+              "v": "Check an item's inventory",
+              "href": "check-item-inventory.md"
+            }
+          ],
+          "text": "Check an item's inventory"
+        },
         "leaves": {
           "tokens": [
             {

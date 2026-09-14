@@ -20,8 +20,7 @@ meeting updates the outputs, and every fact keeps one home.
   issue ids or environment detail.
 - **Map.** The overview. The session map retires: its own text says it composes
   and owns nothing, and its four "fails with no message" notes are confirmed in
-  a walkthrough, line by line, before it goes. A tile links to its walkthrough,
-  and a lookup tile links to the inventory walkthrough.
+  a walkthrough, line by line, before it goes. A tile links to its walkthrough.
 - **Walkthrough** replaces guide everywhere: Notes' pages, navigation and
   addresses, and atlas's type, folder, rules and checks. A walkthrough holds the
   steps and one short "What LN is doing" paragraph per phase. A walk is one run
@@ -34,11 +33,6 @@ meeting updates the outputs, and every fact keeps one home.
   order, and anything only it holds moves into the walkthrough that owns it.
 - The bamboo test item family, today a reference beside the tests, folds into
   the walkthrough that builds it, `create-basic-test-items-and-defaults.md`.
-- A new walkthrough, **Check an item's inventory**, holds the inventory lookup
-  once: Inventory 360, the per-warehouse view, and on hand, blocked, on order
-  and allocated. It is written from `ship-from-stock.md` phase 0, which is
-  walked, and the screen files. Walkthroughs that read on-hand link to it as
-  their first step instead of repeating it.
 - **Concept** stays the name and becomes published. Each concept is attested by
   rux before it publishes, which is what closes OI-274.
 - **Experiment** replaces both exercise and test, in atlas and on Notes: a
@@ -60,8 +54,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the inventory walkthrough in atlas, and link it from the lookup
-      tiles and from each walkthrough that reads on-hand.
 - [ ] Rename guide to walkthrough everywhere: atlas's type, folder, rules and
       checks, and Notes' pages, addresses, navigation and prose.
 - [ ] Merge exercises and tests into experiments: one type and folder in atlas,

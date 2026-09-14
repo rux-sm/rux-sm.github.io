@@ -1,0 +1,832 @@
+{
+  "contract": 8,
+  "tier": "export",
+  "id": "check-item-inventory",
+  "title": "Check an item's inventory",
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "updated": "2026-09-13",
+  "status": "draft",
+  "summary": "find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it.",
+  "order": 2,
+  "sources": [
+    "whwmd2515m000",
+    "whwmd4300m000"
+  ],
+  "phases": [
+    {
+      "n": 0,
+      "title": "Find the item",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen."
+            }
+          ],
+          "text": "What LN is doing. Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.1"
+                    }
+                  ],
+                  "text": "0.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enter the item in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Filter Items"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and run it"
+                    }
+                  ],
+                  "text": "Enter the item in Filter Items and run it"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Grid shows "
+                    },
+                    {
+                      "t": "field",
+                      "v": "On Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Blocked"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "On Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": " · "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Allocated"
+                    }
+                  ],
+                  "text": "Grid shows On Hand · Blocked · On Order · Allocated"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the four quantities on the item's row"
+                    }
+                  ],
+                  "text": "Read the four quantities on the item's row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "on hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "blocked"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "on order"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "allocated"
+                    }
+                  ],
+                  "text": "on hand, blocked, on order, allocated"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick the item row"
+                    }
+                  ],
+                  "text": "Tick the item row"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "title": "Read the stock by warehouse",
+      "route": "Warehousing ➔ Inventory 360",
+      "session": "Inventory 360",
+      "sessionCode": "whwmd4300m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. "
+            },
+            {
+              "t": "em",
+              "v": "Economic Stock"
+            },
+            {
+              "t": "text",
+              "v": " on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+            }
+          ],
+          "text": "What LN is doing. Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.1"
+                    }
+                  ],
+                  "text": "1.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "In the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " group of the header, click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Warehouse Inventory"
+                    }
+                  ],
+                  "text": "In the Inventory group of the header, click Warehouse Inventory"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "whwmd2515m000",
+                      "name": "Warehouse - Item Inventory"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens, item carried through"
+                    }
+                  ],
+                  "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through"
+                }
+              ],
+              "id": "1.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.2"
+                    }
+                  ],
+                  "text": "1.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read each row's "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory on Hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory on Order"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory Allocated"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Inventory Blocked"
+                    }
+                  ],
+                  "text": "Read each row's Inventory on Hand, Inventory on Order, Inventory Allocated and Inventory Blocked"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One row per warehouse holding or expecting the item"
+                    }
+                  ],
+                  "text": "One row per warehouse holding or expecting the item"
+                }
+              ],
+              "id": "1.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.3"
+                    }
+                  ],
+                  "text": "1.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Choose the warehouse to work from by its figures, not its name"
+                    }
+                  ],
+                  "text": "Choose the warehouse to work from by its figures, not its name"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "warehouse"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "on hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "allocated"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "blocked"
+                    }
+                  ],
+                  "text": "warehouse, on hand, allocated, blocked"
+                }
+              ],
+              "id": "1.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.4"
+                    }
+                  ],
+                  "text": "1.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the totals beneath the grid"
+                    }
+                  ],
+                  "text": "Read the totals beneath the grid"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "total on hand"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "total allocated"
+                    }
+                  ],
+                  "text": "total on hand, total allocated"
+                }
+              ],
+              "id": "1.4",
+              "optional": false,
+              "produces": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it."
+        }
+      ],
+      "text": "Objective: find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Note"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This changes nothing in LN."
+        },
+        {
+          "t": "text",
+          "v": " Both screens only report. The figures written down at the end are the baseline a later walkthrough compares against."
+        }
+      ],
+      "text": "> Note > This changes nothing in LN. Both screens only report. The figures written down at the end are the baseline a later walkthrough compares against."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Phase",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " Find the item"
+                }
+              ],
+              "text": "0 Find the item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item's on hand, blocked, on order and allocated are known"
+                }
+              ],
+              "text": "The item's on hand, blocked, on order and allocated are known"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " Read the stock by warehouse"
+                }
+              ],
+              "text": "1 Read the stock by warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse - Item Inventory"
+                }
+              ],
+              "text": "Warehouse - Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse to work from, and its figures, are written down"
+                }
+              ],
+              "text": "The warehouse to work from, and its figures, are written down"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "troubleshooting",
+      "columns": [
+        "Phase",
+        "Symptom",
+        "What to check or do"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item returns no row"
+                }
+              ],
+              "text": "The item returns no row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item has no inventory records yet, so there is nothing to report"
+                }
+              ],
+              "text": "The item has no inventory records yet, so there is nothing to report"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " is greyed out in the header"
+                }
+              ],
+              "text": "Item Order Plan is greyed out in the header"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Expected. Open it through Planning, as the phase 0 notes say"
+                }
+              ],
+              "text": "Expected. Open it through Planning, as the phase 0 notes say"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On hand looks sufficient but an order will not fill"
+                }
+              ],
+              "text": "On hand looks sufficient but an order will not fill"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Allocated"
+                },
+                {
+                  "t": "text",
+                  "v": ". Much of the on-hand may be committed elsewhere"
+                }
+              ],
+              "text": "Check Inventory Allocated. Much of the on-hand may be committed elsewhere"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Economic Stock"
+                },
+                {
+                  "t": "text",
+                  "v": " is negative"
+                }
+              ],
+              "text": "Economic Stock is negative"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse is over-allocated: more is committed than it holds and expects"
+                }
+              ],
+              "text": "The warehouse is over-allocated: more is committed than it holds and expects"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "openIssues": 3
+}

@@ -11,7 +11,7 @@
   "updated": "2026-09-02",
   "status": "approved",
   "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
-  "order": 5,
+  "order": 6,
   "sources": [
     "tdsls4246m000",
     "tdsls4501m140",
@@ -2611,6 +2611,33 @@
         }
       ],
       "text": "> Warning > This guide ends at shipped. Its completion boundary is a Confirmed shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
     },
     {
       "kind": "glance",

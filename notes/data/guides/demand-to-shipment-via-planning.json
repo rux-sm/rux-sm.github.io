@@ -14,7 +14,7 @@
   "updated": "2026-09-02",
   "status": "draft",
   "summary": "run the bamboo family down the long route of `order-to-shipment-overview.md` — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down.",
-  "order": 6,
+  "order": 7,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",
@@ -2897,6 +2897,33 @@
         }
       ],
       "text": "Objective: run the bamboo family down the long route of order-to-shipment-overview.md — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. Spine guide — it carries the sequence and the handovers. Each phase names the atomic guide that owns its detail and does not restate it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > Know each item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > Know each item's stock before you start: Check an item's inventory."
     },
     {
       "kind": "glance",

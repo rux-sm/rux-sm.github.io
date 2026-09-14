@@ -10,7 +10,7 @@
   "updated": "2026-09-02",
   "status": "draft",
   "summary": "move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity.",
-  "order": 4,
+  "order": 5,
   "sources": [
     "cppat1210m000",
     "whinh0100m000",
@@ -2003,6 +2003,33 @@
         }
       ],
       "text": "Objective: move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. Base guide — this is the foundation for a future multicompany-transfer variant."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
     },
     {
       "kind": "glance",

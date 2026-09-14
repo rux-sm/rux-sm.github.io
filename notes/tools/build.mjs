@@ -80,6 +80,15 @@ const PAYLOAD = {
 // which ids are real so it can tell a cross-reference from a dead one.
 const GUIDE_IDS = new Set();
 
+// A guide link is written relative to guides/, where every guide page sits.
+// The home page renders the map outside that folder, so it sets the base
+// while it does.
+let GUIDE_BASE = '';
+const withGuideBase = (base, render) => {
+  GUIDE_BASE = base;
+  try { return render(); } finally { GUIDE_BASE = ''; }
+};
+
 // FOUR REGISTERS, NOT SEVEN TAG COLOURS. Replaces the colour map on
 // 2026-09-10, and the reason is density rather than taste.
 //
@@ -210,7 +219,7 @@ function token(t) {
           if (PRIVATE) return `<span class="notes-unlinked">${esc(t.v)}</span>`;
           throw new Error(`link to "${href}" names no guide in data/guides/`);
         }
-        href = `${md[1]}.html`;
+        href = `${GUIDE_BASE}${md[1]}.html`;
       }
       return `<a class="rux--link" href="${esc(href)}">${esc(t.v)}</a>`;
     }
@@ -1991,8 +2000,8 @@ function indexPage(site) {
   const lead = home ? `
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-map">
           <h1 id="h-map">Demand to shipment</h1>
-          ${diagramFigure(home.diagram, { notes: false,
-            link: `<a class="rux--link notes-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` })}
+          ${withGuideBase('guides/', () => diagramFigure(home.diagram, { notes: false,
+            link: `<a class="rux--link notes-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` }))}
         </section>
 ` : `
         <div class="rux--stack-vertical rux--stack-scale-5">

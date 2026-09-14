@@ -773,6 +773,25 @@ button.scheduler-row-head__num {
 }
 .rux--menu-item__icon .scheduler-swatch { margin-inline-end: 0; }
 
+/* A CONTACT OPTION IS TWO LINES, the name over the organization and phone.
+   Carbon's list box option is one 40px line, so the row and its body take
+   their content's height, and each line ends in an ellipsis when it runs out. */
+.scheduler-contact-option,
+.scheduler-contact-option__body { block-size: auto; }
+.scheduler-contact-option__name,
+.scheduler-contact-option__detail {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scheduler-contact-option__detail {
+  margin-block-start: var(--rux-spacing-01);
+  color: var(--rux-text-helper);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
 /* States. A partial PO has the warning border; a leg that continues past the
    week has no edge on that side and runs to it. Confirmation is not a state
    here: it is the bar's colour, chosen by `hueFor` in data.js, so a trip with a

@@ -1761,50 +1761,72 @@
     return BARE(outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* A SEARCH OVER THE CONTACTS, ON THE PLATFORM'S OWN CONTROL, 2026-09-09.
-     196 contacts and duplicate first names mean a bare text field cannot tell
-     two Ashleys apart; the option list carries name, organisation and phone so
-     it can -- "Ashley Pearl - Pearl Elite Getaways - 956-648-9691".
-
-     WHY `<datalist>` AND NOT CARBON'S COMBO BOX. `js/list-box.js` says in as
-     many words that filtering is NOT reimplemented and that the combo-box form
-     is NOT VERIFIED -- "a combo box has a text input and its own filtering, and
-     nothing here should be read as covering it". Writing that filtering here
-     would be implementing a component the design system owns, which AGENTS.md
-     makes a request rather than a local rule. A datalist is not a Carbon
-     component at all: it is the browser's, it filters and announces itself
-     without any script of ours, and the input wearing `rux--text-input` is that
-     component used correctly. A real filtering combo box is filed instead.
-
-     THE OPTION VALUE IS THE LABEL, which is how datalist works -- there is no
-     value/label pair. So the picked row is found by matching the rendered
-     string back, and `data-contact-id` records the resolved id for the save. */
-  function contactSearch(id, label, listId, contacts, current) {
-    const outer = el('div', 'rux--text-input__field-outer-wrapper');
-    const wrap = el('div', 'rux--text-input__field-wrapper');
-    const input = el('input', 'rux--text-input');
+  /* A SEARCH OVER THE CONTACTS, as Carbon's combo box. About 200 contacts and
+     a few repeated names mean the list has to tell two people apart, so each
+     option shows the name over the organization and phone, and typing filters
+     on all three. `js/list-box.js` opens, filters and picks. A pick writes only
+     the name into the field, through the option's `data-rux-text`, and the
+     input's `data-contact-id` says whose it is for the save. */
+  function contactSearch(id, label, contacts, current) {
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const field = el('div', 'rux--list-box__field');
+    const input = el('input', current ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
     input.type = 'text';
     input.id = id;
-    input.setAttribute('list', listId);
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
     input.autocomplete = 'off';
     input.placeholder = 'Search contacts';
-    input.value = current ? contactLabel(current) : '';
+    input.value = current?.name ?? '';
     if (current) input.dataset.contactId = current.id;
-    const list = el('datalist');
-    list.id = listId;
+    const clear = el('button', 'rux--list-box__selection');
+    clear.type = 'button';
+    clear.tabIndex = -1;
+    clear.hidden = !input.value;
+    clear.title = 'Clear selected item';
+    clear.setAttribute('aria-label', 'Clear selected item');
+    clear.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
+    const caret = el('button', 'rux--list-box__menu-icon');
+    caret.type = 'button';
+    caret.tabIndex = -1;
+    caret.setAttribute('aria-label', 'Open');
+    caret.setAttribute('aria-expanded', 'false');
+    caret.appendChild(svgUse('#i-chevron--down', '16', '0 0 16 16'));
+    field.append(input, clear, caret);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
     for (const c of contacts) {
-      const o = el('option');
-      o.value = contactLabel(c);
-      list.appendChild(o);
+      const on = !!current && String(c.id) === String(current.id);
+      const option = el('li', on
+        ? 'rux--list-box__menu-item rux--list-box__menu-item--active scheduler-contact-option'
+        : 'rux--list-box__menu-item scheduler-contact-option');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.contactId = c.id;
+      option.dataset.ruxText = c.name ?? '';
+      const body = el('div', 'rux--list-box__menu-item__option scheduler-contact-option__body');
+      body.appendChild(el('span', 'scheduler-contact-option__name', c.name ?? ''));
+      const detail = [c.client, c.phone].filter(Boolean).join(' · ');
+      if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
+      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      tick.classList.add('rux--list-box__menu-item__selected-icon');
+      body.appendChild(tick);
+      option.appendChild(body);
+      menu.appendChild(option);
     }
-    wrap.append(input, list);
-    outer.appendChild(wrap);
-    return FIELD(id, label, outer, 'rux--form-item rux--text-input-wrapper');
+    root.append(field, menu);
+    // The wrapper is the field's outermost box, as in Carbon's own DOM. Inside
+    // `.rux--form-item`, whose `align-items: flex-start` shrinks it, the field
+    // measured 214px beside a 288px phone field.
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root);
+    return wrap;
   }
-
-  // One string per contact, and the same one everywhere, so a picked option can
-  // be matched back to the row it came from.
-  const contactLabel = c => [c.name, c.client, c.phone].filter(Boolean).join(' - ');
 
   function selectField(id, label, value, options) {
     const box = el('div', 'rux--select');
@@ -3062,7 +3084,7 @@
          rule meant to run once. A run that is already flush and already
          gapless needs no second one inside it, so the fields go straight in. */
       topFields.append(
-        contactSearch('scheduler-f-cfind', 'Booking contact name', 'scheduler-contacts', allContacts, contact),
+        contactSearch('scheduler-f-cfind', 'Booking contact name', allContacts, contact),
         textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
         textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
       );
@@ -3138,7 +3160,7 @@
       const drawRow = (c, n) => {
         const suffix = n === 1 ? '' : ` ${n}`;
         rowsHost.append(
-          contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, 'scheduler-contacts', allContacts, c),
+          contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, allContacts, c),
           textField(`scheduler-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
         );
       };
@@ -4698,22 +4720,27 @@
   // DIRTY IS COMPUTED, NOT TRACKED. Every input event re-reads the form and
   // compares it against the values the panel opened with, so typing a change
   // and typing it back out again disables Save rather than leaving it armed.
-  /* A PICKED OPTION IS RESOLVED BACK TO ITS ROW, and a typed one is not.
-     `<datalist>` has no value/label pair -- the option's value IS what lands in
-     the field -- so the only way to know which contact was chosen is to match
-     the string `contactLabel` built. A name typed freehand matches nothing and
-     clears the id, which is correct: it is not a contact until it is one, and
-     the save writes no link for it.
+  /* A PICKED CONTACT LINKS AND FILLS; TYPING UNLINKS. `js/list-box.js`
+     announces a pick with its option, and a cleared or broken selection with
+     `option: null`. Any keystroke in the field drops the link as well, so a
+     name typed freehand saves no contact.
 
      SUGGESTS, NEVER LOCKS. Choosing a booking contact fills organisation,
      phone and email and leaves all three editable -- 13 trips have a customer
      that differs from their contact's client, so overwriting has to stay
      cheap. */
+  const isContactField = t => t instanceof HTMLInputElement
+    && (t.id === 'scheduler-f-cfind' || /^scheduler-f-d\d$/.test(t.id));
   panelDetails?.addEventListener('input', e => {
-    const t = e.target;
-    if (!t || t.tagName !== 'INPUT' || !t.getAttribute('list')) return;
-    const hit = (panelIndex.contacts || []).find(c => contactLabel(c) === t.value);
-    if (hit) t.dataset.contactId = hit.id; else delete t.dataset.contactId;
+    if (isContactField(e.target)) delete e.target.dataset.contactId;
+  });
+  panelDetails?.addEventListener('rux:listbox-selected', e => {
+    const t = e.target.querySelector?.('input[role="combobox"]');
+    if (!isContactField(t)) return;
+    const id = e.detail?.option?.dataset.contactId;
+    if (!id) { delete t.dataset.contactId; return; }
+    t.dataset.contactId = id;
+    const hit = (panelIndex.contacts || []).find(c => String(c.id) === id);
     if (!hit) return;
     if (t.id === 'scheduler-f-cfind') {
       const put = (id, v) => { const e2 = document.getElementById(id); if (e2) e2.value = v ?? ''; };
@@ -4733,7 +4760,7 @@
       put('scheduler-f-cphone', hit.phone);
       put('scheduler-f-cemail', hit.email);
       suggest('scheduler-f-customer', hit.client);
-    } else if (/^scheduler-f-d\d$/.test(t.id)) {
+    } else {
       const ph = document.getElementById(`scheduler-f-dphone${t.id.slice(-1)}`);
       if (ph && !ph.value) ph.value = hit.phone ?? '';
     }
@@ -5287,9 +5314,10 @@
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
   /* ESCAPE ACTS WHERE FOCUS IS. Inside the editor it closes the editor; on the
      board it clears a selection first. An open dialog or search keeps the key
-     for itself. */
+     for itself, and so does anything that already took it -- a list or date
+     picker closing, a combo box clearing -- so one press does one thing. */
   document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
     const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);
     if (!inEditor && selectedBar()) { e.preventDefault(); clearSelection(); return; }

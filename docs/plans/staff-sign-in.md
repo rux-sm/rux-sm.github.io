@@ -49,9 +49,14 @@ function, including the ones that create share links.
 - **Captcha protection is on and covers sign-in**, so both sign-in forms send
   a Turnstile token with the site key `account.js` already uses. The email
   provider is enabled.
-- **Sign-ups stay on.** A self-made account gets nothing, because staff needs a
-  profile rux links, and the home page's anonymous sessions go through the
-  same sign-up endpoint.
+- **Anonymous sign-in ends everywhere.** Home, Notes and Design open with no
+  session at all, and a visitor's theme stays in their browser as it already
+  does. The only accounts are the seven staff ones, and with anonymous
+  sign-in gone rux turns off sign-ups, GitHub and Google too, since staff
+  accounts are created in the dashboard.
+- **rux chooses the passwords, and one shared password is acceptable:** the
+  aim is a wall between the public and staff, not between staff. It must meet
+  the project's minimum password length.
 - **Later plans:** per-person chat rules, trip history naming the actor from
   the session, private storage, private realtime channels.
 
@@ -95,14 +100,18 @@ None open.
       sign-in over the app; `js/core/profile.js` keeps its three exports;
       `js/pages/trip-intake.js` signs in first; forced refresh after the
       deploy.
-- [ ] Scheduler sign-in: `account.js` skips the anonymous session on a page
-      marked `data-auth="staff"` and adds `signInStaff` with a Turnstile token,
-      `staffProfile` and
+- [ ] Scheduler sign-in: `account.js` never signs in anonymously, drops the
+      GitHub and Google buttons, syncs a theme only for a staff session, and
+      adds `signInStaff` with a Turnstile token, `staffProfile` and
       `onAuthChange`, and on every page it loads it hides the app switcher
       button and panel for a staff session whose profile lacks
       `sees_all_apps`; `scheduler/data.js` shows the form for no session, an
       anonymous one or a non-staff account, reads an empty fleet as a lost
       sign-in, and reports a write that returns no row as not saved.
+- [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
+      dashboard once that deploy is live; a migration deletes the anonymous
+      users, whose theme rows go with them, and rux deletes the old GitHub
+      account.
 - [ ] Watch for at least seven days, until three business days in a row show
       every account signed in, no `anon` realtime subscription, and no anon or
       non-staff table request in the edge logs; a dry run inside a rolled-back

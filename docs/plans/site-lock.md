@@ -50,20 +50,20 @@ customer requests, are rebuilt with Design here and open without a login.
 - **Old links keep working.** rux-ui's driver, maintenance, document and
   request pages become forwarders to the new pages, keeping the token, and
   rux-ui's link-making code switches to the new addresses.
+- **rux-ui keeps making driver and maintenance links**, pointing at the new
+  pages. The scheduler making links is a plan of its own.
 - **rux-ui keeps its own login and session.** It is a separate site that this
   lock does not reach.
+- **The role migration and the login page come before the database close** in
+  the staff sign-in plan, so the close checks roles from the start. The link
+  pages can come before or after it.
 - **rux creates accounts in the dashboard, and a migration sets the role**, on
   rux's yes. A role change reaches someone already logged in within an hour, or
   at their next login.
 
 ## Questions
 
-- Should the scheduler also make driver and maintenance links, or does rux-ui
-  keep making them, pointing at the new pages? Recommended: rux-ui keeps making
-  them, and the scheduler gets it in a plan of its own.
-- Does this come before the database close in the staff sign-in plan?
-  Recommended: the role migration and the login page first, so the close
-  checks roles from the start; the link pages can follow in either order.
+None open.
 
 ## Tasks
 

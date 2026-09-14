@@ -429,15 +429,16 @@
   // A STALLED REQUEST HAS TO END SOMEWHERE. A rejected fetch surfaces at once,
   // but a connection that simply hangs does not: measured 2026-09-06 with the
   // network blocked, the grid sat dimmed and marked busy past seven seconds
-  // with no error and no way back except a reload. The read loses after this,
-  // the catch runs, and pressing the arrow again is a retry. The abandoned
-  // request may still land; nothing reads it, because a second read cannot
-  // start while one is in flight.
+  // with no error and no way back except a reload. The request loses after
+  // this and the catch runs. An abandoned read may still land, and nothing
+  // reads it. An abandoned WRITE may still land too, so its error carries
+  // `timedOut` and a save treats it as possibly written.
   const READ_TIMEOUT = 15000;
   const withTimeout = promise => Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(
-      () => reject(new Error(`The schedule did not answer within ${READ_TIMEOUT / 1000} seconds.`)),
+      () => reject(Object.assign(
+        new Error(`The schedule did not answer within ${READ_TIMEOUT / 1000} seconds.`), { timedOut: true })),
       READ_TIMEOUT)),
   ]);
 
@@ -2987,6 +2988,9 @@
       return_start_date: null, return_end_date: null,
       req_sleeper: false, req_ada: false, req_56pax: false,
       notes: null, trip_assignments: [], trip_stops: [],
+      // The id the trip is inserted with, fixed for the panel's life, so a
+      // second press of Save cannot make a second trip.
+      newId: crypto.randomUUID(),
     });
   }
 
@@ -3080,6 +3084,9 @@
        fields are rows in `trip_stops`, so they diff separately and write
        separately. Folding them into one patch object would have `trips.update`
        sent columns it does not have. */
+
+    // A new trip's id comes with its draft, so Reset keeps it too.
+    editing.newId = creating ? draft.newId : null;
 
     /* THE ROWS AS THEY WERE, so `paymentsPatch` has something to diff
        against. Same shape as `editing.stops` and for the same reason: the
@@ -4762,10 +4769,10 @@
   // after the grid's own size changes.
   new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBarClose(); })).observe(gridEl);
 
-  // Enter on a selected bar opens it. This runs before app.js's handler, so the
-  // first Enter on an unselected bar only selects it.
+  // Enter on the selected bar opens it. Enter on any other bar is app.js's and
+  // only selects that bar, even while a different one is selected.
   gridEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar')) openSelected();
+    if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-pressed="true"]')) openSelected();
   });
 
   // Every selection change, from a click, a key or a script, lands here.
@@ -5017,10 +5024,12 @@
     if (await saveEditor(after)) after();
   });
 
-  /* SAVE AS A STEP OTHER ACTIONS CAN WAIT ON. True once everything is written;
-     false when there is nothing to write, a write fails, or the trip changed
-     under the editor, which leaves the editor as it was. Work is anything
-     `changed` sees, so a time, contact or payment edit alone saves too.
+  /* SAVE AS A STEP OTHER ACTIONS CAN WAIT ON. True once the editor's work is
+     done: everything is written, or a new trip exists and the editor has
+     closed on it. False when there is nothing to write, nothing could be
+     written, the trip changed under the editor, or a save stopped partway and
+     the editor reopened on the trip as it is saved. Work is anything `changed`
+     sees, so a time, contact or payment edit alone saves too.
 
      THE TRIP IS READ BACK FIRST. When its `updated_at` is not the one the
      editor opened with, someone saved it in between, and the conflict box asks
@@ -5043,6 +5052,18 @@
         return false;
       }
     }
+    /* EVERY WRITE GOES THROUGH `write`, so a failure knows whether anything
+       reached the database and which part was being written. Sending a write
+       again that already landed is how a trip or a payment is saved twice. */
+    let wrote = false;
+    let part = 'the trip';
+    const write = async (what, query) => {
+      part = what;
+      const { data, error } = await withTimeout(query.then(r => r));
+      if (error) throw Object.assign(new Error(error.message), { code: error.code });
+      wrote = true;
+      return data;
+    };
     panelSave.disabled = true;
     toast('info', creating ? 'Creating the trip…' : 'Saving the trip…');
     try {
@@ -5075,13 +5096,12 @@
          is every trip at the instant it is created -- so this writes the
          value that derivation would produce, once, and never touches it
          again. */
-      const row = creating ? { ...form, bus_count: 1, confirmed: false } : patch;
+      const row = creating ? { id: editing.newId, ...form, bus_count: 1, confirmed: false } : patch;
       // Contacts are linked, and added to the list, before the trip is written.
       const unlinked = await linkContacts(row, creating);
       const wantBus = creating ? createBusId : null;
       /* TWO WRITES WHEN A CELL ASKED FOR A BUS, and they cannot be one:
-         the assignment needs the trip's id, which only exists after the
-         insert. `.select().single()` is what returns it.
+         the assignment row needs the trip row to exist first.
 
          IF THE SECOND WRITE FAILS THE FIRST STANDS, and that is the honest
          outcome rather than a silent rollback this client cannot do: the trip
@@ -5094,12 +5114,23 @@
          rather than sent. */
       const stopWork = creating ? [] : stopsPatch();
       const tripWork = creating || Object.keys(row || {}).length > 0;
-      const { data: made, error } = tripWork
-        ? await withTimeout((creating
-            ? client.from('trips').insert(row).select('id').single()
-            : client.from('trips').update(row).eq('id', id)).then(r => r))
-        : { data: null, error: null };
-      if (error) throw new Error(error.message);
+      /* A NEW TRIP CARRIES ITS OWN ID, made when the panel opened, so Save
+         pressed again after a timeout cannot make a second copy: the database
+         refuses a second row with the same id. That refusal means the first
+         insert landed after all, so the form is written over it instead. */
+      if (creating) {
+        try {
+          await write('the trip', client.from('trips').insert(row));
+        } catch (e) {
+          if (e.code !== '23505' || !/trips_pkey/.test(e.message)) throw e;
+          const again = { ...row };
+          delete again.id;
+          await write('the trip', client.from('trips').update(again).eq('id', row.id));
+        }
+      } else if (tripWork) {
+        await write('the trip', client.from('trips').update(row).eq('id', id));
+      }
+      const tripId = creating ? row.id : id;
 
       /* THE STOPS GO SECOND AND ONE ROW AT A TIME. There are at most two, they
          are separate rows with separate ids, and Supabase has no multi-row
@@ -5107,10 +5138,8 @@
          both rows, which would write back stale copies of the itinerary
          columns this form never showed.
 
-         IF A STOP WRITE FAILS THE TRIP WRITE STANDS, the same honest outcome
-         the assignment write below already takes: the trip is saved, the time
-         is not, and the message says which rather than claiming everything
-         failed. */
+         IF A STOP WRITE FAILS THE TRIP WRITE STANDS, and the catch below says
+         which part did not save and shows the trip as it is saved. */
       /* THE FIRST STOPS, WRITTEN ONLY ON CREATE. A pickup row carries the
          location, the yard departure and the spot; a return row carries the
          arrival. Neither is written unless something was typed into it --
@@ -5121,23 +5150,20 @@
          nothing to order against: outbound, 0 and 1. On an existing trip this
          same arithmetic would be a guess, which is why `stopsPatch` refuses it
          there. */
-      if (creating && made?.id) {
+      if (creating) {
         const v = id => document.getElementById(id)?.value.trim() || null;
         const where = v('scheduler-f-pickup'), dep = v('scheduler-f-depart'), spot = v('scheduler-f-spot');
         const back = v('scheduler-f-return');
         const rows = [];
         if (where || dep || spot) {
-          rows.push({ trip_id: made.id, leg: 'outbound', position: 0, type: 'pickup',
+          rows.push({ trip_id: tripId, leg: 'outbound', position: 0, type: 'pickup',
                       name: where, depart_prev: dep, spot });
         }
         if (back) {
-          rows.push({ trip_id: made.id, leg: 'outbound', position: rows.length, type: 'return',
+          rows.push({ trip_id: tripId, leg: 'outbound', position: rows.length, type: 'return',
                       arrive: back });
         }
-        if (rows.length) {
-          const { error: stErr } = await withTimeout(client.from('trip_stops').insert(rows).then(r => r));
-          if (stErr) throw new Error(`The trip was created, but its schedule was not: ${stErr.message}`);
-        }
+        if (rows.length) await write('its schedule', client.from('trip_stops').insert(rows));
       }
 
       /* PAYMENTS, THEN THE AGGREGATE THEY ADD UP TO. `deposit_amount` is not
@@ -5151,69 +5177,45 @@
          IT IS WRITTEN AS A SECOND UPDATE rather than folded into the trip
          patch above, because its value is not known until the rows are.
          `|| null` matches what rux-ui stores for an empty list. */
-      /* THE TRIP ID IS `made.id` ON CREATE and `id` on edit, because `id` is
-         `editing.id` and a trip being created has none until the INSERT above
-         comes back. Every payment write below hangs off this, which is the
-         whole of what it took to make payments work on a new trip. */
-      const payTripId = made?.id ?? id;
-      const payPatch = payTripId ? paymentsPatch() : null;
+      /* EVERY ROW BELOW HANGS OFF `tripId`: the id a new trip was inserted
+         with, or `editing.id` on an edit. */
+      const payPatch = paymentsPatch();
       if (payPatch?.work) {
         for (const p of payPatch.inserts) {
-          const { error: piErr } = await withTimeout(
-            client.from('trip_payments').insert({ trip_id: payTripId, ...p }).then(r => r));
-          if (piErr) throw piErr;
+          await write('its payments', client.from('trip_payments').insert({ trip_id: tripId, ...p }));
         }
         for (const u of payPatch.updates) {
-          const { error: puErr } = await withTimeout(
-            client.from('trip_payments').update(u.patch).eq('id', u.id).then(r => r));
-          if (puErr) throw puErr;
+          await write('its payments', client.from('trip_payments').update(u.patch).eq('id', u.id));
         }
         for (const delId of payPatch.deletes) {
-          const { error: pdErr } = await withTimeout(
-            client.from('trip_payments').delete().eq('id', delId).then(r => r));
-          if (pdErr) throw pdErr;
+          await write('its payments', client.from('trip_payments').delete().eq('id', delId));
         }
-        const { error: daErr } = await withTimeout(
-          client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', payTripId).then(r => r));
-        if (daErr) throw daErr;
+        await write('its payments',
+          client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', tripId));
       }
 
       /* POS AND INVOICES, by id like the payments above. Their single columns
          went out with the trip patch, computed from the same rows (`EDITS`). */
-      for (const [table, listWork] of [['trip_pos', payTripId ? posPatch() : null],
-                                       ['trip_invoices', payTripId ? invoicesPatch() : null]]) {
+      for (const [table, what, listWork] of [['trip_pos', 'its purchase orders', posPatch()],
+                                             ['trip_invoices', 'its invoices', invoicesPatch()]]) {
         if (!listWork?.work) continue;
-        for (const row of listWork.inserts) {
-          const { error: liErr } = await withTimeout(
-            client.from(table).insert({ trip_id: payTripId, ...row }).then(r => r));
-          if (liErr) throw liErr;
+        for (const item of listWork.inserts) {
+          await write(what, client.from(table).insert({ trip_id: tripId, ...item }));
         }
         for (const u of listWork.updates) {
-          const { error: luErr } = await withTimeout(
-            client.from(table).update(u.patch).eq('trip_id', payTripId).eq('id', u.id).then(r => r));
-          if (luErr) throw luErr;
+          await write(what, client.from(table).update(u.patch).eq('trip_id', tripId).eq('id', u.id));
         }
         for (const delId of listWork.deletes) {
-          const { error: ldErr } = await withTimeout(
-            client.from(table).delete().eq('trip_id', payTripId).eq('id', delId).then(r => r));
-          if (ldErr) throw ldErr;
+          await write(what, client.from(table).delete().eq('trip_id', tripId).eq('id', delId));
         }
       }
 
       for (const w of stopWork) {
-        const { error: sErr } = await withTimeout(
-          client.from('trip_stops').update(w.patch).eq('id', w.id).then(r => r));
-        if (sErr) throw new Error(`The trip saved, but the schedule did not: ${sErr.message}`);
+        await write('its schedule', client.from('trip_stops').update(w.patch).eq('id', w.id));
       }
-      if (wantBus && made?.id) {
-        const { error: aErr } = await withTimeout(client.from('trip_assignments')
-          .insert({ trip_id: made.id, bus_id: wantBus, leg: 'outbound', position: 0 }).then(r => r));
-        if (aErr) {
-          await show();
-          toast('warning', 'The trip was created without its bus.',
-            `It is in the Unassigned row and can be dragged onto one. ${aErr.message}`);
-          return true;
-        }
+      if (wantBus) {
+        await write('its bus', client.from('trip_assignments')
+          .insert({ trip_id: tripId, bus_id: wantBus, leg: 'outbound', position: 0 }));
       }
       // READ IT BACK rather than trusting the write, as the drag does.
       await show();
@@ -5224,8 +5226,32 @@
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
       return true;
     } catch (e) {
-      toast('error', `The trip was not ${creating ? 'created' : 'saved'}. ${e.message}`);
-      panelSave.disabled = false;
+      const why = String(e && e.message ? e.message : e);
+      /* NOTHING LANDED, or a new trip's insert ran out of time, which its fixed
+         id makes safe to send again. The editor stays as it is for another try. */
+      if (!wrote && (creating || !e.timedOut)) {
+        if (e.timedOut) toast('warning', 'The trip may not have been created.', `${why} Press Save again. It cannot make a second copy.`);
+        else toast('error', `The trip was not ${creating ? 'created' : 'saved'}. ${why}`);
+        panelSave.disabled = false;
+        return false;
+      }
+      /* PART OF IT LANDED, OR MAY HAVE. The editor's pending rows no longer
+         match the database, and sending them again would save some twice, so
+         the board is read back and the editor lets them go. A new trip closes,
+         since it exists now; an existing one reopens as it is saved. */
+      const check = part === 'its bus' ? 'It is in the Unassigned row and can be dragged onto one.'
+        : part === 'the trip' ? 'Check the trip and make the change again if it is missing.'
+        : `Check ${part} and add what is missing.`;
+      const didNot = e.timedOut ? 'may not have saved' : 'did not save';
+      await show();
+      if (creating) {
+        closePanel(false);
+        toast('warning', `The trip was created, but ${part} ${didNot}.`, `${check} ${why}`);
+        return true;
+      }
+      const bar = panelArgs?.ref ? findBar(panelArgs.ref) : null;
+      if (bar) openPanel(bar); else closePanel(false);
+      toast('warning', `Part of the trip ${didNot}.`, `${check} ${why}`);
       return false;
     }
   }
@@ -5987,17 +6013,34 @@
 
   // -- the week, and moving between them ------------------------------------
   let cursor = mondayOf(new Date());
-  let loading = false;
   let shown = null;   // the week actually on screen, which is not `cursor` mid-fetch
+  // The read in flight, and whether anything asked for another while it ran.
+  let reading = null;
+  let readAgain = false;
 
-  async function show() {
+  /* ONE READ AT A TIME, AND THE LAST ASK ALWAYS GETS ITS OWN. A week change or
+     a save that asks while a week is loading is queued, not dropped, so the
+     board always ends on `cursor` and on the data as it is after the save.
+     Every caller gets the same promise, which settles once nothing is left to
+     read, so `await show()` means the board is current. */
+  function show() {
+    if (reading) { readAgain = true; return reading; }
+    reading = (async () => {
+      try {
+        do { readAgain = false; await readWeek(); } while (readAgain);
+      } finally {
+        reading = null;
+      }
+    })();
+    return reading;
+  }
+
+  async function readWeek() {
     if (!client) {
       schEl.hidden = true;
       say('error', 'Not connected', 'The account script did not load, so this page has no way to reach the schedule. It is served from the site root and is missing here.');
       return;
     }
-    if (loading) return;
-    loading = true;
 
     // SAY SO BEFORE THE FETCH, NOT AFTER IT. The week being asked for is known
     // the moment the button is pressed and the read takes a few hundred
@@ -6014,9 +6057,14 @@
     if (shown) gridEl.classList.add('scheduler-grid--busy');
 
     try {
-      render(await read(asked));
+      const data = await read(asked);
+      // A newer ask for a different week is queued: this one is not drawn.
+      if (readAgain && iso(cursor) !== iso(asked)) return;
+      render(data);
       shown = asked;
     } catch (e) {
+      // A queued read follows and reports for itself.
+      if (readAgain) return;
       // A FAILED WEEK DOES NOT TAKE THE LAST GOOD ONE WITH IT. Hiding the grid
       // meant one dropped request wiped what was on screen. What is drawn is
       // still `shown`, so the label goes back to it and the notice says which
@@ -6028,7 +6076,6 @@
         ? `${why} Still showing the week that did load.`
         : why);
     } finally {
-      loading = false;
       schEl.removeAttribute('aria-busy');
       gridEl.classList.remove('scheduler-grid--busy');
     }

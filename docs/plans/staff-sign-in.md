@@ -90,14 +90,9 @@ None open.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] rux-ui login screen: `js/core/staff-username.js` with a test,
-      `js/data/auth-db.js`, and a full login screen with a Turnstile token
-      shown before the app loads when there is no staff session;
-      `index.html` drops the profile picker and turns "Switch profile" into
-      "Sign out", which returns to the login screen; a lost session returns to
-      it without discarding unsaved work; `js/core/profile.js` keeps its three
-      exports; `js/pages/trip-intake.js` requires the same sign-in; forced
-      refresh after the deploy.
+- [ ] rux presses "Force refresh all users" in rux-ui, logs in there, and
+      someone logs in on the Display; the old profile picker code stays in
+      rux-ui unused.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
       dashboard once both login screens are live; a migration deletes the
       anonymous users, whose theme rows go with them.

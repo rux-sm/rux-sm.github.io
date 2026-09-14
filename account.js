@@ -119,65 +119,79 @@
   const panel = document.getElementById('rux-account-panel');
   const panelButton = panel?.querySelector('#rux-profile-sign-in');
 
+  // THE STAFF SIDE OF A PAGE, run once: at load for a session that already
+  // exists, or when someone logs in on the page, as the scheduler's form does.
+  let staffReady = false;
+  const setupStaff = async session => {
+    if (staffReady || !session || session.user.is_anonymous) return;
+    let staff = null;
+    try { staff = await staffProfile(); } catch { return; }
+    if (!staff || staffReady) return;
+    staffReady = true;
+
+    // A TEAM ACCOUNT STAYS IN THE SCHEDULING APPS.
+    if (!staff.sees_all_apps) {
+      if (location.pathname === '/' || location.pathname === '/index.html') {
+        location.replace('/scheduler/');
+        return;
+      }
+      document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
+      document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
+    } else if (panelButton) {
+      // THE ONE DOOR INTO THE FULLER ACCOUNT PAGE, for the account that sees
+      // every app; a team account has no reason to leave the scheduler.
+      const link = document.createElement('a');
+      link.className = 'rux--link rux--link--inline';
+      link.href = '/account/';
+      link.textContent = 'Account settings';
+      panelButton.insertAdjacentElement('afterend', link);
+    }
+
+    // The panel's one button becomes Log out. profile.js reveals it only when
+    // something registers a handler.
+    profile.onSignIn(async () => {
+      await sb.auth.signOut().catch(() => {});
+      location.reload();
+    });
+    if (panelButton) panelButton.textContent = 'Log out';
+
+    const uid = session.user.id;
+    try {
+      const { data: row } = await profiles().select('display_name, theme').eq('id', uid).maybeSingle();
+      const patch = {};
+      if (row?.display_name != null) patch.name = row.display_name;
+      if (row?.theme != null) patch.theme = row.theme;
+      if (Object.keys(patch).length) profile.set(patch);
+      if (!row) {
+        const localProfile = profile.get();
+        await profiles().upsert({ id: uid, display_name: localProfile.name ?? null, theme: localProfile.theme ?? null });
+      }
+    } catch { /* platform unreachable: the local profile stands */ }
+
+    let timer;
+    profile.onChange(p => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        profiles().update({ display_name: p.name ?? null, theme: p.theme ?? null }).eq('id', uid)
+          .then(() => {}, () => {});
+      }, 500);
+    });
+  };
+
+  // Someone logging in on the page gets the staff side without a reload. The
+  // work runs after the callback returns, because supabase-js must not be
+  // awaited inside its own auth callback.
+  sb.auth.onAuthStateChange((event, next) => {
+    if (event === 'SIGNED_IN') setTimeout(() => setupStaff(next), 0);
+  });
+
   let session;
   try { ({ data: { session } } = await sb.auth.getSession()); } catch { return; }
-  if (!session) return;
   // AN ANONYMOUS SESSION LEFT FROM BEFORE LOG-IN WAS STAFF-ONLY ENDS HERE, so
   // nothing syncs to it; this browser keeps its theme locally.
-  if (session.user.is_anonymous) {
+  if (session?.user.is_anonymous) {
     await sb.auth.signOut().catch(() => {});
     return;
   }
-
-  let staff = null;
-  try { staff = await staffProfile(); } catch { return; }
-  if (!staff) return;
-
-  // A TEAM ACCOUNT STAYS IN THE SCHEDULING APPS.
-  if (!staff.sees_all_apps) {
-    if (location.pathname === '/' || location.pathname === '/index.html') {
-      location.replace('/scheduler/');
-      return;
-    }
-    document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
-    document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
-  } else if (panelButton) {
-    // THE ONE DOOR INTO THE FULLER ACCOUNT PAGE, for the account that sees
-    // every app; a team account has no reason to leave the scheduler.
-    const link = document.createElement('a');
-    link.className = 'rux--link rux--link--inline';
-    link.href = '/account/';
-    link.textContent = 'Account settings';
-    panelButton.insertAdjacentElement('afterend', link);
-  }
-
-  const uid = session.user.id;
-  try {
-    const { data: row } = await profiles().select('display_name, theme').eq('id', uid).maybeSingle();
-    const patch = {};
-    if (row?.display_name != null) patch.name = row.display_name;
-    if (row?.theme != null) patch.theme = row.theme;
-    if (Object.keys(patch).length) profile.set(patch);
-    if (!row) {
-      const localProfile = profile.get();
-      await profiles().upsert({ id: uid, display_name: localProfile.name ?? null, theme: localProfile.theme ?? null });
-    }
-  } catch { /* platform unreachable: the local profile stands */ }
-
-  let timer;
-  profile.onChange(p => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      profiles().update({ display_name: p.name ?? null, theme: p.theme ?? null }).eq('id', uid)
-        .then(() => {}, () => {});
-    }, 500);
-  });
-
-  // The panel's one button becomes Log out for a staff session. profile.js
-  // reveals it only when something registers a handler.
-  profile.onSignIn(async () => {
-    await sb.auth.signOut().catch(() => {});
-    location.reload();
-  });
-  if (panelButton) panelButton.textContent = 'Log out';
+  await setupStaff(session);
 })();

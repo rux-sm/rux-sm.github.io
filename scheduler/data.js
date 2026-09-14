@@ -5751,7 +5751,10 @@
   const loginErrorText = document.getElementById('scheduler-login-error-text');
   const appEl = document.getElementById('scheduler-app');
   const searchEl = document.getElementById('scheduler-search')?.closest('.scheduler-header-search');
+  const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
   let started = false;
+  // Only an account whose profile sees every app gets the app switcher.
+  const showSwitcher = staff => { if (switcherBtn) switcherBtn.hidden = !staff?.sees_all_apps; };
 
   const loginSay = text => {
     if (!loginError) return;
@@ -5759,6 +5762,7 @@
     loginError.hidden = !text;
   };
   const showLogin = text => {
+    showSwitcher(null);
     if (loginEl) loginEl.hidden = false;
     if (appEl) appEl.hidden = true;
     if (searchEl) searchEl.hidden = true;
@@ -5784,8 +5788,12 @@
       const problem = await account.signInStaff(
         loginUser.value, loginPassword.value, document.getElementById('scheduler-login-captcha'));
       loginPassword.value = '';
-      if (problem) loginSay(problem);
-      else startBoard();
+      if (problem) {
+        loginSay(problem);
+      } else {
+        showSwitcher(await account.staffProfile().catch(() => null));
+        startBoard();
+      }
     } catch {
       loginSay("Can't log in right now. Try again.");
     } finally {
@@ -5802,8 +5810,12 @@
     }
     let staff = null;
     try { staff = await account.staffProfile(); } catch { /* the form shows */ }
-    if (staff) startBoard();
-    else showLogin();
+    if (staff) {
+      showSwitcher(staff);
+      startBoard();
+    } else {
+      showLogin();
+    }
     account.onAuthChange(event => {
       if (event === 'SIGNED_OUT' && started) showLogin('You were logged out. Log in again.');
     });

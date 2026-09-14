@@ -226,9 +226,10 @@
     $('scheduler-quote-total-note').textContent = other ? `Includes ${money.format(other)} other charges` : 'Mileage and driver pay';
   };
 
-  const drawRateSelect = () => {
+  // Keeps the chosen rate while it still exists; `fresh` starts from the default.
+  const drawRateSelect = (fresh = false) => {
     const select = $('scheduler-quote-rate');
-    const current = select.value;
+    const current = fresh ? '' : select.value;
     const sorted = [...mileage].sort((a, b) => a.rate - b.rate);
     select.replaceChildren(...sorted.map(m => Object.assign(document.createElement('option'), {
       className: 'rux--select-option',
@@ -387,7 +388,8 @@
     dayCount = 1;
     $('scheduler-quote-day-rows').replaceChildren();
     drawDays();
-    drawRateSelect();
+    // A reset puts the select on its first option, the cheapest rate.
+    drawRateSelect(true);
     compute();
   }));
   $('scheduler-quote-drivers').addEventListener('change', showDrivers);

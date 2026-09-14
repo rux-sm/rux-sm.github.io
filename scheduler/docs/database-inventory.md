@@ -91,6 +91,8 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `dev_notes` | dev notes popover | dropped |
 | `game_*` (four tables, nine functions) | Flip Seven | dropped |
 | `trip_docs`, `trip_buses` | nothing | referenced by no code; leave alone |
+| `quote_rates` | quote calculator | this app's own. `key` and `value`, one row per named rate; the keys are listed in `scheduler/quote.js`. Staff only. |
+| `quote_mileage_rates` | quote calculator | this app's own. `rate`, `note`, `is_default` (at most one true). Staff only. |
 
 ### Functions the app calls
 

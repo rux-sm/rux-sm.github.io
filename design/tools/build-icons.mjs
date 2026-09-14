@@ -58,6 +58,9 @@ const ICONS = [
   // this sprite -- which is why check-icons counts it among the symbols nothing
   // points at rather than failing on it.
   'color-palette',
+  // A CALCULATOR, asked for by Scheduler for its quote calculator's side-nav
+  // item, where every entry needs an icon and none of the others says pricing.
+  'calculator',
   // A GROUP OF PEOPLE, asked for by Scheduler 2026-09-07. A roster control
   // sitting in a toolbar Carbon draws as icons had to be a text button, because
   // the sprite held exactly one person in 62 -- `user--avatar`, which the shell's

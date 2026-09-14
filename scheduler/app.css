@@ -2630,3 +2630,117 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-app[hidden],
 .scheduler-header-search[hidden],
 .scheduler-menu-trigger[hidden] { display: none; }
+
+/* ── THE QUOTE CALCULATOR (quote.html) ─────────────────────────────────────
+   A form beside a summary tile. Flex wrapping, not a breakpoint, puts the
+   summary under the form when the two do not fit side by side. */
+.scheduler-quote-panel { padding-block-start: var(--rux-spacing-07); }
+/* overrides.css takes the page's padding away below md, which suits the
+   full-bleed board. This page is a form with prose, so it keeps a gutter. */
+@media (max-width: 41.98rem) {
+  .scheduler-quote-page {
+    padding: var(--rux-spacing-05) max(var(--rux-spacing-05), var(--scheduler-safe-right)) var(--rux-spacing-07) max(var(--rux-spacing-05), var(--scheduler-safe-left));
+  }
+}
+.scheduler-quote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--rux-spacing-07);
+}
+.scheduler-quote__form { flex: 1 1 32rem; min-inline-size: 0; }
+.scheduler-quote__summary {
+  flex: 1 1 18rem;
+  max-inline-size: 24rem;
+  position: sticky;
+  inset-block-start: calc(3rem + var(--rux-spacing-05));
+}
+.scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
+.scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
+.scheduler-quote__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--rux-spacing-05);
+  align-items: end;
+}
+.scheduler-quote__church { align-self: center; }
+/* The checkbox wrapper's own display rule beats the browser's [hidden]. */
+.scheduler-quote__church[hidden] { display: none; }
+.scheduler-quote__lede,
+.scheduler-quote__notes { max-inline-size: 42rem; }
+.scheduler-quote__day-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-03);
+  margin-block-start: var(--rux-spacing-03);
+}
+
+/* The miles table: a day number, then one column per mileage column showing. */
+.scheduler-quote-days {
+  --scheduler-quote-cols: 1;
+  max-inline-size: calc(3rem + var(--scheduler-quote-cols) * 12rem);
+}
+.scheduler-quote-days__head,
+.scheduler-quote-days__row {
+  display: grid;
+  grid-template-columns: 3rem repeat(var(--scheduler-quote-cols), minmax(0, 1fr));
+  gap: var(--rux-spacing-03);
+  align-items: center;
+}
+.scheduler-quote-days__row + .scheduler-quote-days__row { margin-block-start: var(--rux-spacing-03); }
+.scheduler-quote-days__head {
+  margin-block-end: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-quote-days__day {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-quote-days [data-driver][hidden] { display: none; }
+.scheduler-quote-days__row .rux--text-input { font-variant-numeric: tabular-nums; }
+
+/* The Rates tab's mileage list: rate, note, the default radio, remove. */
+.scheduler-quote-mileage { max-inline-size: 42rem; }
+.scheduler-quote-mileage__head,
+.scheduler-quote-mileage__row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) 4rem 2rem;
+  gap: var(--rux-spacing-03);
+  align-items: center;
+}
+.scheduler-quote-mileage__row + .scheduler-quote-mileage__row { margin-block-start: var(--rux-spacing-03); }
+.scheduler-quote-mileage__head {
+  margin-block-end: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-quote-mileage__default { justify-content: center; }
+
+/* The summary's lines: a name and an amount, with a note under them. */
+.scheduler-quote-lines { margin: 0; }
+.scheduler-quote-lines__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--rux-spacing-05);
+  padding-block: var(--rux-spacing-04);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+}
+.scheduler-quote-lines__row[hidden] { display: none; }
+.scheduler-quote-lines__row dd { margin: 0; font-variant-numeric: tabular-nums; }
+.scheduler-quote-lines__note {
+  grid-column: 1 / -1;
+  margin-block-start: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+}
+.scheduler-quote-lines__note:empty { display: none; }
+#scheduler-quote-total { font-variant-numeric: tabular-nums; }

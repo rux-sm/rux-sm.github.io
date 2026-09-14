@@ -55,7 +55,7 @@ done and how.
 
 ## Notes owes atlas
 
-- Some cross-guide references reach Notes as plain file names instead of
+- Some cross-walkthrough references reach Notes as plain file names instead of
   links. Atlas should send them as links.
 
 ## Only rux can do

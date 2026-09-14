@@ -1,15 +1,15 @@
 # Notes
 
-**Infor LN scenario guides, meeting reviews and practice exercises**, at
+**Infor LN walkthroughs, meeting reviews and practice exercises**, at
 [rux-sm.github.io/notes](https://rux-sm.github.io/notes/).
 Notes renders; it does not author. The repository's `AGENTS.md` is the policy,
 and its `README.md` covers setup, the commands and how a push deploys.
 
 ## What it publishes
 
-Scenario guides, meeting reviews with their summaries, and practice exercises,
-each a generated page under `guides/`, with `index.html` as the front. Every
-page ends with the atlas revision it was built from. A draft guide is labelled
+Walkthroughs, meeting reviews with their summaries, and practice exercises,
+each a generated page under `pages/`, with `index.html` as the front. Every
+page ends with the atlas revision it was built from. A draft walkthrough is labelled
 on the page, never withheld.
 
 An exercise page is a worksheet. The answer spaces atlas marked are text
@@ -20,13 +20,13 @@ learner types stays in their own browser, and the rail exports it as Markdown.
 
 ## How pages are made
 
-1. `sh tools/sync-guides.sh` copies atlas's **export tier** into `data/guides/`
-   and writes `data/guides/PIN`: the atlas commit, the contract and a sha256 of
+1. `sh tools/sync-export.sh` copies atlas's **export tier** into `data/atlas/`
+   and writes `data/atlas/PIN`: the atlas commit, the contract and a sha256 of
    the bytes. `tools/check-data.mjs` refuses data that does not match it.
 2. `tools/build.mjs` turns each JSON file into a page. All markup lives there;
    pages link Design at `/design/`.
 
-The data contract is atlas's `standards/guide-json.md`, and
+The data contract is atlas's `standards/export-json.md`, and
 `standards/renderer-brief.md` §5 lists what bites when rendering it. Both are
 read, never re-implemented. `docs/diagram.md` is how the diagram is drawn.
 
@@ -51,7 +51,7 @@ From the repository root:
 ```sh
 npm run serve -- --private   # atlas's working tree, internal tier, into build/ on :8644; never published
                              # the walk form at /walk/ saves into atlas through tools/serve-walk.mjs on :8645
-npm run export               # sync-guides.sh from ../../atlas, then build and check
+npm run export               # sync-export.sh from ../../atlas, then build and check
 npm run serve                # the whole site on :8640, this app at /notes/
 npm run check                # every gate here, plus the rest of the site
 ```
@@ -65,7 +65,7 @@ machine has to be able to reproduce.
 
 ## Never edited by hand
 
-`data/guides/`, `guides/` and `index.html` are generated, and the next sync or
+`data/atlas/`, `pages/` and `index.html` are generated, and the next sync or
 build overwrites them. Fix content in atlas, a component in Design, markup in
 `tools/build.mjs`. `theme.css` and `overrides.css` here are this app's
 override hooks, linked after Design's own and empty by design. A rule goes

@@ -8,7 +8,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `index.html`, `account/`, `switcher.json`, `switcher.js`, `account.js` | `/` | the hub: the front door and the account panel |
 | `design/` | `/design/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
-| `notes/` | `/notes/` | Infor LN scenario guides, rendered from the private `atlas` |
+| `notes/` | `/notes/` | Infor LN walkthroughs, rendered from the private `atlas` |
 | `tools/` | — | the commands below |
 | `docs/` | — | `docs/status.md`, what is unfinished, and `docs/plans/`, changes being decided or built |
 

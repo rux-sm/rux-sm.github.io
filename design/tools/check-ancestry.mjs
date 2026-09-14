@@ -482,7 +482,7 @@ const showAll = process.argv.includes('--all');
 // never committed, quoted or copied here.
 //
 //   node tools/check-ancestry.mjs                          # sink + templates
-//   node tools/check-ancestry.mjs ../notes/guides  # a consumer's pages
+//   node tools/check-ancestry.mjs ../notes/pages  # a consumer's pages
 //
 // This is the same fix `pageTargets()` took for the browser gates, and that
 // four node gates took at 9186429: a hardcoded page list is a gate that cannot

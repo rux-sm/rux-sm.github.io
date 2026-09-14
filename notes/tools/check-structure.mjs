@@ -176,7 +176,7 @@ function elements(html) {
 const pairs = compoundPairs(readFileSync(CSS, 'utf8'));
 // EVERY PAGE, NOT EVERY PAGE AT THE ROOT — see the same note in
 // check-classes.mjs. This stopped at the repository root until 2026-08-31,
-// when tools/build.mjs began writing generated guides into `guides/`; the
+// when tools/build.mjs began writing generated walkthroughs into `pages/`; the
 // no-argument form would have swept one file and reported a clean run.
 const SKIP = new Set(['node_modules', 'vendor', 'build', '.git']);
 

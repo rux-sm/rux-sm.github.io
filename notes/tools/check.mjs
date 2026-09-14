@@ -19,7 +19,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // Order: the cheap structural checks first, publishability last so its
 // refusal is the final word on the screen.
 const GATES = [
-  // THE REBUILD, FIRST OF ALL. Everything after this reads guides/ and
+  // THE REBUILD, FIRST OF ALL. Everything after this reads pages/ and
   // index.html; if they were stale, this gate rewrote them from data/ before
   // any of it ran, so every gate below sees current content, not a snapshot
   // from the last time someone remembered to type `node tools/build.mjs`.

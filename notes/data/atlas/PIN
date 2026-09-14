@@ -1,0 +1,10 @@
+commit   e705aa7b83811363d360da8151b6349e7a5252d9
+date     2026-09-14T02:57:55Z
+subject  refactor: Rename guide to walkthrough
+contract 9 
+tier     export
+sha256   0c2e0b9001c468166869578b14fd1aad3c9409c57826d284613d45b4774b3b87
+
+Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --exercises --references.
+These files are INPUTS, not source. Do not hand-edit them -- the next sync
+overwrites them, and the real fix belongs in the walkthrough in atlas.

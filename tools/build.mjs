@@ -2,7 +2,7 @@
 //
 // Regenerate everything that is committed but derived: Design's compiled
 // stylesheet and generated pages (its own `npm run verify` does that and
-// checks it), Notes' pages from data/guides/, and the sprite inlined into the
+// checks it), Notes' pages from data/atlas/, and the sprite inlined into the
 // hub's and the scheduler's pages. Publishing is `git push`; this only writes.
 //
 //   npm run build

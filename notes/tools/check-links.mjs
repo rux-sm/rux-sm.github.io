@@ -3,16 +3,16 @@
 // Does every local `href` and `src` on a page point at a file that exists?
 //
 // WHY IT EXISTS, AND IT IS NOT HYPOTHETICAL. The first build of the generated
-// guides shipped TEN dead references and every other check was green:
+// walkthroughs shipped TEN dead references and every other check was green:
 //
-//   * NINE cross-guide links pointing at a guide's `.md` file. Guides reference each
+//   * NINE cross-walkthrough links pointing at a walkthrough's `.md` file. Walkthroughs reference each
 //     other by their atlas filename, and atlas's files are Markdown. Emitted
 //     verbatim into HTML they are nine links to nothing.
 //   * ONE image, `order-to-shipment-flowchart.svg`, referenced relative to the
-//     page but delivered into `data/guides/`. The generator was not copying it.
+//     page but delivered into `data/atlas/`. The generator was not copying it.
 //
 // NEITHER IS VISIBLE TO ANYTHING ELSE HERE. `check-classes` reads class names,
-// `check-structure` reads ancestry, and the pre-commit hook reads guide
+// `check-structure` reads ancestry, and the pre-commit hook reads walkthrough
 // strings; not one of them looks at an attribute that names a file. And
 // neither fault shows on the page: a dead link is drawn exactly like a live
 // one, and a missing image is a small broken-image box that reads as a slow
@@ -20,8 +20,8 @@
 // finished and is wrong -- in the one place nothing was watching.
 //
 // WHAT IT CANNOT SEE, said plainly because a green run is easy to over-read:
-//   * whether the link points at the RIGHT page. A guide linking to the wrong
-//     guide resolves fine.
+//   * whether the link points at the RIGHT page. A walkthrough linking to the wrong
+//     walkthrough resolves fine.
 //   * fragments. `#summaries` is checked only as far as the file; whether the
 //     id exists in it is not read.
 //   * anything remote. An `https://` target is skipped rather than fetched.
@@ -69,7 +69,7 @@ const external = href => href === '' || href.startsWith('#')
 // sits under /notes/. No file here answers them, so they are counted
 // and printed rather than resolved. Before this rule `/` passed by accident
 // -- join(dir, '/') is dir -- and /switcher.js would have failed as
-// `guides/switcher.js`. WHAT THIS CANNOT SEE: a root path with a typo in it
+// `pages/switcher.js`. WHAT THIS CANNOT SEE: a root path with a typo in it
 // passes here; the hub's tools/check.mjs guards switcher.json's paths, and
 // nothing guards the entries this site ships as its fallback. Open the page.
 const rootAbsolute = href => href.startsWith('/') && !href.startsWith('//');

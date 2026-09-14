@@ -54,10 +54,10 @@ if (!existsSync(GATE)) {
   process.exit(1);
 }
 
-// The page directories, verified rather than assumed. `guides/` is where
+// The page directories, verified rather than assumed. `pages/` is where
 // build.mjs writes; the repository root holds index.html and the one
 // hand-authored page.
-const ROOTS = [ROOT, join(ROOT, 'guides')].filter(dir => {
+const ROOTS = [ROOT, join(ROOT, 'pages')].filter(dir => {
   if (existsSync(dir)) return true;
   console.error(`  unavailable: ${dir} does not exist -- has build.mjs's output moved?`);
   process.exit(1);

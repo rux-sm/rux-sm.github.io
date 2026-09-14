@@ -22,7 +22,7 @@ const ORIGIN = `http://localhost:${process.env.PREVIEW_PORT ?? 8644}`;
 const HOSTS = new Set([`localhost:${PORT}`, `127.0.0.1:${PORT}`]);
 
 const WALK_ID = /^WK_([a-z0-9-]+)_(\d{4}-\d{2}-\d{2})_(\d{6})$/;
-const GUIDE_ID = /^[a-z0-9-]+$/;
+const WALKTHROUGH_ID = /^[a-z0-9-]+$/;
 const STEP_ID = /^\d+\.\d+$/;
 const CODE = /\b[a-z]{5}\d{4}[a-z]\d{3}\b/;
 const IMAGE = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)$/;
@@ -38,11 +38,11 @@ const cell = text => String(text ?? '').replace(/\r?\n+/g, ' · ').replace(/\|/g
 const uncell = text => text.replace(/\\\|/g, '|');
 
 function walkthroughs() {
-  const dir = join(ATLAS, 'guides');
+  const dir = join(ATLAS, 'walkthroughs');
   return readdirSync(dir).filter(f => f.endsWith('.md')).flatMap(f => {
     const text = readFileSync(join(dir, f), 'utf8');
     const fm = frontmatter(text);
-    if (field(fm, 'type') !== 'guide') return [];
+    if (field(fm, 'type') !== 'walkthrough') return [];
     const title = /^# (.+)$/m.exec(text)?.[1].trim() ?? f.slice(0, -3);
     const phases = [...fm.matchAll(/^\s*- \{n: (\d+), title: (.+?), walked:/gm)]
       .map(m => ({ n: Number(m[1]), title: m[2].trim() }));
@@ -58,7 +58,7 @@ function walks() {
   const dir = join(ATLAS, 'walks');
   if (!existsSync(dir)) return [];
   return readdirSync(dir).map(f => WALK_ID.exec(f.replace(/\.md$/, ''))).filter(Boolean)
-    .map(m => ({ id: m[0], guide: m[1], date: m[2], committed: committed(m[0]) }))
+    .map(m => ({ id: m[0], walkthrough: m[1], date: m[2], committed: committed(m[0]) }))
     .sort((a, b) => b.id.localeCompare(a.id));
 }
 
@@ -81,10 +81,10 @@ function readWalk(id) {
       phase.steps.push({ index, step: c[0], do: c[1], see: c[2], actual: uncell(c[3]), evidence: c[4], notes: uncell(c[5]) });
     }
   });
-  const guide = WALK_ID.exec(id)[1];
-  const titles = walkthroughs().find(w => w.id === guide)?.phases ?? [];
+  const walkthrough = WALK_ID.exec(id)[1];
+  const titles = walkthroughs().find(w => w.id === walkthrough)?.phases ?? [];
   for (const p of phases) p.title = titles.find(t => t.n === p.n)?.title ?? '';
-  return { id, guide, date: WALK_ID.exec(id)[2], environment: field(fm, 'environment'), path, lines, phases };
+  return { id, walkthrough, date: WALK_ID.exec(id)[2], environment: field(fm, 'environment'), path, lines, phases };
 }
 
 function findStep(walk, stepId) {
@@ -108,7 +108,7 @@ const slug = text => String(text ?? '').toLowerCase()
 // session the step itself names, else its phase's, else the walkthrough's id;
 // never the step number, which rule 3 forbids because step numbers move.
 function screenshotName(walk, phase, step, what, ext) {
-  const code = CODE.exec(`${step.do} ${step.see}`)?.[0] || phase.code || walk.guide;
+  const code = CODE.exec(`${step.do} ${step.see}`)?.[0] || phase.code || walk.walkthrough;
   const base = slug(what) || slug(step.see) || 'screen';
   for (let n = 1; ; n++) {
     const name = `SS_${code}_${n === 1 ? base : `${base}-${n}`}_${walk.date}.${ext}`;
@@ -153,11 +153,11 @@ async function handle(req, res) {
 
   if (req.method === 'POST' && parts[1] === 'walks' && parts.length === 2) {
     const body = await readBody(req);
-    if (!GUIDE_ID.test(body.guide ?? '') || !walkthroughs().some(w => w.id === body.guide)) return send(res, 400, { error: 'unknown walkthrough' });
+    if (!WALKTHROUGH_ID.test(body.walkthrough ?? '') || !walkthroughs().some(w => w.id === body.walkthrough)) return send(res, 400, { error: 'unknown walkthrough' });
     if (!/^[A-Za-z0-9]{1,10}$/.test(body.company ?? '') || !/^[A-Za-z0-9._-]{1,32}$/.test(body.user ?? '')) {
       return send(res, 400, { error: 'company and user are letters and digits, as on the status bar' });
     }
-    const run = spawnSync('python3', ['tools/newwalk.py', body.guide, '--all', '--company', body.company, '--user', body.user], { cwd: ATLAS, encoding: 'utf8' });
+    const run = spawnSync('python3', ['tools/newwalk.py', body.walkthrough, '--all', '--company', body.company, '--user', body.user], { cwd: ATLAS, encoding: 'utf8' });
     const made = /newwalk: walks\/(WK_[^\s]+)\.md/.exec(run.stdout ?? '');
     if (run.status !== 0 || !made) return send(res, 409, { error: (run.stderr || run.stdout || 'newwalk failed').trim() });
     return send(res, 201, { id: made[1] });

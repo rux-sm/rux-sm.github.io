@@ -21,10 +21,8 @@ meeting updates the outputs, and every fact keeps one home.
 - **Map.** The overview. The session map retires: its own text says it composes
   and owns nothing, and its four "fails with no message" notes are confirmed in
   a walkthrough, line by line, before it goes. A tile links to its walkthrough.
-- **Walkthrough** replaces guide everywhere: Notes' pages, navigation and
-  addresses, and atlas's type, folder, rules and checks. A walkthrough holds the
-  steps and one short "What LN is doing" paragraph per phase. A walk is one run
-  of it.
+- A **walkthrough** holds the steps and one short "What LN is doing" paragraph
+  per phase. A walk is one run of it.
 - The long notes under each phase, about 45% of a guide today, move into
   concepts or the screen files that own them, so a walkthrough is quick to scan
   during a run.
@@ -54,8 +52,6 @@ None open.
 
 ## Tasks
 
-- [ ] Rename guide to walkthrough everywhere: atlas's type, folder, rules and
-      checks, and Notes' pages, addresses, navigation and prose.
 - [ ] Merge exercises and tests into experiments: one type and folder in atlas,
       its rules and checks, and one Notes section.
 - [ ] Fold the bamboo test item family into the walkthrough that builds it.

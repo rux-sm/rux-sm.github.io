@@ -8,7 +8,7 @@ name: pages
 # What this cannot check: Notes' names sweep needs the private atlas checkout,
 # which CI never has, so check-publishable reports that class unavailable
 # here; it ran in the pre-commit hook on the staged bytes, and check-data
-# refuses guide data that did not come through atlas's own filter.
+# refuses walkthrough data that did not come through atlas's own filter.
 
 on:
   push:

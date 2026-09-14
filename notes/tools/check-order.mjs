@@ -2,14 +2,14 @@
 //
 // Do the phases come before the sections that talk about them?
 //
-// WHY IT EXISTS, AND IT IS NOT HYPOTHETICAL. All seven generated guides
+// WHY IT EXISTS, AND IT IS NOT HYPOTHETICAL. All seven generated walkthroughs
 // shipped with Run record, Troubleshooting, Variants and What this unlocks
 // ahead of the Phases they belong to, and all four other gates were green on
 // every one of them. The troubleshooting rows are keyed by phase number and
 // the run record opens "Fill in as you go", so the page handed a reader the
 // fix-it table roughly a hundred lines before the instructions it fixes.
 //
-// IT IS A REGRESSION, WHICH IS THE POINT. The hand-built `guide.html` was
+// IT IS A REGRESSION, WHICH IS THE POINT. The hand-built `walkthrough.html` was
 // measured in a browser with this order correct. `build.mjs` replaced it and
 // put it back, because the fix lived in the artifact and not in a rule -- so
 // deleting the artifact deleted the fix, and nothing was left behind to
@@ -17,7 +17,7 @@
 //
 // WHY NOTHING ELSE CATCHES IT. `check-classes` reads class names,
 // `check-structure` reads ancestry, `check-links` reads attributes that name
-// files, and the pre-commit hook reads guide strings. Not one of them models
+// files, and the pre-commit hook reads walkthrough strings. Not one of them models
 // DOCUMENT ORDER, so there was no rule to violate. A person opening the page
 // sees it immediately; that is the gap this closes, and it is the second
 // defect class here that only a browser was catching.
@@ -68,13 +68,13 @@ for (const path of files) {
   const heads = [...html.matchAll(H2)].map(m => m[1].trim());
   const name = relative(ROOT, path);
 
-  // A page with no Phases heading is not a guide -- index.html and the
+  // A page with no Phases heading is not a walkthrough -- index.html and the
   // candidate template land here. Skipped, and said so rather than counted as
   // a pass, because a silent skip is how a sweep reports coverage it does not
   // have.
   const at = heads.indexOf(PHASES);
   if (at === -1) {
-    console.log(`  ${name}: no "${PHASES}" heading, not a guide — skipped`);
+    console.log(`  ${name}: no "${PHASES}" heading, not a walkthrough — skipped`);
     continue;
   }
 
@@ -92,7 +92,7 @@ for (const path of files) {
   }
 }
 
-console.log(`\n  ${files.length} page(s) · ${checkedPages} guide(s) checked · ${faults} misplaced`);
+console.log(`\n  ${files.length} page(s) · ${checkedPages} walkthrough(s) checked · ${faults} misplaced`);
 console.log('  This says the phases come FIRST. It does not say they are correct,');
 console.log('  complete, or that anything on the page is laid out properly.\n');
 

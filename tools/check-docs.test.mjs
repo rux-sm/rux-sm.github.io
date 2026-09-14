@@ -38,7 +38,7 @@ const cases = [
   ['a document nothing links to', { ...base(), 'app/docs/lost.md': '---\ntype: reference\n---\n\n# Lost\n' }, {}, 'orphan', '', ''],
   ['a named file that does not exist', steps('Also `app/gone.js`.\n'), {}, 'missing', '', ''],
   ['a missing name with atlas absent', steps('Also `app/gone.js`.\n'), { atlas: null }, '', '', 'unchecked'],
-  ['a name atlas holds', steps('The contract is `standards/guide-json.md`.\n'), { atlas: ['standards/guide-json.md'] }, '', '', ''],
+  ['a name atlas holds', steps('The contract is `standards/export-json.md`.\n'), { atlas: ['standards/export-json.md'] }, '', '', ''],
   ['a sibling repository that is present but lacks the file', steps('Also `../other/gone.html`.\n'), {}, 'missing', '', ''],
   ['a sibling repository that is absent', steps('Also `../away/page.html`.\n'), {}, '', '', 'unchecked'],
   ['a README over the limit', { ...base(), 'README.md': base()['README.md'] + '\n'.repeat(150) + 'end\n' }, {}, 'length', '', ''],

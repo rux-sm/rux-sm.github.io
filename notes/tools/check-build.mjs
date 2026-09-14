@@ -15,16 +15,16 @@
 // this project's own "Moving the pin" procedure ran build.mjs first; only
 // pages.yml's build-and-diff step caught it, on push, after the commit.
 //
-// SCOPE MATCHES pages.yml EXACTLY: guides/ and index.html, the two things
+// SCOPE MATCHES pages.yml EXACTLY: pages/ and index.html, the two things
 // build.mjs writes. Not MEASURED -- the commit hook already regenerates and
 // stages that on its own, for a different reason.
 //
 // UNSTAGED ONLY, AND IT MUST BE. `git status --porcelain` was tried first and
 // is wrong: it reports a file the WAY IT ALREADY IS relative to HEAD, so a
-// normal commit that legitimately changes guides/ content -- exactly the
+// normal commit that legitimately changes pages/ content -- exactly the
 // case a rebuild is supposed to let through -- shows those files as staged-
 // modified and this gate refused every such commit, unconditionally. Never
-// caught before 2026-09-10 because no commit had touched guides/ since this
+// caught before 2026-09-10 because no commit had touched pages/ since this
 // gate was added. `git diff` (worktree vs. index) asks the right question:
 // did running build.mjs just now find something NOT ALREADY STAGED -- the
 // actual stale-pages scenario this gate exists for, where nothing was
@@ -39,7 +39,7 @@ try {
   process.exit(1);
 }
 
-const diff = execFileSync('git', ['diff', '--name-only', '--', 'guides', 'index.html'], { encoding: 'utf8' }).trim();
+const diff = execFileSync('git', ['diff', '--name-only', '--', 'pages', 'index.html'], { encoding: 'utf8' }).trim();
 if (diff) {
   console.log('\n  FAIL  the committed pages were stale -- rebuilding just changed:');
   for (const line of diff.split('\n')) console.log(`          M  ${line}`);
@@ -48,4 +48,4 @@ if (diff) {
   console.log('  push cannot be the first place it is caught.');
   process.exit(1);
 }
-console.log('  build is current: rebuilding left nothing unstaged under guides/ or index.html');
+console.log('  build is current: rebuilding left nothing unstaged under pages/ or index.html');

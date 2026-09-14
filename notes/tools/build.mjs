@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //
-// Generate every page in this project from `data/guides/*.json`.
+// Generate every page in this project from `data/atlas/*.json`.
 //
 // WHY BUILD-TIME, DECIDED 2026-08-31. README's "Undecided" carried this as an
 // open question and `renderer-brief.md` §4 argued build-time, then retracted
@@ -13,13 +13,13 @@
 // runtime renderer commits a shell whose `main` is empty, so both would find a
 // handful of resolving shell classes and exit 0 -- green because there was
 // nothing in the file to look at. That is `smoke.html`'s failure with a
-// different cause, and guides are expected to change often, so it is a dice
+// different cause, and walkthroughs are expected to change often, so it is a dice
 // roll taken weekly rather than once.
 //
 // Two smaller reasons, both concrete:
-//   * A malformed guide throws HERE, before the commit, with a stack trace --
-//     rather than in a reader's browser, on one guide out of thirty.
-//   * A runtime fetch of data/guides/*.json is blocked over file://, silently,
+//   * A malformed walkthrough throws HERE, before the commit, with a stack trace --
+//     rather than in a reader's browser, on one walkthrough out of thirty.
+//   * A runtime fetch of data/atlas/*.json is blocked over file://, silently,
 //     which is the exact failure `inline-sprite.mjs` exists to prevent. The way
 //     out is inlining the JSON, which is build-time wearing a different hat.
 //
@@ -39,7 +39,7 @@ import { fileURLToPath } from 'node:url';
 import { CATEGORY_NAME } from './build-tile-looks.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-// THE PUBLIC BUILD READS data/guides/ AND WRITES guides/, AND NOTHING ELSE
+// THE PUBLIC BUILD READS data/atlas/ AND WRITES pages/, AND NOTHING ELSE
 // MAY. The two overrides exist for one caller: tools/sync-internal.sh, which
 // renders atlas's INTERNAL tier -- gaps, stamps, issue ids, the notes under
 // every phase, the concept pages that have no published tier -- into the
@@ -47,13 +47,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // variable set every path below is what it always was, and the public pages
 // come out byte-identical; `git status` after a build is the proof.
 const PRIVATE = Boolean(process.env.LN_DATA || process.env.LN_OUT);
-const DATA = process.env.LN_DATA ? resolve(process.env.LN_DATA) : join(ROOT, 'data/guides');
-const OUT_DIR = process.env.LN_OUT ? resolve(process.env.LN_OUT) : join(ROOT, 'guides');
+const DATA = process.env.LN_DATA ? resolve(process.env.LN_DATA) : join(ROOT, 'data/atlas');
+const OUT_DIR = process.env.LN_OUT ? resolve(process.env.LN_OUT) : join(ROOT, 'pages');
 const INDEX = PRIVATE ? join(OUT_DIR, '..', 'index.html') : join(ROOT, 'index.html');
 
 // ---------------------------------------------------------------- escaping
 
-// EVERY STRING FROM THE DATA GOES THROUGH THIS. The guides are prose written by
+// EVERY STRING FROM THE DATA GOES THROUGH THIS. The walkthroughs are prose written by
 // people and contain `&`, `<` and quotes; one unescaped `&` is an invalid
 // entity and one unescaped `<` swallows the rest of a cell. Neither shows up as
 // a broken page -- text simply goes missing, which no gate here can see.
@@ -69,7 +69,7 @@ const esc = s => String(s)
 // 2,905 of them and reads correctly throughout, so a spot check passes. Five
 // types keep their text elsewhere and `pencil` has none at all.
 //
-// Measured against all seven guides on 2026-08-31, which is what these counts
+// Measured against all seven walkthroughs on 2026-08-31, which is what these counts
 // are: session/code 117, button/label 50, command/route 39, path/route 5,
 // image/alt+src 1, link/v+href 9, pencil none 134.
 const PAYLOAD = {
@@ -78,15 +78,15 @@ const PAYLOAD = {
 
 // Filled before any rendering happens; the `link` case below needs to know
 // which ids are real so it can tell a cross-reference from a dead one.
-const GUIDE_IDS = new Set();
+const PAGE_IDS = new Set();
 
-// A guide link is written relative to guides/, where every guide page sits.
+// A walkthrough link is written relative to pages/, where every walkthrough page sits.
 // The home page renders the map outside that folder, so it sets the base
 // while it does.
-let GUIDE_BASE = '';
-const withGuideBase = (base, render) => {
-  GUIDE_BASE = base;
-  try { return render(); } finally { GUIDE_BASE = ''; }
+let PAGE_BASE = '';
+const withPageBase = (base, render) => {
+  PAGE_BASE = base;
+  try { return render(); } finally { PAGE_BASE = ''; }
 };
 
 // FOUR REGISTERS, NOT SEVEN TAG COLOURS. Replaces the colour map on
@@ -94,7 +94,7 @@ const withGuideBase = (base, render) => {
 //
 // SEVEN TYPES USED TO RENDER AS `rux--tag`, differing only in hue: chip blue,
 // session cyan, field cool-gray, literal gray, value warm-gray, status teal,
-// button purple. Counted over the seven guides that is 1003 of 3775 tokens --
+// button purple. Counted over the seven walkthroughs that is 1003 of 3775 tokens --
 // 27% of everything on a page was a coloured pill. Three of the seven hues are
 // near-identical greys, there was no legend anywhere, and a reader was being
 // asked to learn seven colours to read a sentence. Every gate stayed green
@@ -196,30 +196,30 @@ function token(t) {
       // is what a reader keeping their own notes needs from it.
       return `<svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>`;
 
-    // A LINK BETWEEN GUIDES ARRIVES AS A `.md` FILENAME, because that is what
-    // the guide is called in atlas. Nine of them exist across these seven and
-    // every one names a guide rendered here. Emitted verbatim they are nine
+    // A LINK BETWEEN WALKTHROUGHS ARRIVES AS A `.md` FILENAME, because that is what
+    // the walkthrough is called in atlas. Nine of them exist across these seven and
+    // every one names a walkthrough rendered here. Emitted verbatim they are nine
     // dead links — and a dead link looks exactly like a live one, so nothing
     // on the page or in the gates would have said so. A link checker found
     // them; `check-classes` and `check-structure` cannot see an href at all.
     //
-    // The rewrite is narrow: `<id>.md` where `<id>` is a guide we are
-    // generating. Anything else is left alone, and a `.md` naming a guide that
+    // The rewrite is narrow: `<id>.md` where `<id>` is a walkthrough we are
+    // generating. Anything else is left alone, and a `.md` naming a walkthrough that
     // does NOT exist stops the build rather than shipping a 404.
     case 'link': {
       let href = t.href;
       const md = /^(.+)\.md$/.exec(href);
       if (md) {
-        if (!GUIDE_IDS.has(md[1])) {
-          // INTERNAL TIER: a guide may point at a session file, a test sheet
+        if (!PAGE_IDS.has(md[1])) {
+          // INTERNAL TIER: a walkthrough may point at a session file, a test sheet
           // or a concept. Whatever is rendered in this build is linkable;
           // anything else keeps its words and loses its href, because a page
           // only its author reads should not stop over a file the site was
           // never going to carry.
           if (PRIVATE) return `<span class="notes-unlinked">${esc(t.v)}</span>`;
-          throw new Error(`link to "${href}" names no guide in data/guides/`);
+          throw new Error(`link to "${href}" names no walkthrough in data/atlas/`);
         }
-        href = `${GUIDE_BASE}${md[1]}.html`;
+        href = `${PAGE_BASE}${md[1]}.html`;
       }
       return `<a class="rux--link" href="${esc(href)}">${esc(t.v)}</a>`;
     }
@@ -237,13 +237,13 @@ function token(t) {
         + `<cite class="notes-at">${esc(t.at)}</cite>`;
 
     // THE IMAGE TOKEN RETIRED AT CONTRACT 7. A diagram used to arrive as an
-    // SVG copied beside the guide; both diagrams are `diagram` blocks now, so
+    // SVG copied beside the walkthrough; both diagrams are `diagram` blocks now, so
     // nothing emits this token and nothing copies a file. `.notes-figure` goes
     // with it.
 
     // A CITATION IS ONE TOKEN. Since atlas f092fb1 the name rides beside the
     // code and the brackets are gone: how the two are presented is this side's
-    // decision (guide-json.md). A session with no `name` is the code alone.
+    // decision (export-json.md). A session with no `name` is the code alone.
     case 'session':
       return t.name ? `${reg('chip', t.name)} ${reg('session', t.code)}` : reg('session', t.code);
 
@@ -289,7 +289,7 @@ function token(t) {
 // type scale, where size and line-height are one paired style.
 //
 // EVERY TOKEN TAG ON EVERY PAGE, not the diagram panel's alone. Scoping it to
-// one component would render the same token 24px in a guide and 18px in the
+// one component would render the same token 24px in a walkthrough and 18px in the
 // panel -- one token with two appearances, which is worse than either size.
 // The standalone badge rows (a page's status, "7 phases", "Updated ...") are
 // NOT changed: they are not inside a sentence and have no line box to fit.
@@ -364,7 +364,7 @@ const tokens = ts => {
 // THE RULE IS STRUCTURAL AND ITS REACH IS MEASURED, which is the difference
 // between this and an exception list. It matches on token POSITION and TYPE --
 // not by parsing markers out of a string, which is the marker contract's job
-// and never this renderer's. Across all seven guides it matches exactly 15 of
+// and never this renderer's. Across all seven walkthroughs it matches exactly 15 of
 // 48 prose blocks, in three levels: Warning, Note, Prerequisite. The other 33
 // are untouched, and `assertCalloutReach` below fails the build if that count
 // moves without someone looking.
@@ -405,7 +405,7 @@ function asCallout(block) {
 // DEVIATION. Carbon's DEFAULT inline notification is the high-contrast one --
 // #393939 on the white theme -- and `sink/notification.html` records that both
 // are real. The default is built to interrupt; these are Prerequisite and Note
-// blocks sitting inside a procedure, fifteen of them across seven guides, and
+// blocks sitting inside a procedure, fifteen of them across seven walkthroughs, and
 // a page of dark slabs reads as fifteen alarms.
 //
 // Everything else is the captured markup unchanged.
@@ -426,7 +426,7 @@ function callout({ label, level, body }) {
 // BRANCH ON THE KEYS PRESENT, NEVER ON `kind`. README's bite 1 has two mouths:
 // a `prose` block has no `rows`, so iterating uniformly throws -- and in
 // `sections` the same trap bites again, because `runrecord` arrives
-// token-shaped 15 times and row-shaped 7 across these seven guides. One kind,
+// token-shaped 15 times and row-shaped 7 across these seven walkthroughs. One kind,
 // two shapes. `kind` cannot tell them apart and the keys can.
 const isRows = b => Array.isArray(b.rows);
 
@@ -443,7 +443,7 @@ function table(block, { numbered = false } = {}) {
       if (numbered && i === 0) return `<th scope="row" class="notes-step-id">${inner}</th>`;
       // THE LAST COLUMN OF A NUMBERED TABLE IS WHAT THE SCREEN ANSWERS, and it
       // gets a rule so the two halves of a step read as two halves. Structural
-      // and not a name match: all 50 numbered tables across the seven guides
+      // and not a name match: all 50 numbered tables across the seven walkthroughs
       // are exactly ('#', 'Do this', 'You should see'), so "the last column of
       // a numbered table" and "You should see" are the same set -- and if a
       // future table has four columns this still marks the answer column
@@ -451,7 +451,7 @@ function table(block, { numbered = false } = {}) {
       const last = numbered && i === (row.cells ?? []).length - 1 && i > 1;
       // A STEP THAT YIELDS A VALUE GETS SOMEWHERE TO WRITE IT, IN PLACE.
       // `produces` is the same fact the pencil carries inline, and 99 rows
-      // across the seven guides have it. The field goes in the answer column
+      // across the seven walkthroughs have it. The field goes in the answer column
       // of that row rather than in a panel at the foot, because a reader is
       // AT the step when the value appears and should not have to carry it
       // down the page. The row id is the storage key; it is authored data,
@@ -489,8 +489,8 @@ function table(block, { numbered = false } = {}) {
 
 // --------------------------------------------------------- prose documents
 
-// THE SIX BLOCK KINDS REVIEWS AND EXERCISES CARRY, four of which a guide never does.
-// A guide's blocks are identified by `kind` meaning something else entirely
+// THE SIX BLOCK KINDS REVIEWS AND EXERCISES CARRY, four of which a walkthrough never does.
+// A walkthrough's blocks are identified by `kind` meaning something else entirely
 // (`prose`, `steps`, `runrecord`), so this dispatches on the review vocabulary
 // and never falls through to `block()` -- REVIEW-SHAPE.md section 2 named them
 // and atlas emits exactly these.
@@ -517,10 +517,10 @@ function rblock(b) {
 
     case 'callout': {
       // A review's callout NESTS BLOCKS and cannot be flattened to a string
-      // the way a guide's is -- the longest runs two paragraphs with its own
+      // the way a walkthrough's is -- the longest runs two paragraphs with its own
       // citation and a dated correction inside it. That is why `callout()`
       // above is not reused: it takes tokens, this takes blocks.
-      // ONE MAP FOR BOTH VOCABULARIES. A guide's callout arrives labelled
+      // ONE MAP FOR BOTH VOCABULARIES. A walkthrough's callout arrives labelled
       // `Warning`, a review's as `variant: "warning"`; the rendering is the
       // same component and a second map would drift from this one. `i-warning`
       // is NOT a symbol in the sprite -- `i-warning--filled` is -- so an
@@ -603,7 +603,7 @@ const HEADING = {
   walked: 'Walked',
 };
 
-// WHERE THE PHASES GO, WHICH THE DATA DOES NOT SAY. A guide arrives as two
+// WHERE THE PHASES GO, WHICH THE DATA DOES NOT SAY. A walkthrough arrives as two
 // independent top-level arrays -- `phases` and `sections` -- with nothing
 // relating them, so the renderer chooses. Printing all of `sections` and then
 // all of `phases` puts Troubleshooting, Run record and Variants AHEAD of the
@@ -614,7 +614,7 @@ const HEADING = {
 //
 // The boundary is THE FIRST SECTION OF A SET, not a named kind. It was
 // `runrecord` until that section was removed from the format on 2026-09-01,
-// and the anchor went with it: every guide put its phases last again, and
+// and the anchor went with it: every walkthrough put its phases last again, and
 // `check-order` reported twenty-one misplaced sections across seven pages.
 // That is the gate doing its job, and the lesson is that keying a structural
 // rule to ONE kind makes the rule only as durable as that kind.
@@ -622,10 +622,10 @@ const HEADING = {
 // A set survives any one member leaving. Troubleshooting, Variants and What
 // this unlocks are the sections that refer BACK to work already done -- the
 // troubleshooting rows are keyed by phase number -- so the first of them opens
-// the back matter. Everything before introduces the guide.
+// the back matter. Everything before introduces the walkthrough.
 //
 // `reference` is deliberately not in the set: it sits in front matter in one
-// guide and back matter in another, so it floats to wherever it was authored
+// walkthrough and back matter in another, so it floats to wherever it was authored
 // rather than dragging the boundary with it. Checked across all seven: front
 // matter always holds `glance` and never holds a back-matter kind.
 const BACK_MATTER = new Set(['troubleshooting', 'variants', 'downstream', 'runrecord']);
@@ -696,22 +696,22 @@ function phase(p) {
 
 // ONE DEFINITION OF THE NAV, WHICH IS THE POINT OF GENERATING AT ALL. Eight
 // pages carry this markup; hand-authoring meant eight copies with nothing
-// keeping them in step, and guides are expected to be added and removed often.
+// keeping them in step, and walkthroughs are expected to be added and removed often.
 function nav(site, activeId) {
   const link = (d) => {
     const current = d.id === activeId ? ' aria-current="page"' : '';
     return `          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="${
-      activeId === null ? 'guides/' : ''}${d.id}.html"${current}><span class="rux--side-nav__link-text">${esc(d.title)}</span></a></li>`;
+      activeId === null ? 'pages/' : ''}${d.id}.html"${current}><span class="rux--side-nav__link-text">${esc(d.title)}</span></a></li>`;
   };
-  const items = site.guides.map(link).join('\n');
+  const items = site.walkthroughs.map(link).join('\n');
   const practice = site.exercises.map(link).join('\n');
   // SUMMARIES ARE THE LISTED CATEGORY, reviews are reached from them. The
-  // agreement was scenario guides and meeting summaries; the full reviews are
+  // agreement was walkthroughs and meeting summaries; the full reviews are
   // deferred rather than refused, and listing twelve documents under one
   // heading would present them as one category when they are two.
   const meetings = site.summaries.map(link).join('\n');
 
-  const guidesOpen = site.guides.some(g => g.id === activeId);
+  const guidesOpen = site.walkthroughs.some(g => g.id === activeId);
   const practiceOpen = site.exercises.some(e => e.id === activeId);
   const meetingsOpen = [...site.reviews, ...site.summaries].some(d => d.id === activeId);
   // CONCEPTS ARE NOT A PUBLISHED CATEGORY. atlas's concept-rules.md section 5
@@ -762,10 +762,10 @@ ${concepts}
            it and it sorts as a curriculum would -- build the family, plan, buy,
            make, move, ship, then the end-to-end run. Atlas got there by reading
            Prerequisite callouts as dependency edges; on Downstream rows alone
-           the guide that builds the test data came fourth. -->
+           the walkthrough that builds the test data came fourth. -->
       <li class="rux--side-nav__item${guidesOpen ? ' rux--side-nav__item--active' : ''}">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="${guidesOpen}">
-          <span class="rux--side-nav__submenu-title">Scenario guides</span>
+          <span class="rux--side-nav__submenu-title">Walkthroughs</span>
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu"${guidesOpen ? '' : ' hidden'}>
@@ -773,7 +773,7 @@ ${items}
         </ul>
       </li>
 
-      <!-- EXERCISES COMPOSE GUIDES; they do not repeat their procedures. They
+      <!-- EXERCISES COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
            get their own group because a learner opens one to predict, record
            and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item${practiceOpen ? ' rux--side-nav__item--active' : ''}">
@@ -787,7 +787,7 @@ ${practice}
       </li>
 
       <!-- THE MEETING CONTENT GROUP lists summaries rather than full reviews.
-           The agreement is scenario guides and meeting summaries; the six full
+           The agreement is walkthroughs and meeting summaries; the six full
            reviews render and are reached from their summary rather than listed
            beside it, because putting twelve documents under one heading
            presents two categories as one. -->
@@ -811,7 +811,7 @@ const SCRIPTS = [
   'profile',
 ];
 
-// THE REVISION ON THE PAGE, READ FROM THE PIN AT BUILD TIME. data/guides/PIN
+// THE REVISION ON THE PAGE, READ FROM THE PIN AT BUILD TIME. data/atlas/PIN
 // already names the atlas commit that produced the data and check-data holds
 // the bytes to it; until 2026-09-06 no page carried it, so a reader looking
 // at a published procedure could not say which library state it came from
@@ -826,7 +826,7 @@ const REVISION = (() => {
   const text = readFileSync(pin, 'utf8');
   const commit = /^commit\s+([0-9a-f]{7,40})/m.exec(text)?.[1];
   const contract = /^contract\s+(\d+)/m.exec(text)?.[1];
-  if (!commit) throw new Error('data/guides/PIN names no commit -- run sh tools/sync-guides.sh');
+  if (!commit) throw new Error('data/atlas/PIN names no commit -- run sh tools/sync-export.sh');
   return `atlas ${commit.slice(0, 7)}${contract ? ` · contract ${contract}` : ''}`;
 })();
 const revisionLine = () => REVISION
@@ -854,7 +854,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
 <!-- MONO, UNCONDITIONALLY: a "code" content block and sessionCode both
-     render rux--type-code-01 (below), and both are guide DATA -- which
+     render rux--type-code-01 (below), and both are walkthrough DATA -- which
      pages carry either is not fixed, so every page preloads the same way
      it preloads Sans, rather than only the pages that happen to need it
      today. Found missing entirely, 2026-09-10: 14 of 28 pages already
@@ -1041,7 +1041,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
    exercise looks complete while leaving nowhere to write. Scoped to exercise
-   pages so ordinary guide and review tables remain dense. */
+   pages so ordinary walkthrough and review tables remain dense. */
 .notes-exercise .rux--data-table td:empty::after {
   content: '';
   display: block;
@@ -1454,7 +1454,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-dg-strip-code { font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary, #525252); }
 .notes-dg-strip-line + .notes-dg-strip-line { margin-block-start: var(--rux-spacing-02, .25rem); }
 
-/* GUIDE IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
+/* WALKTHROUGH IS PROVENANCE, NOT INSTRUCTION, so it reads as a footnote. It was the
    heaviest thing on the panel -- the tag it carries is wide and dark -- while
    being the one field a reader following the steps never needs. */
 .notes-dg-foot { font-size: .75rem; color: var(--rux-text-secondary, #525252); }
@@ -1538,7 +1538,7 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 /* THE FIVE CATEGORIES, DECIDED 2026-09-10. Until then \`kind\` chose a HUE, five
    of them, on a page with no legend -- and \`decision\` and \`outcome\` chose
    nothing at all, so nine of the overview's seventeen tiles carried three
-   meanings in one appearance. atlas's own guide-json.md §5 rules the axis the
+   meanings in one appearance. atlas's own export-json.md §5 rules the axis the
    other way: colour says what to do with a thing, form says what kind of thing
    it is. docs/diagram.md is the reasoning; this is the result.
 
@@ -1766,7 +1766,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 </style>
 </head>
 <body>
-<!-- GENERATED by tools/build.mjs from data/guides/. Do not edit by hand. -->
+<!-- GENERATED by tools/build.mjs from data/atlas/. Do not edit by hand. -->
 
 <!-- SPRITE:BEGIN -->
 <!-- SPRITE:END -->
@@ -1945,12 +1945,12 @@ const statusTag = s => s === 'approved'
 // integer at the export tier -- the ids themselves were authored out upstream,
 // which is why the ask was for a count in the first place -- so there is
 // nothing here to link to and a reader is told how much is unresolved, not
-// what. Absent and zero both render nothing: a guide with no open issue says
+// what. Absent and zero both render nothing: a walkthrough with no open issue says
 // nothing rather than claiming a clean bill, because `openIssues` counts what
 // atlas has recorded, not what exists.
 //
 // `magenta` rather than `red`: red is GAP, which marks a hole in the document
-// itself, and an open issue is a question against a guide that otherwise
+// itself, and an open issue is a question against a walkthrough that otherwise
 // stands. The title carries the long form, since the label is two words.
 const issuesTag = n => n > 0
   ? `<span class="rux--tag rux--tag--magenta" title="${n} open issue${n === 1 ? '' : 's'} recorded against this document"><span class="rux--tag__label">${n} open</span></span>`
@@ -1981,13 +1981,13 @@ function indexPage(site) {
   // THE HOME PAGE IS THE MAP AND NOTHING ELSE, at rux's direction 2026-09-11.
   //
   // WHAT WAS REMOVED AND WHY IT COST NOTHING. Four sections stood under the
-  // figure -- scenario guides and practice as cards, reference and summaries as
+  // figure -- walkthroughs and practice as cards, reference and summaries as
   // lists -- and every one of them was a second route to a document the side nav
   // already reaches. Measured before cutting rather than assumed: the nav links
   // 19 documents, the sections linked the same 19, and the two sets differ by
   // nothing in either direction. No document lost its only way in.
   //
-  // THE CARD BUILDERS WENT WITH THEM. Roughly 120 lines that built guide cards,
+  // THE CARD BUILDERS WENT WITH THEM. Roughly 120 lines that built walkthrough cards,
   // exercise cards and summary cards are deleted rather than left unreferenced:
   // a generator carrying markup nothing emits is markup no gate checks and no
   // reader sees, and `check-classes` would have gone on validating it forever.
@@ -2000,8 +2000,8 @@ function indexPage(site) {
   const lead = home ? `
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-map">
           <h1 id="h-map">Demand to shipment</h1>
-          ${withGuideBase('guides/', () => diagramFigure(home.diagram, { notes: false,
-            link: `<a class="rux--link notes-dg-legend-link" href="guides/${esc(home.id)}.html">Read the whole document</a>` }))}
+          ${withPageBase('pages/', () => diagramFigure(home.diagram, { notes: false,
+            link: `<a class="rux--link notes-dg-legend-link" href="pages/${esc(home.id)}.html">Read the whole document</a>` }))}
         </section>
 ` : `
         <div class="rux--stack-vertical rux--stack-scale-5">
@@ -2062,7 +2062,7 @@ function reviewPage(r, site) {
   const slots = r.kind === 'summary' ? SUMMARY_SLOTS : REVIEW_SLOTS;
 
   // THE ONLY ROUTE TO A FULL REVIEW, so it is not decoration. Six review pages
-  // render and the nav lists summaries alone -- deliberately, because guides
+  // render and the nav lists summaries alone -- deliberately, because walkthroughs
   // and summaries are the two agreed categories. Without this link the reviews
   // are six pages at URLs nothing points at, and `check-links` says in its own
   // header that a page nobody links to is exactly what it cannot see.
@@ -2091,7 +2091,7 @@ function reviewPage(r, site) {
   return page({ title: `${r.title} — Notes`, site, activeId: r.id, body, depth: 1 });
 }
 
-// AN EXERCISE IS ORDERED PRACTICE, not guide phases. The prose block vocabulary
+// AN EXERCISE IS ORDERED PRACTICE, not walkthrough phases. The prose block vocabulary
 // is shared with reviews, while the top-level shape is an intro followed by the
 // numbered assignments the learner completes.
 // ---------------------------------------------------------------- exercise
@@ -2391,7 +2391,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   const headBand = '<div class="notes-dg-head"></div>';
 
   // THE BOUNDARY IS A PLACE, AND THE RENDERER IS THE ONE THAT DRAWS IT. The
-  // stage carries `boundary: true` (guide-json.md section 7) precisely so this
+  // stage carries `boundary: true` (export-json.md section 7) precisely so this
   // side never has to recognise the word "Transfer"; until 2026-09-10 all it
   // bought was a red column heading, which makes the boundary a label rather
   // than the place section 2 of the map asks a reader to see -- everything left
@@ -2419,7 +2419,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
   // `Do` as "the controls, in order, with the status each produces" -- a
   // sequence that used to arrive as one flat sentence, because its boundaries
   // sat inside plain `text` tokens and splitting on those is the prose-parse
-  // the contract forbids. atlas now authors the boundary (guide-json.md
+  // the contract forbids. atlas now authors the boundary (export-json.md
   // section 7.2) and sends both: `steps` as the sequence and `do` as the same
   // content joined, so a renderer that reads only `do` still works.
   //
@@ -2447,12 +2447,12 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
                       s.code ? ` <code class="notes-dg-strip-code">${esc(s.code)}</code>` : ''}</p>
                     ${s.route ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Route</span>${tokens(s.route.tokens ?? [])}</p>` : ''}
                     ${s.reads ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Reads</span>${tokens(s.reads.tokens ?? [])}</p>` : ''}
-                    ${s.guide ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Guide</span>${tokens(s.guide.tokens ?? [])}</p>` : ''}
+                    ${s.walkthrough ? `<p class="notes-dg-field notes-dg-strip-line"><span class="notes-dg-key">Walkthrough</span>${tokens(s.walkthrough.tokens ?? [])}</p>` : ''}
                   </div>`).join('\n                  ')
     : '';
 
   // AN EMPTY ZONE IS NOT DRAWN. Every field is optional in the contract and the
-  // level-1 overview proves it rather than theoretically: `leaves` and `guide`
+  // level-1 overview proves it rather than theoretically: `leaves` and `walkthrough`
   // are absent from ALL SEVENTEEN of its nodes, and `route` and `do` from nine.
   // Rendered unconditionally the Leaves zone would be a tinted, ruled, empty
   // box on every one of them.
@@ -2570,7 +2570,7 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
                   ${zone('notes-dg-zone', field(n, 'route', 'Route'))}
                   ${zone('notes-dg-zone', field(n, 'does', 'Does') + doField(n))}
                   ${zone('notes-dg-zone notes-dg-zone--leaves', field(n, 'leaves', 'Leaves') + linkField(n) + stripBlock(n))}
-                  ${zone('notes-dg-foot', field(n, 'guide', 'Guide'))}
+                  ${zone('notes-dg-foot', field(n, 'walkthrough', 'Walkthrough'))}
                 </div>
               </details>`).join('\n              ');
       cells.push(`<div class="notes-dg-cell" style="grid-column:${col.get(s.n)};grid-row:${row.get(l.name)}">
@@ -2676,8 +2676,8 @@ function referencePage(r, site) {
 // page says once what they mean.
 //
 // It sits at the FOOT, not the head: a reader who already knows the
-// convention should not step over it to reach the guide, and a reader who
-// does not will look for it after the first step confuses them. Guide pages
+// convention should not step over it to reach the walkthrough, and a reader who
+// does not will look for it after the first step confuses them. Walkthrough pages
 // only -- a summary or a review carries prose, not steps.
 const stepKey = () => `
       <section class="notes-key" aria-labelledby="h-key">
@@ -2696,9 +2696,9 @@ const stepKey = () => `
         </dl>
       </section>`;
 
-// THE GUIDE'S OWN NOTEPAD. The pencil marks say "this step yields a value
-// worth writing down" 125 times across the seven guides and until now there
-// was nowhere on a guide page to write. Each producing row carries its own
+// THE WALKTHROUGH'S OWN NOTEPAD. The pencil marks say "this step yields a value
+// worth writing down" 125 times across the seven walkthroughs and until now there
+// was nowhere on a walkthrough page to write. Each producing row carries its own
 // field; this is the rest of it -- somewhere for what does not belong to one
 // step, and the way out.
 //
@@ -2707,7 +2707,7 @@ const stepKey = () => `
 // in their browser and nowhere else, and the only way to keep it is to take
 // it with them.
 //
-// A GUIDE PAGE WITHOUT js/guide.js IS STILL THE WHOLE GUIDE. The fields are
+// A WALKTHROUGH PAGE WITHOUT js/walkthrough.js IS STILL THE WHOLE WALKTHROUGH. The fields are
 // inert, the export does nothing, and every step, table and phase reads as it
 // does now. That is the same contract js/exercise.js holds.
 const notepad = () => `
@@ -2750,9 +2750,9 @@ function guidePage(g, site) {
       ${sections(back)}${g.verification ? `
 
         <!-- The generated verification sentence. It is NOT a substitute for
-             the status badge and README says why: one guide's sentence claims
+             the status badge and README says why: one walkthrough's sentence claims
              every phase was performed against a live system and confirmed
-             while the guide itself is status: draft. Both are shown. -->
+             while the walkthrough itself is status: draft. Both are shown. -->
         <p class="rux--type-body-01">${esc(g.verification)}</p>` : ''}
       ${notepad()}
       ${stepKey()}`;
@@ -2760,7 +2760,7 @@ function guidePage(g, site) {
   return page({ title: `${g.title} — Notes`, site, activeId: g.id,
     body: `<div data-notes-doc="${esc(g.id)}">${body}
       </div>`, depth: 1,
-    scripts: ['js/guide.js'] });
+    scripts: ['js/walkthrough.js'] });
 }
 
 // ---------------------------------------------------------------- build
@@ -2770,17 +2770,17 @@ function guidePage(g, site) {
 // THE FIRST VERSION OF THIS CHECK ASSERTED A COUNT -- "the rule must match
 // exactly 15 blocks" -- and it was wrong for the reason the project already
 // knows: a rule that needs a number edited every time the data grows is
-// measuring the number, not the rule. Guides are expected to be added and
+// measuring the number, not the rule. Walkthroughs are expected to be added and
 // removed often, so that check would have failed on every addition and been
 // bumped without being read, which is how an exception list starts. It was
-// tested by adding a guide, it refused the build, and that is what showed it.
+// tested by adding a walkthrough, it refused the build, and that is what showed it.
 //
 // The invariant that does not move with the data: a prose block whose first
 // token is the blockquote marker MUST have become a callout. If atlas adds a
 // fourth label -- "Caution", say -- this fails and names it, rather than
 // printing "> Caution > …" on the page as literal text. It cares about shape,
-// not quantity, so seven guides and seventy both pass.
-function assertNoRawBlockquotes(guides) {
+// not quantity, so seven walkthroughs and seventy both pass.
+function assertNoRawBlockquotes(walkthroughs) {
   const raw = [];
   let found = 0, prose = 0;
 
@@ -2794,7 +2794,7 @@ function assertNoRawBlockquotes(guides) {
     }
   };
 
-  for (const g of guides) {
+  for (const g of walkthroughs) {
     for (const p of g.phases ?? []) for (const b of p.blocks ?? []) visit(b, `${g.id} phase ${p.n}`);
     for (const s of g.sections ?? []) visit(s, `${g.id} section ${s.kind}`);
   }
@@ -2812,7 +2812,7 @@ function assertNoRawBlockquotes(guides) {
 }
 
 // FOUR PUBLISHED DOCUMENT CLASSES NOW ARRIVE, and they are told apart by `kind` rather
-// than by filename. A guide has no `kind` field -- it predates the second
+// than by filename. A walkthrough has no `kind` field -- it predates the second
 // content type -- so its absence is what identifies one, and a document
 // carrying an unknown `kind` stops the build instead of being rendered as
 // whatever it least resembles.
@@ -2820,25 +2820,25 @@ const docs = readdirSync(DATA)
   .filter(f => f.endsWith('.json'))
   .map(f => JSON.parse(readFileSync(join(DATA, f), 'utf8')));
 
-// THE CONTRACT IS PINNED HERE, NOT ONLY REPORTED. sync-guides.sh prints the
+// THE CONTRACT IS PINNED HERE, NOT ONLY REPORTED. sync-export.sh prints the
 // contract set and enforces nothing, so a renderer written for one shape could
 // silently consume the next. Bump this constant when this file is updated for
 // a new contract, and not before.
-const CONTRACT = 8;
+const CONTRACT = 9;
 for (const d of docs) if (Number(d.contract) !== CONTRACT)
   throw new Error(`${d.id ?? '?'}: contract ${d.contract}, this renderer reads ${CONTRACT} -- update build.mjs for it, then this constant`);
 
 for (const d of docs) {
-  const kind = d.kind ?? 'guide';
-  if (!['guide', 'review', 'summary', 'exercise', 'concept', 'reference'].includes(kind)) {
-    throw new Error(`${d.id}: unknown kind "${kind}" -- build.mjs renders guide, review, summary, exercise, concept, reference`);
+  const kind = d.kind ?? 'walkthrough';
+  if (!['walkthrough', 'review', 'summary', 'exercise', 'concept', 'reference'].includes(kind)) {
+    throw new Error(`${d.id}: unknown kind "${kind}" -- build.mjs renders walkthrough, review, summary, exercise, concept, reference`);
   }
   if (kind === 'concept' && !PRIVATE) {
-    throw new Error(`${d.id}: a concept has no published tier and cannot sit in data/guides/`);
+    throw new Error(`${d.id}: a concept has no published tier and cannot sit in data/atlas/`);
   }
 }
 
-const guides = docs.filter(d => !d.kind).sort((a, b) => a.order - b.order);
+const walkthroughs = docs.filter(d => !d.kind).sort((a, b) => a.order - b.order);
 const reviews = docs.filter(d => d.kind === 'review')
   .sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
 const summaries = docs.filter(d => d.kind === 'summary')
@@ -2853,29 +2853,29 @@ const concepts = docs.filter(d => d.kind === 'concept')
 const references = docs.filter(d => d.kind === 'reference')
   .sort((a, b) => String(a.title).localeCompare(String(b.title)));
 
-if (!guides.length) throw new Error(`no guides in ${DATA} -- run tools/sync-guides.sh first`);
+if (!walkthroughs.length) throw new Error(`no walkthroughs in ${DATA} -- run tools/sync-export.sh first`);
 
-for (const g of guides) GUIDE_IDS.add(g.id);
+for (const g of walkthroughs) PAGE_IDS.add(g.id);
 // Reviews, summaries and exercises publish in both tiers, so a link between
 // them is linkable in both -- only a concept is PRIVATE-only (line ~1327).
-for (const d of [...reviews, ...summaries, ...exercises, ...references]) GUIDE_IDS.add(d.id);
-if (PRIVATE) for (const d of concepts) GUIDE_IDS.add(d.id);
+for (const d of [...reviews, ...summaries, ...exercises, ...references]) PAGE_IDS.add(d.id);
+if (PRIVATE) for (const d of concepts) PAGE_IDS.add(d.id);
 
-const reach = assertNoRawBlockquotes(guides);
+const reach = assertNoRawBlockquotes(walkthroughs);
 
 // REMOVAL HAS TO ACTUALLY REMOVE. A generator that only writes leaves a deleted
-// guide's page on disk: out of the nav, still at a URL that resolves, still
+// walkthrough's page on disk: out of the nav, still at a URL that resolves, still
 // serving content that no longer exists upstream. That is a page which looks
 // fine and is wrong, which is the failure class this project cares most about.
 // The directory is rebuilt rather than added to.
 if (existsSync(OUT_DIR)) rmSync(OUT_DIR, { recursive: true });
 mkdirSync(OUT_DIR, { recursive: true });
 
-// ASSETS AUTHORED BESIDE THE GUIDES ARE COPIED IN, and this is not optional
-// either. An `image` token's `src` names a file sitting next to the guide in
+// ASSETS AUTHORED BESIDE THE WALKTHROUGHS ARE COPIED IN, and this is not optional
+// either. An `image` token's `src` names a file sitting next to the walkthrough in
 // atlas -- `order-to-shipment-flowchart.svg` is the one that exists -- so the
 // page references it relative to itself and it has to actually be there. It
-// arrives in `data/guides/`, which is not where the pages are.
+// arrives in `data/atlas/`, which is not where the pages are.
 //
 // A missing image is a broken image icon and nothing else; no gate here reads
 // an `src`. Found by a link check, not by looking at the page.
@@ -2884,11 +2884,11 @@ mkdirSync(OUT_DIR, { recursive: true });
 const assets = readdirSync(DATA).filter(f => f !== 'PIN' && !f.endsWith('.json'));
 for (const a of assets) copyFileSync(join(DATA, a), join(OUT_DIR, a));
 
-const site = { guides, reviews, summaries, exercises, concepts, references };
+const site = { walkthroughs, reviews, summaries, exercises, concepts, references };
 
 const written = [INDEX];
 writeFileSync(written[0], indexPage(site));
-for (const g of guides) {
+for (const g of walkthroughs) {
   const file = join(OUT_DIR, `${g.id}.html`);
   writeFileSync(file, guidePage(g, site));
   written.push(file);
@@ -2920,6 +2920,6 @@ for (const r of references) {
 execFileSync(process.execPath, [join(ROOT, '..', 'tools', 'inline-sprite.mjs'), ...written],
   { stdio: 'inherit' });
 
-console.log(`\n  built ${written.length} page(s) from ${guides.length} guide(s)`);
+console.log(`\n  built ${written.length} page(s) from ${walkthroughs.length} walkthrough(s)`);
 console.log(`  callouts: ${reach.found} of ${reach.prose} prose blocks matched the inferred rule`);
 console.log('\n  Generated. Check them:  node tools/check-classes.mjs && node tools/check-structure.mjs\n');

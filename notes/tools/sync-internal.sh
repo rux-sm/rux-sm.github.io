@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# A PRIVATE VIEWER FOR THE INTERNAL TIER. Everything sync-guides.sh refuses to
+# A PRIVATE VIEWER FOR THE INTERNAL TIER. Everything sync-export.sh refuses to
 # carry -- gap markers, issue ids, evidence stamps, the notes under every
 # phase, and the concept pages that have no published tier at all -- rendered
 # with this project's own pages into build/, which .gitignore keeps out of the
 # repository and check-links, check-classes and check-publishable all skip.
 #
-# Nothing this writes is published. It never touches data/guides/ or guides/,
+# Nothing this writes is published. It never touches data/atlas/ or pages/,
 # or anything tracked; the public build runs exactly as before.
 #
 #   sh tools/sync-internal.sh
@@ -44,7 +44,7 @@ ln -s "$HERE/overrides.css" "$OUT/site/overrides.css"
 mkdir -p "$OUT/site/walk"
 ln -s "$HERE/tools/walk-form.html" "$OUT/site/walk/index.html"
 ln -s "$HERE/tools/walk-form.js" "$OUT/site/walk/walk-form.js"
-LN_DATA="$OUT/data" LN_OUT="$OUT/site/guides" DS="$DS" node "$HERE/tools/build.mjs"
+LN_DATA="$OUT/data" LN_OUT="$OUT/site/pages" DS="$DS" node "$HERE/tools/build.mjs"
 
 echo "  private site: $OUT/site  (git-ignored, never published)"
 echo "  view it:      (cd $OUT/site && PORT=8644 node $(cd "$DS" && pwd)/tools/serve.mjs)"

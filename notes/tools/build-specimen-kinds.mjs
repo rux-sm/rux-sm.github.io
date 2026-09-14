@@ -38,17 +38,17 @@ const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 // it shows is a change the plan did not intend. Nine of the overview's
 // seventeen are not sessions, and three of its kinds collide today.
 // THE SESSION MAP IS FIRST BECAUSE IT IS THE ONLY DOCUMENT WITH ALL FIVE
-// CATEGORIES. The overview has 0 Inquiry tiles of 17 and 0 `guide` links of 17,
+// CATEGORIES. The overview has 0 Inquiry tiles of 17 and 0 `walkthrough` links of 17,
 // so a proposal about either draws nothing there -- and with the overview first
 // a reader met four types and an unchanged canvas before reaching anything the
 // variants do. The overview stays as the second section, where its two absences
 // are the point rather than a confusion.
 const DOCS = [
-  ['session map', 'guides/demand-to-shipment-session-map.html',
-    'Level 2. All five categories, 26 of 26 openable, 26 of 26 carrying a guide.',
+  ['session map', 'pages/demand-to-shipment-session-map.html',
+    'Level 2. All five categories, 26 of 26 openable, 26 of 26 carrying a walkthrough.',
     'demand-to-shipment-session-map'],
-  ['overview', 'guides/order-to-shipment-overview.html',
-    'Level 1. Four categories — no Inquiry at all — and not one of its 17 nodes carries a guide.',
+  ['overview', 'pages/order-to-shipment-overview.html',
+    'Level 1. Four categories — no Inquiry at all — and not one of its 17 nodes carries a walkthrough.',
     'order-to-shipment-overview'],
 ];
 
@@ -137,7 +137,7 @@ const markOffPath = (fig, dg) => {
     if (!node) throw new Error('more tiles in the figure than nodes in the data');
     if (node.kind !== kind) throw new Error(`tile ${i} is ${kind}, node ${node.id} is ${node.kind}`);
     const extra = (off.has(node.id) ? ' notes-dg-node--off-path' : '')
-      + (node.guide ? ' notes-dg-node--has-guide' : '')
+      + (node.walkthrough ? ' notes-dg-node--has-walkthrough' : '')
       + ` notes-dg-cat--${categoryOf(node, off.has(node.id))}`;
     return `class="notes-dg-node notes-dg-node--${kind}${extra}"`;
   });
@@ -146,7 +146,7 @@ const markOffPath = (fig, dg) => {
 };
 
 const figures = DOCS.map(([name, path, note, json]) => {
-  const dg = JSON.parse(read(`data/guides/${json}.json`)).diagram;
+  const dg = JSON.parse(read(`data/atlas/${json}.json`)).diagram;
   const fig = slice(read(path), '<figure class="rux--tile notes-dg"', '</figure>');
   const off = offPathIds(dg).size;
   return [name, `${note} ${off} of ${dg.nodes.length} sit beside the path.`,
@@ -191,14 +191,14 @@ const NOT_A_SESSION = '.notes-dg-node:not(:has(.notes-dg-node-code))';
 // TWO PROPOSALS, 2026-09-11, out of the tile audit, drawn rather than argued.
 //
 // WHAT THE AUDIT FOUND. A tile's face carries four of the fourteen fields a node
-// holds. `guide` is on 26 of the 43 and appears nowhere on the canvas -- the SOP
+// holds. `walkthrough` is on 26 of the 43 and appears nowhere on the canvas -- the SOP
 // link this project exists to hang off a tile is invisible until the tile is
 // opened. And Setup and Inquiry are the same dashed border on the same
 // transparent ground, told apart by `font-style` alone, while italic already
 // carries Result and Checkpoint too: the weakest distinction on the busiest axis.
 //
-// `has-guide` IS INJECTED FROM THE DATA, like `off-path` above it, because
-// whether a node carries a guide is not in the markup. Variants that do not
+// `has-walkthrough` IS INJECTED FROM THE DATA, like `off-path` above it, because
+// whether a node carries a walkthrough is not in the markup. Variants that do not
 // style it are unaffected and the comparison stays CSS-only; if a treatment is
 // taken, `build.mjs` emits the class outright.
 //
@@ -511,7 +511,7 @@ correctly. <b>Colliding by category</b> is tiles that cannot be told from a tile
 category. Both are measured on what is drawn, in the theme you are in — switch themes and
 watch them hold.</p>
 <p class="note"><b>Column width and “figure scrolls” are this page's, not the site's.</b>
-The specimen's container is narrower than a guide page's, so the figure scrolls here where
+The specimen's container is narrower than a walkthrough page's, so the figure scrolls here where
 it fits there. Compare the column figure between runs, never against the live page.</p>
 <div class="themes"><span>Theme</span>
   ${['white', 'g10', 'g90', 'g100'].map(t =>

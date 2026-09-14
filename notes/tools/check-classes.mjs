@@ -48,7 +48,7 @@ const defined = new Set(
 
 // EVERY PAGE, NOT EVERY PAGE AT THE ROOT. This walked `readdirSync(ROOT)` and
 // stopped there until 2026-08-31, when tools/build.mjs started writing seven
-// generated guides into `guides/`. The no-argument form would have reported a
+// generated walkthroughs into `pages/`. The no-argument form would have reported a
 // clean run over one file having never opened the other seven, and printed a
 // count that looked like coverage.
 //

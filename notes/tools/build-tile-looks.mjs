@@ -47,7 +47,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // while a committed row said so. build.mjs imports it; nothing else defines it.
 // A NAME IS PRESENTATION, NOT CONTRACT -- atlas emits `kind` and never a
 // category. The fold itself is build.mjs's `categories()`, and atlas states
-// what it does in standards/guide-json.md section 7.4.
+// what it does in standards/export-json.md section 7.4.
 export const CATEGORY_NAME = { step: 'Step', config: 'Setup', info: 'Lookup',
   result: 'Result', check: 'Checkpoint' };
 
@@ -392,7 +392,7 @@ export function tileLooks(html) {
 // Run it directly to see one page's tiles and what each resolves to -- the
 // surface for arguing with the answer rather than trusting it.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const page = process.argv[2] ?? 'guides/order-to-shipment-overview.html';
+  const page = process.argv[2] ?? 'pages/order-to-shipment-overview.html';
   const r = tileLooks(readFileSync(join(ROOT, page), 'utf8'));
   if (!r) { console.log(`${page} carries no diagram`); process.exit(0); }
   console.log(`${page} — ${r.tiles.length} tiles, ${r.rules.tile} tile rules read, `

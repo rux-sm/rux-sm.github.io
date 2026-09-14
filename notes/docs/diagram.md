@@ -5,7 +5,7 @@ type: reference
 # The diagram
 
 **What it is for, what it covers, and how a tile is drawn.** Figures come from
-the rendered page or the synced data at `data/guides/PIN`, never from a count
+the rendered page or the synced data at `data/atlas/PIN`, never from a count
 by hand.
 
 **The section numbers are load-bearing and do not move.** `build.mjs`,
@@ -39,7 +39,7 @@ The internal classes read `config` for Setup and `info` for Lookup; renaming
 them gains the reader nothing. The reader-facing names are `CATEGORY_NAME` in
 `tools/build-tile-looks.mjs`.
 
-`guide`, the SOP link, is a node field and renders in the tile's panel.
+`walkthrough`, the SOP link, is a node field and renders in the tile's panel.
 
 ## Scope — what the overview does not yet know
 
@@ -97,7 +97,7 @@ legend names the categories (§9).
 
 ### 2.1 The contract rules on the axis
 
-`../atlas/standards/guide-json.md` §5, addressed to renderers:
+`../atlas/standards/export-json.md` §5, addressed to renderers:
 
 > colour says what to do with a thing, form says what kind of thing it is
 
@@ -194,10 +194,10 @@ grammar throws.
 
 ## 6. The kind vocabulary
 
-`guide-json.md` §7 lists nine kinds: `step`, `gate`, `planned`, `transfer`,
+`export-json.md` §7 lists nine kinds: `step`, `gate`, `planned`, `transfer`,
 `real`, `terminal`, `read`, `decision`, `outcome`. Its §7.4 lists the five
 categories with the derivation above. Read both at the commit in
-`data/guides/PIN`, not from memory of this file.
+`data/atlas/PIN`, not from memory of this file.
 
 ## 7. The specificity trap
 

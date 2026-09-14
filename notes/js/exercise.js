@@ -9,7 +9,7 @@
    IT READS WHAT build.mjs WROTE AND NOTHING ELSE. Every hook is a data
    attribute the generator put on an element -- data-notes-answer, data-notes-check,
    data-notes-pass, data-notes-reveal, data-notes-notes -- so this file never looks at
-   guide text, never guesses that an empty cell is a question, and never
+   walkthrough text, never guesses that an empty cell is a question, and never
    re-reads the marker contract. The page without this script is still the
    whole worksheet, read-only.
 

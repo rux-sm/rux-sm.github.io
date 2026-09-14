@@ -36,9 +36,9 @@
     } catch { /* nothing remembered */ }
     try {
       const [list, walks] = await Promise.all([api('/walkthroughs'), api('/walks')]);
-      $('walk-guide').replaceChildren(...list.map(w => option(w.id, w.title)));
+      $('walk-walkthrough').replaceChildren(...list.map(w => option(w.id, w.title)));
       const open = walks.filter(w => !w.committed);
-      $('walk-resume').replaceChildren(...open.map(w => option(w.id, `${w.guide} · ${w.date} · ${w.id.slice(-6, -4)}:${w.id.slice(-4, -2)}`)));
+      $('walk-resume').replaceChildren(...open.map(w => option(w.id, `${w.walkthrough} · ${w.date} · ${w.id.slice(-6, -4)}:${w.id.slice(-4, -2)}`)));
       $('walk-resume-section').hidden = !open.length;
     } catch (e) {
       show(`The save service is not answering. Start the private preview with npm run serve -- --private. (${e.message})`);
@@ -53,7 +53,7 @@
     if (!state.flat.length) throw new Error('this walk has no steps to fill in');
     const first = state.flat.findIndex(x => !x.step.actual);
     state.at = first < 0 ? 0 : first;
-    $('walk-title').textContent = `Walk · ${walk.guide} · ${walk.date}`;
+    $('walk-title').textContent = `Walk · ${walk.walkthrough} · ${walk.date}`;
     $('walk-start').hidden = true;
     $('walk-run').hidden = false;
     clear();
@@ -155,7 +155,7 @@
 
   $('walk-start-form').addEventListener('submit', async event => {
     event.preventDefault();
-    const body = { guide: $('walk-guide').value, company: $('walk-company').value.trim(), user: $('walk-user').value.trim() };
+    const body = { walkthrough: $('walk-walkthrough').value, company: $('walk-company').value.trim(), user: $('walk-user').value.trim() };
     try { localStorage.setItem(REMEMBER, JSON.stringify({ company: body.company, user: body.user })); } catch { /* not remembered */ }
     try { const { id } = await api('/walks', { method: 'POST', body: JSON.stringify(body) }); await open(id); }
     catch (e) { show(`The walk did not start: ${e.message}`); }

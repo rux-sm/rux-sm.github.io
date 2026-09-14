@@ -5,7 +5,7 @@
 // WHY IT EXISTS. This repository is public, served from main, so the question
 // that decides a commit is: is there anything on this page that should not be
 // on the open internet? Its predecessor gate, check-export-safe, asked whether
-// a page carried guide data bound for Design -- a question about a different
+// a page carried walkthrough data bound for Design -- a question about a different
 // repository, and one the generator had made vacuous by stamping every page
 // it wrote as exempt. It was retired on 2026-09-01; this is the one gate.
 //
@@ -23,8 +23,8 @@
 //
 // WHAT THE SYNC ROUTE ALREADY HOLDS, AND WHAT IT DOES NOT. Atlas's emit.py
 // sweeps every document it writes against that same tuple and writes nothing
-// if a name survives, so a name cannot arrive through sync-guides.sh. It can
-// still arrive by hand: an edit to data/guides/*.json, a generator that
+// if a name survives, so a name cannot arrive through sync-export.sh. It can
+// still arrive by hand: an edit to data/atlas/*.json, a generator that
 // injects text, or a hand-written page or Markdown file. This class is what
 // catches those, and it runs only where the tuple can be read -- the commit
 // hook on a machine with the sibling checkout. CI cannot read it, so a commit
@@ -64,7 +64,7 @@ function pages(dir) {
 }
 
 // PEOPLE, read out of atlas rather than restated here -- AT THE PINNED COMMIT.
-// It read atlas HEAD until 2026-09-01. data/guides/ is emitted at one commit
+// It read atlas HEAD until 2026-09-01. data/atlas/ is emitted at one commit
 // and named in its PIN; if atlas later shortened the list, HEAD would have
 // judged data emitted under the longer one and passed it. The list that
 // applies to this data is the one at the commit that emitted it. The names
@@ -73,7 +73,7 @@ function pages(dir) {
 function peoplePattern() {
   const atlas = process.env.ATLAS ?? join(ROOT, '..', '..', 'atlas');
   if (!existsSync(join(atlas, 'tools', 'export.py'))) return null;
-  const pinFile = join(ROOT, 'data', 'guides', 'PIN');
+  const pinFile = join(ROOT, 'data', 'atlas', 'PIN');
   const pin = existsSync(pinFile)
     ? /^commit\s+([0-9a-f]{7,40})/m.exec(readFileSync(pinFile, 'utf8'))?.[1] : null;
   if (!pin) return null;
@@ -174,7 +174,7 @@ for (const [what, n] of [...totals].sort((a, b) => (b[1] === 'unavailable' ? -1 
 }
 if (!PEOPLE) {
   console.log('\n  NAMES WERE NOT CHECKED: ../../atlas is missing, or the commit');
-  console.log('  data/guides/PIN names is not in it, so PEOPLE could not be read.');
+  console.log('  data/atlas/PIN names is not in it, so PEOPLE could not be read.');
   console.log('  Nothing else re-checks names: the sync route is held by atlas emit.py,');
   console.log('  and a hand edit to data, the generator or a page is not.');
 }

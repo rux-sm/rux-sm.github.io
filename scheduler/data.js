@@ -599,11 +599,13 @@
     bar.setAttribute('aria-pressed', 'false');
     bar.dataset.tripId = trip.id;
     bar.dataset.leg = leg.leg;
+    bar.dataset.start = place.start;
+    bar.dataset.span = place.span;
+    // The slot is the position an empty slot's assignment row is written at.
+    bar.dataset.slot = slot;
     if (assign) {
       bar.dataset.assignmentId = assign.id;
       bar.dataset.busId = assign.bus_id ?? '';
-      bar.dataset.start = place.start;
-      bar.dataset.span = place.span;
     }
     if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
     if (place.toNext) bar.classList.add('scheduler-bar--to-next');
@@ -1025,6 +1027,17 @@
     if (error) throw new Error(error.message);
   }
 
+  /* AN EMPTY SLOT HAS NO ROW TO MOVE, so dropping one on a bus writes the row:
+     the trip, its leg, the slot's position and the bus. It returns the new id,
+     and undo takes the bus off that row, which draws the slot on the No bus row
+     where it started. */
+  async function fillSlot(tripId, leg, position, busId) {
+    const { data, error } = await client.from('trip_assignments')
+      .insert({ trip_id: tripId, leg, position, bus_id: busId }).select('id').single();
+    if (error) throw new Error(error.message);
+    return data.id;
+  }
+
   /* WHAT THE ROW IS CALLED, for a message about a bus that may no longer be on
      screen. `null` is the Unassigned row, which has no number to give. */
   function busLabel(busId) {
@@ -1088,7 +1101,7 @@
   }
 
   function installDrag(bar) {
-    if (!bar.dataset.assignmentId) return;   // an unfilled slot owns no row to move
+    if (!bar.dataset.tripId) return;
     bar.addEventListener('pointerdown', down => {
       if (down.button !== 0) return;
       // The trip open in the editor is locked on the board.
@@ -1152,14 +1165,16 @@
         /* HELD AS VALUES, NOT AS THE ELEMENTS THEY CAME OFF. `show()` below
            replaces every bar in the grid, so `bar` is detached by the time the
            undo can be pressed and its dataset is gone with it. */
-        const assignmentId = bar.dataset.assignmentId;
+        let assignmentId = bar.dataset.assignmentId;
+        const { tripId, leg, slot } = bar.dataset;
         const backTo = fromBus;
         const label = busLabel(fromBus);
         let failed = null;
         try {
           schEl.setAttribute('aria-busy', 'true');
           gridEl.classList.add('scheduler-grid--busy');
-          await moveToBus(assignmentId, toBus);
+          if (assignmentId) await moveToBus(assignmentId, toBus);
+          else assignmentId = await fillSlot(tripId, leg || 'outbound', +slot || 0, toBus);
         } catch (e) {
           failed = String(e && e.message ? e.message : e);
         } finally {

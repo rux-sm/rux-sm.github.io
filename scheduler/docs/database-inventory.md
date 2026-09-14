@@ -129,7 +129,7 @@ as in `screen-inventory.md`.
 | Table | Read by | Written by |
 |---|---|---|
 | `trips` | Schedule, Trips search, driver page | Trip editor |
-| `trip_assignments`, `trip_drivers` | Schedule, Drivers, Fleet | Trip editor; the bus reassignment drag writes `trip_assignments.bus_id` alone |
+| `trip_assignments`, `trip_drivers` | Schedule, Drivers, Fleet | Trip editor; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
 | `trip_stops` | Trip editor Itinerary tab, driver page | Trip editor |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |

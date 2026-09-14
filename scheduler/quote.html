@@ -228,6 +228,8 @@
               <form class="scheduler-quote__form" id="scheduler-quote-form" novalidate>
                 <div class="rux--stack-vertical rux--stack-scale-7">
 
+                  <!-- The rate and the drivers come first: the drivers decide
+                       which mileage columns the table below shows. -->
                   <fieldset class="scheduler-quote__group">
                     <legend class="rux--label rux--type-heading-compact-01">Trip</legend>
                     <div class="scheduler-quote__fields">
@@ -240,28 +242,6 @@
                           </div>
                         </div>
                       </div>
-                      <div class="rux--form-item rux--text-input-wrapper">
-                        <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
-                        <div class="rux--text-input__field-outer-wrapper">
-                          <div class="rux--text-input__field-wrapper">
-                            <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="rux--form-item rux--text-input-wrapper">
-                        <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-other">Other ($)</label></div>
-                        <div class="rux--text-input__field-outer-wrapper">
-                          <div class="rux--text-input__field-wrapper">
-                            <input id="scheduler-quote-other" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-
-                  <fieldset class="scheduler-quote__group">
-                    <legend class="rux--label rux--type-heading-compact-01">Driver pay</legend>
-                    <div class="scheduler-quote__fields">
                       <div class="rux--form-item">
                         <div class="rux--select">
                           <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
@@ -284,23 +264,58 @@
                   </fieldset>
 
                   <fieldset class="scheduler-quote__group">
-                    <legend class="rux--label rux--type-heading-compact-01">Miles by day</legend>
-                    <!-- quote.js draws the rows. Column 1 is the day, then trip
-                         miles, then one column per driver; `--scheduler-quote-cols`
-                         says how many mileage columns show. -->
-                    <div class="scheduler-quote-days" id="scheduler-quote-days" style="--scheduler-quote-cols: 1">
-                      <div class="scheduler-quote-days__head" aria-hidden="true">
-                        <span>Day</span><span>Trip miles</span><span data-driver="1">Driver 1</span><span data-driver="2">Driver 2</span>
+                    <legend class="rux--label rux--type-heading-compact-01">Miles</legend>
+                    <div class="rux--stack-vertical rux--stack-scale-6">
+                      <div>
+                        <!-- quote.js draws the rows. Column 1 is the day, then trip
+                             miles, then one column per driver; `--scheduler-quote-cols`
+                             says how many mileage columns show. -->
+                        <div class="scheduler-quote-days" id="scheduler-quote-days" style="--scheduler-quote-cols: 1">
+                          <div class="scheduler-quote-days__head" aria-hidden="true">
+                            <span>Day</span><span>Trip miles</span><span data-driver="1">Driver 1</span><span data-driver="2">Driver 2</span>
+                          </div>
+                          <div id="scheduler-quote-day-rows"></div>
+                        </div>
+                        <div class="rux--form__helper-text">Days count up to the last day with miles.</div>
+                        <div class="scheduler-quote__day-actions">
+                          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
+                          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
+                        </div>
                       </div>
-                      <div id="scheduler-quote-day-rows"></div>
-                    </div>
-                    <div class="rux--form__helper-text">Days count up to the last day with miles.</div>
-                    <div class="scheduler-quote__day-actions">
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
-                      <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear</button>
+                      <!-- Dead miles are one number for the whole trip, so they
+                           sit under the table rather than in it. -->
+                      <div class="scheduler-quote__fields">
+                        <div class="rux--form-item rux--text-input-wrapper">
+                          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
+                          <div class="rux--text-input__field-outer-wrapper">
+                            <div class="rux--text-input__field-wrapper">
+                              <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </fieldset>
+
+                  <fieldset class="scheduler-quote__group">
+                    <legend class="rux--label rux--type-heading-compact-01">Other charges</legend>
+                    <div class="scheduler-quote__fields">
+                      <div class="rux--form-item rux--text-input-wrapper">
+                        <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-other">Amount ($)</label></div>
+                        <div class="rux--text-input__field-outer-wrapper">
+                          <div class="rux--text-input__field-wrapper">
+                            <input id="scheduler-quote-other" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <!-- Clear empties the whole quote, so it ends the form rather
+                       than sitting beside the day buttons. -->
+                  <div>
+                    <button type="reset" class="rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
+                  </div>
 
                 </div>
               </form>

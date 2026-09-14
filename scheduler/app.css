@@ -2107,11 +2107,11 @@ button.scheduler-row-head__num {
        day's squares. */
     padding-inline: var(--rux-spacing-05);
   }
-  /* The names and the Driver heading start at that inset, lined up with the
-     panel title above them. */
-  .scheduler-aside .scheduler-avail__name,
-  .scheduler-aside .scheduler-avail__day--head {
-    padding-inline-start: 0;
+  /* The names start 16px inside the grid, level with the Driver heading, the
+     way Carbon's table cells pad their text. The grid's own edge is what lines
+     up with the panel title above. */
+  .scheduler-aside .scheduler-avail__name {
+    padding-inline-start: var(--rux-spacing-05);
   }
 
   /* THE WEEK LABEL TAKES ITS OWN ROW, and this is a deliberate exception to

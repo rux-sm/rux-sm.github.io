@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Design — LIST BOX (dropdown, and the select-only combobox)
+   Design — LIST BOX (dropdown and combo box)
    --------------------------------------------------------------------------
    Requires js/overlay.js. Load after js/popover.js.
 
@@ -24,12 +24,14 @@
    already relates them — the rule menu.js settled.
 
    `select` NEEDS NOTHING. Carbon's Select is a native <select> and the browser
-   already owns every one of these behaviours; only the dropdown form is here.
+   already owns every one of these behaviours; only the dropdown and combo box
+   forms are here.
 
    NOT EVERY `.rux--list-box` IS A CONTROL. list-box.html demos the PRIMITIVE —
    a specimen of the expanded state whose `__field` is a plain <div>, because
-   Carbon's ListBox on its own is not interactive. Only the dropdown form gives
-   it a `<button role="combobox">`. So this module claims a list box by its
+   Carbon's ListBox on its own is not interactive. Only the dropdown and combo
+   box forms give it a combobox, a `<button>` or an `<input>`. So this module
+   claims a list box by its
    FIELD rather than by the root class, and leaves the static specimens alone:
    opening one would fight markup that is deliberately rendered open, and
    `field.focus()` on a div does nothing, which is how this was found.
@@ -67,9 +69,27 @@
    "false" and aria-activedescendant stayed empty. The conclusion survived; the evidence
    behind it did not, and only the second run is worth citing.
 
-   NOT VERIFIED: the multiselect and combo-box forms. This drove the DROPDOWN, which is
-   the only consumer whose field is select-only; a combo box has a text input and its own
-   filtering, and nothing here should be read as covering it.
+   NOT VERIFIED: the multiselect form.
+
+   COMBO BOX: verified-live · driven 2026-09-14 on components-combobox--default and
+   components-combobox--allow-custom-value, with real clicks and key events.
+
+   CONFIRMED: the field is an <input role="combobox"> inside `__field`, and it keeps focus
+   through every key. Opening adds `--list-box--expanded` alone, never `--dropdown--open`,
+   turns the menu icon `--open` and names it "Close". A click in the field opens it with no
+   cursor. Typing opens it, filters the options to those containing the text, case aside,
+   and puts the cursor on the first. A value shows `__selection`, the clear button named
+   "Clear selected item". Enter picks the cursor, writes the option into the field, closes,
+   and keeps focus. Reopening lists the options matching the field, with the cursor on the
+   selection. Escape on an open list closes it and keeps the value; Escape on a closed one
+   clears the value and the selection. Tab leaves a typed value in place. The input wears
+   `--combo-box--input--focus` while focused and `--text-input--empty` while empty.
+
+   OURS, NOT CARBON'S: an option may carry `data-rux-text`, the text a pick writes into the
+   field -- React's `itemToString`, for an option that renders more than its name.
+   Filtering reads the option's whole text, so a second line is searchable too. The clear
+   button returns focus to the field; where Carbon's focus lands after it was not read.
+   Home and End stay the input's and move the caret.
    ========================================================================== */
 (() => {
   'use strict';
@@ -82,18 +102,24 @@
   const live = new Map();   // root -> { registration, cursor }
   let typed = '', typedTimer = 0;
 
-  // A control, not a specimen: a real button, or something explicitly given the
-  // combobox role. Anything else is markup demonstrating a state.
+  // A control, not a specimen: a real button, something explicitly given the
+  // combobox role, or a combo box's input. Anything else is markup
+  // demonstrating a state.
   const fieldOf = r => r.querySelector(
-    'button.rux--list-box__field, .rux--list-box__field[role="combobox"]');
+    'button.rux--list-box__field, .rux--list-box__field[role="combobox"], ' +
+    '.rux--combo-box > .rux--list-box__field > input[role="combobox"]');
+  const isCombo = r => r.classList.contains('rux--combo-box');
   const menuOf = r => r.querySelector('.rux--list-box__menu');
   const iconOf = r => r.querySelector('.rux--list-box__menu-icon');
+  const clearOf = r => r.querySelector('.rux--list-box__selection');
   const labelOf = r => r.querySelector('.rux--list-box__label');
+  // A filtered-out option is `hidden`, and the arrows pass it like a disabled one.
   const optionsOf = r => [...r.querySelectorAll('.rux--list-box__menu-item[role="option"]')]
-    .filter(o => !o.hasAttribute('disabled') && o.getAttribute('aria-disabled') !== 'true');
+    .filter(o => !o.hidden && !o.hasAttribute('disabled') && o.getAttribute('aria-disabled') !== 'true');
   const isDisabled = r => r.classList.contains('rux--list-box--disabled')
-    || r.classList.contains('rux--dropdown--disabled');
+    || r.classList.contains('rux--dropdown--disabled') || !!fieldOf(r)?.readOnly;
   const selectedOf = r => r.querySelector('.rux--list-box__menu-item--active');
+  const textOf = o => o.dataset.ruxText ?? o.textContent.trim();
 
   function setCursor(root, option) {
     const field = fieldOf(root);
@@ -113,7 +139,12 @@
     if (!state) return;
     live.delete(root);
     root.classList.remove('rux--list-box--expanded', 'rux--dropdown--open');
-    iconOf(root)?.classList.remove('rux--list-box__menu-icon--open');
+    const icon = iconOf(root);
+    icon?.classList.remove('rux--list-box__menu-icon--open');
+    if (isCombo(root)) {
+      icon?.setAttribute('aria-expanded', 'false');
+      icon?.setAttribute('aria-label', 'Open');
+    }
     const menu = menuOf(root);
     if (menu && menu.children.length) menu.hidden = true;
     const field = fieldOf(root);
@@ -137,8 +168,16 @@
       close: opts => close(root, opts),
     });
 
-    root.classList.add('rux--list-box--expanded', 'rux--dropdown--open');
-    iconOf(root)?.classList.add('rux--list-box__menu-icon--open');
+    root.classList.add('rux--list-box--expanded');
+    const icon = iconOf(root);
+    icon?.classList.add('rux--list-box__menu-icon--open');
+    if (isCombo(root)) {
+      icon?.setAttribute('aria-expanded', 'true');
+      icon?.setAttribute('aria-label', 'Close');
+      filter(root);
+    } else {
+      root.classList.add('rux--dropdown--open');
+    }
     // FOCUS THE FIELD EXPLICITLY. This pattern keeps DOM focus on the field and
     // moves aria-activedescendant instead, so if the field does not hold focus
     // the arrows reach nothing and the component is inert. Clicking a <button>
@@ -148,8 +187,12 @@
     if (menu.children.length) menu.hidden = false;
     live.set(root, { registration, cursor: null });
     // The cursor starts on the SELECTION, not the first option — reopening a
-    // dropdown should show you where you already are.
-    setCursor(root, selectedOf(root) || optionsOf(root)[0] || null);
+    // dropdown should show you where you already are. A combo box with no
+    // selection in view opens with no cursor, as Carbon's does on a click.
+    const selected = selectedOf(root);
+    setCursor(root, isCombo(root)
+      ? (selected && !selected.hidden ? selected : null)
+      : (selected || optionsOf(root)[0] || null));
     root.dispatchEvent(new CustomEvent('rux:listbox-opened', { bubbles: true }));
   }
 
@@ -161,12 +204,51 @@
     }
     option.classList.add('rux--list-box__menu-item--active');
     option.setAttribute('aria-selected', 'true');
+    const value = textOf(option);
     const label = labelOf(root);
-    if (label) label.textContent = option.textContent.trim();
+    if (label) label.textContent = value;
+    if (isCombo(root)) { fieldOf(root).value = value; sync(root); }
     root.dispatchEvent(new CustomEvent('rux:listbox-selected', {
-      bubbles: true, detail: { option, value: option.textContent.trim() },
+      bubbles: true, detail: { option, value },
     }));
     close(root, { restoreFocus: true });
+  }
+
+  /* ── the combo box's own field ─────────────────────────────────────────── */
+  // The value decides the empty class and whether the clear button shows.
+  function sync(root) {
+    const field = fieldOf(root);
+    const empty = !field.value;
+    field.classList.toggle('rux--text-input--empty', empty);
+    const clear = clearOf(root);
+    if (clear) clear.hidden = empty;
+  }
+
+  // Hides every option whose text does not contain the field's, case aside.
+  function filter(root) {
+    const text = fieldOf(root).value.trim().toLowerCase();
+    for (const o of root.querySelectorAll('.rux--list-box__menu-item[role="option"]'))
+      o.hidden = !!text && !o.textContent.toLowerCase().includes(text);
+  }
+
+  // Drops the selection and announces it. `option: null` means the field holds
+  // text that no option owns.
+  function deselect(root) {
+    const selected = selectedOf(root);
+    selected?.classList.remove('rux--list-box__menu-item--active');
+    selected?.setAttribute('aria-selected', 'false');
+    root.dispatchEvent(new CustomEvent('rux:listbox-selected', {
+      bubbles: true, detail: { option: null, value: fieldOf(root).value },
+    }));
+  }
+
+  function clear(root) {
+    const field = fieldOf(root);
+    field.value = '';
+    sync(root);
+    filter(root);
+    deselect(root);
+    if (live.has(root)) close(root); else field.focus();
   }
 
   // CARBON CLAMPS, IT DOES NOT WRAP, and this used to do the opposite. Driven on
@@ -193,6 +275,8 @@
   // outline none -> rgba(0,0,0,0) solid 2px, wrapper unchanged. Reimplemented
   // here on the AGENTS.md rule for behaviour Carbon keeps in its React layer.
   const focusClass = (target, on) => {
+    if (target.matches('.rux--combo-box > .rux--list-box__field > input[role="combobox"]'))
+      target.classList.toggle('rux--combo-box--input--focus', on);
     const ms = target.closest('.rux--multi-select');
     if (!ms) return;
     if (target.matches('.rux--list-box__field')) {
@@ -205,8 +289,31 @@
   document.addEventListener('focusout', e => e.target instanceof Element && focusClass(e.target, false));
 
   /* ── pointer ──────────────────────────────────────────────────────────── */
+  // A press on a combo box's list or its buttons keeps focus in the input, so
+  // the caret stays and a phone keyboard does not close between press and pick.
+  document.addEventListener('mousedown', event => {
+    if (event.target instanceof Element && event.target.closest(
+      '.rux--combo-box .rux--list-box__menu, .rux--combo-box .rux--list-box__field button'))
+      event.preventDefault();
+  });
+
   document.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
+
+    const combo = event.target.closest('.rux--combo-box');
+    if (combo && fieldOf(combo) && !isDisabled(combo)) {
+      if (event.target.closest('.rux--list-box__selection')) {
+        event.preventDefault();
+        clear(combo);
+        return;
+      }
+      if (event.target.closest('.rux--list-box__menu-icon')) {
+        event.preventDefault();
+        live.has(combo) ? close(combo) : open(combo);
+        return;
+      }
+      if (event.target.closest('.rux--list-box__field')) { open(combo); return; }
+    }
 
     const field = event.target.closest('.rux--list-box__field');
     if (field) {
@@ -224,11 +331,60 @@
     }
   });
 
+  /* ── the combo box's keys and typing ──────────────────────────────────── */
+  function comboKey(event, root) {
+    const field = fieldOf(root);
+    if (event.target !== field) return;
+    const isOpen = live.has(root);
+    const cursor = live.get(root)?.cursor ?? null;
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowUp':
+        event.preventDefault();
+        if (!isOpen) {
+          open(root);
+          if (!live.get(root)?.cursor) setCursor(root, optionsOf(root)[0] ?? null);
+          return;
+        }
+        setCursor(root, step(optionsOf(root), cursor, event.key === 'ArrowDown' ? 1 : -1));
+        break;
+      case 'Enter':
+        if (!isOpen) return;
+        event.preventDefault();
+        if (cursor) choose(root, cursor); else close(root);
+        break;
+      case 'Escape':
+        // Open, the kernel has already closed it and consumed the key.
+        // Closed, Escape clears.
+        if (event.defaultPrevented || isOpen || !field.value) return;
+        event.preventDefault();
+        clear(root);
+        break;
+      case 'Tab':
+        if (isOpen) close(root, { restoreFocus: false });
+        break;
+    }
+  }
+
+  document.addEventListener('input', event => {
+    const field = event.target;
+    if (!(field instanceof HTMLInputElement)) return;
+    const root = field.closest('.rux--combo-box');
+    if (!root || fieldOf(root) !== field || isDisabled(root)) return;
+    const selected = selectedOf(root);
+    if (selected && textOf(selected) !== field.value) deselect(root);
+    sync(root);
+    filter(root);
+    open(root);
+    setCursor(root, field.value.trim() ? optionsOf(root)[0] ?? null : null);
+  });
+
   /* ── the combobox keyboard pattern ────────────────────────────────────── */
   document.addEventListener('keydown', event => {
     if (!(event.target instanceof Element)) return;
     const root = event.target.closest(ROOT);
     if (!root || isDisabled(root) || !fieldOf(root)) return;
+    if (isCombo(root)) { comboKey(event, root); return; }
     const isOpen = live.has(root);
     const list = optionsOf(root);
     const cursor = live.get(root)?.cursor ?? null;
@@ -332,6 +488,7 @@
     open: root => open(root),
     close: root => close(root),
     select: (root, option) => choose(root, option),
+    clear: root => clear(root),
     isOpen: root => live.has(root),
   };
 })();

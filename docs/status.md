@@ -27,8 +27,6 @@ done and how.
   It needs the header's inline padding.
 - `.rux--contained-list-item__action` sits at the top of its row. It needs
   `inset-block: 0` and `align-items: center`.
-- A combo box that filters as you type. `design/js/list-box.js` is select-only,
-  and the trip editor picks one contact from about 200.
 - A display format for the date picker. `design/js/date-picker.js` shows ISO
   dates, while the scheduler shows mm/dd/yyyy everywhere else.
 - `setToggle` words a product can choose. It always says On/Off, where the

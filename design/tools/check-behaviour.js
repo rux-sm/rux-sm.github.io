@@ -693,6 +693,52 @@
     key(trigger, 'Escape');
   })();
 
+  // ── list-box: the combo box filters, picks and clears ─────────────────────
+  // What list-box.js's COMBO BOX block confirms against Carbon, driven here with
+  // synthetic input and key events on the input.
+  (() => {
+    const root = fixture('#combo-box').querySelector('.rux--combo-box');
+    const input = root?.querySelector('.rux--list-box__field > input[role="combobox"]');
+    if (!input || input.readOnly) return skip('list-box', 'combo box', 'no combo box on this page');
+    const all = [...root.querySelectorAll('.rux--list-box__menu-item[role="option"]')];
+    const clearBtn = root.querySelector('.rux--list-box__selection');
+    const shown = () => all.filter(o => !o.hidden);
+    const was = input.value;
+    const type = text => {
+      input.value = text;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    input.focus();
+    const target = all[all.length - 1];
+    const text = target?.textContent.trim() ?? '';
+    type(text);
+    record('list-box', 'typing filters a combo box to the options containing the text',
+      input.getAttribute('aria-expanded') === 'true' && shown().includes(target)
+      && shown().length < all.length,
+      `aria-expanded=${input.getAttribute('aria-expanded')}, ${shown().length} of ${all.length} shown`);
+    record('list-box', 'and puts the cursor on the first of them',
+      !!shown()[0] && input.getAttribute('aria-activedescendant') === shown()[0].id,
+      `aria-activedescendant=${input.getAttribute('aria-activedescendant')}`);
+
+    key(input, 'Enter');
+    record('list-box', 'Enter picks the cursor into the field, closes and shows the clear button',
+      input.value === text && input.getAttribute('aria-expanded') === 'false'
+      && has(target, 'rux--list-box__menu-item--active') && !!clearBtn && !clearBtn.hidden,
+      `value="${input.value}", aria-expanded=${input.getAttribute('aria-expanded')}, ` +
+      `clear hidden=${clearBtn?.hidden}`);
+
+    key(input, 'Escape');
+    record('list-box', 'Escape on a closed combo box clears the value and the selection',
+      input.value === '' && !root.querySelector('.rux--list-box__menu-item--active')
+      && shown().length === all.length && (!clearBtn || clearBtn.hidden),
+      `value="${input.value}", ${shown().length} of ${all.length} shown`);
+
+    if (input.value !== was) type(was);
+    window.Rux?.listBox?.close(root);
+    input.blur();
+  })();
+
   // ── the kernel's stack: one open surface at a time ────────────────────────
   // js/overlay.js exists because two surfaces otherwise disagree about who owns
   // a press. Opening a second dismissible surface must close the first.

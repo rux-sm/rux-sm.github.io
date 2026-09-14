@@ -72,6 +72,12 @@
    corrected in the same pass. */
 .rux--date-picker__input[hidden] { display: none; }
 
+/* A HIDDEN CLEAR BUTTON MUST NOT RENDER, the same rule again. js/list-box.js
+   hides a combo box's clear button with `hidden` while the field is empty, and
+   Carbon's `.rux--list-box__selection { display: flex }` is an author
+   declaration the attribute loses to. */
+.rux--list-box__selection[hidden] { display: none; }
+
 /* A CONTAINED LIST'S LABEL TAKES ITS HEADER'S TYPE. This repair is of this
    system's own divergence, not Carbon's: Carbon renders `__label` on a `<div>`
    that inherits the header's type, and `sink/contained-list.html` deliberately

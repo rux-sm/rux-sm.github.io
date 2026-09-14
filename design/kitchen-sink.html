@@ -6187,7 +6187,8 @@
   <h2>Combo box</h2><p>filterable input over a list box</p>
   <!-- PROVENANCE: rendered-dom · components-combobox--default and its state
        recipes (open, readonly) in data/carbon-react-states.json, harvested
-       2026-08-27 -->
+       2026-08-27; the clear button from components-combobox--allow-custom-value
+       with a value typed, driven 2026-09-14 -->
   <!--
     Rebuilt 2026-08-27 against the rendered React DOM, superseding the shadow-DOM
     extraction. What the rendered DOM corrected:
@@ -6197,6 +6198,9 @@
       - label and control sit inside div.list-box__wrapper
       - the menu icon is a BUTTON carrying aria-expanded, not a div
       - the menu is a UL of LI options
+    The clear button, `button.list-box__selection`, sits between the input and
+    the menu icon while the field has text; it ships `hidden` here and
+    js/list-box.js shows it.
   -->
   <div class="ks-grid">
     <div class="rux--list-box__wrapper">
@@ -6204,7 +6208,10 @@
       <div class="rux--combo-box rux--list-box">
         <div class="rux--list-box__field">
           <input id="cbx-1" class="rux--text-input rux--text-input--empty" type="text" role="combobox"
-                 aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list" placeholder="Type to filter…">
+                 aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list" autocomplete="off" placeholder="Type to filter…">
+          <button type="button" class="rux--list-box__selection" aria-label="Clear selected item" title="Clear selected item" tabindex="-1" hidden>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
           <button type="button" class="rux--list-box__menu-icon" aria-expanded="false" aria-label="Open" tabindex="-1">
             <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
           </button>
@@ -6218,6 +6225,12 @@
           </li>
           <li class="rux--list-box__menu-item" role="option" aria-selected="false">
             <div class="rux--list-box__menu-item__option">Blackberry</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Cherry</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Pineapple</div>
           </li>
         </ul>
       </div>

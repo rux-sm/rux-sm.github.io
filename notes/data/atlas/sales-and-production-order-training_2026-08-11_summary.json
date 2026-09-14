@@ -1,5 +1,5 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
   "kind": "summary",
   "id": "sales-and-production-order-training_2026-08-11_summary",
@@ -26,10 +26,10 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Review of a trainee's earlier Ship from stock exercise, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order exercise — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
+          "v": "Review of a trainee's earlier Ship from stock experiment, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order experiment — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
         }
       ],
-      "text": "Review of a trainee's earlier Ship from stock exercise, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order exercise — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
+      "text": "Review of a trainee's earlier Ship from stock experiment, an explanation of why some warehousing steps are manual and others automatic, and a fresh production-order experiment — item, BOM, routing, order creation, release, and material issue — followed by a discussion of what to study next."
     }
   ],
   "topics": [

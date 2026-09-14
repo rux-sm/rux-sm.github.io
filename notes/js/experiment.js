@@ -1,7 +1,7 @@
 /* ==========================================================================
    Notes — THE WORKSHEET
    --------------------------------------------------------------------------
-   Behaviour for an exercise page: answers typed into the spaces the data
+   Behaviour for an experiment page: answers typed into the spaces the data
    marked, boxes ticked, a notepad, a revealable answer key, and an export.
    Everything lives in this browser's localStorage under one key per page;
    nothing is sent anywhere, and the page says so beside the notepad.
@@ -13,7 +13,7 @@
    re-reads the marker contract. The page without this script is still the
    whole worksheet, read-only.
 
-   A KEY IS REVEALED ONLY AFTER SOMETHING IS WRITTEN. The exercises are built
+   A KEY IS REVEALED ONLY AFTER SOMETHING IS WRITTEN. The experiments are built
    on predict-then-observe; a key that opens on a blank space removes the
    prediction. The button stays disabled until the space holds text.
 

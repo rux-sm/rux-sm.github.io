@@ -24,7 +24,7 @@ OUT="$HERE/build/internal"
 
 rm -rf "$OUT"
 mkdir -p "$OUT/data" "$OUT/site"
-(cd "$ATLAS" && python3 tools/emit.py --all --reviews --exercises --references --concepts --internal --out "$OUT/data" >/dev/null)
+(cd "$ATLAS" && python3 tools/emit.py --all --reviews --experiments --references --concepts --internal --out "$OUT/data" >/dev/null)
 # The pages reach the design system at /design/ -- absolute, since 2026-09-10
 # -- so the private site root gets a folder of
 # exactly that name, symlinked rather than copied, and served by design's OWN

@@ -489,7 +489,7 @@ function table(block, { numbered = false } = {}) {
 
 // --------------------------------------------------------- prose documents
 
-// THE SIX BLOCK KINDS REVIEWS AND EXERCISES CARRY, four of which a walkthrough never does.
+// THE SIX BLOCK KINDS REVIEWS AND EXPERIMENTS CARRY, four of which a walkthrough never does.
 // A walkthrough's blocks are identified by `kind` meaning something else entirely
 // (`prose`, `steps`, `runrecord`), so this dispatches on the review vocabulary
 // and never falls through to `block()` -- REVIEW-SHAPE.md section 2 named them
@@ -704,7 +704,7 @@ function nav(site, activeId) {
       activeId === null ? 'pages/' : ''}${d.id}.html"${current}><span class="rux--side-nav__link-text">${esc(d.title)}</span></a></li>`;
   };
   const items = site.walkthroughs.map(link).join('\n');
-  const practice = site.exercises.map(link).join('\n');
+  const practice = site.experiments.map(link).join('\n');
   // SUMMARIES ARE THE LISTED CATEGORY, reviews are reached from them. The
   // agreement was walkthroughs and meeting summaries; the full reviews are
   // deferred rather than refused, and listing twelve documents under one
@@ -712,7 +712,7 @@ function nav(site, activeId) {
   const meetings = site.summaries.map(link).join('\n');
 
   const guidesOpen = site.walkthroughs.some(g => g.id === activeId);
-  const practiceOpen = site.exercises.some(e => e.id === activeId);
+  const practiceOpen = site.experiments.some(e => e.id === activeId);
   const meetingsOpen = [...site.reviews, ...site.summaries].some(d => d.id === activeId);
   // CONCEPTS ARE NOT A PUBLISHED CATEGORY. atlas's concept-rules.md section 5
   // gives them no tier, its emitter refuses them at export, and this group
@@ -773,12 +773,12 @@ ${items}
         </ul>
       </li>
 
-      <!-- EXERCISES COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
+      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
            get their own group because a learner opens one to predict, record
            and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item${practiceOpen ? ' rux--side-nav__item--active' : ''}">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="${practiceOpen}">
-          <span class="rux--side-nav__submenu-title">Practice</span>
+          <span class="rux--side-nav__submenu-title">Experiments</span>
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu"${practiceOpen ? '' : ' hidden'}>
@@ -1040,16 +1040,16 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
-   exercise looks complete while leaving nowhere to write. Scoped to exercise
+   experiment looks complete while leaving nowhere to write. Scoped to experiment
    pages so ordinary walkthrough and review tables remain dense. */
-.notes-exercise .rux--data-table td:empty::after {
+.notes-experiment .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
 .notes-revision { color: var(--rux-text-secondary); margin: 0; }
-/* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
+/* THE EXPERIMENT PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
@@ -1988,7 +1988,7 @@ function indexPage(site) {
   // nothing in either direction. No document lost its only way in.
   //
   // THE CARD BUILDERS WENT WITH THEM. Roughly 120 lines that built walkthrough cards,
-  // exercise cards and summary cards are deleted rather than left unreferenced:
+  // experiment cards and summary cards are deleted rather than left unreferenced:
   // a generator carrying markup nothing emits is markup no gate checks and no
   // reader sees, and `check-classes` would have gone on validating it forever.
   // `git show` has them if a future index wants them back.
@@ -2091,10 +2091,10 @@ function reviewPage(r, site) {
   return page({ title: `${r.title} — Notes`, site, activeId: r.id, body, depth: 1 });
 }
 
-// AN EXERCISE IS ORDERED PRACTICE, not walkthrough phases. The prose block vocabulary
+// AN EXPERIMENT IS ORDERED PRACTICE, not walkthrough phases. The prose block vocabulary
 // is shared with reviews, while the top-level shape is an intro followed by the
 // numbered assignments the learner completes.
-// ---------------------------------------------------------------- exercise
+// ---------------------------------------------------------------- experiment
 
 // A STABLE ID FOR A QUESTION, so an answer saved in the browser survives a
 // rebuild and a re-sync. Keyed by the section number and the question's own
@@ -2199,7 +2199,7 @@ function exercisePage(e, site) {
   // THE RAIL. Progress, a notepad, and the way out. Everything a learner
   // types stays in this browser's storage until they export it -- there is no
   // server behind this page and the helper text says so. The export is the
-  // report-back the exercise already asks for, as a file.
+  // report-back the experiment already asks for, as a file.
   const rail = `<aside class="notes-ex-rail" aria-label="Your work">
           <div class="rux--tile notes-ex-work">
             <h3 class="rux--type-heading-compact-02">Your work</h3>
@@ -2219,7 +2219,7 @@ function exercisePage(e, site) {
           </div>
         </aside>`;
 
-  const body = `        <div class="notes-ex notes-exercise" data-notes-doc="${esc(e.id)}">
+  const body = `        <div class="notes-ex notes-experiment" data-notes-doc="${esc(e.id)}">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>${esc(e.title)}</h1>
           <div class="notes-tag-row">
@@ -2235,7 +2235,7 @@ function exercisePage(e, site) {
         ${rail}
         </div>`;
 
-  return page({ title: `${e.title} — Notes`, site, activeId: e.id, body, depth: 1, scripts: ['js/exercise.js'] });
+  return page({ title: `${e.title} — Notes`, site, activeId: e.id, body, depth: 1, scripts: ['js/experiment.js'] });
 }
 
 function conceptPage(c, site) {
@@ -2663,7 +2663,7 @@ function referencePage(r, site) {
         </div>${r.diagram ? `
         ${diagramFigure(r.diagram)}` : ''}
         ${topics}`;
-  // js/diagram.js ONLY WHERE THERE IS A DIAGRAM, the same way js/exercise.js
+  // js/diagram.js ONLY WHERE THERE IS A DIAGRAM, the same way js/experiment.js
   // is linked only by a worksheet. It adds the close button and Escape to the
   // panel; without it the panel still opens and closes from its own tile.
   return page({ title: `${r.title} — Notes`, site, activeId: r.id, body, depth: 1,
@@ -2709,7 +2709,7 @@ const stepKey = () => `
 //
 // A WALKTHROUGH PAGE WITHOUT js/walkthrough.js IS STILL THE WHOLE WALKTHROUGH. The fields are
 // inert, the export does nothing, and every step, table and phase reads as it
-// does now. That is the same contract js/exercise.js holds.
+// does now. That is the same contract js/experiment.js holds.
 const notepad = () => `
       <section class="notes-notepad" aria-labelledby="h-notes">
         <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
@@ -2824,14 +2824,14 @@ const docs = readdirSync(DATA)
 // contract set and enforces nothing, so a renderer written for one shape could
 // silently consume the next. Bump this constant when this file is updated for
 // a new contract, and not before.
-const CONTRACT = 9;
+const CONTRACT = 10;
 for (const d of docs) if (Number(d.contract) !== CONTRACT)
   throw new Error(`${d.id ?? '?'}: contract ${d.contract}, this renderer reads ${CONTRACT} -- update build.mjs for it, then this constant`);
 
 for (const d of docs) {
   const kind = d.kind ?? 'walkthrough';
-  if (!['walkthrough', 'review', 'summary', 'exercise', 'concept', 'reference'].includes(kind)) {
-    throw new Error(`${d.id}: unknown kind "${kind}" -- build.mjs renders walkthrough, review, summary, exercise, concept, reference`);
+  if (!['walkthrough', 'review', 'summary', 'experiment', 'concept', 'reference'].includes(kind)) {
+    throw new Error(`${d.id}: unknown kind "${kind}" -- build.mjs renders walkthrough, review, summary, experiment, concept, reference`);
   }
   if (kind === 'concept' && !PRIVATE) {
     throw new Error(`${d.id}: a concept has no published tier and cannot sit in data/atlas/`);
@@ -2843,7 +2843,7 @@ const reviews = docs.filter(d => d.kind === 'review')
   .sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
 const summaries = docs.filter(d => d.kind === 'summary')
   .sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
-const exercises = docs.filter(d => d.kind === 'exercise')
+const experiments = docs.filter(d => d.kind === 'experiment')
   .sort((a, b) => String(a.title).localeCompare(String(b.title)));
 const concepts = docs.filter(d => d.kind === 'concept')
   .sort((a, b) => String(a.title).localeCompare(String(b.title)));
@@ -2856,9 +2856,9 @@ const references = docs.filter(d => d.kind === 'reference')
 if (!walkthroughs.length) throw new Error(`no walkthroughs in ${DATA} -- run tools/sync-export.sh first`);
 
 for (const g of walkthroughs) PAGE_IDS.add(g.id);
-// Reviews, summaries and exercises publish in both tiers, so a link between
+// Reviews, summaries and experiments publish in both tiers, so a link between
 // them is linkable in both -- only a concept is PRIVATE-only (line ~1327).
-for (const d of [...reviews, ...summaries, ...exercises, ...references]) PAGE_IDS.add(d.id);
+for (const d of [...reviews, ...summaries, ...experiments, ...references]) PAGE_IDS.add(d.id);
 if (PRIVATE) for (const d of concepts) PAGE_IDS.add(d.id);
 
 const reach = assertNoRawBlockquotes(walkthroughs);
@@ -2884,7 +2884,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 const assets = readdirSync(DATA).filter(f => f !== 'PIN' && !f.endsWith('.json'));
 for (const a of assets) copyFileSync(join(DATA, a), join(OUT_DIR, a));
 
-const site = { walkthroughs, reviews, summaries, exercises, concepts, references };
+const site = { walkthroughs, reviews, summaries, experiments, concepts, references };
 
 const written = [INDEX];
 writeFileSync(written[0], indexPage(site));
@@ -2898,7 +2898,7 @@ for (const r of [...reviews, ...summaries]) {
   writeFileSync(file, reviewPage(r, site));
   written.push(file);
 }
-for (const e of exercises) {
+for (const e of experiments) {
   const file = join(OUT_DIR, `${e.id}.html`);
   writeFileSync(file, exercisePage(e, site));
   written.push(file);

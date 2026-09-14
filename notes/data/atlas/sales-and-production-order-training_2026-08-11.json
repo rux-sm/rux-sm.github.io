@@ -1,5 +1,5 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
   "kind": "review",
   "id": "sales-and-production-order-training_2026-08-11",
@@ -38,10 +38,10 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order exercise covering the manufactured item's bill of material, routing, order creation, release, and material issue."
+          "v": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order experiment covering the manufactured item's bill of material, routing, order creation, release, and material issue."
         }
       ],
-      "text": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order exercise covering the manufactured item's bill of material, routing, order creation, release, and material issue."
+      "text": "Review a trainee's Ship from stock execution, explain why warehousing activities can be manual or automatic, and begin a production-order experiment covering the manufactured item's bill of material, routing, order creation, release, and material issue."
     },
     {
       "kind": "prose",
@@ -436,7 +436,7 @@
     },
     {
       "n": "3.4",
-      "title": "Production master-data exercise and BOM loop",
+      "title": "Production master-data experiment and BOM loop",
       "blocks": [
         {
           "kind": "prose",
@@ -1157,10 +1157,10 @@
           "tokens": [
             {
               "t": "text",
-              "v": "The facilitator described the remaining exercise: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
+              "v": "The facilitator described the remaining experiment: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
             }
           ],
-          "text": "The facilitator described the remaining exercise: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
+          "text": "The facilitator described the remaining experiment: complete the operations, receive the end item through the receipt warehousing order, and report the production order complete. The meeting ended before those steps were performed."
         },
         {
           "kind": "prose",
@@ -1319,10 +1319,10 @@
           "tokens": [
             {
               "t": "text",
-              "v": "Continue the production-order exercise after the meeting rather than treating receipt and completion as performed."
+              "v": "Continue the production-order experiment after the meeting rather than treating receipt and completion as performed."
             }
           ],
-          "text": "Continue the production-order exercise after the meeting rather than treating receipt and completion as performed."
+          "text": "Continue the production-order experiment after the meeting rather than treating receipt and completion as performed."
         }
       ]
     }
@@ -1353,10 +1353,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Complete the operations, finished-goods receipt, and order-completion portion of the production exercise"
+                  "v": "Complete the operations, finished-goods receipt, and order-completion portion of the production experiment"
                 }
               ],
-              "text": "Complete the operations, finished-goods receipt, and order-completion portion of the production exercise"
+              "text": "Complete the operations, finished-goods receipt, and order-completion portion of the production experiment"
             },
             {
               "tokens": [
@@ -1648,10 +1648,10 @@
           "tokens": [
             {
               "t": "text",
-              "v": "Keep the manual production-order exercise distinct from the later planning exercise."
+              "v": "Keep the manual production-order experiment distinct from the later planning experiment."
             }
           ],
-          "text": "Keep the manual production-order exercise distinct from the later planning exercise."
+          "text": "Keep the manual production-order experiment distinct from the later planning experiment."
         },
         {
           "tokens": [

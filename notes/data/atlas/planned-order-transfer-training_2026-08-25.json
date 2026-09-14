@@ -1,5 +1,5 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
   "kind": "review",
   "id": "planned-order-transfer-training_2026-08-25",
@@ -1905,7 +1905,7 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "The trainee's next exercise is order-to-cash driven from planning"
+              "v": "The trainee's next experiment is order-to-cash driven from planning"
             },
             {
               "t": "text",
@@ -1921,7 +1921,7 @@
               "v": ", with the demand deliberately exceeding on-hand so that both purchase and production are triggered, and with everything driven from the Item Order Plan."
             }
           ],
-          "text": "The trainee's next exercise is order-to-cash driven from planning — , with the demand deliberately exceeding on-hand so that both purchase and production are triggered, and with everything driven from the Item Order Plan."
+          "text": "The trainee's next experiment is order-to-cash driven from planning — , with the demand deliberately exceeding on-hand so that both purchase and production are triggered, and with everything driven from the Item Order Plan."
         },
         {
           "tokens": [

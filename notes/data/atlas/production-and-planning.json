@@ -1,7 +1,7 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
-  "kind": "exercise",
+  "kind": "experiment",
   "id": "production-and-planning",
   "title": "Homework — understand a production result",
   "updated": "2026-09-06",

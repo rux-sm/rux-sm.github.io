@@ -15,12 +15,12 @@
 
    THE PAGE WITHOUT THIS SCRIPT IS STILL THE WHOLE WALKTHROUGH. Every phase, table
    and step reads as it does now; the fields are simply inert. That is the
-   same contract js/exercise.js holds, and the reason a walkthrough is generated as
+   same contract js/experiment.js holds, and the reason a walkthrough is generated as
    a complete document rather than assembled here.
 
    IT IS DELIBERATELY NOT THE WORKSHEET. A walkthrough is read while doing the
    thing, so there is no progress count, no pass condition and nothing to
-   reveal -- those belong to an exercise, where predict-then-observe is the
+   reveal -- those belong to an experiment, where predict-then-observe is the
    point. Here a reader is recording what they saw.
    ========================================================================== */
 (() => {

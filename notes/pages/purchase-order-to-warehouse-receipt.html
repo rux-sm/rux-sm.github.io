@@ -199,16 +199,16 @@
 
 /* A WORKSHEET ANSWER CELL NEEDS VISIBLE SPACE even before it has an answer.
    Empty table cells otherwise collapse to one text line and the published
-   exercise looks complete while leaving nowhere to write. Scoped to exercise
+   experiment looks complete while leaving nowhere to write. Scoped to experiment
    pages so ordinary walkthrough and review tables remain dense. */
-.notes-exercise .rux--data-table td:empty::after {
+.notes-experiment .rux--data-table td:empty::after {
   content: '';
   display: block;
   min-block-size: 3rem;
 }
 
 .notes-revision { color: var(--rux-text-secondary); margin: 0; }
-/* THE EXERCISE PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
+/* THE EXPERIMENT PAGE IS A WORKSHEET. Two columns on a wide viewport -- the
    work, and a rail that stays put holding progress, notes and the export --
    one column otherwise. Local layout classes, because Carbon's css-grid is
    already the page's outer frame and a nested one would re-derive the shell's
@@ -1162,12 +1162,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
       </li>
 
-      <!-- EXERCISES COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
+      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
            get their own group because a learner opens one to predict, record
            and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Practice</span>
+          <span class="rux--side-nav__submenu-title">Experiments</span>
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
         <ul class="rux--side-nav__menu" hidden>
@@ -1523,7 +1523,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas e705aa7 · contract 9</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 475b8bf · contract 10</p>
       </div>
     </div>
   </div>

@@ -1,22 +1,22 @@
 # Notes
 
-**Infor LN walkthroughs, meeting reviews and practice exercises**, at
+**Infor LN walkthroughs, meeting reviews and practice experiments**, at
 [rux-sm.github.io/notes](https://rux-sm.github.io/notes/).
 Notes renders; it does not author. The repository's `AGENTS.md` is the policy,
 and its `README.md` covers setup, the commands and how a push deploys.
 
 ## What it publishes
 
-Walkthroughs, meeting reviews with their summaries, and practice exercises,
+Walkthroughs, meeting reviews with their summaries, and practice experiments,
 each a generated page under `pages/`, with `index.html` as the front. Every
 page ends with the atlas revision it was built from. A draft walkthrough is labelled
 on the page, never withheld.
 
-An exercise page is a worksheet. The answer spaces atlas marked are text
+An experiment page is a worksheet. The answer spaces atlas marked are text
 areas, a box column is a tick per row, the pass condition is a box, and a
 question with a key can reveal it once something has been written. What a
 learner types stays in their own browser, and the rail exports it as Markdown.
-`js/exercise.js` is the whole of that.
+`js/experiment.js` is the whole of that.
 
 ## How pages are made
 

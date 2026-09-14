@@ -1,5 +1,5 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
   "id": "create-basic-test-items-and-defaults",
   "title": "Create test items",
@@ -7285,10 +7285,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Follow the current item-code segmentation; do not modify segmentation for the exercise"
+                  "v": "Follow the current item-code segmentation; do not modify segmentation for the experiment"
                 }
               ],
-              "text": "Follow the current item-code segmentation; do not modify segmentation for the exercise"
+              "text": "Follow the current item-code segmentation; do not modify segmentation for the experiment"
             }
           ]
         },

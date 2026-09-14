@@ -1,5 +1,5 @@
 {
-  "contract": 9,
+  "contract": 10,
   "tier": "export",
   "kind": "summary",
   "id": "planned-order-transfer-training_2026-08-25_summary",
@@ -627,7 +627,7 @@
           "tokens": [
             {
               "t": "text",
-              "v": "The next exercise is a full "
+              "v": "The next experiment is a full "
             },
             {
               "t": "strong",
@@ -638,7 +638,7 @@
               "v": ": create a sales order for more than you have on hand, run MRP, transfer what it suggests, buy the materials, produce the item, and ship it — working from the Item Order Plan throughout."
             }
           ],
-          "text": "The next exercise is a full order-to-cash cycle driven from planning: create a sales order for more than you have on hand, run MRP, transfer what it suggests, buy the materials, produce the item, and ship it — working from the Item Order Plan throughout."
+          "text": "The next experiment is a full order-to-cash cycle driven from planning: create a sales order for more than you have on hand, run MRP, transfer what it suggests, buy the materials, produce the item, and ship it — working from the Item Order Plan throughout."
         },
         {
           "tokens": [

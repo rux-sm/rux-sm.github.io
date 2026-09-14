@@ -450,6 +450,9 @@
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
     ]));
+    // THE FLEET IS NEVER EMPTY, so an empty one is a read the database refused,
+    // which is what an ended log-in looks like, not a week with no buses.
+    if (!buses.length) throw new Error('The schedule came back empty. Log in again.');
     return { buses, trips, drivers, contacts, oos, timeOff, weekStart, weekEnd };
   }
 
@@ -5733,8 +5736,76 @@
   document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
-  // /account.js opens the session asynchronously and these tables do not need
-  // one, so the first paint does not wait for it; the client is whichever
-  // exists when this runs.
-  show();
+  /* THE SCHEDULE NEEDS A STAFF LOG-IN. The board and its search wait until
+     /account.js reports a staff session; no session, or an account with no
+     staff profile, sees the log-in form in their place. A log-in that ends
+     while the page is open brings the form back. A local preview without
+     ?cloud has no account layer, so the form says so rather than offering a
+     log-in that cannot work. */
+  const loginEl = document.getElementById('scheduler-login');
+  const loginForm = document.getElementById('scheduler-login-form');
+  const loginUser = document.getElementById('scheduler-login-username');
+  const loginPassword = document.getElementById('scheduler-login-password');
+  const loginSubmit = document.getElementById('scheduler-login-submit');
+  const loginError = document.getElementById('scheduler-login-error');
+  const loginErrorText = document.getElementById('scheduler-login-error-text');
+  const appEl = document.getElementById('scheduler-app');
+  const searchEl = document.getElementById('scheduler-search')?.closest('.scheduler-header-search');
+  let started = false;
+
+  const loginSay = text => {
+    if (!loginError) return;
+    loginErrorText.textContent = text || '';
+    loginError.hidden = !text;
+  };
+  const showLogin = text => {
+    if (loginEl) loginEl.hidden = false;
+    if (appEl) appEl.hidden = true;
+    if (searchEl) searchEl.hidden = true;
+    loginSay(text);
+    loginUser?.focus();
+  };
+  const startBoard = () => {
+    if (loginEl) loginEl.hidden = true;
+    if (appEl) appEl.hidden = false;
+    if (searchEl) searchEl.hidden = false;
+    loginSay('');
+    started = true;
+    show();
+  };
+
+  loginForm?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const account = window.Rux?.account;
+    if (!account?.signInStaff) return;
+    loginSubmit.disabled = true;
+    loginSay('');
+    try {
+      const problem = await account.signInStaff(
+        loginUser.value, loginPassword.value, document.getElementById('scheduler-login-captcha'));
+      loginPassword.value = '';
+      if (problem) loginSay(problem);
+      else startBoard();
+    } catch {
+      loginSay("Can't log in right now. Try again.");
+    } finally {
+      loginSubmit.disabled = false;
+    }
+  });
+
+  (async () => {
+    const account = window.Rux?.account;
+    if (!account?.staffProfile) {
+      showLogin('This preview has no log-in. Add ?cloud to the address to log in.');
+      if (loginSubmit) loginSubmit.disabled = true;
+      return;
+    }
+    let staff = null;
+    try { staff = await account.staffProfile(); } catch { /* the form shows */ }
+    if (staff) startBoard();
+    else showLogin();
+    account.onAuthChange(event => {
+      if (event === 'SIGNED_OUT' && started) showLogin('You were logged out. Log in again.');
+    });
+  })();
 })();

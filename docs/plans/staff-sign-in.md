@@ -74,8 +74,14 @@ function, including the ones that create share links.
 - **rux chooses the passwords, and one shared password is acceptable:** the
   aim is a wall between the public and staff, not between staff. It must meet
   the project's minimum password length.
+- **The scheduler's log-in is live:** `account.js` holds a staff session only,
+  hides the switcher for a team account and sends it from Home to the
+  scheduler, and `scheduler/data.js` shows the log-in form until a staff
+  account is in, reading an empty fleet as an ended log-in.
 - **Later plans:** per-person chat rules, trip history naming the actor from
-  the session, private storage, private realtime channels.
+  the session, private storage, private realtime channels, and reporting a
+  scheduler write the database refused as not saved, which only an ended
+  log-in could cause once the form guards the board.
 
 ## Questions
 
@@ -92,14 +98,6 @@ None open.
       it without discarding unsaved work; `js/core/profile.js` keeps its three
       exports; `js/pages/trip-intake.js` requires the same sign-in; forced
       refresh after the deploy.
-- [ ] Scheduler login screen: `account.js` never signs in anonymously, drops
-      the GitHub and Google buttons, syncs a theme only for a staff session,
-      and adds `signInStaff` with a Turnstile token, `staffProfile` and
-      `onAuthChange`; on every site page it loads, a staff session whose
-      profile lacks `sees_all_apps` hides the app switcher, and Home sends it
-      to `/scheduler/`; `scheduler/data.js` shows a full login screen for no
-      session, an anonymous one or a non-staff account, reads an empty fleet
-      as a lost sign-in, and reports a write that returns no row as not saved.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
       dashboard once both login screens are live; a migration deletes the
       anonymous users, whose theme rows go with them.

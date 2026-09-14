@@ -1,54 +1,33 @@
 /* ==========================================================================
    Rux Apps — ACCOUNT
    --------------------------------------------------------------------------
-   Loads after Design's js/profile.js, which must run first and
-   which this depends on for window.Rux.profile. Opens an anonymous Supabase
-   session on first visit, reads and writes the cloud half of the profile
-   js/profile.js already keeps in this browser, and wires the sign-in button
-   js/profile.js reveals to identity linking -- GitHub since 2026-09-03,
-   Google alongside it since 2026-09-06, whose button this file adds.
+   Loads after Design's js/profile.js, which must run first and which this
+   depends on for window.Rux.profile. Holds the site's one Supabase client
+   and the staff log-in. A staff account is a Supabase user linked to a row
+   in public.profiles, which my_staff_profile() returns. There is no
+   anonymous session and no GitHub or Google log-in: a visitor without a
+   staff session uses these pages with the profile this browser keeps.
 
-   THE SAME CONTRACT AS switcher.js: a fetch that fails — no network, the
-   backend paused, Turnstile unavailable — leaves the local profile standing
-   and does nothing else. Nothing here blocks first paint or the local
-   profile from working; this only adds a cloud layer on top when it can.
+   WITH A STAFF SESSION the name and theme sync to platform.profiles, cloud
+   first on load and local edits pushed up after, debounced. A team account,
+   one whose profile lacks sees_all_apps, is for the scheduling apps only:
+   the app switcher is hidden for it, and Home sends it to the scheduler.
 
-   CLOUD WINS ON LOAD, FIELD BY FIELD: a name or theme already in
-   platform.profiles overwrites what this browser has stored, once, right
-   after the session opens. A field the row does not have yet (a brand-new
-   anonymous session) leaves the local value alone rather than blanking it.
-   After that, local edits push up through window.Rux.profile.onChange,
-   debounced, so typing does not spam the API.
-
-   THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS — both are
-   meant to sit in client code the browser can read; the paired secret keys
-   stay in the Supabase project's settings, never here.
-
-   NOT DONE: an interrupted anonymous sign-in (Turnstile times out, the
-   network drops) is not retried until the next page load. A Turnstile
-   challenge, on the rare visit that needs an interactive one, renders
-   inside the account panel below the sign-in button — untested against a
-   real challenge, since Managed/interaction-only mode did not trigger one
-   in verification.
+   THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS. Both are
+   meant to sit in client code; the paired secret keys stay in the Supabase
+   project's settings. Captcha protection is on for the project, so every
+   log-in carries a Turnstile token.
 
    window.Rux.account IS THE ONE CLIENT for anything that needs Supabase
-   auth beyond the panel — /account/'s own script uses it rather than
-   creating a second createClient(), which supabase-js warns about (two
-   GoTrueClient instances on one storage key is undefined behaviour, seen
-   directly while testing this from the console). getSession() lets a page
-   read identity state (is this anonymous, is GitHub linked) without
-   duplicating the client; signOut() and connectGithub() are the same calls
-   this file already makes. */
+   beyond the panel. A second createClient() on the same storage key is
+   undefined behaviour in supabase-js. */
 (async () => {
   'use strict';
   const profile = window.Rux?.profile;
   if (!profile || !window.supabase) return;
 
-  // A LOCAL PREVIEW NEVER TOUCHES THE CLOUD. Loading this page signs in
-  // anonymously and writes a profile row, so every `npm run serve` visit
-  // would create a production auth user. On localhost the local profile
-  // stands alone, as it does offline; `?cloud` on the URL opts back in for
-  // the one time the sign-in itself is what is being tested. Since 2026-09-12.
+  // A LOCAL PREVIEW NEVER TOUCHES THE CLOUD, so a `npm run serve` visit does
+  // not reach production auth; `?cloud` on the URL opts back in.
   const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   if (local && !new URLSearchParams(location.search).has('cloud')) {
     console.info('account: local preview, cloud sync off (add ?cloud to the URL to enable)');
@@ -58,115 +37,122 @@
   const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
   const TURNSTILE_SITE_KEY = '0x4AAAAAAEmfPE09UcbC-aRI';
+  // The same rule as rux-ui's js/core/staff-username.js: a username is that
+  // name on the reserved staff domain, which nobody can own; a full email
+  // address is used as typed.
+  const STAFF_EMAIL_DOMAIN = 'staff.invalid';
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const profiles = () => sb.schema('platform').from('profiles');
 
-  // TWO PROVIDERS SINCE 2026-09-06, and the provider is REMEMBERED ACROSS THE
-  // REDIRECT. linkIdentity leaves the page before it knows whether linking
-  // will succeed, so the recovery below runs on a fresh load with nothing in
-  // memory; with one provider it could assume GitHub, with two it cannot, and
-  // recovering a Google conflict by signing in with GitHub would land the
-  // visitor in the wrong account. sessionStorage is the right scope: this tab,
-  // this trip through the redirect, gone afterwards.
-  const ATTEMPT = 'rux:auth-provider';
-  const remember = provider => { try { sessionStorage.setItem(ATTEMPT, provider); } catch { /* private mode: recovery just falls back */ } };
-  const recall = () => { try { const v = sessionStorage.getItem(ATTEMPT); sessionStorage.removeItem(ATTEMPT); return v; } catch { return null; } };
-  const connect = provider => {
-    remember(provider);
-    return sb.auth.linkIdentity({ provider, options: { redirectTo: window.location.origin } });
-  };
-  const connectGithub = () => connect('github');
-  const connectGoogle = () => connect('google');
-
-  window.Rux.account = {
-    // THE CLIENT ITSELF, exposed 2026-09-06 for the app that needs to READ
-    // as well as authenticate -- the scheduler's grid. The header comment
-    // already called this the one client; an app making a second one would
-    // put two GoTrueClient instances on one storage key, which supabase-js
-    // warns about and which is undefined behaviour. An app served without
-    // this file (a module opened alone, offline) makes its own read-only
-    // client instead and says so; nothing here changes for the panel.
-    client: sb,
-    getSession: () => sb.auth.getSession().then(r => r.data.session),
-    signOut: () => sb.auth.signOut(),
-    connect,
-    connectGithub,
-    connectGoogle,
+  const usernameToEmail = input => {
+    const value = String(input ?? '').trim().toLowerCase();
+    if (!value) return null;
+    if (value.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? value : null;
+    return /^[a-z0-9._-]{1,40}$/.test(value) ? `${value}@${STAFF_EMAIL_DOMAIN}` : null;
   };
 
-  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in Design's
-  // markup: the switcher panel's own contents are filled by JS too
-  // (switcher.js), so a JS-added link matches how this panel already works
-  // rather than growing the shared template for one hub-specific route.
-  const panel = document.getElementById('rux-account-panel');
-  const signInBtn = panel?.querySelector('#rux-profile-sign-in');
-  if (signInBtn) {
-    const link = document.createElement('a');
-    link.className = 'rux--link rux--link--inline';
-    link.href = '/account/';
-    link.textContent = 'Account settings';
-    signInBtn.insertAdjacentElement('afterend', link);
-  }
-
-  // A GitHub redirect can come back with an error instead of a session:
-  // linkIdentity redirects to GitHub before it knows whether linking will
-  // succeed, so a conflict — this identity already belongs to a different,
-  // permanent account, not this visit's anonymous one — only surfaces here,
-  // in the URL, never through the linkIdentity() promise itself. Recover by
-  // signing in directly, which authenticates that existing account instead.
-  const authError = new URLSearchParams(location.hash.slice(1));
-  if (authError.has('error')) {
-    history.replaceState(null, '', location.pathname + location.search);
-    const attempted = recall();
-    if (authError.get('error_code') === 'identity_already_exists' && attempted) {
-      try { await sb.auth.signInWithOAuth({ provider: attempted, options: { redirectTo: window.location.origin } }); return; }
-      catch { /* falls through to the anonymous flow below */ }
-    }
-  }
-
-  // Turnstile loads async and may not be ready yet; poll briefly rather than
-  // block first paint on it. No Turnstile after ~10s: skip anonymous sign-in
-  // for this visit, same as any other unreachable dependency.
-  const getCaptchaToken = () => new Promise(resolve => {
+  // One Turnstile token for one log-in attempt, rendered into `host`. A token
+  // works once, so each attempt replaces the widget before asking again.
+  let widget = null;
+  const captchaToken = host => new Promise(resolve => {
     let tries = 0;
     const attempt = () => {
-      if (window.turnstile) return render();
-      if (++tries > 40) return resolve(null);
-      setTimeout(attempt, 250);
-    };
-    const render = () => {
-      const panel = document.getElementById('rux-account-panel');
-      const host = document.createElement('div');
-      host.id = 'rux-turnstile';
-      (panel ?? document.body).appendChild(host);
+      if (!window.turnstile) {
+        if (++tries > 50) return resolve(null);
+        return setTimeout(attempt, 200);
+      }
       try {
-        window.turnstile.render(host, {
+        if (widget !== null) window.turnstile.remove(widget);
+        widget = window.turnstile.render(host, {
           sitekey: TURNSTILE_SITE_KEY,
           appearance: 'interaction-only',
           callback: token => resolve(token),
           'error-callback': () => resolve(null),
+          'expired-callback': () => resolve(null),
         });
       } catch { resolve(null); }
     };
     attempt();
   });
 
-  const ensureSession = async () => {
+  // The signed-in staff profile, or null for no session, an anonymous one, or
+  // an account with no linked profile.
+  const staffProfile = async () => {
     const { data: { session } } = await sb.auth.getSession();
-    if (session) return session;
-    const captchaToken = await getCaptchaToken();
-    if (!captchaToken) return null;
-    const { data, error } = await sb.auth.signInAnonymously({ options: { captchaToken } });
-    return error ? null : data.session;
+    if (!session || session.user.is_anonymous) return null;
+    const { data, error } = await sb.rpc('my_staff_profile');
+    if (error) throw new Error(error.message);
+    return data ?? null;
   };
 
+  // Resolves null once a staff account is signed in, or a sentence to show.
+  const signInStaff = async (username, password, captchaHost) => {
+    const email = usernameToEmail(username);
+    if (!email) return 'Type your username.';
+    if (!password) return 'Type your password.';
+    const token = await captchaToken(captchaHost);
+    if (!token) return "The security check didn't finish. Try again.";
+    const { error } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken: token } });
+    if (error) {
+      return /invalid login/i.test(error.message)
+        ? "That username and password don't match."
+        : "Can't log in right now. Try again.";
+    }
+    const staff = await staffProfile().catch(() => null);
+    if (!staff) {
+      await sb.auth.signOut().catch(() => {});
+      return "This account isn't set up for this app.";
+    }
+    return null;
+  };
+
+  window.Rux.account = {
+    client: sb,
+    getSession: () => sb.auth.getSession().then(r => r.data.session),
+    signOut: () => sb.auth.signOut(),
+    signInStaff,
+    staffProfile,
+    onAuthChange: callback => sb.auth.onAuthStateChange((event, session) => callback(event, session)),
+  };
+
+  // THE ONE DOOR INTO THE FULLER PAGE, added here rather than in Design's
+  // markup, because the panel's contents are the account layer's business.
+  const panel = document.getElementById('rux-account-panel');
+  const panelButton = panel?.querySelector('#rux-profile-sign-in');
+  if (panelButton) {
+    const link = document.createElement('a');
+    link.className = 'rux--link rux--link--inline';
+    link.href = '/account/';
+    link.textContent = 'Account settings';
+    panelButton.insertAdjacentElement('afterend', link);
+  }
+
   let session;
-  try { session = await ensureSession(); } catch { return; }
+  try { ({ data: { session } } = await sb.auth.getSession()); } catch { return; }
   if (!session) return;
+  // AN ANONYMOUS SESSION LEFT FROM BEFORE LOG-IN WAS STAFF-ONLY ENDS HERE, so
+  // nothing syncs to it; this browser keeps its theme locally.
+  if (session.user.is_anonymous) {
+    await sb.auth.signOut().catch(() => {});
+    return;
+  }
+
+  let staff = null;
+  try { staff = await staffProfile(); } catch { return; }
+  if (!staff) return;
+
+  // A TEAM ACCOUNT STAYS IN THE SCHEDULING APPS.
+  if (!staff.sees_all_apps) {
+    if (location.pathname === '/' || location.pathname === '/index.html') {
+      location.replace('/scheduler/');
+      return;
+    }
+    document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
+    document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
+  }
 
   const uid = session.user.id;
-
   try {
     const { data: row } = await profiles().select('display_name, theme').eq('id', uid).maybeSingle();
     const patch = {};
@@ -174,10 +160,10 @@
     if (row?.theme != null) patch.theme = row.theme;
     if (Object.keys(patch).length) profile.set(patch);
     if (!row) {
-      const local = profile.get();
-      await profiles().upsert({ id: uid, display_name: local.name ?? null, theme: local.theme ?? null });
+      const localProfile = profile.get();
+      await profiles().upsert({ id: uid, display_name: localProfile.name ?? null, theme: localProfile.theme ?? null });
     }
-  } catch { /* platform unreachable: local profile stands */ }
+  } catch { /* platform unreachable: the local profile stands */ }
 
   let timer;
   profile.onChange(p => {
@@ -188,35 +174,11 @@
     }, 500);
   });
 
-  // The one signal this panel can give for "already signed in", short of an
-  // avatar or a name/email swap neither Carbon nor this panel's markup
-  // offers: a permanently-linked session never reveals the Sign in button,
-  // since profile.js only reveals it when something registers a handler.
-  if (session.user.is_anonymous !== false) {
-    profile.onSignIn(async () => {
-      try { await connectGithub(); }
-      catch { /* linking failed or was refused: local profile stands */ }
-    });
-    // THE SECOND PROVIDER'S BUTTON IS BUILT HERE, not in Design's markup, for
-    // the reason the Account settings link above gives: this panel is already
-    // filled by JS, and one shared template growing a button per provider is
-    // the wrong shape. Design ships ONE #rux-profile-sign-in and profile.js
-    // reveals it; a second door is the cloud layer's business, so it lives
-    // with the client that knows which providers the project has. The
-    // shipped button is relabelled at the same time, because "Sign in" beside
-    // "Sign in with Google" does not say what it does.
-    if (signInBtn) {
-      signInBtn.textContent = 'Sign in with GitHub';
-      const google = document.createElement('button');
-      google.type = 'button';
-      google.className = signInBtn.className;
-      google.id = 'rux-profile-sign-in-google';
-      google.textContent = 'Sign in with Google';
-      google.addEventListener('click', async () => {
-        try { await connectGoogle(); }
-        catch { /* linking failed or was refused: local profile stands */ }
-      });
-      signInBtn.insertAdjacentElement('beforebegin', google);
-    }
-  }
+  // The panel's one button becomes Log out for a staff session. profile.js
+  // reveals it only when something registers a handler.
+  profile.onSignIn(async () => {
+    await sb.auth.signOut().catch(() => {});
+    location.reload();
+  });
+  if (panelButton) panelButton.textContent = 'Log out';
 })();

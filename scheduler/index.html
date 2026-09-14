@@ -491,7 +491,56 @@
        left 200px dead each side while the board scrolled for want of room.
        With the trip panel and the driver grid both open the board had 763px
        against the 995 seven columns need; full width gives it 1179. -->
-  <div class="rux--css-grid rux--css-grid--full-width">
+  <!-- LOG IN · Carbon's login pattern (design/carbon-website patterns/login-pattern):
+       a title that says "Log in", the ID and password fields, and one
+       primary button. The ID is a username, or a full email for an account
+       that has one. No "forgot password" and no "create account": staff
+       accounts and resets are made in the Supabase dashboard. data.js shows
+       this form and hides the board until a staff account is logged in. The
+       password field has no visibility toggle, because Design has no module
+       that makes one work. -->
+  <section id="scheduler-login" aria-labelledby="scheduler-login-title" hidden>
+    <div class="rux--css-grid">
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-6 rux--lg:col-span-6">
+      <form id="scheduler-login-form" novalidate>
+        <div class="rux--stack-vertical rux--stack-scale-6">
+          <h2 class="rux--type-productive-heading-05" id="scheduler-login-title">Log in</h2>
+          <div class="rux--form-item rux--text-input-wrapper">
+            <label class="rux--label" for="scheduler-login-username">Username</label>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper">
+                <input id="scheduler-login-username" class="rux--text-input" type="text" autocomplete="username" autocapitalize="none" spellcheck="false">
+              </div>
+            </div>
+          </div>
+          <div class="rux--form-item rux--text-input-wrapper rux--password-input-wrapper">
+            <label class="rux--label" for="scheduler-login-password">Password</label>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper">
+                <input id="scheduler-login-password" class="rux--text-input rux--password-input" type="password" autocomplete="current-password">
+              </div>
+            </div>
+          </div>
+          <div id="scheduler-login-captcha"></div>
+          <!-- A plain wrapper carries `hidden`, because the notification's own
+               display rule beats the browser's [hidden]. -->
+          <div id="scheduler-login-error" role="alert" hidden>
+            <div class="rux--inline-notification rux--inline-notification--error">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__subtitle" id="scheduler-login-error-text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div><button type="submit" class="rux--btn rux--btn--primary" id="scheduler-login-submit">Log in</button></div>
+        </div>
+      </form>
+    </div>
+    </div>
+  </section>
+  <div class="rux--css-grid rux--css-grid--full-width scheduler-app" id="scheduler-app">
     <div class="rux--css-grid-column rux--col-span-100">
       <!-- An app-owned wrapper so the page can make room for the side panel
            without a rule on a rux-- class. `--with-panel` is set by

@@ -59,6 +59,14 @@
    already asserts. */
 .rux--side-panel .rux--tab-content { padding-inline: 0; }
 
+/* A TAB PANEL DRAWS NO RING WHEN A CLICK FOCUSES IT. Carbon outlines
+   `.rux--tab-content:focus`, and a panel carries `tabindex="0"`, so a click on
+   any empty spot inside it boxed the whole panel in the focus colour. Only
+   `:not(:focus-visible)` is dropped: a panel reached with the keyboard keeps
+   its ring, since nothing else would show where focus is. At Carbon's
+   specificity plus the pseudo-classes, so it wins without reordering. */
+.rux--tab-content:focus:not(:focus-visible) { outline: none; }
+
 /* NOTES FILLS ITS WRAPPER. `.rux--text-area__wrapper` is `display: flex` at
    `inline-size: 100%`, but `.rux--text-area` carries no width of its own -- so
    as a flex item at the default `0 1 auto` it takes its basis from the HTML

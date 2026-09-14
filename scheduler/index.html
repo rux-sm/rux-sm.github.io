@@ -499,7 +499,10 @@
        this form and hides the board until a staff account is logged in. The
        password field has no visibility toggle, because Design has no module
        that makes one work. -->
-  <section id="scheduler-login" aria-labelledby="scheduler-login-title" hidden>
+  <!-- A div, not a section: Carbon's reset gives section `display: block`,
+       which beats the browser's [hidden] and left the form on screen above
+       the board after logging in. -->
+  <div id="scheduler-login" role="region" aria-labelledby="scheduler-login-title" hidden>
     <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-6 rux--lg:col-span-6">
       <form id="scheduler-login-form" novalidate>
@@ -539,7 +542,7 @@
       </form>
     </div>
     </div>
-  </section>
+  </div>
   <div class="rux--css-grid rux--css-grid--full-width scheduler-app" id="scheduler-app">
     <div class="rux--css-grid-column rux--col-span-100">
       <!-- An app-owned wrapper so the page can make room for the side panel

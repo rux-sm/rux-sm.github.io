@@ -2102,6 +2102,16 @@ button.scheduler-row-head__num {
   .scheduler-aside .sch--avail {
     --scheduler-avail-h: var(--rux-layout-size-height-sm);
     --scheduler-day-track: var(--rux-layout-size-height-sm);
+    /* 16px either side. The grid is the screen's width, and a phone draws its
+       scroll bar over the right edge while scrolling, which hid the last
+       day's squares. */
+    padding-inline: var(--rux-spacing-05);
+  }
+  /* The names and the Driver heading start at that inset, lined up with the
+     panel title above them. */
+  .scheduler-aside .scheduler-avail__name,
+  .scheduler-aside .scheduler-avail__day--head {
+    padding-inline-start: 0;
   }
 
   /* THE WEEK LABEL TAKES ITS OWN ROW, and this is a deliberate exception to

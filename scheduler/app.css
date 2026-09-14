@@ -2069,10 +2069,32 @@ button.scheduler-row-head__num {
     flex: 0 0 0;
     inline-size: 100%;
     order: 0;
-    background: var(--rux-layer);
-    box-shadow: 0 0.125rem 0.25rem var(--rux-overlay);
+    /* A card on the page's background, 16px in from every edge, so the row
+       lines end at the card's edges. The overlay scrolls rather than the grid,
+       which puts the phone's scroll bar in the gutter at the screen's edge
+       instead of over the last day's squares. Block rather than flex: with the
+       overlay scrolling, the pane no longer fills a remainder. */
+    display: block;
+    padding: 0 var(--rux-spacing-05) var(--rux-spacing-05);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--rux-background);
   }
-  .scheduler-aside .sch--avail { max-block-size: none; }
+  /* The head sticks at the top and the day row under it, 48px down, both over
+     the grid's own layers, the highest of which is the corner cell at 4.
+     The gap above the card is the head's margin and scrolls away with the
+     list. As the overlay's padding it held the head 16px down, and the rows
+     showed through that strip as they scrolled past. */
+  .scheduler-aside__head {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 5;
+    margin-block-start: var(--rux-spacing-05);
+  }
+  .scheduler-aside .scheduler-avail__days > .scheduler-avail__day {
+    inset-block-start: var(--rux-layout-size-height-lg);
+  }
+  .scheduler-aside .sch--avail { max-block-size: none; overflow: visible; }
   /* THE HEAD WAS RAISED HERE AND NO LONGER NEEDS TO BE: `.scheduler-aside__head` is
      `size-lg` at every width since 2026-09-11, so this breakpoint has nothing
      left to say about it. Removed rather than left restating the base rule. */
@@ -2102,14 +2124,9 @@ button.scheduler-row-head__num {
   .scheduler-aside .sch--avail {
     --scheduler-avail-h: var(--rux-layout-size-height-sm);
     --scheduler-day-track: var(--rux-layout-size-height-sm);
-    /* 16px either side. The grid is the screen's width, and a phone draws its
-       scroll bar over the right edge while scrolling, which hid the last
-       day's squares. */
-    padding-inline: var(--rux-spacing-05);
   }
-  /* The names start 16px inside the grid, level with the Driver heading, the
-     way Carbon's table cells pad their text. The grid's own edge is what lines
-     up with the panel title above. */
+  /* The names start 16px inside the card, level with the Driver heading and
+     the panel title, the way Carbon's table cells pad their text. */
   .scheduler-aside .scheduler-avail__name {
     padding-inline-start: var(--rux-spacing-05);
   }

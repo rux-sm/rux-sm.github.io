@@ -272,6 +272,16 @@
   color: var(--rux-text-primary);
 }
 
+/* ADD ANOTHER CONTACT SPANS THE EDITOR'S COLUMN, which is Carbon's rule for a
+   ghost button in a side panel 480px wide or less: full width reads as
+   intentional, where a ghost button's own width leaves its label hanging 16px
+   in from the labels above. Carbon caps every button at 20rem, so the cap goes
+   too. Scoped to the one button, like the roster's close above. */
+#scheduler-f-dadd {
+  inline-size: 100%;
+  max-inline-size: none;
+}
+
 /* 40px SINCE 2026-09-10, the third of the three region heads that moved
    together -- app.css's `.scheduler-corner` carries the reasoning and the two
    that stayed behind. Worth saying here what this number is NOT: Carbon's

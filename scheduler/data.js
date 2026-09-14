@@ -3184,11 +3184,9 @@
         syncAdd();
       });
       syncAdd();
-      /* THE BUTTON IS THE ONE THING HERE THAT DOES NOT BLEED. It goes on
-         `form` rather than into the run, so it keeps the stack's own 16px
-         above it and stays inset like every other control that is not a
-         field. A ghost button flush against the panel edge, directly under
-         a filled field, would read as part of the field. */
+      /* THE BUTTON GOES ON `form` rather than into the run, so it keeps the
+         stack's own 16px above it. It spans the column like the fields, and
+         overrides.css says why. */
       form.appendChild(addBtn);
     }
 

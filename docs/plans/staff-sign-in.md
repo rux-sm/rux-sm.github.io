@@ -22,8 +22,9 @@ function, including the ones that create share links.
   Claude never types or handles a password.
 - **Seven accounts**, one for each current rux-ui profile, the wall display
   included, each linked to its `public.profiles` row so names, colours and
-  photos stay. rux's app login moves to rux's real email, and rux moves the
-  Supabase dashboard login from GitHub to that email.
+  photos stay. rux's app login moves to rux's real email. The Supabase
+  dashboard login is already an email account, and it gets two-factor
+  sign-in.
 - **Each scheduling app has its own full login screen.** Staff receive a link
   to each app separately and sign in to each one with the same username and
   password; signing in to one does not sign in to the other.
@@ -88,9 +89,8 @@ None open.
       read on `profiles` with update of the own row only; staff versions of
       the game policies; the four tables with row level security off get it
       on, with `staff_all` and a temporary `transition_open` policy.
-- [ ] rux changes the `sergio` app login to rux's real email, deleting the old
-      GitHub app account first if it holds that address, and moves the
-      dashboard login to it.
+- [ ] rux changes the `sergio` app login to rux's real email and turns on
+      two-factor sign-in for the dashboard login.
 - [ ] rux-ui login screen: `js/core/staff-username.js` with a test,
       `js/data/auth-db.js`, and a full login screen with a Turnstile token
       shown before the app loads when there is no staff session;

@@ -200,29 +200,39 @@
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
 
-        <div class="rux--stack-vertical rux--stack-scale-3">
-          <div class="scheduler-maintenance-title">
-            <div class="rux--stack-vertical rux--stack-scale-2">
-              <h1 class="rux--type-productive-heading-04">Maintenance schedule</h1>
-              <p class="rux--type-body-01" id="scheduler-share-range">Loading the schedule…</p>
+        <div class="scheduler-maintenance-title">
+          <div class="rux--stack-vertical rux--stack-scale-2">
+            <h1 class="rux--type-productive-heading-04">Maintenance schedule</h1>
+            <p class="rux--type-body-01" id="scheduler-share-range">Loading the schedule…</p>
+          </div>
+          <!-- The public link, filled in by share/maintenance.js once it has
+               the token, in Carbon's single-line code snippet. Under it, a row:
+               what just happened to the link, then Replace link, which opens
+               the confirmation below. -->
+          <div class="scheduler-maintenance-link" id="scheduler-maintenance-link" hidden>
+            <div class="rux--snippet rux--snippet--single">
+              <div class="rux--snippet-container"><pre><code id="scheduler-maintenance-link-url"></code></pre></div>
+              <!-- The copy button inside Carbon's icon tooltip: the snippet's
+                   own rule places that container over its right edge, and the
+                   tooltip carries the Copied! feedback (design/js/copy-button.js). -->
+              <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+                <div class="rux--tooltip-trigger__wrapper">
+                  <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy-from="scheduler-maintenance-link-url" aria-label="Copy the public link">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+                <span class="rux--popover">
+                  <span class="rux--popover-content rux--tooltip-content">Copy</span>
+                  <span class="rux--popover-caret"></span>
+                </span>
+              </span>
             </div>
-            <!-- The public link, filled in by share/maintenance.js once it has
-                 the token. Carbon's single-line code snippet shows it and its
-                 copy button copies it; Replace link opens the confirmation
-                 below. -->
-            <div class="scheduler-maintenance-link" id="scheduler-maintenance-link" hidden>
-              <div class="rux--snippet rux--snippet--single">
-                <div class="rux--snippet-container"><pre><code id="scheduler-maintenance-link-url"></code></pre></div>
-                <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary rux--btn--icon-only" data-rux-copy-from="scheduler-maintenance-link-url" aria-label="Copy the public link">
-                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
-                  <span class="rux--copy-btn__feedback">Copied</span>
-                </button>
-              </div>
+            <div class="scheduler-maintenance-link__row">
+              <p class="rux--type-body-01" id="scheduler-maintenance-link-note" hidden></p>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-rux-open="scheduler-maintenance-replace-modal">Replace link</button>
             </div>
-            <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="scheduler-maintenance-create" hidden>Create public link</button>
           </div>
-          <p class="rux--type-body-01" id="scheduler-maintenance-link-note" hidden></p>
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="scheduler-maintenance-create" hidden>Create public link</button>
         </div>
 
         <!-- One notice for the page, as on the public page. A plain wrapper

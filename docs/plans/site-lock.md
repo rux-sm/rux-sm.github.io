@@ -38,7 +38,7 @@ customer requests, are rebuilt with Design here and open without a login.
 - **One login page for the whole site, at `/login/`, built from Design.** An
   address opened without a login goes there and remembers the address. After
   logging in, the account lands on that address if its access allows it, and
-  on Home if not, or on its one app when it has only one. It replaces the scheduler's own login form, and Log out
+  on Home if not, or on its one app when it has only one. Log out
   everywhere returns to it.
 - **`funnel.js` is the gate**, the first script on every page. It reads the
   stored login and redirects before the page draws, with no network. It lets
@@ -49,7 +49,8 @@ customer requests, are rebuilt with Design here and open without a login.
 - **Search engines are asked not to crawl the site**, in `robots.txt`.
 - **`account.js` loads on every page** and confirms the login with Supabase
   after the page opens, so a login that ended elsewhere, like a changed
-  password or a deleted account, goes to the login page.
+  password or a deleted account, goes to the login page, as does a login that
+  ends while the page is open.
 - **A curtain for files, a lock for data.** GitHub Pages sends a file to anyone
   who has its address, and this repository is public, so the login stops
   browsing while the database rules protect the data. Truly private pages would
@@ -81,7 +82,6 @@ None open.
 
 ## Tasks
 
-- [ ] Remove the scheduler's own login form, and `signInStaff` with it.
 - [ ] Build the driver, maintenance, document and request pages in
       `/scheduler/share/`, each tested against a real link without saving.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making

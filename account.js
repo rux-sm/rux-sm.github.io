@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Loads after Design's js/profile.js, and syncs window.Rux.profile on pages
    that have the account panel. Holds the site's one Supabase client
-   and the staff log-in. A staff account is a Supabase user linked to a row
+   and the log-in /login/ uses. A staff account is a Supabase user linked to a row
    in public.profiles, which my_staff_profile() returns. There is no
    anonymous session and no GitHub or Google log-in: a visitor without a
    staff session uses these pages with the profile this browser keeps.
@@ -91,27 +91,6 @@
     return data ?? null;
   };
 
-  // Resolves null once a staff account is signed in, or a sentence to show.
-  const signInStaff = async (username, password, captchaHost) => {
-    const email = usernameToEmail(username);
-    if (!email) return 'Type your username.';
-    if (!password) return 'Type your password.';
-    const token = await captchaToken(captchaHost);
-    if (!token) return "The security check didn't finish. Try again.";
-    const { error } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken: token } });
-    if (error) {
-      return /invalid login/i.test(error.message)
-        ? "That username and password don't match."
-        : "Can't log in right now. Try again.";
-    }
-    const staff = await staffProfile().catch(() => null);
-    if (!staff) {
-      await sb.auth.signOut().catch(() => {});
-      return "This account isn't set up for this app.";
-    }
-    return null;
-  };
-
   // The site's log-in page: resolves null once an account with access is
   // logged in, or a sentence to show. An account with no owner switch and no
   // ticked apps is logged straight out again. Access is read by
@@ -141,23 +120,18 @@
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),
     signIn,
-    signInStaff,
     staffProfile,
-    onAuthChange: callback => sb.auth.onAuthStateChange((event, session) => callback(event, session)),
   };
 
   const panel = document.getElementById('rux-account-panel');
   const panelButton = panel?.querySelector('#rux-profile-sign-in');
 
-  // THE STAFF SIDE OF A PAGE, run once: at load for a session that already
-  // exists, or when someone logs in on the page, as the scheduler's form does.
-  let staffReady = false;
+  // THE STAFF SIDE OF A PAGE, run at load once the login is confirmed.
   const setupStaff = async session => {
-    if (staffReady || !profile || !session || session.user.is_anonymous) return;
+    if (!profile || !session || session.user.is_anonymous) return;
     let staff = null;
     try { staff = await staffProfile(); } catch { return; }
-    if (!staff || staffReady) return;
-    staffReady = true;
+    if (!staff) return;
 
     if (panelButton) {
       // The account panel's door into the Account page, which every account
@@ -200,13 +174,6 @@
     });
   };
 
-  // Someone logging in on the page gets the staff side without a reload. The
-  // work runs after the callback returns, because supabase-js must not be
-  // awaited inside its own auth callback.
-  sb.auth.onAuthStateChange((event, next) => {
-    if (event === 'SIGNED_IN') setTimeout(() => setupStaff(next), 0);
-  });
-
   let session;
   try { ({ data: { session } } = await sb.auth.getSession()); } catch { return; }
   // AN ANONYMOUS SESSION LEFT FROM BEFORE LOG-IN WAS STAFF-ONLY ENDS HERE, so
@@ -221,14 +188,17 @@
      stands. A login the server refuses, such as one ended by a changed password
      or a deleted account, goes to the log-in page. A change to the account's
      access is taken into the stored login and applied to this page. A request
-     with no answer, as when offline, changes nothing. /login/ and
-     /scheduler/share/ need no login, so they are not checked. */
+     with no answer, as when offline, changes nothing. A login that ends while
+     the page is open, as by Log out in another tab, goes to the log-in page
+     too. /login/ and /scheduler/share/ need no login, so they are not
+     checked. */
   const access = window.Rux?.access;
   const path = location.pathname;
   if (access && !path.startsWith('/login/') && !path.startsWith('/scheduler/share/')) {
+    const loginAddress = () => `/login/?next=${encodeURIComponent(path + location.search + location.hash)}`;
     const toLogin = async () => {
       await sb.auth.signOut({ scope: 'local' }).catch(() => {});
-      location.replace(`/login/?next=${encodeURIComponent(path + location.search + location.hash)}`);
+      location.replace(loginAddress());
     };
     if (!session) { await toLogin(); return; }
     const { data, error } = await sb.auth.getUser().catch(e => ({ data: null, error: e }));
@@ -245,6 +215,11 @@
       if (!access.canEnter(granted)) { await toLogin(); return; }
       if (!access.allows(granted, path)) { location.replace(access.landing(granted)); return; }
     }
+    // Only a redirect, because supabase-js must not be called inside its own
+    // auth callback.
+    sb.auth.onAuthStateChange(event => {
+      if (event === 'SIGNED_OUT') location.replace(loginAddress());
+    });
   }
   await setupStaff(session);
 })();

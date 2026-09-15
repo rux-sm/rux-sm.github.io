@@ -479,13 +479,7 @@
 
   // The same staff gate as the schedule: the page waits for the staff profile,
   // and an account with none, or a profile that would not load, gets the
-  // notice instead. A staff account also gets the header's buttons.
-  const headerBtns = [
-    document.querySelector('.scheduler-menu-trigger'),
-    document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
-  ].filter(Boolean);
-  const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
-
+  // notice instead.
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {
@@ -495,14 +489,15 @@
       show();
       return;
     }
-    let staff = null;
-    try { staff = await account.staffProfile(); } catch { /* the notice shows */ }
-    if (!staff) {
-      say('The quote calculator needs a staff log-in.', true);
+    let staff;
+    try { staff = await account.staffProfile(); } catch {
+      say("The rates didn't load. Reload the page to try again.");
       return;
     }
-    for (const btn of headerBtns) btn.hidden = false;
-    if (switcherBtn) switcherBtn.hidden = false;
+    if (!staff) {
+      say("This account isn't set up as staff yet. Ask the owner to set it up.");
+      return;
+    }
     client = account.client;
     try {
       await load();
@@ -511,12 +506,5 @@
       say("The rates didn't load. Reload the page to try again.");
     }
     show();
-    account.onAuthChange(event => {
-      if (event !== 'SIGNED_OUT') return;
-      page.app.hidden = true;
-      if (page.actions) page.actions.hidden = true;
-      for (const btn of headerBtns) btn.hidden = true;
-      say('You were logged out.', true);
-    });
   })();
 })();

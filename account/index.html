@@ -520,7 +520,7 @@
   account.getSession().then(session => {
     if (avatar && session) renderProfile(profile.get(), session.user.id);
     if (!session || session.user.is_anonymous) {
-      status.textContent = 'Not logged in. Staff log in from the scheduler.';
+      status.textContent = 'Not logged in.';
       return;
     }
     status.textContent = `Logged in as ${session.user.email}`;

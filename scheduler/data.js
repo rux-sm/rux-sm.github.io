@@ -321,8 +321,9 @@
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
-    // which is what an ended log-in looks like.
-    if (!buses.length) throw new Error('The schedule came back empty. Log in again.');
+    // which is what an ended log-in or removed access looks like; a reload
+    // sends the account where it can go.
+    if (!buses.length) throw new Error('The schedule came back empty. Reload the page.');
     return { buses, trips, drivers, contacts, oos, timeOff, weekStart, weekEnd };
   }
 
@@ -4354,96 +4355,33 @@
   document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
-  /* The schedule needs a staff log-in. The board and its search wait until
-     /account.js reports a staff session; no session, or an account with no
-     staff profile, sees the log-in form in their place. A log-in that ends
-     while the page is open brings the form back. A local preview without
-     ?cloud has no account layer, so the form says so rather than offering a
-     log-in that cannot work. */
-  const loginEl = document.getElementById('scheduler-login');
-  const loginForm = document.getElementById('scheduler-login-form');
-  const loginUser = document.getElementById('scheduler-login-username');
-  const loginPassword = document.getElementById('scheduler-login-password');
-  const loginSubmit = document.getElementById('scheduler-login-submit');
-  const loginError = document.getElementById('scheduler-login-error');
-  const loginErrorText = document.getElementById('scheduler-login-error-text');
-  const appEl = document.getElementById('scheduler-app');
-  const searchEl = document.getElementById('scheduler-search')?.closest('.scheduler-header-search');
-  const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
-  const headerBtns = [
-    document.querySelector('.scheduler-menu-trigger'),
-    document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
-  ].filter(Boolean);
-  let started = false;
-  // The menu, account and switcher buttons are for a logged-in staff account;
-  // /switcher.js lists only the apps that account can open.
-  const showHeader = staff => {
-    for (const btn of headerBtns) btn.hidden = !staff;
-    if (switcherBtn) switcherBtn.hidden = !staff;
+  /* The schedule needs a staff account. /funnel.js opens this page only for an
+     account with Scheduler, and /account.js sends a log-in that ends to the
+     log-in page. The board and its search wait for the staff profile. An
+     account without one, a profile that would not load, or a local preview
+     without ?cloud gets a notice in their place, and nothing is read. */
+  const boardEl = document.querySelector('.scheduler-board');
+  const stop = (kind, title, subtitle) => {
+    if (boardEl) boardEl.hidden = true;
+    if (searchWrap) searchWrap.hidden = true;
+    say(kind, title, subtitle);
   };
-
-  const loginSay = text => {
-    if (!loginError) return;
-    loginErrorText.textContent = text || '';
-    loginError.hidden = !text;
-  };
-  const showLogin = text => {
-    showHeader(null);
-    if (loginEl) loginEl.hidden = false;
-    if (appEl) appEl.hidden = true;
-    if (searchEl) searchEl.hidden = true;
-    loginSay(text);
-    loginUser?.focus();
-  };
-  const startBoard = () => {
-    if (loginEl) loginEl.hidden = true;
-    if (appEl) appEl.hidden = false;
-    if (searchEl) searchEl.hidden = false;
-    loginSay('');
-    started = true;
-    show();
-  };
-
-  loginForm?.addEventListener('submit', async event => {
-    event.preventDefault();
-    const account = window.Rux?.account;
-    if (!account?.signInStaff) return;
-    loginSubmit.disabled = true;
-    loginSay('');
-    try {
-      const problem = await account.signInStaff(
-        loginUser.value, loginPassword.value, document.getElementById('scheduler-login-captcha'));
-      loginPassword.value = '';
-      if (problem) {
-        loginSay(problem);
-      } else {
-        showHeader(await account.staffProfile().catch(() => null));
-        startBoard();
-      }
-    } catch {
-      loginSay("Can't log in right now. Try again.");
-    } finally {
-      loginSubmit.disabled = false;
-    }
-  });
 
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {
-      showLogin('This preview has no log-in. Add ?cloud to the address to log in.');
-      if (loginSubmit) loginSubmit.disabled = true;
+      stop('info', 'This preview has no log-in', 'Add ?cloud to the address to load the schedule.');
       return;
     }
-    let staff = null;
-    try { staff = await account.staffProfile(); } catch { /* the form shows */ }
-    if (staff) {
-      showHeader(staff);
-      startBoard();
-    } else {
-      showLogin();
+    let staff;
+    try { staff = await account.staffProfile(); } catch {
+      stop('error', 'Could not load the schedule', 'Reload the page to try again.');
+      return;
     }
-    account.onAuthChange(event => {
-      if (event === 'SIGNED_OUT' && started) showLogin('You were logged out. Log in again.');
-    });
+    if (!staff) {
+      stop('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
+      return;
+    }
+    show();
   })();
 })();

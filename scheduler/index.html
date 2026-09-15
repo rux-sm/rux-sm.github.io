@@ -124,9 +124,7 @@
   <!-- The hamburger. js/ui-shell.js toggles --expanded on the nav, keeps
        aria-expanded in step and swaps the glyph to a close icon while the nav
        is open. It starts closed, as Carbon's captures do. -->
-  <!-- The menu and the account buttons start hidden: data.js shows them once a
-       staff account is logged in, so the log-in form offers neither. -->
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle scheduler-menu-trigger" aria-label="Open menu" aria-expanded="false" hidden><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle scheduler-menu-trigger" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
 
   <!-- The mark is brand/logo.svg: replace the file, not this markup. It is
        sized by height so the file's own aspect sets the width, and it carries
@@ -172,10 +170,8 @@
         <p class="scheduler-search__empty" id="scheduler-search-note" hidden></p>
       </div>
     </div>
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel" hidden><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
-    <!-- The switcher starts hidden: data.js shows it only for an account whose
-         profile sees every app, so the log-in form and team accounts never offer it. -->
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel" hidden><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
   </div>
   <!-- The switcher panel, opened by the grid button (js/ui-shell.js).
        /switcher.js refills the list from /switcher.json; these entries stay if
@@ -298,56 +294,6 @@
   writes, and saves trip edits back. The grid and trip bar are this app's own
   components (app.css); specimen.html draws every state the grid can draw,
   with no network. -->
-  <!-- The log-in form, after Carbon's login pattern: a title, the ID and
-       password fields and one primary button. The ID is a username, or a full
-       email for an account that has one. Staff accounts and resets are made
-       in the Supabase dashboard, so there is no "forgot password" or "create
-       account". data.js shows this form and hides the board until a staff
-       account is logged in. The password field has no visibility toggle,
-       because Design has no module that makes one work. -->
-  <!-- A div, not a section, because Carbon's reset gives section
-       display: block, which beats the browser's [hidden]. -->
-  <div id="scheduler-login" role="region" aria-labelledby="scheduler-login-title" hidden>
-    <div class="rux--css-grid">
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-6 rux--lg:col-span-6">
-      <form id="scheduler-login-form" novalidate>
-        <div class="rux--stack-vertical rux--stack-scale-6">
-          <h2 class="rux--type-productive-heading-05" id="scheduler-login-title">Log in</h2>
-          <div class="rux--form-item rux--text-input-wrapper">
-            <label class="rux--label" for="scheduler-login-username">Username</label>
-            <div class="rux--text-input__field-outer-wrapper">
-              <div class="rux--text-input__field-wrapper">
-                <input id="scheduler-login-username" class="rux--text-input" type="text" autocomplete="username" autocapitalize="none" spellcheck="false">
-              </div>
-            </div>
-          </div>
-          <div class="rux--form-item rux--text-input-wrapper rux--password-input-wrapper">
-            <label class="rux--label" for="scheduler-login-password">Password</label>
-            <div class="rux--text-input__field-outer-wrapper">
-              <div class="rux--text-input__field-wrapper">
-                <input id="scheduler-login-password" class="rux--text-input rux--password-input" type="password" autocomplete="current-password">
-              </div>
-            </div>
-          </div>
-          <div id="scheduler-login-captcha"></div>
-          <!-- A plain wrapper carries `hidden`, because the notification's own
-               display rule beats the browser's [hidden]. -->
-          <div id="scheduler-login-error" role="alert" hidden>
-            <div class="rux--inline-notification rux--inline-notification--error">
-              <div class="rux--inline-notification__details">
-                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
-                <div class="rux--inline-notification__text-wrapper">
-                  <div class="rux--inline-notification__subtitle" id="scheduler-login-error-text"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div><button type="submit" class="rux--btn rux--btn--primary" id="scheduler-login-submit">Log in</button></div>
-        </div>
-      </form>
-    </div>
-    </div>
-  </div>
   <!-- Full width, Carbon's modifier for a data-dense page: the board is
        scanned rather than read, so it takes the whole width. -->
   <div class="rux--css-grid rux--css-grid--full-width scheduler-app" id="scheduler-app">

@@ -15,8 +15,8 @@ the schema to match the page.
 
 ## 1. How the two apps reach the database
 
-- **Both log in as staff.** Each app has its own log-in screen for a Supabase
-  Auth user. A user is staff when a `public.profiles` row carries its id in
+- **Both log in as staff.** The site's log-in page and the old app's own screen
+  each log in a Supabase Auth user. A user is staff when a `public.profiles` row carries its id in
   `user_id` and the account's `app_metadata` has `owner` true or `scheduler`
   in `apps`. `my_staff_profile()` returns that row with `owner` and `apps`.
   This app's client is the site's `account.js`; the old app's is

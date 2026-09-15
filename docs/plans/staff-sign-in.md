@@ -71,15 +71,14 @@ function, including the ones that create share links.
 - **rux chooses the passwords, and one shared password is acceptable:** the
   aim is a wall between the public and staff, not between staff. It must meet
   the project's minimum password length.
-- **The scheduler's log-in is live:** `account.js` holds a staff session only,
-  `switcher.js` lists only the apps the account can open, `funnel.js` locks every page of
-  the site behind a log-in and the account's ticked apps, and
-  `scheduler/data.js` shows its log-in form when a session ends while the board
-  is open, reading an empty fleet as an ended log-in.
+- **The site's log-in is live:** `/login/` logs in, `funnel.js` locks every
+  page behind a log-in and the account's ticked apps, `account.js` sends a
+  log-in that ends to the log-in page, and `switcher.js` lists only the apps
+  the account can open. The scheduler reads an empty fleet as an ended log-in.
 - **Later plans:** per-person chat rules, trip history naming the actor from
   the session, private storage, private realtime channels, and reporting a
   scheduler write the database refused as not saved, which only an ended
-  log-in could cause once the form guards the board.
+  log-in could cause once the page lock guards the board.
 
 ## Questions
 

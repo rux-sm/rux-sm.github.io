@@ -27,11 +27,9 @@ function, including the ones that create share links.
 - **Each scheduling app has its own full login screen.** Staff receive a link
   to each app separately and sign in to each one with the same username and
   password; signing in to one does not sign in to the other.
-- **A team account stays inside the app it signed in to:** no app switcher,
-  no link to Home, to another app, or between the scheduler and rux-ui. Home
-  sends a signed-in team account to the scheduler. rux's account keeps the
-  switcher, the rightmost header icon as Carbon orders it, and opens every
-  app. Notes and Design stay public pages anyone can open by address.
+- **Which pages and apps an account opens is the site lock plan's**
+  (`docs/plans/site-lock.md`): the owner switch and ticked apps decide it, and
+  there is no link between the scheduler and rux-ui.
 - **Sign-in replaces "Who's this?".** Identity and the trip-history name come
   from the session; changing person is sign out, then sign in.
 - **The display account has full staff access** and stays signed in, because
@@ -66,11 +64,9 @@ function, including the ones that create share links.
 - **Captcha protection is on and covers sign-in**, so both login screens send
   a Turnstile token with the site key `account.js` already uses. The email
   provider is enabled.
-- **Anonymous sign-in ends everywhere.** Home, Notes and Design open with no
-  session at all, and a visitor's theme stays in their browser as it already
-  does. The only accounts are the seven staff ones, and with anonymous
-  sign-in gone rux turns off sign-ups, GitHub and Google too, since staff
-  accounts are created in the dashboard.
+- **Anonymous sign-in ends everywhere.** The only accounts are the ones rux
+  creates in the dashboard, and with anonymous sign-in gone rux turns off
+  sign-ups, GitHub and Google too.
 - **rux chooses the passwords, and one shared password is acceptable:** the
   aim is a wall between the public and staff, not between staff. It must meet
   the project's minimum password length.

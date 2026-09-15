@@ -49,7 +49,9 @@ the schema to match the page.
 alone reach the same rows until the open rules come down. That is a cutover
 step, taken once nothing uses the key alone, as a migration applied through
 the Supabase connection. `platform.profiles` is a separate table that holds a
-staff member's name and theme across the site.
+staff member's name and theme across the site, and in `scheduler_shortcuts`
+their choice for slots 2 to 4 of the selected bar's shortcuts, null for the
+default set.
 
 ## 2. Tables
 

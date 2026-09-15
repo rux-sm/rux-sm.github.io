@@ -262,6 +262,8 @@
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'notes', 'updated_at',
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
+    // The trip's documents, for the itinerary shortcut.
+    'trip_documents(id,label,created_at)',
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
     // The trip's own copy of the booking contact, which rux-ui reads and writes.
@@ -467,6 +469,12 @@
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
   };
 
+  // The trip's newest document labelled Itinerary, as rux-ui picks it: a
+  // re-uploaded itinerary replaces the one before.
+  const latestItinerary = trip => (trip.trip_documents || [])
+    .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
+    .reduce((newest, d) => (!newest || new Date(d.created_at || 0) > new Date(newest.created_at || 0) ? d : newest), null);
+
   function barEl(b, driversById, busesById) {
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
@@ -474,6 +482,8 @@
     // The bar menu reads both to check the trip's colour and paint Standard.
     bar.dataset.tripColor = tripColorOf(trip) ?? '';
     bar.dataset.standardHue = standardHueOf(trip);
+    // The itinerary shortcut and menu item open this document.
+    bar.dataset.itineraryId = latestItinerary(trip)?.id ?? '';
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
@@ -1027,8 +1037,8 @@
   const panelTitle = document.getElementById('scheduler-panel-title');
   const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
   const pageEl = document.querySelector('.scheduler-page');
-  // Open trip, placed on the selected bar by placeBarOpen.
-  const barOpenBtn = document.getElementById('scheduler-bar-open');
+  // The selected bar's shortcut column, placed and drawn by placeBarOpen.
+  const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   const def = (rows) => {
@@ -3148,15 +3158,19 @@
     btn.style.setProperty('--scheduler-open-h', `${bar.clientHeight}px`);
   }
 
-  // Open trip follows the selection, except onto the trip in the editor, whose
-  // bars carry Close trip in the same place.
+  /* The shortcut column follows the selection, except onto the trip in the
+     editor, whose bars carry Close trip in the same place. It splits the bar's
+     height into as many 24px slots as fit, up to four, so a bar with rows turned
+     off keeps its first slots, and slot 1 is always Open trip. */
+  const SLOT_MIN_PX = 24;
   function placeBarOpen(bar = selectedBar()) {
-    if (!barOpenBtn) return;
+    if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || isEditorTrip(bar);
-    barOpenBtn.hidden = none;
+    barShortcuts.hidden = none;
     if (none) return;
-    if (barOpenBtn.previousElementSibling !== bar) bar.after(barOpenBtn);
-    placeAtStart(barOpenBtn, bar);
+    if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
+    placeAtStart(barShortcuts, bar);
+    drawShortcuts(bar, Math.max(1, Math.min(4, Math.floor(bar.clientHeight / SLOT_MIN_PX))));
   }
 
   /* Close trip on every bar of the trip in the editor. Those bars are locked,
@@ -3274,7 +3288,6 @@
     if (unsavedWork()) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  barOpenBtn?.addEventListener('click', openSelected);
   gridEl.addEventListener('click', e => {
     if (e.target.closest('.scheduler-bar-close')) whenSafe(() => closePanel());
   });
@@ -3732,7 +3745,7 @@
 
   gridEl.addEventListener('contextmenu', e => {
     const track = e.target.closest('.scheduler-track');
-    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-open, .scheduler-bar-close')) return;
+    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts, .scheduler-bar-close')) return;
     if (!shown) return;
     e.preventDefault();
 
@@ -3759,27 +3772,7 @@
     // On touch a hold lifts the bar for dragging and can also fire this event,
     // so the menu stays shut while a finger carries a bar.
     if (touchDragging) return;
-    barMenuFor = bar;
-    document.getElementById('scheduler-bar-menu-unassign').hidden =
-      !bar.dataset.assignmentId || !bar.dataset.busId || isEditorTrip(bar);
-    /* The colours hide for the trip open in the editor, as Take off this bus
-       does: the editor has its own colour field, and a write from here would
-       move `updated_at` under it and turn its next Save into a conflict. */
-    const locked = isEditorTrip(bar);
-    for (const part of barMenu.querySelectorAll('[data-color-part]')) part.hidden = locked;
-    // The Color item's chip is the colour the bar paints now.
-    const hue = TRIP_COLORS.find(c => c.value === bar.dataset.tripColor)?.hue ?? bar.dataset.standardHue ?? 'blue';
-    barMenu.querySelector('#scheduler-bar-menu-color > .rux--menu-item__icon .scheduler-swatch')
-      .className = `scheduler-swatch scheduler-bar--${hue}`;
-    for (const item of barMenu.querySelectorAll('[data-color]')) {
-      const on = item.dataset.color === (bar.dataset.tripColor || '');
-      item.setAttribute('aria-checked', String(on));
-      item.querySelector('.rux--menu-item__selection-icon')
-        .replaceChildren(...(on ? [svgUse('#i-checkmark', '16', '0 0 20 20')] : []));
-      if (!item.dataset.color) {
-        item.querySelector('.scheduler-swatch').className = `scheduler-swatch scheduler-bar--${bar.dataset.standardHue || 'blue'}`;
-      }
-    }
+    prepareBarMenu(bar);
     popMenuAt(barMenu, e);
   });
 
@@ -3796,6 +3789,16 @@
       const ref = barRef(bar);
       selectBar(bar);
       whenSafe(() => openRef(ref));
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-itinerary') {
+      openItinerary(bar);
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-shortcuts') {
+      openShortcutsModal(2);
       return;
     }
 
@@ -3822,25 +3825,193 @@
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-unassign') {
-      const assignmentId = bar.dataset.assignmentId;
-      if (!assignmentId) return;
-      toast('info', 'Taking the trip off its bus…');
-      try {
-        // The same write the drag makes for a drop on the Unassigned row.
-        const { error } = await withTimeout(
-          client.from('trip_assignments').update({ bus_id: null }).eq('id', assignmentId).then(r => r));
-        if (error) throw new Error(error.message);
-        await show();
-        refreshEditor(assignmentId);
-        toast('success', 'Taken off its bus. It is in the Unassigned row.');
-      } catch (err) {
-        toast('error', `The trip was not moved. ${err.message}`);
-      }
-    }
+    if (item.id === 'scheduler-bar-menu-unassign') await takeOffBus(bar);
   });
   // The Color submenu's own close bubbles here too, and must not hide the menu.
   barMenu?.addEventListener('rux:menu-closed', e => { if (e.target === barMenu) barMenu.hidden = true; });
+
+  // Fills the bar menu for one bar: which items apply, and the Color chips.
+  function prepareBarMenu(bar) {
+    barMenuFor = bar;
+    document.getElementById('scheduler-bar-menu-unassign').hidden =
+      !bar.dataset.assignmentId || !bar.dataset.busId || isEditorTrip(bar);
+    /* The colours hide for the trip open in the editor, as Take off this bus
+       does: the editor has its own colour field, and a write from here would
+       move `updated_at` under it and turn its next Save into a conflict. */
+    const locked = isEditorTrip(bar);
+    for (const part of barMenu.querySelectorAll('[data-color-part]')) part.hidden = locked;
+    // The Color item's chip is the colour the bar paints now.
+    const hue = TRIP_COLORS.find(c => c.value === bar.dataset.tripColor)?.hue ?? bar.dataset.standardHue ?? 'blue';
+    barMenu.querySelector('#scheduler-bar-menu-color > .rux--menu-item__icon .scheduler-swatch')
+      .className = `scheduler-swatch scheduler-bar--${hue}`;
+    for (const item of barMenu.querySelectorAll('[data-color]')) {
+      const on = item.dataset.color === (bar.dataset.tripColor || '');
+      item.setAttribute('aria-checked', String(on));
+      item.querySelector('.rux--menu-item__selection-icon')
+        .replaceChildren(...(on ? [svgUse('#i-checkmark', '16', '0 0 20 20')] : []));
+      if (!item.dataset.color) {
+        item.querySelector('.scheduler-swatch').className = `scheduler-swatch scheduler-bar--${bar.dataset.standardHue || 'blue'}`;
+      }
+    }
+    document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
+  }
+
+  // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.
+  async function takeOffBus(bar) {
+    const assignmentId = bar.dataset.assignmentId;
+    if (!assignmentId) return;
+    toast('info', 'Taking the trip off its bus…');
+    try {
+      // The same write the drag makes for a drop on the Unassigned row.
+      const { error } = await withTimeout(
+        client.from('trip_assignments').update({ bus_id: null }).eq('id', assignmentId).then(r => r));
+      if (error) throw new Error(error.message);
+      await show();
+      refreshEditor(assignmentId);
+      toast('success', 'Taken off its bus. It is in the Unassigned row.');
+    } catch (err) {
+      toast('error', `The trip was not moved. ${err.message}`);
+    }
+  }
+
+  // The document link page opens a trip document by its id, in a new tab.
+  function openItinerary(bar) {
+    const id = bar.dataset.itineraryId;
+    if (id) window.open(`share/document.html?id=${encodeURIComponent(id)}`, '_blank', 'noopener');
+  }
+
+  // Color from a slot opens the bar menu beside the slot, with Color's own
+  // submenu already open.
+  function openColorFrom(bar, slot) {
+    const box = slot.getBoundingClientRect();
+    prepareBarMenu(bar);
+    popMenuAt(barMenu, { clientX: box.right, clientY: box.top });
+    const color = document.getElementById('scheduler-bar-menu-color');
+    const sub = color?.querySelector(':scope > .rux--menu');
+    if (sub) window.Rux?.menu?.open?.(sub, color);
+  }
+
+  /* THE SELECTED BAR'S SHORTCUTS. Slot 1 is always Open trip; slots 2 to 4 hold
+     the person's choice, saved on their profile, or the default set until they
+     choose. A slot whose action cannot act on the bar shows it disabled, with
+     the reason as its label, so the slots keep their order from trip to trip. */
+  const SHORTCUT_ACTIONS = [
+    { id: 'open', label: 'Open trip', icon: '#i-launch',
+      applies: () => true, run: () => openSelected() },
+    { id: 'itinerary', label: 'Open itinerary', icon: '#i-attachment', reason: 'No itinerary yet',
+      applies: bar => !!bar.dataset.itineraryId, run: bar => openItinerary(bar) },
+    { id: 'color', label: 'Color', icon: '#i-color-palette',
+      applies: () => true, run: (bar, slot) => openColorFrom(bar, slot) },
+    { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract', reason: 'Not on a bus',
+      applies: bar => !!bar.dataset.assignmentId && !!bar.dataset.busId, run: bar => takeOffBus(bar) },
+  ];
+  const SHORTCUT_DEFAULT = ['itinerary', 'color', null];
+  // Where the choice is kept when no one is signed in, as in a local preview.
+  const SHORTCUT_KEY = 'rux.scheduler.shortcuts';
+  let shortcutChoice = SHORTCUT_DEFAULT.slice();
+
+  // A stored choice is three slots of known actions; anything else is the default.
+  const cleanShortcuts = value => {
+    const known = new Set(SHORTCUT_ACTIONS.map(a => a.id).filter(id => id !== 'open'));
+    return Array.isArray(value) && value.length === 3
+      ? value.map(v => (known.has(v) ? v : null))
+      : SHORTCUT_DEFAULT.slice();
+  };
+
+  let shortcutsDrawn = '';
+  function drawShortcuts(bar, count) {
+    const slots = ['open', ...shortcutChoice].slice(0, count);
+    const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
+      bar.dataset.assignmentId, bar.dataset.busId, slots.join()].join('|');
+    // The same slots on the same bar are left alone, so a focused slot keeps focus.
+    if (key === shortcutsDrawn && barShortcuts.childElementCount === slots.length) return;
+    shortcutsDrawn = key;
+    barShortcuts.replaceChildren(...slots.map((id, i) => {
+      const btn = el('button', 'scheduler-bar-shortcut');
+      btn.type = 'button';
+      btn.dataset.slot = String(i + 1);
+      const action = SHORTCUT_ACTIONS.find(a => a.id === id);
+      if (!action) {
+        btn.classList.add('scheduler-bar-shortcut--empty');
+        btn.setAttribute('aria-label', 'Add a shortcut');
+        btn.title = 'Add a shortcut';
+        btn.appendChild(svgUse('#i-circle-dash', '16', '0 0 32 32'));
+        return btn;
+      }
+      const ok = action.applies(bar);
+      btn.dataset.shortcut = action.id;
+      btn.setAttribute('aria-label', ok ? action.label : action.reason);
+      btn.title = ok ? action.label : action.reason;
+      if (!ok) btn.setAttribute('aria-disabled', 'true');
+      btn.appendChild(svgUse(action.icon, '16', '0 0 32 32'));
+      return btn;
+    }));
+  }
+
+  // A slot acts on the selected bar. An empty slot opens Customize shortcuts at
+  // that slot, and a disabled one does nothing.
+  barShortcuts?.addEventListener('click', e => {
+    const btn = e.target.closest('.scheduler-bar-shortcut');
+    const bar = selectedBar();
+    if (!btn || !bar || btn.getAttribute('aria-disabled') === 'true') return;
+    if (!btn.dataset.shortcut) { openShortcutsModal(Number(btn.dataset.slot)); return; }
+    SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut)?.run(bar, btn);
+  });
+
+  const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');
+  function openShortcutsModal(slot) {
+    if (!shortcutsModal) return;
+    for (let n = 2; n <= 4; n++) {
+      document.getElementById(`scheduler-shortcut-${n}`).value = shortcutChoice[n - 2] ?? '';
+    }
+    window.Rux?.modal?.open?.(shortcutsModal);
+    document.getElementById(`scheduler-shortcut-${Math.min(4, Math.max(2, slot))}`)?.focus();
+  }
+  document.getElementById('scheduler-shortcuts-save')?.addEventListener('click', () => {
+    window.Rux?.modal?.close?.(shortcutsModal);
+    saveShortcuts([2, 3, 4].map(n => document.getElementById(`scheduler-shortcut-${n}`).value || null));
+  });
+
+  // The signed-in person's id, or null in a preview with no log-in.
+  async function personId() {
+    const session = await Promise.resolve(window.Rux?.account?.getSession?.()).catch(() => null);
+    return session?.user?.id ?? null;
+  }
+
+  // The choice lives on the person's profile, so it follows them to every device.
+  async function loadShortcuts() {
+    const uid = await personId();
+    try {
+      if (uid) {
+        const { data, error } = await withTimeout(client.schema('platform').from('profiles')
+          .select('scheduler_shortcuts').eq('id', uid).maybeSingle().then(r => r));
+        if (error) throw new Error(error.message);
+        shortcutChoice = cleanShortcuts(data?.scheduler_shortcuts ?? null);
+      } else {
+        shortcutChoice = cleanShortcuts(JSON.parse(localStorage.getItem(SHORTCUT_KEY) || 'null'));
+      }
+    } catch { /* the default set stays */ }
+    placeBarOpen();
+  }
+
+  async function saveShortcuts(choice) {
+    shortcutChoice = cleanShortcuts(choice);
+    placeBarOpen();
+    const uid = await personId();
+    if (!uid) {
+      try { localStorage.setItem(SHORTCUT_KEY, JSON.stringify(shortcutChoice)); } catch { /* this visit only */ }
+      toast('success', 'Shortcuts saved in this browser.');
+      return;
+    }
+    try {
+      const { error } = await withTimeout(client.schema('platform').from('profiles')
+        .upsert({ id: uid, scheduler_shortcuts: shortcutChoice }).then(r => r));
+      if (error) throw new Error(error.message);
+      toast('success', 'Shortcuts saved.');
+    } catch (err) {
+      toast('error', `The shortcuts did not save. ${err.message}`);
+    }
+  }
 
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
      row stays, so a cancelled trip can still be looked up. The reason is
@@ -4244,7 +4415,7 @@
   // A click on empty board space puts the selection down. A click on a bar is
   // app.js's toggle and opens nothing; a click on a bar's button is the button's.
   gridEl.addEventListener('click', e => {
-    if (e.target.closest('.scheduler-bar, .scheduler-bar-open, .scheduler-bar-close') || !e.target.closest('.scheduler-track')) return;
+    if (e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts, .scheduler-bar-close') || !e.target.closest('.scheduler-track')) return;
     clearSelection();
   });
 
@@ -4406,5 +4577,6 @@
       return;
     }
     show();
+    loadShortcuts();
   })();
 })();

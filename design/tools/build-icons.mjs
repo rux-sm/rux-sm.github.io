@@ -61,6 +61,11 @@ const ICONS = [
   // A CALCULATOR, asked for by Scheduler for its quote calculator's side-nav
   // item, where every entry needs an icon and none of the others says pricing.
   'calculator',
+  // A TRIP'S SHORTCUTS, asked for by Scheduler for the selected bar's shortcut
+  // slots and its right-click menu: `launch` opens a trip, and rux picked it
+  // over the arrow it replaces; `attachment` is Carbon's paperclip, for a
+  // trip's itinerary file.
+  'launch', 'attachment',
   // A GROUP OF PEOPLE, asked for by Scheduler 2026-09-07. A roster control
   // sitting in a toolbar Carbon draws as icons had to be a text button, because
   // the sprite held exactly one person in 62 -- `user--avatar`, which the shell's

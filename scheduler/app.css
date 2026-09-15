@@ -1218,6 +1218,35 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-share-scroll { overflow-x: auto; }
 .scheduler-share-scroll[hidden] { display: none; }
 
+/* The staff maintenance page's title row: the heading and its dates, then the
+   public link to copy and its Replace button, which wrap under the heading
+   when the row is too narrow for both. */
+.scheduler-maintenance-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+}
+.scheduler-maintenance-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--rux-spacing-03);
+  flex: 1 1 20rem;
+  min-inline-size: 0;
+  max-inline-size: 40rem;
+}
+/* The snippet gives way and scrolls the link inside itself, so on a phone the
+   Replace button stays beside it and the page never grows wider. Containing its
+   inline size keeps the link's one long line out of the page's minimum width,
+   which otherwise widened the page past a 402px screen. */
+.scheduler-maintenance-link .rux--snippet--single { flex: 1 1 auto; inline-size: auto; min-inline-size: 0; max-inline-size: 30rem; contain: inline-size; }
+.scheduler-maintenance-link > .rux--btn { flex: none; }
+/* Each has a display rule that beats the browser's own [hidden]. */
+.scheduler-maintenance-link[hidden],
+.scheduler-maintenance-title .rux--btn[hidden] { display: none; }
+
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
    Both pages use Carbon's editorial style model, which Carbon names for
    low-density product screens such as checkout: centred at lg, both pages in

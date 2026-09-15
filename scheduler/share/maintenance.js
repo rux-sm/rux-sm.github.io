@@ -355,9 +355,19 @@
   };
 
   // -- loading -------------------------------------------------------------------
-  const token = (new URLSearchParams(location.search).get('s') ?? '').trim().toLowerCase();
-  const client = window.Rux?.account?.client;
-  if (!token) {
+  /* Two pages load this. The public page, share/maintenance.html, takes the
+     link's token from its address. The staff page, maintenance.html, marks its
+     body data-maintenance="staff": it waits for the staff profile, reads the
+     current token through get_maintenance_schedule_share, shows the public
+     link to copy, and replaces it through replace_maintenance_schedule_share,
+     which also makes the first one where there is none. */
+  const staffPage = document.body.dataset.maintenance === 'staff';
+  const account = window.Rux?.account;
+  const client = account?.client;
+  let token = staffPage ? '' : (new URLSearchParams(location.search).get('s') ?? '').trim().toLowerCase();
+  // The staff page loads nothing until the account is known to be staff.
+  let ready = !staffPage;
+  if (!staffPage && !token) {
     rangeEl.textContent = '';
     say('error', 'This link has no schedule in it', 'Ask dispatch for the current maintenance link.');
     return;
@@ -368,8 +378,24 @@
     return;
   }
 
+  // -- the staff page's public link ----------------------------------------------
+  const linkEl = $('scheduler-maintenance-link');
+  const linkUrl = $('scheduler-maintenance-link-url');
+  const linkNote = $('scheduler-maintenance-link-note');
+  const createBtn = $('scheduler-maintenance-create');
+  const replaceModal = $('scheduler-maintenance-replace-modal');
+  const replaceBtn = $('scheduler-maintenance-replace-confirm');
+  const replaceError = $('scheduler-maintenance-replace-error');
+  const showLink = () => {
+    if (!staffPage) return;
+    linkUrl.textContent = token ? `${location.origin}/scheduler/share/maintenance.html?s=${encodeURIComponent(token)}` : '';
+    linkEl.hidden = !token;
+    createBtn.hidden = !!token;
+  };
+
   let loadedAt = null;
   const load = async () => {
+    if (!ready) return;
     const [schedule, changes] = await Promise.all([
       client.rpc('get_maintenance_schedule', { p_token: token }),
       client.rpc('get_maintenance_schedule_changes', { p_token: token }),
@@ -377,11 +403,18 @@
     if (schedule.error) throw schedule.error;
     if (!schedule.data) {
       // A revoked or unknown token. Checking again costs nothing, so the
-      // page keeps checking, and a restored link shows its schedule.
+      // page keeps checking, and a restored link shows its schedule. The
+      // staff page offers to make a link instead.
       weekEl.hidden = true;
       changesEl.hidden = true;
       rangeEl.textContent = '';
-      say('error', 'This link is no longer active', 'Ask dispatch for the current maintenance link.');
+      if (staffPage) {
+        token = '';
+        showLink();
+        say('info', 'There is no public link', 'Create one to see the schedule here and send it to the maintenance crew.');
+      } else {
+        say('error', 'This link is no longer active', 'Ask dispatch for the current maintenance link.');
+      }
       return;
     }
     render(schedule.data);
@@ -414,5 +447,68 @@
   addEventListener('focus', soon);
   setInterval(soon, POLL_MS);
   addEventListener('pagehide', () => { clearTimeout(timer); client.removeChannel(channel); }, { once: true });
-  refresh();
+  if (!staffPage) {
+    refresh();
+    return;
+  }
+
+  /* Replacing the link, or making the first one, is one call: the old token
+     stops working at once, so a public page someone has open says so on its
+     next refresh. */
+  const replaceLink = async () => {
+    const { data, error } = await client.rpc('replace_maintenance_schedule_share');
+    if (error || !data?.token) throw error || new Error('No token came back');
+    token = data.token;
+    showLink();
+    refresh();
+  };
+  replaceBtn.addEventListener('click', async () => {
+    replaceBtn.disabled = true;
+    replaceError.hidden = true;
+    try {
+      await replaceLink();
+      window.Rux?.modal?.close(replaceModal);
+      linkNote.textContent = `New link made at ${clock.format(new Date())}. The old one no longer works.`;
+      linkNote.hidden = false;
+    } catch {
+      replaceError.hidden = false;
+    } finally {
+      replaceBtn.disabled = false;
+    }
+  });
+  createBtn.addEventListener('click', async () => {
+    createBtn.disabled = true;
+    try {
+      await replaceLink();
+      linkNote.textContent = `Link made at ${clock.format(new Date())}. Copy it to send it.`;
+      linkNote.hidden = false;
+    } catch {
+      say('error', "The link couldn't be created", 'Nothing changed. Try again.');
+    } finally {
+      createBtn.disabled = false;
+    }
+  });
+
+  (async () => {
+    let staff;
+    try {
+      staff = await account.staffProfile();
+    } catch {
+      rangeEl.textContent = '';
+      say('error', "The schedule can't be loaded right now", 'Check your connection, then reload the page.');
+      return;
+    }
+    if (!staff) {
+      rangeEl.textContent = '';
+      say('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
+      return;
+    }
+    try {
+      const { data } = await client.rpc('get_maintenance_schedule_share');
+      token = data?.token ?? '';
+    } catch { /* no token: the load below offers to make a link */ }
+    ready = true;
+    showLink();
+    refresh();
+  })();
 })();

@@ -41,9 +41,10 @@ the schema to match the page.
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
-- **The publishable key can run 35 of the 40 `security definer` functions.**
-  The five it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
-  `my_staff_profile` and `signal_maintenance_schedule`.
+- **The publishable key can run 35 of the 44 `security definer` functions.**
+  The nine it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
+  `my_staff_profile`, `signal_maintenance_schedule`, `is_owner`,
+  `list_accounts`, `set_account_apps` and `replace_maintenance_schedule_share`.
 
 **What this means for this app.** A staff session and the publishable key
 alone reach the same rows until the open rules come down. That is a cutover
@@ -94,7 +95,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`. RPC only. |
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
-| `maintenance_schedule_shares` | this app's maintenance link page, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
+| `maintenance_schedule_shares` | this app's maintenance pages, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements and billing defaults live here. |
 | `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; `sees_all_apps`, which no code reads; the owner switch in `app_metadata` decides instead. Not `platform.profiles`. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
@@ -114,7 +115,7 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 |---|---|
 | Driver share links | `create_driver_schedule_share`, `update_driver_schedule_share`, `get_driver_schedule_share`, `get_driver_schedule_share_for_driver`, `revoke_driver_schedule_share` |
 | Driver acceptance | `confirm_trip_assignment`, `decline_trip_assignment`, `get_trip_driver_statuses`, `sync_trip_driver_statuses`, `get_driver_assignment_statuses`, `get_driver_confirmations` |
-| Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share` |
+| Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one |
 | Trip requests | `create_trip_request`, `submit_trip_request`, `get_trip_request`, `list_trip_requests`, `update_trip_request_status`, `link_trip_request`, `delete_trip_request`, `new_trip_request_reference` |
 | Document links | `get_trip_document`, for this app's and rux-ui's document link pages |
 | History | `record_trip_history`, `get_trip_history` |

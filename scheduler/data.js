@@ -1271,31 +1271,6 @@
     return FIELD(id, label, outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* Design's labelled toggle, from `templates/form-page.html`. Nothing calls
-     it; the panel's switches use `toggleAction`. `js/form-controls.js` binds
-     the click and writes On and Off, so nothing is bound here. */
-  function toggleField(id, label, on) {
-    const box = el('div', 'rux--toggle');
-    const btn = el('button', 'rux--toggle__button');
-    btn.type = 'button';
-    btn.id = id;
-    btn.setAttribute('role', 'switch');
-    btn.setAttribute('aria-checked', String(!!on));
-    btn.setAttribute('aria-labelledby', `${id}-l`);
-    const lab = el('label', 'rux--toggle__label');
-    lab.id = `${id}-l`;
-    lab.setAttribute('for', id);
-    const appearance = el('div', 'rux--toggle__appearance');
-    const sw = el('div', 'rux--toggle__switch');
-    if (on) sw.classList.add('rux--toggle__switch--checked');
-    const text = el('span', 'rux--toggle__text', on ? 'On' : 'Off');
-    text.setAttribute('aria-hidden', 'true');
-    appearance.append(sw, text);
-    lab.append(el('span', 'rux--toggle__label-text', label), appearance);
-    box.append(btn, lab);
-    return box;
-  }
-
   /* Carbon's small toggle, from `sink/toggle.html`, with no On/Off text: the
      section heading beside it names the state (Contract signed, PO received,
      Invoice sent). `js/form-controls.js` binds it and fires `rux:toggle`. The
@@ -3371,12 +3346,13 @@
   // rather than blinking off after it.
   applyView();
 
-  // The roster's own close button. Focus goes back to the toolbar toggle
-  // rather than staying on the button just hidden.
+  // The roster's own close button. Focus goes to the control that opens the
+  // roster again: the toolbar toggle, or the menu below md, where the toggle
+  // is hidden and cannot take focus.
   document.getElementById('scheduler-avail-close')?.addEventListener('click', () => {
     availOn = false;
     placeAvailability();
-    availToggle?.focus();
+    (availToggle?.getClientRects().length ? availToggle : viewTrigger)?.focus();
   });
 
   /* A picked contact links the field and fills from it; typing unlinks it, and
@@ -3837,6 +3813,7 @@
   document.getElementById('scheduler-menu-today')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
+    toast(null);
     cursor = mondayOf(new Date());
     show();
   });

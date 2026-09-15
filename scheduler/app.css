@@ -308,7 +308,6 @@ button.scheduler-row-head__num {
 .scheduler-bar--magenta   { --scheduler-bg: var(--rux-tag-background-magenta);   --scheduler-fg: var(--rux-tag-color-magenta);   --scheduler-hover: var(--rux-tag-hover-magenta);   --scheduler-border: var(--rux-tag-border-magenta); }
 .scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
-.scheduler-bar--warm-gray { --scheduler-bg: var(--rux-tag-background-warm-gray); --scheduler-fg: var(--rux-tag-color-warm-gray); --scheduler-hover: var(--rux-tag-hover-warm-gray); --scheduler-border: var(--rux-tag-border-warm-gray); }
 /* Amber is the one hue Carbon's tags lack, so it takes the warning colour, and
    its text is whichever of text-primary or text-inverse is dark in the theme
    (`--scheduler-on-warning`, set in theme.css). The warning colour has no hover
@@ -681,17 +680,6 @@ button.scheduler-row-head__num {
   font-variant-numeric: tabular-nums;
 }
 
-/* A list header's controls, in a flex row that centres them against each
-   other. `.rux--contained-list__action` is absolute with `inset-inline: 0`, so
-   it ignores the header's own padding; the end padding is put back from
-   Carbon's local inline density. */
-.scheduler-list-action {
-  display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-03);
-  padding-inline-end: var(--rux-layout-density-padding-inline-local);
-}
-
 /* A list's rows, hidden while its switch is off. Restated because an element
    inside a Carbon component may be given a display that beats `[hidden]`. The
    header is never hidden, because the switch is in it. */
@@ -767,7 +755,6 @@ button.scheduler-row-head__num {
 .scheduler-page { position: relative; }
 
 .scheduler-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
-.scheduler-board > .scheduler-week { flex: 1 1 auto; min-inline-size: 0; }
 
 /* ── Driver availability ─────────────────────────────────────────────────────
    Who is free on each day, which the board cannot show. Rows are drivers,
@@ -857,7 +844,10 @@ button.scheduler-row-head__num {
    header row, where `.scheduler-avail__day--head` draws none. */
 .scheduler-avail__name { padding-inline: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
+/* The corner stays above the day letters when the roster scrolls sideways.
+   It needs the header row's two-class specificity to beat their z-index 3. */
 .scheduler-avail__days > .scheduler-avail__day--head {
+  z-index: 4;
   font-size: var(--rux-heading-compact-01-font-size);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
@@ -873,7 +863,6 @@ button.scheduler-row-head__num {
 .scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
-  z-index: 4;
   /* 1rem and start-aligned, as Carbon's table header cells are. Declared here,
      after `.scheduler-avail__day`, whose zero padding and centring also match
      this cell at the same specificity. */
@@ -943,7 +932,6 @@ button.scheduler-row-head__num {
    untouched where each is shown. */
 @media (min-width: 42rem) {
   .scheduler-menu-item--sm-only { display: none; }
-  .scheduler-toolbar__sm-only { display: none; }
 }
 
 @media (max-width: 41.98rem) {

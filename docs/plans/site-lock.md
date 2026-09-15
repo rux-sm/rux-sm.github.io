@@ -62,9 +62,15 @@ customer requests, are rebuilt with Design here and open without a login.
   document and request pages. They use Design and the `scheduler-` prefix, are
   not apps and are not in the switcher. They read only the token-checked
   functions, so they keep working after the database closes.
+- **The scheduler carries the company's logo** in every page's header, the
+  link pages' included, and its own bus mark as its favicon and its tile.
 - **Each keeps its old page's address shape:** `driver.html?s=`,
   `maintenance.html?s=`, `document.html?id=` and `request.html?r=`, so a
   forwarder swaps only the start of the address.
+- **The request page takes no file attachments.** rux-ui's form uploads to a
+  `trip-request-uploads` bucket and records each file with
+  `attach_trip_request_document`, and neither exists, so no attachment has
+  ever arrived; the page says to send files when dispatch follows up.
 - **Old and new pages work side by side until the forwarders.** Both read the
   same functions with the same link, so they show the same trips, and an
   accept or decline on either is one record.
@@ -84,15 +90,7 @@ customer requests, are rebuilt with Design here and open without a login.
 
 ## Questions
 
-- **Which name and logo do drivers and customers see?** rux-ui's link pages
-  show the company's; the scheduler's pages show Rux Scheduler and the
-  dachshund. The maintenance, driver and request pages wait on this answer.
-- **Should the request page take file attachments?** rux-ui's form uploads to
-  a `trip-request-uploads` bucket and records each file with
-  `attach_trip_request_document`. Neither exists in the database, so every
-  attachment fails today while the request itself goes through. Keeping them
-  needs a migration adding both; leaving them out matches what customers get
-  now.
+None open.
 
 ## Tasks
 

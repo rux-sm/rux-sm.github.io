@@ -21,8 +21,8 @@
      and nonzero, and both count 97.
      Whole pixel sizes are exact at any multiple of 16, which is what the
      port bought and what the 67 unit export could not offer at any size.
-     Not generated from the logo. Every app's brand folder carries this
-     same file, kept identical by hand.
+     Not generated from the logo. Home's, Notes' and Design's brand folders
+     carry this same file, kept identical by hand; the scheduler has its own.
      Self themed because a favicon gets no CSS from the page: gray-100 on
      a light tab strip, gray-10 on a dark one. -->
 <style>

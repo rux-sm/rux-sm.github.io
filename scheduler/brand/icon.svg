@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app tile icon, the same drawing as brand/favicon.svg. It is a CSS mask
+     over the tile's text colour, so this file's own colours are discarded and
+     only its alpha is read; that is why it carries no fill and no title. -->
+<path d="M3 2L4 2L4 13L3 13ZM6 9L10 9L10 13L6 13ZM3 2L13 2L13 3L3 3ZM1 5L2 5L2 8L1 8ZM1 7L4 7L4 8L1 8ZM12 7L15 7L15 8L12 8ZM3 11L13 11L13 13L3 13ZM3 8L13 8L13 10L3 10ZM14 5L15 5L15 8L14 8ZM4 12L6 12L6 14L4 14ZM10 12L12 12L12 14L10 14ZM12 2L13 2L13 13L12 13Z"/>
+</svg>

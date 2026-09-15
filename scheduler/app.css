@@ -1171,6 +1171,12 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-board[hidden],
 .scheduler-header-search[hidden] { display: none; }
 
+/* Below md the header keeps the company's logo and drops the app's name, so
+   the search, account and switcher buttons stay on the screen. */
+@media (max-width: 41.98rem) {
+  .scheduler-header-app { display: none; }
+}
+
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
    Both pages use Carbon's editorial style model, which Carbon names for
    low-density product screens such as checkout: centred at lg, both pages in

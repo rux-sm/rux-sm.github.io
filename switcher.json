@@ -15,7 +15,7 @@
       "name": "Scheduler",
       "path": "/scheduler/",
       "description": "Fleet scheduling and dispatch",
-      "icon": "#i-calendar"
+      "icon": "/scheduler/brand/icon.svg"
     },
     {
       "name": "Design",

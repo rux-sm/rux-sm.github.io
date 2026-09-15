@@ -67,15 +67,17 @@
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
-    /* The trip editor gets a definite `block-size`, not a cap: the side panel
-       inside it resolves `block-size: 100%` against this box, and a percentage
-       against a parent with only a maximum resolves to auto, which leaves the
-       form unscrollable and the Save bar unpinned. */
-    const trip = document.getElementById('scheduler-trip');
-    if (trip && !trip.hidden) {
-      if (trip.style.blockSize !== panelNext) trip.style.blockSize = panelNext;
-    } else if (trip && trip.style.blockSize) {
-      trip.style.removeProperty('block-size');
+    /* The trip editor and the itinerary panel get a definite `block-size`, not
+       a cap: the side panel inside each resolves `block-size: 100%` against
+       this box, and a percentage against a parent with only a maximum resolves
+       to auto, which leaves the form unscrollable and the Save bar unpinned. */
+    for (const id of ['scheduler-trip', 'scheduler-itinerary']) {
+      const column = document.getElementById(id);
+      if (column && !column.hidden) {
+        if (column.style.blockSize !== panelNext) column.style.blockSize = panelNext;
+      } else if (column && column.style.blockSize) {
+        column.style.removeProperty('block-size');
+      }
     }
   }
 

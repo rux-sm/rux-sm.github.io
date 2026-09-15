@@ -34,7 +34,8 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 
 | Old surface | Verdict | Becomes |
 |---|---|---|
-| Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. The itinerary grid is *later*. |
+| Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch and the trip's itineraries, newest first, read only; upload waits for Design's file uploader. The itinerary grid is *later*. |
+| Document viewer | keep | A `rux--side-panel--lg` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
 | Driver editor | keep | Panel with tabs Profile, License, Status, Time off, Trips. |
 | Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |
@@ -49,8 +50,8 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Notifications | later | Shell header panel, the one the switcher uses. |
 | Driver card | later | Popover from a cell of the availability grid (§7). |
 
-Dropped: dev notes, team chat and presence, the old profile menu (the Design
-account panel replaces it), the document viewer (open in a new tab).
+Dropped: dev notes, team chat and presence, and the old profile menu (the
+Design account panel replaces it).
 
 ## 3. Schedule view in detail
 
@@ -60,7 +61,8 @@ account panel replaces it), the document viewer (open in a new tab).
 | Two-week view | decide | The grid fetches one week. |
 | Tasks, History | later | Pages (§7). |
 | Print envelope on the bar menu | later | With printing. |
-| Upload itinerary, open email thread | later | Wait for Files and for the Missive decision. |
+| Pending itinerary mark | keep | A warning chip on a bar whose trip has no itinerary and is not marked as not needing one. |
+| Upload itinerary, open email thread | later | Upload waits for Design's file uploader and closed document storage; the thread waits for the Missive decision. |
 | Realtime refresh | later | |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
@@ -115,6 +117,8 @@ Three homes, and one rule for choosing.
   spends standing space on an occasional action. On a phone the label is the
   week's months and year, "Sep – Oct 2026", so Driver availability fits beside
   it; the day header numbers the days.
+- **An itinerary reads in its own panel left of the board,** beside the trip
+  panel, because it is read while the trip is edited.
 - **Print is a modal over the same page.**
 
 ### The driver availability grid

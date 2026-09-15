@@ -456,8 +456,9 @@ button.scheduler-row-head__num {
 .scheduler-bar:has(+ .scheduler-bar-shortcuts:not([hidden]), + .scheduler-bar-close) .scheduler-bar__conflict { inset-inline-start: var(--scheduler-tab-w); }
 .scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__notes { opacity: .85; }
 
-/* A requirement the bus fails: the missing item's icon on the warning colour,
-   in the text colour that reads on it, so it shows on every bar tint. The copy
+/* A requirement the bus fails, or a missing itinerary: the missing item's icon
+   on the warning colour, in the text colour that reads on it, so it shows on
+   every bar tint. The copy
    on the destination row shows only while the drivers row is turned off. */
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
@@ -525,19 +526,61 @@ button.scheduler-row-head__num {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
-   `rux--side-panel--sm` class, and the two move together. */
+   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
+   `rux--side-panel--md` class, and the two move together; it is md rather
+   than sm so the five tabs, split evenly, keep whole labels. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 20rem;
-  min-inline-size: 20rem;
+  flex: 0 0 30rem;
+  min-inline-size: 30rem;
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
      `max-block-size` the panel's `block-size: 100%` resolves to auto. This is the
      no-script value; app.js measures the board's top and replaces it. */
   block-size: max(24rem, calc(100dvh - 15rem));
+}
+
+/* The itinerary panel's column, left of everything on the board. 40rem matches
+   the panel's `rux--side-panel--lg` class, and the two move together. Like the
+   editor's column it never shrinks and app.js gives it a definite height;
+   data.js opens it only from 82rem up, where both columns fit. */
+.scheduler-itinerary {
+  order: -2;
+  flex: 0 0 40rem;
+  min-inline-size: 40rem;
+  max-inline-size: 100%;
+  block-size: max(24rem, calc(100dvh - 15rem));
+}
+/* The panel's middle row: the toolbar, and the frame taking what it leaves. */
+.scheduler-itinerary__body {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+/* Carbon's action toolbar has no inset of its own. The rule under it parts it
+   from the frame, as the head's rule parts the head. */
+.scheduler-itinerary__toolbar {
+  flex: none;
+  padding-inline: var(--rux-spacing-03);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-itinerary__uploaded {
+  margin-inline-start: auto;
+  padding-inline-end: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  white-space: nowrap;
+}
+.scheduler-itinerary__frame {
+  display: block;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  inline-size: 100%;
+  border: 0;
 }
 .scheduler-toolbar {
   display: flex;
@@ -715,7 +758,6 @@ button.scheduler-row-head__num {
   text-align: end;
   font-variant-numeric: tabular-nums;
 }
-
 /* A list's rows, hidden while its switch is off. Restated because an element
    inside a Carbon component may be given a display that beats `[hidden]`. The
    header is never hidden, because the switch is in it. */
@@ -764,10 +806,11 @@ button.scheduler-row-head__num {
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
 
-/* A section of an editor tab sits 24px below what comes before it. Its heading
-   is `heading-compact-01`, 14px at 600 in primary text, so it reads as a
-   heading over the 12px secondary field labels beneath it. */
-.scheduler-panel-section { margin-block-start: var(--rux-spacing-06); }
+/* A section of an editor tab sits 32px below what comes before it, a step
+   above the 24px between fields. Its heading is `heading-compact-01`, 14px at
+   600 in primary text, so it reads as a heading over the 12px secondary field
+   labels beneath it. */
+.scheduler-panel-section { margin-block-start: var(--rux-spacing-07); }
 .scheduler-panel-section__title {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
@@ -777,12 +820,44 @@ button.scheduler-row-head__num {
   margin-block-end: var(--rux-spacing-03);
 }
 /* A 1px rule opens every section after the first in the Details and Billing
-   tabs, with 16px under it, so 24px above and 16px below part the groups more
-   than the 16px between fields does. */
+   tabs, with 24px under it, so 32px above and 24px below part the groups more
+   than the 24px between fields does. */
 .scheduler-panel-section--rule {
   border-block-start: 1px solid var(--rux-border-subtle-01);
-  padding-block-start: var(--rux-spacing-05);
+  padding-block-start: var(--rux-spacing-06);
 }
+
+/* A group's heading line with an overflow menu trigger at its end. The line
+   keeps the title's own height, so the title sits 8px over the first label as
+   every group's does, and the 32px trigger reaches 7px above and below it,
+   (18px line - 32px button) / 2, into the gaps around it. */
+.scheduler-group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+  margin-block-end: var(--rux-spacing-03);
+}
+.scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
+.scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
+/* Two fields side by side, each half the row, tops aligned so a helper text
+   under one does not move the other: Type and Trip bar color, and each contact's
+   Name and Phone. */
+.scheduler-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--rux-spacing-05);
+}
+/* A form control keeps an intrinsic width and ignores its track, so every box
+   down to the input gets a zero minimum and fills, as in `.scheduler-times`. */
+.scheduler-pair > *,
+.scheduler-pair .rux--select,
+.scheduler-pair .rux--select-input__wrapper,
+.scheduler-pair .rux--text-input__field-outer-wrapper,
+.scheduler-pair .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
+.scheduler-pair .rux--text-input,
+.scheduler-pair .rux--select-input { inline-size: 100%; min-inline-size: 0; }
 
 /* ── Board layout ────────────────────────────────────────────────────────────
    `.scheduler-board` is a flex row: the roster, the schedule's frame and the
@@ -950,7 +1025,8 @@ button.scheduler-row-head__num {
 .scheduler-times {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--rux-spacing-03);
+  /* 24px between rows, as between the tab's other fields. */
+  gap: var(--rux-spacing-06) var(--rux-spacing-05);
 }
 /* A form control keeps an intrinsic width from its `size` and ignores its
    track, so every box down to the input gets a zero minimum and fills. */

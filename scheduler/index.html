@@ -459,7 +459,7 @@
                inside is styled from that ancestor, and overrides.css removes
                the panel's fixed positioning from md up. -->
           <div class="scheduler-trip" id="scheduler-trip" hidden>
-    <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--condensed-actions" id="scheduler-panel" aria-label="Trip" hidden>
+    <aside class="rux--side-panel rux--side-panel--md rux--side-panel--condensed-actions" id="scheduler-panel" aria-label="Trip" hidden>
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
         <div class="rux--side-panel__title">
           <h2 class="rux--side-panel__title-text" id="scheduler-panel-title">&nbsp;</h2>
@@ -493,8 +493,11 @@
             <button id="scheduler-tab-fleet" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-fleet" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Fleet</span></div>
             </button>
-            <button id="scheduler-tab-schedule" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-schedule" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Schedule</span></div>
+            <button id="scheduler-tab-route" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-route" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Route</span></div>
+            </button>
+            <button id="scheduler-tab-files" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-files" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Files</span></div>
             </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
@@ -502,7 +505,8 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-details" aria-labelledby="scheduler-tab-details" tabindex="0"></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-schedule" aria-labelledby="scheduler-tab-schedule" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-route" aria-labelledby="scheduler-tab-route" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-files" aria-labelledby="scheduler-tab-files" tabindex="0" hidden></div>
       </div>
       <!-- The action bar, least to most committing: Cancel, Reset, Save. The
            row-double and md classes give each button a flex basis of 50%, so
@@ -513,6 +517,55 @@
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--danger--ghost" id="scheduler-panel-cancel">Cancel</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
+      </div>
+    </aside>
+          </div>
+          <!-- The itinerary panel, a column left of the board from Carbon's xlg
+               breakpoint up. data.js opens it on an itinerary and frames the
+               file; narrower, it opens the file in a new tab instead. order: -2
+               in app.css draws it left of the driver availability pane. -->
+          <div class="scheduler-itinerary" id="scheduler-itinerary" hidden>
+    <aside class="rux--side-panel rux--side-panel--lg rux--side-panel--left-placement" id="scheduler-itinerary-panel" aria-label="Itinerary">
+      <div class="rux--side-panel__header rux--side-panel__header--has-title">
+        <div class="rux--side-panel__title">
+          <h2 class="rux--side-panel__title-text" id="scheduler-itinerary-title">Itinerary</h2>
+          <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-itinerary-title-collapsed">Itinerary</h2>
+        </div>
+        <div class="rux--side-panel__decorator-and-close">
+          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-itinerary-close" aria-label="Close itinerary">
+            <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- The body is this app's, not Carbon's padded __inner-content, so the
+           frame meets the panel's edges. The toolbar is Carbon's action
+           toolbar, here rather than in the head, which is a one-line row; it
+           stands in for the browser's PDF toolbar, which data.js hides because
+           Chrome's scrolls sideways at 40rem. The file's actions start disabled
+           and data.js enables them once the file has loaded. -->
+      <div class="scheduler-itinerary__body">
+        <div class="rux--side-panel__action-toolbar scheduler-itinerary__toolbar" role="group" aria-label="Itinerary actions">
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--out"/></svg>
+          </button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="fit" aria-label="Fit to width" title="Fit to width" disabled>
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-fit-to-width"/></svg>
+          </button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="in" aria-label="Zoom in" title="Zoom in" disabled>
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--in"/></svg>
+          </button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-itinerary-print" aria-label="Print" title="Print" disabled>
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-printer"/></svg>
+          </button>
+          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-itinerary-download" aria-label="Download" title="Download">
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-download"/></svg>
+          </a>
+          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-itinerary-new-tab" target="_blank" rel="noopener" aria-label="Open in new tab" title="Open in new tab">
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-launch"/></svg>
+          </a>
+          <span class="scheduler-itinerary__uploaded" id="scheduler-itinerary-uploaded"></span>
+        </div>
+        <iframe class="scheduler-itinerary__frame" id="scheduler-itinerary-frame" title="Itinerary"></iframe>
       </div>
     </aside>
           </div>

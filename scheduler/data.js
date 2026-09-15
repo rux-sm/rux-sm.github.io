@@ -260,10 +260,13 @@
     'id', 'destination', 'customer', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
-    'req_sleeper', 'req_ada', 'req_56pax', 'notes', 'updated_at',
+    'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
-    // The trip's documents, for the itinerary shortcut.
-    'trip_documents(id,label,created_at)',
+    // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
+    // and the itinerary panel, which frames the file at its path.
+    'trip_documents(id,label,created_at,file_name,file_path)',
+    // Set in the Files tab; a trip that does not need an itinerary is not marked.
+    'itinerary_not_needed',
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
     // The trip's own copy of the booking contact, which rux-ui reads and writes.
@@ -469,11 +472,20 @@
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
   };
 
-  // The trip's newest document labelled Itinerary, as rux-ui picks it: a
-  // re-uploaded itinerary replaces the one before.
-  const latestItinerary = trip => (trip.trip_documents || [])
+  // The trip's documents labelled Itinerary, newest first. The first is the one
+  // rux-ui picks: a re-uploaded itinerary replaces the one before.
+  const itinerariesOf = trip => (trip.trip_documents || [])
     .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
-    .reduce((newest, d) => (!newest || new Date(d.created_at || 0) > new Date(newest.created_at || 0) ? d : newest), null);
+    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  const latestItinerary = trip => itinerariesOf(trip)[0] ?? null;
+
+  // A document's upload day as mm/dd/yyyy on this computer's calendar. The
+  // column is a timestamp, so `mdy` would print its UTC day.
+  const uploadedOn = at => {
+    const d = new Date(at || '');
+    return Number.isNaN(d.getTime()) ? ''
+      : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  };
 
   function barEl(b, driversById, busesById) {
     const { trip, leg, assign, place, slot } = b;
@@ -483,7 +495,8 @@
     bar.dataset.tripColor = tripColorOf(trip) ?? '';
     bar.dataset.standardHue = standardHueOf(trip);
     // The itinerary shortcut and menu item open this document.
-    bar.dataset.itineraryId = latestItinerary(trip)?.id ?? '';
+    const itinerary = latestItinerary(trip);
+    bar.dataset.itineraryId = itinerary?.id ?? '';
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
@@ -518,6 +531,10 @@
       trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
       trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
     ].filter(Boolean) : [];
+    /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
+       Pending itinerary is: no document labelled Itinerary, and the trip not
+       marked as not needing one. */
+    if (!itinerary && !trip.itinerary_not_needed) lacks.push({ href: '#i-attachment', label: 'No itinerary yet' });
     // Drawn on the drivers row and again on the destination row; app.css shows
     // the second only while the drivers row is turned off, so hiding a row
     // never hides the warning. The bar's label carries it for a screen reader.
@@ -1026,7 +1043,8 @@
   const panelDetails = document.getElementById('scheduler-panel-details');
   const panelFleet = document.getElementById('scheduler-panel-fleet');
   const panelBilling = document.getElementById('scheduler-panel-billing');
-  const panelSchedule = document.getElementById('scheduler-panel-schedule');
+  const panelRoute = document.getElementById('scheduler-panel-route');
+  const panelFiles = document.getElementById('scheduler-panel-files');
   const panelSave = document.getElementById('scheduler-panel-save');
   const panelReset = document.getElementById('scheduler-panel-reset');
   const panelCancel = document.getElementById('scheduler-panel-cancel');
@@ -1069,13 +1087,20 @@
     return wrap;
   };
 
+  // Two fields side by side, each half the row; app.css sizes them.
+  const pair = (...nodes) => {
+    const row = el('div', 'scheduler-pair');
+    row.append(...nodes);
+    return row;
+  };
+
   /* A run of fields under one heading is a fieldset, so a screen reader names
      each field with its group, "Booking contact, Name", and the labels need not
      repeat the heading. The rule is on a wrapper, because a fieldset draws its
      legend across its own top border. */
   const fieldGroup = (title, ...nodes) => {
     const set = el('fieldset', 'rux--fieldset');
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
     stack.append(...nodes);
     set.append(el('legend', 'scheduler-panel-section__title', title), stack);
     const wrap = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
@@ -1126,19 +1151,21 @@
     menu.setAttribute('role', 'menu');
     menu.tabIndex = -1;
     menu.hidden = true;
-    const item = (text, danger, pick) => {
+    const item = (danger, pick) => {
       const li = el('li', danger ? 'rux--menu-item rux--menu-item--danger' : 'rux--menu-item');
       li.setAttribute('role', 'menuitem');
       li.tabIndex = 0;
-      li.appendChild(el('div', 'rux--menu-item__label', text));
+      li.dataset.pick = pick;
+      li.appendChild(el('div', 'rux--menu-item__label'));
       li.addEventListener('click', () => {
+        if (li.getAttribute('aria-disabled') === 'true') return;
         const act = rowMenuFor;
         window.Rux?.menu?.close?.(menu);
         act?.[pick]?.();
       });
       return li;
     };
-    menu.append(item('Edit', false, 'edit'), item('Remove', true, 'remove'));
+    menu.append(item(false, 'edit'), item(true, 'remove'));
     menu.addEventListener('rux:menu-closed', () => {
       menu.hidden = true;
       rowMenuTrigger?.setAttribute('aria-expanded', 'false');
@@ -1152,6 +1179,17 @@
   const openRowMenu = (trigger, actions) => {
     const menu = rowMenu();
     rowMenuFor = actions;
+    /* The two items' words and states are the caller's: Edit and Remove unless
+       it names them, as Day-of contacts' Add contact and Remove last contact,
+       and either can be disabled. */
+    for (const li of menu.children) {
+      const pick = li.dataset.pick;
+      li.querySelector('.rux--menu-item__label').textContent =
+        actions[`${pick}Text`] ?? (pick === 'edit' ? 'Edit' : 'Remove');
+      const off = !!actions[`${pick}Disabled`];
+      li.classList.toggle('rux--menu-item--disabled', off);
+      li.setAttribute('aria-disabled', String(off));
+    }
     // Fixed, so the trigger's viewport rect places it directly.
     menu.hidden = false;
     menu.style.position = 'fixed';
@@ -1222,6 +1260,24 @@
     }));
     act.appendChild(more);
     li.appendChild(act);
+    return li;
+  };
+
+  /* A trip document as a list row that opens it in the itinerary panel: the
+     file's name, cut to one line, and its upload date. */
+  const documentRow = (trip, doc) => {
+    const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+    const open = el('button', 'rux--contained-list-item__content');
+    open.type = 'button';
+    const when = uploadedOn(doc.created_at);
+    const line = el('span', 'scheduler-listrow scheduler-listrow--document');
+    line.append(el('span', 'scheduler-listrow__when', doc.file_name || 'Itinerary'),
+                el('span', 'scheduler-listrow__much', when));
+    open.appendChild(line);
+    if (doc.file_name) open.title = doc.file_name;
+    open.setAttribute('aria-label', when ? `Open the itinerary uploaded ${when}` : 'Open the itinerary');
+    open.addEventListener('click', () => openDocument(trip, doc, open));
+    li.appendChild(open);
     return li;
   };
 
@@ -1514,10 +1570,8 @@
 
      `js/list-box.js` opens it, runs the keyboard and moves the selection. A
      pick writes the option's text into the field, which drops the chip, so
-     the field is repainted here. It opens upward, Carbon's `--list-box--up`,
-     because it is the last field in Details and a list opening down runs
-     under the action bar. The root carries `id`, which is what `readForm`
-     looks up. */
+     the field is repainted here. The root carries `id`, which is what
+     `readForm` looks up. */
   function colorField(id, trip) {
     const chosen = tripColorOf(trip) ?? '';
     const choices = [{ value: '', label: 'Standard', hue: standardHueOf(trip) }, ...TRIP_COLORS];
@@ -1526,9 +1580,9 @@
       c.setAttribute('aria-hidden', 'true');
       return c;
     };
-    const lab = el('label', 'rux--label', 'Trip color');
+    const lab = el('label', 'rux--label', 'Trip bar color');
     lab.id = `${id}-label`;
-    const root = el('div', 'rux--dropdown rux--list-box rux--list-box--up rux--layout--size-md');
+    const root = el('div', 'rux--dropdown rux--list-box rux--layout--size-md');
     root.id = id;
     const field = el('button', 'rux--list-box__field');
     field.type = 'button';
@@ -1562,9 +1616,8 @@
     root.addEventListener('rux:listbox-selected', e =>
       paint(choices.find(c => c.value === e.detail.option.dataset.color)));
     const wrap = el('div', 'rux--list-box__wrapper');
-    wrap.append(lab, root, el('div', 'rux--form__helper-text',
-      'A color replaces the standard blue, and the red of an unconfirmed trip.'));
-    const item = el('div', 'rux--form-item scheduler-panel-section');
+    wrap.append(lab, root);
+    const item = el('div', 'rux--form-item');
     item.appendChild(wrap);
     return item;
   }
@@ -1726,6 +1779,8 @@
     { key: 'req_sleeper', get: f => f['scheduler-f-sleeper'].checked },
     { key: 'req_ada', get: f => f['scheduler-f-ada'].checked },
     { key: 'req_56pax', get: f => f['scheduler-f-56pax'].checked },
+    // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
+    { key: 'need_hotel', get: f => f['scheduler-f-hotel'].checked },
     { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
     /* Billing. Money goes to the column as a number or null, never NaN, which
        Postgres rejects with an error that does not name the field. The two
@@ -1750,6 +1805,8 @@
     { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
     { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
     { key: 'invoice_number', get: () => listRowsToSave('invoice')[0]?.number ?? null },
+    // Files. A trip that runs without an itinerary loses its bar's mark.
+    { key: 'itinerary_not_needed', get: f => on(f['scheduler-f-notneeded']) },
     /* The contact links are trip columns, so they diff here. They read the DOM
        rather than `f`, which keeps them out of `readForm`'s required ids; a
        getter returns undefined when its control is not on screen. */
@@ -1904,13 +1961,13 @@
 
   function readForm() {
     const f = {};
-    for (const id of ['destination', 'customer', 'type', 'sleeper', 'ada', '56pax', 'notes',
+    for (const id of ['destination', 'customer', 'type', 'sleeper', 'ada', '56pax', 'hotel', 'notes',
                       // Every id `EDITS` reads through `f` is listed, and only
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
                       'contract', 'contractnote', 'poreceived', 'invoice',
-                      'color']) {
+                      'color', 'notneeded']) {
       f[`scheduler-f-${id}`] = document.getElementById(`scheduler-f-${id}`);
     }
     if (Object.values(f).some(v => !v)) return null;
@@ -2172,7 +2229,7 @@
 
 
 
-  /* What the Schedule tab writes to `trip_stops` on an existing trip: one
+  /* What the Route tab writes to `trip_stops` on an existing trip: one
      update per changed row, or [] when nothing moved. A leg with no pickup or
      return stop gets no new row, because where it belongs among the stops is
      the itinerary editor's business; those controls render disabled. */
@@ -2283,7 +2340,7 @@
       trip_type: 'round_trip', confirmed: false,
       start_date: start, end_date: start,
       return_start_date: null, return_end_date: null,
-      req_sleeper: false, req_ada: false, req_56pax: false,
+      req_sleeper: false, req_ada: false, req_56pax: false, need_hotel: false,
       notes: null, trip_assignments: [], trip_stops: [],
       // The id the trip is inserted with, fixed for the panel's life, so a
       // second press of Save cannot make a second trip.
@@ -2344,6 +2401,7 @@
       req_sleeper: !!trip.req_sleeper,
       req_ada: !!trip.req_ada,
       req_56pax: !!trip.req_56pax,
+      need_hotel: !!trip.need_hotel,
       notes: trip.notes ?? null,
       start_date: trip.start_date ?? null,
       end_date: trip.end_date ?? trip.start_date ?? null,
@@ -2361,6 +2419,7 @@
       // Booleans take `!!`, not `?? null`, because `same(false, null)` is a change.
       po_received: !!trip.po_received,
       invoiced: !!trip.invoiced,
+      itinerary_not_needed: !!trip.itinerary_not_needed,
       booking_contact_id: trip.booking_contact_id ?? null,
       trip_contact_1_id: trip.trip_contact_1_id ?? null,
       trip_contact_2_id: trip.trip_contact_2_id ?? null,
@@ -2398,8 +2457,9 @@
     })();
 
     panelDetails.replaceChildren();
-    /* Type comes first because it decides the form's shape: a drop-off and
-       pick-up trip has two date ranges, every other type one. The return pair
+    /* The dates lead the tab, because a trip is found by when it runs. Type,
+       further down, decides their shape: a drop-off and pick-up trip has two
+       date ranges, every other type one. The return pair
        is a second outing, since the bus is free between drop-off and pick-up,
        so `legsOf` draws it as a second bar; it shows only for a split. */
     const returnDates = el('div', 'scheduler-panel-return-dates');
@@ -2423,32 +2483,38 @@
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
-    /* Equipment is Carbon's horizontal checkbox group, one row that wraps if
-       the labels outgrow the panel. It follows Notes with no visible heading,
-       because the three boxes name themselves; the legend stays for a screen
-       reader. */
+    /* Needs is Carbon's horizontal checkbox group under its legend, one row
+       that wraps if the labels outgrow the panel. Sleeper, ADA lift and 56 pax
+       are asked of the bus; Hotel is a reminder that one has to be booked. */
     const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal');
     flags.setAttribute('aria-disabled', 'false');
     flags.append(
-      el('legend', 'rux--visually-hidden', 'Equipment'),
+      el('legend', 'rux--label', 'Needs'),
       checkField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
       checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
       checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
+      checkField('scheduler-f-hotel', 'Hotel', trip.need_hotel),
     );
 
-    const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    /* The trip's own fields are one stack, 24px apart. Type and Trip bar color
+       share a row, each one pick from a short list; the bar color is a property
+       of the trip, not a section of its own. */
+    const topFields = el('div', 'rux--stack-vertical rux--stack-scale-6');
     topFields.append(
-      selectField('scheduler-f-type', 'Type', trip.trip_type, [
-        ['', '—'],
-        ['round_trip', 'Round trip'],
-        ['one_way', 'One way'],
-        [SPLIT, 'Drop-off and pick-up'],
-      ]),
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
       returnDates,
       textField('scheduler-f-destination', 'Destination', trip.destination),
       // The organization is `trips.customer`; the contact's own `client` is not shown.
       textField('scheduler-f-customer', 'Organization', trip.customer),
+      pair(
+        selectField('scheduler-f-type', 'Type', trip.trip_type, [
+          ['', '—'],
+          ['round_trip', 'Round trip'],
+          ['one_way', 'One way'],
+          [SPLIT, 'Drop-off and pick-up'],
+        ]),
+        colorField('scheduler-f-color', trip),
+      ),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
       flags,
     );
@@ -2465,11 +2531,15 @@
          the first thing known. A field's label is its own word alone, because
          the group's heading says whose it is; the copy button still names the
          contact in full. */
+      // Name and Phone side by side, as each day-of contact has them; Email,
+      // the longest value, keeps the whole row.
       panelDetails.appendChild(fieldGroup('Booking contact',
-        withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
-          'scheduler-f-cfind', 'Booking contact name'),
-        withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
-          'scheduler-f-cphone', 'Booking contact phone'),
+        pair(
+          withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
+            'scheduler-f-cfind', 'Booking contact name'),
+          withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
+            'scheduler-f-cphone', 'Booking contact phone'),
+        ),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
       ));
@@ -2478,72 +2548,112 @@
 
       /* ── Day-of-trip contacts ──
          "Day-of-trip", not "on-site": the person may travel with the group or
-         coordinate from a desk. The trip's own rows are drawn, or one empty row
-         when it has none, and `Add another contact` adds rows up to the
-         schema's five. */
+         coordinate from a desk. The trip's own contacts are drawn, or one empty
+         contact when it has none, and the section's menu adds one up to the
+         schema's five or removes the last. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      // A stack, so each day-of field keeps the group's gap.
-      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      /* Name over phone, under the group's heading. From the second contact the
-         number follows the noun, `Name 2`, so it reads as the second contact's
-         name. */
-      const drawRow = (c, n) => {
-        const suffix = n === 1 ? '' : ` ${n}`;
-        rowsHost.append(
-          withCopy(contactSearch(`scheduler-f-d${n}`, `Name${suffix}`, allContacts, c),
-            `scheduler-f-d${n}`, `Day-of contact name${suffix}`),
-          withCopy(textField(`scheduler-f-dphone${n}`, `Phone${suffix}`, c?.phone),
-            `scheduler-f-dphone${n}`, `Day-of contact phone${suffix}`),
-        );
-      };
-      const shown = dayRows.length ? dayRows : [null];
-      shown.forEach((c, i) => drawRow(c, i + 1));
+      // A stack, so each contact keeps the group's gap.
+      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-6');
 
-      // The button names what it adds, and stops at five because the schema does.
-      const addBtn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Add another contact');
-      addBtn.type = 'button';
-      addBtn.id = 'scheduler-f-dadd';
-      /* The icon follows the label and carries `rux--btn__icon`: Carbon spaces a
-         ghost button's icon with a start margin, which is right only when the
-         icon trails. */
-      addBtn.append(svgUse('#i-add', '16', '0 0 32 32'));
-      addBtn.lastChild.setAttribute('class', 'rux--btn__icon');
-      let count = shown.length;
-      const syncAdd = () => { addBtn.disabled = count >= 5; };
-      addBtn.addEventListener('click', () => {
-        if (count >= 5) return;
-        count += 1;
-        drawRow(null, count);
-        syncAdd();
+      // What the drawn contacts hold, in `tripContact`'s shape.
+      const readContacts = () => [...rowsHost.children].map((_, i) => {
+        const box = document.getElementById(`scheduler-f-d${i + 1}`);
+        const name = box?.value.trim() || '';
+        return { id: name ? (box.dataset.contactId || null) : null, name,
+                 phone: document.getElementById(`scheduler-f-dphone${i + 1}`)?.value.trim() || null };
       });
-      syncAdd();
-      // After the rows in the group's stack, so the stack's gap sits above it.
-      // overrides.css spans it across the column.
-      panelDetails.appendChild(fieldGroup('Day-of contacts', rowsHost, addBtn));
-    }
 
-    // Trip color closes the tab alone, under a rule, its label its heading.
-    const color = colorField('scheduler-f-color', trip);
-    color.classList.add('scheduler-panel-section--rule');
-    panelDetails.appendChild(color);
+      /* Each contact is one row, Name and Phone side by side, as a group named
+         Contact 1 to 5, which a screen reader says before its labels, so the
+         tab needs no heading between the section title and the fields. Adding
+         and removing are on the overflow menu at the end of the section's title
+         line, out of the rows: Add contact, up to five, and Remove last
+         contact, down to one; a contact in the middle is emptied by clearing
+         its fields. The fields keep positional ids, `scheduler-f-d2` for the
+         second contact, which `EDITS` and `linkContacts` read, so a redraw
+         fills them from what they held. */
+      const drawContacts = list => {
+        rowsHost.replaceChildren();
+        list.forEach((c, i) => {
+          const n = i + 1;
+          const row = pair(
+            withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
+              `scheduler-f-d${n}`, `Contact ${n} name`),
+            withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
+              `scheduler-f-dphone${n}`, `Contact ${n} phone`),
+          );
+          row.setAttribute('role', 'group');
+          row.setAttribute('aria-label', `Contact ${n}`);
+          rowsHost.appendChild(row);
+        });
+      };
+      drawContacts(dayRows.length ? dayRows : [null]);
+
+      const menuBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+      menuBtn.type = 'button';
+      menuBtn.id = 'scheduler-f-dmenu';
+      menuBtn.setAttribute('aria-haspopup', 'true');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.setAttribute('aria-label', 'Day-of contact actions');
+      menuBtn.title = 'Day-of contact actions';
+      menuBtn.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+      menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
+      menuBtn.addEventListener('click', () => {
+        const count = readContacts().length;
+        openRowMenu(menuBtn, {
+          editText: 'Add contact', editDisabled: count >= 5,
+          edit: () => {
+            const kept = readContacts();
+            if (kept.length >= 5) return;
+            drawContacts([...kept, null]);
+            syncCopy();
+            document.getElementById(`scheduler-f-d${kept.length + 1}`)?.focus();
+          },
+          removeText: 'Remove last contact', removeDisabled: count <= 1,
+          remove: () => {
+            const kept = readContacts();
+            if (kept.length <= 1) return;
+            drawContacts(kept.slice(0, -1));
+            syncCopy();
+            refreshDirty();
+            menuBtn.focus();
+          },
+        });
+      });
+
+      /* The section is a group named by its title, not a fieldset, because the
+         title line also holds the menu, and a legend must be the fieldset's
+         first child and nothing beside it. */
+      const days = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
+      const dayTitle = el('div', 'scheduler-panel-section__title', 'Day-of contacts');
+      dayTitle.id = 'scheduler-f-dgroup';
+      const dayHead = el('div', 'scheduler-group__head');
+      dayHead.append(dayTitle, menuBtn);
+      const dayGroup = el('div');
+      dayGroup.setAttribute('role', 'group');
+      dayGroup.setAttribute('aria-labelledby', dayTitle.id);
+      dayGroup.append(dayHead, rowsHost);
+      days.appendChild(dayGroup);
+      panelDetails.appendChild(days);
+    }
 
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.
     panelCancel.hidden = creating || !trip.id;
 
-    /* ── Schedule ──
+    /* ── Route ──
        These controls write the leg's `trip_stops` rows, which is where
        `timesOf` reads the board's times, falling back to a trip column only for
        departure. They are leg-scoped: the panel opens from one bar, and
        `stopsOfLeg` picks the same pickup and return rows `timesOf` places that
        bar by. */
-    panelSchedule.replaceChildren();
+    panelRoute.replaceChildren();
     {
       /* On a new trip there are no stops yet, and Save inserts the first ones on
          the outbound leg, where nothing else can come before them. On an
          existing leg a missing stop is not invented. */
       const { pickup, back } = creating ? { pickup: null, back: null } : stopsOfLeg(trip, legName);
-      const sched = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      const sched = el('div', 'rux--stack-vertical rux--stack-scale-6');
       const times = el('div', 'scheduler-times');
       times.append(
         timeField('scheduler-f-depart', 'Yard depart', pickup?.depart_prev),
@@ -2567,7 +2677,7 @@
       }
       // The tab is the heading. A return leg gets its own, to say which of a
       // split trip's two outings these times belong to.
-      panelSchedule.appendChild(
+      panelRoute.appendChild(
         legName === 'return' ? section('Return leg', sched) : sched);
     }
 
@@ -2582,7 +2692,7 @@
          `rux--stack-vertical` is `display: grid`, which overrides the bare
          `[hidden]` attribute. */
       const gate = (fields, help) => {
-        const box = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-milestone-fields');
+        const box = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-milestone-fields');
         box.append(...fields);
         if (help) box.appendChild(help);
         return box;
@@ -2807,7 +2917,7 @@
       );
       tile.appendChild(tileStack);
 
-      const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      const summary = el('div', 'rux--stack-vertical rux--stack-scale-6');
       summary.append(
         tile,
         moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price),
@@ -2926,7 +3036,7 @@
     }
 
     // Fleet is the bus and who is on it; the dates are in Details and the times
-    // in Schedule.
+    // in Route.
     panelFleet.replaceChildren();
     if (creating) {
       const onBus = createBusId ? panelIndex.buses.get(createBusId) : null;
@@ -2940,6 +3050,26 @@
       ['Needs', reqs],
     ]));
 
+    /* Files is the trip's itineraries, newest first, and only reads them:
+       upload, replace and delete stay in rux-ui. Its switch writes
+       `itinerary_not_needed` with Save, like any field. */
+    panelFiles.replaceChildren();
+    const notNeeded = section('Itinerary not needed',
+      el('p', 'scheduler-panel-hint', 'On for a trip that runs without one, so its bars stop showing No itinerary yet.'),
+      toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
+    const itineraries = creating ? [] : itinerariesOf(trip);
+    let docsNode;
+    if (itineraries.length) {
+      const { list, body } = rowList();
+      body.append(...itineraries.map(doc => documentRow(trip, doc)));
+      docsNode = list;
+    } else {
+      docsNode = el('p', 'scheduler-panel-hint', 'Itineraries uploaded to the trip in rux-ui are listed here.');
+    }
+    const docsWrap = section('Itineraries', docsNode);
+    docsWrap.classList.add('scheduler-panel-section--rule');
+    panelFiles.append(notNeeded, docsWrap);
+
     /* The date-picker module claims pickers on load; these were just built, so
        it is asked again for the whole panel body. An unclaimed picker renders
        its calendar open, because the module closes a calendar by detaching it. */
@@ -2948,7 +3078,7 @@
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring
        round the whole tab. Decided per panel from its contents, which change. */
-    for (const tp of [panelDetails, panelBilling, panelFleet, panelSchedule]) {
+    for (const tp of [panelDetails, panelBilling, panelFleet, panelRoute, panelFiles]) {
       const focusable = tp.querySelector('input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])');
       if (focusable) tp.removeAttribute('tabindex');
       else tp.setAttribute('tabindex', '0');
@@ -3453,17 +3583,14 @@
   // included: that handler is registered above, so this runs after it.
   panelDetails?.addEventListener('input', syncCopy);
   panelDetails?.addEventListener('rux:listbox-selected', syncCopy);
-  // The add button reveals a row and fires neither input nor change, so Save's
-  // state is refreshed on the click.
-  panelDetails?.addEventListener('click', e => {
-    if (e.target?.closest?.('#scheduler-f-dadd')) refreshDirty();
-  });
   /* Billing is a second tab and needs its own listeners. A toggle is a
      <button> that fires neither `input` nor `change`; `form-controls.js` sends
      `rux:toggle` instead. */
   panelBilling?.addEventListener('input', refreshDirty);
   panelBilling?.addEventListener('change', refreshDirty);
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
+  // Files has one switch.
+  panelFiles?.addEventListener('rux:toggle', refreshDirty);
 
   /* Reset replays `openPanel` with the arguments that opened it, which rewrites
      every field from the trip at once, date labels, return pair, added contact
@@ -3874,10 +4001,176 @@
     }
   }
 
-  // The document link page opens a trip document by its id, in a new tab.
+  /* ── The itinerary panel ──
+     From Carbon's xlg breakpoint up, an itinerary opens in a side panel left of
+     the board, beside the trip editor. Narrower, the two panels do not fit and
+     a phone frames a PDF badly, so the document link page opens it in a new tab.
+     The panel fetches the file and frames a blob address of it, because a frame
+     of the bucket's own address is another origin, which the page may not
+     print. The browser's PDF toolbar is hidden, since Chrome's scrolls sideways
+     at 40rem, and the panel's action toolbar stands in for it. The panel stays
+     open through week changes and selections, like the editor, and another
+     itinerary replaces the one shown. */
+  const itinEl = document.getElementById('scheduler-itinerary');
+  let itinFrame = document.getElementById('scheduler-itinerary-frame');
+  const itinTitle = document.getElementById('scheduler-itinerary-title');
+  const itinTitleCollapsed = document.getElementById('scheduler-itinerary-title-collapsed');
+  const itinUploaded = document.getElementById('scheduler-itinerary-uploaded');
+  const itinPrint = document.getElementById('scheduler-itinerary-print');
+  const itinDownload = document.getElementById('scheduler-itinerary-download');
+  const itinNewTab = document.getElementById('scheduler-itinerary-new-tab');
+  const itinClose = document.getElementById('scheduler-itinerary-close');
+  const itinZooms = [...document.querySelectorAll('[data-itinerary-zoom]')];
+  // The 40rem panel beside the 30rem editor, with the board still in view.
+  const itinWide = matchMedia('(min-width: 82rem)');
+  // The zooms Zoom in and Zoom out step through, in percent.
+  const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
+  let itinOpener = null;
+  // The file showing: its document id, its blob address, and its zoom, where
+  // null is fit to width.
+  let itinShown = null;
+  // Counts opens, so a slow fetch that a later open overtook is dropped.
+  let itinSeq = 0;
+  const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
+
+  /* Each load gets a new frame: a PDF viewer does not read a changed fragment
+     again, and navigating a frame that has loaded adds to the tab's history,
+     so Back would step through zooms. */
+  function swapFrame(src) {
+    const frame = itinFrame.cloneNode(false);
+    if (src) frame.src = src; else frame.removeAttribute('src');
+    itinFrame.replaceWith(frame);
+    itinFrame = frame;
+  }
+
+  // Frames the file at its zoom, and disables the zoom that has nowhere to go.
+  function frameItinerary() {
+    const { blob, zoom } = itinShown;
+    swapFrame(`${blob}#toolbar=0&navpanes=0&${zoom == null ? 'view=FitH' : `zoom=${zoom}`}`);
+    for (const btn of itinZooms) {
+      const step = btn.dataset.itineraryZoom;
+      btn.disabled = step === 'fit' ? zoom == null
+        : step === 'in' ? zoom === ZOOM_STEPS.at(-1)
+        : zoom === ZOOM_STEPS[0];
+    }
+  }
+
+  // A fit-to-width page reads as about 90%, so the first step from it is 100%
+  // in or 75% out.
+  function zoomItinerary(step) {
+    if (!itinShown) return;
+    const now = itinShown.zoom;
+    if (step === 'fit') itinShown.zoom = null;
+    else if (step === 'in') itinShown.zoom = ZOOM_STEPS.find(z => z > (now ?? 90)) ?? ZOOM_STEPS.at(-1);
+    else itinShown.zoom = ZOOM_STEPS.findLast(z => z < (now ?? 90)) ?? ZOOM_STEPS[0];
+    if (itinShown.zoom !== now) frameItinerary();
+  }
+
+  // The actions that need the fetched file wait for it; Open in new tab does not.
+  function setItineraryReady(ready) {
+    for (const btn of [...itinZooms, itinPrint]) btn.disabled = !ready;
+    if (!ready) itinDownload.removeAttribute('href');
+  }
+
+  // Lets go of the file showing: the frame empties and its blob is freed.
+  function dropItinerary() {
+    if (itinShown) URL.revokeObjectURL(itinShown.blob);
+    itinShown = null;
+    setItineraryReady(false);
+    swapFrame(null);
+  }
+
+  async function openDocument(trip, doc, opener) {
+    if (!doc) return;
+    const url = client && doc.file_path
+      ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
+    if (!itinEl || !itinWide.matches || !url) {
+      window.open(documentLink(doc.id), '_blank', 'noopener');
+      return;
+    }
+    // The head names the trip as the editor's does: an icon, then the
+    // destination, with "Itinerary" for a screen reader in place of the icon.
+    const dest = trip?.destination || 'No destination';
+    for (const h of [itinTitle, itinTitleCollapsed]) {
+      const icon = svgUse('#i-attachment', '16', '0 0 32 32');
+      icon.setAttribute('class', 'scheduler-panel-title__icon');
+      h.replaceChildren(icon, el('span', 'rux--visually-hidden', 'Itinerary: '), document.createTextNode(dest));
+      h.title = dest;
+    }
+    const when = uploadedOn(doc.created_at);
+    itinUploaded.textContent = when ? `Uploaded ${when}` : '';
+    itinNewTab.href = url;
+    if (itinEl.hidden) {
+      itinOpener = opener ?? null;
+      itinEl.hidden = false;
+      window.Rux?.schedule?.fit?.();
+    }
+    itinClose?.focus();
+    // The file showing is not fetched again, so its zoom stays.
+    if (itinShown?.id === doc.id) return;
+    const seq = ++itinSeq;
+    dropItinerary();
+    try {
+      const res = await withTimeout(fetch(url));
+      if (!res.ok) throw new Error(`The storage answered ${res.status}.`);
+      const bytes = await res.arrayBuffer();
+      if (seq !== itinSeq) return;
+      const blob = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      itinShown = { id: doc.id, blob, zoom: null };
+      itinFrame.title = `Itinerary for ${dest}`;
+      itinDownload.href = blob;
+      itinDownload.download = doc.file_name || 'itinerary.pdf';
+      setItineraryReady(true);
+      frameItinerary();
+    } catch (err) {
+      if (seq !== itinSeq) return;
+      // `withTimeout` words its timeout for the schedule, so it is reworded here.
+      const why = err.timedOut ? 'The storage did not answer in time.' : err.message;
+      toast('error', `The itinerary did not load. ${why} Open in new tab still opens it.`);
+    }
+  }
+
+  for (const btn of itinZooms) {
+    btn.addEventListener('click', () => {
+      zoomItinerary(btn.dataset.itineraryZoom);
+      // A zoom that has nowhere further to go is disabled, and would drop focus.
+      if (btn.disabled) itinZooms.find(b => !b.disabled)?.focus();
+    });
+  }
+  // The frame is a blob of this page's origin, so the page may print it. A
+  // browser that refuses gets the file in a new tab, where its viewer prints.
+  itinPrint?.addEventListener('click', () => {
+    try {
+      itinFrame.contentWindow.focus();
+      itinFrame.contentWindow.print();
+    } catch {
+      window.open(itinNewTab.href, '_blank', 'noopener');
+    }
+  });
+
+  function closeItinerary(returnFocus = true) {
+    if (!itinEl || itinEl.hidden) return;
+    itinEl.hidden = true;
+    // A fetch still running is dropped, and no PDF is held while the panel is shut.
+    itinSeq++;
+    dropItinerary();
+    window.Rux?.schedule?.fit?.();
+    const opener = itinOpener;
+    itinOpener = null;
+    if (returnFocus && opener?.isConnected) opener.focus();
+  }
+  itinClose?.addEventListener('click', () => closeItinerary());
+  // A window narrowed below xlg has no room for the panel.
+  itinWide.addEventListener('change', e => { if (!e.matches) closeItinerary(false); });
+
+  // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
   function openItinerary(bar) {
     const id = bar.dataset.itineraryId;
-    if (id) window.open(`share/document.html?id=${encodeURIComponent(id)}`, '_blank', 'noopener');
+    if (!id) return;
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    const doc = trip ? itinerariesOf(trip).find(d => String(d.id) === id) : null;
+    if (doc) openDocument(trip, doc, bar);
+    else window.open(documentLink(id), '_blank', 'noopener');
   }
 
   // Color from a slot opens the bar menu beside the slot, with Color's own
@@ -4075,13 +4368,19 @@
     whenSafe(() => openCreate());
   });
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
-  /* Escape acts where focus is. Inside the editor it closes the editor; on the
-     board it clears a selection first. An open dialog or search keeps the key
+  /* Escape acts where focus is. Inside the itinerary panel it closes that
+     panel; inside the editor it closes the editor; on the board it clears a
+     selection first. An open dialog or search keeps the key
      for itself, and so does anything that already took it -- a list or date
      picker closing, a combo box clearing -- so one press does one thing. */
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
+    if (itinEl && !itinEl.hidden && itinEl.contains(document.activeElement)) {
+      e.preventDefault();
+      closeItinerary();
+      return;
+    }
     const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);
     if (!inEditor && selectedBar()) { e.preventDefault(); clearSelection(); return; }
     if (!panelEl.hidden) { e.preventDefault(); whenSafe(() => closePanel()); }

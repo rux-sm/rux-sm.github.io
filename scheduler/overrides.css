@@ -24,6 +24,16 @@
 
 /* Notes sizes itself to its text (data.js), so its drag handle comes off. */
 #scheduler-f-notes { resize: none; }
+/* One line of Notes is as tall as a text input, 40px. Carbon's text area pads
+   11px above and below, which makes it 43px, so the padding is what the line
+   and the 1px border leave of 40px. */
+#scheduler-f-notes { padding-block: calc((2.5rem - 1px - 1lh) / 2); }
+
+/* A dropdown's or contact search's label sits straight in the list box's
+   wrapper, where Carbon's inline-block label opens a line box 1.5px taller
+   than itself, so the field stood 66px against a text input's 64px. As a
+   block the label is its own 16px. */
+.rux--side-panel .rux--list-box__wrapper > .rux--label { display: block; }
 
 /* From Carbon's md up, the trip editor is a column in `.scheduler-board`
    rather than a fixed overlay, so the panel's positioning and transition are
@@ -81,13 +91,6 @@
   color: var(--rux-text-primary);
 }
 
-/* Add another contact spans the editor's column, so the ghost button reads as
-   a row of the form rather than a stray label. Carbon caps every button at
-   20rem, so the cap goes too. */
-#scheduler-f-dadd {
-  inline-size: 100%;
-  max-inline-size: none;
-}
 
 /* The editor's head sits in one band with the toolbar and the roster's head: a
    centred flex row with no block padding, as tall as the height token the
@@ -118,7 +121,6 @@
 /* The collapsed title is absolutely positioned, so it is held to the title's
    width here; otherwise it grows with its text and widens the page unseen. */
 .rux--side-panel .rux--side-panel__collapsed-title-text { inset-inline: 0; }
-
 /* The head is 32px on a desktop, and Carbon's close button, which
    `rux--btn--md` fixes at 2.5rem, is set to match at Carbon's own selector. On
    a phone the head, its close button and the tab strip take the 48px token,
@@ -266,24 +268,29 @@
   inline-size: 100%;
 }
 
-/* A date range fills its row on a phone. Carbon fixes each of the two dates at
-   8.96875rem, which fills the editor's row on a desktop exactly and falls
-   short of the wider phone row. On a phone each date takes half the row, set
-   at every level of the picker for the same reason as the dialog rule above. */
-@media (max-width: 41.98rem) {
-  .rux--side-panel .rux--date-picker--range {
-    inline-size: 100%;
-  }
-  .rux--side-panel .rux--date-picker--range .rux--date-picker-container {
-    flex: 1 1 0;
-    min-inline-size: 0;
-    inline-size: auto;
-  }
-  .rux--side-panel .rux--date-picker--range .rux--date-picker-input__wrapper,
-  .rux--side-panel .rux--date-picker--range .rux--date-picker-input__wrapper > span,
-  .rux--side-panel .rux--date-picker--range .rux--date-picker__input {
-    inline-size: 100%;
-  }
+/* A date range fills its row. Carbon fixes each of the two dates at
+   8.96875rem, which falls short of the editor's row, so each date takes half
+   the row, set at every level of the picker for the same reason as the dialog
+   rule above. */
+.rux--side-panel .rux--date-picker--range {
+  inline-size: 100%;
+}
+.rux--side-panel .rux--date-picker--range .rux--date-picker-container {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  inline-size: auto;
+}
+.rux--side-panel .rux--date-picker--range .rux--date-picker-input__wrapper,
+.rux--side-panel .rux--date-picker--range .rux--date-picker-input__wrapper > span,
+.rux--side-panel .rux--date-picker--range .rux--date-picker__input {
+  inline-size: 100%;
+}
+
+/* A dropdown fills its row. Carbon's form item is a flex box, where the list
+   box's wrapper shrinks to its longest line, the helper text, and the field
+   with it. */
+.rux--side-panel .rux--form-item > .rux--list-box__wrapper {
+  inline-size: 100%;
 }
 
 

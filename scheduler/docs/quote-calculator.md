@@ -18,8 +18,10 @@ this repository is public.
    miles. An empty day in the middle counts; an empty day at the end doesn't.
 4. **Very long trips drop a charge.** From 10,250 trip miles, or 6,250 driver
    miles, the free-day table runs out and that charge counts as $0.
-5. **Driver pay is added to the trip total.** The spreadsheet labels the row
-   "2nd Driver", but it is the pay for all drivers' miles.
+5. **The second driver is paid on all the trip miles.** The spreadsheet's
+   "2nd Driver" row takes a column of miles for each driver and adds them
+   together. With each day's miles split equally between the two drivers,
+   that is the whole trip, at the two-driver rates.
 6. **Dead miles are free while their rate is $0.** They still count toward
    the 295-mile line and the free days.
 7. **The two free-day tables differ.** At 750 to 999 miles a quote gets 1.5
@@ -29,5 +31,6 @@ this repository is public.
 9. **No miles means no charge.** A quote with no miles entered comes to $0
    plus other charges.
 
-One thing is the page's own: an empty driver box counts that day's trip miles,
-and shows them in gray.
+Two things are the page's own. The regular quote includes one driver, so only
+a second driver adds pay, with each day's trip miles split equally between the
+two. So the rates page's one-driver rate for 1,000+ miles is not used.

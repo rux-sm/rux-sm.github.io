@@ -215,8 +215,8 @@
           <div class="rux--tile scheduler-quote__inputs">
             <div class="rux--layer-two rux--stack-vertical rux--stack-scale-7">
 
-              <!-- The rate and the drivers come first, because the drivers
-                   decide the miles table's columns. -->
+              <!-- The rate and the drivers are set once a quote. The regular
+                   quote includes one driver; a second adds its own pay. -->
               <fieldset class="scheduler-quote__group">
                 <legend class="rux--type-heading-compact-02"><span class="scheduler-quote__step" aria-hidden="true">1</span>Trip</legend>
                 <div class="rux--stack-vertical rux--stack-scale-5">
@@ -235,7 +235,6 @@
                         <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
                         <div class="rux--select-input__wrapper">
                           <select id="scheduler-quote-drivers" class="rux--select-input">
-                            <option class="rux--select-option" value="0">None</option>
                             <option class="rux--select-option" value="1">1 driver</option>
                             <option class="rux--select-option" value="2">2 drivers</option>
                           </select>
@@ -252,18 +251,10 @@
                 </div>
               </fieldset>
 
-              <!-- quote.js draws the rows: the day, the trip miles, then one
-                   column per driver; `--scheduler-quote-cols` says how many
-                   mileage columns show. An empty driver box counts the trip
-                   miles, and shows them in gray. -->
+              <!-- quote.js draws a field a day, labelled with the day. -->
               <fieldset class="scheduler-quote__group">
                 <legend class="rux--type-heading-compact-02"><span class="scheduler-quote__step" aria-hidden="true">2</span>Miles per day</legend>
-                <div class="scheduler-quote-days" id="scheduler-quote-days" style="--scheduler-quote-cols: 1">
-                  <div class="scheduler-quote-days__head" aria-hidden="true">
-                    <span>Day</span><span>Trip</span><span data-driver="1">Driver 1</span><span data-driver="2">Driver 2</span>
-                  </div>
-                  <div id="scheduler-quote-day-rows"></div>
-                </div>
+                <div class="scheduler-quote-days" id="scheduler-quote-day-rows"></div>
                 <div class="scheduler-quote__actions">
                   <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
                   <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
@@ -314,7 +305,7 @@
           </div>
 
           <!-- The quote: a line for each part of the price, then the total they
-               add up to. Driver pay and other charges show only when the quote
+               add up to. The second driver and other charges show only when the quote
                has them. -->
           <!-- The stack is a div of its own: the tile's display rule beats the
                stack's on one element, and the lines sat flush under the heading. -->
@@ -328,7 +319,7 @@
                   <dd class="scheduler-quote-line__note" id="scheduler-quote-mileage-note"></dd>
                 </div>
                 <div class="scheduler-quote-line" id="scheduler-quote-driver-line" hidden>
-                  <dt class="rux--type-body-compact-02">Driver pay</dt>
+                  <dt class="rux--type-body-compact-02">2nd driver</dt>
                   <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-driver">—</dd>
                   <dd class="scheduler-quote-line__note" id="scheduler-quote-driver-note"></dd>
                 </div>

@@ -8,6 +8,10 @@
    only a staff session can read or write, so no rate is written in this
    public file.
 
+   The regular quote pays for one driver. Choosing two adds the second
+   driver's pay, with each day's trip miles split equally between the two
+   drivers, as the spreadsheet's two driver columns take them.
+
    A local preview has no account layer. Both pages still draw, and rates
    saved on the rates page are kept in this browser tab only, so the
    calculator can be tried without the database.
@@ -183,47 +187,27 @@
     const form = $('scheduler-quote-form');
     let dayCount = 1;
 
-    const driversChosen = () => parseInt($('scheduler-quote-drivers').value, 10) || 0;
+    const driversChosen = () => parseInt($('scheduler-quote-drivers').value, 10) || 1;
 
     const drawDays = () => {
       const rows = $('scheduler-quote-day-rows');
       const kept = [...rows.querySelectorAll('input')].reduce((m, i) => (m[i.id] = i.value, m), {});
       rows.replaceChildren();
       for (let d = 1; d <= dayCount; d++) {
-        const row = document.createElement('div');
-        row.className = 'scheduler-quote-days__row';
-        const day = document.createElement('span');
-        day.className = 'scheduler-quote-days__day';
-        day.textContent = d;
-        row.append(day);
-        for (const [col, name] of [['trip', 'trip miles'], ['d1', 'driver 1 miles'], ['d2', 'driver 2 miles']]) {
-          const id = `scheduler-quote-${col}-${d}`;
-          const field = textField({ id, label: `Day ${d} ${name}`, hidden: true, value: kept[id] ?? '', placeholder: '0' });
-          if (col !== 'trip') field.dataset.driver = col === 'd1' ? '1' : '2';
-          row.append(field);
-        }
-        rows.append(row);
+        const id = `scheduler-quote-trip-${d}`;
+        rows.append(textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' }));
       }
       $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
       $('scheduler-quote-remove-day').disabled = dayCount <= 1;
       showDrivers();
     };
 
+    // Local church changes only the second driver's pay.
     const showDrivers = () => {
-      const n = driversChosen();
-      const grid = $('scheduler-quote-days');
-      grid.style.setProperty('--scheduler-quote-cols', String(1 + n));
-      for (const el of grid.querySelectorAll('[data-driver]')) el.hidden = Number(el.dataset.driver) > n;
-      $('scheduler-quote-church-item').hidden = n === 0;
+      $('scheduler-quote-church-item').hidden = driversChosen() < 2;
     };
 
     const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
-
-    // An empty driver box counts that day's trip miles.
-    const driverColumn = (col, trip) => trip.map((miles, i) => {
-      const raw = $(`scheduler-quote-${col}-${i + 1}`)?.value.trim() ?? '';
-      return raw === '' ? miles : Math.max(0, num(raw));
-    });
 
     // Dead miles and other charges count only while their switch is on.
     const extrasOn = () => $('scheduler-quote-extras').getAttribute('aria-checked') === 'true';
@@ -234,17 +218,14 @@
       $('scheduler-quote-extras-fields').hidden = !extras;
 
       const trip = column('trip');
-      // Each driver box shows, in gray, the trip miles it counts while empty.
-      for (let d = 1; d <= dayCount; d++) {
-        const hint = trip[d - 1] ? count.format(trip[d - 1]) : '0';
-        for (const col of ['d1', 'd2']) $(`scheduler-quote-${col}-${d}`).placeholder = hint;
-      }
-
       const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
-      const driver = n === 0 ? null : driverPay({
-        driver1: driverColumn('d1', trip),
-        driver2: n === 2 ? driverColumn('d2', trip) : trip.map(() => 0),
-        drivers: n,
+      // The second driver's pay, from each day's miles split in half, one half
+      // a driver: the formula adds the halves back together.
+      const half = trip.map(miles => miles / 2);
+      const driver = n < 2 ? null : driverPay({
+        driver1: half,
+        driver2: half,
+        drivers: 2,
         church: $('scheduler-quote-church').checked,
       }, rates);
       const other = extras ? num($('scheduler-quote-other').value) : 0;
@@ -260,7 +241,7 @@
 
       $('scheduler-quote-driver-line').hidden = !driver;
       if (driver) {
-        const driverMiles = plural(driver.total, 'mile', 'miles');
+        const driverMiles = `${plural(driver.total, 'mile', 'miles')}, half each`;
         const meal = driver.meal == null ? '' : ` · meals ${money.format(driver.meal)} not included`;
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =

@@ -91,10 +91,10 @@
     if (sch.style.maxBlockSize !== next) sch.style.maxBlockSize = next;
 
     /* THE PANELS ARE MEASURED FROM THE BOARD, NOT FROM THE GRID. They used to
-       start where `.sch` starts -- pushed down past the toolbar by a 2rem
+       start where `.scheduler-week` starts -- pushed down past the toolbar by a 2rem
        margin -- so one measurement served all three. Each region carries its
        own head in that band now and they all begin at `.scheduler-board`'s top, which
-       is 32px above the grid. Measuring from `.sch` and applying it here would
+       is 32px above the grid. Measuring from `.scheduler-week` and applying it here would
        run both panels exactly one toolbar past the bottom of the board. */
     const board = sch.closest('.scheduler-board');
     const panelTop = board ? board.getBoundingClientRect().top : top;
@@ -108,7 +108,7 @@
        a head of its own now, so giving the pane the board's full height made the
        two of them 32px taller than everything beside them. The aside takes the
        measurement and the pane fills what is left under the head -- see
-       `.scheduler-aside .sch--avail`, which is `flex: 1 1 auto` with the base `.sch`
+       `.scheduler-aside .scheduler-week--avail`, which is `flex: 1 1 auto` with the base `.scheduler-week`
        cap lifted so it can. */
     const aside = document.getElementById('scheduler-aside');
     const avail = document.getElementById('scheduler-avail');
@@ -206,7 +206,7 @@
      twice, a width read 320px mid-entrance, and a transitionend refit waiting
      on an animation that had been removed. */
 
-  const sch = document.getElementById('sch');
+  const sch = document.getElementById('scheduler-week');
   if (sch && 'ResizeObserver' in window) {
     // Observing the PANE, not the grid: the grid's width is what this changes,
     // so observing it would feed its own output back in.

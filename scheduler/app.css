@@ -28,7 +28,7 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-.sch {
+.scheduler-week {
   --scheduler-days: 7;
   /* AS NARROW AS ITS CONTENT, ON A 2rem FLOOR. `max-content` is still what
      sizes this track, so a bus number wider than the floor widens the column
@@ -107,7 +107,7 @@
 .scheduler-grid {
   position: relative;   /* the now-line's containing block: the GRID, not the
                            scroll port, so it stays on today's column when the
-                           week is wider than the viewport and .sch scrolls. */
+                           week is wider than the viewport and .scheduler-week scrolls. */
   display: grid;
   /* The day track is a variable so app.js can replace the fluid default with
      a WHOLE NUMBER OF PIXELS; see its note. Without that script this is what
@@ -832,11 +832,11 @@ button.scheduler-row-head__num {
    `--scheduler-bar-rows` drops with it and the bar shrinks, so more buses fit. The
    destination has no toggle: a bar with no name on it is not a shorter bar, it
    is an unreadable one. */
-.sch--no-client .scheduler-bar__client,
-.sch--no-contact .scheduler-bar__contact,
-.sch--no-time .scheduler-bar__time,
-.sch--no-notes .scheduler-bar__notes,
-.sch--no-drivers .scheduler-bar__drivers { display: none; }
+.scheduler-week--no-client .scheduler-bar__client,
+.scheduler-week--no-contact .scheduler-bar__contact,
+.scheduler-week--no-time .scheduler-bar__time,
+.scheduler-week--no-notes .scheduler-bar__notes,
+.scheduler-week--no-drivers .scheduler-bar__drivers { display: none; }
 
 .scheduler-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; }
 .scheduler-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
@@ -895,7 +895,7 @@ button.scheduler-row-head__num {
    on the destination row shows only while the drivers row is turned off. */
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
-.sch--no-drivers .scheduler-bar__warn--dest { display: flex; }
+.scheduler-week--no-drivers .scheduler-bar__warn--dest { display: flex; }
 .scheduler-bar__warn-chip {
   display: flex;
   align-items: center;
@@ -942,8 +942,8 @@ button.scheduler-row-head__num {
 
    IT SPANS THE WHOLE BOARD, THE AVAILABILITY GRID INCLUDED, and that is the
    deciding argument rather than a tidiness one: `.scheduler-board` is full width
-   always, while `.sch` narrows whenever Drivers is toggled on. A toolbar over
-   `.sch` alone would resize and shift every time that toggle is pressed --
+   always, while `.scheduler-week` narrows whenever Drivers is toggled on. A toolbar over
+   `.scheduler-week` alone would resize and shift every time that toggle is pressed --
    moving the very buttons being clicked, which is the same reason index.html
    gives for keeping the week label after the controls that change it. */
 .scheduler-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
@@ -1057,7 +1057,7 @@ button.scheduler-row-head__num {
      down to the schedule's header line was 32px of nothing above a head that
      wanted to be there. Every region on this board now begins at the board's
      top; what differs is what each puts in its first 32px. app.js measures
-     these panels from `.scheduler-board` rather than from `.sch` for the same
+     these panels from `.scheduler-board` rather than from `.scheduler-week` for the same
      reason. */
   /* A DEFINITE HEIGHT, AND THIS IS WHAT MAKES THE FORM SCROLL AND THE SAVE BAR
      STAY PUT. Carbon's side panel is already built for it: the panel is
@@ -1073,7 +1073,7 @@ button.scheduler-row-head__num {
      the Save bar was pushed down the page instead of pinned. Changing this one
      word from `max-block-size` to `block-size` is the whole fix.
 
-     IT IS THE NO-SCRIPT FALLBACK, NOT THE REAL HEIGHT. `.sch` carries the same
+     IT IS THE NO-SCRIPT FALLBACK, NOT THE REAL HEIGHT. `.scheduler-week` carries the same
      expression and app.js replaces it on both by MEASURING the pane's own top,
      because this hand-tuned 15rem is exactly the guess that function exists to
      correct -- and left to it the editor stood visibly shorter than the board
@@ -1626,7 +1626,7 @@ button.scheduler-row-head__num {
    2.805px of daylight to the right of Sunday, measured at 1440 with the driver
    grid on. So the rule keeps grow for the measuring pass and app.js pins
    `flex-grow: 0` inline for the width it just set. */
-.scheduler-board > .sch { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-board > .scheduler-week { flex: 1 1 auto; min-inline-size: 0; }
 
 /* AS WIDE AS ITS CONTENT, MEASURED, NOT PICKED -- the same rule the bus column
    follows. The width here is only ever seven squares plus the longest driver
@@ -1669,7 +1669,7 @@ button.scheduler-row-head__num {
 /* 256px, CARBON'S XS SIDE PANEL WIDTH. The roster is a fixed width rather than
    its content's, so it does not move when the driver list does, and 16rem is the
    `rux--side-panel--xs` number rather than a local one. How the width divides
-   between the days and the names is on `.scheduler-aside .sch--avail`. */
+   between the days and the names is on `.scheduler-aside .scheduler-week--avail`. */
 .scheduler-aside { flex: 0 0 16rem; inline-size: 16rem; order: -1; }
 
 /* XS ROWS UNDER AN SM HEAD, 2026-09-08, AND THE FLIP-FLOP ENDS ON AN ARGUMENT
@@ -1718,7 +1718,7 @@ button.scheduler-row-head__num {
    the days give up lands on the driver name inside it: 107 to 152. It buys
    nothing for `.scheduler-frame`, where the week is still 323px short at 1440 with
    both companions open, and it was never going to -- see the yield. */
-.sch--avail { --scheduler-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
+.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
 /* In the side slot every pixel the days do not need goes to the name, which is
    the only thing there with anything to say: 320 less seven 24s is 152, where a
    `max-content` head left it 107. `minmax(0, 1fr)` and not `1fr`: a grid
@@ -1727,7 +1727,7 @@ button.scheduler-row-head__num {
    value said `max-content` from the day the aside became `max-content` itself,
    which is what made the head the thing sizing the box; a fixed box lets the
    rule be what it always claimed to be. */
-.scheduler-aside .sch--avail {
+.scheduler-aside .scheduler-week--avail {
   --scheduler-head-w: minmax(0, 1fr);
   /* 24px SQUARES. Each day is a 24px column over the 24px row, so a day reads as
      a mark, and the two-letter day head ("We" is 18.4px) fits inside it. The
@@ -1740,7 +1740,7 @@ button.scheduler-row-head__num {
   --scheduler-day-track: var(--rux-layout-size-height-xs);
   /* FILLS WHAT THE HEAD LEAVES. app.js gives the ASIDE the board's height; this
      takes the remainder under the head. `max-block-size: none` lifts the base
-     `.sch` cap, which is a viewport expression and would otherwise re-cap this
+     `.scheduler-week` cap, which is a viewport expression and would otherwise re-cap this
      pane at the full board height inside a box already 32px shorter. */
   flex: 1 1 auto;
   min-block-size: 0;
@@ -2153,7 +2153,7 @@ button.scheduler-row-head__num {
      three: the roster at 20rem, the board, the editor at 20rem. On a 375px
      screen the content box is 343px, so ONE 20rem companion is already wider
      than the whole row -- measured before this block, opening either one put
-     `.scheduler-frame` and `.sch` at 0px wide and pushed the board off the right of
+     `.scheduler-frame` and `.scheduler-week` at 0px wide and pushed the board off the right of
      the screen. The schedule did not shrink, it disappeared.
 
      The editor is handled where it belongs, in overrides.css: Carbon's own
@@ -2207,7 +2207,7 @@ button.scheduler-row-head__num {
     block-size: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
   }
   /* The board's last row scrolls up past the home bar the same way. */
-  .sch:not(.sch--avail)::after {
+  .scheduler-week:not(.scheduler-week--avail)::after {
     content: "";
     display: block;
     block-size: var(--scheduler-safe-bottom);
@@ -2225,7 +2225,7 @@ button.scheduler-row-head__num {
   .scheduler-aside .scheduler-avail__days > .scheduler-avail__day {
     inset-block-start: var(--rux-layout-size-height-lg);
   }
-  .scheduler-aside .sch--avail { max-block-size: none; overflow: visible; }
+  .scheduler-aside .scheduler-week--avail { max-block-size: none; overflow: visible; }
   /* THE HEAD WAS RAISED HERE AND NO LONGER NEEDS TO BE: `.scheduler-aside__head` is
      `size-lg` at every width since 2026-09-11, so this breakpoint has nothing
      left to say about it. Removed rather than left restating the base rule. */
@@ -2247,12 +2247,12 @@ button.scheduler-row-head__num {
      Going to md would spend 12 of 40 rows on a surface whose whole job while
      it is open is scanning the roster.
 
-     THE DESKTOP IS NOT TOUCHED. `.sch--avail` stays xs above this breakpoint;
+     THE DESKTOP IS NOT TOUCHED. `.scheduler-week--avail` stays xs above this breakpoint;
      that number went 24, 32, 24, 32, 24 before settling on
      an argument about a companion pane competing with the board for height.
      None of that applies to a full-width overlay, which is why this can differ
      without reopening it. */
-  .scheduler-aside .sch--avail {
+  .scheduler-aside .scheduler-week--avail {
     --scheduler-avail-h: var(--rux-layout-size-height-sm);
     --scheduler-day-track: var(--rux-layout-size-height-sm);
   }

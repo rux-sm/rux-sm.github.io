@@ -102,7 +102,7 @@
 /* AND ONLY AT md AND UP, SCOPED 2026-09-11. The un-fixing above describes a
    board with three columns on it, and below Carbon's `md` (42rem) there is no
    room for three: `.scheduler-trip` is a 20rem wrapper, and on a 375px screen it
-   took the whole board -- measured, `.scheduler-frame` and `.sch` both came out
+   took the whole board -- measured, `.scheduler-frame` and `.scheduler-week` both came out
    0px wide with the panel's right edge 9px past the screen. Tapping a trip
    deleted the schedule.
 

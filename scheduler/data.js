@@ -40,7 +40,7 @@
   const PUBLISHABLE = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
 
   const gridEl = document.getElementById('scheduler-grid');
-  const schEl = document.getElementById('sch');
+  const schEl = document.getElementById('scheduler-week');
   const statusEl = document.getElementById('scheduler-status');
   const toastEl = document.getElementById('scheduler-toast');
   /* TWO ELEMENTS, AND KEEPING THEM APART IS LOAD-BEARING. `rangeEl` is the
@@ -4845,6 +4845,14 @@
      `localStorage` and are read with a try-catch; a browser that refuses
      storage gets the defaults and no error. */
   const VIEW_ROWS = ['client', 'contact', 'time', 'notes', 'drivers'];
+  // The class that hides each row, written out in full so the check can read it.
+  const HIDE_ROW = {
+    client: 'scheduler-week--no-client',
+    contact: 'scheduler-week--no-contact',
+    time: 'scheduler-week--no-time',
+    notes: 'scheduler-week--no-notes',
+    drivers: 'scheduler-week--no-drivers',
+  };
   const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false };
   const VIEW_KEY = 'scheduler.view';
 
@@ -4862,7 +4870,7 @@
 
   function applyView() {
     weekStartsSunday = view.sunday;
-    for (const r of VIEW_ROWS) schEl.classList.toggle(`sch--no-${r}`, !view[r]);
+    for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {

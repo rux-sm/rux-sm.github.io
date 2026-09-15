@@ -699,7 +699,7 @@
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
                  grey placeholders in the real grid's classes, so the first paint
                  is already the board. render() in data.js replaces all of it. -->
-            <div class="sch" id="sch" role="region" aria-label="Week schedule" aria-busy="true">
+            <div class="scheduler-week" id="scheduler-week" role="region" aria-label="Week schedule" aria-busy="true">
               <div class="scheduler-grid" id="scheduler-grid">
                 <div class="scheduler-corner" title="Bus number">#</div>
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
@@ -971,7 +971,7 @@
           </div>
         </div>
 
-        <div class="sch sch--avail" id="scheduler-avail" role="region" aria-label="Driver availability" hidden>
+        <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Driver availability" hidden>
           <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid"></div>
         </div>
       </div>

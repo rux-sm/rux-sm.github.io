@@ -1764,8 +1764,16 @@
   // `ilike` with nothing wild in it: an exact match, case aside.
   const likeExact = v => String(v).trim().replace(/[\\%_]/g, m => `\\${m}`);
 
+  /* A new contact's id is made before its insert and kept for that person until
+     the insert is confirmed, so a save pressed again after a timeout sends the
+     same id. The database refuses a second row with it, and that refusal means
+     the first insert landed. */
+  const pendingContactIds = new Map();
+  const personKey = p => [folded(p.name), phoneDigits(p.phone), folded(p.email)].join('|');
+
   async function matchOrAddContact(p) {
     const cols = 'id,name,phone,email,client';
+    const key = personKey(p);
     const first = async query => {
       const { data, error } = await withTimeout(query.limit(1).then(r => r));
       if (error) throw new Error(error.message);
@@ -1774,12 +1782,14 @@
     const hit = (p.phone && await first(client.from('contacts').select(cols).eq('phone', p.phone)))
       || (p.email && await first(client.from('contacts').select(cols).ilike('email', likeExact(p.email))))
       || await first(client.from('contacts').select(cols).ilike('name', likeExact(p.name)));
-    if (hit) return hit;
-    const { data, error } = await withTimeout(client.from('contacts')
-      .insert({ name: p.name, phone: p.phone, email: p.email, client: p.client })
-      .select(cols).single().then(r => r));
-    if (error) throw new Error(error.message);
-    return data;
+    if (hit) { pendingContactIds.delete(key); return hit; }
+    const newId = pendingContactIds.get(key) ?? crypto.randomUUID();
+    pendingContactIds.set(key, newId);
+    const row = { id: newId, name: p.name, phone: p.phone, email: p.email, client: p.client };
+    const { data, error } = await withTimeout(client.from('contacts').insert(row).select(cols).single().then(r => r));
+    if (error && !(error.code === '23505' && /contacts_pkey/.test(error.message))) throw new Error(error.message);
+    pendingContactIds.delete(key);
+    return error ? row : data;
   }
 
   // Settles every on-screen contact id into `row`, which is the insert or the
@@ -3432,6 +3442,10 @@
     if (await saveEditor(after)) after();
   });
 
+  // Counts save attempts, so a late write that settles after a newer save
+  // leaves the screen to that save.
+  let saveSeq = 0;
+
   /* Save as a step other actions can wait on. True once the editor's work is
      done: everything is written, or a new trip exists and the editor has
      closed on it. False when there is nothing to write, nothing could be
@@ -3465,12 +3479,22 @@
        again that already landed is how a trip or a payment is saved twice. */
     let wrote = false;
     let part = 'the trip';
+    // The write that ran out of time, which may still land.
+    let late = null;
+    const seq = ++saveSeq;
     const write = async (what, query) => {
       part = what;
-      const { data, error } = await withTimeout(query.then(r => r));
-      if (error) throw Object.assign(new Error(error.message), { code: error.code });
+      const request = query.then(r => r);
+      let result;
+      try {
+        result = await withTimeout(request);
+      } catch (e) {
+        if (e.timedOut) late = request;
+        throw e;
+      }
+      if (result.error) throw Object.assign(new Error(result.error.message), { code: result.error.code });
       wrote = true;
-      return data;
+      return result.data;
     };
     panelSave.disabled = true;
     toast('info', creating ? 'Creating the trip…' : 'Saving the trip…');
@@ -3595,6 +3619,7 @@
         if (e.timedOut) toast('warning', 'The trip may not have been created.', `${why} Press Save again. It cannot make a second copy.`);
         else toast('error', `The trip was not ${creating ? 'created' : 'saved'}. ${why}`);
         panelSave.disabled = false;
+        followLateWrite(late, seq, null, ['The trip was created after all.', 'Press Save to finish it.']);
         return false;
       }
       /* Part of it landed, or may have. The editor's pending rows no longer
@@ -3609,13 +3634,37 @@
       if (creating) {
         closePanel(false);
         toast('warning', `The trip was created, but ${part} ${didNot}.`, `${check} ${why}`);
+        followLateWrite(late, seq, null);
         return true;
       }
-      const bar = panelArgs?.ref ? findBar(panelArgs.ref) : null;
+      const ref = panelArgs?.ref ?? null;
+      const bar = ref ? findBar(ref) : null;
       if (bar) openPanel(bar); else closePanel(false);
       toast('warning', `Part of the trip ${didNot}.`, `${check} ${why}`);
+      followLateWrite(late, seq, ref);
       return false;
     }
+  }
+
+  /* A write that ran out of time can still land after the board was read back,
+     where it would look missing. When it settles the board is read again. Unless
+     another save has started since, an editor still on that trip with nothing
+     unsaved reopens on it, and a message says what happened. */
+  function followLateWrite(request, seq, ref,
+                           landed = ['The late save has arrived.', 'The board shows it now.']) {
+    if (!request) return;
+    request.then(async ({ error }) => {
+      await show();
+      if (seq !== saveSeq) return;
+      const onTrip = !!ref && !panelEl.hidden && panelArgs?.ref?.tripId === ref.tripId;
+      const unsaved = onTrip && unsavedWork();
+      if (!error && onTrip && !unsaved) {
+        const bar = findBar(panelArgs.ref);
+        if (bar) openPanel(bar);
+      }
+      if (error) toast('warning', 'The late save did not go through.', `${error.message} Check the trip before saving again.`);
+      else toast('info', landed[0], unsaved ? 'Reload the trip to see it before saving again.' : landed[1]);
+    }, () => {});
   }
 
   /* ── Right-click an empty cell ─────────────────────────────────────────────

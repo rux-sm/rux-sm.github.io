@@ -1553,7 +1553,7 @@
     const wrap = el('div', 'rux--text-area__wrapper');
     const ta = el('textarea', 'rux--text-area');
     ta.id = id;
-    ta.rows = 3;
+    ta.rows = 1;
     ta.value = value ?? '';
     wrap.append(ta, el('span', 'rux--text-area__counter-alert'));
     wrap.lastChild.setAttribute('role', 'alert');

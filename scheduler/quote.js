@@ -124,9 +124,8 @@
   let client = null;
   let canSave = false;
 
-  const say = (text, link) => {
+  const say = text => {
     $('scheduler-quote-notice-text').textContent = text || '';
-    $('scheduler-quote-notice-link').hidden = !link;
     $('scheduler-quote-notice').hidden = !text;
   };
 
@@ -334,7 +333,7 @@
       const row = document.createElement('div');
       row.className = 'scheduler-quote-mileage__row';
       row.dataset.id = m.id ?? '';
-      const rate = textField({ id: `scheduler-quote-m-rate-${n}`, label: 'Rate in dollars per mile', hidden: true, value: m.rate === '' ? '' : String(m.rate), placeholder: '0.00' });
+      const rate = textField({ id: `scheduler-quote-m-rate-${n}`, label: 'Rate in dollars per mile', hidden: true, value: m.rate === '' ? '' : Number(m.rate).toFixed(2), placeholder: '0.00' });
       const note = textField({ id: `scheduler-quote-m-note-${n}`, label: 'Note', hidden: true, value: m.note });
       note.querySelector('input').inputMode = 'text';
 
@@ -456,9 +455,11 @@
 
     return {
       app: form,
+      actions: $('scheduler-quote-rates-actions'),
       preview: 'This preview has no log-in, so rates saved here stay in this browser tab. Add ?cloud to the address to load the real ones.',
       start: () => {
         drawRates();
+        $('scheduler-quote-rates-actions').hidden = false;
         $('scheduler-quote-rates-save').disabled = !canSave;
       },
     };
@@ -476,13 +477,9 @@
     page.start();
   };
 
-  // The same staff gate as the schedule, which is where a log-in happens.
-  const headerBtns = [
-    document.querySelector('.scheduler-menu-trigger'),
-    document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
-  ].filter(Boolean);
-  const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
-
+  // The same staff gate as the schedule: the page waits for the staff profile,
+  // and an account with none, or a profile that would not load, gets the
+  // notice instead.
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {
@@ -511,6 +508,7 @@
     account.onAuthChange(event => {
       if (event !== 'SIGNED_OUT') return;
       page.app.hidden = true;
+      if (page.actions) page.actions.hidden = true;
       for (const btn of headerBtns) btn.hidden = true;
       say('You were logged out.', true);
     });

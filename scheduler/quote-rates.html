@@ -190,8 +190,8 @@
 
 <main id="main-content" class="rux--content scheduler-quote-page">
   <div class="rux--css-grid">
-    <!-- The calculator's left edge, in the eight columns Carbon shows a form in. -->
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-8">
+    <!-- The calculator's columns: centred in twelve of the sixteen at lg. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-3">
           <nav aria-label="Breadcrumb">
@@ -199,7 +199,16 @@
               <li class="rux--breadcrumb-item"><a class="rux--link" href="quote.html">Quote calculator</a></li>
             </ol>
           </nav>
-          <h1 class="rux--type-productive-heading-04">Rates</h1>
+          <!-- The page's actions sit in its title row, as the calculator's do.
+               They are outside the form, so Save rates names the form it
+               submits, and quote.js shows them with the form. -->
+          <div class="scheduler-quote-title">
+            <h1 class="rux--type-productive-heading-04">Rates</h1>
+            <div class="scheduler-quote-title__actions" id="scheduler-quote-rates-actions" hidden>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-rates-revert">Discard changes</button>
+              <button type="submit" form="scheduler-quote-rates-form" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="scheduler-quote-rates-save">Save rates</button>
+            </div>
+          </div>
         </div>
 
         <!-- The same notice as the calculator's. -->
@@ -214,48 +223,50 @@
           </div>
         </div>
 
-        <!-- A dedicated-page form, on the page like the calculator's, with
-             Carbon's 40px between groups. Its buttons come at its end. -->
-        <form id="scheduler-quote-rates-form" novalidate hidden>
-          <div class="rux--stack-vertical rux--stack-scale-8">
-            <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Trip</legend>
-              <div class="scheduler-quote__fields" id="scheduler-quote-rates-trip"></div>
-            </fieldset>
-
-            <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Mileage rates</legend>
-              <div class="scheduler-quote-mileage">
-                <div class="scheduler-quote-mileage__head" aria-hidden="true"><span>Rate ($/mi)</span><span>Note</span><span>Default</span><span></span></div>
-                <div id="scheduler-quote-mileage-rows"></div>
-              </div>
-              <div class="scheduler-quote__actions">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-rate">Add rate<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
-              </div>
-            </fieldset>
-
-            <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Driver pay</legend>
-              <div class="scheduler-quote__fields" id="scheduler-quote-rates-driver"></div>
-            </fieldset>
-
-            <div id="scheduler-quote-rates-result" role="status" hidden>
-              <div class="rux--inline-notification" id="scheduler-quote-rates-result-box">
-                <div class="rux--inline-notification__details">
-                  <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-quote-rates-result-icon" href="#i-checkmark--filled"/></svg>
-                  <div class="rux--inline-notification__text-wrapper">
-                    <div class="rux--inline-notification__subtitle" id="scheduler-quote-rates-result-text"></div>
-                  </div>
-                </div>
+        <!-- What a save did, under the title where its buttons are. -->
+        <div id="scheduler-quote-rates-result" role="status" hidden>
+          <div class="rux--inline-notification" id="scheduler-quote-rates-result-box">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-quote-rates-result-icon" href="#i-checkmark--filled"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__subtitle" id="scheduler-quote-rates-result-text"></div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Not `btn-set`, which caps each button at 196px and ran the pair
-                 off a phone's edge. On an in-page form Carbon puts the primary
-                 button first, on the left. -->
-            <div class="scheduler-quote__actions">
-              <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-quote-rates-save">Save rates</button>
-              <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-quote-rates-revert">Discard changes</button>
+        <!-- Three tiles, as the calculator's: the trip rates, the mileage
+             rates and the driver pay. A tile paints layer, so the fields
+             inside it step up to layer-two. quote.js draws the fields. -->
+        <form class="scheduler-quote-rates" id="scheduler-quote-rates-form" novalidate hidden>
+          <div class="rux--tile scheduler-quote-rates__trip">
+            <div class="rux--layer-two scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Trip</legend>
+                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-quote-rates-trip"></div>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="rux--tile scheduler-quote-rates__mileage">
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Mileage rates</legend>
+                <div class="scheduler-quote-mileage__head" aria-hidden="true"><span>Rate ($/mi)</span><span>Note</span><span>Default</span><span></span></div>
+                <div class="scheduler-quote-mileage__rows" id="scheduler-quote-mileage-rows"></div>
+              </fieldset>
+              <div>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-rate">Add rate<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="rux--tile scheduler-quote-rates__driver">
+            <div class="rux--layer-two scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Driver pay</legend>
+                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-quote-rates-driver"></div>
+              </fieldset>
             </div>
           </div>
         </form>

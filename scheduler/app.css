@@ -1174,9 +1174,8 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
    Both pages use Carbon's editorial style model, which Carbon names for
-   low-density product screens such as checkout: centred at lg, the calculator
-   in twelve of the grid's sixteen columns and the rates form in eight from the
-   same left edge. The calculator is three tiles in a row, in the order a quote
+   low-density product screens such as checkout: centred at lg, both pages in
+   twelve of the grid's sixteen columns. The calculator is three tiles in a row, in the order a quote
    is made: the miles, the modifiers, and the quote. The tiles share one
    height, the tallest's, and adding days moves nothing inside the other two;
    the quote's contents are sticky inside its tile, so the total stays in view
@@ -1213,18 +1212,6 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
 .scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
-.scheduler-quote__fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-  gap: var(--rux-spacing-07) var(--rux-spacing-05);
-  align-items: end;
-}
-.scheduler-quote__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--rux-spacing-03);
-  margin-block-start: var(--rux-spacing-05);
-}
 
 /* The miles: a column of days, each field the tile's full width. Days are
    24px apart, the modifiers' own spacing, so each day lines up with the
@@ -1302,15 +1289,55 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 .scheduler-quote-bar { display: none; }
 
-/* The rates page's mileage list: rate, note, the default radio, remove. */
+/* The rates page: the calculator's three tiles, the trip rates, the mileage
+   rates and the driver pay, sharing one height. At md the mileage rates go
+   under the other two; below md the tiles stack. */
+.scheduler-quote-rates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "trip mileage driver";
+  gap: var(--rux-spacing-05);
+}
+/* Each of these has a display rule that beats the browser's [hidden]. */
+.scheduler-quote-rates[hidden],
+.scheduler-quote-title__actions[hidden] { display: none; }
+.scheduler-quote-rates__trip { grid-area: trip; min-inline-size: 0; }
+.scheduler-quote-rates__mileage { grid-area: mileage; min-inline-size: 0; container-type: inline-size; }
+.scheduler-quote-rates__driver { grid-area: driver; min-inline-size: 0; }
+@media (max-width: 65.98rem) {
+  .scheduler-quote-rates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "trip driver" "mileage mileage";
+  }
+}
+@media (max-width: 41.98rem) {
+  .scheduler-quote-rates {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "trip" "mileage" "driver";
+  }
+}
+
+/* The mileage list: a row a rate, its note, the default radio and remove,
+   under a head that names them. In a tile under 22rem inside, as each of the
+   three is at lg, the note takes a line of its own under its rate; at md,
+   where the tile spans the page, it sits beside it. */
 .scheduler-quote-mileage__head,
 .scheduler-quote-mileage__row {
   display: grid;
-  grid-template-columns: 8rem minmax(0, 1fr) 4rem 2rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr) 3rem 2rem;
+  grid-template-areas: "rate note default remove";
   gap: var(--rux-spacing-03);
   align-items: center;
 }
-.scheduler-quote-mileage__row + .scheduler-quote-mileage__row { margin-block-start: var(--rux-spacing-03); }
+.scheduler-quote-mileage__head > :nth-child(1),
+.scheduler-quote-mileage__row > :nth-child(1) { grid-area: rate; }
+.scheduler-quote-mileage__head > :nth-child(2),
+.scheduler-quote-mileage__row > :nth-child(2) { grid-area: note; }
+.scheduler-quote-mileage__head > :nth-child(3),
+.scheduler-quote-mileage__row > :nth-child(3) { grid-area: default; }
+.scheduler-quote-mileage__head > :nth-child(4),
+.scheduler-quote-mileage__row > :nth-child(4) { grid-area: remove; }
+.scheduler-quote-mileage__rows { display: grid; gap: var(--rux-spacing-03); }
 .scheduler-quote-mileage__head {
   margin-block-end: var(--rux-spacing-03);
   color: var(--rux-text-secondary);
@@ -1319,6 +1346,15 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-quote-mileage__default { justify-content: center; }
+@container (max-width: 22rem) {
+  .scheduler-quote-mileage__head,
+  .scheduler-quote-mileage__row {
+    grid-template-columns: minmax(0, 1fr) 3rem 2rem;
+    grid-template-areas: "rate default remove" "note note note";
+  }
+  .scheduler-quote-mileage__head > :nth-child(2) { display: none; }
+  .scheduler-quote-mileage__rows { gap: var(--rux-spacing-05); }
+}
 
 @media (max-width: 65.98rem) {
   .scheduler-quote {

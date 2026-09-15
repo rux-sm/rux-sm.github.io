@@ -22,6 +22,9 @@ the `quote_rates` and `quote_mileage_rates` tables, which only a staff session
 can read or change. `docs/quote-calculator.md` lists where it copies the
 spreadsheet's quirks.
 
+The pages in `share/` are for people without a log-in, who arrive by a link:
+`share/document.html` opens a trip document.
+
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here and
 no pin to move.

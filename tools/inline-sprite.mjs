@@ -3,7 +3,7 @@
 // SPRITE markers, because a <use> pointing at another file draws nothing in
 // Safari or over file://.
 //
-//   node tools/inline-sprite.mjs                  the site's own pages: /, account/, scheduler/
+//   node tools/inline-sprite.mjs                  the site's own pages: /, account/, login/, scheduler/, scheduler/share/
 //   node tools/inline-sprite.mjs --check          fail if any of them carries an old sprite
 //   node tools/inline-sprite.mjs <page.html> ...  exactly these pages; Notes' build passes its own
 //
@@ -17,7 +17,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DS = resolve(ROOT, process.env.DS ?? 'design');
 const BEGIN = /<!-- SPRITE:BEGIN[\s\S]*?-->\n/;
 const END = '<!-- SPRITE:END -->';
-const SITE_DIRS = ['.', 'account', 'login', 'scheduler'];
+const SITE_DIRS = ['.', 'account', 'login', 'scheduler', 'scheduler/share'];
 
 const args = process.argv.slice(2);
 const check = args.includes('--check');

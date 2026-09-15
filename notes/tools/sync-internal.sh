@@ -39,12 +39,23 @@ ln -s "$HERE/brand" "$OUT/site/brand"
 # design's own by every page; without them the viewer 404s twice per page.
 ln -s "$HERE/theme.css" "$OUT/site/theme.css"
 ln -s "$HERE/overrides.css" "$OUT/site/overrides.css"
+# The site's own scripts, at the root on every page: the page lock, which keeps
+# a page hidden until it runs, the app switcher and the list it fetches, and
+# the account panel.
+for f in funnel.js switcher.js switcher.json account.js; do
+  ln -s "$(cd "$HERE/.." && pwd)/$f" "$OUT/site/$f"
+done
 # The walk form, at /walk/. It saves through tools/serve-walk.mjs, which
 # `npm run serve -- --private` starts beside this site.
 mkdir -p "$OUT/site/walk"
 ln -s "$HERE/tools/walk-form.html" "$OUT/site/walk/index.html"
 ln -s "$HERE/tools/walk-form.js" "$OUT/site/walk/walk-form.js"
 LN_DATA="$OUT/data" LN_OUT="$OUT/site/pages" DS="$DS" node "$HERE/tools/build.mjs"
+# Every root-absolute file a page loads must be here. A page that cannot load
+# the page lock stays hidden, and nothing on the blank screen says why.
+missing=$(cd "$OUT/site" && grep -ohE '(src="/[^"]*"|href="/[^"]*\.[a-z0-9]+")' index.html pages/*.html walk/index.html \
+  | sed -E 's/^[a-z]+="\/(.*)"$/\1/' | sort -u | while read -r f; do [ -e "$f" ] || echo "/$f"; done)
+[ -z "$missing" ] || { echo "the private site is missing:" $missing; exit 1; }
 
 echo "  private site: $OUT/site  (git-ignored, never published)"
 echo "  view it:      (cd $OUT/site && PORT=8644 node $(cd "$DS" && pwd)/tools/serve.mjs)"

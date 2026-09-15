@@ -80,9 +80,6 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `site_access_manage` and the Access page: owner-only
-      `list_accounts()` and `set_account_apps()`, and the checkbox table on the
-      Account page.
 - [ ] Build `/login/` from Design, with Turnstile and the remembered address.
 - [ ] `funnel.js` reads the access from the stored login, sends no login to
       `/login/` and a page of an app not ticked to Home, and lets through `/login/`

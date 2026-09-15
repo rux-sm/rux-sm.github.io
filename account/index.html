@@ -339,6 +339,43 @@
             </div>
           </fieldset>
 
+          <!-- Access, for the owner only: every account with a checkbox per
+               app, filled and saved by data.js. A div carries `hidden`, since
+               the table container inside is styled by Carbon. The table is
+               table-page.html's container and header; each app column reuses
+               its selection cell. -->
+          <div id="acct-access" hidden>
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
+              <section class="rux--data-table-container">
+                <div class="rux--data-table-header">
+                  <div>
+                    <h2 class="rux--data-table-header__title">Access</h2>
+                    <p class="rux--data-table-header__description">Tick the apps each person can open. Everyone can open Home. A change reaches their pages within an hour, or at their next log-in.</p>
+                  </div>
+                </div>
+                <div class="rux--data-table-content">
+                  <table class="rux--data-table rux--data-table--lg">
+                    <thead>
+                      <tr id="acct-access-head">
+                        <th scope="col"><div class="rux--table-header-label">Person</div></th>
+                        <th scope="col"><div class="rux--table-header-label">Login</div></th>
+                      </tr>
+                    </thead>
+                    <tbody id="acct-access-rows"></tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="rux--inline-notification rux--inline-notification--error" role="status" id="acct-access-error" hidden>
+                <div class="rux--inline-notification__details">
+                  <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+                  <div class="rux--inline-notification__text-wrapper">
+                    <div class="rux--inline-notification__title" id="acct-access-error-text"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -452,5 +489,6 @@
   });
 })();
 </script>
+<script src="data.js"></script>
 </body>
 </html>

@@ -2378,6 +2378,19 @@
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
+    /* Equipment is Carbon's horizontal checkbox group, one row that wraps if
+       the labels outgrow the panel. It follows Notes with no visible heading,
+       because the three boxes name themselves; the legend stays for a screen
+       reader. */
+    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal');
+    flags.setAttribute('aria-disabled', 'false');
+    flags.append(
+      el('legend', 'rux--visually-hidden', 'Equipment'),
+      checkField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
+      checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
+      checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
+    );
+
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
       selectField('scheduler-f-type', 'Type', trip.trip_type, [
@@ -2392,6 +2405,7 @@
       // The organization is `trips.customer`; the contact's own `client` is not shown.
       textField('scheduler-f-customer', 'Organization', trip.customer),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
+      flags,
     );
     panelDetails.appendChild(topFields);
 
@@ -2463,24 +2477,10 @@
       panelDetails.appendChild(fieldGroup('Day-of contacts', rowsHost, addBtn));
     }
 
-    /* Equipment is Carbon's horizontal checkbox group, one row that wraps if
-       the labels outgrow the panel. Its legend takes the app's section title
-       class, like the other sections, and a wrapper carries the rule, as in
-       `fieldGroup`. */
-    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal');
-    flags.setAttribute('aria-disabled', 'false');
-    const legend = el('legend', 'scheduler-panel-section__title', 'Equipment');
-    flags.append(
-      legend,
-      checkField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
-      checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
-      checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
-    );
-    const equipment = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
-    equipment.appendChild(flags);
-    // Trip color follows with a section's space and no rule, because a rule
-    // between two one-row sections would part almost nothing.
-    panelDetails.append(equipment, colorField('scheduler-f-color', trip));
+    // Trip color closes the tab alone, under a rule, its label its heading.
+    const color = colorField('scheduler-f-color', trip);
+    color.classList.add('scheduler-panel-section--rule');
+    panelDetails.appendChild(color);
 
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.

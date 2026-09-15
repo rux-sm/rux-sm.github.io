@@ -104,7 +104,10 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Scheduler">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <a class="rux--header__name" href="/scheduler/"><img src="../brand/logo.png" alt="Escamilla Tour Buses" style="height:1.5rem;width:auto;flex:none"></a>
+  <!-- No address: someone who arrives by this link has nowhere in the app to
+       go, so the logo is not a link. An <a> without href keeps Carbon's
+       a.rux--header__name layout and is neither clickable nor a tab stop. -->
+  <a class="rux--header__name"><img src="../brand/logo.png" alt="Escamilla Tour Buses" style="height:1.5rem;width:auto;flex:none"></a>
 </header>
 
 <main id="main-content" class="rux--content">

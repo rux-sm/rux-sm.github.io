@@ -1233,20 +1233,23 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-maintenance-link {
   display: flex;
   flex-direction: column;
-  gap: var(--rux-spacing-02);
+  gap: var(--rux-spacing-03);
   flex: 1 1 20rem;
   min-inline-size: 0;
-  max-inline-size: 30rem;
+  max-inline-size: 32.5rem;
 }
-/* The snippet takes the column's width and scrolls the link inside itself.
-   Containing its inline size keeps the link's one long line out of the page's
-   minimum width, which otherwise widened the page past a 402px screen. */
-.scheduler-maintenance-link .rux--snippet--single { inline-size: 100%; min-inline-size: 0; max-inline-size: none; contain: inline-size; }
-/* The row under the link: the note on what just happened to it, then Replace
-   link at the right. */
-.scheduler-maintenance-link__row { display: flex; align-items: center; gap: var(--rux-spacing-03); }
-.scheduler-maintenance-link__row > p { min-inline-size: 0; color: var(--rux-text-secondary); }
-.scheduler-maintenance-link__row > .rux--btn { flex: none; margin-inline-start: auto; }
+/* The link and its overflow menu on one line. The snippet takes what the menu
+   leaves and scrolls the link inside itself; containing its inline size keeps
+   the link's one long line out of the page's minimum width, which otherwise
+   widened the page past a 402px screen. */
+.scheduler-maintenance-link__bar { display: flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-maintenance-link__bar .rux--snippet--single { flex: 1 1 auto; inline-size: auto; min-inline-size: 0; max-inline-size: none; contain: inline-size; }
+/* The overflow menu's wrapper is the containing block of its list. The trigger
+   sits at the page's right edge, so the list opens from its right edge
+   leftward rather than past the window. */
+.scheduler-maintenance-menu { position: relative; flex: none; }
+.scheduler-maintenance-menu .rux--overflow-menu-options { inset-inline-start: auto; inset-inline-end: 0; }
+.scheduler-maintenance-link > p { color: var(--rux-text-secondary); }
 /* Each has a display rule that beats the browser's own [hidden]. */
 .scheduler-maintenance-link[hidden],
 .scheduler-maintenance-title .rux--btn[hidden] { display: none; }

@@ -386,9 +386,10 @@
   const replaceModal = $('scheduler-maintenance-replace-modal');
   const replaceBtn = $('scheduler-maintenance-replace-confirm');
   const replaceError = $('scheduler-maintenance-replace-error');
+  const publicUrl = () => `${location.origin}/scheduler/share/maintenance.html?s=${encodeURIComponent(token)}`;
   const showLink = () => {
     if (!staffPage) return;
-    linkUrl.textContent = token ? `${location.origin}/scheduler/share/maintenance.html?s=${encodeURIComponent(token)}` : '';
+    linkUrl.textContent = token ? publicUrl() : '';
     linkEl.hidden = !token;
     createBtn.hidden = !!token;
   };
@@ -462,6 +463,16 @@
     showLink();
     refresh();
   };
+  // The link's overflow menu. design/js/menu.js closes the menu on a click and
+  // puts focus back on its trigger, so the dialog opens after that and keeps
+  // the focus it takes; closing the dialog returns focus to the trigger.
+  $('scheduler-maintenance-open-public').addEventListener('click', () => {
+    if (token) window.open(publicUrl(), '_blank', 'noopener');
+  });
+  $('scheduler-maintenance-replace-open').addEventListener('click', () => {
+    replaceError.hidden = true;
+    setTimeout(() => window.Rux?.modal?.open(replaceModal, $('scheduler-maintenance-menu-trigger')), 0);
+  });
   replaceBtn.addEventListener('click', async () => {
     replaceBtn.disabled = true;
     replaceError.hidden = true;

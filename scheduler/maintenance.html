@@ -206,10 +206,13 @@
             <p class="rux--type-body-01" id="scheduler-share-range">Loading the schedule…</p>
           </div>
           <!-- The public link, filled in by share/maintenance.js once it has
-               the token, in Carbon's single-line code snippet. Under it, a row:
-               what just happened to the link, then Replace link, which opens
-               the confirmation below. -->
+               the token, in Carbon's single-line code snippet, with an overflow
+               menu beside it: Open public page, and Replace link, which opens
+               the confirmation below. Replacing is rare and cuts off everyone
+               who has the link, so it sits behind the menu. Under them, a note
+               on what just happened to the link. -->
           <div class="scheduler-maintenance-link" id="scheduler-maintenance-link" hidden>
+            <div class="scheduler-maintenance-link__bar">
             <div class="rux--snippet rux--snippet--single">
               <div class="rux--snippet-container"><pre><code id="scheduler-maintenance-link-url"></code></pre></div>
               <!-- The copy button inside Carbon's icon tooltip: the snippet's
@@ -227,10 +230,27 @@
                 </span>
               </span>
             </div>
-            <div class="scheduler-maintenance-link__row">
-              <p class="rux--type-body-01" id="scheduler-maintenance-link-note" hidden></p>
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-rux-open="scheduler-maintenance-replace-modal">Replace link</button>
+            <!-- The list is the trigger's sibling, as design/js/menu.js expects,
+                 inside a wrapper that is its containing block. -->
+            <div class="scheduler-maintenance-menu">
+              <button type="button" class="rux--overflow-menu" id="scheduler-maintenance-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-label="Public link actions">
+                <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>
+              </button>
+              <ul class="rux--overflow-menu-options" role="menu" aria-label="Public link actions">
+                <li class="rux--overflow-menu-options__option" role="none">
+                  <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="0" id="scheduler-maintenance-open-public">
+                    <div class="rux--overflow-menu-options__option-content">Open public page</div>
+                  </button>
+                </li>
+                <li class="rux--overflow-menu--divider rux--overflow-menu-options__option rux--overflow-menu-options__option--danger" role="none">
+                  <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1" id="scheduler-maintenance-replace-open">
+                    <div class="rux--overflow-menu-options__option-content">Replace link</div>
+                  </button>
+                </li>
+              </ul>
             </div>
+            </div>
+            <p class="rux--type-body-01" id="scheduler-maintenance-link-note" hidden></p>
           </div>
           <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="scheduler-maintenance-create" hidden>Create public link</button>
         </div>
@@ -316,6 +336,7 @@
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/copy-button.js"></script>
+<script src="/design/js/menu.js"></script>
 <script src="/design/js/modal.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>

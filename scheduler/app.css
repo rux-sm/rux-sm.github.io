@@ -411,11 +411,13 @@ button.scheduler-row-head__num {
    data.js sets `--scheduler-open-top`, `--scheduler-open-start` and
    `--scheduler-open-h` from the bar. Carbon has no such control, so it is the
    app's own. The focus ring is the inverse focus colour, because the plain one
-   matches the fill on dark themes. */
+   matches the fill on dark themes. The bars' own layer, so the tab slides under
+   the sticky bus column with its bar; coming after the bar, it still draws on
+   top of it. */
 .scheduler-bar-shortcuts,
 .scheduler-bar-close {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   inset-block-start: var(--scheduler-open-top, 0px);
   inset-inline-start: var(--scheduler-open-start, 0px);
   inline-size: var(--scheduler-tab-w);

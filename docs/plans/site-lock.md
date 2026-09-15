@@ -80,9 +80,6 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `site_access_add`: `owner` on rux's account and Scheduler
-      ticked for the six others; staff is the owner or Scheduler ticked;
-      `my_staff_profile()` returns both.
 - [ ] Migration `site_access_manage` and the Access page: owner-only
       `list_accounts()` and `set_account_apps()`, and the checkbox table on the
       Account page.

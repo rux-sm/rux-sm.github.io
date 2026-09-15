@@ -40,8 +40,9 @@ function, including the ones that create share links.
   for the trips in that link only.
 - **Storage files stay public.** Closing them is a later plan.
 - **Staff means a `public.profiles` row whose `user_id` is `auth.uid()` in a
-  session that is not anonymous**, so anonymous site visitors and self-made
-  accounts are never staff.
+  session that is not anonymous, on an account that is the owner or has
+  Scheduler ticked**, so anonymous site visitors, self-made accounts and
+  accounts given only other apps are never staff.
 - **Every step adds beside what exists, and the open rules come down last**,
   after a watch of at least seven days shows nothing still uses the key alone.
   Each database step is a named migration, applied on rux's yes, with its

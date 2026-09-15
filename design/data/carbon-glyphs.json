@@ -638,6 +638,20 @@
         "path|d=M28,9H25V3H7V9H4a2,2,0,0,0-2,2V21a2,2,0,0,0,2,2H7v6H25V23h3a2,2,0,0,0,2-2V11A2,2,0,0,0,28,9ZM9,5H23V9H9ZM23,27H9V17H23Zm5-6H25V15H7v6H4V11H28Z"
       ]
     },
+    "building@32": {
+      "name": "building",
+      "size": "32",
+      "source": "node_modules/@carbon/icons/svg/32/building.svg",
+      "geometry": [
+        "path|d=M28,2H16a2.002,2.002,0,0,0-2,2V14H4a2.002,2.002,0,0,0-2,2V30H30V4A2.0023,2.0023,0,0,0,28,2ZM9,28V21h4v7Zm19,0H15V20a1,1,0,0,0-1-1H8a1,1,0,0,0-1,1v8H4V16H16V4H28Z",
+        "path|d=M18 8H20V10H18z",
+        "path|d=M24 8H26V10H24z",
+        "path|d=M18 14H20V16H18z",
+        "path|d=M24 14H26V16H24z",
+        "path|d=M18 20H20V22H18z",
+        "path|d=M24 20H26V22H24z"
+      ]
+    },
     "user--multiple@32": {
       "name": "user--multiple",
       "size": "32",

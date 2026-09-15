@@ -70,6 +70,10 @@ const ICONS = [
   // panel, which hides the browser's PDF toolbar and stands in for it: zoom
   // out, fit to width, zoom in and print. `download` and `launch` are above.
   'zoom--out', 'fit-to-width', 'zoom--in', 'printer',
+  // A HOTEL, asked for by Scheduler for a trip bar's hotel mark. `building`,
+  // not `hotel`: Carbon's `hotel` is a bed, which already means a sleeper coach
+  // on the same bar.
+  'building',
   // A GROUP OF PEOPLE, asked for by Scheduler 2026-09-07. A roster control
   // sitting in a toolbar Carbon draws as icons had to be a text button, because
   // the sprite held exactly one person in 62 -- `user--avatar`, which the shell's

@@ -7,10 +7,8 @@
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
-<!-- MONO, FOR THE <code>app.css</code> IN THE INTRO PARAGRAPH. One word,
-     but font-display: optional means a cold-cache load that misses the
-     preload stays in the browser's fallback monospace for the whole
-     visit and never swaps. -->
+<!-- Plex Mono is preloaded for the code element in the intro paragraph: under
+     font-display: optional a face that misses the first paint never swaps in. -->
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexMono-Regular-Latin1.woff2">
 <link rel="stylesheet" href="/design/assets/fonts/plex.css">
 <link rel="stylesheet" href="/design/css/rux.css">
@@ -19,121 +17,28 @@
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="overrides.css">
 <link rel="stylesheet" href="app.css">
-<!-- BEFORE theme.js, AND THE ORDER IS LOAD-BEARING. `theme.js:73` resolves a
-     stored id through `window.Rux?.customThemes?.get(t)` at load, so the module
-     has to exist by then; after it, a custom theme would resolve to undefined
-     on the first paint. Added 2026-09-08: this page was scaffolded before
-     Design Phase 16 put the tag in `templates/app-shell.html`, and the pin moves
-     of that time refreshed `vendor/` without rewriting a page, so the file was
-     vendored and unlinked from the v0.1.9 pin on. Every read of it is optionally chained
-     -- `profile.js:79` falls back to `[]` -- so the failure was SILENT: the
-     account panel simply showed the compiled themes and nothing said why. -->
+<!-- Before theme.js, which resolves a stored custom theme through
+     window.Rux.customThemes as it loads. -->
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
 <style>
-/* NO OFFSET FOR THE NAV, BECAUSE THE NAV IS NOT THERE UNTIL IT IS ASKED FOR.
-   The template reserves 18rem on the left above 66rem -- 16rem of persistent
-   side nav plus .rux--content's own 2rem -- and this page gives that 256rem
-   back to the grid instead. The nav carries `rux--side-nav--hidden`, which
-   Carbon declares AFTER `--side-nav--ux` and BEFORE `--expanded`, so it is 0
-   at every width and the hamburger's own `--expanded` still opens it to 16rem.
-   It is position: fixed at z-index 8000 with an opaque background, so it
-   covers the page rather than pushing it, which is what it already does below
-   the breakpoint. Measured 2026-09-06 with a forced reflow between each step:
-   256 / 0 / 256 / 256 for base, +hidden, +hidden+expanded, +expanded.
-
-   THE SCRIM STAYS BELOW THE BREAKPOINT. `side-nav__overlay-active` is 100vw
-   only under `max-width: 65.98rem`, so at desktop the nav opens over the page
-   with nothing dimmed. Escape closes it and so does the button; an outside
-   press does not, which is js/ui-shell.js's deliberate choice for a nav. */
+/* No rule offsets the content for the nav. The nav carries
+   rux--side-nav--hidden, so it is 0 wide at every width until the
+   hamburger's --expanded opens it over the page. Below 66rem the scrim dims
+   the page behind it. Escape, the button and the scrim close it; a press
+   elsewhere does not. */
 </style>
 </head>
 <body>
-<!-- PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav,
-     --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28 -->
-<!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
-     read at 1280 and 900 on 2026-08-28. Confirmed there, not inferred here:
-     `header__menu-toggle__hidden` is present and the button computes
-     display:none at 1280; the side nav is persistent and keeps `--ux` at both
-     widths; the content region is cleared by a fixed inset, not a grid share.
-     NOT FROM CARBON: that page opens and closes its nav with
-     `LeftNavWrapper-module--expanded`, a gatsby-theme-carbon class, so its
-     toggle mechanism is the docs site's and is no evidence about the
-     component. Its white nav is a site class too. 
-     THE SWITCHER PANEL, added 2026-09-02, verified-live the same day on
-     components-ui-shell-header--header-w-actions-and-switcher: press opens,
-     second press, outside press and Escape close, focus stays put. Its
-     entries are invented; an ecosystem fills them, the same list on every app.
-     THE ACCOUNT PANEL, added 2026-09-02: the same header panel, opened by the
-     Account action through aria-controls, holding rux's own profile controls
-     (js/profile.js). No Carbon page has a profile to read; the panel itself
-     is the captured --header-w-actions-and-right-panel.
--->
 <!--
-  THE APP SHELL. Copy this file, replace the marked regions, delete the rest of
-  this comment. It is the frame the other templates are built on: each of them
-  is a COMPLETE page carrying this same shell, because a skeleton must run on
-  its own, and a file that only runs once pasted into another one is
-  not runnable. templates/table-page.html is the worked example.
-
-  THE SIDE NAV IS THE RAIL, AND IT SITS INSIDE THE HEADER. Carbon renders two
-  shells and this is the one with a working hamburger:
-
-    rail      nav.--side-nav--ux INSIDE header, 3rem wide, expanded to 16rem
-              over the page by button.--header__menu-toggle. Five captures
-              render it, and they are the ones whose headers also carry
-              __nav and __global. js/ui-shell.js finds the nav with
-              `burger.closest('.rux--header')`, so this nesting is what makes
-              the hamburger work at all.
-
-    expanded  nav.--side-nav--expanded BESIDE header and main, permanent, no
-              hamburger in any of the 641 captures. Its one advantage is that
-              the content region is offset by a sibling rule
-              (`.rux--side-nav--expanded ~ .rux--content { 16rem }`) that this
-              arrangement cannot satisfy. REJECTED so the shell could have a
-              hamburger; a template built on it shipped in f5f1bef and was
-              replaced.
-
-  WHAT THAT COSTS, STATED PLAINLY: no rule offsets `.rux--content` for a nav
-  that lives inside the header. `.rux--content` is only ever indented by a
-  SIBLING side nav, and this one is not a sibling, so the page indents itself
-  — see the <style> block in the head, which is the only CSS these templates
-  carry and says why it has to exist.
-
-  `--side-nav--ux` is 16rem, NOT a 3rem rail — the rail is `--side-nav--rail`,
-  and the bare `.rux--side-nav` is 3rem before `--ux` widens it. The nav is a
-  full panel sitting below the header, so the content has a fixed 16rem to
-  clear, which is why the indent is a fixed padding and not a share of the
-  grid.
-
-  THE SHELL CARRIES ITS OWN THEME, and `data-theme="g100"` on the header is
-  that. Carbon's UI-shell-header/style.mdx says the shell "can be customized to
-  use any of the four IBM themes by applying an inline theme to the shell
-  zone", and the header's background token is plain `$background` — so a shell
-  left on the page's theme is white on a white page, with the nav, the page and
-  the header separated by one 1px border and nothing else. The shell zone is
-  the header, and the side nav sits inside it, so one attribute themes both.
-  Change it to `white` only if you mean the shell to disappear into the page.
-
-  THE SPRITE IS INLINED, and has to be. Referencing it as
-  `../assets/icons.svg#i-name` was tried and is broken in two ordinary cases:
-  WebKit has never supported a cross-document <use>, so every icon on the page
-  is blank in Safari, and opening the file over file:// blocks the fetch in
-  every engine. Both fail SILENTLY — the CSS and the scripts still load, so the
-  page looks built and simply has no icons in it. A file meant to be copied
-  cannot carry that.
-
-  The block after <body> is generated. `npm run icons` rewrites it in every
-  template from assets/icons.svg, and check-icons fails if one drifts, so
-  neither a stale copy nor a hand-edit survives.
-
-  EVERY BEHAVIOUR MODULE LOADS, not just ui-shell, so a modal or a data table
-  pasted into `main` needs no script of its own. The kernel is first because
-  the others delegate to it.
+  The side nav sits inside the header, where js/ui-shell.js finds it from the
+  hamburger. data-theme="g100" on the header themes the shell apart from the
+  page's own theme.
 -->
 
-<!-- SPRITE:BEGIN — generated, do not edit. `npm run icons` rewrites this
-     block in every template from assets/icons.svg. -->
+<!-- SPRITE:BEGIN — generated, do not edit. npm run build rewrites this block
+     from design/assets/icons.svg. It is inlined because a use element that
+     points at another file draws nothing in Safari or over file://. -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 <!-- Generated by tools/build-icons.mjs from @carbon/icons. Do not edit by hand.
      Path data: Carbon Design System, Copyright IBM Corp. 2015, 2026,
@@ -209,75 +114,27 @@
 <header class="rux--header" data-theme="g100" aria-label="Rux Scheduler">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
-  <!-- The hamburger. js/ui-shell.js toggles --expanded and --hidden on the nav
-       and keeps aria-expanded in step; nothing here needs a script.
-
-       `__menu-toggle__hidden` IS WHAT MAKES THIS IBM'S DESIGN, not a
-       decoration. It is `display: none` above 66rem, and `--side-nav--ux` is
-       16rem above 66rem and 0 below it: one breakpoint, two halves of one
-       behaviour. IBM's UI-shell-left-panel/accessibility.mdx describes it —
-       the left panel is PERSISTENT at desktop, and "on smaller screens, or if
-       content is zoomed up to approximately 175% magnification, Carbon
-       responsively hides the left panel behind a 'hamburger' button", which
-       then "overlays the main content area, which often becomes dimmed". The
-       header doc puts it plainly: the hamburger "is only needed when there is
-       a collapsable left navigation".
-
-       WITHOUT THE CLASS THE BUTTON SHOWS AT DESKTOP, and closing the nav there
-       leaves the content indented against a nav that is no longer beside it.
-       That state does not exist in IBM's design, and this template shipped it
-       until 2026-08-28.
-
-       IT SHIPS CLOSED, as the captures do. Shipping it `--expanded` was tried
-       and is worse: below the breakpoint the nav overlays, js/ui-shell.js
-       activates `side-nav__overlay`, and the page loads behind a grey scrim.
-
-       js/ui-shell.js swaps the glyph to a close icon while the nav is open,
-       which is the rest of what IBM specifies for this control. -->
+  <!-- The hamburger. js/ui-shell.js toggles --expanded on the nav, keeps
+       aria-expanded in step and swaps the glyph to a close icon while the nav
+       is open. It starts closed, as Carbon's captures do. -->
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
 
-  <!-- REPLACE: product name. The mark is brand/logo.svg -- SWAP THE FILE,
-       not this markup: every shell here and every page the script exports
-       reads that one path, so a new drawing lands everywhere on reload.
-       What ships today is a dashed placeholder, not a mark. No invented
-       class; the img is inline style only. Sized by HEIGHT with the width
-       following, so the file's own aspect governs -- do not pin a width.
-       currentColor does not reach into an img, so the file carries its own
-       colours; the header ground is #161616 in every theme, so one
-       colourway serves. -->
+  <!-- The mark is brand/logo.svg: replace the file, not this markup. It is
+       sized by height so the file's own aspect sets the width, and it carries
+       its own colours because currentColor does not reach into an img. -->
   <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Scheduler</a>
 
-  <!-- REPLACE: top-level product navigation. The current one carries
-       --header__menu-item--current and aria-current="page". -->
-  <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
-
-       ORDER IS PRESCRIBED, right to left: switcher, account, notifications,
-       help. Carbon fixes those so they do not shift as a user moves between
-       products, and anything a product adds of its own goes in the band LEFT
-       of them, with search furthest left of all. Right-aligned, no gaps.
-
-       TWO OF THE FOUR SHIP HERE, and the order above is why these two and in
-       this order. NOTIFICATIONS AND HELP ARE NOT HERE, dropped 2026-09-03:
-       an icon-only button with no handler is an affordance that lies, the
-       rule js/ states about itself, and nothing in this ecosystem notifies
-       or has help to open. Carbon's captured story has all of them and
-       sink/ui-shell.html keeps them, because that fragment is the capture
-       and this file is what an app ships. Add one back in a product when it
-       does something; put it here, in this order, not at the end.
-
-       A theme control is NOT a header action: Carbon reserves these utilities
-       for "universal, system-level functions" and no capture has one. Since
-       2026-09-02 it lives INSIDE the account panel below, with the profile
-       (js/profile.js); the sink's five buttons stay in harness.js as a demo
-       convenience. It moves `data-theme` on <html>, which is the CONTENT
-       only: the shell keeps its own g100 either way. -->
+  <!-- Global actions, in Carbon's order from the right: the switcher, then
+       account. Icon-only, so each has an aria-label. The theme control is in
+       the account panel, not here, because Carbon keeps these actions for
+       system-level functions. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
   </div>
-  <!-- THE SWITCHER PANEL: a sibling of __global, collapsed until the grid button
-       opens it (js/ui-shell.js). Every app in an ecosystem lists the same apps
-       here; a divider is an <hr> in an li of its own. -->
+  <!-- The switcher panel, opened by the grid button (js/ui-shell.js).
+       /switcher.js refills the list from /switcher.json; these entries stay if
+       that fetch fails. -->
   <div class="rux--header-panel" id="rux-switcher-panel">
     <ul class="rux--switcher" aria-label="Applications">
       <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
@@ -285,15 +142,10 @@
       <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/scheduler/" aria-current="page">Rux Scheduler</a></li>
     </ul>
   </div>
-  <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
-       through aria-controls (js/ui-shell.js), holding the profile every app
-       keeps — a display name and the theme, saved in this browser under one
-       key shared by every app on the origin (js/theme.js, js/profile.js).
-       The panel is captured (--header-w-actions-and-right-panel); what is IN
-       it is a product's own, composed from the sink's text input and vertical
-       radio group. The sign-in button ships hidden and shows only once
-       something registers a handler for it, because a button with no handler
-       is an affordance that lies. -->
+  <!-- The account panel, opened by the Account button through aria-controls
+       (js/ui-shell.js): the display name and theme, saved in this browser by
+       js/profile.js and js/theme.js. The sign-in button stays hidden until
+       something registers a handler for it through js/profile.js. -->
   <div class="rux--header-panel" id="rux-account-panel">
     <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
       <div class="rux--form-item rux--text-input-wrapper">
@@ -371,20 +223,14 @@
     </div>
   </div>
 
-  <!-- The scrim. Only visible under the mobile media query, where the nav
-       overlays the page; pressing it closes the nav. -->
+  <!-- The scrim. Only visible below 66rem, where the nav overlays the page;
+       pressing it closes the nav. -->
   <div class="rux--side-nav__overlay"></div>
 
-  <!-- REPLACE: the navigation. Every item needs an icon because the rail shows
-       nothing else. An expandable category is a <button> plus its <ul>; a
-       standalone link is an <a> on its own. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <!-- THE NAV LISTS WHAT EXISTS. Drivers, Fleet, Customers, Requests and
-           Settings all pointed at this page, so clicking one silently reloaded
-           the schedule -- worse than not offering it. Carbon compiles no disabled
-           state for a side-nav link, and inventing one is not this app's to do,
-           so each returns when its page does. -->
+      <!-- Only pages that exist are listed, because Carbon compiles no disabled
+           state for a side-nav link. -->
 <li class="rux--side-nav__item rux--side-nav__item--active">
         <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></div>
@@ -396,56 +242,31 @@
 </header>
 
 <main id="main-content" class="rux--content">
-<!-- BEHAVIOUR: static specimen · 2026-09-06 · invented trips on an invented
-  week, Mon 7 to Sun 13 September 2026, today drawn on Wednesday for the
-  specimen and not read from a clock. The grid and the trip bar are this
-  app's own components (app.css); the toolbar, side nav, switcher, tags and
-  overflow menu are Carbon parts as compiled in the pinned rux.css. What it
-  shows: the six rows of a bar (destination, customer, booking contact with
-  its phone, times, notes, drivers), a booking contact with no phone, a
-  requirement the bus lacks as a warning icon at the end of the drivers row
-  (a sleeper, 56 seats, an ADA lift), a two-day bar, a bar continuing from
-  last week, one continuing into next week with a partial-PO border, two
-  bars overlapping into a second lane, an unconfirmed trip in red, a double
-  booking, an out-of-service stripe with its row icon, and the Unassigned
-  row. What it does: a click
-  selects a bar (aria-pressed), the switcher changes the size tier. Not
-  covered: no data, no drag, no editor, no week navigation, no time-aligned
-  mode, no realtime. -->
+<!-- A static specimen: invented trips on an invented week, Mon 7 to Sun 13
+  September 2026, with today drawn on Wednesday rather than read from a clock.
+  It shows the six rows of a bar, a booking contact with no phone, a
+  requirement the bus lacks as a warning icon, a two-day bar, bars continuing
+  from last week and into next week with a partial-PO border, two bars
+  overlapping into a second lane, an unconfirmed trip in red, a double
+  booking, an out-of-service stripe with its row icon, and the Unassigned row.
+  app.js selects a bar on click and sizes the day columns. -->
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-5">
-        <!-- THE PAGE'S NAME IS IN THE OUTLINE, NOT ON THE SCREEN. Three pieces of
-             chrome already say it: the tab title, the app name in the header, and
-             the current item in the side nav. Drawn at 42px in a 50px line it cost
-             66px of a viewport where a bus row is 95px, and the toolbar directly
-             below carries the week, which is the part that changes. The heading
-             stays for the document outline and for anyone arriving by screen
-             reader. -->
+        <!-- The page's name is in the outline, not on the screen: the tab
+             title, the header and the side nav already say it. -->
         <h1 class="rux--visually-hidden">Trip bar specimen</h1>
         <p>Every state the grid can draw, on invented trips and no network. This page is the design reference for <code>app.css</code>: the live <a class="rux--link" href="./">Schedule</a> shows only the states this week happens to contain. Not linked from the side nav on purpose.</p>
-        <!-- THE TOOLBAR AND THE BOARD ARE ONE COMPONENT, joined 2026-09-07.
-             Same join as index.html: no gap, and the toolbar takes the grid's
-             own surface so the day band is the only accent between them. -->
+        <!-- The toolbar and the board share .scheduler-frame, as on index.html. -->
         <div class="scheduler-frame">
         <div class="scheduler-toolbar">
-          <!-- ORDER: MOVE, THEN READ, THEN ACT. The two arrows are neighbours
-               because paging back and forth is the most repeated gesture here and
-               Today between them put a 70px hop between the pair. The label sits
-               straight after the controls that change it, and NEVER before them:
-               "August 31 - September 6, 2026" is wider than "September 7 - 13,
-               2026", so anything after it in the flow would slide sideways as the
-               week changes, moving the very buttons being clicked. New trip is
-               pushed right, which is Carbon's own place for a primary action and
-               keeps creating a trip clear of the paging controls. -->
+          <!-- The two arrows are neighbours because paging back and forth is the
+               most repeated gesture here. The week label follows the controls
+               that change it, so a wider week does not move them. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prev" aria-label="Previous week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-next" aria-label="Next week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
           <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="scheduler-today">Today</button>
           <h2 class="scheduler-toolbar__range rux--type-heading-compact-02" id="scheduler-range">&nbsp;</h2>
-          <!-- NEW TRIP IS NOT HERE YET, and a disabled primary button is a worse
-               answer than none: it was the most prominent thing on the page and it
-               did nothing. It comes back, right-aligned after this spacer, on the
-               day the trip editor does. -->
           </div>
         </div>
         <div class="scheduler-week" id="scheduler-week" role="region" aria-label="Week of 7 September 2026">

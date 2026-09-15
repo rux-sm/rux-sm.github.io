@@ -1,37 +1,27 @@
 /* ==========================================================================
-   data.js — THE LIVE WEEK
+   data.js — the live week
    --------------------------------------------------------------------------
-   Fills #scheduler-grid from the tables the rux-ui app also writes, and writes
-   back: a drag moves a bus, and the trip panel's Save writes the trip with
-   its stops, contact, payments and bus. That database is production and
-   shared with rux-ui, so nothing here is ever tried with a test record.
+   Fills #scheduler-grid from the tables rux-ui also writes, and writes back:
+   a drag moves a bus, and the trip panel's Save writes the trip with its
+   stops, contacts, payments, POs, invoices and assignments. The database is
+   production and shared with rux-ui, so nothing is tried with a test record.
 
-   THE CLIENT IS THE ACCOUNT'S, NOT A SECOND ONE. /account.js at the hub root
-   opens the session and exposes window.Rux.account.client; two clients on one
-   storage key put two GoTrueClient instances there, which supabase-js warns
-   about. A module opened alone -- localhost, or this repo served by itself --
-   has no /account.js, so it falls back to its own client with persistSession
-   off, which cannot fight the first one because it stores nothing. The
-   publishable key is meant to sit in client code; the secret keys are the
-   backend project's and are nowhere near this repository.
+   The client is the account's. /account.js opens the session and exposes
+   window.Rux.account.client, because two clients on one storage key make
+   supabase-js warn. Opened without /account.js, this module makes its own
+   client with persistSession off, which stores nothing. The publishable key
+   is meant to sit in client code.
 
-   WHAT A BAR IS: ONE ASSIGNMENT, NOT ONE TRIP. A trip carries an outbound leg
-   (start_date..end_date) and, when it is a drop-off and pick-up, a return leg
-   (return_start_date..return_end_date) that can be days later; trip_assignments
-   rows name a bus per leg and per position, so a seven-bus trip is seven bars
-   across seven rows and a drop-off is two bars on the same row with a gap
-   between them. A leg needing more buses than it has assignments contributes
-   the difference to the Unassigned row, which is the dispatcher's to-do rather
-   than an error.
+   A bar is one assignment, not one trip. A trip has an outbound leg and may
+   have a return leg days later; trip_assignments names a bus per leg and
+   position, so a seven-bus trip is seven bars. A leg with fewer assignments
+   than buses adds the difference to the unassigned row, as a to-do.
 
-   NO CONFLICT MARKING, DELIBERATELY. The specimen draws a double-booked bar
-   and this page never will: placement here is by DAY, and two same-day trips
-   on one bus are ordinary -- a morning charter and an afternoon one -- so
-   marking every overlap would cry wolf on most rows. Real conflict detection
-   needs the times, which is the time-aligned mode, which is later.
+   Overlaps are not marked as conflicts: bars are placed by day, and two
+   same-day trips on one bus are ordinary.
 
-   EVERY VALUE FROM THE DATABASE IS WRITTEN WITH textContent. The rows were
-   authored in another application, and a destination is data, never markup.
+   Every value from the database is written with textContent, because the
+   rows are authored in another application.
    ========================================================================== */
 (() => {
   'use strict';
@@ -43,12 +33,8 @@
   const schEl = document.getElementById('scheduler-week');
   const statusEl = document.getElementById('scheduler-status');
   const toastEl = document.getElementById('scheduler-toast');
-  /* TWO ELEMENTS, AND KEEPING THEM APART IS LOAD-BEARING. `rangeEl` is the
-     BUTTON -- what `data-rux-open` goes on and what the overlay anchors to --
-     and `rangeTextEl` is the span inside it that holds the week. They were one
-     element until the trigger gained a caret `<use>`; `setRange` writes
-     `textContent`, which on the button would delete the svg on the first
-     render and leave a trigger with no disclosure mark. */
+  // `rangeEl` is the week button and `rangeTextEl` the span inside it that
+  // `setRange` writes, because textContent on the button would delete its caret.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
   // The week picker's hidden input and the guard that tells its `change`
@@ -64,34 +50,25 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-  /* THE WEEK'S FIRST DAY IS A PREFERENCE NOW, not a constant. `mondayOf` is
-     kept as the name because that is what it returns by default and what every
-     call site means by it; `weekStartsSunday` shifts it by one when set.
-     `getDay()` is 0 for Sunday, so Monday-first is `(day + 6) % 7` and
-     Sunday-first is simply `day`. */
+  // `mondayOf` returns the week's first day: Monday, or Sunday when
+  // `weekStartsSunday` is set. `getDay()` is 0 for Sunday.
   let weekStartsSunday = false;
   const mondayOf = d => addDays(d, -(weekStartsSunday ? d.getDay() : (d.getDay() + 6) % 7));
-  /* WHICH DAYS ARE THE WEEKEND, ASKED OF THE DATE AND NOT OF THE COLUMN.
-     Here rather than at either call site because the board and the driver
-     roster both mark it and they must never disagree -- and because the
-     column index is the wrong question: `weekStartsSunday` moves the weekend
-     to columns 0 and 6, which is not a run of columns at all. */
+  // The weekend is read from the date, not the column, because a Sunday-first
+  // week puts it at both ends. The board and the driver roster share it.
   const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
 
   // -- the palette ----------------------------------------------------------
-  /* THE ONE TABLE OF TRIP COLOURS, read by the board, the editor and the bar
-     menu. `value` is what `trips.trip_bar_color` stores, and its check
-     constraint allows these five, null, and the retired names below; `hue` is
-     the `scheduler-bar--*` class that paints it. Carbon's tag palette has no
-     amber, so `scheduler-bar--amber` in app.css paints it with the warning
-     colour, and pink is Carbon's magenta.
+  /* The trip colours, read by the board, the editor and the bar menu. `value`
+     is what `trips.trip_bar_color` stores and `hue` is the `scheduler-bar--*`
+     class that paints it. Carbon's tag palette has no amber, so app.css paints
+     `scheduler-bar--amber` with the warning colour.
 
-     RETIRED NAMES ARE MAPPED ON READ, NEVER REWRITTEN, which is rux-ui's own
-     rule: orange and yellow paint as amber and cyan as teal, and a row keeps
-     what it stores until someone picks a colour. */
+     Retired names are mapped on read and never rewritten, as rux-ui does:
+     orange and yellow paint as amber, cyan as teal. */
   const TRIP_COLORS = [
     { value: 'teal', label: 'Teal', hue: 'teal' },
     { value: 'green', label: 'Green', hue: 'green' },
@@ -109,14 +86,7 @@
   // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
   const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
 
-  // THREE LEVELS, WHICH IS RUX-UI'S OWN RULE. Its `--_tone` reads
-  // `var(--_trip-bar-color, var(--sched-trip-bar-confirmed-tone))` with a
-  // second rule giving `--unconfirmed:not([data-trip-bar-color])` the
-  // unconfirmed tone: an override colour beats status, status beats the
-  // default, and the default is BLUE, not neutral. Only the override was
-  // wired here until 2026-09-06, and 679 of 743 trips carry none, so
-  // virtually every bar came out grey -- a bar saying nothing where the old
-  // board said "confirmed, nothing to look at".
+  // An override colour beats status, and status beats the default blue, as in rux-ui.
   const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
     ?? standardHueOf(trip);
 
@@ -133,18 +103,9 @@
     return n;
   };
 
-  /* `box` IS THE WHOLE viewBox STRING, NOT ITS LAST NUMBER, and four callers
-     read it the other way until 2026-09-08: `svgUse('#i-checkmark', 16, 32)`
-     wrote `viewBox="32"`, which is invalid, so the browser dropped the
-     attribute and logged one error per icon -- 78 in a session, drowning the
-     console this app is meant to be debugged in.
-
-     IT NEVER LOOKED WRONG, WHICH IS WHY IT SURVIVED. Every symbol in the sprite
-     carries its own viewBox and scales into whatever viewport it is used in, so
-     the icons rendered correctly with no outer viewBox at all. The fault was
-     only ever visible in the console -- and the sizes were not even guessable
-     from the call: `#i-checkmark` is a 20-unit drawing, the chevrons are 16 and
-     `#i-calendar` is 32, where all four calls said 32. */
+  /* `box` is the whole viewBox string, not its last number. Sprite symbols are
+     drawn in different boxes -- `#i-checkmark` in 20, the chevrons in 16, most
+     icons in 32 -- so a caller passes the symbol's own. */
   const svgUse = (href, size, box) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', size); svg.setAttribute('height', size);
@@ -156,19 +117,8 @@
     return svg;
   };
 
-  // WRITTEN OUT, NOT BUILT FROM A PREFIX AND A VARIANT. `rux--inline-
-  // notification--${kind}` is a class no checker can resolve, and check-
-  // classes said so on the first run: it read the literal half and failed on
-  // it. Both whole names appear here, so the gate can see them, which is the
-  // point of the gate.
-  /* EVERY CLASS WRITTEN OUT IN FULL, never `--${kind}`: check-classes reads
-     the source and cannot see through an interpolation.
-
-     SUCCESS AND WARNING WERE MISSING UNTIL 2026-09-06 and the lookup falls
-     back to `info`, so every "Saved" and "Trip created" notice this editor has
-     shown was rendering as an INFO notice -- the right words in the wrong
-     kind, which is exactly the sort of thing a fallback hides. Found while
-     adding `warning` for a half-finished create. */
+  // Every class is written out in full, never `--${kind}`: check-classes reads
+  // the source and cannot see through an interpolation.
   const NOTE = {
     error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#i-error--filled' },
     info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#i-information--filled' },
@@ -176,12 +126,8 @@
     warning: { cls: 'rux--inline-notification rux--inline-notification--warning', icon: '#i-warning--filled' },
   };
 
-  /* THE SAME FOUR KINDS AGAIN, AS THE ACTIONABLE COMPONENT. Carbon ships a
-     second notification for the case where the notice OFFERS something --
-     `actionable-notification` -- and `say` grows a fourth argument rather than
-     the board growing a second status region. Written out in full for the same
-     reason `NOTE` is: check-classes reads the source and cannot see through an
-     interpolation. */
+  // The same kinds as Carbon's actionable notification, for a notice that
+  // offers an action.
   const ACTION_NOTE = {
     error: { cls: 'rux--actionable-notification rux--actionable-notification--error', icon: '#i-error--filled' },
     info: { cls: 'rux--actionable-notification rux--actionable-notification--info', icon: '#i-information--filled' },
@@ -189,45 +135,7 @@
     warning: { cls: 'rux--actionable-notification rux--actionable-notification--warning', icon: '#i-warning--filled' },
   };
 
-  /* `action` IS OPTIONAL AND CHANGES THE COMPONENT, not just the contents.
-     Without it nothing about this function moves: the same inline notification
-     it has always built. With it the markup is Carbon's actionable one, taken
-     from `carbon-react-dom.json`'s `components-notifications-actionable--inline`
-     -- `__focus-wrapper` around `__details` and `__button-wrapper`, the text in
-     a `__content` the inline notification does not have, and the ICON keeping
-     `rux--inline-notification__icon`, which is what the capture does rather
-     than an oversight here.
-
-     TWO THINGS IN THAT CAPTURE ARE DELIBERATELY NOT COPIED. Carbon puts
-     `role="alertdialog"` on the root and wraps it in two visually-hidden focus
-     sentinels, which together TRAP the keyboard until the notice is dealt
-     with. That is right for a notification demanding a decision and wrong for
-     a board: `#scheduler-status` is already `role="status" aria-live="polite"`, the
-     move has already happened, and the offer is a courtesy. So the text is
-     announced, the button is in the tab order after it, and nothing is
-     captured. The close button is dropped for the same reason -- the next
-     render clears this region on its own. */
-  /* ONE BUILDER FOR BOTH ROOMS. `say` puts it above the board and `toast` puts
-     it over the page; what goes INSIDE is the same decision either way, so it
-     is made once here.
-
-     `action` CHANGES THE COMPONENT, not just the contents. Without one this is
-     Carbon's inline notification, unchanged from what this file has always
-     built. With one it is the actionable notification, taken from
-     `carbon-react-dom.json`'s `components-notifications-actionable--inline` --
-     `__focus-wrapper` around the details and the button, the text in a
-     `__content` the inline notification has no equivalent of, and the ICON
-     keeping `rux--inline-notification__icon`, which is what the capture does
-     rather than an oversight here.
-
-     TWO THINGS IN THAT CAPTURE ARE DELIBERATELY NOT COPIED. Carbon puts
-     `role="alertdialog"` on the root and wraps it in two visually-hidden focus
-     sentinels, which together TRAP the keyboard until the notice is dealt with.
-     That is right for a notification demanding a decision and wrong for a
-     board: the move has already happened and the offer is a courtesy. Both
-     regions are `role="status" aria-live="polite"`, so the text is announced,
-     the button follows it in the tab order, and nothing is captured. The close
-     button is dropped for the same reason -- the next message clears the slot. */
+  // And as Carbon's toast notification, for a plain notice over the page.
   const TOAST_NOTE = {
     error: { cls: 'rux--toast-notification rux--toast-notification--error', icon: '#i-error--filled' },
     info: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#i-information--filled' },
@@ -235,22 +143,17 @@
     warning: { cls: 'rux--toast-notification rux--toast-notification--warning', icon: '#i-warning--filled' },
   };
 
+  /* One builder for both places: `say` puts a notice above the board and
+     `toast` over the page. With an `action` it is Carbon's actionable
+     notification, from `carbon-react-dom.json`'s
+     `components-notifications-actionable--inline`, whose icon keeps
+     `rux--inline-notification__icon`. The capture's `role="alertdialog"` and
+     focus sentinels are left out: they trap the keyboard, and this action is
+     an offer about something already done. */
   function note(kind, title, subtitle, action, asToast) {
-    /* A PLAIN TOAST IS CARBON'S TOAST COMPONENT, NOT THE INLINE ONE FLOATED.
-       It was the inline one with `--low-contrast` for a round, and that has no
-       width of its own: measured in the corner, a short "Move undone" came to
-       383px and a real error message to 559px, with the container stretched to
-       1119 of the viewport's 1440. `toast-notification` sets `inline-size:
-       18rem` itself, which is the same 18rem the actionable `--toast` variant
-       carries -- so both shapes are Carbon's own figure and this file invents
-       no width.
-
-       ITS STRUCTURE IS FLATTER THAN THE INLINE ONE and is taken from
-       `carbon-react-dom.json`'s `components-notifications-toast--default`: the
-       icon is a DIRECT child rather than living inside a `__details`, and
-       `__details` holds the title and subtitle instead of a
-       `__text-wrapper`. Copying the inline arrangement here would put Carbon's
-       own padding on the wrong boxes. */
+    /* A plain toast is Carbon's toast notification, which sets its own width.
+       Its icon is a direct child and `__details` holds the text, as in
+       `components-notifications-toast--default`. */
     if (!action && asToast) {
       const spec = TOAST_NOTE[kind] ?? TOAST_NOTE.info;
       const box = el('div', spec.cls);
@@ -307,14 +210,9 @@
     return box;
   }
 
-  /* A TOAST CAN BE DISMISSED AND THE ONE ABOVE THE BOARD CANNOT, which is the
-     one behavioural difference between the two rooms. `say`'s region is cleared
-     by the next render -- it describes the board, and when the board changes
-     the description is spent. A toast is cleared by nothing: it floats over the
-     page and the next render does not touch it, which is exactly why the undo
-     survives a re-read, and equally why it would otherwise sit there for good.
-     So it carries Carbon's own close button. Written out in full per variant
-     because check-classes cannot see through an interpolation. */
+  /* A toast carries Carbon's close button because nothing else clears it: the
+     next render clears `say`'s region and leaves the toast. Written out in full
+     per variant for check-classes. */
   const CLOSE = {
     'rux--actionable-notification': { btn: 'rux--actionable-notification__close-button', icon: 'rux--actionable-notification__close-icon' },
     'rux--toast-notification': { btn: 'rux--toast-notification__close-button', icon: 'rux--toast-notification__close-icon' },
@@ -331,10 +229,10 @@
     return b;
   }
 
-  /* ABOVE THE BOARD, IN FLOW, for the notices that stand in for the grid:
-     nothing this week, and a week that would not load. Loading is the grid's
-     own skeleton, and the status starts as screen-reader text for it; a notice
-     makes it visible. Everything else goes to `toast`. */
+  /* Above the board, in flow, for the notices that stand in for the grid:
+     nothing this week, or a week that would not load. The region starts as
+     screen-reader text for the loading skeleton; a notice makes it visible.
+     Everything else goes to `toast`. */
   function say(kind, title, subtitle, action) {
     statusEl.replaceChildren();
     if (!kind) { statusEl.hidden = true; return; }
@@ -343,23 +241,10 @@
     statusEl.appendChild(note(kind, title, subtitle, action, false));
   }
 
-  /* ── SAYING IT OVER THE PAGE INSTEAD OF ABOVE THE BOARD ───────────────────
-     `say` writes into `#scheduler-status`, which is in normal flow above the grid, so
-     every message it shows pushes the board down and every one it clears pulls
-     it back. For the three messages that describe the BOARD -- loading, nothing
-     this week, a week that would not load -- that is correct: they stand in for
-     the grid. For the thirteen that report what a person just did it is a jolt,
-     and rux asked for somewhere else.
-
-     SAME BUILDER, DIFFERENT ROOM. `note()` makes the element for both; this
-     adds Carbon's `--toast` modifier, which is what sizes it to 18rem and gives
-     it the shadow a floating card needs. The placement is this app's own, in
-     app.css: Carbon ships the toast's APPEARANCE and no position at all.
-
-     IT REPLACES RATHER THAN STACKS, exactly as `say` does. One slot means the
-     last thing you did is the thing on screen, and a second move drops the
-     first move's undo -- which is the right depth, since only the last move is
-     undoable. */
+  /* Over the page, for a notice about what a person just did, so the board does
+     not jump the way it would under `say`'s in-flow region. The placement is in
+     app.css, because Carbon's toast has no position. It replaces rather than
+     stacks, so a second move drops the first move's undo. */
   function toast(kind, title, subtitle, action) {
     if (!toastEl) { say(kind, title, subtitle, action); return; }
     toastEl.replaceChildren();
@@ -375,34 +260,11 @@
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'notes', 'updated_at',
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
-    // THE TIMES ARE HERE, NOT ON THE TRIP. `trips.departure_time`,
-    // `return_time` and `spot_time` are null on all 743 rows -- counted
-    // 2026-09-06, not sampled -- so a bar reading them showed an empty row on
-    // every trip. The itinerary carries them: a leg's first `pickup` stop
-    // holds the departure in `depart_prev`, its last `return` stop holds the
-    // arrival in `arrive`. That is rux-ui's own rule (extractTripTimes), with
-    // one correction: it read a trip's stops without regard to leg, and a bar
-    // here IS a leg, so the return leg of a drop-off must read its own.
-    // BILLING'S OWN COLUMNS, added 2026-09-09. Counted over all 751 rows before
-    // a field was built, because the Schedule section had just been designed
-    // against three columns that turned out null on every row: quoted_price 99,
-    // deposit_amount 31, invoice_number 43, po_ref 42, po_amount 47,
-    // contract_status 336, invoice_status 336, balance_paid 751, date_paid 24.
-    // All nine are real and in use, so all nine are fetched.
-    /* THE BOOKING CONTACT, added 2026-09-09. Counted first, as ever: `contacts`
-       holds 196 rows with name 196, phone 140, email 134 and client 160
-       populated -- all four real. What is NOT real is a link on most trips:
-       only 292 of 751 carry a `booking_contact_id`, so the section has to have
-       something to say for the other 459. */
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
     // The trip's own copy of the booking contact, which rux-ui reads and writes.
     'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
-    /* THE DAY-OF CONTACTS, five columns because the schema has five. Counted:
-       64 trips carry a first, 7 a second, and one carries all five, so 687 of
-       751 have none at all -- which is why the section renders one row and not
-       a stack of empty ones. 34 of the 64 point at the booking contact itself,
-       which is what the "same as booking" box is for. */
+    // The day-of contacts: five, because the schema has five.
     'trip_contact_1_id', 'trip_contact_2_id', 'trip_contact_3_id',
     'trip_contact_4_id', 'trip_contact_5_id',
     'c1:trip_contact_1_id(id,name,phone)', 'c2:trip_contact_2_id(id,name,phone)',
@@ -413,12 +275,9 @@
     'trip_contact_5_name', 'trip_contact_5_phone',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     'contract_status,invoice_status,balance_paid,date_paid',
-    // The three the billing switches gate, added 2026-09-10 with them.
-    // `po_received` and `invoiced` are booleans, never null on any of the 779
-    // rows; `contract_note` is free text and non-null on 18, all of them signed.
+    // The PO and invoice switches' flags, and the contract note.
     'contract_note,po_received,invoiced',
-    // 34 rows across the table today. The old app REWRITES every row of a
-    // trip on save; Save here inserts, updates and deletes one row at a time.
+    // Save inserts, updates and deletes payment rows one at a time, by id.
     'trip_payments(id,position,amount,method,date,ref)',
     // POs and invoices, one row each, written by id like the payments.
     'trip_pos(id,position,ref,amount,date)',
@@ -426,13 +285,9 @@
     'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot)',
   ].join(',');
 
-  // A STALLED REQUEST HAS TO END SOMEWHERE. A rejected fetch surfaces at once,
-  // but a connection that simply hangs does not: measured 2026-09-06 with the
-  // network blocked, the grid sat dimmed and marked busy past seven seconds
-  // with no error and no way back except a reload. The request loses after
-  // this and the catch runs. An abandoned read may still land, and nothing
-  // reads it. An abandoned WRITE may still land too, so its error carries
-  // `timedOut` and a save treats it as possibly written.
+  /* A hung connection never rejects, so a request races this timeout and the
+     catch runs. An abandoned write may still land, so its error carries
+     `timedOut` and a save treats it as possibly written. */
   const READ_TIMEOUT = 15000;
   const withTimeout = promise => Promise.race([
     promise,
@@ -444,7 +299,7 @@
 
   async function read(weekStart) {
     const weekEnd = addDays(weekStart, 6);
-    // A trip that STARTED before this week can still run through it, so the
+    // A trip that started before this week can still run through it, so the
     // window reaches back; 90 days is far longer than any trip in the data and
     // the exact overlap is decided per leg below, not by this filter.
     const lo = iso(addDays(weekStart, -90));
@@ -453,54 +308,36 @@
 
     const [buses, trips, drivers, contacts, oos, timeOff] = await withTimeout(Promise.all([
       client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper').order('sort_order').then(unwrap),
-      // A CANCELLED TRIP IS NOT ON THE SCHEDULE. `cancelled_at` is set on 41 of
-      // the 743 rows and this read never excluded it, so cancelled work has
-      // been drawn as live work on every week since the grid landed -- the
-      // kind of defect that misleads rather than merely looks wrong. It stays
-      // in the table and belongs to the trips page, which is where it can be
-      // seen and brought back.
+      // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
       client.from('drivers').select('id,name,short_name').then(unwrap),
-      /* EVERY CONTACT, ONCE, FOR THE SEARCH. 196 rows of four short columns is
-         a few kilobytes and it does not change while a week is open, so it is
-         read with the week rather than on each keystroke -- a lookup per
-         character against a table this size would be more requests than it is
-         worth. */
+      // Every contact, read once with the week for the contact search rather
+      // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client').order('name').then(unwrap),
       client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(weekStart)).then(unwrap),
-      // OVERLAP, NOT CONTAINMENT: a driver away across the whole fortnight has
+      // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
     ]));
-    // THE FLEET IS NEVER EMPTY, so an empty one is a read the database refused,
-    // which is what an ended log-in looks like, not a week with no buses.
+    // The fleet is never empty, so an empty one is a read the database refused,
+    // which is what an ended log-in looks like.
     if (!buses.length) throw new Error('The schedule came back empty. Log in again.');
     return { buses, trips, drivers, contacts, oos, timeOff, weekStart, weekEnd };
   }
 
-  // formatRange, not two formatted dates joined by a dash: only it knows that
-  // a week inside one month is "September 7 - 13, 2026" here and "7-13
-  // September 2026" elsewhere. Building it by hand read "7 - September 13,
-  // 2026", which is what sent me looking.
   function setRange(weekStart, weekEnd) {
     if (!rangeEl) return;
-    /* SHORT MONTH: "Sep 7 – 13, 2026" against "September 7 – 13, 2026", which
-       is about 70px back on the widest thing in the toolbar. The month is read
-       once and the DAYS are what change week to week; spelling it out cost more
-       than it said, and it was the first thing pushing this row to wrap. */
+    /* `formatRange`, because only it writes a week inside one month the way the
+       locale does, such as "Sep 7 – 13, 2026". The month is short so the widest
+       thing in the toolbar does not wrap its row. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
     rangeTextEl.textContent = typeof fmt.formatRange === 'function'
       ? fmt.formatRange(weekStart, weekEnd)
       : `${fmt.format(weekStart)} - ${fmt.format(weekEnd)}`;
-    /* AND THE PICKER'S INPUT, WHICH NOBODY SEES. It is `hidden`, so this is
-       the calendar's idea of where it is rather than anything on screen: open
-       it and the shown week's first day is selected and its month is the one
-       displayed. Without this the calendar would open on today every time,
-       which is wrong the moment you have paged away from today -- which is the
-       only time you want it. `valueSetBySelf` stops the `change` listener
-       below from treating this as a user pick and re-rendering the week that
-       just rendered. */
+    /* The week picker's hidden input follows the shown week, so the calendar
+       opens on it rather than on today. `valueSetBySelf` stops the `change`
+       listener from treating this as a person's pick. */
     if (weekInput) {
       valueSetBySelf = true;
       weekInput.value = iso(weekStart);
@@ -510,13 +347,10 @@
   }
 
   // -- placing --------------------------------------------------------------
-  // A leg's clock, from its own stops. The trip columns stay as the fallback
-  // they were written to be, though every one of them is null today.
-  /* ONE PLACE PICKS THE TWO ROWS THAT MATTER, so the board and the editor
-     cannot choose differently. This was inline in `timesOf` until the Schedule
-     section needed the same pair to edit; a second copy of "which stop is the
-     pickup" is exactly the kind of thing that drifts and then draws a bar that
-     disagrees with the panel describing it. */
+  /* A leg's own stops in order, and the two that carry its times: the first
+     `pickup` holds the departure in `depart_prev` and the last `return` the
+     arrival in `arrive`. The board and the editor both use it, so they pick
+     the same two; `timesOf` falls back to the trip's own time columns. */
   const stopsOfLeg = (trip, leg) => {
     const stops = (trip.trip_stops || [])
       .filter(s => (s.leg || 'outbound') === leg)
@@ -572,7 +406,7 @@
     return lastEnd.length || 1;
   }
 
-  /* A CONTACT AS THE TRIP RECORDS IT. rux-ui keeps each contact's name, phone
+  /* A contact as the trip records it. rux-ui keeps each contact's name, phone
      and email on the trip itself and links the contact beside them, so the
      trip's own copy comes first; a trip with only a link shows the linked
      contact. Slot 0 is the booking contact, 1 to 5 the day-of ones. */
@@ -607,13 +441,8 @@
     for (const p of parts) if (p != null) r.appendChild(p);
     bar.appendChild(r);
   };
-  /* TWELVE HOUR, COMPACT. This was `String(t).slice(0, 5)` -- not a format at
-     all, a truncation of Postgres's `HH:MM:SS` -- so the one thing on this page
-     that never respected a reader was the time. Charter dispatch reads 12 hour
-     and the day column is 136px at its floor, so "7:50a" rather than
-     "7:50 AM": the suffix has to survive beside a second time and an en dash.
-     Midnight and noon are the two the modulo gets wrong if written naively;
-     `|| 12` covers both. */
+  // Twelve-hour and compact, "7:50a", so two times and a dash fit a day column.
+  // `|| 12` turns hour 0 and hour 12 into 12.
   const hhmm = t => {
     if (!t) return '';
     const [h, m] = String(t).split(':');
@@ -652,7 +481,7 @@
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
-    /* A REQUIREMENT IS DRAWN ONLY WHEN THE BUS FAILS IT. A trip that needs a
+    /* A requirement is drawn only when the bus fails it. A trip that needs a
        sleeper on a sleeper bus has nothing to say, so the flags cost no row; a
        trip on a bus without one shows the missing item as a warning icon. No
        bus means nothing to compare, and an unrecorded capacity is not a
@@ -681,18 +510,15 @@
     addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null, warn('dest'));
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
-    // THE BOOKING CONTACT as the trip records it. The phone keeps its width and
+    // The booking contact as the trip records it. The phone keeps its width and
     // the name gives way.
     const contact = tripContact(trip, 0);
     const who = el('span', null, contact?.name || '');
     if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
     addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', contact.phone) : null);
 
-    // Departure and return on one line, an en dash between them. The SPOT
-    // time -- be at the yard -- is read above and deliberately not drawn: the
-    // row is one line in a column of about 119px, and three times do not fit
-    // where two already fill it. It belongs on the trip editor, which does not
-    // exist yet.
+    // Departure and return on one line, an en dash between them. The spot time
+    // is not drawn, because two times already fill the row; the editor shows it.
     const dep = hhmm(leg.depart), back = hhmm(leg.back);
     const legDays = daysBetween(parseISO(leg.from), parseISO(leg.to)) + 1;
     const when = dep && back ? `${dep} \u2013 ${back}`
@@ -754,46 +580,20 @@
     const rows = buses
       .filter(b => b.status === 'active' || used.has(b.id))
       .map(b => ({ id: b.id, bus: b }));
-    // ALWAYS PRESENT, HIDDEN WHEN EMPTY. A drag has to be able to drop the
-    // week's FIRST unassigned trip somewhere, and a row that is not in the
+    // Always present, hidden when empty. A drag has to be able to drop the
+    // week's first unassigned trip somewhere, and a row that is not in the
     // document has no rectangle to aim at.
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
 
     gridEl.replaceChildren();
-    /* "#", NOT "Bus". The column holds bus NUMBERS and the corner labels them;
-       "#" is the conventional heading for a column of identifiers and it stops
-       the heading being wider than the things under it.
-
-       IT SAVES NO WIDTH, and rux asked for it on that basis, so it is worth
-       being exact: the column floors at 2rem to square the corner, and the
-       widest bus number is already under that floor. "Bus" at 20.5px was not
-       what set this column either. What changes is that the heading no longer
-       says a word the whole grid already says. The title carries the sense for
-       anyone who needs it spelled out. */
+    // "#" heads the column of bus numbers; the title spells it out.
     const corner = el('div', 'scheduler-corner', '#');
     corner.title = 'Bus number';
     gridEl.appendChild(corner);
 
-    // TODAY IS THE HEADER CELL AND NOTHING ELSE. There was a rule down the
-    // column until 2026-09-06; app.css says why it went and why nothing
-    // replaces it.
+    // Today is marked on its header cell only.
     const today = iso(new Date());
     let todayCell = null;
-    /* THE WEEKEND IS READ OFF THE DATE, NOT OFF THE COLUMN INDEX, 2026-09-11.
-       This was `i >= 5`, which is only Saturday and Sunday while the week
-       starts on Monday. `weekStartsSunday` is a saved view option -- the menu's
-       "Start on Sunday" -- and with it on, columns 5 and 6 are FRIDAY and
-       SATURDAY: the board dimmed the wrong two days and called Sunday a
-       weekday. Measured before the fix, on a Sunday-first week: index 5 = Fri,
-       index 6 = Sat, while the actual weekend sits at indices 0 and 6.
-
-       AND NOTHING DOWNSTREAM MAY TREAT THE WEEKEND AS A RUN OF COLUMNS, even
-       now that nothing downstream uses it. Sunday-first puts the two days at
-       OPPOSITE ENDS of the week. The columns were collected here for a band and
-       then for a boundary hairline; both are gone, the body draws a rule at
-       every day now, and the weekend's only mark is the dimmed text this line
-       sets. The warning stays because the next thing to mark the weekend will
-       need it. */
     for (let i = 0; i < 7; i++) {
       const d = addDays(weekStart, i);
       const cell = el('div', 'scheduler-day');
@@ -806,38 +606,10 @@
       gridEl.appendChild(cell);
     }
 
-    /* THE DAY RULES ARE BACK, 2026-09-11, ON RUX'S CALL AND AFTER TWO
-       INTERMEDIATE ANSWERS THAT ARE NOW SUPERSEDED. The board has carried "no
-       weekend tint, so an empty row still cannot be counted" since 2026-09-07,
-       when six vertical day rules were REMOVED at rux's own ask. This pass
-       first answered it with a weekend fill, which read as the header band
-       bleeding down the board; then with a hairline at the weekend boundary
-       only. rux has now asked for the full set back, with the day labels
-       centred over them: "lets add the vertical lines back and center the
-       dates?"
-
-       WHICH SUBSUMES THE WEEKEND HAIRLINE RATHER THAN JOINING IT. Six rules
-       answer the counting problem directly -- an empty row has a landmark every
-       column, not one at the week's end -- so a line at the weekend boundary is
-       no longer a mark, it is one of six identical ones. The weekend keeps the
-       dimmed header text it has always had and nothing else in the body. If it
-       needs to be distinguishable again, that is a heavier rule or a fill and a
-       separate decision; it is not this.
-
-       THE BOUNDARIES ARE THE SIX INTERNAL ONES, 1 THROUGH 6. Column 0 is the
-       week's left edge, which the bus column's own rule already draws, and
-       column 7 is its right edge, which the pane draws. A line on either would
-       double something. That is the same rule the removed version used -- its
-       comment recorded it as "inset one day from the start so it fell on days 1
-       to 6 and neither edge" -- reached here by naming the boundaries rather
-       than by insetting a repeat, so the edges are explicit instead of implied.
-
-       STILL A BACKGROUND AND STILL PER TRACK, for the reasons the note on
-       `--scheduler-day-rule` in app.css gives: `background-image` sits above the
-       row's own `background-color` and below every child, and `var()` inside a
-       custom property resolves where that property is COMPUTED, so the stops
-       have to meet the colour on the element that owns both. Both were learned
-       the hard way earlier today and neither changes. */
+    /* A rule at each of the six internal day boundaries, so an empty row can
+       be counted; the bus column and the pane draw the two outer edges. The
+       stops are set on each track, which app.css draws as its background, so
+       `var(--scheduler-day-rule)` resolves on the track that defines it. */
     const ruleCols = [1, 2, 3, 4, 5, 6];
     const dayRuleStops = (() => {
       const parts = [];
@@ -861,23 +633,14 @@
       const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
       if (r.empty) rowEl.hidden = true;
 
-      // THE HEAD IS THE NUMBER AND THE EQUIPMENT ICONS. Capacity, type and a
-      // non-active status are not dropped, they move to the cell's title, so
-      // the column can be narrow and a hover still answers "which bus is this".
+      // The head is the bus number and an out-of-service flag; the rest of what
+      // the bus knows is in the number's toggletip and the head's title.
       const head = el('div', 'scheduler-row-head');
-      // "No bus", not "Unassigned": the word was the widest thing in the
-      // column and set its width on its own. This one wraps, and the row's
-      // title carries the full sense.
-      /* THE NUMBER IS A TOGGLETIP TRIGGER when there is a bus behind it.
-         Structure from `carbon-ibm-products-dom.json`: a `popover-container`
-         carrying `--caret`, a placement and `toggletip`, holding a
-         `toggletip-button`, then `popover > popover-content > toggletip-content`
-         and the caret as the container's last child. js/popover.js opens it on
-         click from the markup alone -- the module reads the mode off the classes
-         and wants no attribute.
-
-         `right-start` because this column is the board's left edge: anywhere
-         else and the tip covers the week it is describing. */
+      // "No bus" wraps in the narrow column, and the head's title carries the sense.
+      /* The number is a toggletip trigger, with the structure from
+         `carbon-ibm-products-dom.json`; js/popover.js opens it from the markup
+         alone. `right-start`, because this column is the board's left edge and
+         any other placement covers the week the tip describes. */
       if (r.bus) {
         const tip = el('span', 'rux--popover-container rux--popover--caret rux--popover--drop-shadow rux--popover--right-start rux--toggletip');
         const trigger = el('button', 'rux--toggletip-button scheduler-row-head__num');
@@ -897,8 +660,8 @@
           r.bus.vin ? `VIN ${r.bus.vin}` : null,
           r.bus.status && r.bus.status !== 'active' ? `Status: ${r.bus.status}` : null,
         ].filter(Boolean);
-        // EVERY VALUE WITH textContent, as everywhere else here: these rows were
-        // authored in another application and a bus colour is data, never markup.
+        // Every value with textContent, as everywhere here: a bus colour is data,
+        // never markup.
         for (const line of spec) inner.appendChild(el('p', null, line));
         if (!spec.length) inner.appendChild(el('p', null, 'Nothing recorded for this bus.'));
         content.appendChild(inner);
@@ -920,26 +683,10 @@
         ].filter(Boolean).join(' · ');
       }
 
-      // EACH SYMBOL KEEPS ITS OWN viewBox. The sprite quarries every icon from
-      // the smallest size Carbon ships it in, so these are not all one box:
-      // accessibility and hotel exist only at 32, warning--filled at 16. Drawing
-      // a 16-box symbol inside a 32-box svg scales it to a quarter of the space.
-      /* THE EQUIPMENT ICONS ARE GONE FROM THIS COLUMN, 2026-09-07, and the
-         reason is not tidiness: they were SETTING THE ROW HEIGHT. A head is
-         the number stacked over its icons, and two of them came to about 74px
-         against a 5-row bar's 88 -- invisible until the view menu let a bar
-         drop to two rows, at which point the row's height was decided by
-         whether that bus happens to have a lift. rux saw it at five rows too:
-         the two-icon rows measurably taller than the one-icon rows beside them,
-         so the grid's rhythm was set by metadata nobody was reading.
-
-         THEY ARE IN THE TOGGLETIP ON THE NUMBER NOW, with everything else the
-         bus knows. `ada_lift` and `sleeper` are ATTRIBUTES -- constant, and a
-         dispatcher learns their own fleet -- so they belong behind a press.
-
-         OUT OF SERVICE STAYS IN THE COLUMN. It is a STATE, it changes what the
-         row can accept this week, and the drag already reads it as a warning.
-         One icon cannot make a row taller than a bar. */
+      /* Out of service is the one flag in this column: it is a state that
+         changes what the row can take this week, where the lift and sleeper are
+         fixed and sit in the toggletip. Icons stacked under the number would
+         set the row's height. Each symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -990,7 +737,7 @@
     placeAvailability();
     syncSelection();
 
-    // THE ONLY MARK FOR TODAY IS ITS HEADER CELL, so the grid brings that cell
+    // The only mark for today is its header cell, so the grid brings that cell
     // into view rather than leaving it past the right edge -- which is where a
     // Sunday sits on a narrow window. Only when it is actually out of view, and
     // never past the sticky bus column, which covers the pane's left edge.
@@ -1003,66 +750,38 @@
       else if (left < schEl.scrollLeft + sticky) schEl.scrollLeft = Math.max(0, left - sticky);
     }
 
-    // formatRange, not two formatted dates joined by a dash: only it knows
-    // that a week inside one month is "September 7 - 13, 2026" here and
-    // "7-13 September 2026" elsewhere. Building it by hand read
-    // "7 - September 13, 2026", which is what sent me looking.
     setRange(weekStart, weekEnd);
 
     const barCount = [...tracks.values()].reduce((n, list) => n + list.length, 0);
     if (!barCount) say('info', 'Nothing this week', 'No trip touches these seven days.');
     else say(null);
 
-    // The line above just changed what sits ABOVE the grid, which moves the
-    // grid and changes how much height is left for it. app.js owns that sum;
-    // this says when to redo it rather than leaving it to an observer.
+    // The notice above changes how much height is left for the grid. app.js
+    // owns that sum, so this asks it to refit.
     window.Rux?.schedule?.fit?.();
   }
 
-  /* ── MOVING A TRIP TO ANOTHER BUS ─────────────────────────────────────────
-     THE ONE THING THIS PAGE WRITES, and it writes one column:
-     `trip_assignments.bus_id`. Vertical only, exactly as rux-ui's own drag is
-     -- a trip's DATES are the itinerary's business and are changed in the
-     editor, never by sliding a bar sideways.
+  /* ── Moving a trip to another bus ──
+     A drag writes one assignment's `bus_id`, or inserts the row for an empty
+     slot. It moves vertically only, as rux-ui's drag does; dates change in the
+     editor. Its rules:
+       * a threshold before it counts, so a press that does not move selects;
+       * a finger holds before a bar lifts, because a touch that travels at
+         once means to scroll;
+       * the unassigned row shows while dragging, so the week's first
+         unassigned trip has somewhere to land;
+       * a double booking or an out-of-service stretch warns and still drops,
+         because the dispatcher may know something this page does not;
+       * the unassigned row never warns, and dropping on the same row does
+         nothing;
+       * an interrupted gesture writes nothing; only a release drops.
+     Nothing moves optimistically: on release the week is read again, so the
+     screen shows what the database holds. */
 
-     ITS RULES, TAKEN FROM THAT DRAG RATHER THAN INVENTED:
-       * a threshold before it counts, so a press that does not move still
-         selects the bar;
-       * the Unassigned row is revealed for the duration, because the week's
-         first unassigned trip needs somewhere to land;
-       * a double booking and an out-of-service stretch are WARNINGS, not
-         walls -- the row says so and the drop still goes through, because the
-         dispatcher can see something this page cannot;
-       * the Unassigned row can never be a conflict;
-       * dropping on the row it came from does nothing.
-
-     TWO RULES ARE THIS APP'S OWN, ADDED 2026-09-07 AFTER RUX MOVED BUSES BY
-     MISTAKE ON A PHONE:
-       * a finger has to HOLD a bar before it lifts, because a touch that
-         travels straight away meant to scroll the board;
-       * an INTERRUPTED gesture writes nothing. Only a release is a drop.
-
-     WHAT IT DOES NOT DO: no ghost that re-lays-out a multi-day bar, no
-     optimistic move. The source dims, the target row lights, and on release
-     the week is read again from the server -- so what is on screen after a
-     move is what the database actually holds, not what this page hoped.
-     ────────────────────────────────────────────────────────────────────────*/
-  /* WHAT COUNTS AS PICKING A BAR UP, AND WHY A FINGER IS ASKED FOR MORE.
-     4px of travel is the right threshold for a pointing device and no threshold
-     at all for a thumb -- a finger moves that far just landing on the glass. So
-     on touch the board's own scroll and this drag were competing for the same
-     gesture, and a finger starting on a bar almost always meant the scroll:
-     rux moved buses by mistake on a phone, repeatedly.
-
-     A FINGER HOLDS FIRST. Stay inside TOUCH_SLOP for TOUCH_HOLD_MS and the bar
-     lifts; travel before that and this was a scroll, so the drag stands down
-     and never fires again for that gesture. A mouse is unchanged and picks the
-     bar up on the first 4px, because a mouse has no second job on this element.
-
-     KEYED OFF THE POINTER, NOT THE SCREEN. `pointerType` is a property of the
-     gesture, so a touchscreen laptop keeps the instant mouse drag AND gets the
-     hold from its own screen, in one window at one size. A width query would
-     have got both of those wrong. */
+  /* A mouse lifts a bar after 4px of vertical travel. A finger moves that far
+     just landing, so it must stay within TOUCH_SLOP for TOUCH_HOLD_MS; travel
+     first means a scroll, and the drag stands down for that gesture. Keyed off
+     `pointerType`, not screen width, so a touchscreen laptop gets both. */
   const DRAG_THRESHOLD = 4;      // mouse: pixels of travel that mean "drag"
   const TOUCH_SLOP = 10;         // finger: how far it may wander while holding
   const TOUCH_HOLD_MS = 400;     // finger: how long it must hold to lift a bar
@@ -1094,7 +813,7 @@
     if (error) throw new Error(error.message);
   }
 
-  /* AN EMPTY SLOT HAS NO ROW TO MOVE, so dropping one on a bus writes the row:
+  /* An empty slot has no row to move, so dropping one on a bus writes the row:
      the trip, its leg, the slot's position and the bus. It returns the new id,
      and undo takes the bus off that row, which draws the slot on the No bus row
      where it started. */
@@ -1105,8 +824,8 @@
     return data.id;
   }
 
-  /* WHAT THE ROW IS CALLED, for a message about a bus that may no longer be on
-     screen. `null` is the Unassigned row, which has no number to give. */
+  /* What the row is called, for a message about a bus that may no longer be on
+     screen. `null` is the unassigned row, which has no number to give. */
   function busLabel(busId) {
     if (!busId) return 'Unassigned';
     const row = gridEl.querySelector(`.scheduler-track[data-bus-id="${CSS.escape(String(busId))}"]`);
@@ -1114,28 +833,12 @@
     return num ? `bus ${num}` : 'its previous bus';
   }
 
-  /* ── UNDOING A MOVE ───────────────────────────────────────────────────────
-     ASKED FOR on 2026-09-07 and three times since: "No undo on a bus
-     move." The ask also said where it would come from -- "the write to
-     reverse it is the one `moveToBus` already makes" -- and that is exactly
-     what this is. One column, written back to the value the drag closure had
-     already captured before it moved.
-
-     `null` NEEDS NO SPECIAL CASE. A bar dragged OFF the Unassigned row has
-     `fromBus === null`, and `moveToBus(id, null)` is the same write the
-     "Take off its bus" action already makes.
-
-     ONE STEP, AND NO TIMER. `say` is a single slot: the next message or the
-     next render replaces whatever is in it, so a second move drops the first
-     move's offer and only the last move is undoable -- which is the right
-     depth for a board where the truth is the database and not a stack held in
-     this page. Nothing expires on a clock either. A notice that vanishes while
-     a dispatcher is reading it is a trap, and this one costs nothing to leave
-     standing.
-
-     AND THE UNDO ITSELF OFFERS NO UNDO. Pressing it ends on a plain
-     notification with no action, so the pair cannot be ping-ponged; going back
-     again is another drag. */
+  /* ── Undoing a move ──
+     Undo writes back, with `moveToBus`, the bus the drag captured before it
+     moved; `null` puts the trip back on the unassigned row. `toast` holds one
+     notice, so the next one drops the offer and only the last move is
+     undoable. The offer has no timer, so it cannot vanish while being read, and
+     the undo ends on a plain notice, so the pair cannot ping-pong. */
   function offerUndo(assignmentId, backTo, label) {
     toast('success', 'Trip moved', `Undo puts it back on ${label}.`, {
       label: 'Undo',
@@ -1183,15 +886,13 @@
         for (const { track } of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
       };
 
-      // WHILE A FINGER IS CARRYING A BAR THE PAGE MUST NOT SCROLL UNDER IT.
-      // `touch-action` is read when the gesture STARTS and cannot be changed
-      // once the hold has completed, so a non-passive `touchmove` is what stops
-      // the scroll mid-gesture. It works only because arming requires the
-      // finger to have stayed still: the browser has not begun scrolling yet,
-      // and a scroll already under way cannot be taken back.
+      /* While a finger carries a bar the page must not scroll under it.
+         `touch-action` is read only when a gesture starts, so a non-passive
+         `touchmove` stops the scroll; that works because the hold means the
+         browser has not started scrolling. */
       const eat = ev => ev.preventDefault();
 
-      // THE BAR IS PICKED UP. The same for both pointers; only the way in differs.
+      // Picks the bar up, the same for both pointers.
       const lift = () => {
         moved = true;
         unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
@@ -1203,13 +904,9 @@
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
       };
 
-      /* EVERY ENDING COMES THROUGH HERE, AND ONLY A RELEASE WRITES.
-         `pointercancel` used to run the same handler as `pointerup`, and that
-         handler wrote as soon as the drag had armed. So a gesture the browser
-         TOOK AWAY -- a scroll takeover, a system dialog, a window switch
-         mid-drag -- committed the move to whichever row the bar was last over,
-         with nothing released and nothing confirmed. An interrupted drag is not
-         a drop. It is nothing happening, and the trip stays where it was. */
+      /* Every ending comes through here, and only a release writes. A gesture
+         the browser cancels -- a scroll takeover, a system dialog -- leaves the
+         trip where it was. */
       const finish = async (release) => {
         if (hold) { clearTimeout(hold); hold = 0; }
         bar.removeEventListener('pointermove', move);
@@ -1229,9 +926,8 @@
 
         const toBus = target ? (target.dataset.busId ?? null) : fromBus;
         if (!target || toBus === fromBus) return;
-        /* HELD AS VALUES, NOT AS THE ELEMENTS THEY CAME OFF. `show()` below
-           replaces every bar in the grid, so `bar` is detached by the time the
-           undo can be pressed and its dataset is gone with it. */
+        /* Held as values, not as elements: `show()` below replaces every bar,
+           so `bar` is detached by the time the undo can be pressed. */
         let assignmentId = bar.dataset.assignmentId;
         const { tripId, leg, slot } = bar.dataset;
         const backTo = fromBus;
@@ -1248,16 +944,9 @@
           schEl.removeAttribute('aria-busy');
           gridEl.classList.remove('scheduler-grid--busy');
         }
-        /* AWAITED SO THE MESSAGE DESCRIBES A BOARD THAT IS ALREADY CORRECT.
-           These go to `toast` now, which `render` does not clear, so neither
-           one would be destroyed by the re-read as it was when both lived in
-           `#scheduler-status` -- surviving is no longer what the ordering buys. What
-           it buys is that the undo is not offered, and a failure is not
-           reported, against a grid still showing the pre-move week. The
-           failure is still carried down as a string rather than spoken in the
-           `catch`, for the same reason. The board is re-read either way: a move
-           that threw may still have landed, and the only honest thing on screen
-           is what the server says. */
+        /* Awaited, so the undo or the failure is shown against the re-read
+           board rather than the pre-move week. The board is re-read either
+           way, because a move that threw may still have landed. */
         await show();   // read it back, rather than trusting the move landed
         refreshEditor(assignmentId);
         if (failed) toast('error', 'Could not move that trip', failed);
@@ -1267,9 +956,8 @@
       const move = ev => {
         if (!moved) {
           const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY);
-          // A FINGER THAT TRAVELS BEFORE THE HOLD IS DONE MEANT TO SCROLL.
-          // Stand down rather than arm, and let the board keep the gesture.
-          // Both axes count, because the board scrolls sideways as well.
+          // A finger that travels before the hold is done means to scroll, so the
+          // drag stands down. Both axes count: the board scrolls sideways too.
           if (touch) { if (dx > TOUCH_SLOP || dy > TOUCH_SLOP) finish(false); return; }
           if (dy < DRAG_THRESHOLD) return;
           lift();
@@ -1297,42 +985,15 @@
     });
   }
 
-  /* ── THE TRIP PANEL ───────────────────────────────────────────────────────
-     IT SHOWS A TRIP AND EDITS IT, and Save writes it back. Editing went in
-     field by field, the way the drag went in.
+  /* ── The trip panel ──
+     It shows a trip and edits it, and Save writes it back. No Design module
+     opens `side-panel`, so its open state is this app's own on Carbon's
+     markup. Escape closes it and focus returns to the bar that opened it, so a
+     keyboard user is not left at the top of the document. The editor is a
+     flex child of `.scheduler-board`, so the board makes room by layout. */
 
-     NO Design MODULE CLAIMS `side-panel`, so opening and closing it is this
-     app's own behaviour on Carbon's own markup -- the class is compiled, the
-     structure is the sink's, and only the open/closed state is ours. Escape
-     closes it and focus goes back to the bar that opened it, because a panel
-     that swallows focus on close leaves a keyboard user at the top of the
-     document.
-
-     THE PAGE MAKES ROOM rather than the panel floating over it: `.scheduler-page`
-     takes the panel's width as end padding, and the grid follows on its own
-     because it measures its pane. Carbon's slide-in variant exists for
-     exactly this and drops the shadow a floating panel would carry.
-     ────────────────────────────────────────────────────────────────────────*/
-  /* HOW MANY RESULTS THE LIST SHOWS, 50 SINCE 2026-09-11.
-
-     IT WAS 12, AND THAT ARGUMENT DIED WITH THE PANEL IT WAS WRITTEN FOR. The
-     comment read "the panel is 256px of header, not a page" -- true of the
-     `rux--header-panel` the results used to live in. They are a menu hung off
-     the field now: the field's own width, `max-block-size: 60vh`, and the list
-     scrolling inside it. A dozen rows was a cap on a shape that no longer
-     exists.
-
-     WHAT 12 WAS ACTUALLY COSTING, counted live against the fleet's 737 trips:
-     "memorial" matches 38, "vanguard" 25, "dallas" 28. Every one of those was
-     cut to 12 -- and since the order is `start_date` DESCENDING, what was cut
-     was always the OLDEST, with nothing on screen saying so. A dispatcher
-     looking for last spring's trip got told to narrow a query that was already
-     a school's name.
-
-     50 CLEARS ALL THREE, and the ones it does not clear are the queries that
-     should be narrowed anyway: "tx" matches 612. The cap is still printed
-     rather than silent -- "More than 50 trips match" -- and cap+1 is still what
-     is fetched, so that line never claims a total it did not count. */
+  // The most trips a search lists. One more is fetched, so the count can say
+  // "More than 50 trips match" without claiming a total it did not count.
   const SEARCH_CAP = 50;
   let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), contacts: [] };
   let panelOpener = null;
@@ -1366,26 +1027,13 @@
     return dl;
   };
 
-  /* A SECTION CAN CARRY AN INLINE ACTION, 2026-09-10. The billing milestones
-     put their switch on the heading line rather than under it, which is what
-     rux drew and what saves the panel three stacked `label + switch + "On"`
-     blocks.
-
-     WHY NOT A `contained-list` HEADER, which is the component that already
-     does exactly this two pixels above on the same tab: because its body is a
-     `<ul>` of `contained-list-item`s, and Contract, PO and Invoice hold FORM
-     FIELDS, not rows. Putting a text input in a list item would be borrowing
-     a component's shell for content it was not built for -- the same fault
-     already refused for `rux--date-picker__icon` and for
-     `rux--time-picker`. Payments stays a real contained-list because it
-     genuinely has rows; these three get app chrome that MATCHES it, at the
-     same 12px/400 and the same `size-sm` height, so the tab still reads as
-     one system. */
+  /* A section can carry one control on its heading line, as each billing
+     switch does. The head is app markup rather than a `contained-list`
+     header, because Contract holds form fields, not list rows; every billing
+     section uses it, so the switches share one right edge. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
-    // A titleless section is still a section: it keeps the `spacing-06` above
-    // it. Billing's summary opens the tab, so a "Summary" heading over the
-    // first thing on screen names what is already obvious.
+    // A titleless section still keeps the `spacing-06` above it.
     if (!title) { wrap.appendChild(node); return wrap; }
     const head = el('div', 'scheduler-panel-section__title', title);
     if (!action) { wrap.append(head, node); return wrap; }
@@ -1395,49 +1043,11 @@
     return wrap;
   };
 
-  /* ── A MILESTONE THAT IS A LIST ─────────────────────────────────────────────
-     THREE LISTS, ONE BUILDER, 2026-09-11. Payments shipped as a
-     `contained-list` on 2026-09-10 and rux asked for Purchase order and
-     Invoice to read the same way -- a row per PO, a row per invoice, an add
-     button on the heading. Built as one header and one row rather than three
-     copies of each, because "structurally identical to Payments" is a claim
-     worth making true in the code rather than by eye: the three lists cannot
-     drift in height, density, tag size or row grid, since there is one of
-     each.
-
-     THE SWITCH GOES IN THE HEADER'S ACTION SLOT beside the `+`, which is where
-     `section()` already puts it for Contract -- the same heading line, at the
-     same height. It is passed in rather than built here because PO and Invoice
-     have one and Payments does not.
-
-     `__action` IS ABSOLUTE AND THAT IS WHY THE CONTROLS GET A BOX OF THEIR
-     OWN. `.rux--contained-list__action` is `position: absolute` with
-     `inset-inline: 0` and `justify-content: flex-end` (`css/rux.css:10752`),
-     so it has no height of its own to centre a 24px toggle in beside a 32px
-     button. An app element inside it carries the flex row, which keeps the
-     override file out of it -- `overrides.css` already steers around the
-     same absolute-positioning fault for the ROW action, and the note there
-     says the header's own action was left alone. It still is.
-
-     THE HEADER IS BUILT ONCE AND ONLY THE BODY IS REDRAWN. Payments rebuilds
-     its whole list on every change, which is safe for markup this file owns;
-     a header holding a live toggle is not -- rebuilding it would mint a new
-     switch on every row added and drop whatever state the old one held. */
-  /* THE HEADER HOLDS THE SWITCH AND NOTHING ELSE, 2026-09-11. It held the
-     switch AND the `+`, both inside `__action`, and that is what put PO's and
-     Invoice's switches 40px inboard of Contract's -- three consecutive rows on
-     two right edges, measured 311 / 271 / 271 at the 320px panel. One control
-     per header line puts all three back on one, and the `+` becomes the list's
-     last ROW instead (`listAddRow` below).
-
-     THE HEADER IS ALSO NO LONGER THE LIST'S. `--disclosed` existed here to
-     make the contained-list's own `__header` read like a section title; with
-     the label moved out to `.scheduler-panel-section__head` -- the line Contract
-     signed has always used -- the list has no header to style, so the variant
-     goes and `--inset-rulers` comes in to separate the rows.
-
-     THE LIST IS BUILT ONCE AND ONLY THE BODY IS REDRAWN, as before: a header
-     holding a live toggle must not be minted again on every row added. */
+  /* ── A milestone that is a list ──
+     Payments, purchase orders and invoices share this list and `listRow`, so
+     they cannot drift in height, density or row grid. The label and switch sit
+     on the section's heading line, and the add is the list's last row. The
+     list is built once and only its body is redrawn. */
   const rowList = () => {
     const list = el('div', 'rux--contained-list rux--contained-list--inset-rulers rux--layout--size-md');
     const body = el('ul', 'scheduler-list-body');
@@ -1446,11 +1056,9 @@
     return { list, body };
   };
 
-  /* THE ADD IS A ROW OF THE LIST. As a row it takes the list's ruler and the
-     rows' left edge, so it reads as the place the next row appears rather than
-     a button floating below the list. It is also the EMPTY STATE: an empty
-     list draws this row alone instead of "No purchase order recorded." above
-     an add button, which was two rows saying one thing. */
+  /* The add is a row of the list, so it takes the list's ruler and the rows'
+     left edge and reads as the place the next row appears. It is also the
+     empty state: an empty list draws this row alone. */
   const listAddRow = ({ label, id, onClick }) => {
     const li = el('li', 'rux--contained-list-item scheduler-list-additem');
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
@@ -1464,20 +1072,11 @@
     return { li, btn };
   };
 
-  /* ── ONE MENU FOR EVERY ROW ─────────────────────────────────────────────────
-     Added 2026-09-11. Each row carried a permanent `✕`: a destructive control
-     on screen at all times, in a 320px row. Edit and Remove go
-     behind the row's own overflow trigger, which is where Carbon puts row
-     actions and where `rux--menu-item--danger` already exists to mark one.
-
-     ONE ELEMENT, NOT ONE PER ROW, which is the pattern this file already uses
-     for the cell and bar menus: the menu is positioned at whichever trigger
-     was pressed and a variable holds what it acts on. A menu per row would
-     mint one on every redraw and leak them.
-
-     STILL NO CONFIRM ON REMOVE. Nothing is written until the panel saves, so a
-     mis-click costs a `Reset`, not a record -- the reasoning the `✕` shipped
-     with, unchanged by moving it into a menu. */
+  /* ── One menu for every row ──
+     Edit and Remove sit behind each row's overflow trigger, where Carbon puts
+     row actions. One menu element serves every row, placed at the pressed
+     trigger, so a redraw never mints another. Remove does not confirm: nothing
+     is written until Save, so a slip costs a Reset. */
   let rowMenuEl = null;
   let rowMenuFor = null;
   let rowMenuTrigger = null;
@@ -1513,31 +1112,20 @@
   const openRowMenu = (trigger, actions) => {
     const menu = rowMenu();
     rowMenuFor = actions;
-    /* FIXED, WHICH IS THE ONE POSITION `menu.js` REPOSITIONS. Its kernel calls
-       `anchor()` on scroll and resize and that is a no-op for anything not
-       `position: fixed`; the panel scrolls, so a menu anchored any other way
-       would sit still while its row moved out from under it. */
+    // Fixed, so the trigger's viewport rect places it directly.
     menu.hidden = false;
     menu.style.position = 'fixed';
 
-    /* MEASURED, NOT ASSUMED, 2026-09-11. This read a hardcoded 160 -- right
-       for today's two items and wrong the moment one carries a longer word or
-       a third is added. The menu is laid out at the origin first so
-       `offsetWidth` is its real width, which is what `popMenuAt` does for the
-       board's menus and the same reason. */
+    // Laid out at the origin first, so `offsetWidth` is its real width.
     menu.style.insetInlineStart = '0px';
     menu.style.insetBlockStart = '0px';
     const box = trigger.getBoundingClientRect();
     const width = menu.offsetWidth;
     const height = menu.offsetHeight;
 
-    /* IT OPENS TO THE LEFT. The trigger sits at the row's right end, which is
-       hard against the panel's own right edge, so a menu growing rightward has
-       nowhere to grow -- right-aligning it to the trigger opens it back over
-       the row it belongs to. Clamped to the viewport on both axes: the board's
-       `popMenuAt` clamps horizontally, and a row low in a long list runs out of
-       room on the other one, so this flips above the trigger when the space
-       below cannot hold it. */
+    /* It opens to the left, because the trigger sits against the panel's right
+       edge. Clamped to the viewport, and flipped above the trigger when the
+       space below cannot hold it. */
     const left = Math.max(0, Math.min(box.right - width, window.innerWidth - width));
     const top = box.bottom + height <= window.innerHeight
       ? box.bottom
@@ -1545,31 +1133,23 @@
     menu.style.insetInlineStart = `${Math.round(left)}px`;
     menu.style.insetBlockStart = `${Math.round(top)}px`;
 
-    /* `null`, NOT THE TRIGGER, and the first version passed the trigger.
-       `menu.js` registers an anchored surface with `reposition: anchor(...)`
-       and re-places any `position: fixed` menu itself -- so the placement
-       above was computed, written, and then overwritten. Measured: asked for
-       left 489 against a trigger ending at 649, got 537, opening RIGHTWARD off
-       the row. `popMenuAt` passes null for the same reason. The trade is that
-       the module does not wire `aria-controls` or return focus for us; the
-       trigger carries its own `aria-haspopup` and `aria-expanded` in markup,
-       and `aria-expanded` is synced on open and close below. */
+    /* `null`, not the trigger: given a trigger, `menu.js` re-places a fixed
+       menu itself and overwrites the placement above. So the trigger carries
+       its own `aria-haspopup`, and `aria-expanded` is synced here and on close. */
     window.Rux?.menu?.open?.(menu, null);
     trigger.setAttribute('aria-expanded', 'true');
     rowMenuTrigger = trigger;
   };
 
-  /* ONE ROW: A TAG, A WORD, AN AMOUNT. `--with-action` puts the row's control
-     at its end and `--clickable` makes the row itself the editor, which is
-     what keeps editing a row from meaning deleting and retyping it.
+  /* One row: a tag, a date, an amount. `--with-action` puts the row's control
+     at its end and `--clickable` makes the row itself open its editor.
 
-     THE GRID IS INSIDE THE ROW'S CONTENT, NOT ON IT. Carbon's
-     `__content` is an inline-block of its own, so the three columns go in a
-     span this app owns -- no rule here touches a `rux--*` class.
+     Carbon's `__content` is an inline-block of its own, so the columns go in a
+     span this app owns and no rule here touches a `rux--*` class.
 
-     THE CODE IS NEVER THE ONLY NAME. `CHK`, `PO` and `INV` mean nothing to a
-     screen reader, so the row button carries the whole thing in `aria-label`
-     and the tag carries its own long form in `title`. */
+     The code is never the only name: a code means nothing to a screen reader,
+     so the row button carries the whole row in `aria-label` and the tag its
+     long form in `title`. */
   const listRow = ({ code, tone, codeTitle, when, much, title, edit, remove, removeLabel }) => {
     const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action rux--contained-list-item--clickable');
     const open = el('button', 'rux--contained-list-item__content');
@@ -1593,7 +1173,7 @@
     more.type = 'button';
     more.setAttribute('aria-haspopup', 'true');
     more.setAttribute('aria-expanded', 'false');
-    // The trigger's name is the ROW's, so two rows' menus are told apart.
+    // The trigger's name is the row's, so two rows' menus are told apart.
     more.setAttribute('aria-label', `Actions for ${title}`);
     more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
@@ -1605,25 +1185,8 @@
     return li;
   };
 
-  /* CLOSING IS NOW `hidden`, AND THE APPARATUS BELOW IT IS GONE.
-     The editor is a flex child of the board rather than a fixed overlay, so
-     there is no entrance or exit animation to wait out -- `--right-placement`
-     and `--slide-in` are off the element and their rule sets never match.
-
-     WHAT WAS HERE, and it was hard won, so it is worth saying what stopped
-     being needed rather than deleting it silently: an `animationend` listener
-     plus a 400ms fallback timer, because removing the `--closing` class while
-     the exit animation still ran made the panel SNAP back to opacity 1 at its
-     original position for one full-strength frame -- the flash rux reported.
-     Sampled every frame on 2026-09-06: at 143ms the panel was at opacity 0.176
-     and 263px out, and the next frame had it back at opacity 1 and x=0. The fix
-     was ordering `hidden` first, while the fill still held the panel out of
-     sight, and the timer stayed as a fallback because `animationend` never
-     arrives when a stylesheet suppresses animations, which the gate sweep does
-     deliberately.
-
-     None of that has anything to hold now. An element that was never animating
-     cannot flash on the way out. */
+  // The editor is a flex child of the board, not an animated overlay, so
+  // closing it is setting `hidden`.
   function closePanel(returnFocus = true) {
     if (panelEl.hidden) return;
     // Closing puts the editor's own trip down; a different trip selected
@@ -1635,35 +1198,19 @@
     syncSelection();
     const opener = panelOpener;
     panelOpener = null;
-    // THE ROSTER COMES BACK FIRST, so the fit below measures a board that
-    // already has it. `placeAvailability` fits too, so the restoring case runs
-    // two -- the second is idempotent and the un-yielded case still runs one.
+    // The roster comes back first, so the fit below measures a board that has
+    // it. `placeAvailability` fits too, and a second fit changes nothing.
     if (availYielded) { availYielded = false; placeAvailability(); }
     window.Rux?.schedule?.fit?.();
     if (returnFocus && opener?.isConnected) opener.focus();
   }
 
-  /* ── THE TRIP EDITOR ───────────────────────────────────────────────────────
-     STEP 4's FIRST SLICE, and deliberately not all 88 columns of `trips`.
-     What is editable here is what is a plain column on the trip and changes
-     nothing about WHERE the bar sits: destination, customer, type, status,
-     the three requirement flags, notes. One update, no cascade.
-
-     WHAT IS NOT EDITABLE HERE AND WHY. Dates move a bar across days and are
-     read through legsOf/clip, so a wrong write moves a real trip -- they get
-     their own pass with the placement in front of it. Times are not on the
-     trip at all: they live per-leg and per-stop in `trip_stops`, which is the
-     itinerary editor. Bus and drivers are the Fleet half. Money, contacts and
-     the per-leg workflow booleans are a fuller editor than this panel.
-
-     ONE BUTTON, BECAUSE ONE IS WHAT IS CAPTURED. `action-set--row-double` is
-     compiled but no captured story shows two buttons in an action set, so the
-     second is not ours to invent (AGENTS.md). Close discards.
-
-     SAVE READS BACK rather than trusting the write, the same rule the drag
-     follows: `show()` refetches the week, and the Save button closes the
-     editor after it. Any other render leaves the editor open on its trip,
-     whatever week it draws. */
+  /* ── The trip editor ──
+     It edits the trip's details, dates, times, billing and contacts. The
+     action bar holds Save, Reset, and Cancel, which cancels the trip after a
+     dialog. Save reads back rather than trusting the write: `show()` re-reads
+     the week and Save then closes the editor. Any other render leaves the
+     editor open on its trip. */
   const FIELD = (id, label, control, cls = 'rux--form-item') => {
     const item = el('div', cls);
     const lw = el('div', 'rux--text-input__label-wrapper');
@@ -1674,29 +1221,17 @@
     return item;
   };
 
-  /* A FIELD WHOSE SECTION HEADING ALREADY NAMES IT drops the visible label and
-     keeps the name, 2026-09-10. "Contract" over "Contract note" over an empty
-     box is the label said twice; rux asked for the second one to become a
-     placeholder.
-
-     THE PLACEHOLDER IS NOT THE LABEL, and this is the part that had to be got
-     right rather than done the quick way. A placeholder is not exposed as an
-     accessible name by every screen reader, it is not read at all by some
-     once the field has content, and it disappears the moment anyone types --
-     WCAG 3.3.2 is about exactly this. So the label survives as `aria-label`
-     on the input and only its rendered `<label>` element goes. The
-     accessibility tree is unchanged; the pixels are not.
-
-     WHY NOT `aria-labelledby` POINTING AT THE HEADING: because the heading
-     says "Purchase order" while the two fields under it are the reference and
-     the amount, so it names neither. The full name is written out instead. */
+  /* A field whose section heading already names it shows a placeholder and no
+     visible label. The name stays as `aria-label`, because a placeholder is
+     not a reliable accessible name and disappears on typing. It is not
+     `aria-labelledby` the heading, which names the section, not the field. */
   const BARE = (control, cls = 'rux--form-item') => {
     const item = el('div', cls);
     item.appendChild(control);
     return item;
   };
 
-  /* NO BROWSER AUTOFILL ON A TRIP'S FIELDS. They hold a customer's data, never
+  /* No browser autofill on a trip's fields. They hold a customer's data, never
      the person typing, yet Chrome reads labels like `Booking contact name` or
      `Pickup location` and offers the user's own saved address. Chrome ignores
      `off` for address autofill, so the value is a token it does not recognise,
@@ -1719,21 +1254,10 @@
     return BARE(outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* A CARBON TEXT INPUT IN TIME MODE, AND DELIBERATELY NOT `rux--time-picker`.
-     The first attempt wrapped this markup in that class. Carbon's time picker
-     is a different component -- a `__input-field` beside a `rux--select-input`
-     for AM/PM, which is why `.rux--time-picker .rux--select-input` is compiled
-     and nothing there styles a `rux--text-input` -- so the class was a Carbon
-     name hung on markup that is not that component. This app
-     already refuses exactly this move for `rux--date-picker__icon`, and it
-     would have been the same fault: a page inventing a component's insides.
-
-     WHAT THIS IS INSTEAD: `rux--text-input` with `type="time"`, which is the
-     component it really is. The browser draws the clock affordance and gives a
-     keyboard the platform's own entry; Carbon draws the box. If a real time
-     picker is wanted later, that is a request, not a local wrapper.
-
-     The value round-trips as `HH:MM`, which is what `trip_stops` stores. */
+  /* `rux--text-input` with `type="time"`, not `rux--time-picker`: Carbon's
+     time picker is another component, an input beside an AM/PM select, and
+     this markup is a text input. The browser draws the clock and the
+     platform's own entry; Carbon draws the box. */
   function timeField(id, label, value) {
     const outer = el('div', 'rux--text-input__field-outer-wrapper');
     const wrap = el('div', 'rux--text-input__field-wrapper');
@@ -1747,31 +1271,9 @@
     return FIELD(id, label, outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* THE TOGGLE'S MARKUP IS Design's OWN, taken from templates/form-page.html
-     rather than reconstructed from the compiled selectors. `timeField` in the
-     entry before this one was built by reading class names out of `rux.css` and
-     came out wearing `rux--time-picker` around markup that was not that
-     component; the templates are the authoritative shape and cost one grep.
-
-     AND THE BEHAVIOUR IS Design's TOO -- THIS BINDS NOTHING. The first version
-     added a click listener that flipped `aria-checked` and rewrote the word
-     beside it. `js/form-controls.js` already does exactly that: `setToggle`
-     owns the click, sets `aria-checked`, toggles `__switch--checked` and fires
-     `rux:toggle`. Two handlers on one control left it reading `false` after an
-     odd number of presses, which is what driving it showed. Ours is gone.
-
-     THE WORDS ARE "On" AND "Off" AND CANNOT BE OURS. `setToggle` hard-codes
-     them, so a label of "Signed"/"Pending" was overwritten the moment the
-     control was pressed. Rather than fight the module for the text, the LABEL
-     carries the meaning -- "Contract signed", not "Contract" -- so On and Off
-     read correctly against it. Design's own file header already calls that
-     hard-coding "worth a decision rather than a silent default"; this app is
-     now a consumer that hit it, and it is filed as such.
-
-     TWO VALUES, WHICH IS WHY A TOGGLE AND NOT A SELECT. `contract_status` is
-     "Pending" or "Signed" and `invoice_status` is "Pending" or "Invoiced"
-     across all 751 rows -- checked, not assumed -- so the control has exactly
-     the two positions the data has. */
+  /* Design's labelled toggle, from `templates/form-page.html`. Nothing calls
+     it; the panel's switches use `toggleAction`. `js/form-controls.js` binds
+     the click and writes On and Off, so nothing is bound here. */
   function toggleField(id, label, on) {
     const box = el('div', 'rux--toggle');
     const btn = el('button', 'rux--toggle__button');
@@ -1794,12 +1296,10 @@
     return box;
   }
 
-  /* Compact milestone toggle, using sink/toggle.html's small variant.
-     The visible section heading now says the full state (Contract signed,
-     PO received, Invoice sent), so the repeated On/Off text is unnecessary.
-     The button keeps its accessible name and the same rux:toggle event.
-     Carbon hides the check glyph while off; keeping it mounted lets the
-     existing class toggle handle both states without new behaviour. */
+  /* Carbon's small toggle, from `sink/toggle.html`, with no On/Off text: the
+     section heading beside it names the state (Contract signed, PO received,
+     Invoice sent). `js/form-controls.js` binds it and fires `rux:toggle`. The
+     check glyph stays mounted, and Carbon hides it while off. */
   function toggleAction(id, label, on) {
     const box = el('div', 'rux--toggle');
     const btn = el('button', 'rux--toggle__button');
@@ -1829,12 +1329,9 @@
     return box;
   }
 
-  /* MONEY IS A TEXT INPUT WITH A DECIMAL KEYBOARD, not `rux--number-input`.
-     Carbon's number input ships stepper buttons -- `rux--number__controls` and
-     two `__control-btn`s -- and a quoted price is not a thing anyone steps by
-     one. Building that markup to then hide the steppers would be inventing a
-     variant; `inputmode="decimal"` gives a phone the right keypad and the
-     control stays the component it looks like. */
+  /* Money is a text input with a decimal keyboard, not `rux--number-input`,
+     whose stepper buttons suit nothing anyone steps by one.
+     `inputmode="decimal"` gives a phone the right keypad. */
   function moneyField(id, label, value, placeholder) {
     const outer = el('div', 'rux--text-input__field-outer-wrapper');
     const wrap = el('div', 'rux--text-input__field-wrapper');
@@ -1851,8 +1348,7 @@
     return BARE(outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* A SEARCH OVER THE CONTACTS, as Carbon's combo box. About 200 contacts and
-     a few repeated names mean the list has to tell two people apart, so each
+  /* A search over the contacts, as Carbon's combo box. Names repeat, so each
      option shows the name over the organization and phone, and typing filters
      on all three. `js/list-box.js` opens, filters and picks. A pick writes only
      the name into the field, through the option's `data-rux-text`, and the
@@ -1873,11 +1369,9 @@
     input.placeholder = 'Search contacts';
     input.value = current?.name ?? '';
     if (current?.id) input.dataset.contactId = current.id;
-    /* NO CLEAR OR OPEN BUTTON, on rux's call for a quieter form: the field's
-       only button is its copy button. Nothing is lost -- `js/list-box.js`
-       opens the list on a click in the field and on typing, filters as you
-       type, and a name deleted by hand unlinks like the clear button did. The
-       module looks both buttons up optionally, so their absence is supported. */
+    /* No clear or open button: `js/list-box.js` looks both up optionally and
+       opens the list on a click in the field or on typing, and a name edited
+       by hand unlinks the contact. */
     field.append(input);
     const menu = el('ul', 'rux--list-box__menu');
     menu.setAttribute('role', 'listbox');
@@ -1902,25 +1396,21 @@
       menu.appendChild(option);
     }
     root.append(field, menu);
-    // The wrapper is the field's outermost box, as in Carbon's own DOM. Inside
-    // `.rux--form-item`, whose `align-items: flex-start` shrinks it, the field
-    // measured 214px beside a 288px phone field.
+    // The wrapper is the field's outermost box, as in Carbon's DOM, so
+    // `.rux--form-item`'s `align-items: flex-start` does not shrink the field.
     const wrap = el('div', 'rux--list-box__wrapper');
     wrap.append(lab, root);
     return wrap;
   }
 
-  /* A COPY BUTTON IN A CONTACT FIELD: Design's copy button in its tooltip,
-     which says Copied once the value lands. `js/copy-button.js` copies the
-     button's `data-rux-copy`, which `syncCopy` keeps equal to the field, so
-     what is copied is what is on screen, saved or not. It shows only while the
-     field has a value, and stays out of the tab order: the field itself already
-     selects and copies from the keyboard.
+  /* A copy button in a contact field: Design's copy button in its tooltip.
+     `js/copy-button.js` copies the button's `data-rux-copy`, which `syncCopy`
+     keeps equal to the field, so what is copied is what is on screen. It shows
+     only while the field has a value and stays out of the tab order, since the
+     field itself copies from the keyboard.
 
-     ON A COMBO BOX IT GOES IN THE ROOT, NOT THE FIELD. `js/list-box.js` opens
-     the menu on any click inside `__field`, so a copy button there would open
-     the list as well; placed over the field from the root, the click is the
-     copy button's alone. */
+     On a combo box it goes in the root, not the field, because
+     `js/list-box.js` opens the menu on any click inside `__field`. */
   function withCopy(item, id, label) {
     const input = item.querySelector(`#${id}`);
     const combo = input?.closest('.rux--combo-box');
@@ -2000,7 +1490,7 @@
     return item;
   }
 
-  /* THE TRIP'S COLOUR, as Carbon's dropdown with one option per row of
+  /* The trip's colour, as Carbon's dropdown with one option per row of
      `TRIP_COLORS` after Standard. Carbon has no swatch, so the field and each
      option carry a `scheduler-swatch` chip wearing the hue class the bar
      wears, which shows the fill the board paints rather than an approximation
@@ -2081,17 +1571,14 @@
     return item;
   }
 
-  /* A CARBON RANGE DATE PICKER, built from the capture
-     `preview-preview-datepicker--range-with-calendar@open`: the root, two
-     `--from`/`--to` containers, and ONE shared calendar container. The module
-     fills the calendar and owns it from there -- "the markup is the API" --
-     so only the shell is written here, and `Rux.datePicker.init(scope)` claims
-     it after the panel is built.
+  /* A Carbon range date picker, from the capture
+     `preview-preview-datepicker--range-with-calendar@open`: the root, `--from`
+     and `--to` containers and one shared calendar container. Only the shell is
+     written here; `Rux.datePicker.init(scope)` claims it and fills the calendar.
 
-     IT WRITES ISO AND DISPATCHES `change`, which is why the dirty check picks
-     these up for free. One behaviour to know: the FIRST pick of a range clears
-     the `to` input, so a half-made range is a real state and the save below
-     treats a blank end as "same day as the start". */
+     It writes ISO and dispatches `change`, so the dirty check sees it. The
+     first pick of a range clears the `to` input, so the save treats a blank
+     end as the start day. */
   const dpIcon = () => {
     const b = el('button', 'rux--date-picker__icon');
     b.type = 'button';
@@ -2101,23 +1588,9 @@
     return b;
   };
 
-  // BOTH NAMED IN FULL, never built from a fragment: `check-classes` reads the
-  // source and cannot see through an interpolation, so a composed class name
-  // is one it cannot verify -- and it said so. Same rule as the notification
-  // kinds. These are the two the range capture carries.
-  /* `--single` JOINED THESE TWO ON 2026-09-10, and its absence was a bug with
-     a visible width. `dateOne` was passing `from`, so a lone date picker wore
-     the class Carbon puts on the FIRST HALF OF A RANGE -- and
-     `.rux--date-picker--next .rux--date-picker-container--from
-     .rux--date-picker__input` pins `inline-size: 8.96875rem`, which is one
-     half of a range control, not a field. Measured at 143.5px in a 287px grid
-     cell, which is the gap rux saw beside it.
-
-     The rule that should have applied is
-     `.rux--date-picker.rux--date-picker--single .rux--date-picker__input` at
-     `18rem`; it never matched, because the container said range. Design's own
-     `sink/date-picker.html:158` uses `--single` on a single picker, so the
-     class existed and this file simply reached for the wrong one. */
+  /* Each container class is written out in full for check-classes. A lone
+     picker takes `--single`: `--from` is the first half of a range, and Carbon
+     sizes its input as half a range control. */
   const DP_CONTAINER = {
     single: 'rux--date-picker-container rux--date-picker-container--single',
     from: 'rux--date-picker-container rux--date-picker-container--from',
@@ -2140,35 +1613,14 @@
     return c;
   };
 
-  /* THE CALENDAR BODY, BUILT ONCE FOR BOTH VARIANTS. `date-picker.js` claims
-     any `--next` root containing a `__calendar-container` and fills the days
-     itself, so range and single differ only by their variant class and how many
-     inputs they carry -- the body is identical, and two copies of it would be
-     two things to keep in step for no gain. Extracted 2026-09-09 when Billing's
-     `Date paid` needed the second one. */
+  /* The calendar body, shared by both variants: `date-picker.js` claims any
+     `--next` root holding a `__calendar-container` and fills the days, so
+     range and single differ only in variant class and inputs. */
   function calendarBody() {
-    /* `rux--layer-two` IS WHY THE CALENDAR IS VISIBLE AT ALL, added 2026-09-09
-       after rux compared it against Carbon's own story and said the surface
-       looked wrong. It was.
-
-       `.rux--date-picker--next .rux--date-picker__calendar` paints
-       `var(--rux-layer)`, which is a CONTEXTUAL token: Carbon expects an
-       ancestor to have raised it. On Carbon's story page nothing has, so the
-       calendar takes layer-01 and steps above the page background, and it
-       reads correctly. Here the calendar opens inside a side panel that IS a
-       layer-01 surface, so both resolved to the same value -- measured in g90,
-       panel #393939 and calendar #393939, no step, the boundary invisible.
-
-       THE FIX IS CARBON'S OWN LAYER COMPONENT, not a colour of ours.
-       `.rux--layer-two` is compiled in the pin and sets `--rux-layer` to
-       layer-02 for its subtree, which is exactly what a surface floating over
-       another surface is for. Putting it on the container rather than on the
-       panel keeps every field in the form on the layer it already had -- only
-       the thing that floats is raised.
-
-       It survives the module: `date-picker.js` DETACHES this container on
-       claim and re-inserts the same element on open, so the class travels
-       with it. */
+    /* `rux--layer-two` raises `--rux-layer` for the calendar, which otherwise
+       paints the same layer as the side panel it opens in and shows no edge.
+       The class travels with the element, which `date-picker.js` detaches on
+       claim and re-inserts on open. */
     const cc = el('div', 'rux--date-picker__calendar-container rux--layer-two');
     cc.hidden = true;
     const cal = el('div', 'rux--date-picker__calendar');
@@ -2190,11 +1642,9 @@
     return cc;
   }
 
-  /* ONE DATE, ON CARBON'S OWN `--single` VARIANT. `rux--date-picker--single`
-     is compiled beside `--range`, so this is the shipped shape rather than a
-     range with one half hidden. It reuses `dpContainer` and the calendar body
-     the range already builds, because those are the same parts -- the variant
-     class is the whole difference, which is how Carbon means it. */
+  /* One date, on Carbon's `--single` variant rather than a range with one half
+     hidden. It reuses `dpContainer` and the calendar body; the variant class is
+     the whole difference. */
   function dateOne(id, label, value) {
     const root = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--single');
     root.appendChild(dpContainer('single', id, label, value));
@@ -2216,21 +1666,19 @@
     return item;
   }
 
-  // The fields this pass writes, each with how to read it off the form and
-  // what counts as unchanged. `null` and '' are the same thing to the column.
+  // The `trips` columns Save writes, each with how to read it off the form. A
+  // blank field reads as null; undefined means the control is not on screen.
   const SPLIT = 'dropoff_pickup';
   const isoOrNull = v => (/^\d{4}-\d{2}-\d{2}$/.test((v || '').trim()) ? v.trim() : null);
 
   const EDITS = [
     { key: 'destination', get: f => f['scheduler-f-destination'].value.trim() || null },
     { key: 'start_date', get: f => isoOrNull(f['scheduler-f-start'].value) },
-    // A BLANK END IS THE SAME DAY, not a null: `legsOf` falls back to
-    // start_date anyway, and the picker CLEARS this input on the first pick of
-    // a range, so a half-made range would otherwise save as a null end.
+    // A blank end saves as the start day, because the picker clears this input
+    // on the first pick of a range.
     { key: 'end_date', get: f => isoOrNull(f['scheduler-f-end'].value) ?? isoOrNull(f['scheduler-f-start'].value) },
-    // THE RETURN PAIR IS NULLED OFF A SPLIT, on rux's instruction: a
-    // round trip carrying return dates draws a phantom second bar, because
-    // `legsOf` makes a leg from them whatever the type says.
+    // The return pair is null unless the type is a split: `legsOf` draws a
+    // return leg from any return date, whatever the type.
     { key: 'return_start_date', get: f => f['scheduler-f-type'].value === SPLIT ? isoOrNull(f['scheduler-f-rstart'].value) : null },
     { key: 'return_end_date', get: f => f['scheduler-f-type'].value !== SPLIT ? null
         : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
@@ -2238,86 +1686,45 @@
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
     // Standard is the empty value and stores null.
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
-    /* `confirmed`, `balance_paid` AND `date_paid` ARE NOT WRITTEN HERE ANY
-       MORE, 2026-09-10. All three were fields on this form -- a Confirmed
-       toggle, a Balance paid toggle and a Date paid picker -- and all three
-       are columns the rux-ui app DERIVES and overwrites on every save. Two
-       writers, one column, and this one loses.
-
-       VERIFIED AGAINST THE LIVE DATABASE rather than argued: the `settings`
-       row `billing-workflow-v1` reads
-
-           confirmWhen: ["contract_signed","po_received",
-                         "deposit_received","paid_full","overpaid"]
-
-       so `confirmed` means "a contract is signed, or a PO is in, or a
-       deposit landed, or it is paid in full or more" -- computed from other
-       facts, not typed. rux-ui recomputes it in `collectTrip()` on every
-       save; `balance_paid` is `price > 0 && balance <= 0` and `date_paid`
-       is the latest payment's date, both recomputed the same way. Anything
-       a dispatcher set here was going to be silently reverted the next time
-       that trip was opened over there.
-
-       THEY ARE STILL SHOWN, as readouts in the Billing status list, because
-       the values are worth reading; they are simply no longer ours to
-       write. What would let this app own them honestly is editable
-       payments -- the number every one of them derives from -- which is the
-       next piece of work rather than this one. */
+    // `confirmed`, `balance_paid` and `date_paid` are not written: rux-ui
+    // derives all three on every save, so a value set here would be overwritten.
     { key: 'req_sleeper', get: f => f['scheduler-f-sleeper'].checked },
     { key: 'req_ada', get: f => f['scheduler-f-ada'].checked },
     { key: 'req_56pax', get: f => f['scheduler-f-56pax'].checked },
     { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
-    /* BILLING. Money comes back from the form as text and goes to the column as
-       a number or a null -- `money()` refuses anything that is not a number
-       rather than sending NaN, which Postgres rejects with a message about
-       syntax that says nothing about the field that caused it.
+    /* Billing. Money goes to the column as a number or null, never NaN, which
+       Postgres rejects with an error that does not name the field. The two
+       statuses are text columns holding "Pending"/"Signed" and
+       "Pending"/"Invoiced", not booleans.
 
-       THE TWO STATUSES ARE THE DATA'S OWN WORDS, not booleans. The column is
-       text and holds "Pending"/"Signed" and "Pending"/"Invoiced"; storing true
-       would be a third value nothing else in the system reads. */
-    /* EACH GATED FIELD IS NULLED BY ITS OWN SWITCH, 2026-09-10, which is what
-       holds the invariant the live table has never broken -- 0 of 779 rows
-       carry a `po_ref` without `po_received`, an `invoice_number` while not
-       Invoiced, or a `contract_note` on an unsigned contract. rux-ui does the
-       same in `collectTrip` (`js/data/trip-db.js:377-379`); this app wrote
-       these four ungated and could therefore have been the first.
-
-       `po_received` AND `invoiced` ARE NEW HERE. `po_received` was never
-       written at all, so a PO typed in this app left the column false and
-       `confirmWhen` never saw it -- the trip stayed unconfirmed with its PO
-       in hand. `invoiced` is the boolean twin of `invoice_status`; the two
-       agree on all 43 Invoiced rows and this app was writing only the text
-       one, which would have split them on the first save. */
+       Each gated field is null while its switch is off, the rule rux-ui's
+       `collectTrip` follows too. `invoiced` is written beside `invoice_status`
+       so the two always agree. */
     { key: 'quoted_price', get: f => money(f['scheduler-f-quoted'].value) },
     { key: 'contract_status', get: f => on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
     { key: 'contract_note',
       get: f => on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
-    /* THE PO AND INVOICE COLUMNS ARE FILLED FROM THE ROWS. A trip's POs live in
-       `trip_pos` and its invoices in `trip_invoices`; `po_ref` is the first
-       PO's reference, `po_amount` the sum of the PO amounts and
-       `invoice_number` the first invoice's number, because rux-ui's status
-       ladder and every other reader still use them. `listRowsToSave` is the
-       same list Save writes, so the columns and the rows cannot disagree. */
+    /* The PO and invoice columns are filled from the rows in `trip_pos` and
+       `trip_invoices`: `po_ref` is the first PO's reference, `po_amount` the sum
+       of the PO amounts and `invoice_number` the first invoice's number, because
+       rux-ui and other readers still use the columns. `listRowsToSave` is the
+       list Save writes, so the columns and the rows agree. */
     { key: 'po_received', get: f => on(f['scheduler-f-poreceived']) },
     { key: 'po_ref', get: () => listRowsToSave('po')[0]?.ref ?? null },
     { key: 'po_amount', get: () => sumOrNull(listRowsToSave('po')) },
     { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
     { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
     { key: 'invoice_number', get: () => listRowsToSave('invoice')[0]?.number ?? null },
-    /* THE CONTACT LINKS ARE TRIP COLUMNS, so they diff here rather than with
-       the contact's own fields. Read straight from the DOM and not through
-       `f`: these controls exist only when a trip is open, and `readForm`
-       returns null the moment one id in its list is missing, which would kill
-       Save on the create panel. `linkId` returns undefined when the field is
-       absent and `patchOf` then compares undefined against the before-value,
-       so a missing control is simply no change. */
+    /* The contact links are trip columns, so they diff here. They read the DOM
+       rather than `f`, which keeps them out of `readForm`'s required ids; a
+       getter returns undefined when its control is not on screen. */
     { key: 'booking_contact_id', get: () => linkId('scheduler-f-cfind') },
     { key: 'trip_contact_1_id', get: () => dayLink(1) },
     { key: 'trip_contact_2_id', get: () => dayLink(2) },
     { key: 'trip_contact_3_id', get: () => dayLink(3) },
     { key: 'trip_contact_4_id', get: () => dayLink(4) },
     { key: 'trip_contact_5_id', get: () => dayLink(5) },
-    /* THE TRIP'S OWN COPY of each contact, which rux-ui reads and writes: the
+    /* The trip's own copy of each contact, which rux-ui reads and writes: the
        name, phone and email as this trip has them. `undefined` when the field
        is not on screen, as above. The ids are settled at save by
        `linkContacts`, which needs the database. */
@@ -2338,20 +1745,9 @@
     return e.value.trim() ? (e.dataset.contactId || null) : null;
   };
 
-  /* EACH ROW ANSWERS FOR ITSELF, since `Same as booking contact` went on
-     2026-09-10. That box used to be the first thing read here -- checked, it
-     pointed row one at the booking contact and emptied the rest -- so its
-     removal had to be paired with this or the five links would have gone
-     silently unwritten.
-
-     THE `!box` GUARD IS THE PART THAT MATTERED, and it is kept on a
-     different element rather than dropped. Returning `undefined` means "the
-     control is not on screen", which is how a getter says DO NOT WRITE; the
-     alternative, `null`, means "on screen and empty" and CLEARS the column.
-     With the checkbox gone the guard hangs on row one's own name field,
-     which exists whenever this block is built and is absent whenever it is
-     not. Without it, opening a trip on a tab that never rendered these rows
-     would read five nulls and wipe every day-of contact the trip had. */
+  /* A day-of contact link. Row one's name field stands for the block: when it
+     is absent the getter returns undefined, which writes nothing, where null
+     would clear the link. */
   const dayLink = n => {
     if (!document.getElementById('scheduler-f-d1')) return undefined;
     return linkId(`scheduler-f-d${n}`) ?? null;
@@ -2368,7 +1764,7 @@
     return fieldVal(id) ?? null;
   };
 
-  /* LINKING A TRIP'S CONTACTS, as rux-ui does it. A contact picked from the
+  /* Linking a trip's contacts, as rux-ui does it. A contact picked from the
      list keeps its id while the name, phone or email still agrees with it;
      anything else is matched against the contacts list by phone, then email,
      then exact name, and added to the list when nothing matches -- which is
@@ -2436,7 +1832,7 @@
         }
       }
       if (creating || !same(id, before)) row[s.idKey] = id; else delete row[s.idKey];
-      /* THE COPY IS WRITTEN WHOLE. A trip showing its linked contact has no copy
+      /* The copy is written whole. A trip showing its linked contact has no copy
          yet, so a phone edited alone would save a phone with no name beside it,
          and the next open would show the linked contact's phone again. */
       if (s.idKey in row || Object.values(s.copy).some(k => k in row)) {
@@ -2450,9 +1846,8 @@
   // markup carries -- there is no `.checked` to read.
   const on = e => e?.getAttribute('aria-checked') === 'true';
 
-  /* BLANK IS NULL, NOT ZERO. 652 of 751 trips have no quoted price, and a form
-     that turned every empty box into 0 would quietly claim 652 free charters.
-     A value that is not a number is also null rather than NaN. */
+  // Blank is null, not zero, so an empty price never reads as a free charter.
+  // Text that is not a number is null too, never NaN.
   const money = v => {
     const t = String(v ?? '').replace(/[$,\s]/g, '');
     if (!t) return null;
@@ -2465,31 +1860,8 @@
   function readForm() {
     const f = {};
     for (const id of ['destination', 'customer', 'type', 'sleeper', 'ada', '56pax', 'notes',
-                      // `confirmed`, `paid` and `datepaid` left this list with
-                      // their controls on 2026-09-10, and had to: a missing id
-                      // makes readForm return null, which on create becomes an
-                      // insert of `{ bus_count: 1 }` -- a trip with no
-                      // destination and no start date that nothing can draw.
-                      // The guard below is what turns that into a loud failure.
-                      // AND A KEY ADDED TO `EDITS` MUST BE ADDED HERE TOO,
-                      // 2026-09-10. The billing switches went into `EDITS`
-                      // first and not into this list, so `f['scheduler-f-poreceived']`
-                      // was `undefined`, `on(undefined)` returned false, and
-                      // every trip with a PO opened with a phantom patch of
-                      // `{po_received: false, po_ref: null, po_amount: null}`
-                      // -- Save armed on an untouched panel, and pressing it
-                      // would have erased a real PO. The guard below could not
-                      // catch it: an id that is not in this list never becomes
-                      // a key of `f`, so `some(v => !v)` has nothing to test.
-                      // AND AN ID WHOSE CONTROL LEFT THE PANEL MUST LEAVE
-                      // THIS LIST, 2026-09-11, which is the same rule read
-                      // the other way. `poref`, `poamount` and `invnum` went
-                      // behind the PO and Invoice dialogs when those sections
-                      // became lists; left here they would be three ids that
-                      // never resolve, `readForm` would return null on every
-                      // open, and Save would die on a panel where nothing was
-                      // wrong. Their values now come off the pending rows in
-                      // `EDITS` above, which read no element at all.
+                      // Every id `EDITS` reads through `f` is listed, and only
+                      // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
                       'contract', 'contractnote', 'poreceived', 'invoice',
@@ -2507,57 +1879,28 @@
   // cut to HH:MM before anything is compared or sent.
   const hhmmOrNull = t => (t ? String(t).slice(0, 5) : null);
 
-  /* mm/dd/yyyy, ON RUX'S CALL 2026-09-09, FOR THE DATES THIS APP RENDERS
-     ITSELF. The picker's own inputs CANNOT take this format and are left
-     alone: `date-picker.js` accepts one shape, `^(\d{4})-(\d{2})-(\d{2})$`
-     in `parse()`, and writes ISO back into the field on every pick. A field
-     showing mm/dd/yyyy would be a field the module could not read -- no
-     calendar position, no range arithmetic -- so that half is a request to
-     Design rather than a format applied here, in the site's docs/status.md.
-
-     STRING WORK, NOT `new Date()`. A bare `new Date('2026-07-06')` is parsed
-     as UTC midnight and then printed in local time, which is the previous day
-     anywhere west of Greenwich -- the payment dated the 6th would read as the
-     5th. The column is a plain date with no zone, so it is split rather than
-     parsed. */
+  /* mm/dd/yyyy for the dates this app renders itself; the picker's inputs stay
+     ISO, the only shape `date-picker.js` parses. The string is split rather
+     than passed to `new Date()`, which reads a bare date as UTC midnight and
+     prints the day before anywhere west of Greenwich. */
   const mdy = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     return m ? `${m[2]}/${m[3]}/${m[1]}` : (d || '');
   };
 
-  // Whole dollars: every amount in the table is a round number -- 2800, 1108,
-  // 600 -- so cents would be two characters of noise on every row.
+  // Whole dollars: trip amounts are round, so cents would be noise on every row.
   const usd = n => `$${Math.round(n).toLocaleString('en-US')}`;
 
-  /* THE SIX rux-ui OFFERS, in its order. Not a guess and not this app's
-     choice to make: `trip_payments.method` is free text, both apps write it,
-     and a seventh spelling here would be a value the other app's menu cannot
+  /* The six methods rux-ui offers, in its order. `trip_payments.method` is free
+     text both apps write, so a spelling rux-ui's menu lacks would not
      round-trip. */
   const PAYMENT_METHODS = ['Cash', 'Check', 'Card', 'ACH', 'Zelle', 'Other'];
 
-  /* A COLOURED TAG WHERE rux ASKED FOR AN ICON, and the substitution is
-     deliberate rather than a shortfall quietly dressed up. Design's sprite is
-     63 symbols and not one of them means money -- counted 2026-09-10 and asked
-     of Design -- so `Check` would have to borrow `i-document`
-     and `Card` `i-copy`, glyphs that say something else. A tag says the true
-     thing in a word AND carries the colour that makes the column scannable,
-     which is what the icons were wanted for. The moment the sprite grows a
-     card, a bank and a cheque, this becomes `--with-icon` and the words stay.
-
-     THE COLOURS ARE NOT A RANKING. Six methods, six of Carbon's tag hues, no
-     order implied -- green is not "better" than red here, and none of these is
-     an error state, so `--red` stays out of it entirely. */
-  /* THREE LETTERS, NOT THE WORD, and this is rux's placeholder for the icons
-     until the sprite has them. A code the width of a glyph buys the row back:
-     `Check · 09/10/2026 · $200 · test payment` wrapped to two lines in a
-     288px panel, and `CHK 09/10/2026 $200` does not.
-
-     THE CODE IS NEVER THE ONLY NAME. `CHK` means nothing to a first-time
-     reader and nothing at all to a screen reader, so the row button carries
-     the full method in its `aria-label` and the tag carries it in `title` --
-     the abbreviation is a visual shorthand over a label that stays spelled
-     out. When the sprite grows a card, a bank and a cheque these become
-     icons and the same two labels keep doing that job. */
+  /* Each method shows as a three-letter tag, standing in for icons the sprite
+     does not have. The hues only tell methods apart: none ranks them, and none
+     is red because none is an error.
+     The code is never the only name: the row button carries the full method in
+     its `aria-label` and the tag carries it in `title`. */
   const PAYMENT_TAG = {
     Cash:  { code: 'CSH', tone: 'rux--tag--green' },
     Check: { code: 'CHK', tone: 'rux--tag--blue' },
@@ -2567,24 +1910,15 @@
     Other: { code: 'OTH', tone: 'rux--tag--cool-gray' },
   };
 
-  /* WHAT THE PAYMENT ROWS WANT DONE, as three lists rather than a rewrite.
-     A row with a `data-pay-id` existed when the panel opened; without one it
-     is new. Anything that had an id and is no longer on screen was removed.
-
-     AN EMPTY ROW IS NOT A PAYMENT. `Add payment` draws a row with today's
-     date and nothing else, and somebody who clicks it and then thinks better
-     of it should not have a $0 receipt saved. A row counts only once it has
-     an amount or a method; an untouched one is dropped, and an EXISTING row
-     emptied to nothing is a delete rather than a write of nulls. */
-  /* THE PANEL'S PENDING PAYMENTS, and the handle that redraws them. Module
+  /* The panel's pending payments, and the handle that redraws them. Module
      scope because the dialog lives outside the panel's build closure and has
      to reach both. */
   let payPending = [];
   let redrawPayments = () => {};
   let payEditing = null;   // index being edited, or null for a new row
 
-  /* THE PO AND THE INVOICE ARE PENDING ROWS TOO, for the reason the payments
-     are: the list is a render of the array and the array is what Save reads.
+  /* POs and invoices are pending rows too, for the reason payments are: the
+     list is a render of the array and the array is what Save reads.
      Each row keeps its `trip_pos` or `trip_invoices` id, so Save updates it
      rather than replacing it. Module scope because the dialogs live outside
      the panel's build closure. */
@@ -2595,10 +1929,9 @@
   let poEditing = null;
   let invEditing = null;
 
-  /* THE DIALOG BUILDS ITS FIELDS EACH TIME rather than reusing four kept
-     inputs. `dateOne` mints a Carbon date picker with a calendar the module
-     has to claim, and claiming the same one twice leaves two; building fresh
-     and initialising once is the shape every other picker here uses. */
+  /* The dialog builds its fields each time rather than reusing kept inputs:
+     `dateOne` makes a date picker whose calendar the module claims, and
+     claiming the same one twice leaves two calendars. */
   function openPaymentDialog(index) {
     const host = document.getElementById('scheduler-payment-fields');
     if (!host) return;
@@ -2606,19 +1939,8 @@
     const p = index === null ? { date: iso(new Date()) } : payPending[index];
     document.getElementById('scheduler-payment-h').textContent =
       index === null ? 'Add payment' : 'Edit payment';
-    /* TWO COLUMNS, BECAUSE THE DIALOG IS 623px WIDE FOR FOUR SHORT FIELDS.
-       Stacked, it was a column of full-width boxes down the middle of a modal
-       three times wider than any value in it, and `Done` sat a long way below
-       `Method`.
-
-       DATE LEADS, AND I ARGUED THE OTHER WAY FIRST. The case for Method and
-       Amount on the top row is that they are what MAKE a payment -- the two
-       `Done` tests before deciding a dialog was left empty. rux put Date
-       first, and the calendar settles it: it is 348px tall and drops from
-       whatever row its field is on, so a Date field on the second row puts
-       the calendar through the footer. On the first row it has the height of
-       the dialog beneath it. A layout reason beats a semantic one when the
-       semantic one costs a clipped control. */
+    // Two columns, and Date first: its calendar drops below its field, and from
+    // the first row it has the dialog's height to open into.
     const grid = el('div', 'scheduler-dialog-grid');
     grid.append(
       dateOne('scheduler-f-pdate', 'Date', p.date),
@@ -2640,10 +1962,8 @@
       date: isoOrNull(val('scheduler-f-pdate')),
       ref: val('scheduler-f-pref') || null,
     };
-    /* AN EMPTY DIALOG ADDS NOTHING. `Done` on a blank form is the same
-       intention as `Cancel`, and a $0 receipt with no method is not a
-       payment anyone meant to record. An EXISTING row emptied this way is
-       left alone rather than blanked -- removing it is Remove on the row's own menu. */
+    // An empty dialog adds nothing, as `Cancel` would. An existing row emptied
+    // this way is left alone; removing it is Remove on the row's own menu.
     if (row.amount === null && !row.method) {
       window.Rux?.modal?.close?.('scheduler-payment-modal');
       return;
@@ -2655,7 +1975,7 @@
     refreshDirty();
   });
 
-  /* THE PO DIALOG: a date, a reference and an amount. Date leads for the
+  /* The PO dialog: a date, a reference and an amount. Date leads for the
      reason it leads in the payment dialog: its calendar needs the room below
      it. The fields keep real labels, because a modal headed "Add purchase
      order" has the room. */
@@ -2681,12 +2001,8 @@
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')),
                   date: isoOrNull(val('scheduler-f-odate')) };
-    /* AN EMPTY DIALOG ADDS NOTHING, the same rule the payment dialog follows.
-       `Done` on a blank form is the same intention as `Cancel`, and a PO with
-       no reference and no amount is not a PO -- it is the state the switch
-       already expresses on its own, which 12 of the 55 existing PO trips are
-       in. An EXISTING row emptied this way is left alone rather than blanked;
-       removing it is Remove on the row's own menu. */
+    // An empty dialog adds nothing, as in the payment dialog: the switch alone
+    // already says a PO is expected.
     if (row.ref === null && row.amount === null && row.date === null) {
       window.Rux?.modal?.close?.('scheduler-po-modal');
       return;
@@ -2698,8 +2014,7 @@
     refreshDirty();
   });
 
-  /* THE INVOICE DIALOG mirrors the PO's: a date, the invoice number and an
-     amount. */
+  // The invoice dialog mirrors the PO's: a date, the invoice number and an amount.
   function openInvoiceDialog(index) {
     const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
@@ -2734,7 +2049,7 @@
     refreshDirty();
   });
 
-  /* THE ROWS SAVE WRITES FOR ONE LIST. Off means none. On means the pending
+  /* The rows Save writes for one list. Off means none. On means the pending
      rows in order, and at least one: a PO expected with nothing typed is one
      empty row, so `po_received` always agrees with whether rows exist, the
      rule rux-ui follows too. */
@@ -2757,7 +2072,7 @@
       : null;
   }
 
-  /* A PO OR INVOICE LIST AS WRITES, by id like `paymentsPatch`: new rows
+  /* A PO or invoice list as writes, by id like `paymentsPatch`: new rows
      insert, changed rows update, removed rows delete. `was` is the list as the
      trip opened, so a row saved in rux-ui after that is neither updated nor
      deleted here. A trip opened without its rows writes none. */
@@ -2783,18 +2098,9 @@
   const posPatch = () => listPatch('po');
   const invoicesPatch = () => listPatch('invoice');
 
-  /* IT RUNS ON A NEW TRIP TOO, fixed 2026-09-10 after rux asked. This used to
-     bail on `editing.creating`, so a deposit typed while booking was drawn in
-     the list, counted in the summary, and then silently dropped on save --
-     the worst of the three possible behaviours, because the screen said it
-     had been recorded.
-
-     NOTHING SPECIAL IS NEEDED FOR IT. A creating panel has no
-     `editing.payments`, so every pending row lacks an `id` and falls into
-     `inserts` by the rule already written; `deletes` is empty because there
-     was nothing to delete. The only real difference is the trip id, which
-     does not exist until the INSERT returns -- so the caller passes it in
-     rather than this function reading `editing.id`. */
+  /* The payment rows as writes, by id: new rows insert, changed rows update,
+     removed rows delete. On a new trip every row is an insert, and Save
+     supplies the trip id, which exists only once the trip insert returns. */
   function paymentsPatch() {
     if (!editing) return null;
     const was = editing.payments || [];
@@ -2821,16 +2127,10 @@
 
 
 
-  /* WHAT THE SCHEDULE SECTION WOULD WRITE, as one update per row and only for
-     rows that changed. Returns [] when nothing moved, which is what lets Save
-     stay dead on a panel where only a time was typed and typed back.
-
-     A MISSING ROW IS NOT AN ERROR AND NOT AN INSERT. A leg with no `pickup`
-     stop has nowhere to put a departure, and inventing the row here would be
-     writing an itinerary from a form that does not describe one -- position,
-     type and the rows around it are the itinerary editor's business, and that
-     is `screen-inventory.md`'s "later". The controls render empty and disabled
-     in that case -- see the disable loop where they are built. */
+  /* What the Schedule tab writes to `trip_stops` on an existing trip: one
+     update per changed row, or [] when nothing moved. A leg with no pickup or
+     return stop gets no new row, because where it belongs among the stops is
+     the itinerary editor's business; those controls render disabled. */
   function stopsPatch() {
     if (!editing?.stops) return [];
     const val = id => document.getElementById(id)?.value.trim() ?? '';
@@ -2868,14 +2168,6 @@
     return patch;
   }
 
-  /* A TRIP WITHOUT A START DATE IS A TRIP NOBODY CAN SEE. `legsOf` makes the
-     outbound leg only `if (trip.start_date)`, so saving a null start would
-     take the trip off every week of the board while leaving the row in the
-     table -- lost rather than deleted, and from inside the editor that just
-     did it. So it is not saveable: clearing the field disables Save and the
-     field is marked invalid. The same is not true of the end date, which
-     falls back to the start, or of the pick-up pair, which only a split
-     reads. */
   // Whether the form differs from the trip it opened on, in any part Save writes.
   function changed() {
     if (!editing) return false;
@@ -2908,58 +2200,29 @@
     const startEl = document.getElementById('scheduler-f-start');
     const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
-    // DESTINATION IS REQUIRED because it is the bar's only label and because
-    // it is not null on ANY of the 743 rows -- a null would be the first.
+    // Save needs a start date, without which `legsOf` draws no leg, and a
+    // destination, which is the bar's only label.
     const destOk = !!destEl?.value.trim();
     destEl?.setAttribute('aria-invalid', String(!destOk));
-    // `aria-invalid` ONLY. The first attempt hung a
-    // `rux--date-picker--invalid` class on the root and check-classes failed
-    // it: Carbon compiles no such class, and inventing one to hang a rule on
-    // is the thing AGENTS.md forbids. The attribute is real, it is what a
-    // screen reader reads, and Save being dead says the rest.
+    // `aria-invalid` alone marks the date, since Carbon has no invalid class for
+    // the date picker; the disabled Save says the rest.
     startEl?.setAttribute('aria-invalid', String(!startOk));
-    // A NEW TRIP IS SAVEABLE WITH NOTHING CHANGED, because its defaults are
-    // already a real trip -- the dirty test is for edits, not for creation.
-    // A SCHEDULE EDIT IS A REAL EDIT. Save is armed by the trip patch OR by a
-    // stop patch; asking only the first left a panel where changing the spot
-    // time did nothing and Save stayed grey.
-    /* NOTHING TOUCHED is the honest question, and it is not the same one Save
-       asks. `patchOf` diffs the form against `editing.before`, which is filled
-       from the DRAFT on a new trip just as it is from the row on an existing
-       one, so this is true of an untouched panel either way. */
+    /* A new trip is saveable untouched, because its defaults are already a real
+       trip. `changed` compares against `editing.before`, which a new trip fills
+       from its draft, so an untouched panel is unchanged either way. */
     const nothingChanged = !changed();
     const nothingToDo = !editing?.creating && nothingChanged;
     panelSave.disabled = !startOk || !destOk || nothingToDo;
     setTitle();
-    /* RESET ANSWERS TO `nothingChanged`, NOT `nothingToDo`, corrected
-       2026-09-10. `nothingToDo` carries `!editing?.creating` because a NEW
-       trip is saveable with nothing changed -- its defaults are already a
-       real trip -- and that guard makes the expression permanently false
-       while creating. Reset inherited it and was therefore live on a blank
-       new trip, offering to discard nothing, and doing it in the heaviest
-       button on a bar whose Save was correctly grey. rux saw it.
-
-       IT STILL IGNORES THE REQUIRED FIELDS, which Save does not. A form held
-       invalid by a blank destination is exactly when someone wants to back
-       out, and a Reset greyed for Save's reason would strand them with a trip
-       they can neither save nor restore. */
+    /* Reset follows `nothingChanged`, not `nothingToDo`, which is always false
+       while creating. It ignores the required fields: an invalid form is when
+       someone most wants to back out. */
     if (panelReset) panelReset.disabled = nothingChanged;
   }
 
-  /* NEW TRIP OPENS THE SAME PANEL WITH NOTHING IN IT. A trip needs one thing
-     to exist on the board -- a start date -- because `legsOf` builds the
-     outbound leg only `if (trip.start_date)`. With no assignment the render
-     pushes it into the Unassigned row, which is where a trip nobody has given
-     a bus belongs, so creation needs no bus and no drivers.
-
-     THE DEFAULTS ARE THE DATA'S, not invented. Across all 743 trips:
-     `trip_type` is never null and 705 are round trips, so that is the type;
-     `bus_count` is never null, so it is written as 1 rather than left for
-     `|| 1` to cover; `confirmed` is never null and 274 trips are false, so a
-     trip nobody has confirmed yet is a normal row and the box starts clear;
-     `destination` is never null in any of the 743, which is why it is
-     required below alongside the date. `customer` is null on 26, so it is
-     not. */
+  /* New trip opens the same panel on a draft: a round trip, unconfirmed, on the
+     day of the cell it came from or the first day of the week shown. With no
+     bus it lands in the Unassigned row, so creation needs no bus and no drivers. */
   // The bus a new trip will be put on, when creation started from a cell.
   // Null means the trip is created with no assignment and lands in Unassigned.
   let createBusId = null;
@@ -2969,19 +2232,8 @@
     createBusId = opts.busId || null;
     openPanel(null, {
       id: null,
-      /* NULL AND NOT `''`, corrected 2026-09-10. `same` is
-         `(a ?? null) === (b ?? null)`, which leaves an empty string alone --
-         so a draft seeded with `''` put `''` into `editing.before`, while
-         every getter normalises a blank field back to `null`. A brand-new
-         trip therefore reported a patch of `{destination: null, customer:
-         null, notes: null}` before anyone typed anything: three fields
-         claiming to have changed from "" to null.
-
-         IT WAS INVISIBLE UNTIL RESET EXISTED. Save reads `nothingToDo`,
-         which ignores the patch while creating, so nothing acted on the
-         phantom diff. Reset asks the honest question -- has anything
-         changed -- and answered yes on an untouched form. The fields render
-         the same either way: `input.value = value ?? ''`. */
+      // Null, not '': every getter reads a blank field as null and `same` does
+      // not treat '' as null, so '' would count an untouched field as changed.
       destination: null, customer: null,
       trip_type: 'round_trip', confirmed: false,
       start_date: start, end_date: start,
@@ -2994,10 +2246,10 @@
     });
   }
 
-  /* WHAT BUILT THE PANEL, so Reset can build it again and a render can find
+  /* What built the panel, so Reset can build it again and a render can find
      the trip's bar. `ref` names the bar by its values, and `trip` is the saved
      row the editor opened on, kept because the week on screen may no longer
-     hold it. Replaying `openPanel` with these IS the reset; in create mode the
+     hold it. Replaying `openPanel` with these is the reset; in create mode the
      replay hands back the untouched draft. */
   let panelArgs = null;
 
@@ -3013,10 +2265,7 @@
     const bus = ref ? panelIndex.buses.get(ref.busId) : null;
     const assign = ref ? (trip.trip_assignments || []).find(a => a.id === ref.assignmentId) : null;
 
-    /* THE TITLE SAYS WHICH TRIP: "New trip", or a pencil and the destination,
-       because the selected bar can be a different trip from the one in the
-       editor. `setTitle` builds it and keeps it in step as the destination is
-       typed. */
+    // A plain heading until `refreshDirty` calls `setTitle`, which names the trip.
     const heading = creating ? 'New trip' : 'Edit trip';
     panelTitle.textContent = heading;
     panelTitleCollapsed.textContent = heading;
@@ -3060,14 +2309,11 @@
       po_ref: trip.po_ref ?? null,
       po_amount: trip.po_amount ?? null,
       invoice_number: trip.invoice_number ?? null,
-      // The column is nullable and 415 rows are null; a trip nobody has filed a
-      // contract for reads as Pending, which is what the old app shows too.
+      // A null status reads as Pending.
       contract_status: trip.contract_status === 'Signed' ? 'Signed' : 'Pending',
       invoice_status: trip.invoice_status === 'Invoiced' ? 'Invoiced' : 'Pending',
-      // Booleans, so `!!` rather than `?? null` -- the column is never null on
-      // any of the 779 rows and `same(false, null)` would report a phantom
-      // change on every trip that has neither.
       contract_note: trip.contract_note ?? null,
+      // Booleans take `!!`, not `?? null`, because `same(false, null)` is a change.
       po_received: !!trip.po_received,
       invoiced: !!trip.invoiced,
       booking_contact_id: trip.booking_contact_id ?? null,
@@ -3079,22 +2325,14 @@
       ...contactColumnsOf(trip),
     } };
 
-    /* THE SCHEDULE'S BEFORE IS KEPT APART FROM THE TRIP'S, because it is a
-       different table. `EDITS`/`patchOf` build a patch for `trips`; these four
-       fields are rows in `trip_stops`, so they diff separately and write
-       separately. Folding them into one patch object would have `trips.update`
-       sent columns it does not have. */
-
     // A new trip's id comes with its draft, so Reset keeps it too.
     editing.newId = creating ? draft.newId : null;
 
-    /* THE ROWS AS THEY WERE, so `paymentsPatch` has something to diff
-       against. Same shape as `editing.stops` and for the same reason: the
-       form knows what is on screen, not what was there when it opened. */
+    // The payment rows as the trip opened, for `paymentsPatch` to diff against.
     editing.payments = creating ? [] : ((trip.trip_payments || [])
       .slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
 
-    /* THE PO AND INVOICE ROWS AS THEY WERE, for `listPatch` to diff against.
+    /* The PO and invoice rows as the trip opened, for `listPatch` to diff against.
        A trip object that never came through the embedded select has neither
        list, cannot be diffed, and so Save leaves its rows alone. */
     editing.listsLoaded = creating || (Array.isArray(trip.trip_pos) && Array.isArray(trip.trip_invoices));
@@ -3102,6 +2340,8 @@
     editing.pos = creating ? [] : byPosition(trip.trip_pos);
     editing.invoices = creating ? [] : byPosition(trip.trip_invoices);
 
+    // The stops' before is kept apart from `editing.before`: they are
+    // `trip_stops` rows, not `trips` columns, so they diff and write separately.
     editing.stops = creating ? null : (() => {
       const { pickup, back } = stopsOfLeg(trip, legName);
       return {
@@ -3114,73 +2354,20 @@
 
     panelDetails.replaceChildren();
     const form = el('div', 'rux--stack-vertical rux--stack-scale-5');
-    /* TYPE COMES FIRST AND THE DATES SECOND, on rux's call 2026-09-09,
-       superseding the ordering recorded below it the same day. Type is the
-       question that decides what the rest of the form even asks: a drop-off
-       and pick-up trip wants two date ranges and every other type wants
-       one, so answering it first means the form settles its own shape
-       before anyone fills a field in it. The dates keep second place for
-       the reason they had first -- they are the one thing that arrives
-       already filled, a trip created from a cell carrying that cell's day.
-
-       WHAT THIS GIVES UP, PLAINLY, BECAUSE THE ENTRY IT REPLACES CLAIMED
-       IT AS A WIN: `Pick-up` no longer sits under the control that reveals
-       it. The return pair is still appended after this whole block, so with
-       Type at the top there are now three fields between the select and the
-       range it summons instead of none. Moving `Pick-up` up to chase it
-       would put the RETURN leg's dates above the outbound leg's, which is
-       worse than the distance. Left as distance, knowingly.
-
-       AND IT COSTS THE CALENDAR NOTHING. `__calendar-container` is
-       `position: absolute; inset-block-start: 100%` against its own root, so
-       it opens downward over whatever follows -- from the top of the panel it
-       has more room below it, not less. */
-    /* FLUSH, 2026-09-09: `rux--stack-scale-5` puts a 1rem row-gap between
-       EVERY child, fluid or not -- right for spacing one titled block from
-       the next, wrong within one: Carbon's own fluid forms butt adjacent
-       fields against each other with no gap at all, each field's own border
-       standing in for the seam. `.scheduler-fluid-group` zeroes `--rux-stack-gap`
-       for a run with no title between its members; the run itself is still
-       one item in `form`'s own stack, so the 1rem gap before Pick-up /
-       Booking contact / etc. is untouched. */
-    /* THE RETURN PAIR IS A SECOND OUTING, NOT THE END OF THE FIRST. Measured
-       across all 743 trips on 2026-09-06: every one of the 12 drop-off and
-       pick-up trips drops off on a SINGLE day, and the bus comes back 1 to 4
-       days later -- Sandia TX drops 19 July and collects 22 July. A single
-       From/To range would say the bus is committed for those four days when
-       the point of the type is that it is free in between, and the board
-       already knows better: `legsOf` makes two legs and draws two bars.
-
-       Round trip and one way never carry return dates -- 0 of 731 -- so the
-       pair only appears for a split. And one way is NOT a single date: 25 of
-       26 run a day, but one runs three, so it keeps the range too. */
+    /* Type comes first because it decides the form's shape: a drop-off and
+       pick-up trip has two date ranges, every other type one. The return pair
+       is a second outing, since the bus is free between drop-off and pick-up,
+       so `legsOf` draws it as a second bar; it shows only for a split. */
     const returnDates = el('div', 'scheduler-panel-return-dates');
     returnDates.appendChild(dateRange(
       'scheduler-f-rstart', 'scheduler-f-rend', 'Pick-up start', 'Pick-up end',
       trip.return_start_date, trip.return_end_date || trip.return_start_date));
     returnDates.hidden = trip.trip_type !== SPLIT;
 
-    /* THE TWO RANGES NAME THEIR OWN LEGS, 2026-09-10 on rux's call, and the
-       `Pick-up` heading that used to do it is gone. The pair sits directly
-       under the outbound range now, inside the same flush run, so the two
-       ranges read as one block of dates rather than a block and a titled
-       section four fields apart.
-
-       WHY THE OUTBOUND LABELS MOVE AND THE RETURN'S DO NOT: the return pair
-       is only ever on screen for a split, so `Pick-up start`/`Pick-up end`
-       is true whenever it is readable and can be written once. The outbound
-       range is shown for EVERY type, so it cannot be called `Drop-off`
-       statically -- that word is a lie on a round trip. It takes the split's
-       words only while the split is selected, which is also why the form
-       echoes back the option just chosen: pick `Drop-off and pick-up` and
-       the dates rename themselves to drop-off and pick-up.
-
-       `Drop-off`/`Pick-up` RATHER THAN `Outbound`/`Inbound`, which rux also
-       offered: the select immediately above says "Drop-off and pick-up", so
-       those are the words already in the reader's head one field earlier.
-       `Inbound` would also be a third name for a thing the code calls the
-       `return` leg and the Schedule section titles "return leg" -- two
-       vocabularies is one too many already. */
+    /* The ranges name their own legs. The outbound range shows for every type,
+       so it reads Drop-off only while a split is selected; the return pair
+       shows only for a split and keeps its Pick-up labels. The words match the
+       type's option text. */
     const outLabels = split =>
       split ? ['Drop-off start', 'Drop-off end'] : ['Start date', 'End date'];
     const setOutLabels = split => {
@@ -3203,86 +2390,22 @@
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
       returnDates,
       textField('scheduler-f-destination', 'Destination', trip.destination),
-      /* ORGANIZATION, AND THERE IS ONLY ONE OF THEM NOW, 2026-09-09 on rux's
-         call. This field and the booking block's `Organization or group` read
-         the same on nearly every trip -- "TMS" against "TMS" -- and rux saw
-         them stacked and cut one.
-
-         `trips.customer` IS THE ONE THAT SURVIVES, because it is the one that
-         is there: 725 of 751 trips carry it, where `contacts.client` exists
-         only for the 292 with a linked contact and only 160 of the 196
-         contacts have one. Keeping the contact's copy would have blanked the
-         field on 433 trips.
-
-         WHAT IT GIVES UP, ONCE, SO IT IS NOT REDISCOVERED: 13 trips have a
-         `customer` that differs from their contact's `client` -- "Mission
-         CISD" books for "Vaquero Indoor", "Raymondville ISD" for "Raymondville
-         High School". Billed-to and travelling-group were two facts and are
-         now one. `contacts.client` still holds the other and the Customers
-         view still edits it; this panel simply stops showing it. */
+      // The organization is `trips.customer`; the contact's own `client` is not shown.
       textField('scheduler-f-customer', 'Organization', trip.customer),
-      /* NOTES JOINS THE TOP RUN, 2026-09-10 on rux's call, from the foot of
-         the tab where it sat beside the checkboxes. It is a fact about the
-         trip like the five above it and not a thing anyone hunts for, so it
-         belongs in the same flush card rather than after two contact
-         sections. It is the only field here that grows: the textarea keeps
-         its resize grip, and the card simply gets taller with it. */
       notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
     form.appendChild(topFields);
 
-    /* ── BOOKING CONTACT ────────────────────────────────────────────────────
-       Rebuilt 2026-09-09 against three orderings rux collected. The structure
-       is the third's and two behaviours are the first's; the reasons are
-       counts from the live data, not taste.
-
-       THE LABELS DROP THE PREFIX because the section heading carries it. In a
-       320px panel that is width rather than tidiness: "Booking contact phone"
-       wraps and "Phone" does not.
-
-       THE SEARCH SUGGESTS AND DOES NOT LOCK. Picking a contact fills
-       organisation, phone and email, and every one of them stays editable --
-       measured, 13 trips have a `customer` that differs from their contact's
-       `client` ("Mission CISD" books for "Vaquero Indoor"), so an agency
-       booking for a school is a real shape here and a hard autofill would
-       stamp the agency onto trips that are not theirs. */
+    /* ── Booking contact ──
+       The search suggests and does not lock: picking a contact fills its phone
+       and email and suggests its organization, and every field stays editable,
+       because an agency can book for a school. */
     const contact = creating ? null : tripContact(trip, 0);
     const allContacts = panelIndex.contacts || [];
     {
-      /* THE CONTACT BLOCKS RENDER ON A NEW TRIP, 2026-09-09 on rux's ask, and
-         nothing about them needed the trip to exist: the search picks from
-         contacts that already exist, and the six link columns are `trips`
-         columns that join the insert like any other. A booking contact is
-         often the FIRST thing known about a trip -- someone rang -- so hiding
-         it until after a save had the order backwards. */
-      /* THREE FULL-WIDTH ROWS, 2026-09-09 on rux's call, where Phone and
-         Email were a `scheduler-two-up` pair on one row. Fluid is why: a fluid
-         field is a 64px box carrying a floating label over its value, and
-         two of them in a 288px column leave each about 140px to hold both
-         -- an email address in a 140px box is ellipsis by the third
-         character. Stacked, each gets the full width the panel has.
-
-         THE LABELS CARRY THE PREFIX AGAIN, 2026-09-10, and the heading that
-         used to carry it is gone. This reverses the note two entries down,
-         which said the prefix was dropped because in a 320px panel "Booking
-         contact phone wraps and Phone does not". It no longer does: the
-         fields went full-bleed on 2026-09-10, so the label has 288px of run
-         where it had 256, and at `label-01`'s 12px the longest of them --
-         `Booking contact phone` -- measures 171.6px. Every one of the five
-         fits with over 100px spare, measured rather than guessed.
-
-         WHAT IT BUYS is the section heading's removal, and with it the last
-         of the gaps: `Booking contact` and `Day-of-trip contacts` were two
-         titled blocks costing 40px of break each, in a form whose fields
-         now say which contact they belong to on their own face. A label
-         that reads `Booking contact phone` needs nothing above it. */
-      /* NO WRAPPER, 2026-09-10, and the reason is the bleed. These three used
-         to sit in their own `.scheduler-fluid-group`; once that group was appended
-         INTO `topFields`, which is also one, the negative margin applied
-         twice and the fields hung 16px off the panel's left edge with their
-         labels at 0. rux saw it as missing padding, and it was -- taken by a
-         rule meant to run once. A run that is already flush and already
-         gapless needs no second one inside it, so the fields go straight in. */
+      /* The contacts render on a new trip too, since a booking contact is often
+         the first thing known. One field per row, each label naming its
+         contact, because no heading sits above them. */
       topFields.append(
         withCopy(contactSearch('scheduler-f-cfind', 'Booking contact name', allContacts, contact),
           'scheduler-f-cfind', 'Booking contact name'),
@@ -3291,72 +2414,20 @@
         withCopy(textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
       );
-      /* PHONE AND EMAIL ARE THIS TRIP'S COPY. Editing them changes the trip,
-         never the shared contact record; `linkContacts` says how the link is
-         kept. */
-      /* APPENDED INTO `topFields`, NOT AS ITS OWN BLOCK. Both runs are
-         `.scheduler-fluid-group`, so nesting one in the other keeps every gap at
-         zero and the whole form reads as one card from Type to the last
-         day-of phone. The stack that used to hold this beside a heading is
-         gone with the heading. */
+      // Phone and email are this trip's copy; editing them never changes the
+      // shared contact record. `linkContacts` keeps the link.
 
-      /* ── DAY-OF-TRIP CONTACTS ─────────────────────────────────────────────
-         "Day-of-trip" and not "on-site": the person may be travelling with the
-         group or coordinating from a desk, and only some of them stand at the
-         pickup.
-
-         ONE ROW, NOT FIVE. The schema has `trip_contact_1..5_id` and the data
-         has almost none of them -- 687 of 751 trips carry no day-of contact at
-         all, 57 carry one, 6 carry two and a single trip carries five. Five
-         empty rows would be noise on 91% of trips, so the rows that exist are
-         drawn plus one empty, and `+ Add another contact` reveals the next up
-         to the schema's five.
-
-         SAME AS BOOKING IS THE COMMONEST CASE AND IS A CHECKBOX. 34 of the 64
-         first day-of contacts ARE the booking contact -- 53% of the ones that
-         exist are that person retyped. */
+      /* ── Day-of-trip contacts ──
+         "Day-of-trip", not "on-site": the person may travel with the group or
+         coordinate from a desk. The trip's own rows are drawn, or one empty row
+         when it has none, and `Add another contact` adds rows up to the
+         schema's five. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      /* THIS CHECKBOX GOES THROUGH `checkField` LIKE THE OTHER FIVE,
-         2026-09-10. It was a hand-rolled copy of that helper's markup and
-         had drifted from it in the one way that shows: the label text sat
-         DIRECTLY in `.rux--checkbox-label`, where `checkField` wraps it in
-         `.rux--checkbox-label-text`. That wrapper is not decoration --
-         it is the only thing carrying `padding-inline-start: 0.625rem` in
-         rux.css, so without it the words butt against the box. The label's
-         own `1.25rem` start padding only reserves room for the `::before`
-         square; the 10px BETWEEN square and text belongs to the span. rux
-         saw it as "no spacing token between checkbox and label", which is
-         exactly what it was. The copy was also missing
-         `__validation-msg`; going through the helper ends both drifts and
-         leaves one place to change. */
-      /* A PLAIN BOX, for the same reason the booking three lost their wrapper:
-         this lives inside `topFields`, which already bleeds and already has
-         no gap. A block div stacks its children edge to edge and adds
-         neither. It stays a named element only because `drawRow` needs
-         somewhere to append to. */
-      /* A STACK AGAIN, 2026-09-10. This was a plain block for one day, while
-         the fields were fluid and a run of them was meant to butt together
-         with no gap at all. Default style wants the opposite and the plain
-         div gave it nothing: `Day of contact phone` sat hard against the
-         name above it at 0px where every other pair in the form had 16.
-         The gap belongs to the container, so the container has to be one. */
+      // A stack, so each day-of field keeps the form's gap.
       const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      /* NAME OVER PHONE, NOT BESIDE IT, 2026-09-10 -- the same call the
-         booking block took a day earlier and for the same reason: two
-         fluid boxes in a 288px column leave each about 140px, and 140px is
-         not a phone number beside a name. A contact is two stacked rows
-         now, and the run of them stays flush inside `rowsHost`.
-
-         IT ALSO ENDS `.scheduler-two-up`. Booking contact was its other caller;
-         with both stacked the class has no user left, so its rules come out
-         of app.css rather than sitting there as a shape nothing makes. */
-      /* THE PREFIX IS ON THESE TOO, 2026-09-10, and for the same reason the
-         booking three took it: the `Day-of-trip contacts` heading came off,
-         so the field is the only thing left to say which contact it means.
-         The row number rides after the noun rather than the phrase --
-         `Day of contact name 2`, not `Day of contact 2 name` -- because the
-         first reads as the second contact's name and the second reads as a
-         field called "contact 2 name". */
+      /* Name over phone, each labelled with its contact because no heading says
+         which. The number follows the noun, `Day of contact name 2`, so it
+         reads as the second contact's name. */
       const drawRow = (c, n) => {
         const suffix = n === 1 ? '' : ` ${n}`;
         rowsHost.append(
@@ -3370,35 +2441,15 @@
       shown.forEach((c, i) => drawRow(c, i + 1));
       topFields.appendChild(rowsHost);
 
-      /* THE BUTTON SAYS WHAT IT ADDS. A bare `+` is ambiguous once a form
-         carries two kinds of contact, and this one sits under the second of
-         them. It stops at five because the schema does. */
+      // The button names what it adds, and stops at five because the schema does.
       const addBtn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Add another contact');
       addBtn.type = 'button';
       addBtn.id = 'scheduler-f-dadd';
-      /* THE ICON TRAILS AND WEARS THE CLASS, 2026-09-10. It was PREPENDED and
-         carried no class at all, so it got none of Carbon's icon rules and
-         sat hard against the word -- rux saw the gap as wrong, and there was
-         no gap to be wrong: `margin-inline-start` was 0 because nothing
-         selected it.
-
-         PUTTING IT AFTER THE LABEL IS THE FIX, not adding a margin on the
-         left. Carbon spaces a button's icon with
-         `.rux--btn--ghost .rux--btn__icon { margin-inline-start: 0.5rem }`,
-         which is 8px BEFORE the icon -- correct when the icon trails the
-         text and backwards when it leads, where it would push the icon off
-         the button's own padding and still leave nothing between icon and
-         word. Carbon's `Button` renders its icon after the label for the
-         same reason; the base rule even pins it to `inset-inline-end`. */
+      /* The icon follows the label and carries `rux--btn__icon`: Carbon spaces a
+         ghost button's icon with a start margin, which is right only when the
+         icon trails. */
       addBtn.append(svgUse('#i-add', '16', '0 0 32 32'));
       addBtn.lastChild.setAttribute('class', 'rux--btn__icon');
-      /* `Same as booking contact` WAS HERE AND IS GONE, 2026-09-10 on rux's
-         call. It hid these rows and pointed row one at the booking contact
-         on save. Removing it takes the shortcut with it: reusing the booking
-         contact is now typing them into Name like anyone else, which the
-         search makes cheap. The count of five is still the schema's, so
-         `Add another contact` keeps its own limit and simply no longer has
-         a second reason to be disabled. */
       let count = shown.length;
       const syncAdd = () => { addBtn.disabled = count >= 5; };
       addBtn.addEventListener('click', () => {
@@ -3408,46 +2459,14 @@
         syncAdd();
       });
       syncAdd();
-      /* THE BUTTON GOES ON `form` rather than into the run, so it keeps the
-         stack's own 16px above it. It spans the column like the fields, and
-         overrides.css says why. */
+      // On `form` rather than in the run of fields, so the stack's gap sits above
+      // it. overrides.css spans it across the column.
       form.appendChild(addBtn);
     }
 
-    /* NEITHER CHECKBOX NOR ITS GROUP HAS A FLUID VARIANT -- confirmed against
-       Design's compiled css, zero `rux--checkbox` selector carries `fluid`.
-       AGENTS.md is explicit that a missing component is a request to Design,
-       never a local rule, so this stays Carbon's DEFAULT checkbox. What is
-       local is giving it its own titled section rather than letting it sit
-       as a bare fieldset between two fluid-boxed neighbours -- the same
-       `scheduler-panel-section__title` class every sibling section already carries,
-       so "Equipment" reads as its own module rather than a stray row.
-
-       IT IS `Equipment` AND NOT `Status and needs` AS OF 2026-09-10, which
-       is a rename that followed a removal: with `Confirmed` out, the three
-       left are all things a coach either has or has not got, and "status"
-       named a member the group no longer holds. Singular because equipment
-       is uncountable -- rux wrote "Equipments"; the word is the only part
-       of that not taken.
-
-       THE LEGEND CANNOT KEEP `rux--label`, 2026-09-09: `.rux--form--fluid
-       .rux--label` is a bare descendant selector -- it does not check WHICH
-       field the label belongs to, so it caught this legend too and made it
-       `position: absolute`, floating it up behind the sticky header where
-       nothing could see it. `rux--label` here was only ever borrowed for
-       type, never a field's own label, so it drops in favour of the app's
-       own title class, which the fluid rule has no selector for. */
-    /* ONE ROW, NOT TWO COLUMNS, 2026-09-10. rux asked for two; three fit in
-       one. `--horizontal` is Carbon's own compiled variant -- `flex-flow:
-       row wrap` -- and the three items measure 77.4, 76.5 and 71.8 against
-       the group's 288, so they take 226 with 62 to spare and never wrap. The
-       block goes from 99px to 47. A two-column grid would have been a local
-       rule for a layout Carbon does not ship, to fit three things that fit
-       in one row anyway.
-
-       IT WRAPS IF THE WORDS GROW, which is the variant's own behaviour and
-       the reason it is safe to use here: a fourth flag, or a longer one,
-       drops to a second row rather than overflowing. */
+    /* Equipment is Carbon's horizontal checkbox group, one row that wraps if
+       the labels outgrow the panel. Its legend takes the app's section title
+       class, like the other sections. */
     const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal scheduler-panel-section');
     flags.setAttribute('aria-disabled', 'false');
     const legend = el('legend', 'scheduler-panel-section__title', 'Equipment');
@@ -3457,74 +2476,27 @@
       checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
       checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
     );
-    /* EQUIPMENT SITS BESIDE THE FORM, NOT IN IT, 2026-09-10. rux asked
-       whether the gap above it was standard. It was not, and it was not even
-       consistent with itself: `.scheduler-panel-section` carries a 24px top margin,
-       and inside `form` -- a `rux--stack-vertical` -- the stack's own 16px
-       row-gap added to it for 40, while the same class on Billing measured 24
-       above all three of its sections because `panelBilling` is a plain tab
-       panel that adds nothing. One class, two spacings, decided by which kind
-       of container it happened to land in.
-
-       APPENDING IT TO THE PANEL rather than to the stack makes Details match
-       Billing structurally, so the 24px is the section's own margin in both
-       and there is no sum to reason about. The alternative was a rule
-       docking the margin whenever a section sits in a stack, which is more
-       CSS to say the same thing and leaves the two tabs built differently. */
+    // Equipment is appended to the panel, not into `form`, so the section's own
+    // top margin is not added to the stack's gap.
     panelDetails.appendChild(form);
     panelDetails.appendChild(flags);
     panelDetails.appendChild(colorField('scheduler-f-color', trip));
 
-    /* CANCEL TRIP MOVED TO THE ACTION BAR, 2026-09-10, and is static markup
-       there rather than built here -- index.html carries it and the reason.
-       All that is left for this pass is whether it applies: there is nothing
-       to cancel on a trip that does not exist yet, and `Close` already
-       discards a draft, which is what cancelling one would mean. */
+    // Cancel is static markup in the action bar. A trip not yet saved has
+    // nothing to cancel, and Close already discards a draft.
     panelCancel.hidden = creating || !trip.id;
 
-    // THE LEG'S OWN FACTS STAY READ-ONLY. Dates and times are not in this
-    // pass; they are shown because the editor above is meaningless without
-    // knowing which leg is on screen.
-    // NO LEG YET, SO NOTHING TO SAY ABOUT ONE. The section describes the bar
-    // that was clicked, and in create mode there is no bar; showing it with
-    // blanks would read as data that failed to load.
-    /* SCHEDULE REPLACED A READOUT WITH THE THING ITSELF, 2026-09-09 on rux's
-       call. This was `This leg`: a `scheduler-def` list showing Leg, When, Departs,
-       Spot and Returns, 146px of text nobody could act on, sitting above a
-       284px `Itinerary` structured list nobody could act on either. Between
-       them they were 430px of a 729px panel -- more than the 405px the panel
-       overflowed by -- so the editor scrolled to show two things it would not
-       let you change. Both are gone; these four controls are what most trips
-       actually need set.
-
-       THE STOPS ARE THE STORE, NOT THE TRIP COLUMNS, and that is not a
-       preference. `trips.departure_time`, `spot_time` and `return_time` are
-       null on all 743 rows -- counted 2026-09-06, see the select above -- and
-       `timesOf` reads the stops, using those columns only as a fallback that
-       has never once been taken. `spot` has no column fallback at all. So a
-       Schedule that wrote the trip would save values the BOARD DOES NOT READ:
-       the field would change, Save would succeed, and the bar would not move.
-
-       LEG-SCOPED, because a drop-off and pick-up trip has two of these and the
-       panel is opened from one bar, which IS one leg. `stopsOfLeg` picks the
-       same pickup and return rows `timesOf` places the bar from, so what is
-       edited here and what is drawn there cannot disagree.
-
-       NOT IN CREATE MODE. A trip being made has no stops to edit and no leg to
-       scope them to; the section appears once the trip exists, which is the
-       rule `This leg` already followed and for the same reason. */
+    /* ── Schedule ──
+       These controls write the leg's `trip_stops` rows, which is where
+       `timesOf` reads the board's times, falling back to a trip column only for
+       departure. They are leg-scoped: the panel opens from one bar, and
+       `stopsOfLeg` picks the same pickup and return rows `timesOf` places that
+       bar by. */
     panelSchedule.replaceChildren();
     {
-      /* SCHEDULE RENDERS ON A NEW TRIP TOO, and unlike the blocks above this
-         one needed a decision rather than just the guard removed. These four
-         write `trip_stops`, and a trip being created has none.
-
-         MAKING THE FIRST STOP IS NOT THE SAME AS INVENTING ONE. `stopsPatch`
-         refuses to create a row for an EXISTING leg that has no pickup,
-         because where that row belongs among the others is the itinerary
-         editor's business. A brand-new trip has no others: leg `outbound`,
-         position 0, type `pickup` is the only thing it could mean. So on
-         create the rows are inserted, and on edit the refusal stands. */
+      /* On a new trip there are no stops yet, and Save inserts the first ones on
+         the outbound leg, where nothing else can come before them. On an
+         existing leg a missing stop is not invented. */
       const { pickup, back } = creating ? { pickup: null, back: null } : stopsOfLeg(trip, legName);
       const sched = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const times = el('div', 'scheduler-times');
@@ -3538,138 +2510,32 @@
           [pickup?.name, pickup?.address].filter(Boolean).join(' — ')),
         times,
       );
-      /* A CONTROL WITH NO ROW BEHIND IT IS DISABLED, NOT MERELY EMPTY. Three of
-         these write the leg's `pickup` stop and one writes its `return` stop,
-         and `stopsPatch` refuses to invent either -- making the row is the
-         itinerary editor's job, not this form's. An enabled input that silently
-         cannot save is the fault this whole section exists to remove, so the
-         missing case says so instead. */
+      /* A control with no stop row behind it is disabled, not merely empty:
+         `stopsPatch` creates no rows, so an enabled input there could not save. */
       for (const [id, row] of [['scheduler-f-pickup', pickup], ['scheduler-f-depart', pickup],
                                ['scheduler-f-spot', pickup], ['scheduler-f-return', back]]) {
-        // On create there is no row YET, which is not the same as a leg that
+        // On create there is no row yet, which is not the same as a leg that
         // has none: the save makes them. Only an existing leg disables.
         if (row || creating) continue;
         const input = sched.querySelector(`#${id}`);
         if (input) { input.disabled = true; input.title = 'This leg has no stop to hold it yet.'; }
       }
-      /* THE TAB IS THE HEADING NOW, 2026-09-10. This was `section('Schedule')`
-         at the foot of Details; with a tab of its own that title would be the
-         word `Schedule` printed twice, once in the strip and once under it.
-         The return leg keeps a heading because it says something the tab
-         cannot: which of a split trip's two outings these four times belong
-         to. The panel is opened from one bar and a bar IS one leg, so this is
-         never ambiguous by accident -- it is only ever unlabelled when there
-         is one leg to mean. */
+      // The tab is the heading. A return leg gets its own, to say which of a
+      // split trip's two outings these times belong to.
       panelSchedule.appendChild(
         legName === 'return' ? section('Return leg', sched) : sched);
     }
 
-    /* ── BILLING ────────────────────────────────────────────────────────────
-       Every field here was checked against all 751 rows before it was built,
-       which is the habit the Schedule section earned the hard way: quoted_price
-       99, deposit_amount 31, invoice_number 43, po_ref 42, po_amount 47,
-       contract_status 336, invoice_status 336, balance_paid 751, date_paid 24.
-
-       THREE THINGS IN THE MOCKUP ARE NOT BUILT, AND NONE OF THEM IS AN
-       OVERSIGHT. `Service type` (Charter/Ticketed) has no column --
-       `trips.service_type` does not exist, confirmed by asking for it -- and
-       only ONE trip of 751 has any `trip_ticket_options`, so there is nothing
-       here to switch between and a column would be rux's to add, not this
-       panel's to assume. `Est. miles` and `Actual miles` are not trip columns
-       either: `trip_stops.miles` carries them per stop with `miles_source`
-       saying estimated or manual, so a total is the itinerary's arithmetic and
-       belongs with the itinerary editor. And `Balance` is drawn in the mockup
-       as money, but `balance_paid` is a BOOLEAN -- true on 751 of 751 rows, so
-       the column is "is it settled", not "how much is left". It is a toggle
-       here, and the amount outstanding is shown beside it as arithmetic rather
-       than stored twice. */
+    /* ── Billing ── */
     panelBilling.replaceChildren();
     {
-      /* BILLING RENDERS ON A NEW TRIP TOO, 2026-09-09, and this is a BUG FIX as
-         much as rux's request. It used to show "Billing opens once the trip
-         exists" and build no fields -- and `readForm` returns null the moment
-         ONE id in its list is missing, which nine of these were. `patchOf`
-         then returned null, and the create path is
-         `{ ...readForm(), bus_count: 1 }`, which spreads null to nothing: a new
-         trip inserted as `{bus_count: 1}`, with no destination and no start
-         date. `legsOf` builds no leg without a start date, so the row would
-         have existed and never appeared on the board. Save is disabled until a
-         date is typed, which is the only reason this was not seen.
-
-         Every column here is on `trips`, so on create they simply join the
-         insert. Nothing about them needed the trip to exist first. */
-      /* THE DERIVED THREE READ, THEY DO NOT EDIT, 2026-09-10. `Confirmed`
-         and `Balance paid` were toggles here and `Date paid` was a picker
-         in Invoice details; all three are columns rux-ui computes on every
-         save, so this app's copies were overwritten as fast as they were
-         set. The values still belong on screen -- a dispatcher needs to
-         know whether a trip is confirmed -- so they join the readout above
-         the toggles rather than leaving with the controls.
-
-         WHAT EACH ONE IS DERIVED FROM, per the live `billing-workflow-v1`
-         settings row: confirmed is contract-signed OR PO-received OR
-         deposit-received OR paid-in-full; balance paid is a quoted price
-         with nothing left owing; date paid is the latest payment's date.
-         All three now MOVE when this panel saves, because the payments they
-         read became editable here on 2026-09-10 -- which is also why they
-         are stated as of the last save rather than recomputed live: the
-         other app owns the arithmetic and this one would only be guessing
-         at its rung. */
-      /* THREE MILESTONES, EACH A SWITCH THAT OWNS ITS FIELDS, 2026-09-10.
-         Before this the four billing fields were always editable and the two
-         switches sat in a section of their own at the foot of the tab, which
-         let this app write three states the database has never held.
-
-         MEASURED ON THE LIVE TABLE, 779 trips, and the invariant is perfect:
-         0 rows carry a `po_ref` or a `po_amount` with `po_received` false,
-         0 carry an `invoice_number` while not Invoiced, 0 carry a
-         `contract_note` on an unsigned contract. `invoiced` and
-         `invoice_status` agree on all 43. rux-ui holds that line by nulling
-         each field in `collectTrip` when its switch is off
-         (`js/data/trip-db.js:377-379`); this app held nothing, so a PO
-         reference typed here became the first such row in 779 -- and, because
-         `confirmWhen` reads `po_received`, a trip whose PO had landed would
-         have gone unconfirmed.
-
-         `po_received` WAS NEVER WRITTEN HERE AT ALL and `invoiced` was
-         written only as its text twin. Both join `readForm` with this change.
-
-         THE FIELDS CLEAR WHEN A SWITCH GOES OFF, and that is a deliberate
-         difference from rux-ui rather than an oversight. Over there the typed
-         value stays in the greyed input and is discarded at save
-         (`js/panels/trip-panel.js:497-502` sets only `disabled` and the
-         placeholder), so the screen shows a PO number that Save is about to
-         delete. Nothing is written here until Save and `Reset` restores the
-         panel, so clearing costs a keystroke and buys a screen that always
-         states what will be saved. */
-      /* THE SWITCH IS THE SECTION'S HEADING ACTION, not the first control in
-         its stack. Three `label + switch + "On"` blocks cost about 120px of a
-         320px panel and put the question ("has the contract been signed?")
-         one line below the answer to a different question (the heading). On
-         the heading line the two are the same line. */
-      /* THE FIELDS ARE HIDDEN UNTIL THE SWITCH IS ON, 2026-09-10, not merely
-         disabled. A trip that has been booked and nothing else showed three
-         greyed boxes nobody could type in -- about 190px of the panel spent
-         saying "not yet" three times, when the three switches already say it.
-
-         THIS IS SAFE HERE AND WOULD NOT BE IN rux-ui. Hiding a field that
-         still holds a value hides data that will be saved; over there the
-         typed value survives in the greyed box until `collectTrip` nulls it
-         (`js/panels/trip-panel.js:497-502`), so hiding would conceal a real
-         difference between what is on screen and what is stored. This app
-         CLEARS on toggle-off, so hidden means empty means exactly what will
-         be written. The clearing is what buys the hiding.
-
-         rux-ui ALREADY DOES BOTH, which is the precedent: it disables the PO
-         number and HIDES the authorised-amount block beside it
-         (`details.hidden = !enabled`, `js/panels/trip-panel.js:488-489`).
-         This just applies the second treatment to all three.
-
-         THE ATTRIBUTE ALONE WOULD NOT HAVE WORKED. `rux--stack-vertical` is
-         `display: grid` (`css/rux.css:24862`), which beats the user agent's
-         `[hidden] { display: none }` -- the fields would have stayed on
-         screen with no error anywhere. Hence the app class and its own rule
-         in `app.css`, on an element this app owns. */
+      // Billing renders on a new trip too, because `readForm` needs its ids on
+      // the panel.
+      /* Three milestones, each a switch on its section's heading line. Off hides
+         and clears what the switch owns, so nothing hidden holds a value Save
+         would write. The box carries `scheduler-milestone-fields` because
+         `rux--stack-vertical` is `display: grid`, which overrides the bare
+         `[hidden]` attribute. */
       const gate = (fields, help) => {
         const box = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-milestone-fields');
         box.append(...fields);
@@ -3682,52 +2548,26 @@
       const contractSwitch = toggleAction('scheduler-f-contract', 'Contract signed',
         trip.contract_status === 'Signed');
 
-      /* THE COVERAGE LINE IS THE POINT OF THE PO SWITCH. A PO confirms the
-         trip whatever its amount -- `isStatusConfirmed` maps `po_partial`
-         onto `po_received` on purpose, and rux-ui's own comment says so:
-         "Partial PO is operationally confirmed by the same workflow choice as
-         PO received, while its distinct status remains available for
-         warnings." So the switch never withholds confirmation; it raises a
-         flag beside the amount instead.
+      /* The PO coverage line. A PO confirms the trip whatever its amount
+         (rux-ui's `isStatusConfirmed`), so the line only says what the POs and
+         payments leave uncovered, counted as `deriveStatus` counts it:
 
-         WHAT THE FLAG COUNTS, mirroring `deriveStatus` exactly:
-
-             shortfall = max(0, (quoted - paid) - po_amount)
-
-         PAYMENTS COUNT TOWARD COVERAGE, which is the half of rux's
-         requirement that is easy to miss -- "cover the rest with another PO
-         or payment". A deposit shrinks the shortfall exactly as a larger PO
-         does, because what is uncovered is measured against the REMAINING
-         balance rather than against the quoted price. Several POs add
-         up, so another PO closes the gap the same way. */
+             shortfall = max(0, (quoted - paid) - po_amount) */
       const poCoverage = el('p', 'rux--form__helper-text scheduler-po-coverage');
       const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
         !!trip.po_received);
       const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
         trip.invoice_status === 'Invoiced');
 
-      /* PO AND INVOICE ARE LISTS, one row per PO or invoice, with no limit.
-
-         THE ROWS ARE THE FIELDS THAT WERE HERE. `scheduler-f-poref` and
-         `scheduler-f-poamount` were a labelless pair under this heading and
-         `scheduler-f-invnum` a single box under the next; all three moved into
-         dialogs, which is why they left `readForm`'s id list. What is on the
-         tab is a 32px header and one 44px row per record instead of a header
-         plus 120px of form -- and it is the same shape as Payments below,
-         built from the same `rowList`.
-
-         THE SWITCH STAYS. A PO expected with nothing typed is the switch on and
-         one empty row, so the switch and the rows always agree.
-
-         WHAT THE SWITCH DOES TO A LIST is what it did to the fields: off
-         hides the rows and clears them, so hidden still means empty means
-         exactly what Save will write. See `syncLists`. */
+      /* PO and invoice are lists, one row per record with no limit, built from
+         the same `rowList` as Payments. Off hides and clears the rows, as it
+         does fields (`syncLists`). */
       const poList = rowList();
       const invList = rowList();
 
       const redrawLists = () => { drawPos(); drawInvoices(); };
 
-      /* THE ROWS ARE THE TABLES' OWN, with their ids. A trip object that
+      /* The rows are the tables' own, with their ids. A trip object that
          never carried them shows its single columns as one unsaved row, and
          Save leaves its tables alone (`editing.listsLoaded`). */
       const fromTables = editing.listsLoaded && !editing.creating;
@@ -3753,10 +2593,7 @@
             remove: () => { poPending.splice(i, 1); drawPos(); refreshDirty(); },
           }));
         });
-        /* THE ADD ROW IS THE EMPTY STATE. An empty list used to draw "No
-           purchase order recorded." and then an add button below it -- two
-           rows saying one thing in a panel that is already long. The add row
-           alone says both: there is nothing here, and this is how one starts. */
+        // The add row is also the empty state.
         poList.body.appendChild(listAddRow({
           label: 'Add purchase order', id: 'scheduler-f-poadd',
           onClick: () => openPoDialog(null),
@@ -3786,65 +2623,19 @@
       redrawPos = drawPos;
       redrawInvoices = drawInvoices;
 
-      /* PAYMENTS ARE EDITABLE AS OF 2026-09-10, and they are the reason the
-         rest of this tab can be honest. `deposit_amount`, `balance_paid`,
-         `date_paid` and the whole of rux-ui's status ladder are all read off
-         the money that came in; with no way to record a payment this panel
-         could show those numbers and never change them.
-
-         DIFFED BY `id`, NOT REPLACED. rux-ui saves this list by deleting
-         every row for the trip and reinserting -- two calls, no transaction,
-         so a failed insert leaves a trip with no payments at all, and row
-         ids churn on every save. `trip_payments` has a real `id` (confirmed
-         against the live table), and this file already updates `trip_stops`
-         and `contacts` by id, so payments do the same: new rows insert,
-         changed rows update, removed rows delete, and a failure touches only
-         the row it was for.
-
-         `position` STILL GOES OUT, because rux-ui orders by it and a null
-         would sort unpredictably over there. It is the row's place in this
-         list, renumbered on save rather than tracked as state. */
-      /* ONE ROW PER PAYMENT, IN A `contained-list`. Carbon ships this exact
-         shape -- `--with-action` puts a control at the row's end, and the
-         `__header` carries the list's title and its own action, which is
-         where the sink's every story puts one. It replaces four labelled
-         boxes per receipt with a line that reads `Check · Aug 19 · $2,728`.
-
-         THE METHOD IS A WORD AND NOT A GLYPH, for now. rux asked for icons
-         and Carbon's `--with-icon` variant is built for it, but Design's
-         whole sprite is 63 symbols and none of them means money -- counted,
-         and asked of Design. Pressing `i-document` or
-         `i-copy` into service would be a glyph that lies. The word costs a
-         reader nothing to learn, which four near-neighbour methods --
-         Check, ACH, Card, Cash are all "money arrived" -- otherwise would.
-
-         THE LIST IS DRAWN FROM `pending`, NOT FROM THE DOM. The old version
-         read its values back out of the inputs it had built; with the
-         fields behind a dialog there are no inputs to read, so the array is
-         the truth and the list is a render of it. That also makes the diff
-         a comparison of two arrays rather than a walk over form controls. */
+      /* Payments are saved by `id`, not replaced: new rows insert, changed rows
+         update, removed rows delete, so a failure touches only its own row.
+         `position` is the row's place in the list, since rux-ui orders by it.
+         The list is a render of `pending`, which is the array Save diffs. */
       const pending = (trip.trip_payments || [])
         .slice().sort((x, y) => (x.position ?? 0) - (y.position ?? 0))
         .map(p => ({ id: String(p.id), method: p.method ?? null, amount: p.amount,
                      date: p.date ?? null, ref: p.ref ?? null }));
       payPending = pending;
 
-      /* THE SUMMARY GOES FIRST AND IT MOVES, 2026-09-10. Paid and Balance were
-         two lines of a `dl` in the middle of the tab, computed once from
-         `trip.trip_payments` at open. Both facts were wrong the moment a
-         payment was added: the list below would say $1,500 and the readout
-         above it $2,728, on the same screen, from the same rows.
-
-         SO IT IS A RENDER, NOT A VALUE. `drawSummary` reads the pending array
-         and the quoted-price INPUT rather than `trip`, and both the payment
-         list's `draw` and the quoted field's `input` call it. The two numbers
-         and the rows beneath them cannot disagree because there is one source.
-
-         `big-number` IS THE COMPONENT FOR IT -- Carbon's own figure for a
-         headline figure with a label, and its `__total` slot is exactly the
-         "of the quoted price" half of `Paid`. With no quoted price there is no
-         total to state and no balance to compute; it says so rather than
-         showing a deficit against zero. */
+      /* The summary is a render, not a stored value: `drawSummary` reads the
+         pending rows and the quoted-price input rather than `trip`, so its
+         figures and the lists below always agree. */
       const bigNumber = (label, value, total) => {
         const fig = el('figure', 'rux--big-number');
         const top = el('span', 'rux--big-number__row');
@@ -3860,8 +2651,8 @@
         const raw = document.getElementById('scheduler-f-quoted')?.value;
         return raw === undefined || raw === null ? null : money(String(raw));
       };
-      /* THE STATUS LADDER, MIRRORED FROM rux-ui RATHER THAN INVENTED.
-         `js/core/billing-config.js:94-110`, first match wins, same order:
+      /* The billing status ladder, mirrored from `deriveStatus` in rux-ui's
+         `js/core/billing-config.js`; first match wins:
 
            overpaid          price > 0 && balance < 0
            paid_full         price > 0 && paid > 0 && balance <= 0
@@ -3871,29 +2662,14 @@
            contract_signed   contractSigned
            pending           -- everything else
 
-         THERE IS NO INVOICE RUNG. The invoice switch moves neither the status
-         nor `confirmed`; it is billing paperwork, not a step toward being
-         booked. Worth saying because a tab that shows three switches invites
-         the assumption that all three drive the readout.
-
-         IT IS A PREDICTION AND IT IS LABELLED AS ONE. rux-ui owns `confirmed`
-         and recomputes it on every save over there, so this app shows what
-         the ladder WOULD say and writes nothing -- the same rule the derived
-         three have followed since the column cleanup. `confirmWhen` is the
-         five rungs the live `billing-workflow-v1` settings row holds; this app
-         does not fetch that row, so a change to it over there would make this
-         readout stale until someone looks. Stated rather than hidden. */
-      /* THE TONE ENCODES HOW FAR ALONG, NOT WHICH RUNG. Seven rungs and five
-         hues on purpose: three of them mean the same thing to a dispatcher
-         reading the board -- somebody has committed, the trip is on -- so
-         they share `blue` rather than each taking a colour that would have to
-         be learned. `purple` is the one that wants a second look, `green` is
-         done, `magenta` is wrong in the customer's favour, `cool-gray` is
-         nothing yet.
-
-         A partial PO is not an error: it confirms the trip. The coverage
-         shortfall was red until the 2026-09-11 composition pass; it now
-         uses helper text, with this tag carrying the status colour. */
+         The invoice switch moves neither the status nor confirmation. The
+         result is a prediction and writes nothing: rux-ui owns `confirmed`, and
+         `CONFIRM_WHEN` copies the `billing-workflow-v1` settings row rather than
+         fetching it. */
+      /* The tone shows how far along, not which rung: the three rungs that mean
+         someone has committed share blue, purple wants a second look, green is
+         done, magenta is overpaid and cool gray is nothing yet. A partial PO
+         still confirms the trip, so it is not red. */
       const STATUS_LABEL = {
         overpaid: ['Overpaid', 'rux--tag--magenta'],
         paid_full: ['Paid in full', 'rux--tag--green'],
@@ -3903,13 +2679,11 @@
         contract_signed: ['Contract signed', 'rux--tag--blue'],
         pending: ['Pending', 'rux--tag--cool-gray'],
       };
-      /* OVERPAID CONFIRMS TOO. A customer who has paid MORE than the quote
-         has confirmed the trip by any reading of the word, and the live
-         settings row lists it. `po_partial` is remapped to `po_received`
-         below rather than listed, because it is the same rung with a gap. */
+      // Overpaid confirms too. `po_partial` is remapped to `po_received` below
+      // rather than listed, because it is the same rung with a gap.
       const CONFIRM_WHEN = ['contract_signed', 'po_received', 'deposit_received',
                             'paid_full', 'overpaid'];
-      // What to say once it IS confirmed, per rung. `po_partial` is remapped
+      // What to say once it is confirmed, per rung. `po_partial` is remapped
       // to `po_received` before this is read.
       const CONFIRM_BY = {
         contract_signed: 'Confirmed by the signed contract.',
@@ -3938,8 +2712,7 @@
         const paid = pending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
         const price = quoted ?? 0;
         const poOn = on(document.getElementById('scheduler-f-poreceived'));
-        /* THE PO AMOUNT IS THE SUM OF THE PO ROWS, so the coverage line below --
-           `max(0, (quoted - paid) - poAmount)` -- covers several POs. */
+        // The PO amount is the sum of the PO rows, so coverage counts every PO.
         const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
         const remaining = Math.max(0, price - paid);
         const shortfall = Math.max(0, remaining - poAmount);
@@ -3948,55 +2721,19 @@
           poReceived: poOn, poAmount, price, paid,
         });
 
-        /* THE COVERAGE LINE SAYS THE NUMBER, not just the word. "Partial PO"
-           tells a dispatcher there is a gap; `$12,750 not authorized` tells
-           them how big it is, which is what the next PO or payment has to
-           close. rux-ui shows the same figure beside the same field
-           (`js/panels/trip-panel.js:505-535`). */
+        // The coverage line gives the amount, which is what the next PO or
+        // payment has to close.
         poCoverage.textContent = !poOn ? ''
           : price <= 0 ? 'No quoted price to cover'
           : shortfall <= 0 ? 'Covers the balance'
           : `${usd(shortfall)} uncovered. Add a PO or payment.`;
 
-        /* TWO ROWS LEFT THIS LIST, 2026-09-10, and neither was merely
-           redundant -- both could contradict the lines above them.
-
-           `Balance paid` SAID THE OPPOSITE OF THE TWO FACTS ABOVE IT. It read
-           `trip.balance_paid`, a column rux-ui computes at ITS last save,
-           while Balance and Status are recomputed here on every keystroke.
-           Entering a payment that cleared the trip put this on screen at
-           once: `Balance $0`, `Status Paid in full`, `Balance paid Not yet`.
-           Measured, not imagined. And it carried nothing new even when it
-           agreed -- "is there anything left owing" is what `Balance` is.
-
-           `Date paid` was the latest payment's date, from the same stale
-           column, sitting four rows above a list that shows every payment
-           WITH its date. The list is live and complete; this was one entry
-           from it, as of whenever the other app last looked.
-
-           WHAT IS LEFT IS NOT REDUNDANT. `Status` is the ladder in one word,
-           `Confirmed` is the one question a dispatcher actually asks, and the
-           mapping between them is not guessable -- see below for the rung
-           where it surprises. */
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
         const confirmRung = rung === 'po_partial' ? 'po_received' : rung;
         const confirmed = CONFIRM_WHEN.includes(confirmRung);
 
-        /* THE HEADLINE IS THE ANSWER, NOT THE BALANCE, 2026-09-11. Balance led
-           this tile and on a new trip it read "No quote" -- the largest type on
-           the panel saying there is no data yet, in the slot a reader looks at
-           first. Confirmation is never empty: a trip is confirmed or it is not,
-           from the moment it exists, and it is the question a dispatcher
-           actually brings to this tab. Balance keeps every digit it had, one
-           row down beside Paid.
-
-           "ONCE SAVED" LEFT THE WORDING. The row it was in said
-           `Yes, once saved`, marking that the ladder is recomputed from the
-           controls rather than read from the database. That is true of every
-           value on this panel -- Balance, Paid and the coverage line are all
-           recomputed on each keystroke -- so singling out this one implied the
-           others were stored. The footer's Save is what says nothing is
-           written yet. */
+        // The headline is the trip's confirmation, which is never empty; Balance
+        // and Paid sit below it.
         derived.replaceChildren(def([
           ['Balance', quoted === null ? 'No quote'
             : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))],
@@ -4008,21 +2745,14 @@
           bigNumber('Trip', confirmed ? 'Confirmed' : 'Not confirmed'),
           status,
         );
-        /* WHICH ONE DID IT. Three separate things confirm a trip and the tab
-           gave no sign which was in force, so a dispatcher had to read the
-           rung tag and know the mapping. Unconfirmed, the line states the rule
-           instead -- the only place in the app that says it. */
+        // The line names what confirmed the trip or, unconfirmed, states the rule.
         confirmWhy.textContent = confirmed
           ? (CONFIRM_BY[confirmRung] || 'Confirmed.')
           : 'A signed contract, a PO or any payment confirms it.';
       };
-      /* Billing composition revised 2026-09-11 for a quieter, shorter panel.
-         Balance is the headline; Paid is a supporting definition row. This
-         replaces the two stacked headlines chosen on 2026-09-10, while
-         keeping their values, the status ladder and confirmation prediction.
-         The summary keeps its distinct surface; the lists below now share
-         the panel surface. No extra section margin above the first tile:
-         the sticky tab strip already supplies that space. */
+      /* The summary tile: the confirmation and its status tag, the reason line,
+         then Balance and Paid. It takes no section margin, because the sticky
+         tab strip already gives it room. */
       const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed');
       const tileStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       tileStack.append(
@@ -4039,51 +2769,8 @@
       );
       panelBilling.appendChild(summary);
 
-      /* `--disclosed`, NOT `--on-page`, so the four headings on this tab are
-         one heading. `--on-page` renders its header at `heading-compact-01`
-         (14px/600) on a filled band; `--disclosed` renders it at `label-01`
-         (12px/400, text-secondary), which is character for character what
-         `.scheduler-panel-section__title` sets for Summary, Pricing & invoice and
-         Billing status. A shipped Carbon variant rather than a rule of ours,
-         which is the whole reason to prefer it over restyling the header. */
-      /* The layer-two header bands introduced on 2026-09-10 are removed
-         from the lists in this design pass. Repeated filled blocks competed
-         with the summary; headings and row boundaries now do the grouping.
-         The existing disclosed variant, sizes and action slots are retained. */
-      /* `size-md` MOVES THE ROWS AND NOT THE HEADER, which is why it is safe
-         here. `--disclosed` pins its header to a hard `block-size: 2rem`
-         (`css/rux.css:10641`) where `--on-page` reads
-         `--rux-layout-size-height-local`, so the band stays 32px at every
-         size and keeps matching `.scheduler-panel-section__head`. Measured across
-         all three: header 32/32/32, rows 32/44/52 for sm/md/lg.
-
-         md FOR THE ROWS BECAUSE THEY HOLD A TAG. A `CHK` tag is 18px inside
-         what was a 32px row, leaving 7px above and below; 44px gives it room
-         and gives the row and its delete button a fair click target. The
-         inline density does not change with size -- 16px at all three -- so
-         the bleed above still lands the rows on the same left as the fields. */
-      /* THE PAYMENT LIST IS BUILT FROM THE SAME `rowList` AS THE TWO ABOVE
-         IT, 2026-09-11. It shipped first and carried its own header and row
-         markup; PO and Invoice would have been a second and third copy of
-         both, so the three share one builder instead and this section lost
-         about forty lines without changing a pixel. What is still its own is
-         what is genuinely different: a method tag rather than a fixed code,
-         a date in the middle column, and no switch on the header -- there is
-         no milestone to gate, a receipt either exists or does not.
-
-         THE METHOD IS A WORD AND NOT A GLYPH, for now. rux asked for icons
-         and Carbon's `--with-icon` variant is built for it, but Design's
-         whole sprite is 63 symbols and none of them means money -- counted,
-         and asked of Design. Pressing `i-document` or
-         `i-copy` into service would be a glyph that lies. The word costs a
-         reader nothing to learn, which four near-neighbour methods --
-         Check, ACH, Card, Cash are all "money arrived" -- otherwise would.
-
-         THE LIST IS DRAWN FROM `pending`, NOT FROM THE DOM. The old version
-         read its values back out of the inputs it had built; with the fields
-         behind a dialog there are no inputs to read, so the array is the
-         truth and the list is a render of it. That also makes the diff a
-         comparison of two arrays rather than a walk over form controls. */
+      /* Payments use the same `rowList` as PO and invoice, with a method tag on
+         each row and no switch: a receipt has no milestone to gate. */
       const payList = rowList();
       const draw = () => {
         payList.body.replaceChildren();
@@ -4094,10 +2781,8 @@
           payList.body.appendChild(listRow({
             code: mark.code, tone: mark.tone, codeTitle: p.method || 'Method not set',
             when, much,
-            /* THE REFERENCE IS OFF THE ROW, on the tooltip and in the dialog.
-               It is a cheque number -- looked up when there is a question
-               about a specific payment, not scanned down a list -- and it was
-               the one field long enough to wrap the row onto a second line. */
+            /* The reference is on the tooltip and in the dialog, not the row: it
+               is looked up rather than scanned, and it would wrap the row. */
             title: [p.method || 'Payment', when, much,
                     p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
             edit: () => openPaymentDialog(i),
@@ -4105,9 +2790,7 @@
             remove: () => { pending.splice(i, 1); draw(); refreshDirty(); },
           }));
         });
-        /* NO CAP ON PAYMENTS: `trip_payments` is a real table with real rows,
-           so the add row is never disabled here. It is still the empty state,
-           the same as the two lists above. */
+        // The add row is also the empty state, as in the two lists above.
         payList.body.appendChild(listAddRow({
           label: 'Add payment', id: 'scheduler-f-payadd',
           onClick: () => openPaymentDialog(null),
@@ -4116,18 +2799,9 @@
       };
       draw();
       redrawPayments = draw;
-      /* NO `section()` AROUND THE LIST, and the first attempt had one: the tab
-         rendered "Payments" twice, once as the small section label and once in
-         the contained-list's own `__header` two pixels below it. The header IS
-         the section title -- that is what Carbon ships it for -- so the wrapper
-         here exists only for the `spacing-06` above it that every other section
-         gets. */
-      /* A LIST BLEEDS AND ITS HELPER TEXT DOES NOT. A `contained-list` pads
-         itself by `spacing-05` inside the band, so the wrapper is pulled out by
-         the panel body's own `spacing-05` to land the rows on the same left as
-         every field. The coverage line is NOT a list row, so it stays in the
-         padded section and keeps the panel's inline margin; bleeding it too
-         would run it to the panel's edges. */
+      /* A list bleeds to the panel's edges so its rows, which a contained-list
+         pads inside, line up with the fields. Helper text such as the PO
+         coverage line does not bleed. */
       const bleed = (node) => {
         const box = el('div', 'scheduler-panel-section--bleed');
         box.appendChild(node);
@@ -4135,29 +2809,9 @@
       };
       const listWrap = section('Payments', bleed(payList.list));
 
-      /* THE ORDER, AND PAYMENTS MOVED TO THE END, 2026-09-10. Summary, then
-         the three milestones in the order the ladder climbs -- contract, PO,
-         invoice -- then the receipts.
-
-         PAYMENTS SAT SECOND UNTIL rux MOVED IT. The argument for second was
-         that the summary derives from it; the argument for last, which wins,
-         is that it is the only section that GROWS. A list of eight receipts
-         pushed Contract, PO and Invoice off the bottom of a 320px panel, so
-         the three fixed-height sections a dispatcher fills in while booking
-         sat below the one that gets longer the more the trip is paid. Last,
-         it can run as long as it likes. */
-      /* THE TWO LISTS BLEED AND THEIR HELPER TEXT DOES NOT. A
-         `contained-list` pads itself by `spacing-05` inside the band, so the
-         wrapper is pulled out by the panel body's own `spacing-05` to land
-         the header text on the same left as every field -- the trick Payments
-         already uses. The coverage line is NOT a list row, so it stays in the
-         padded section and keeps the panel's own inline margin; bleeding it
-         too would run it to the panel's edges. */
-      /* EVERY SECTION IS NOW A `section()`: a head line carrying the label and
-         its one control, then the list bled out beneath it. The switch used to
-         ride in the contained-list's own header beside the `+`; with the label
-         moved out here, all four heads are the same element, which is what
-         puts the three switches on one right edge. */
+      /* The order is contract, PO and invoice, as the ladder climbs, then
+         payments last because it is the only section that grows. Every section
+         is a `section()`, so the three switches share one right edge. */
       const poBody = el('div');
       poBody.append(bleed(poList.list), poCoverage);
 
@@ -4165,10 +2819,8 @@
       const invWrap = section('Invoice sent', bleed(invList.list), invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
 
-      /* THE RULE, NOT A HEADING, IS WHAT SEPARATES THEM. A heading over each
-         group was tried first and cost about 60px of a 320px panel; the border
-         costs 1. `.scheduler-billing-rule` also zeroes the section's own top margin
-         and spends it as padding under the border -- see app.css. */
+      // A border separates the sections; `.scheduler-billing-rule` turns the top
+      // margin into padding under it (app.css).
       for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
         wrap.classList.replace('scheduler-panel-section', 'scheduler-billing-section');
         wrap.classList.add('scheduler-billing-rule');
@@ -4180,16 +2832,9 @@
         listWrap,
       );
 
-      /* WHAT A SWITCH DOES TO ITS FIELDS: hides the block, clears the values,
-         and disables the inputs. `clear` is false on the first pass so a row
-         already holding a value does not arm Save merely by being opened --
-         the invariant says none should, and if one ever does it is a fact to
-         see rather than to erase.
-
-         `disabled` STAYS ALONGSIDE `hidden` rather than being replaced by it.
-         It costs nothing, it keeps the state the tests here already check,
-         and it means a field is never typeable in the one frame between the
-         toggle firing and the block being hidden. */
+      /* A switch that is off hides and disables its fields and clears them.
+         `clear` is false on the first pass, so opening a trip that holds a value
+         under an off switch shows it rather than arming Save to erase it. */
       const GATES = [
         ['scheduler-f-contract', ['scheduler-f-contractnote'], contract],
       ];
@@ -4205,25 +2850,10 @@
           }
         }
       };
-      /* A LIST IS GATED BY ITS BODY, NOT BY ITS SECTION, 2026-09-11. The
-         switch is IN the header, so hiding the whole list would hide the
-         control that unhides it. The `<ul>` goes instead, which is also what
-         makes the closed state cost 32px: a header line reading
-         "Purchase order   Off".
-
-         `[hidden]` NEEDS A RULE HERE FOR THE SAME REASON THE FIELDS DID. The
-         body is a flex/grid descendant of a Carbon component, so the user
-         agent's `[hidden] { display: none }` is not safe to rely on -- see
-         `.scheduler-milestone-fields[hidden]`, which was written after the fields
-         stayed on screen with nothing reporting an error. `.scheduler-list-body`
-         carries its own.
-
-         CLEARING IS THE SAME BARGAIN AS THE FIELDS'. Off empties the array,
-         so a hidden list holds nothing and `EDITS` writes nulls that match
-         what is on screen. `clear` is false on the first pass so opening a
-         trip that breaks the invariant -- a `po_ref` with `po_received`
-         false, which 0 of 779 rows do -- shows the row rather than silently
-         arming Save to delete it. */
+      /* A list is gated by its `<ul>`, not its section, whose heading holds the
+         switch; `.scheduler-list-body[hidden]` has its own rule in app.css, like
+         the milestone fields. Off empties the array, and `clear` is false on the
+         first pass, as with the fields. */
       const syncLists = (clear) => {
         for (const [toggleId, box, pending, redraw] of [
           ['scheduler-f-poreceived', poList, poPending, drawPos],
@@ -4237,37 +2867,23 @@
 
       syncGates(false);
       syncLists(false);
-      /* DELEGATED ON THE TAB, NOT BOUND TO THE SWITCH. `setToggle` dispatches
-         `rux:toggle` on the `.rux--toggle` BOX (`js/form-controls.js:94`),
-         while the id is on the `__button` INSIDE it -- so a listener on the
-         button never sees the event, because bubbling goes up and the button
-         is a descendant of the dispatcher. The first version bound to the
-         button and silently did nothing: the patch was right, because
-         `readForm` re-reads `aria-checked` on demand, but the fields stayed
-         enabled and the coverage line went stale. `panelBilling` already
-         listens for the same event to drive `refreshDirty`, which is what
-         made the difference visible. */
+      /* Listened for on the tab, not the switch: Design's `setToggle` dispatches
+         `rux:toggle` on the `.rux--toggle` box, which contains the button, so
+         the event never reaches a listener on the button. */
       panelBilling.addEventListener('rux:toggle', () => {
         syncGates(true);
         syncLists(true);
         drawSummary();
       });
-      /* THE QUOTED PRICE IS THE ONE FIELD LEFT THAT FEEDS THE TOP OF THE TAB,
-         so typing in it redraws the figures. `input`, not `change`: the
-         numbers should follow the keystroke. The PO amount was the second
-         entry in this loop until it moved into a dialog -- it now redraws
-         through `drawPos`, which is the same arrangement the payment list has
-         always had. */
+      // The quoted price redraws the figures on `input`, so they follow each keystroke.
       document.getElementById('scheduler-f-quoted')?.addEventListener('input', drawSummary);
       drawPos();
       drawInvoices();
       drawSummary();
     }
 
-    // FLEET IS THE BUS AND WHO IS ON IT, and nothing else -- the leg's own
-    // dates and times are in Details, above the editor they belong to. Both
-    // tabs carried them for one commit, which read as a bug rather than a
-    // convenience.
+    // Fleet is the bus and who is on it; the dates are in Details and the times
+    // in Schedule.
     panelFleet.replaceChildren();
     if (creating) {
       const onBus = createBusId ? panelIndex.buses.get(createBusId) : null;
@@ -4281,40 +2897,14 @@
       ['Needs', reqs],
     ]));
 
-    // The module claims a picker on load; these were built just now, so it is
-    // asked again for this subtree.
-    /* EVERY TAB, NOT JUST DETAILS, corrected 2026-09-10. This claimed
-       `panelDetails` alone, so a date picker built into any other tab was
-       never claimed at all -- and `date-picker.js` is the only thing that
-       DETACHES a calendar, which is how a closed calendar is expressed
-       (Carbon ships no closed state; see that module's header). An
-       unclaimed picker therefore renders its calendar open, inline, pushing
-       the form down, and no click closes it.
-
-       THAT IS THE WHOLE OF THE `Date paid` DEFECT, and this session first
-       filed it against Design as a single-variant claim bug on the strength
-       of the symptom -- the Billing calendar sitting in the DOM while the
-       Details ones were detached. Both facts have one cause and it is here:
-       the module was never asked to look at that panel. Nothing upstream
-       needed fixing. Scoped to the panel body so all four tabs are covered
-       and a fifth cannot repeat it. */
+    /* The date-picker module claims pickers on load; these were just built, so
+       it is asked again for the whole panel body. An unclaimed picker renders
+       its calendar open, because the module closes a calendar by detaching it. */
     window.Rux?.datePicker?.init?.(panelBody);
 
-    /* A TABPANEL IS A TAB STOP ONLY WHEN NOTHING INSIDE IT IS. That is the
-       ARIA rule, and Details breaks it: it holds 16 focusable controls, so its
-       own `tabindex="0"` made the panel a redundant stop and drew a focus ring
-       around the whole form -- which is what rux saw. Fleet is read-only with
-       nothing focusable in it, so it KEEPS the attribute: without it a
-       keyboard user could reach the tab and never reach what it reveals.
-       Decided per panel, from its contents, rather than written into the
-       markup once and left to rot as the contents change. */
-    /* BILLING JOINED THIS LIST 2026-09-10, having been left out of it since
-       the rule was written. It kept the static `tabindex="0"` from
-       index.html while holding nine focusable controls, so it was exactly
-       the redundant tab stop the note below describes -- one Tab landed on
-       the panel itself and drew a focus ring round the whole tab, which is
-       what rux saw as the section being selectable. The loop decides this
-       per panel from its contents; Billing simply was not being asked. */
+    /* A tabpanel is a tab stop only when nothing inside it is focusable, the
+       ARIA pattern; otherwise the panel is a redundant stop with a focus ring
+       round the whole tab. Decided per panel from its contents, which change. */
     for (const tp of [panelDetails, panelBilling, panelFleet, panelSchedule]) {
       const focusable = tp.querySelector('input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])');
       if (focusable) tp.removeAttribute('tabindex');
@@ -4338,28 +2928,10 @@
     // as the one in the editor.
     syncSelection();
     window.Rux?.schedule?.fit?.();
-    /* THE ROSTER ONLY STEPS ASIDE ON A PHONE, NARROWED 2026-09-11.
-
-       IT USED TO YIELD WHENEVER THE BOARD WAS `crowded` -- `app.js`'s name for
-       the day columns hitting their 8.5rem floor -- which is true at 1440 with
-       both companions open, so opening a trip on an ordinary desktop took the
-       roster away. rux: "id rather the assigments grid not be force closed".
-       A control that closes itself reads as a control that broke, and nothing
-       said why. On a desktop the cost of keeping it is the board scrolling,
-       which this board is built to do: `.scheduler-grid` is `max-content` with a
-       sticky bus column precisely so seven days can total more than the pane.
-
-       BELOW md IT STILL YIELDS, AND THERE IT IS NOT A PREFERENCE. app.css puts
-       both companions on top of the board at that width -- the editor through
-       Carbon's own `position: fixed`, the roster by hand beside it -- so they
-       are full-width overlays and one does not sit next to the other, it
-       covers it. The stacking comment there says as much: the z-index "only
-       decides what happens during the frame between", because this line is
-       what stops both being up at once.
-
-       STILL ONLY ON THE WAY IN. Opening a second trip while the editor is open
-       calls this again, and re-taking the yield would undo a `Drivers` press
-       made in between. */
+    /* The roster steps aside only below md, where app.css makes it and the
+       editor full-width overlays, so one would cover the other; on a desktop it
+       stays and the board scrolls. Only on the way in, so a `Drivers` press
+       made while the editor is open is not undone. */
     if (!wasOpen && availOn && !availYielded && matchMedia('(max-width: 41.98rem)').matches) {
       availYielded = true;
       placeAvailability();
@@ -4367,43 +2939,22 @@
     document.getElementById('scheduler-panel-close')?.focus();
   }
 
-  /* ── DRIVER AVAILABILITY ───────────────────────────────────────────────────
-     LEFT OF THE BOARD, decided 2026-09-06 after trying it docked below the
-     schedule and to its right as well. The dock aligned Thursday under
-     Thursday and cost 240px of height; the right-hand slot sat between the
-     board and the panel describing it, which is what settled it. Both are
-     gone. The marked day column is what answers "who is free THEN" now that
-     the columns no longer line up.
+  /* ── Driver availability ───────────────────────────────────────────────────
+     Busy is derived, not stored: a driver is busy on a day an assignment of
+     theirs covers, walked from the same legs the bars are placed from, so the
+     roster always agrees with the board.
 
-     BUSY IS DERIVED, NOT STORED. There is no per-driver-per-day row anywhere:
-     a driver is busy on a day because an assignment they are on covers it, so
-     this walks the same legs the bars are placed from and marks the days each
-     one spans. That means it is exactly as correct as the board above it, and
-     wrong in the same way if the board is.
-
-     TIME OFF IS STORED, in `driver_time_off`, and beats busy in the cell --
+     Time off is stored, in `driver_time_off`, and beats busy in a cell, because
      a driver both assigned and away is a conflict worth seeing as away. */
   const asideSlot = document.getElementById('scheduler-aside');
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
-  /* THE ROSTER YIELDS TO THE EDITOR WHEN THE WEEK CANNOT AFFORD BOTH, added
-     2026-09-08. Measured at 1440x950: the board is 1344, the roster takes 331,
-     the editor 320, two gaps 32, and seven days need 984 -- 1667 against 1344,
-     so the week runs 323px short and Saturday and Sunday scroll off. A charter
-     board that hides the weekend is the one failure this layout cannot have.
-     Either companion ALONE fits: 997 of 997 with the roster, 1008 of 984 with
-     the editor. Both never do, at any density -- xs rows and an xs panel
-     together return 120 of the 323.
-
-     SEPARATE FROM `availOn`, WHICH IS WHAT RUX ASKED FOR. Yielding is the
-     IT ONLY YIELDS ON A PHONE NOW, 2026-09-11. The roster used to step aside
-     whenever the editor opened onto a CROWDED board -- which was true at 1440,
-     a width people work at all day -- and rux asked for it to stay. Below the
-     md breakpoint it still steps aside, because there both panes are full-width
-     overlays and one would simply cover the other. `openPanel` carries the
-     reasoning. */
+  /* The roster steps aside for the editor only below md, where both are
+     full-width overlays and one would cover the other (`openPanel`). The yield
+     is kept apart from `availOn`, the wanted state, so closing the editor
+     brings the roster back. */
   let availYielded = false;
   let availRows = [];
 
@@ -4450,39 +3001,17 @@
     availRows = rows;
     availGrid.textContent = '';
 
-    /* THE ROSTER'S DAY RULES ARE PURE CSS, unlike the board's. Its cells are
-       real grid cells with a column each, so the rule is simply an inline-start
-       border on every cell but the first and `data-day` already says which that
-       is; nothing has to be computed here. The board has one element spanning
-       all seven days and no edges to hang a border on, which is why only it
-       needs stops painted. */
-
     const head = el('div', 'scheduler-avail__days');
     head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head', 'Driver'));
     for (let i = 0; i < 7; i++) {
       const d = new Date(weekStart.getTime() + i * DAY);
-      /* TWO LETTERS, 2026-09-08, AND IT IS WHAT LETS THE COLUMN BE 24px. This
-         has been one letter (`narrow`, until 2026-09-07) and three (`short`,
-         after), and the case for three was never about three: it was that one
-         letter cannot tell Tuesday from Thursday or Saturday from Sunday --
-         four of the seven columns unreadable in the pane whose job is answering
-         "who is free THEN". Two letters answer that in full. The 2026-09-07
-         entry ruled single letters out and did not weigh the middle.
-
-         MEASURED AT label-01, 12px/600 with 0.32px of tracking: "Wed" is 26.0
-         and will not fit a 24px cell, which is why `--scheduler-day-track` held at sm
-         and the cells were 32x24 rather than square. "We" is 18.4, the widest
-         of the seven, and clears 24 with 5.6 to spare. The type is unchanged --
-         the day cells stay label-01 where "Driver" beside them keeps the table
-         header's 14px, for the reason the entry above this one gives.
-
-         SLICED FROM `short`, NOT A HAND-WRITTEN TABLE, so a locale that
-         abbreviates its own way gets its own first two characters rather than
-         English ones. Spread and not `.slice(2)`: the unit is a code point. */
+      /* Two letters, taken from the locale's own `short` weekday: one letter
+         cannot tell Tuesday from Thursday, and two fit the roster's narrow day
+         column. Spread rather than `slice`, so the unit is a code point. */
       const short = d.toLocaleDateString(undefined, { weekday: 'short' });
       const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 2).join(''));
-      // The band dims its weekend TEXT and draws no vertical line, exactly as
-      // the board's day header does. The boundary rule is the body's alone.
+      // Weekend letters dim, as the board's day header does; the day rules are
+      // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
       cell.dataset.day = String(i);
       head.appendChild(cell);
@@ -4491,30 +3020,10 @@
 
     for (const row of rows) {
       const r = el('div', 'scheduler-avail__row');
-      /* THE FULL NAME GOES ON THE CELL'S TITLE, 2026-09-11, AND IT IS NOT A
-         TOOLTIP REPEATING WHAT IS ON SCREEN. This cell renders `short_name`
-         when there is one -- "Cortinas", "All Valley" -- so the long form is
-         information the column is actively dropping, not a restatement of it.
-         The busy cell beside it has carried `driver.name` for exactly this
-         reason since it was written.
-
-         IT ANSWERS THE DUPLICATE NAMES noted since
-         2026-09-07: "two Bennys, two Ernestos ... make the roster ambiguous in
-         the one pane meant to resolve it". Both pairs are in today's fleet, the
-         full names are already fetched, and nothing was using them.
-
-         AND THE COLUMN IS NARROW, 88px in Carbon's xs roster, so a long name
-         ellipses. That is the same argument `.scheduler-row-head` makes on the
-         board, where capacity and type moved to the title so the column could
-         be narrow and a hover could still answer which bus it is. So every name
-         carries the title, and a cut name stays readable on hover.
-
-         WHAT IT DOES NOT DO, SO NOBODY READS MORE INTO IT: `title` is hover
-         only. On a non-interactive div it is not keyboard reachable and not
-         reliably announced, so this makes an ambiguous or clipped name
-         RECOVERABLE by mouse and does not make the column accessible. Telling
-         two Bennys apart without a mouse needs something in the cell itself,
-         which is a design change and not this. */
+      /* The full name goes on the title, because the cell shows `short_name`
+         when there is one and ellipses a long name. `title` is hover only, so
+         it does not help a keyboard or screen-reader user tell two similar
+         names apart. */
       const shown = row.driver.short_name || row.driver.name || 'Driver';
       const nameEl = el('div', 'scheduler-avail__name', shown);
       if (row.driver.name) nameEl.title = row.driver.name;
@@ -4536,29 +3045,9 @@
     markAvailDays(on ? on.start : null, on ? on.span : 1);
   }
 
-  // The selected trip's day, marked down the column so "who is free THEN" does
-  // not need counting. Null clears it.
-  /* THE SELECTED TRIP'S DAYS, TINTED, 2026-09-11. This has been three things in
-     one day and the history is the argument. It drew a four-sided box on every
-     cell of one column -- forty outlined squares, which rux called messy -- and
-     it only ever marked the FIRST day, so a five-day trip lit one column of
-     five. Then it became a bracket around the whole span, and rux did not like
-     that either.
-
-     WHAT THE PANE IS FOR DECIDED IT. The question here is "who is free on this
-     day", so the eye is hunting the cells in that column that are EMPTY. A
-     tint lands on exactly those: a busy cell paints
-     `--rux-tag-background-blue` and a day-off cell `--rux-tag-background-red`
-     through the `background` SHORTHAND, which resets what is under it, so the
-     tint shows on the free cells and nowhere else. The marking and the answer
-     are the same pixels.
-
-     `--rux-layer-selected` IS CARBON'S OWN TOKEN FOR THIS STATE rather than a
-     step chosen by eye, and it is what a selected row takes in Carbon's table.
-
-     NO LINES AT ALL NOW. The header keeps its underline, which says which days
-     without drawing on the body; the day rules already mark every column edge,
-     so the tint has boundaries without adding any. */
+  /* Tints the selected trip's days down the roster, so "who is free then" needs
+     no counting; null clears it. Busy and day-off cells paint over the tint in
+     app.css, so it shows on the free cells, which are the answer. */
   function markAvailDays(start, span) {
     for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
       c.classList.remove('scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day');
@@ -4581,10 +3070,10 @@
     return Number.isFinite(start) ? { start, span: Number.isFinite(span) ? span : 1 } : null;
   };
 
-  /* ── SELECTING IS NOT OPENING ────────────────────────────────────────────────
+  /* ── Selecting is not opening ────────────────────────────────────────────────
      A click selects a bar (app.js owns the toggle) and leaves the editor alone:
-     the selection lights its days in the driver grid, and Open trip shows when
-     the selected bar is not the one being edited. Opening goes through
+     the selection lights its days in the driver grid, and Open trip shows on it
+     unless it belongs to the trip being edited. Opening goes through
      `whenSafe`, which asks before unsaved changes would be lost. A bar is named
      by `barRef` values rather than held, because every render replaces the
      elements. */
@@ -4616,15 +3105,14 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* A TRIP BUTTON SITS IN THE TOP CORNER OF ITS BAR'S FIRST DAY. It goes
-     straight after its bar, so app.css can show it from that bar's own hover
-     and focus, and takes the top of the bar and the right edge of the bar's
-     FIRST DAY in its track, which app.css turns into a corner. A week-long trip
-     would otherwise put it six days from the destination it opens.
+  /* A trip button sits in the top corner of its bar's first day, so a
+     week-long trip does not put it six days from the destination it opens. It
+     goes straight after its bar, so app.css can show it from that bar's own
+     hover and focus.
 
-     THE FIRST DAY ENDS WHERE A ONE-DAY BAR WOULD. A bar is `span` days wide
-     less its two gaps, so those gaps are `span * day - width`, and the first
-     day's edge is one day from the bar's start less the same gaps. */
+     The first day ends where a one-day bar would: a bar is `span` days wide
+     less its gaps, so the gaps are `span * day - width`, and the first day's
+     edge is one day from the bar's start less the same gaps. */
   function placeAtCorner(btn, bar) {
     const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
     const day = bar.parentElement.clientWidth / days;
@@ -4646,7 +3134,7 @@
     placeAtCorner(barOpenBtn, bar);
   }
 
-  /* CLOSE TRIP ON EVERY BAR OF THE TRIP IN THE EDITOR. Those bars are locked,
+  /* Close trip on every bar of the trip in the editor. Those bars are locked,
      and the filled pencil says why they do not drag. A bar keeps its button
      from one call to the next, so focus on the button survives a selection
      change. */
@@ -4676,7 +3164,7 @@
     markAvailDays(on ? on.start : null, on ? on.span : 1);
   }
 
-  /* THE TRIP CHANGED UNDER THE EDITOR. Reload trip drops the editor's changes
+  /* The trip changed under the editor. Reload trip drops the editor's changes
      and opens the trip as it is now; Save anyway saves over it and then runs
      what the save was for; closing the box keeps editing. */
   const conflictModal = document.getElementById('scheduler-conflict-modal');
@@ -4730,7 +3218,7 @@
     whenSafe(() => openRef(ref));
   }
 
-  /* ASK BEFORE LOSING WORK. With nothing unsaved the action runs at once.
+  /* Asks before losing work. With nothing unsaved the action runs at once.
      Otherwise the box names the trip: Save runs the action only when the save
      succeeds, Discard runs it straight away, and closing the box drops it. */
   let afterPrompt = null;
@@ -4779,13 +3267,8 @@
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
   function placeAvailability() {
-    /* THE TOGGLE REPORTS WHAT IS ON SCREEN, NOT WHAT WAS WANTED. It was written
-       the other way first -- `aria-pressed` from `availOn` -- so a yielded
-       roster left a lit button with nothing behind it, and a press flipped the
-       invisible want to false instead of bringing the roster back: pressed,
-       and still nothing. That is a lie to anyone reading the state and a dead
-       control to anyone using it, so `shown` drives both. `availOn` stays the
-       thing that survives the editor; it is no longer the thing announced. */
+    /* The toggle reports what is on screen, not `availOn`, so a yielded roster
+       does not leave a pressed button with nothing behind it. */
     const shown = availOn && !availYielded;
     if (asideSlot) {
       asideSlot.hidden = !shown;
@@ -4793,16 +3276,11 @@
     }
     availEl.hidden = !shown;
     availToggle.setAttribute('aria-pressed', String(shown));
-    /* AND IT HAS TO LOOK PRESSED. `aria-pressed` was the only thing saying so,
-       and Carbon compiles no `[aria-pressed]` styling -- zero rules in rux.css
-       -- so the button looked identical on and off. `rux--btn--selected` is
-       Carbon's own compiled state for exactly this and needs no rule of ours. */
+    // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
+    // Carbon's pressed look.
     availToggle.classList.toggle('rux--btn--selected', shown);
-    /* AND SO DOES THE MENU ROW, which is the same control at a narrow width.
-       It is kept in step here rather than where it is pressed, for the reason
-       the note above gives: what is announced is what is ON SCREEN, and only
-       this function knows that -- a yield by the editor changes it without
-       anyone pressing anything. */
+    // The menu's Drivers item is the same control below md, kept in step here
+    // because only this function knows what is on screen.
     const availItem = document.getElementById('scheduler-menu-drivers');
     if (availItem) {
       availItem.setAttribute('aria-checked', String(shown));
@@ -4812,38 +3290,20 @@
     window.Rux?.schedule?.fit?.();
   }
 
-  /* The padding used to be transitioned and a second fit was needed when it
-     settled. It is not any more -- the transition stopped the padding
-     applying at all -- so the fit inside openPanel measures the final width
-     and this listener has nothing left to wait for. */
-
-  /* THE PRESS ACTS ON WHAT IS ON SCREEN. Off-screen for either reason -- never
-     asked for, or yielded to the editor -- a press means SHOW IT, which clears
-     both. On screen, a press means hide it. Overruling the budget this way
-     holds, because the yield is only ever taken as the editor OPENS. */
+  /* A press acts on what is on screen: off screen for either reason, it shows
+     the roster and clears the yield; on screen, it hides it. The yield is only
+     taken as the editor opens, so this holds. */
   availToggle?.addEventListener('click', () => {
     if (availOn && !availYielded) { availOn = false; }
     else { availOn = true; availYielded = false; }
     placeAvailability();
   });
 
-  /* ── VIEW OPTIONS ─────────────────────────────────────────────────────────
-     WHAT IS HERE AND WHAT IS NOT. `screen-inventory.md` section 7 lists four
-     homeless options: time-aligned, start on Sunday, two weeks, and the bar-row
-     toggles. Two of them are built below. Time-aligned and two-week are NOT:
-     this grid places by DAY and fetches one week, so a control for either would
-     be a switch attached to nothing -- worse than its absence, because it
-     promises a mode that does not exist.
-
-     THE BAR ROWS ARE THE USEFUL HALF. A bar reserves six lines whatever it
-     holds, and the booking contact line is empty on most trips -- 16px of
-     every 104px bar spent on nothing. Turning a row off REMOVES it rather than
-     blanking it: `--scheduler-bar-rows` is the count, so the bar shrinks and the row
-     with it, and more buses fit on screen.
-
-     LOCAL, AND FORGIVING. `screen-inventory.md` says these preferences stay in
-     `localStorage` and are read with a try-catch; a browser that refuses
-     storage gets the defaults and no error. */
+  /* ── View options ─────────────────────────────────────────────────────────
+     Start on Sunday and the bar-row toggles. Turning a row off removes it
+     rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
+     shrinks and more buses fit. Saved in `localStorage` and read with a
+     try-catch, so a browser that refuses storage gets the defaults. */
   const VIEW_ROWS = ['client', 'contact', 'time', 'notes', 'drivers'];
   // The class that hides each row, written out in full so the check can read it.
   const HIDE_ROW = {
@@ -4860,9 +3320,8 @@
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
     for (const k of [...VIEW_ROWS, 'sunday']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
-  // BEFORE `cursor` IS FIRST COMPUTED, further down: `mondayOf` reads this, and
-  // a saved Sunday preference has to be in force for the very first week drawn,
-  // not from the first time the menu is opened.
+  // Set before `cursor` is first computed below, because `mondayOf` reads it
+  // and the first week drawn must honour a saved Sunday start.
   weekStartsSunday = view.sunday;
 
   const viewMenu = document.getElementById('scheduler-view-menu');
@@ -4875,10 +3334,8 @@
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
-      /* THE ROSTER ROW IS A CHECKBOX IN THIS MENU AND IS NOT A VIEW OPTION.
-         It carries `data-act` instead, and without this guard `view[undefined]`
-         reads `undefined` and would silently uncheck it every time any other
-         option changed. `placeAvailability` owns its state. */
+      // The Drivers item carries `data-act`, not a view key, and
+      // `placeAvailability` owns its checked state.
       if (!key) continue;
       const on = !!view[key];
       item.setAttribute('aria-checked', String(on));
@@ -4891,9 +3348,8 @@
 
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
-    // Anchored to the button rather than to a pointer, which is the only way
-    // this differs from the two context menus: same placement arithmetic, a
-    // rect's corner standing in for the click.
+    // Placed like the context menus, with the button's bottom-left corner as
+    // the point.
     const r = viewTrigger.getBoundingClientRect();
     popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom });
   });
@@ -4915,30 +3371,18 @@
   // rather than blinking off after it.
   applyView();
 
-
-  /* CLOSING FROM THE GRID'S OWN HEAD. The toolbar toggle still turns it on and
-     still reports state through `aria-pressed`; this is the second way to turn
-     it OFF, next to the thing being turned off. Focus goes back to the toggle,
-     because that is where the control now is and leaving it on a button that
-     has just been hidden strands a keyboard user. */
+  // The roster's own close button. Focus goes back to the toolbar toggle
+  // rather than staying on the button just hidden.
   document.getElementById('scheduler-avail-close')?.addEventListener('click', () => {
     availOn = false;
     placeAvailability();
     availToggle?.focus();
   });
 
-  // DIRTY IS COMPUTED, NOT TRACKED. Every input event re-reads the form and
-  // compares it against the values the panel opened with, so typing a change
-  // and typing it back out again disables Save rather than leaving it armed.
-  /* A PICKED CONTACT LINKS AND FILLS; TYPING UNLINKS. `js/list-box.js`
-     announces a pick with its option, and a cleared or broken selection with
-     `option: null`. Any keystroke in the field drops the link as well, and
+  /* A picked contact links the field and fills from it; typing unlinks it, and
      Save then finds or adds the contact by what was typed (`linkContacts`).
-
-     SUGGESTS, NEVER LOCKS. Choosing a booking contact fills organisation,
-     phone and email and leaves all three editable -- 13 trips have a customer
-     that differs from their contact's client, so overwriting has to stay
-     cheap. */
+     `js/list-box.js` sends the picked option, or `option: null` for a cleared
+     selection. */
   const isContactField = t => t instanceof HTMLInputElement
     && (t.id === 'scheduler-f-cfind' || /^scheduler-f-d\d$/.test(t.id));
   panelDetails?.addEventListener('input', e => {
@@ -4955,18 +3399,10 @@
     if (t.id === 'scheduler-f-cfind') {
       const put = (id, v) => { const e2 = document.getElementById(id); if (e2) e2.value = v ?? ''; };
       const suggest = (id, v) => { const e2 = document.getElementById(id); if (e2 && !e2.value) e2.value = v ?? ''; };
-      /* PHONE AND EMAIL ARE REPLACED; ORGANIZATION IS ONLY SUGGESTED. The
-         first version suggested all three and it was wrong on screen within a
-         minute: picking Adan Molina left Louise Reece's phone and email
-         sitting under his name, because "only fill what is empty" treats the
-         PREVIOUS contact's data as though someone had typed it. They are not
-         the same thing. A phone belongs to the person, so choosing a different
-         person replaces it.
-
-         ORGANIZATION IS THE ONE THAT STAYS A SUGGESTION, and for the reason
-         the agency case gives: it is a TRIP column, 13 trips have one that
-         differs from their contact's, and an agency booking for a school must
-         not stamp itself over the school. Empty, it fills; filled, it stands. */
+      /* Phone and email belong to the person, so a new pick replaces them.
+         Organization is a trip column that can differ from the contact's
+         client, as when an agency books for a school, so it fills only when
+         empty. */
       put('scheduler-f-cphone', hit.phone);
       put('scheduler-f-cemail', hit.email);
       suggest('scheduler-f-customer', hit.client);
@@ -4976,6 +3412,8 @@
     }
   });
 
+  // Save's state is computed, not tracked: each event re-reads the form against
+  // the values the panel opened with, so a change typed back out disarms Save.
   panelDetails?.addEventListener('input', refreshDirty);
   panelDetails?.addEventListener('change', refreshDirty);
   // A dropdown is a <button>, so a pick fires neither; list-box.js announces it.
@@ -4984,44 +3422,30 @@
   // included: that handler is registered above, so this runs after it.
   panelDetails?.addEventListener('input', syncCopy);
   panelDetails?.addEventListener('rux:listbox-selected', syncCopy);
-  // The add button reveals a row rather than changing a value, so it fires
-  // neither input nor change; without this a contact chosen in the new row
-  // arms Save but the row appearing does not, which reads as a dead control.
+  // The add button reveals a row and fires neither input nor change, so Save's
+  // state is refreshed on the click.
   panelDetails?.addEventListener('click', e => {
     if (e.target?.closest?.('#scheduler-f-dadd')) refreshDirty();
   });
-  /* BILLING IS A SECOND TAB AND NEEDED SAYING SO. These were on `panelDetails`
-     alone, so every Billing field was dead to Save: typing a quoted price left
-     the button grey and the edit was simply lost. Found by driving it.
-
-     `rux:toggle` IS THE THIRD EVENT, and it is not optional. A toggle is a
-     <button>, so it fires neither `input` nor `change` -- `form-controls.js`
-     announces itself with a custom event instead, and that is the only signal
-     that a status moved. */
+  /* Billing is a second tab and needs its own listeners. A toggle is a
+     <button> that fires neither `input` nor `change`; `form-controls.js` sends
+     `rux:toggle` instead. */
   panelBilling?.addEventListener('input', refreshDirty);
   panelBilling?.addEventListener('change', refreshDirty);
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
 
-  /* RESET REBUILDS RATHER THAN UNDOES. Every field is written from `trip` on
-     the way in, so replaying `openPanel` with the arguments that opened it
-     restores all of them at once -- including the ones a field-by-field undo
-     would have to know about separately: the type-dependent date labels, the
-     return pair's hidden state, the day-of rows that `Add another contact`
-     appended, the disabled schedule inputs. It also re-runs `refreshDirty`,
-     so the bar disarms itself the moment there is nothing left to discard.
-
-     NO CONFIRM ON IT: pressing Reset is itself the ask to discard, and the
-     button is dead unless there is something to discard. */
+  /* Reset replays `openPanel` with the arguments that opened it, which rewrites
+     every field from the trip at once, date labels, return pair, added contact
+     rows and disabled inputs included, and re-runs `refreshDirty`. No confirm:
+     pressing Reset is the ask, and it is disabled with nothing to discard. */
   panelReset?.addEventListener('click', () => {
     if (!panelArgs) return;
     openPanel(null, panelArgs.draft, panelArgs);
   });
 
-  /* THE BUTTON ASKS; THE MODAL DECIDES. This opens `scheduler-cancel-modal` and
-     stops -- the write lives on that dialog's own confirm, which is why
-     this can sit beside Save at all. It reads `editing.id` rather than
-     closing over a trip, so it is right for whichever trip the panel is
-     showing now and not whichever one it was showing when it was wired. */
+  /* The button only opens `scheduler-cancel-modal`; the dialog's confirm makes
+     the write. It reads `editing.id`, so it acts on the trip the panel shows
+     now. */
   panelCancel?.addEventListener('click', () => {
     if (editing?.id) openCancelModal(editing.id);
   });
@@ -5032,14 +3456,14 @@
     if (await saveEditor(after)) after();
   });
 
-  /* SAVE AS A STEP OTHER ACTIONS CAN WAIT ON. True once the editor's work is
+  /* Save as a step other actions can wait on. True once the editor's work is
      done: everything is written, or a new trip exists and the editor has
      closed on it. False when there is nothing to write, nothing could be
      written, the trip changed under the editor, or a save stopped partway and
      the editor reopened on the trip as it is saved. Work is anything `changed`
      sees, so a time, contact or payment edit alone saves too.
 
-     THE TRIP IS READ BACK FIRST. When its `updated_at` is not the one the
+     The trip is read back first. When its `updated_at` is not the one the
      editor opened with, someone saved it in between, and the conflict box asks
      before replacing that, holding `after` to run if the save goes through.
      `force` is the box's Save anyway. A failed read does not block the save,
@@ -5060,7 +3484,7 @@
         return false;
       }
     }
-    /* EVERY WRITE GOES THROUGH `write`, so a failure knows whether anything
+    /* Every write goes through `write`, so a failure knows whether anything
        reached the database and which part was being written. Sending a write
        again that already landed is how a trip or a payment is saved twice. */
     let wrote = false;
@@ -5075,54 +3499,27 @@
     panelSave.disabled = true;
     toast('info', creating ? 'Creating the trip…' : 'Saving the trip…');
     try {
-      // CREATE WRITES EVERY FIELD, not the diff: there is no row to diff
-      // against. `bus_count` is set to 1 rather than left null, because it is
-      // null on none of the 743 rows and `legsOf` would only paper over it.
-      /* A NULL FORM MUST NEVER BECOME AN INSERT. `readForm` returns null when
-         one id in its list is missing, and `{ ...null }` is `{}` -- so a
-         missing field used to turn "create this trip" into
-         `{ bus_count: 1 }`: a row with no destination and no start date, which
-         `legsOf` draws no leg for and nobody could ever find. That is exactly
-         what a hidden Billing tab caused until today.
-
-         The fields are all present now, so this cannot happen; the guard is
-         here because the last one was invisible until someone read the spread,
-         and the next field added to `readForm` deserves to fail loudly. */
+      /* Create writes every field, not the diff. `readForm` returns null when a
+         field is missing, and spreading null would insert a trip with no
+         destination or start date, so a missing field fails loudly instead.
+         `bus_count` is written as 1 rather than left for `legsOf`'s fallback. */
       const form = creating ? readForm() : null;
       if (creating && !form) throw new Error('The form is not complete — a field is missing from the panel.');
-      /* `confirmed: false` IS SET ONCE, AT INSERT, and only here. The form
-         stopped writing that column on 2026-09-10 because rux-ui derives it
-         -- but an INSERT that omits it leans on a database default nothing
-         in this repo states, and the column's own history says it is never
-         null. Getting it wrong the other way is not cosmetic: `confirmed`
-         is false on 274 trips and it COLOURS THE BAR, so a new trip born
-         `true` would read as agreed with the customer when nobody has
-         agreed anything.
-
-         IT IS NOT A SECOND WRITER RETURNING. rux-ui's rule derives
-         `pending` for a trip with no contract, no PO and no payment -- which
-         is every trip at the instant it is created -- so this writes the
-         value that derivation would produce, once, and never touches it
-         again. */
+      /* `confirmed: false` is written once, at insert: rux-ui derives the
+         column afterwards, a new trip has nothing that confirms it, and it
+         colours the bar, so it is not left to a database default. */
       const row = creating ? { id: editing.newId, ...form, bus_count: 1, confirmed: false } : patch;
       // Contacts are linked, and added to the list, before the trip is written.
       const unlinked = await linkContacts(row, creating);
       const wantBus = creating ? createBusId : null;
-      /* TWO WRITES WHEN A CELL ASKED FOR A BUS, and they cannot be one:
-         the assignment row needs the trip row to exist first.
-
-         IF THE SECOND WRITE FAILS THE FIRST STANDS, and that is the honest
-         outcome rather than a silent rollback this client cannot do: the trip
-         exists, it simply has no bus, so it appears in the Unassigned row
-         where it can be dragged onto one. The message says exactly that
-         instead of claiming the whole thing failed. */
-      /* THE TRIP PATCH CAN BE EMPTY WHILE THERE IS STILL WORK. Editing only a
-         time leaves `patch` with no keys, and `trips.update({})` is a request
-         that changes nothing and may error on an empty body, so it is skipped
-         rather than sent. */
+      /* A trip created from a cell also gets an assignment row, written last
+         because it needs the trip to exist. If that write fails the trip
+         stands, in the Unassigned row, and the message says so. */
+      // An edit to a time alone leaves the trip patch empty, and an empty
+      // update is skipped rather than sent.
       const stopWork = creating ? [] : stopsPatch();
       const tripWork = creating || Object.keys(row || {}).length > 0;
-      /* A NEW TRIP CARRIES ITS OWN ID, made when the panel opened, so Save
+      /* A new trip carries its own id, made when the panel opened, so Save
          pressed again after a timeout cannot make a second copy: the database
          refuses a second row with the same id. That refusal means the first
          insert landed after all, so the form is written over it instead. */
@@ -5140,24 +3537,11 @@
       }
       const tripId = creating ? row.id : id;
 
-      /* THE STOPS GO SECOND AND ONE ROW AT A TIME. There are at most two, they
-         are separate rows with separate ids, and Supabase has no multi-row
-         update by differing values -- an upsert would need every column of
-         both rows, which would write back stale copies of the itinerary
-         columns this form never showed.
-
-         IF A STOP WRITE FAILS THE TRIP WRITE STANDS, and the catch below says
-         which part did not save and shows the trip as it is saved. */
-      /* THE FIRST STOPS, WRITTEN ONLY ON CREATE. A pickup row carries the
-         location, the yard departure and the spot; a return row carries the
-         arrival. Neither is written unless something was typed into it --
-         a trip saved with the Schedule left blank gets no stops, which is what
-         687 of the existing 751 trips look like.
-
-         POSITION AND LEG ARE NOT GUESSES HERE. The trip is new, so there is
-         nothing to order against: outbound, 0 and 1. On an existing trip this
-         same arithmetic would be a guess, which is why `stopsPatch` refuses it
-         there. */
+      /* A new trip's first stops: a pickup row with the location, yard
+         departure and spot, and a return row with the arrival, each written
+         only when something was typed into it. Leg and position are known for
+         a new trip; on an existing one `stopsPatch` only updates the rows the
+         editor opened with. */
       if (creating) {
         const v = id => document.getElementById(id)?.value.trim() || null;
         const where = v('scheduler-f-pickup'), dep = v('scheduler-f-depart'), spot = v('scheduler-f-spot');
@@ -5174,19 +3558,10 @@
         if (rows.length) await write('its schedule', client.from('trip_stops').insert(rows));
       }
 
-      /* PAYMENTS, THEN THE AGGREGATE THEY ADD UP TO. `deposit_amount` is not
-         a deposit despite its name -- rux-ui writes the SUM of the payment
-         rows into it and reads it back as "paid" when deriving a trip's
-         billing status (`normalizeRecord` in its billing-config.js). So
-         writing payment rows without updating this column would leave the
-         other app deriving from a stale total: money recorded here, and a
-         status over there that never moved.
-
-         IT IS WRITTEN AS A SECOND UPDATE rather than folded into the trip
-         patch above, because its value is not known until the rows are.
-         `|| null` matches what rux-ui stores for an empty list. */
-      /* EVERY ROW BELOW HANGS OFF `tripId`: the id a new trip was inserted
-         with, or `editing.id` on an edit. */
+      /* Payments, then `deposit_amount`, which holds their sum despite its
+         name: rux-ui reads it as the amount paid (`normalizeRecord` in its
+         billing-config.js), so it is rewritten after the rows. `|| null`
+         matches what rux-ui stores for no payments. */
       const payPatch = paymentsPatch();
       if (payPatch?.work) {
         for (const p of payPatch.inserts) {
@@ -5202,8 +3577,8 @@
           client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', tripId));
       }
 
-      /* POS AND INVOICES, by id like the payments above. Their single columns
-         went out with the trip patch, computed from the same rows (`EDITS`). */
+      /* Purchase orders and invoices, by id like the payments. Their summary
+         columns on the trip went out with the trip patch (`EDITS`). */
       for (const [table, what, listWork] of [['trip_pos', 'its purchase orders', posPatch()],
                                              ['trip_invoices', 'its invoices', invoicesPatch()]]) {
         if (!listWork?.work) continue;
@@ -5218,6 +3593,9 @@
         }
       }
 
+      /* Existing stops are updated one row at a time, since an upsert would
+         need every column and write back stale copies of those the form never
+         shows. */
       for (const w of stopWork) {
         await write('its schedule', client.from('trip_stops').update(w.patch).eq('id', w.id));
       }
@@ -5225,7 +3603,7 @@
         await write('its bus', client.from('trip_assignments')
           .insert({ trip_id: tripId, bus_id: wantBus, leg: 'outbound', position: 0 }));
       }
-      // READ IT BACK rather than trusting the write, as the drag does.
+      // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
       if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
@@ -5235,7 +3613,7 @@
       return true;
     } catch (e) {
       const why = String(e && e.message ? e.message : e);
-      /* NOTHING LANDED, or a new trip's insert ran out of time, which its fixed
+      /* Nothing landed, or a new trip's insert ran out of time, which its fixed
          id makes safe to send again. The editor stays as it is for another try. */
       if (!wrote && (creating || !e.timedOut)) {
         if (e.timedOut) toast('warning', 'The trip may not have been created.', `${why} Press Save again. It cannot make a second copy.`);
@@ -5243,7 +3621,7 @@
         panelSave.disabled = false;
         return false;
       }
-      /* PART OF IT LANDED, OR MAY HAVE. The editor's pending rows no longer
+      /* Part of it landed, or may have. The editor's pending rows no longer
          match the database, and sending them again would save some twice, so
          the board is read back and the editor lets them go. A new trip closes,
          since it exists now; an existing one reopens as it is saved. */
@@ -5264,54 +3642,25 @@
     }
   }
 
-  /* ── RIGHT-CLICK AN EMPTY CELL ─────────────────────────────────────────────
-     The old board's gesture, and the reason it is worth keeping: the two
-     things a new trip most needs are the two the cell already knows. The row
-     is the bus and the column is the day, so creating from a cell fills both
-     in and leaves only the destination to type.
+  /* ── Right-click an empty cell ─────────────────────────────────────────────
+     New trip here fills in the two things a cell knows: the row's bus and the
+     column's day. The day comes from the pointer's offset across the track,
+     because bars are placed by percentage inside one track and there is no
+     per-day element. A right-click on a bar opens the bar's menu instead.
 
-     WHICH DAY, FROM THE POINTER. The track is one element spanning all seven
-     columns -- bars are placed inside it by percentage, not by cell -- so
-     there is no per-day element to read. The day is the pointer's offset
-     across the track divided by a seventh of its width, which is the same
-     arithmetic `clip` uses in reverse.
-
-     ONLY ON EMPTY SPACE. A right-click on a bar is left alone: that wants the
-     bar's own actions, which are not built, and offering "new trip here" over
-     an existing one would be the wrong answer to the gesture.
-
-     THE MENU IS POSITIONED HERE AND OPENED BY THE MODULE. `Rux.menu.open`
-     gives Escape, outside-press and focus return; it repositions only
-     `position: fixed` surfaces, and this one is absolute inside `.scheduler-page`,
-     so the placement below stands. */
+     `Rux.menu.open` gives Escape, outside-press and focus return, but it
+     positions only `position: fixed` menus, and these are absolute inside
+     `.scheduler-page`, so `popMenuAt` places them. */
   const cellMenu = document.getElementById('scheduler-cell-menu');
   const barMenu = document.getElementById('scheduler-bar-menu');
   let cellMenuAt = null;
   let barMenuFor = null;
 
-  /* Both menus are placed the same way, so the arithmetic is written once.
-
-     IT CLAMPS TO THE PAGE'S RIGHT EDGE, ADDED 2026-09-11, AND THIS WAS A
-     PRE-EXISTING FAULT RATHER THAN A NEW ONE. The left edge was pinned to the
-     click and nothing stopped the menu running past the page: a right-click in
-     Sunday's column, or any menu anchored to a button near the right edge, put
-     half the items off screen. It surfaced when the toolbar became one row and
-     the overflow trigger moved to x=327 of a 375 display -- the menu opened at
-     327 and ran to 510, so every label was cut -- but the same press on the
-     last day column would always have done it.
-
-     SHIFTED, NOT FLIPPED. Carbon's own menus open from the trigger's edge and
-     move only as far as they must; clamping keeps the menu under the thing
-     that opened it, which for a right-aligned button reads as right-aligned
-     and for a mid-board right-click barely moves at all.
-
-     MEASURED AFTER THE APPEND, because a menu still in the body has the width
-     it has there. `hidden` comes off first so there is a box to read at all.
-
-     THE BLOCK AXIS IS NOT CLAMPED, and that is a decision rather than an
-     oversight: the page grows to fit a menu near its bottom and scrolls, which
-     loses nothing, where the inline axis clips against the display. If a menu
-     opening below the fold turns out to matter, it is the same three lines. */
+  /* Places a menu at a point inside `.scheduler-page`. It shifts left only as
+     far as it must to stay within the page, as Carbon's menus do, so it stays
+     under what opened it. Its width is read after `hidden` comes off and after
+     the append, when it has its real box. The block axis is not clamped,
+     because the page grows and scrolls to a menu near its bottom. */
   function popMenuAt(menu, e) {
     const page = pageEl?.getBoundingClientRect();
     menu.hidden = false;
@@ -5341,37 +3690,22 @@
     popMenuAt(cellMenu, e);
   });
 
-  /* THE BAR'S OWN MENU. `screen-inventory.md` section 5 keeps three of the old
-     bar's five icons and section 7 puts the ones wanted without opening
-     anything here. Open trip is one. Move bus is the other, in the only form
-     it can take without a list of every bus: taking the bus AWAY, which sends
-     the trip to the Unassigned row -- the same write the drag makes when a bar
-     is dropped there, so nothing new is being invented for it.
-
-     TAKE OFF THIS BUS IS HIDDEN WHERE IT CANNOT ACT: a bar with no assignment
-     row is an unfilled slot in the Unassigned row, and there is nothing to
-     clear. A disabled item that can never enable is worse than no item.
-
-     PRINT ENVELOPE IS THE THIRD AND IS NOT HERE, because printing is step 5 of
-     the build order and nothing prints yet. Not forgotten -- deferred.
-
-     DELETE IS NOT HERE EITHER, and deliberately: the inventory never lists it
-     among the bar's actions, so it has no home in the plan yet and this is not
-     the place to invent one for an irreversible write. */
+  /* The bar's own menu: Open trip, Take off this bus, Color and Cancel trip.
+     Take off this bus makes the same write as a drop on the Unassigned row. It
+     is hidden where it cannot act, on a slot with no assignment or bus, and on
+     the trip in the editor, whose bars are locked. */
   gridEl.addEventListener('contextmenu', e => {
     const bar = e.target.closest('.scheduler-bar');
     if (!bar || !bar.dataset.tripId) return;
     e.preventDefault();
     e.stopPropagation();
-    // A HOLD ON TOUCH IS THE DRAG'S GESTURE NOW, and Android fires this event
-    // at about the moment the bar lifts. Opening a menu on top of a bar the
-    // finger is already carrying is the wrong answer to that press, so the
-    // drag wins while it is armed. The menu is unchanged for a right-click.
+    // On touch a hold lifts the bar for dragging and can also fire this event,
+    // so the menu stays shut while a finger carries a bar.
     if (touchDragging) return;
     barMenuFor = bar;
     document.getElementById('scheduler-bar-menu-unassign').hidden =
       !bar.dataset.assignmentId || !bar.dataset.busId || isEditorTrip(bar);
-    /* THE COLOURS HIDE FOR THE TRIP OPEN IN THE EDITOR, as Take off this bus
+    /* The colours hide for the trip open in the editor, as Take off this bus
        does: the editor has its own colour field, and a write from here would
        move `updated_at` under it and turn its next Save into a conflict. */
     const locked = isEditorTrip(bar);
@@ -5413,7 +3747,7 @@
       return;
     }
 
-    // A COLOUR SAVES AT ONCE, like Take off this bus: one column, no form.
+    // A colour saves at once, like Take off this bus: one column, no form.
     if (item.dataset.color != null) {
       const value = item.dataset.color || null;
       if (value === (bar.dataset.tripColor || null)) return;
@@ -5451,21 +3785,10 @@
   // The Color submenu's own close bubbles here too, and must not hide the menu.
   barMenu?.addEventListener('rux:menu-closed', e => { if (e.target === barMenu) barMenu.hidden = true; });
 
-  /* CANCEL IS NOT DELETE, and the difference is the whole point of it. The row
-     stays; `cancelled_at` takes it off the board and the trips page is where
-     it can still be read and brought back. rux: "its useful to know about
-     trips that were cancelled." Deleting outright belongs on that page, for
-     the test rows that are worth nothing to anybody.
-
-     THE REASON IS OPTIONAL HERE and stored when given. 32 of the 41 cancelled
-     trips carry one, so it is normally written but not always, and refusing
-     the cancel without one would be stricter than the data has ever been. */
-  /* ONE WAY IN FOR TWO WAYS TO ASK, 2026-09-10. The bar's own menu had this
-     inline; the Details tab's `Cancel trip` button needed the same six lines,
-     and two copies of "which trip, what does it say, clear the reason, open"
-     is two places for them to disagree about any of it. A function
-     declaration rather than a const because both callers are wired above
-     where `cancelling` is declared. */
+  /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
+     row stays, so a cancelled trip can still be looked up. The reason is
+     optional and stored when given. The bar menu and the Details tab's Cancel
+     trip button both open the dialog through here. */
   function openCancelModal(tripId) {
     // The editor's own trip may be on another week than the one on screen.
     const trip = panelIndex.trips.get(tripId) ?? (panelArgs?.trip?.id === tripId ? panelArgs.trip : null);
@@ -5507,16 +3830,10 @@
   });
   cellMenu?.addEventListener('rux:menu-closed', () => { cellMenu.hidden = true; });
 
-  /* THE SAME ACTION FROM THE OVERFLOW MENU, which is where `New trip` lives
-     below `md`. It calls `openCreate()` with NO argument, exactly as the
-     toolbar button does -- a blank trip. The prefilled path is the cell menu's
-     `openCreate(cellMenuAt)` above, and the two are deliberately different
-     doors: one says "a trip, somewhere", the other "a trip, on this bus, that
-     day". */
-  /* TODAY AND DRIVERS FROM THE MENU, which is where they live below `md`. Each
-     calls exactly what its toolbar button calls -- the button is the same
-     control at a wider width, not a different one -- so there is no second
-     copy of either behaviour to drift. */
+  /* The overflow menu's actions. Today and Drivers show only below md, where
+     their toolbar buttons are hidden, and do what those buttons do. New trip
+     lives only in this menu and opens a blank trip; the cell menu's New trip
+     here prefills the bus and the day. */
   document.getElementById('scheduler-menu-today')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
@@ -5537,7 +3854,7 @@
     whenSafe(() => openCreate());
   });
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
-  /* ESCAPE ACTS WHERE FOCUS IS. Inside the editor it closes the editor; on the
+  /* Escape acts where focus is. Inside the editor it closes the editor; on the
      board it clears a selection first. An open dialog or search keeps the key
      for itself, and so does anything that already took it -- a list or date
      picker closing, a combo box clearing -- so one press does one thing. */
@@ -5549,29 +3866,11 @@
     if (!panelEl.hidden) { e.preventDefault(); whenSafe(() => closePanel()); }
   });
 
-  /* ── SEARCHING THE WEEK ON SCREEN ─────────────────────────────────────────
-     `docs/screen-inventory.md` plans a trip finder -- a floating palette on
-     Cmd-K, "Header search from the shell, results in a data table on a page".
-     The page is not built. What is built here is the half that needs no page:
-     the header icon, the shortcut, and a search over the week already loaded
-     that SELECTS the bar it finds.
-
-     WHY NOT SHIP THE ICON ALONE. index.html says it two panels down, about the
-     sign-in button: "a button with no handler is an affordance that lies". An
-     icon that opens nothing, or opens an empty promise, is that button.
-
-     IT SEARCHES WHAT IS ON SCREEN, LITERALLY. The haystack is each bar's own
-     `textContent` plus its row's bus number -- destination, customer, times and
-     drivers, because that is what `barEl` already wrote into it. Reading the
-     rendered text rather than the trip row means the search can never claim a
-     match the eye cannot then find, and it needs no second opinion about which
-     of `trips`' columns are worth matching.
-
-     THE TOGGLE IS NOT WIRED HERE. `js/ui-shell.js` takes any
-     `__action[aria-expanded]`, finds the panel through `aria-controls`, sets
-     `--expanded` and `__action--active`, and fires `rux:header-panel-opened`.
-     So this listens for that event and does not own the open state -- the same
-     reason the switcher and the account panels have no code in this file. */
+  /* ── Searching trips ──────────────────────────────────────────────────────
+     The header search finds trips by destination, organization or booking
+     contact across every trip, not only the week on screen, and a result opens
+     its trip on its own week. Design ships no search module, so expanding,
+     collapsing, the results list and its keys are all wired here. */
   const searchWrap = document.querySelector('.scheduler-header-search');
   const searchBox = document.getElementById('scheduler-search');
   const searchTrigger = document.getElementById('scheduler-search-trigger');
@@ -5582,18 +3881,9 @@
   const searchNoteEl = document.getElementById('scheduler-search-note');
   const searchClear = document.getElementById('scheduler-search-clear');
 
-  /* EXPANDING AND COLLAPSING, WHICH NOTHING UPSTREAM DOES. Design ships no
-     search module -- `js/` has seventeen and none of them is one -- so the
-     class and the two attributes are moved here. All three together: Carbon's
-     CSS keys the width off `--expanded`, the magnifier reports state through
-     `aria-expanded`, and the input is `tabindex=-1` while collapsed so a tab
-     cannot land in a field that is 0px wide.
-
-     THE RESULTS PANEL FOLLOWS THE FIELD rather than being a second control.
-     `js/ui-shell.js` would have owned it, but it claims
-     `.rux--header__action[aria-expanded]` and this trigger is Carbon's
-     magnifier, so the class is set here. It is the same class ui-shell sets,
-     on the same element, so the panel behaves identically to the other two. */
+  /* Expanding sets three things together: Carbon's CSS keys the width off
+     `--expanded`, the magnifier reports state through `aria-expanded`, and the
+     input is `tabindex=-1` while collapsed so Tab cannot land in a 0px field. */
   const EXPANDED = 'rux--search--expanded';
 
   function expandSearch() {
@@ -5602,9 +3892,8 @@
     if (searchInput) { searchInput.tabIndex = 0; searchInput.focus(); }
   }
 
-  /* COLLAPSING CLEARS THE FIELD, which is Carbon's own behaviour for the
-     expandable variant and the only one that makes sense here: a collapsed
-     search is a magnifier, so a query still in it is a filter nobody can see. */
+  // Collapsing clears the field, as Carbon's expandable search does, so no
+  // query is left hidden inside a bare magnifier.
   function collapseSearch() {
     searchBox?.classList.remove(EXPANDED);
     searchTrigger?.setAttribute('aria-expanded', 'false');
@@ -5616,45 +3905,27 @@
   const searchOpen = () => searchBox?.classList.contains(EXPANDED);
   const toggleSearch = () => { if (searchOpen()) collapseSearch(); else expandSearch(); };
 
-  /* A `role=button` IS NOT A BUTTON, so it needs its keys wired by hand --
-     Enter and Space are what the platform would have given a real one, and
-     Carbon's own markup chose the div. */
+  // Carbon's magnifier is a `role=button` div, so Enter and Space are wired by
+  // hand.
   searchTrigger?.addEventListener('click', toggleSearch);
   searchTrigger?.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSearch(); }
   });
 
-  /* A PRESS OUTSIDE COLLAPSES IT, because an expanded field stretches across the
-     header and there is no other way back -- the magnifier is under it.
-
-     THE TEST IS THE WRAPPER, NOT THE FIELD, AND THE COMMENT THAT WAS HERE WAS
-     WRONG. It read "the results live inside it now" and tested
-     `searchBox.contains` -- but `#scheduler-search` is the `.rux--search` element and
-     the results are its SIBLING inside `.scheduler-header-search`. Checked:
-     `searchBox.contains(results)` is false. So every press on the list --
-     grabbing its scrollbar, pressing the count line, starting a drag over a row
-     -- collapsed the search out from under the thing being pressed. Clicking a
-     RESULT looked fine only by accident: that handler collapses the search
-     itself, so the bug was invisible on the one path anyone tested. */
+  /* A press outside collapses the search, since the expanded field covers the
+     magnifier. The test is the wrapper, not `#scheduler-search`, because the
+     results panel is its sibling inside `.scheduler-header-search` and a press
+     on the list must not collapse it. */
   document.addEventListener('pointerdown', e => {
     if (!searchOpen()) return;
     if (searchWrap.contains(e.target)) return;
     collapseSearch();
   });
 
-  /* AND TABBING AWAY COLLAPSES IT TOO, which the pointer handler cannot see.
-     rux asked whether the results should be individually selectable with Tab;
-     they should not -- this is an activedescendant listbox, the options are
-     `tabindex=-1` on purpose, and Tab is for leaving a widget rather than
-     walking it. But that exposed the real fault: Tab DID leave, and left a
-     942px field and twelve results sitting open over the board with focus on
-     the Account button. Measured before the fix -- field expanded, 12 options
-     drawn, focus "Account".
-
-     `relatedTarget` FIRST, `activeElement` AFTER A TICK. The first says where
-     focus is going and is enough for a Tab; it is null when focus leaves for
-     the window itself or for a non-focusable press, and the deferred check
-     covers that without collapsing on the way between the field and its own
+  /* Tabbing away collapses it too. The options are `tabindex=-1` in an
+     activedescendant listbox, so Tab leaves the widget rather than walking it.
+     `relatedTarget` covers a Tab; the deferred check covers focus leaving for
+     the window or a non-focusable press, without collapsing on the way to the
      clear button. */
   searchWrap?.addEventListener('focusout', e => {
     if (!searchOpen()) return;
@@ -5665,26 +3936,14 @@
     }, 0);
   });
 
-  /* WHAT IT SEARCHES, AND IT IS EVERY TRIP RATHER THAN THE WEEK ON SCREEN.
-     The first version read the rendered bars, which was honest while there was
-     nowhere for an off-week result to go. rux asked for all trips, "by
-     organizations and booking contact and destination" -- and all three are
-     plain columns on `trips`, checked against a live row rather than taken from
-     the inventory: `customer` is the organization (a sampled row reads "Mission
-     CISD"), `destination` is the destination, and `booking_contact_name` sits
-     denormalised beside `booking_contact_id`, so none of this needs a join.
+  /* Every trip that is not cancelled is searched, newest first, in three plain
+     columns on `trips`: `customer` (the organization), `destination` and
+     `booking_contact_name`, so no join is needed.
 
-     ONE `or` OF THREE `ilike`s, WHICH IS WHY THE QUERY IS SANITISED FIRST.
-     PostgREST parses `or=(a.ilike.*x*,b.ilike.*x*)` as a LIST: an unescaped
-     comma, parenthesis or backslash in the typed text does not fail, it
-     re-parses into different filters. So those are stripped before the text is
-     interpolated, and `%`/`*` with them, which would otherwise let a typed
-     wildcard widen the match silently.
-
-     CANCELLED TRIPS ARE OUT, matching the board's own read, and the newest are
-     first -- a dispatcher searching a customer name wants the trip that is
-     coming, not one from 2019. One more than the cap is fetched so "more than
-     12 match" can be said without counting the whole table. */
+     The query is sanitised first because PostgREST parses `or=(...)` as a
+     list: a typed comma, parenthesis or backslash would re-parse into other
+     filters, and `%` or `*` would widen the match. One more than `SEARCH_CAP`
+     is fetched, so the count can say "more than" without counting the table. */
   const SEARCH_MIN = 2;
   const searchSafe = q => q.replace(/[,()\\%*]/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -5702,35 +3961,23 @@
     return { rows: data || [] };
   }
 
-  /* DEBOUNCED, AND THE TOKEN IS WHAT KEEPS THE ANSWER HONEST. Every keystroke
-     would be a request; worse, replies can land out of order, so a slow query
-     for "dal" can overwrite a fast one for "dallas" and show results for text
-     the field no longer holds. `searchSeq` is incremented per run and checked
-     after the await -- a stale reply is dropped rather than rendered. */
+  /* Replies can land out of order, so a slow reply for "dal" could replace one
+     for "dallas". Each run takes the next `searchSeq`, and a reply that is no
+     longer the latest is dropped. */
   let searchSeq = 0;
   let searchTimer = 0;
-  /* WHICH OPTION IS CURRENT, AND IT IS AN INDEX RATHER THAN AN ELEMENT. The
-     list is rebuilt on every keystroke, so a held element would be detached the
-     moment the query changed; the index is re-read against the live list each
-     time it is used. `optionAt` only exists to mint unique ids -- it never
-     resets, because an id reused across two renders can be pointed at by a
-     stale `aria-activedescendant` for exactly one frame. */
+  /* The current option is an index, not an element, because the list is
+     rebuilt on every search. `optionAt` only mints ids and never resets, so a
+     stale `aria-activedescendant` cannot name an option from a newer render. */
   let activeAt = -1;
   let optionAt = 0;
 
   const searchOptions = () => [...searchList.querySelectorAll('[role="option"]')];
 
-  /* MOVING THE HIGHLIGHT IS THREE THINGS AT ONCE and none of them is focus.
-     `aria-selected` is what a screen reader reads as current, the class is what
-     the eye sees, and `aria-activedescendant` on the FIELD is what connects the
-     two -- it names the option without moving the caret out of the input, which
-     is the whole point of this pattern: the query stays editable while the
-     arrows walk the list.
-
-     AND IT SCROLLS THE OPTION INTO VIEW, because the list is capped at 60vh and
-     arrowing to the twelfth result otherwise walks a highlight off the bottom
-     of a box that never moves. `block: 'nearest'` so it only scrolls when it
-     has to, rather than re-centring on every keypress. */
+  /* Moves the highlight without moving focus: `aria-selected` for a screen
+     reader, the class for the eye, and `aria-activedescendant` on the field to
+     connect them while the query stays editable. The option scrolls into the
+     height-capped list only when it is out of view. */
   function setActive(i) {
     const opts = searchOptions();
     activeAt = i;
@@ -5748,9 +3995,7 @@
     }
   }
 
-  /* WRAPS AT BOTH ENDS, which is what a twelve-row menu wants: down from the
-     last is the first, and up from nothing is the LAST, so a single Up key
-     reaches the bottom of the list. */
+  // Wraps at both ends; Up with nothing highlighted goes to the last row.
   function moveActive(by) {
     const opts = searchOptions();
     if (!opts.length) return;
@@ -5758,10 +4003,7 @@
     else setActive((activeAt + by + opts.length) % opts.length);
   }
 
-  /* HIDDEN WHEN IT HAS NOTHING TO SAY. The results hang off the field now, so
-     an empty box would be a shadow floating under the header with no content
-     in it -- which the header panel never showed, because a panel with no
-     content was still a panel. */
+  // Hidden when there is nothing to show, so no empty box hangs under the header.
   function showResults(on) {
     if (!searchResults) return;
     searchResults.hidden = !on;
@@ -5774,20 +4016,9 @@
     }
   }
 
-  /* THE MATCH IS BOLDED IN PLACE, which is what Carbon's type-ahead shows and
-     what rux asked for from the capture. It answers the question a result list
-     otherwise leaves open: WHY is this row here. "Spring Branch, TX" for the
-     query "memorial high school" looks like a mistake until the second line
-     shows the words bolded inside "McAllen Memorial High School".
-
-     BUILT AS NODES, NEVER AS HTML. Every value here is a customer's, and the
-     rest of this file writes them with `textContent` for that reason -- a
-     destination with a `<` in it is data, not markup. So the string is split
-     on the match and reassembled from text nodes and a `<strong>`.
-
-     THE NEEDLE IS THE SANITISED QUERY, the same one the database was asked
-     with, so what is bolded is what actually matched rather than what was
-     typed. Case-insensitive, and every occurrence, not just the first. */
+  /* Bolds every case-insensitive occurrence of the sanitised query, the text
+     the database matched, so a row shows why it is there. Built from text
+     nodes, never HTML, because every value is a customer's data. */
   function mark(text, cls, needle) {
     const span = el('span', cls);
     const hay = String(text ?? '');
@@ -5807,12 +4038,10 @@
     return span;
   }
 
-  /* A NOTE IS NOT A RESULT, so it sits beside the listbox rather than inside it
-     -- a listbox's children must be options -- and the list is emptied when one
-     shows, or `aria-activedescendant` could still name an option no longer
-     drawn. The three parts are static in index.html and only their contents
-     change, which is what lets the field's `aria-controls` name the list: an id
-     minted at runtime is one `tools/check.mjs` cannot resolve, and it said so. */
+  /* A note is not a result, so it sits beside the listbox, whose children must
+     be options, and the list is emptied so `aria-activedescendant` cannot name
+     an option no longer drawn. The parts are static in index.html, so the
+     field's `aria-controls` names an id the app check can resolve. */
   function searchNote(text) {
     searchList.replaceChildren();
     setActive(-1);
@@ -5840,10 +4069,8 @@
     if (mine !== searchSeq) return;          // a later keystroke already owns the list
     const rows = found.rows;
     const safe = searchSafe(q);
-    /* NOT A DEAD END, which the pattern page asks for by name: "If a search
-       returns No results, suggest a follow-up action." The three columns it
-       looked in are the useful suggestion, since a dispatcher who typed a bus
-       number or a driver has typed something this search cannot see. */
+    // Not a dead end: the note names the three fields searched, since a bus
+    // number or a driver's name finds nothing here.
     if (!rows.length) {
       searchNote(`No trip matches "${q}". This looks in the destination, the organization and the booking contact.`);
       return;
@@ -5851,10 +4078,8 @@
 
     showResults(true);
     setActive(-1);
-    /* THE COUNT, BECAUSE CARBON ASKS FOR IT IN SO MANY WORDS: "Always include
-       the number of search results, including for searches with no results."
-       One more than the cap is fetched, so past it the honest figure is a
-       floor rather than a total -- and it says so. */
+    // Carbon's search pattern always shows the number of results. Past
+    // `SEARCH_CAP` the figure is a floor, and it says so.
     searchCount.textContent = rows.length > SEARCH_CAP
       ? `More than ${SEARCH_CAP} trips match`
       : `${rows.length} trip${rows.length === 1 ? '' : 's'} match${rows.length === 1 ? 'es' : ''}`;
@@ -5863,17 +4088,11 @@
     const list = searchList;
     list.replaceChildren();
     for (const trip of rows.slice(0, SEARCH_CAP)) {
-      /* THE ROW IS PRESENTATIONAL AND THE BUTTON IS THE OPTION. A listbox's
-         children must be options, and Carbon's contained list puts a wrapper
-         between them -- so the wrapper is `presentation`, which removes it from
-         the tree without removing its styling, and the thing a person actually
-         presses carries `role=option`. It stays a <button> for the click, the
-         hover and the focus ring; `role` only changes what it is ANNOUNCED as.
-
-         `tabindex=-1` BECAUSE FOCUS NEVER COMES HERE. This is an
-         activedescendant listbox: focus stays in the field so typing keeps
-         working, and the options are reached with the arrow keys. Tabbing
-         through twelve results to leave the search would be the alternative. */
+      /* Carbon's contained list wraps each item, and a listbox's children must
+         be options, so the wrapper is `presentation` and the button is the
+         option; it stays a <button> for the click, hover and focus ring.
+         `tabindex=-1` because focus stays in the field and the arrow keys reach
+         the options. */
       const row = el('div', 'rux--contained-list-item rux--contained-list-item--clickable');
       row.setAttribute('role', 'presentation');
       const btn = el('button', 'rux--contained-list-item__content');
@@ -5882,28 +4101,12 @@
       btn.setAttribute('aria-selected', 'false');
       btn.id = `scheduler-search-opt-${optionAt++}`;
       btn.tabIndex = -1;
-      /* THE SECOND LINE IS THE DATE AND WHO IT IS FOR, because a result may be
-         on any week now: without the date, two "Austin TX" rows a year apart
-         are the same row. `fmtDay` is the board's own short format. */
+      // A result can be on any week, so it shows its date.
       const when = trip.start_date ? parseISO(trip.start_date).toLocaleDateString(undefined,
         { year: 'numeric', month: 'short', day: 'numeric' }) : 'No date';
-      /* FOUR FIELDS ON TWO LINES, AND THE SHAPE WAS CHOSEN FROM THE DATA RATHER
-         THAN THE OTHER WAY ROUND. Counted over 737 live trips: destination is
-         never empty, organization is empty on 2%, and **booking contact is
-         empty on 60%** -- so a column for it would be blank more often than
-         filled, which is what ruled the four-column version out. It is never
-         equal to the organization (0% of rows), so when it IS there it adds
-         something, and it is a person's name: 13 characters median, 27 at the
-         longest.
-
-         SO IT IS APPENDED, NOT PLACED. The second line joins whatever exists,
-         and on the 60% with no contact it simply ends after the organization
-         with nothing missing on screen.
-
-         THE DATE GOES RIGHT, ALONE, because it is the only field that is both
-         short and always present -- which makes it the one thing that can form
-         a column down the list, and the column that tells seven "Dallas, TX"
-         rows apart. */
+      /* The destination with the date beside it, which forms a column down the
+         list; then the organization and booking contact joined on one line,
+         since the contact is often empty. */
       const head = el('div', 'scheduler-search__head');
       head.append(
         mark(trip.destination || 'No destination', 'scheduler-search__dest', safe),
@@ -5914,15 +4117,9 @@
         mark([trip.customer, trip.booking_contact_name].filter(Boolean).join(' · ') || 'No organization',
           'scheduler-search__meta', safe),
       );
-      /* GOING TO A RESULT IS A WEEK CHANGE FIRST AND AN OPEN SECOND, and both
-         halves wait on the read. The cursor moves to the week of the trip's
-         start date, `show()` re-reads, and then the trip's bar is selected and
-         opened through `whenSafe`, so an edit in progress is asked about first.
-
-         A TRIP CAN BE ON THE WEEK AND STILL HAVE NO BAR -- it is unassigned and
-         off the Unassigned row, or its leg falls outside the seven days. The
-         week still moves, which is the useful half, and a toast says so
-         rather than failing silently. */
+      /* Going to a result moves to the week of its start date, reads it, then
+         selects the trip's bar and opens it through `whenSafe`. A trip with no
+         bar on that week still moves the week, and a toast says so. */
       btn.addEventListener('click', async () => {
         collapseSearch();
         if (!trip.start_date) return;
@@ -5950,25 +4147,12 @@
   });
   searchClear?.addEventListener('click', () => { searchInput.value = ''; runSearch(); searchInput.focus(); });
 
-  /* THE ARROWS, ENTER AND ESCAPE, WHICH IS THE PATTERN PAGE'S OWN LIST: "the
-     ARROW keys should cycle through displayed suggestions, with ENTER choosing
-     a suggestion and ESCAPE allowing the user to exit the type-ahead menu
-     without selecting anything."
-
-     ESCAPE IS TWO-STAGE FOR THAT LAST CLAUSE. Carbon asks for an escape from
-     the MENU, not from the search -- so the first press closes the list and
-     leaves the query where it is, and only a second one collapses the field.
-     Pressed with no list open it collapses immediately, which is what the
-     document-level handler already did and still does.
-
-     ENTER WITH NOTHING HIGHLIGHTED TAKES THE FIRST ROW. A person who typed a
-     destination and pressed Enter meant the obvious one, and the alternative --
-     doing nothing -- reads as a broken key. With a row highlighted it takes
-     that one.
-
-     THESE ARE ON THE FIELD, NOT THE DOCUMENT, so they cannot reach a key the
-     trip editor or the board wanted; the document-level handler keeps Cmd-K and
-     the bare Escape, which are global by intent. */
+  /* The arrows, Home and End walk the results, and Enter takes the highlighted
+     row or else the first. Escape is two-stage, because Carbon's escape leaves
+     the menu, not the search: with the list open it closes the list and keeps
+     the query, and with it closed the document handler below collapses the
+     field. These listen on the field, so they cannot take a key the editor or
+     the board wants. */
   searchInput?.addEventListener('keydown', e => {
     const open = !searchResults.hidden && searchOptions().length > 0;
     switch (e.key) {
@@ -5989,8 +4173,8 @@
     }
   });
 
-  /* A HOVER MOVES THE HIGHLIGHT TOO, so the mouse and the keyboard cannot
-     disagree about which row Enter would take. */
+  // A hover moves the highlight too, so the mouse and the keyboard agree on
+  // which row Enter takes.
   searchList?.addEventListener('pointermove', e => {
     const opt = e.target.closest('[role="option"]');
     if (!opt) return;
@@ -5998,13 +4182,8 @@
     if (at !== -1 && at !== activeAt) setActive(at);
   });
 
-  /* CMD-K, AND CTRL-K FOR THE SAME REASON EVERY EDITOR BINDS BOTH. It presses
-     the TRIGGER rather than opening the panel, so there is one path in and out
-     and `aria-expanded` cannot drift from what is on screen. Pressed while the
-     panel is open it closes it, which is what a toggle shortcut should do.
-
-     NOT WHILE TYPING SOMEWHERE ELSE is not a guard this needs: Cmd/Ctrl-K is
-     not a text-editing chord, and the trip editor's fields are plain inputs. */
+  /* Cmd-K or Ctrl-K toggles the search through the magnifier's own toggle, so
+     `aria-expanded` stays in step. Escape collapses an open search. */
   document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
@@ -6026,7 +4205,7 @@
   let reading = null;
   let readAgain = false;
 
-  /* ONE READ AT A TIME, AND THE LAST ASK ALWAYS GETS ITS OWN. A week change or
+  /* One read at a time, and the last ask always gets its own. A week change or
      a save that asks while a week is loading is queued, not dropped, so the
      board always ends on `cursor` and on the data as it is after the save.
      Every caller gets the same promise, which settles once nothing is left to
@@ -6050,13 +4229,9 @@
       return;
     }
 
-    // SAY SO BEFORE THE FETCH, NOT AFTER IT. The week being asked for is known
-    // the moment the button is pressed and the read takes a few hundred
-    // milliseconds, during which nothing used to change at all -- measured
-    // 2026-09-06, 120ms after a press the label, the bars and the status were
-    // all the previous week's. Two presses read as nothing happening. The
-    // label moves now and the grid dims, which says stale rather than empty:
-    // clearing it would throw away a week the person can still read.
+    // The label moves to the asked week before the read, and the grid dims
+    // rather than clearing, so a press shows at once and the last week stays
+    // readable.
     const asked = cursor;
     setRange(asked, addDays(asked, 6));
     schEl.setAttribute('aria-busy', 'true');
@@ -6073,10 +4248,8 @@
     } catch (e) {
       // A queued read follows and reports for itself.
       if (readAgain) return;
-      // A FAILED WEEK DOES NOT TAKE THE LAST GOOD ONE WITH IT. Hiding the grid
-      // meant one dropped request wiped what was on screen. What is drawn is
-      // still `shown`, so the label goes back to it and the notice says which
-      // week failed; only a first load with nothing drawn yet stays empty.
+      // A failed read keeps the last good week on screen and puts its label
+      // back; only a first load, with nothing drawn yet, hides the grid.
       if (shown) setRange(shown, addDays(shown, 6));
       else schEl.hidden = true;
       const why = String(e && e.message ? e.message : e);
@@ -6089,33 +4262,15 @@
     }
   }
 
-  /* ── THE WEEK PICKER ───────────────────────────────────────────────────────
-     The week label is the trigger, which `docs/screen-inventory.md` settles
-     twice (sections 1 and 7) and which Design BUILT FOR THIS APP: the header of
-     `js/date-picker.js` records `data-rux-open` arriving on 2026-09-08 "asked
-     for by Scheduler, whose week label is the control that should jump the
-     calendar and sits in a toolbar far from the picker", and the hidden input
-     the same way -- "a toolbar reading 'Sep 7 - 13, 2026' beside a `2026-09-07`
-     field is one week displayed twice". So nothing here is invented; this is
-     the consumer half of a contract already written.
+  /* ── The week picker ───────────────────────────────────────────────────────
+     The week label opens the picker through `data-rux-open`. The picker is
+     built here, like the trip editor's date fields, from `DP_CONTAINER.single`
+     and `calendarBody()`, with no label and no icon because the week label is
+     its trigger.
 
-     BUILT, NOT WRITTEN IN THE PAGE, like the trip editor's date fields. It
-     reuses `DP_CONTAINER.single` and `calendarBody()` rather than a second copy
-     of the same markup, and `Rux.datePicker.init` claims it after.
-
-     NO LABEL AND NO `dpIcon()`. The label would name a field nobody sees, and
-     the icon is Carbon's own trigger -- this picker's trigger is the week
-     button, and a calendar glyph there would be the second one in this toolbar
-     after `Today`'s.
-
-     WHERE THE ROOT SITS IS WHAT POSITIONS THE CALENDAR. `date-picker.js` does
-     not portal it: `__calendar-container` is `position: absolute;
-     inset-block-start: 100%` against the root. The root goes INSIDE the week
-     row, after the heading, holding only a hidden input -- so it is a
-     zero-height box at the row's bottom edge and the calendar drops from
-     exactly there. The opener is the overlay's anchor, which is a different
-     job: it is what keeps a press on the button from reading as an outside
-     press (`overlay.js:122`). */
+     The root sits inside the week row, after the heading, holding only a
+     hidden input. date-picker.js positions the calendar below the root and
+     does not portal it, so the calendar drops from the row's bottom edge. */
   const weekRow = document.getElementById('scheduler-weekrow');
   if (weekRow && rangeEl) {
     const root = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--single');
@@ -6126,11 +4281,8 @@
     weekInput = el('input', 'rux--date-picker__input');
     weekInput.type = 'text';
     weekInput.id = 'scheduler-week-date';
-    /* `hidden` IS ENOUGH AND THAT IS MEASURED, NOT ASSUMED -- date-picker.js's
-       header says so and corrects its own earlier note that claimed otherwise:
-       the UA's `[hidden] { display: none !important }` beats the author rule
-       that made the CALENDAR container need detaching, so the input alone needs
-       no CSS. */
+    // Hidden, because the week label shows the value; rux-overrides.css
+    // carries the rule that keeps a hidden picker input hidden.
     weekInput.hidden = true;
     span.appendChild(weekInput);
     wrap.appendChild(span);
@@ -6139,10 +4291,8 @@
     weekRow.appendChild(root);
     rangeEl.setAttribute('data-rux-open', root.id);
 
-    /* THE ONLY THING A PICK DOES IS MOVE THE CURSOR. A day is a day and the
-       board is a week, so the week CONTAINING that day is what it means --
-       `mondayOf` already answers that, and already knows about the Sunday-start
-       preference, so picking a Wednesday lands on the same week either way. */
+    // A pick moves to the week containing the picked day, which `mondayOf`
+    // finds with the Sunday-start preference applied.
     weekInput.addEventListener('change', () => {
       if (valueSetBySelf) return;
       const picked = parseISO(weekInput.value);
@@ -6156,19 +4306,10 @@
 
     window.Rux?.datePicker?.init?.(weekRow);
 
-    /* `aria-expanded` IS OURS TO KEEP, because the module does not own this
-       trigger. `date-picker.js` reads `data-rux-open` to find the root and
-       makes the opener the overlay's anchor and focus destination -- and it
-       says nothing about the opener's state, which is right: it did not write
-       that element and cannot know what role it plays. Left alone the button
-       announced `false` the whole time the calendar was open, which is worse
-       than announcing nothing.
-
-       THE CONTAINER'S PRESENCE IS THE STATE, and that is the module's own
-       design rather than a signal borrowed for the purpose: Carbon ships no
-       closed state for the calendar, so `date-picker.js` DETACHES the
-       container on close and re-inserts it on open. Watching the root's child
-       list therefore reads exactly what open means here. */
+    /* `aria-expanded` is kept here because date-picker.js sets no state on a
+       page-owned trigger. The module detaches the calendar container on close
+       and re-inserts it on open, so its presence in the root is the open
+       state. */
     const syncExpanded = () => {
       rangeEl.setAttribute(
         'aria-expanded',
@@ -6179,17 +4320,15 @@
     syncExpanded();
   }
 
-  /* CHANGING THE WEEK DROPS THE TOAST. An undo offered for a move on THIS week
-     names a bus that is about to leave the screen, and the offer would still
-     work -- it goes by assignment id -- which is worse than if it did not: a
-     press would silently move a trip the board is no longer showing. Every
-     other message here is spent the moment the week under it changes. */
+  /* Changing the week drops the toast. An undo for a move on the old week
+     would still work, by assignment id, and silently move a trip no longer on
+     screen. */
   const go = days => { toast(null); cursor = addDays(cursor, days); show(); };
   document.getElementById('scheduler-prev')?.addEventListener('click', () => go(-7));
   document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
-  /* THE SCHEDULE NEEDS A STAFF LOG-IN. The board and its search wait until
+  /* The schedule needs a staff log-in. The board and its search wait until
      /account.js reports a staff session; no session, or an account with no
      staff profile, sees the log-in form in their place. A log-in that ends
      while the page is open brings the form back. A local preview without

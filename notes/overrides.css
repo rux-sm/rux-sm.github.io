@@ -5,3 +5,8 @@
    component rules at Carbon's own specificity with no !important
    (overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
    change goes". */
+
+/* A stack's children may be narrower than their content. A stack is a grid
+   whose one column otherwise grows to its widest child, so a step table in its
+   own scrolling box widened a whole page past a phone's screen. */
+.rux--stack-vertical > * { min-inline-size: 0; }

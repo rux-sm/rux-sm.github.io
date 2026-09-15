@@ -35,6 +35,11 @@ done and how.
   follow the button-icon rule.
 - A file uploader, for the trip editor's planned Files tab.
 
+### Asked for by Notes
+
+- A side-nav link that meets 44px at touch widths. It is 32px tall, and the
+  side nav is how a phone moves between Notes pages.
+
 ## Scheduler
 
 - Trip search shows the 50 newest matches, with no ranking by relevance.

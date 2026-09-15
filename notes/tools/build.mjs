@@ -963,6 +963,14 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
 .notes-t-route .sep { color: var(--rux-text-placeholder, #a8a8a8); padding: 0 .3em; }
 .notes-t-route .dest { font-weight: 600; color: var(--rux-text-primary, #161616); }
 
+/* ON A PHONE A TOKEN MAY BREAK. A control, an exact string or a route that
+   holds together on a desktop is wider than a phone's column, and unbroken it
+   widened a callout past the screen; below the md width each breaks where it
+   has to. */
+@media (max-width: 41.98rem) {
+  .notes-t-press, .notes-t-exact, .notes-t-route { white-space: normal; overflow-wrap: anywhere; }
+}
+
 /* THE READING MEASURE IS CAPPED, NOT SPANNED. A column span is proportional,
    so the same layout gives 81 characters a line at this width and grows
    without limit on a wide display -- the error Design caught in its own

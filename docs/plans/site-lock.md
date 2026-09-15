@@ -19,8 +19,9 @@ customer requests, are rebuilt with Design here and open without a login.
   Notes and nothing else. A role is named for its home app, and every page
   outside it sends the account there. An account with no role is not let in.
 - **The role sits in the account's `app_metadata`**, Supabase's standard place
-  for roles. Only a migration or the dashboard can set it, it travels inside
-  the login token, and the database rules check the same value the pages read.
+  for roles. Only a migration or the dashboard can set it. The database reads
+  it from the account record, so a change applies at once and nobody already
+  logged in loses staff access; the pages read its copy in the login token.
 - **The role replaces `sees_all_apps` and the `rux.team-account` record.**
   Staff in the database becomes a linked profile with the role `owner` or
   `scheduler`, so a Notes reader never sees trip data or appears among staff.
@@ -33,6 +34,9 @@ customer requests, are rebuilt with Design here and open without a login.
   stored login and redirects before the page draws, with no network. It lets
   through `/login/` and the link pages. The check keeps requiring it first on
   every full page, with no exceptions.
+- **Every page starts hidden** by a style in its head, and `funnel.js` shows it
+  only once the login passes, so a browser with scripts off draws nothing.
+- **Search engines are asked not to crawl the site**, in `robots.txt`.
 - **`account.js` loads on every page** and confirms the login with Supabase
   after the page opens, so a login that ended elsewhere, like a changed
   password or a deleted account, goes to the login page.
@@ -73,7 +77,9 @@ None open.
 - [ ] Build `/login/` from Design, with Turnstile and the remembered address.
 - [ ] `funnel.js` reads the role from the stored login, sends no login to
       `/login/` and a wrong page to the role's home, and lets through `/login/`
-      and `/scheduler/share/`.
+      and `/scheduler/share/`. Every page, generators included, starts hidden
+      until it passes, and the check requires both.
+- [ ] `robots.txt` at the root disallows every crawler.
 - [ ] Load `account.js` on every page, including the Design and Notes
       generators, confirming the login after the page opens.
 - [ ] Remove the scheduler's own login form, `sees_all_apps` and the

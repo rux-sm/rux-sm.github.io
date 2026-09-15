@@ -86,7 +86,7 @@ if (bad) failed.push('switcher');
 // until the script lets it open, and later loads a pinned supabase-js and
 // account.js, which confirm the login once the page is open.
 console.log('\n── funnel');
-const LOCK = '<script src="/funnel.js"></script>\n<style>html:not([data-rux-open]){visibility:hidden}</style>';
+const LOCK = '<script src="/funnel.js"></script>\n<style>html:not([data-rux-unlocked]){visibility:hidden}</style>';
 const CONFIRM = /<script src="https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@\d+\.\d+\.\d+\/dist\/umd\/supabase\.js" integrity="sha384-[A-Za-z0-9+/=]+" crossorigin="anonymous"><\/script>[\s\S]*<script src="(?:\.\.\/|\/)?account\.js"><\/script>/;
 const pages = text.filter(p => p.endsWith('.html'))
   .map(p => [p, readFileSync(join(ROOT, p), 'utf8')])

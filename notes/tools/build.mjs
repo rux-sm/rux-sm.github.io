@@ -909,7 +909,7 @@ function page({ title, site, activeId, body, depth, scripts = [], doc = activeId
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <script src="/funnel.js"></script>
-<style>html:not([data-rux-open]){visibility:hidden}</style>
+<style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <!-- PLEX FIRST, THEN rux.css, WHICH IS THE ORDER Design USES IN ITS OWN
      TEMPLATES. rux.css names IBM Plex Sans sixty-seven times and declares no
      @font-face; the faces live here. Linking the stylesheet without this one

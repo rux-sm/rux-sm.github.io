@@ -2,8 +2,10 @@
    Rux Apps — FUNNEL, the site's page lock
    --------------------------------------------------------------------------
    Every full page loads this first in its <head>, followed by a style that
-   keeps the page hidden until this script marks it open, so a browser with
-   scripts off draws nothing. It reads the login supabase-js keeps in this
+   keeps the page hidden until this script sets `data-rux-unlocked` on <html>,
+   so a browser with scripts off draws nothing. The attribute is the lock's
+   own: Design's modal, menu and date picker read `data-rux-open` on whatever
+   was clicked and its ancestors, and on <html> it matched every click. It reads the login supabase-js keeps in this
    browser, with no network, before the page draws:
    - no login, or an account with no access: to /login/?next=<this address>;
    - a page of an app the account lacks: to Home, or to its one app;
@@ -42,7 +44,7 @@
   window.Rux = window.Rux || {};
   window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser };
 
-  const open = () => document.documentElement.setAttribute('data-rux-open', '');
+  const open = () => document.documentElement.setAttribute('data-rux-unlocked', '');
   const path = location.pathname;
   const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   if ((local && !new URLSearchParams(location.search).has('cloud'))

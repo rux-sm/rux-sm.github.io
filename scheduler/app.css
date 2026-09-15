@@ -1225,9 +1225,10 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   margin-block-start: var(--rux-spacing-05);
 }
 
-/* The miles: a column of days, each field the tile's full width, in line
-   with the modifiers beside it. Add day and Remove day sit under the column. */
-.scheduler-quote-days { display: grid; gap: var(--rux-spacing-05); }
+/* The miles: a column of days, each field the tile's full width. Days are
+   24px apart, the modifiers' own spacing, so each day lines up with the
+   modifier beside it. Add day and Remove day sit under the column. */
+.scheduler-quote-days { display: grid; gap: var(--rux-spacing-06); }
 .scheduler-quote__day-buttons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 /* A button's own display rule beats the browser's [hidden]. */
 .scheduler-quote__day-buttons [hidden] { display: none; }

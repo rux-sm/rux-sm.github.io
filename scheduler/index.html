@@ -592,10 +592,10 @@
   </ul>
 
   <!-- Open trip on the selected bar. data.js places this one button straight
-       after the bar, at the top corner of the bar's first day, and app.css
-       shows it while that bar is hovered or focused, or always where nothing
-       can hover. A sibling, not a child, because the bar is itself a button. -->
-  <button type="button" class="rux--btn rux--btn--secondary rux--btn--icon-only rux--layout--size-sm scheduler-bar-open" id="scheduler-bar-open" aria-label="Open trip" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
+       after the bar, down the bar's start edge, and app.css moves the bar's
+       text clear of it. A sibling, not a child, because the bar is itself a
+       button. -->
+  <button type="button" class="scheduler-bar-open" id="scheduler-bar-open" aria-label="Open trip" hidden><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></button>
 
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->

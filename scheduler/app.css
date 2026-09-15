@@ -30,6 +30,8 @@
   --scheduler-ls: var(--rux-label-01-letter-spacing);
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
+  /* The open and close trip tab on a bar's start edge. */
+  --scheduler-tab-w: 1.5rem;
   /* A bar keeps `--scheduler-gap` at its day's start and its row's bottom, and
      `--scheduler-gap-clear`, a pixel less, at its day's end and its row's top,
      allowing for the 1px rule on one side of each boundary. */
@@ -401,45 +403,42 @@ button.scheduler-row-head__num {
 /* The phone sits straight after the name rather than at the bar's far end. */
 .scheduler-bar__contact { justify-content: flex-start; }
 .scheduler-bar__ref { opacity: .75; }
-/* Open and close trip, in the top corner of a bar's first day. data.js sets
-   `--scheduler-open-top` and `--scheduler-open-end` from the bar, and this
-   insets both by the bar's padding. 2rem is the small icon button. */
+/* Open and close trip: a tab down the bar's start edge, inside its border, the
+   same on a one-day trip and a week-long one. Open trip, an arrow, shows on the
+   selected bar; Close trip, an X, on every bar of the trip in the editor. Both
+   take the selection ring's colour, so they read on every bar colour and join
+   the ring. data.js sets `--scheduler-open-top`, `--scheduler-open-start` and
+   `--scheduler-open-h` from the bar. Carbon has no such button, so it is the
+   app's own. The focus ring is the inverse focus colour, because the plain one
+   matches the fill on dark themes. */
 .scheduler-bar-open,
 .scheduler-bar-close {
   position: absolute;
   z-index: 2;
-  inset-block-start: calc(var(--scheduler-open-top, 0px) + var(--rux-spacing-02));
-  inset-inline-start: calc(var(--scheduler-open-end, 0px) - 2rem - var(--rux-spacing-02));
-}
-/* Open trip hides with `visibility` while not wanted, so a press on that corner
-   reaches the bar. It shows while the selected bar or the button is hovered or
-   focused, and always where nothing can hover. */
-.scheduler-bar-open { visibility: hidden; }
-.scheduler-bar[aria-pressed="true"]:is(:hover, :focus-visible) + .scheduler-bar-open,
-.scheduler-bar-open:is(:hover, :focus-visible) { visibility: visible; }
-@media (hover: none) {
-  .scheduler-bar[aria-pressed="true"] + .scheduler-bar-open { visibility: visible; }
-}
-.scheduler-bar--dragging + .scheduler-bar-open { visibility: hidden; }
-/* Close trip is open trip switched on: the same pencil in the same corner, on
-   every bar of the trip in the editor, always shown, and filled with the
-   selection ring's colour so it reads on every bar colour. Carbon has no filled
-   inverse icon button, so this one is the app's own. Its focus ring is the
-   inverse focus colour, because the plain one matches the fill on dark themes. */
-.scheduler-bar-close {
+  inset-block-start: var(--scheduler-open-top, 0px);
+  inset-inline-start: var(--scheduler-open-start, 0px);
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 2rem;
-  block-size: 2rem;
+  inline-size: var(--scheduler-tab-w);
+  block-size: var(--scheduler-open-h, var(--scheduler-bar-h));
   padding: 0;
   border: 0;
   background: var(--rux-layer-selected-inverse);
   color: var(--rux-icon-inverse);
   cursor: pointer;
 }
+/* The tab's display rule beats the browser's own `[hidden]`. */
+.scheduler-bar-open[hidden] { display: none; }
+.scheduler-bar-open:hover,
 .scheduler-bar-close:hover { background: var(--rux-background-inverse-hover); }
+.scheduler-bar-open:focus-visible,
 .scheduler-bar-close:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+/* A dragged bar dims where it sits, and its tab with it. */
+.scheduler-bar--dragging + .scheduler-bar-open { opacity: .4; }
+/* A bar with a tab moves its text, and its double-booking strip, clear of it. */
+.scheduler-bar:has(+ .scheduler-bar-open:not([hidden]), + .scheduler-bar-close) { padding-inline-start: calc(var(--scheduler-tab-w) + var(--rux-spacing-03)); }
+.scheduler-bar:has(+ .scheduler-bar-open:not([hidden]), + .scheduler-bar-close) .scheduler-bar__conflict { inset-inline-start: var(--scheduler-tab-w); }
 .scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__notes { opacity: .85; }
 
 /* A requirement the bus fails: the missing item's icon on the warning colour,

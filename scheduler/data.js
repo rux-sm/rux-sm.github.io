@@ -3091,39 +3091,31 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* A trip button sits in the top corner of its bar's first day, so a
-     week-long trip does not put it six days from the destination it opens. It
-     goes straight after its bar, so app.css can show it from that bar's own
-     hover and focus.
-
-     The first day ends where a one-day bar would: a bar is `span` days wide
-     less its gaps, so the gaps are `span * day - width`, and the first day's
-     edge is one day from the bar's start less the same gaps. */
-  function placeAtCorner(btn, bar) {
-    const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
-    const day = bar.parentElement.clientWidth / days;
-    const span = Math.max(1, +bar.dataset.span || 1);
-    const gaps = Math.max(0, span * day - bar.offsetWidth);
-    const end = Math.min(bar.offsetLeft + bar.offsetWidth, bar.offsetLeft + day - gaps);
-    btn.style.setProperty('--scheduler-open-top', `${bar.offsetTop}px`);
-    btn.style.setProperty('--scheduler-open-end', `${end}px`);
+  /* A trip tab runs down its bar's start edge, inside the bar's border, so a
+     partial PO's border and the dotted edge of a trip from last week still
+     show. It goes straight after its bar, so app.css can move that bar's text
+     clear of it. */
+  function placeAtStart(btn, bar) {
+    btn.style.setProperty('--scheduler-open-top', `${bar.offsetTop + bar.clientTop}px`);
+    btn.style.setProperty('--scheduler-open-start', `${bar.offsetLeft + bar.clientLeft}px`);
+    btn.style.setProperty('--scheduler-open-h', `${bar.clientHeight}px`);
   }
 
   // Open trip follows the selection, except onto the trip in the editor, whose
-  // bars carry Close trip in the same corner.
+  // bars carry Close trip in the same place.
   function placeBarOpen(bar = selectedBar()) {
     if (!barOpenBtn) return;
     const none = !bar?.dataset.tripId || isEditorTrip(bar);
     barOpenBtn.hidden = none;
     if (none) return;
     if (barOpenBtn.previousElementSibling !== bar) bar.after(barOpenBtn);
-    placeAtCorner(barOpenBtn, bar);
+    placeAtStart(barOpenBtn, bar);
   }
 
   /* Close trip on every bar of the trip in the editor. Those bars are locked,
-     and the filled pencil says why they do not drag. A bar keeps its button
-     from one call to the next, so focus on the button survives a selection
-     change. */
+     and the tab marks the trip as open, which is why they do not drag. A bar
+     keeps its button from one call to the next, so focus on the button
+     survives a selection change. */
   function placeBarClose() {
     const keep = new Set();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
@@ -3133,10 +3125,10 @@
         btn = el('button', 'scheduler-bar-close');
         btn.type = 'button';
         btn.setAttribute('aria-label', 'Close trip');
-        btn.appendChild(svgUse('#i-edit', '16', '0 0 32 32'));
+        btn.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
         bar.after(btn);
       }
-      placeAtCorner(btn, bar);
+      placeAtStart(btn, bar);
       keep.add(btn);
     }
     for (const btn of gridEl.querySelectorAll('.scheduler-bar-close')) if (!keep.has(btn)) btn.remove();
@@ -3239,7 +3231,7 @@
   gridEl.addEventListener('click', e => {
     if (e.target.closest('.scheduler-bar-close')) whenSafe(() => closePanel());
   });
-  // The panel and the whole-pixel day columns change a bar's corner, a frame
+  // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
   new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBarClose(); })).observe(gridEl);
 
@@ -3318,6 +3310,10 @@
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
+    // The bars change height and lane, which the scroll pane may not report as
+    // a resize, so the trip tabs follow here.
+    placeBarOpen();
+    placeBarClose();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       // The Drivers item carries `data-act`, not a view key, and

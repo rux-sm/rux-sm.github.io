@@ -1928,6 +1928,8 @@ ${revisionLine()}
 ${SCRIPTS.map(s => `<script src="/design/js/${s}.js"></script>`).join('\n')}
 ${scripts.map(s => `<script src="${up}${s}"></script>`).join('\n')}
 <script src="/switcher.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
 </body>
 </html>
 `;

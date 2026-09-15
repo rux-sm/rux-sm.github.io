@@ -80,17 +80,20 @@ console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps.length} in switcher.json
 if (bad) failed.push('switcher');
 
 // THE LOCK RULE. A page that forgets /funnel.js, or the style after it, opens
-// without a log-in, and nothing on it looks wrong. Every full page loads the
-// script before any other and the style straight after, so the page stays
-// hidden until the script lets it open.
+// without a log-in, and one that forgets account.js never learns that its
+// login ended; nothing on either looks wrong. Every full page loads the script
+// before any other and the style straight after, so the page stays hidden
+// until the script lets it open, and later loads a pinned supabase-js and
+// account.js, which confirm the login once the page is open.
 console.log('\n── funnel');
 const LOCK = '<script src="/funnel.js"></script>\n<style>html:not([data-rux-open]){visibility:hidden}</style>';
+const CONFIRM = /<script src="https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@\d+\.\d+\.\d+\/dist\/umd\/supabase\.js" integrity="sha384-[A-Za-z0-9+/=]+" crossorigin="anonymous"><\/script>[\s\S]*<script src="(?:\.\.\/|\/)?account\.js"><\/script>/;
 const pages = text.filter(p => p.endsWith('.html'))
   .map(p => [p, readFileSync(join(ROOT, p), 'utf8')])
   .filter(([, s]) => s.includes('<head>'));
-const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<script src="/funnel.js">' || !s.includes(LOCK)).map(([p]) => p);
-for (const p of open) console.log(`  FAIL  ${p}: its first script is not <script src="/funnel.js"> with the lock style after it`);
-console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages${open.length ? '' : ', each loads /funnel.js first and starts hidden'}`);
+const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<script src="/funnel.js">' || !s.includes(LOCK) || !CONFIRM.test(s)).map(([p]) => p);
+for (const p of open) console.log(`  FAIL  ${p}: it needs <script src="/funnel.js"> first with the lock style after it, and a pinned supabase-js before account.js`);
+console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages${open.length ? '' : ', each locked first and confirming its login once open'}`);
 if (open.length) failed.push('funnel');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });

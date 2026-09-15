@@ -224,7 +224,38 @@
   // nothing syncs to it; this browser keeps its theme locally.
   if (session?.user.is_anonymous) {
     await sb.auth.signOut().catch(() => {});
-    return;
+    session = null;
+  }
+
+  /* THE LOGIN IS CONFIRMED once the page is open. /funnel.js opened the page
+     from the login this browser keeps; the auth server says whether it still
+     stands. A login the server refuses, such as one ended by a changed password
+     or a deleted account, goes to the log-in page. A change to the account's
+     access is taken into the stored login and applied to this page. A request
+     with no answer, as when offline, changes nothing. /login/ and
+     /scheduler/share/ need no login, so they are not checked. */
+  const access = window.Rux?.access;
+  const path = location.pathname;
+  if (access && !path.startsWith('/login/') && !path.startsWith('/scheduler/share/')) {
+    const toLogin = async () => {
+      await sb.auth.signOut({ scope: 'local' }).catch(() => {});
+      location.replace(`/login/?next=${encodeURIComponent(path + location.search + location.hash)}`);
+    };
+    if (!session) { await toLogin(); return; }
+    const { data, error } = await sb.auth.getUser().catch(e => ({ data: null, error: e }));
+    if (error) {
+      if (window.supabase.isAuthApiError?.(error) && error.status >= 400 && error.status < 500) {
+        await toLogin();
+        return;
+      }
+    } else if (data?.user) {
+      const granted = access.accessOf(data.user);
+      if (JSON.stringify(granted) !== JSON.stringify(access.accessOf(session.user))) {
+        await sb.auth.refreshSession().catch(() => {});
+      }
+      if (!access.canEnter(granted)) { await toLogin(); return; }
+      if (!access.allows(granted, path)) { location.replace(access.landing(granted)); return; }
+    }
   }
   await setupStaff(session);
 })();

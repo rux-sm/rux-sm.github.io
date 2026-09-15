@@ -665,6 +665,8 @@ ${shellScripts()}
      rather than keeping a second copy that could drift. -->
 <script type="application/json" id="thc-catalogue">${pageData}</script>
 <script type="module" src="theme-creator/theme-creator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
 </body>
 </html>
 `;

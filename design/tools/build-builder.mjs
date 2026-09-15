@@ -606,6 +606,8 @@ ${WIDTHS.map(([v, l]) => `                      <button type="button" class="rux
 <script src="js/modal.js"></script>
 ${shellScripts()}
 <script type="module" src="builder/builder.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
 </body>
 </html>
 `;

@@ -72,8 +72,8 @@ customer requests, are rebuilt with Design here and open without a login.
   in the staff sign-in plan, so the close checks access from the start. The
   link pages can come before or after it.
 - **rux creates accounts in the dashboard and ticks their apps on the Access
-  page.** A change reaches the pages of someone already logged in within an
-  hour, or at their next login.
+  page.** A change reaches someone already logged in at the next page they
+  open.
 
 ## Questions
 
@@ -81,8 +81,6 @@ None open.
 
 ## Tasks
 
-- [ ] Load `account.js` on every page, including the Design and Notes
-      generators, confirming the login after the page opens.
 - [ ] Remove the scheduler's own login form, `sees_all_apps` and the
       `rux.team-account` record from the site.
 - [ ] Replace `sees_all_apps` with the owner switch and ticked apps in the

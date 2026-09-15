@@ -33,10 +33,12 @@
   const schEl = document.getElementById('scheduler-week');
   const statusEl = document.getElementById('scheduler-status');
   const toastEl = document.getElementById('scheduler-toast');
-  // `rangeEl` is the week button and `rangeTextEl` the span inside it that
-  // `setRange` writes, because textContent on the button would delete its caret.
+  // `rangeEl` is the week button, and `rangeTextEl` and `rangeMonthsEl` the
+  // spans inside it that `setRange` writes, because textContent on the button
+  // would delete its caret.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
+  const rangeMonthsEl = document.getElementById('scheduler-range-months');
   // The week picker's hidden input and the guard that tells its `change`
   // events apart: ours, from setRange, or a person's, from the calendar.
   let weekInput = null;
@@ -336,6 +338,19 @@
     rangeTextEl.textContent = typeof fmt.formatRange === 'function'
       ? fmt.formatRange(weekStart, weekEnd)
       : `${fmt.format(weekStart)} - ${fmt.format(weekEnd)}`;
+    /* Below md the label is the week's months and year, "Sep – Oct 2026",
+       because the day header under it numbers the days and a phone's toolbar
+       has no more room beside its four buttons. `formatRange` writes a week
+       across New Year as "Dec 2026 – Jan 2027", which is too wide, so that
+       week names its year once. */
+    if (rangeMonthsEl) {
+      const months = new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' });
+      rangeMonthsEl.textContent = weekStart.getFullYear() === weekEnd.getFullYear() && typeof months.formatRange === 'function'
+        ? months.formatRange(weekStart, weekEnd)
+        : weekStart.getMonth() === weekEnd.getMonth()
+          ? months.format(weekEnd)
+          : `${weekStart.toLocaleDateString(undefined, { month: 'short' })} – ${months.format(weekEnd)}`;
+    }
     /* The week picker's hidden input follows the shown week, so the calendar
        opens on it rather than on today. `valueSetBySelf` stops the `change`
        listener from treating this as a person's pick. */
@@ -3289,14 +3304,6 @@
     // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
     // Carbon's pressed look.
     availToggle.classList.toggle('rux--btn--selected', shown);
-    // The menu's Drivers item is the same control below md, kept in step here
-    // because only this function knows what is on screen.
-    const availItem = document.getElementById('scheduler-menu-drivers');
-    if (availItem) {
-      availItem.setAttribute('aria-checked', String(shown));
-      const slot = availItem.querySelector('.rux--menu-item__selection-icon');
-      if (slot) slot.replaceChildren(...(shown ? [svgUse('#i-checkmark', '16', '0 0 20 20')] : []));
-    }
     window.Rux?.schedule?.fit?.();
   }
 
@@ -3348,9 +3355,6 @@
     placeBarClose();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
-      // The Drivers item carries `data-act`, not a view key, and
-      // `placeAvailability` owns its checked state.
-      if (!key) continue;
       const on = !!view[key];
       item.setAttribute('aria-checked', String(on));
       const slot = item.querySelector('.rux--menu-item__selection-icon');
@@ -3385,13 +3389,12 @@
   // rather than blinking off after it.
   applyView();
 
-  // The roster's own close button. Focus goes to the control that opens the
-  // roster again: the toolbar toggle, or the menu below md, where the toggle
-  // is hidden and cannot take focus.
+  // The roster's own close button. Focus goes to the toolbar toggle, which
+  // opens the roster again.
   document.getElementById('scheduler-avail-close')?.addEventListener('click', () => {
     availOn = false;
     placeAvailability();
-    (availToggle?.getClientRects().length ? availToggle : viewTrigger)?.focus();
+    availToggle?.focus();
   });
 
   /* A picked contact links the field and fills from it; typing unlinks it, and
@@ -3895,14 +3898,6 @@
     cursor = mondayOf(new Date());
     show();
   });
-  document.getElementById('scheduler-menu-drivers')?.addEventListener('click', () => {
-    const menu = document.getElementById('scheduler-view-menu');
-    if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
-    if (availOn && !availYielded) { availOn = false; }
-    else { availOn = true; availYielded = false; }
-    placeAvailability();
-  });
-
   document.getElementById('scheduler-menu-new-trip')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }

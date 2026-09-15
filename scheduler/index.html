@@ -328,8 +328,9 @@
                      component for, so it is this app's own with only --rux-*
                      tokens. Its accessible name is the week itself, because
                      js/date-picker.js needs the trigger to carry the value its
-                     hidden input holds. -->
-                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                     hidden input holds. Below md it shows the week's months and
+                     year instead, and the week stays its name. -->
+                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week" id="scheduler-range-text">&nbsp;</span><span class="scheduler-weekbtn__months" id="scheduler-range-months" aria-hidden="true"></span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
               </h2>
             </div>
             <div class="scheduler-toolbar__spacer"></div>
@@ -340,12 +341,13 @@
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
             
             
-          <!-- Named "Driver availability", like the menu row and the pane's own
-               head, so one control has one name. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+          <!-- Named "Driver availability", like the pane's own head, so one
+               control has one name. It stays in the toolbar on a phone, where
+               the week label shortens to make room for it. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
             <!-- The overflow menu (#scheduler-view-menu): New trip at every
-                 width, Today and Driver availability below md, then the
-                 options for how the board draws. -->
+                 width, Today below md, then the options for how the board
+                 draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
           </div>
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
@@ -529,22 +531,13 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></div>
       <div class="rux--menu-item__label">New trip</div>
     </li>
-    <!-- Today and Driver availability show here only below md, where their
-         toolbar buttons hide, so one of each pair is on screen. Driver
-         availability is a checkbox because it toggles, and it carries data-act
-         rather than data-row or data-view so applyView leaves its checked
-         state alone. -->
+    <!-- Today shows here only below md, where its toolbar button hides, so one
+         of the pair is on screen. -->
     <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitem" tabindex="0" id="scheduler-menu-today">
       <div class="rux--menu-item__selection-icon"></div>
       
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></div>
       <div class="rux--menu-item__label">Today</div>
-    </li>
-    <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-act="drivers" id="scheduler-menu-drivers">
-      <div class="rux--menu-item__selection-icon"></div>
-      
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></div>
-      <div class="rux--menu-item__label">Driver availability</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="true" tabindex="0" data-row="client">

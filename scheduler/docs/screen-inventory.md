@@ -112,7 +112,9 @@ Three homes, and one rule for choosing.
   bar-row toggles are there; time-aligned and two weeks join when the grid can
   draw them.
 - **The week label is the date-picker trigger.** A permanent mini calendar
-  spends standing space on an occasional action.
+  spends standing space on an occasional action. On a phone the label is the
+  week's months and year, "Sep – Oct 2026", so Driver availability fits beside
+  it; the day header numbers the days.
 - **Print is a modal over the same page.**
 
 ### The driver availability grid

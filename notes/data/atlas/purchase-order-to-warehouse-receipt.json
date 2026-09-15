@@ -57,15 +57,16 @@
               "v": " > The materials exist as items with purchase defaults, and the receiving warehouse exists. "
             },
             {
-              "t": "literal",
-              "v": "create-basic-test-items-and-defaults.md"
+              "t": "link",
+              "v": "Create test items",
+              "href": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
               "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
             }
           ],
-          "text": "> Prerequisite > The materials exist as items with purchase defaults, and the receiving warehouse exists. create-basic-test-items-and-defaults.md phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+          "text": "> Prerequisite > The materials exist as items with purchase defaults, and the receiving warehouse exists. Create test items phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
         },
         {
           "kind": "prose",
@@ -1711,15 +1712,16 @@
           "v": " — this is the atomic \"buy it in\" process. It was extracted from phase 9 of "
         },
         {
-          "t": "literal",
-          "v": "create-basic-test-items-and-defaults.md"
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
         },
         {
           "t": "text",
           "v": ", which walked it inside a master-data walkthrough. "
         }
       ],
-      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base walkthrough — this is the atomic \"buy it in\" process. It was extracted from phase 9 of create-basic-test-items-and-defaults.md, which walked it inside a master-data walkthrough."
+      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base walkthrough — this is the atomic \"buy it in\" process. It was extracted from phase 9 of Create test items, which walked it inside a master-data walkthrough."
     },
     {
       "kind": "prose",
@@ -2401,15 +2403,16 @@
                   "v": "The adjustment route the notes of "
                 },
                 {
-                  "t": "literal",
-                  "v": "create-basic-test-items-and-defaults.md"
+                  "t": "link",
+                  "v": "Create test items",
+                  "href": "create-basic-test-items-and-defaults.md"
                 },
                 {
                   "t": "text",
                   "v": " phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
                 }
               ],
-              "text": "The adjustment route the notes of create-basic-test-items-and-defaults.md phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
+              "text": "The adjustment route the notes of Create test items phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
             }
           ]
         }

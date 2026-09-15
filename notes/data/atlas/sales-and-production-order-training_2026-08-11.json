@@ -272,15 +272,16 @@
               "v": " user guide. The verified environment-specific route remains "
             },
             {
-              "t": "literal",
-              "v": "the source on file"
+              "t": "link",
+              "v": "Ship from stock",
+              "href": "ship-from-stock.md"
             },
             {
               "t": "text",
               "v": "; this meeting does not replace it."
             }
           ],
-          "text": "The process shape is independently supported by the Infor LN Sales Orders user guide and the Infor LN Outbound and Shipments user guide. The verified environment-specific route remains the source on file; this meeting does not replace it."
+          "text": "The process shape is independently supported by the Infor LN Sales Orders user guide and the Infor LN Outbound and Shipments user guide. The verified environment-specific route remains Ship from stock; this meeting does not replace it."
         }
       ]
     },
@@ -422,15 +423,16 @@
               "v": " if the customer has none. See "
             },
             {
-              "t": "literal",
-              "v": "sales-order-warehouse-allocation-training_2026-08-04.md"
+              "t": "link",
+              "v": "Sales Order and Warehouse Allocation Training — Review",
+              "href": "sales-order-warehouse-allocation-training_2026-08-04.md"
             },
             {
               "t": "text",
               "v": " section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced."
             }
           ],
-          "text": "Updated 2026-08-13 — one of these is now answered. For Sales Order Type specifically, tdsls4100m900's help confirms the default comes from the order type assigned to the Sold-to Business Partner (tccom4110s000), falling back to the order type on the current user's Sales User Profile (tdsls0139m000) if the customer has none. See sales-order-warehouse-allocation-training_2026-08-04.md section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced."
+          "text": "Updated 2026-08-13 — one of these is now answered. For Sales Order Type specifically, tdsls4100m900's help confirms the default comes from the order type assigned to the Sold-to Business Partner (tccom4110s000), falling back to the order type on the current user's Sales User Profile (tdsls0139m000) if the customer has none. See Sales Order and Warehouse Allocation Training — Review section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced."
         }
       ]
     },

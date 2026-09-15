@@ -897,15 +897,16 @@
               "v": " is a useful topic map but not a runnable walkthrough. It summarizes narration as fact, references image assets that were not supplied, includes invoicing outside the current library scope, and describes picking/shipping even though this recording never completed those stages. It remains a TR source and must not override "
             },
             {
-              "t": "literal",
-              "v": "ship-from-stock.md"
+              "t": "link",
+              "v": "Ship from stock",
+              "href": "ship-from-stock.md"
             },
             {
               "t": "text",
               "v": "."
             }
           ],
-          "text": "the source on file is a useful topic map but not a runnable walkthrough. It summarizes narration as fact, references image assets that were not supplied, includes invoicing outside the current library scope, and describes picking/shipping even though this recording never completed those stages. It remains a TR source and must not override ship-from-stock.md."
+          "text": "the source on file is a useful topic map but not a runnable walkthrough. It summarizes narration as fact, references image assets that were not supplied, includes invoicing outside the current library scope, and describes picking/shipping even though this recording never completed those stages. It remains a TR source and must not override Ship from stock."
         }
       ]
     }

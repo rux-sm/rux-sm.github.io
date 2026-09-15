@@ -53,11 +53,6 @@ done and how.
 - **Trip documents and photos are open to anyone.** All three storage buckets
   are public, and the public key can upload to and delete from each.
 
-## Notes owes atlas
-
-- Some cross-walkthrough references reach Notes as plain file names instead of
-  links. Atlas should send them as links.
-
 ## Only rux can do
 
 - Press Save on a real trip. The database is live and shared with rux-ui.

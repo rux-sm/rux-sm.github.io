@@ -1231,8 +1231,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--magenta" title="10 open issues recorded against this document"><span class="rux--tag__label">10 open</span></span>
           </div>
           <p class="notes-prose-measure"><strong>This file is the source. The picture is generated from it.</strong> Sections 3 to 6 are the drawing: lanes, stages, nodes, edges. Editing a cell here and regenerating is the whole loop, and no coordinate, colour or pixel appears anywhere in this document — that split is the one the diagram-as-data proposal of 2026-09-01 drew, applied to a second diagram before it becomes a second hand-placed artefact.</p>
-          <p class="notes-prose-measure"><strong>It is a level-2 companion, not a replacement.</strong> <span class="notes-t-exact">the source on file</span> is level 1 — six lanes, six stages, master data through shipment — and <span class="notes-t-exact">docs/start-here.md</span> and the spine walkthrough both point at it. This one starts where that one&#39;s stage 2 starts, at sales demand, and answers a different question: <strong>which session, reached how, and what do I actually do in it.</strong></p>
-          <p class="notes-prose-measure"><strong>It composes and owns nothing.</strong> Every route, action and status below is already carried by <span class="notes-t-exact">the source on file</span> or by the <span class="notes-t-exact">the source on file</span> file for that code. Section 5&#39;s <strong>Walkthrough step</strong> column is the link back, so a step that moves in the walkthrough is findable here rather than silently stale. If this map and its walkthrough disagree, the walkthrough is right and this is the bug.</p>
+          <p class="notes-prose-measure"><strong>It is a level-2 companion, not a replacement.</strong> <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> is level 1 — six lanes, six stages, master data through shipment — and <span class="notes-t-exact">docs/start-here.md</span> and the spine walkthrough both point at it. This one starts where that one&#39;s stage 2 starts, at sales demand, and answers a different question: <strong>which session, reached how, and what do I actually do in it.</strong></p>
+          <p class="notes-prose-measure"><strong>It composes and owns nothing.</strong> Every route, action and status below is already carried by <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> or by the <span class="notes-t-exact">the source on file</span> file for that code. Section 5&#39;s <strong>Walkthrough step</strong> column is the link back, so a step that moves in the walkthrough is findable here rather than silently stale. If this map and its walkthrough disagree, the walkthrough is right and this is the bug.</p>
         </div>
         <figure class="rux--tile notes-dg" style="--dg-cols:10">
           <div class="notes-dg-grid">
@@ -1278,7 +1278,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>a planning record in <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span>, <em>generated</em> and not finished: <em>Order Horizon</em> and <em>Plan Level</em> are still yours to set, and the horizon arrives at the current date. <strong>So the row is not the test.</strong> An item with a valid cluster row and an unset horizon is absent from the plan in exactly the way an item with no row is — which is why this feeds tile 2, where the horizon is set, rather than tile 3, where the absence is finally visible</p>
                   </div>
                   <div class="notes-dg-foot">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>0.5 · the steps are <span class="notes-t-exact">run-order-planning-for-one-item.md</span> 0.3–0.5</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>0.5 · the steps are <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> 0.3–0.5</p>
                   </div>
                 </div>
               </details>
@@ -1328,7 +1328,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>an approved order. Approval is not what makes planning see it — tile 3 is — but tile 16 will not release without it</p>
                   </div>
                   <div class="notes-dg-foot">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>1.1–1.3 · order entry owned by <span class="notes-t-exact">ship-from-stock.md</span> 1.1–1.12</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>1.1–1.3 · order entry owned by <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> 1.1–1.12</p>
                   </div>
                 </div>
               </details>
@@ -1354,7 +1354,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>a warehousing order carrying your sales order number. From here the activities of the warehousing procedure decide what happens, not the sales order</p>
                   </div>
                   <div class="notes-dg-foot">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>6.1 · owned by <span class="notes-t-exact">ship-from-stock.md</span> 2.1–2.8</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>6.1 · owned by <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> 2.1–2.8</p>
                   </div>
                 </div>
               </details>
@@ -1380,7 +1380,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>a horizon that covers your date. Enter days, then trust the date LN shows — it counts workdays on the warehouse&#39;s calendar, so it is never today plus your number</p><p class="notes-dg-field"><span class="notes-dg-key">Needs</span>Item — the planning record it generates arrives with its horizon at the current date</p>
                   </div>
                   <div class="notes-dg-foot">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>1.4–1.5 · owned by <span class="notes-t-exact">run-order-planning-for-one-item.md</span> phases 1–2</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>1.4–1.5 · owned by <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phases 1–2</p>
                   </div>
                 </div>
               </details>
@@ -1623,7 +1623,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <p class="notes-dg-field"><span class="notes-dg-key">Leaves</span>materials issued. How much of this you do by hand is configuration — <em>Direct Initiate Inventory Issue</em> and <em>Direct Process Warehouse Order Line</em> can do the unblocking for you, so their absence is not an error</p><p class="notes-dg-field"><span class="notes-dg-key">Needs</span>11 — components on hand first</p>
                   </div>
                   <div class="notes-dg-foot">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>5.4 · owned by <span class="notes-t-exact">manual-production-order-existing-master-data.md</span> 4.2–4.7</p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Walkthrough</span>5.4 · owned by <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a> 4.2–4.7</p>
                   </div>
                 </div>
               </details>
@@ -1934,7 +1934,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <tbody>
           <tr><td><span class="notes-t-named">D1</span></td><td><span class="notes-t-named">Canvas</span></td><td>(a) wall chart with every field on the face of each box · (b) a tile of session name and code only, with the rest behind a click</td><td><span class="notes-t-named">Settled — (b).</span> A two-line tile collapses the canvas and stops the detail competing with the shape. Nothing is lost: the route was the reason to keep the map open beside the screen, and it is one click away rather than absent</td></tr>
           <tr><td><span class="notes-t-named">D2</span></td><td><span class="notes-t-named">Where it lives, and how it publishes</span></td><td>(a) a section of the spine walkthrough · (b) its own <span class="notes-t-exact">reference</span> document</td><td><span class="notes-t-named">Settled — (b), and it publishes.</span> It spans seven walkthroughs&#39; worth of sessions, so hanging it off one understates it. The publishing test (<span class="notes-t-exact">standards/export-json.md</span>, &quot;It publishes&quot;) admits it twice over: a person sits down and reads it, and it is consulted while walking a page that publishes. <span class="notes-t-exact">emit.py --references</span> emits it as <span class="notes-t-exact">kind: reference</span> at contract 5. It stays in <span class="notes-t-exact">the source on file</span> because the emitter dispatches on <span class="notes-t-exact">type:</span> and not on directory; a second reference document would earn a folder</td></tr>
-          <tr><td><span class="notes-t-named">D3</span></td><td><span class="notes-t-named">Scope</span></td><td>Whether the two configuration sessions and the master-data prerequisites get tiles</td><td><span class="notes-t-named">Settled, and half of it reversed on 2026-09-11.</span> Both configuration sessions get tiles of their own, as <span class="notes-t-named">reads</span> rather than numbered steps — the same class as Inventory 360, so the numbered count stays the count of things you change. The rest of this row read Master data stays off; level 1 owns it, and it excluded a class where the thing that earns a tile is narrower than the class: <span class="notes-t-named">the test is not whether something is setup, it is whether section 7.1 already diagnoses its absence.</span> Two members qualify and now have tiles in lane 1, unnumbered; the other eight groups of <span class="notes-t-exact">the source on file</span> stay off. The SEND-ATLAS-3 reply of 2026-09-11 carried the reasoning; this row is the record now that the memo folder is gone</td></tr>
+          <tr><td><span class="notes-t-named">D3</span></td><td><span class="notes-t-named">Scope</span></td><td>Whether the two configuration sessions and the master-data prerequisites get tiles</td><td><span class="notes-t-named">Settled, and half of it reversed on 2026-09-11.</span> Both configuration sessions get tiles of their own, as <span class="notes-t-named">reads</span> rather than numbered steps — the same class as Inventory 360, so the numbered count stays the count of things you change. The rest of this row read Master data stays off; level 1 owns it, and it excluded a class where the thing that earns a tile is narrower than the class: <span class="notes-t-named">the test is not whether something is setup, it is whether section 7.1 already diagnoses its absence.</span> Two members qualify and now have tiles in lane 1, unnumbered; the other eight groups of <a class="rux--link" href="create-basic-test-items-and-defaults.html">Create test items</a> stay off. The SEND-ATLAS-3 reply of 2026-09-11 carried the reasoning; this row is the record now that the memo folder is gone</td></tr>
           <tr><td><span class="notes-t-named">D4</span></td><td><span class="notes-t-named">Prose</span></td><td>(a) inside the figure as SVG text · (b) beside it as HTML</td><td><span class="notes-t-named">Settled — (b)</span>, for the panels in section 7 and for every tile&#39;s detail. The diagram reply of 2026-09-01 asked for exactly this, and it is right: prose inside markup is invisible to every gate in both repositories</td></tr>
           <tr><td><span class="notes-t-named">D5</span></td><td><span class="notes-t-named">Issue ids in the figure</span></td><td>(a) keep them in box text · (b) keep them here only, and let the figure carry an unnumbered mark</td><td><span class="notes-t-named">(b)</span>, and this is measured rather than argued — see below</td></tr>
           <tr><td><span class="notes-t-named">D6</span></td><td><span class="notes-t-named">Format</span></td><td>(a) an SVG now and the <span class="notes-t-exact">diagram</span> block later · (b) the block only</td><td><span class="notes-t-named">Settled — (b).</span> No SVG is drawn for this map at any point. The requirement is an interactive tile, an <span class="notes-t-exact">&lt;img&gt;</span> cannot be one, and a static stand-in would be a third artefact to maintain for a worse result.</td></tr>
@@ -2027,7 +2027,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <tr><td><span class="notes-t-named">Does</span></td><td>why you are in this session, in one imperative clause</td><td>~8 words</td></tr>
           <tr><td><span class="notes-t-named">Do</span></td><td>the controls, in order, with the status each produces</td><td>1–3 steps, one sub-bullet each</td></tr>
           <tr><td><span class="notes-t-named">Leaves</span></td><td>what the next tile depends on, and the trap if it is missing</td><td>1–2 lines</td></tr>
-          <tr><td><span class="notes-t-named">Walkthrough</span></td><td>the step in <span class="notes-t-exact">the source on file</span> that owns the detail</td><td>—</td></tr>
+          <tr><td><span class="notes-t-named">Walkthrough</span></td><td>the step in <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> that owns the detail</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
@@ -2044,7 +2044,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — make the item visible to order planning at all</li>
           <li class="rux--list__item"><strong>Do</strong> - on the <strong>Clusters</strong> tab, add a row for the environment&#39;s planning cluster</li>
           <li class="rux--list__item"><strong>Leaves</strong> — a planning record in <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span>, <em>generated</em> and not finished: <em>Order Horizon</em> and <em>Plan Level</em> are still yours to set, and the horizon arrives at the current date. <strong>So the row is not the test.</strong> An item with a valid cluster row and an unset horizon is absent from the plan in exactly the way an item with no row is — which is why this feeds tile 2, where the horizon is set, rather than tile 3, where the absence is finally visible</li>
-          <li class="rux--list__item"><strong>Walkthrough</strong> — 0.5 · the steps are <span class="notes-t-exact">run-order-planning-for-one-item.md</span> 0.3–0.5</li>
+          <li class="rux--list__item"><strong>Walkthrough</strong> — 0.5 · the steps are <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> 0.3–0.5</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">buyfrom · Item - Purchase</span> <span class="notes-t-exact">tdipu0601m000</span> · stage 0 · step</p>
           <ul class="rux--list--unordered">
@@ -2076,7 +2076,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — create the demand, and approve it</li>
           <li class="rux--list__item"><strong>Do</strong> - <span class="notes-t-press" title="New (header)">New</span>, then <em>Sold-to Business Partner</em>, <em>Order Type</em>, <em>Planned Delivery Date</em>, <em>Sales Office</em>, <em>Currency</em>, <em>Site</em> and <em>Warehouse</em>, then <span class="notes-t-press">Save</span> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span> - <span class="notes-t-press" title="New (line)">New</span>, then <em>Item</em> and <em>Ordered Quantity</em>, then <span class="notes-t-press">Save</span> - <strong>Actions ➔ Approve</strong> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">In Process</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — an approved order. Approval is not what makes planning see it — tile 3 is — but tile 16 will not release without it</li>
-          <li class="rux--list__item"><strong>Walkthrough</strong> — 1.1–1.3 · order entry owned by <span class="notes-t-exact">ship-from-stock.md</span> 1.1–1.12</li>
+          <li class="rux--list__item"><strong>Walkthrough</strong> — 1.1–1.3 · order entry owned by <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> 1.1–1.12</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">16 · Release Sales Order Lines to Warehousing</span> <span class="notes-t-exact">tdsls4501m140</span> · stage 7 · step</p>
           <ul class="rux--list--unordered">
@@ -2084,7 +2084,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — hand the approved lines to Warehousing</li>
           <li class="rux--list__item"><strong>Do</strong> - select the order, then <strong>Actions ➔ Release ➔ Release to Warehousing…</strong> - Set <em>Upto Release Date</em> on or after the line&#39;s release date, leave the Options ticked, then <span class="notes-t-press">RELEASE</span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — a warehousing order carrying your sales order number. From here the activities of the warehousing procedure decide what happens, not the sales order</li>
-          <li class="rux--list__item"><strong>Walkthrough</strong> — 6.1 · owned by <span class="notes-t-exact">ship-from-stock.md</span> 2.1–2.8</li>
+          <li class="rux--list__item"><strong>Walkthrough</strong> — 6.1 · owned by <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> 2.1–2.8</li>
         </ul>
           <h3>5.3 Enterprise Planning</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">2 · Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span> · stage 2 · step</p>
@@ -2093,7 +2093,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — put the delivery date inside the item&#39;s order horizon</li>
           <li class="rux--list__item"><strong>Do</strong> - open the item, <strong>Horizons</strong> tab, read the <em>Order Horizon</em> date - If your delivery date is beyond it, raise the <em>Order Horizon</em> days until it is not</li>
           <li class="rux--list__item"><strong>Leaves</strong> — a horizon that covers your date. Enter days, then trust the date LN shows — it counts workdays on the warehouse&#39;s calendar, so it is never today plus your number</li>
-          <li class="rux--list__item"><strong>Walkthrough</strong> — 1.4–1.5 · owned by <span class="notes-t-exact">run-order-planning-for-one-item.md</span> phases 1–2</li>
+          <li class="rux--list__item"><strong>Walkthrough</strong> — 1.4–1.5 · owned by <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phases 1–2</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">3 · Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> · stage 2 · gate</p>
           <ul class="rux--list--unordered">
@@ -2175,7 +2175,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — move the components from the warehouse to the work centre</li>
           <li class="rux--list__item"><strong>Do</strong> - issue the materials for the order until <em>Actual Quantity</em> equals the estimated quantity. <em>Order Status</em> → <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></li>
           <li class="rux--list__item"><strong>Leaves</strong> — materials issued. How much of this you do by hand is configuration — <em>Direct Initiate Inventory Issue</em> and <em>Direct Process Warehouse Order Line</em> can do the unblocking for you, so their absence is not an error</li>
-          <li class="rux--list__item"><strong>Walkthrough</strong> — 5.4 · owned by <span class="notes-t-exact">manual-production-order-existing-master-data.md</span> 4.2–4.7</li>
+          <li class="rux--list__item"><strong>Walkthrough</strong> — 5.4 · owned by <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a> 4.2–4.7</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">15 · Report Operations Completed</span> <span class="notes-t-exact">tisfc0130m000</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
@@ -2343,7 +2343,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <table class="rux--data-table rux--data-table--md">
             <thead><tr><th scope="col"><div class="rux--table-header-label">Left off</div></th><th scope="col"><div class="rux--table-header-label">Why</div></th></tr></thead>
             <tbody>
-          <tr><td>Master data — item groups, item defaults, the items, BOM, routing, standard cost, component stock</td><td>Level 1 owns it, and <span class="notes-t-exact">the source on file</span> builds it. Drawing it twice is the duplication rule 5 exists to stop</td></tr>
+          <tr><td>Master data — item groups, item defaults, the items, BOM, routing, standard cost, component stock</td><td>Level 1 owns it, and <a class="rux--link" href="create-basic-test-items-and-defaults.html">Create test items</a> builds it. Drawing it twice is the duplication rule 5 exists to stop</td></tr>
           <tr><td>Invoicing and Financials</td><td><span class="notes-t-named">No session in either has evidence filed here</span>, and the spine walkthrough puts them out of scope by decision. The cash half of order-to-cash is left undrawn rather than guessed — this is the one place where an empty stage is the honest answer</td></tr>
           <tr><td>Cost closure</td><td><strong>Not documented for this release.</strong></td></tr>
           <tr><td>Every other parameter read</td><td>Two now have tiles of their own under D3; the rest belong to the sessions that own them</td></tr>
@@ -2356,12 +2356,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-9">
           <h2 id="t-9">9. Sources</h2>
           <ol class="rux--list--ordered">
-          <li class="rux--list__item"><span class="notes-t-exact">the source on file</span> — the spine. Every route, action, status and figure above is carried by one of its phases, named in section 5&#39;s <strong>Walkthrough step</strong> column. It adds nothing of its own.</li>
+          <li class="rux--list__item"><a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> — the spine. Every route, action, status and figure above is carried by one of its phases, named in section 5&#39;s <strong>Walkthrough step</strong> column. It adds nothing of its own.</li>
           <li class="rux--list__item"><strong>The </strong><span class="notes-t-exact">the source on file</span><strong> file for each code in </strong><span class="notes-t-exact">sources:</span> — session names, <span class="notes-t-exact">reached:</span> for the drill-ins, and the routes checked against the navigation extract by rule 12.</li>
           <li class="rux--list__item"><span class="notes-t-exact">the source on file</span><strong> and </strong><span class="notes-t-exact">the source on file</span> — measured 2026-09-09, and all 23 codes in <span class="notes-t-exact">sources:</span> settle against principle 3&#39;s test. Sixteen appear in one or both extracts. The seven that do not — <span class="notes-t-exact">cprrp1220m000</span>, <span class="notes-t-exact">tdpur4100m900</span>, <span class="notes-t-exact">tdsls4501m140</span>, <span class="notes-t-exact">tisfc0100s000</span>, <span class="notes-t-exact">whinh2100m100</span>, <span class="notes-t-exact">whinh3512m000</span>, <span class="notes-t-exact">whinh4630m000</span> — each have help exported from this environment, and each is written above as no-menu-entry or drill-in, which is what their absence means. One runs the other way: <span class="notes-t-exact">cprrp1200m000</span><strong> is in the extracts and has no help filed here</strong>, so its route is evidenced and its meaning rests on the walkthrough alone.</li>
         </ol>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 488bea5 · contract 10</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 9892f04 · contract 10</p>
       </div>
     </div>
   </div>

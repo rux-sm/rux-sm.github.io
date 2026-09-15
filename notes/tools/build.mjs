@@ -196,15 +196,15 @@ function token(t) {
       // is what a reader keeping their own notes needs from it.
       return `<svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>`;
 
-    // A LINK BETWEEN WALKTHROUGHS ARRIVES AS A `.md` FILENAME, because that is what
-    // the walkthrough is called in atlas. Nine of them exist across these seven and
-    // every one names a walkthrough rendered here. Emitted verbatim they are nine
-    // dead links — and a dead link looks exactly like a live one, so nothing
-    // on the page or in the gates would have said so. A link checker found
-    // them; `check-classes` and `check-structure` cannot see an href at all.
+    // A LINK BETWEEN PAGES ARRIVES AS A `.md` FILENAME, because that is what the
+    // document is called in atlas: a walkthrough, map, review or experiment, and
+    // on the private tier a concept. Emitted verbatim each would be a dead link
+    // — and a dead link looks exactly like a live one, so nothing on the page
+    // would say so. `check-links` reads hrefs; `check-classes` and
+    // `check-structure` cannot see one at all.
     //
-    // The rewrite is narrow: `<id>.md` where `<id>` is a walkthrough we are
-    // generating. Anything else is left alone, and a `.md` naming a walkthrough that
+    // The rewrite is narrow: `<id>.md` where `<id>` is a page we are
+    // generating. Anything else is left alone, and a `.md` naming a page that
     // does NOT exist stops the build rather than shipping a 404.
     case 'link': {
       let href = t.href;

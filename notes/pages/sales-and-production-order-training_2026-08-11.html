@@ -1260,7 +1260,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <h3 id="t-3.1">3.1 Ship from stock walkthrough</h3>
             <p class="notes-prose-measure">The selected warehouse-item row for item <span class="notes-t-exact">9010-2010</span> showed <strong>On Hand 966</strong>, <strong>On Order 60</strong>, <strong>Allocated 210</strong>, <strong>Blocked 0</strong>, and <strong>Economic Stock 816</strong> in <span class="notes-t-named">Warehouse - Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span>. After the walkthrough, <span class="notes-t-named">Inventory Transactions</span> <span class="notes-t-exact">whinr1510m000</span> showed an <strong>Issue 5.000</strong> transaction and <strong>Inventory After Transaction 961.000</strong>. This verifies the five-unit inventory decrease demonstrated in the recording.</p>
             <p class="notes-prose-measure">Evidence: <span class="notes-t-exact">the source on file</span>; <span class="notes-t-exact">the source on file</span>.</p>
-            <p class="notes-prose-measure">The process shape is independently supported by the Infor LN <strong>Sales Orders</strong> user guide and the Infor LN <strong>Outbound and Shipments</strong> user guide. The verified environment-specific route remains <span class="notes-t-exact">the source on file</span>; this meeting does not replace it.</p>
+            <p class="notes-prose-measure">The process shape is independently supported by the Infor LN <strong>Sales Orders</strong> user guide and the Infor LN <strong>Outbound and Shipments</strong> user guide. The verified environment-specific route remains <a class="rux--link" href="ship-from-stock.html">Ship from stock</a>; this meeting does not replace it.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.2">
             <h3 id="t-3.2">3.2 Warehousing procedures control automation</h3>
@@ -1271,7 +1271,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <h3 id="t-3.3">3.3 Learning method: trace defaults to their source</h3>
             <p class="notes-prose-measure">The trainer directed trainees to investigate why warehouses, prices, and automatic actions defaulted as they did, beginning with the item master and the session&#39;s Help control. This is a reusable consulting method: separate a value observed in this company from the vendor definition of the field, then use session help to establish meaning.</p>
             <p class="notes-prose-measure">No specific default source was settled in the meeting. Item data, business-partner data, order type, sales user profile, and user profile were proposed as questions to investigate, not conclusions.</p>
-            <p class="notes-prose-measure"><strong>Updated 2026-08-13 — one of these is now answered.</strong> For <strong>Sales Order Type</strong> specifically, <span class="notes-t-exact">tdsls4100m900</span>&#39;s help confirms the default comes from the order type assigned to the <span class="notes-t-named">Sold-to Business Partner</span> <span class="notes-t-exact">tccom4110s000</span>, falling back to the order type on the current user&#39;s <span class="notes-t-named">Sales User Profile</span> <span class="notes-t-exact">tdsls0139m000</span> if the customer has none. See <span class="notes-t-exact">sales-order-warehouse-allocation-training_2026-08-04.md</span> section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced.</p>
+            <p class="notes-prose-measure"><strong>Updated 2026-08-13 — one of these is now answered.</strong> For <strong>Sales Order Type</strong> specifically, <span class="notes-t-exact">tdsls4100m900</span>&#39;s help confirms the default comes from the order type assigned to the <span class="notes-t-named">Sold-to Business Partner</span> <span class="notes-t-exact">tccom4110s000</span>, falling back to the order type on the current user&#39;s <span class="notes-t-named">Sales User Profile</span> <span class="notes-t-exact">tdsls0139m000</span> if the customer has none. See <a class="rux--link" href="sales-order-warehouse-allocation-training_2026-08-04.html">Sales Order and Warehouse Allocation Training — Review</a> section 3.1, where this rule closes the same open question raised there. The other proposed sources (item data, general business-partner data) remain untraced.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.4">
             <h3 id="t-3.4">3.4 Production master-data experiment and BOM loop</h3>
@@ -1412,7 +1412,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </div>
           <p class="notes-prose-measure">Codes above were read from visible session status bars where captured and cross-checked against existing help/library references where available.</p>
         </section>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 488bea5 · contract 10</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 9892f04 · contract 10</p>
       </div>
     </div>
   </div>

@@ -59,23 +59,25 @@
           "v": ") past master-data creation: build a job shop bill of material and routing, calculate a standard cost, source component stock by purchasing and receiving, and run the resulting production order through to a finished-goods receipt. This is the walk "
         },
         {
-          "t": "literal",
-          "v": "create-basic-test-items-and-defaults.md"
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
         },
         {
           "t": "text",
           "v": " phases 6–10 and "
         },
         {
-          "t": "literal",
-          "v": "manual-production-order-existing-master-data.md"
+          "t": "link",
+          "v": "Production order",
+          "href": "manual-production-order-existing-master-data.md"
         },
         {
           "t": "text",
           "v": " phases 3–5 had been waiting on."
         }
       ],
-      "text": "Continue the bamboo test-item training case (BAM-ROD, BAM-SLEEVE, BAM-CHOP-PAIR) past master-data creation: build a job shop bill of material and routing, calculate a standard cost, source component stock by purchasing and receiving, and run the resulting production order through to a finished-goods receipt. This is the walk create-basic-test-items-and-defaults.md phases 6–10 and manual-production-order-existing-master-data.md phases 3–5 had been waiting on."
+      "text": "Continue the bamboo test-item training case (BAM-ROD, BAM-SLEEVE, BAM-CHOP-PAIR) past master-data creation: build a job shop bill of material and routing, calculate a standard cost, source component stock by purchasing and receiving, and run the resulting production order through to a finished-goods receipt. This is the walk Create test items phases 6–10 and Production order phases 3–5 had been waiting on."
     }
   ],
   "attendees": [

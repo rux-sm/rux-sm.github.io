@@ -3218,28 +3218,30 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "the source on file"
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
                 },
                 {
                   "t": "text",
                   "v": " — the walkthrough this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
                 }
               ],
-              "text": "the source on file — the walkthrough this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+              "text": "Plan to shipment — the walkthrough this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
             },
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "the source on file"
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
                   "v": ", phases 2 to 5 — the walked source of the four Deliver tiles."
                 }
               ],
-              "text": "the source on file, phases 2 to 5 — the walked source of the four Deliver tiles."
+              "text": "Ship from stock, phases 2 to 5 — the walked source of the four Deliver tiles."
             },
             {
               "tokens": [
@@ -3277,15 +3279,16 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "the source on file"
+                  "t": "link",
+                  "v": "Demand to shipment — session map",
+                  "href": "demand-to-shipment-session-map.md"
                 },
                 {
                   "t": "text",
                   "v": " — level 2, where the same chain is named session by session."
                 }
               ],
-              "text": "the source on file — level 2, where the same chain is named session by session."
+              "text": "Demand to shipment — session map — level 2, where the same chain is named session by session."
             }
           ]
         }

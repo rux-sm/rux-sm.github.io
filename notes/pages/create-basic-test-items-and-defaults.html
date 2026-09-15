@@ -1234,7 +1234,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </div>
 
       <p class="notes-prose-measure"><strong>Objective:</strong> create a small, isolated item family that proves two supply patterns — purchased components and a Job Shop finished product — and carry it through the engineering, costing, and stock data a quantity-one production order needs, so the finished item can be produced and received into the finished-goods warehouse.</p>
-      <p class="notes-prose-measure"><strong>Scope note:</strong> this walkthrough <strong>builds and qualifies the training case; it does not run the production order.</strong> The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is <span class="notes-t-exact">manual-production-order-existing-master-data.md</span>, which phase 10 hands off to. Do not restate its steps here.</p>
+      <p class="notes-prose-measure"><strong>Scope note:</strong> this walkthrough <strong>builds and qualifies the training case; it does not run the production order.</strong> The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a>, which phase 10 hands off to. Do not restate its steps here.</p>
       <p class="notes-prose-measure"><strong>The family this walkthrough builds is </strong>bamboo-test-item-family.md<strong>:</strong> three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This walkthrough says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it.</p>
       <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-glance">
       <h2 id="s-glance">At a glance</h2>
@@ -1260,7 +1260,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </div>
       <p class="notes-prose-measure"><strong>Why this order.</strong> Each phase makes what the next one needs. Item Defaults is keyed by item group, so groups come before defaults; an item inherits its subentities from the defaults, so defaults come before items; a BOM and a routing are written against an item, a cost is calculated from them, and stock is booked for a component that already has purchase data. Nothing here is alphabetical and nothing walks the menu.</p>
       <p class="notes-prose-measure"><strong>Best progress indicator:</strong> phases 0–5 — on the saved item, confirm the intended <em>Default Supply Source</em>; on its site row, confirm the expected subentity indicators. Phases 6–10 — the family is ready when the BOM and the routing are both <strong>Approved</strong> and used for planning and costing, and both components are on hand at the raw-material warehouse.</p>
-      <p class="notes-prose-measure"><strong>Where this walkthrough stops.</strong> Phase 10 hands a qualified training case to <span class="notes-t-exact">manual-production-order-existing-master-data.md</span>. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.</p>
+      <p class="notes-prose-measure"><strong>Where this walkthrough stops.</strong> Phase 10 hands a qualified training case to <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a>. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.</p>
       </section>
 
         <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-phases">
@@ -1711,7 +1711,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-10">
         <h3 id="p-10">Phase 10 — Qualify the training case</h3>
         
-        <p class="notes-prose-measure">This phase creates nothing. It checks the family against what <span class="notes-t-exact">manual-production-order-existing-master-data.md</span> asks for in its phase 0, and hands over.</p>
+        <p class="notes-prose-measure">This phase creates nothing. It checks the family against what <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a> asks for in its phase 0, and hands over.</p>
         <p class="notes-prose-measure"><strong>What LN is doing.</strong> Nothing new. This phase checks the family against what the production-order walkthrough&#39;s phase 0 asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough.</p>
         <div class="rux--data-table-container">
         <div class="rux--data-table-content">
@@ -1843,7 +1843,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </dl>
       </section>
       </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 488bea5 · contract 10</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 9892f04 · contract 10</p>
       </div>
     </div>
   </div>

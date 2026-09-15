@@ -72,23 +72,25 @@
               "v": " > The bamboo family as section 2 describes it. If any of it is missing, "
             },
             {
-              "t": "literal",
-              "v": "create-basic-test-items-and-defaults.md"
+              "t": "link",
+              "v": "Create test items",
+              "href": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
               "v": " builds it and "
             },
             {
-              "t": "literal",
-              "v": "run-order-planning-for-one-item.md"
+              "t": "link",
+              "v": "Run order planning",
+              "href": "run-order-planning-for-one-item.md"
             },
             {
               "t": "text",
               "v": " phase 0 adds the planning data."
             }
           ],
-          "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, create-basic-test-items-and-defaults.md builds it and run-order-planning-for-one-item.md phase 0 adds the planning data."
+          "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Run order planning phase 0 adds the planning data."
         },
         {
           "kind": "prose",
@@ -356,15 +358,16 @@
                       "v": "For any item that does not appear, add its cluster row per "
                     },
                     {
-                      "t": "literal",
-                      "v": "run-order-planning-for-one-item.md"
+                      "t": "link",
+                      "v": "Run order planning",
+                      "href": "run-order-planning-for-one-item.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 0.3–0.5"
                     }
                   ],
-                  "text": "For any item that does not appear, add its cluster row per run-order-planning-for-one-item.md steps 0.3–0.5"
+                  "text": "For any item that does not appear, add its cluster row per Run order planning steps 0.3–0.5"
                 },
                 {
                   "tokens": [
@@ -439,8 +442,9 @@
                       "v": " per "
                     },
                     {
-                      "t": "literal",
-                      "v": "ship-from-stock.md"
+                      "t": "link",
+                      "v": "Ship from stock",
+                      "href": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
@@ -455,7 +459,7 @@
                       "v": " = the warehouse from 0.2"
                     }
                   ],
-                  "text": "Create a sales order for BAM-CHOP-PAIR per ship-from-stock.md steps 1.1–1.11, with Warehouse = the warehouse from 0.2"
+                  "text": "Create a sales order for BAM-CHOP-PAIR per Ship from stock steps 1.1–1.11, with Warehouse = the warehouse from 0.2"
                 },
                 {
                   "tokens": [
@@ -2147,15 +2151,16 @@
                       "v": ", and issue the materials per "
                     },
                     {
-                      "t": "literal",
-                      "v": "manual-production-order-existing-master-data.md"
+                      "t": "link",
+                      "v": "Production order",
+                      "href": "manual-production-order-existing-master-data.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 4.2–4.7"
                     }
                   ],
-                  "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per manual-production-order-existing-master-data.md steps 4.2–4.7"
+                  "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per Production order steps 4.2–4.7"
                 },
                 {
                   "tokens": [
@@ -2439,15 +2444,16 @@
                       "v": " per "
                     },
                     {
-                      "t": "literal",
-                      "v": "ship-from-stock.md"
+                      "t": "link",
+                      "v": "Ship from stock",
+                      "href": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
                       "v": " steps 2.2–2.5"
                     }
                   ],
-                  "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per ship-from-stock.md steps 2.2–2.5"
+                  "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per Ship from stock steps 2.2–2.5"
                 },
                 {
                   "tokens": [
@@ -2880,8 +2886,9 @@
           "v": " run the bamboo family down the long route of "
         },
         {
-          "t": "literal",
-          "v": "order-to-shipment-overview.md"
+          "t": "link",
+          "v": "Demand to shipment",
+          "href": "order-to-shipment-overview.md"
         },
         {
           "t": "text",
@@ -2896,7 +2903,7 @@
           "v": " — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
         }
       ],
-      "text": "Objective: run the bamboo family down the long route of order-to-shipment-overview.md — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. Spine walkthrough — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
+      "text": "Objective: run the bamboo family down the long route of Demand to shipment — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. Spine walkthrough — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
     },
     {
       "kind": "prose",
@@ -4464,15 +4471,16 @@
                   "v": " branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to "
                 },
                 {
-                  "t": "literal",
-                  "v": "ship-from-stock.md"
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
                 },
                 {
                   "t": "text",
                   "v": ". MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
                 }
               ],
-              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to ship-from-stock.md. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
+              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to Ship from stock. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
             }
           ]
         },
@@ -4494,8 +4502,9 @@
                   "v": "Insert "
                 },
                 {
-                  "t": "literal",
-                  "v": "transfer-item-between-warehouses.md"
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "transfer-item-between-warehouses.md"
                 },
                 {
                   "t": "text",
@@ -4518,7 +4527,7 @@
                   "v": ", so this does not arise"
                 }
               ],
-              "text": "Insert transfer-item-between-warehouses.md between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
+              "text": "Insert Warehouse transfer between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
             }
           ]
         },
@@ -4562,8 +4571,9 @@
                   "v": "Skip step 3.6 and create the production order directly per "
                 },
                 {
-                  "t": "literal",
-                  "v": "manual-production-order-existing-master-data.md"
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
                 },
                 {
                   "t": "text",
@@ -4578,7 +4588,7 @@
                   "v": " — it is the fallback if step 3.6 fails"
                 }
               ],
-              "text": "Skip step 3.6 and create the production order directly per manual-production-order-existing-master-data.md phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
+              "text": "Skip step 3.6 and create the production order directly per Production order phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
             }
           ]
         }

@@ -1,9 +1,9 @@
-commit   488bea5dbdd01ad3f556853079004daaa8a7892b
-date     2026-09-14T03:27:38Z
-subject  refactor: Retire tests, move bamboo to config
+commit   9892f04fe60d5c5fbaf458bc7b90f3706bb1c7a3
+date     2026-09-15T05:49:01Z
+subject  fix(emit): Send named pages as links
 contract 10 
 tier     export
-sha256   4aeb11bf34be475573a07bda7d13cbd046d627dea8e5843f303b86e9cf910bad
+sha256   bc1bffcca5addf21ca30c9a0399cfa3fe763d45bed51b7582437c89dc0e76a7f
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

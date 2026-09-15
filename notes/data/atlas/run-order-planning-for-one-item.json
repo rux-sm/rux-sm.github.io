@@ -64,8 +64,9 @@
               "v": " BOM and routing, components, and stock data — the qualified training case from "
             },
             {
-              "t": "literal",
-              "v": "create-basic-test-items-and-defaults.md"
+              "t": "link",
+              "v": "Create test items",
+              "href": "create-basic-test-items-and-defaults.md"
             },
             {
               "t": "text",
@@ -96,7 +97,7 @@
               "v": "."
             }
           ],
-          "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from create-basic-test-items-and-defaults.md. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+          "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
         },
         {
           "kind": "prose",
@@ -536,15 +537,16 @@
                       "v": "Create a sales order for the finished item, following "
                     },
                     {
-                      "t": "literal",
-                      "v": "ship-from-stock.md"
+                      "t": "link",
+                      "v": "Ship from stock",
+                      "href": "ship-from-stock.md"
                     },
                     {
                       "t": "text",
                       "v": " phase 1 steps 1.1–1.11"
                     }
                   ],
-                  "text": "Create a sales order for the finished item, following ship-from-stock.md phase 1 steps 1.1–1.11"
+                  "text": "Create a sales order for the finished item, following Ship from stock phase 1 steps 1.1–1.11"
                 },
                 {
                   "tokens": [

@@ -17,6 +17,9 @@ rate is written here, because this repository is public.
   doesn't change it, as long as the days are the same.
 - The dead-mile discount lowers only the mileage charge. Driver pay counts dead
   miles like any other mile.
+- Dead miles are part of the trip's miles. More of them than the trip has
+  would make the mileage charge negative, so the dead miles field warns and the
+  Mileage note says to check it. The quote still counts them.
 - The rates page's one-driver rate for 1,000+ miles is not used.
 - The spreadsheet's local church choice is not offered, so its rate is not on
   the rates page.

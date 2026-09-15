@@ -267,12 +267,17 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Dead miles are part of the trip's miles. quote.js puts this
+                       field in Carbon's warning state while there are more of
+                       them than the trip has. -->
                   <div class="rux--form-item rux--text-input-wrapper">
                     <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
                     <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+                      <div class="rux--text-input__field-wrapper" id="scheduler-quote-dead-wrapper">
+                        <svg class="rux--text-input__invalid-icon rux--text-input__invalid-icon--warning" id="scheduler-quote-dead-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" hidden><use href="#i-warning--alt--filled"/></svg>
+                        <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="scheduler-quote-dead-warning">
                       </div>
+                      <div class="rux--form-requirement" id="scheduler-quote-dead-warning"></div>
                     </div>
                   </div>
                   <div class="rux--form-item rux--text-input-wrapper">

@@ -208,7 +208,17 @@
     const compute = () => {
       const n = driversChosen();
       const trip = column('trip');
-      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: num($('scheduler-quote-dead').value) }, rates);
+      const dead = num($('scheduler-quote-dead').value);
+      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead }, rates);
+      // Dead miles are part of the trip's miles, so more of them than the trip
+      // has makes the mileage charge wrong. The field warns and the Mileage
+      // note points to it; the quote still counts them.
+      const deadWarn = quote.days !== null && dead > quote.total;
+      $('scheduler-quote-dead-wrapper').classList.toggle('rux--text-input__field-wrapper--warning', deadWarn);
+      $('scheduler-quote-dead').classList.toggle('rux--text-input--warning', deadWarn);
+      // An svg has no `hidden` property, so the attribute is set directly.
+      $('scheduler-quote-dead-icon').toggleAttribute('hidden', !deadWarn);
+      $('scheduler-quote-dead-warning').textContent = deadWarn ? `More than the trip's ${plural(quote.total, 'mile', 'miles')}.` : '';
       // The second driver's pay. The formula reads only the two drivers'
       // combined miles and their last day, so any split of each day's miles
       // gives the same pay, and halves stand in for it.
@@ -229,6 +239,7 @@
       $('scheduler-quote-mileage').textContent = quote.amount === null ? '—' : money.format(quote.amount);
       $('scheduler-quote-mileage-note').textContent =
         quote.days === null ? 'No miles yet'
+        : deadWarn ? 'Check dead miles'
         : quote.local ? 'Local daily rate'
         : quote.free === null ? 'Past the free-day table, counted as $0'
         : `${plural(quote.free, 'free day', 'free days')} · ${plural(quote.extra, 'extra day', 'extra days')}`;

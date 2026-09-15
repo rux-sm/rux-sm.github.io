@@ -1176,10 +1176,12 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
    Both pages use Carbon's editorial style model, which Carbon names for
    low-density product screens such as checkout: centred at lg, the calculator
    in twelve of the grid's sixteen columns and the rates form in eight from the
-   same left edge. The calculator's form sits on the page, as a dedicated-page
-   form does, and beside it the quote is the one tile, sticky, so its lines and
-   total stay in view. Below lg the quote follows the form, and its total is a
-   bar pinned to the bottom of the screen until the page reaches the quote. */
+   same left edge. The calculator is three tiles in a row, in the order a quote
+   is made: the miles, the modifiers, and the quote, sticky. Each tile is as
+   tall as what it holds, so adding days grows only the miles tile. At md the
+   quote goes under the other two; below md the tiles stack. Below lg the
+   quote's total is a bar pinned to the bottom of the screen until the page
+   reaches the quote. */
 .scheduler-quote-title {
   display: flex;
   flex-wrap: wrap;
@@ -1188,35 +1190,29 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
 }
 .scheduler-quote {
-  --scheduler-quote-gap: var(--rux-spacing-07);
+  --scheduler-quote-gap: var(--rux-spacing-05);
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  grid-template-areas: "inputs quote";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "miles modifiers quote";
   align-items: start;
   gap: var(--scheduler-quote-gap);
 }
 /* Each of these has a display rule that beats the browser's [hidden]. */
 .scheduler-quote[hidden],
-.scheduler-quote-line[hidden],
-.scheduler-quote__fields[hidden] { display: none; }
-.scheduler-quote__inputs { grid-area: inputs; min-inline-size: 0; }
+.scheduler-quote-line[hidden] { display: none; }
+.scheduler-quote__miles { grid-area: miles; min-inline-size: 0; }
+.scheduler-quote__modifiers { grid-area: modifiers; min-inline-size: 0; }
 .scheduler-quote__quote {
   grid-area: quote;
+  min-inline-size: 0;
   position: sticky;
   inset-block-start: calc(3rem + var(--rux-spacing-07));
 }
-/* The quote's inset is 24px: the tile's 16 and 8 more. */
+/* Each tile's inset is 24px: the tile's 16 and 8 more. */
 .scheduler-quote__body { padding: var(--rux-spacing-03); }
 
-/* Carbon's spacing for a dedicated-page form: 32px between fields, 40px
-   between groups, which is the form's stack, and 48px before its action. */
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
 .scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
-.scheduler-quote__pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: var(--rux-spacing-07);
-}
 .scheduler-quote__fields {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
@@ -1229,26 +1225,25 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   gap: var(--rux-spacing-03);
   margin-block-start: var(--rux-spacing-05);
 }
-.scheduler-quote__clear { margin-block-start: var(--rux-spacing-03); }
 
 /* The miles: a column of days, each field as wide as a mileage reads, with
    the last day's remove button beside it. */
 .scheduler-quote-days { display: grid; gap: var(--rux-spacing-05); }
 .scheduler-quote-day {
   display: grid;
-  grid-template-columns: 12rem auto;
+  grid-template-columns: minmax(0, 12rem) auto;
   align-items: end;
   gap: var(--rux-spacing-03);
 }
-/* The options' own area, under the miles: a rule, then space. */
-.scheduler-quote__options {
-  padding-block-start: var(--rux-spacing-07);
-  border-block-start: 1px solid var(--rux-border-subtle-00);
-}
 .scheduler-quote-days .rux--text-input { font-variant-numeric: tabular-nums; }
 
-/* The quote: a line for each part of the price, then the total. */
+/* The quote: the miles and days, a rule, a line for each part of the price,
+   then the total. */
 .scheduler-quote-lines { display: grid; gap: var(--rux-spacing-05); margin: 0; }
+.scheduler-quote-lines--charges {
+  padding-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
 .scheduler-quote-line {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1297,9 +1292,8 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 
 @media (max-width: 65.98rem) {
   .scheduler-quote {
-    --scheduler-quote-gap: var(--rux-spacing-08);
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "inputs" "quote" "bar";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "miles modifiers" "quote quote" "bar bar";
   }
   .scheduler-quote__quote { position: static; }
   .scheduler-quote__total { display: none; }
@@ -1317,9 +1311,13 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
     border-block-start: 1px solid var(--rux-border-subtle-01);
   }
 }
-/* overrides.css takes the page's padding away below md, which suits the
-   full-bleed board. These pages are forms, so they keep a gutter. */
 @media (max-width: 41.98rem) {
+  .scheduler-quote {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "miles" "modifiers" "quote" "bar";
+  }
+  /* overrides.css takes the page's padding away below md, which suits the
+     full-bleed board. These pages are forms, so they keep a gutter. */
   .scheduler-quote-page {
     padding: var(--rux-spacing-05) max(var(--rux-spacing-05), var(--scheduler-safe-right)) var(--rux-spacing-07) max(var(--rux-spacing-05), var(--scheduler-safe-left));
   }

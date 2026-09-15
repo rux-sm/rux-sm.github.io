@@ -217,16 +217,10 @@
 
     const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
 
-    // Dead miles and other charges count only while their switch is on.
-    const extrasOn = () => $('scheduler-quote-extras').getAttribute('aria-checked') === 'true';
-
     const compute = () => {
       const n = driversChosen();
-      const extras = extrasOn();
-      $('scheduler-quote-extras-fields').hidden = !extras;
-
       const trip = column('trip');
-      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
+      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: num($('scheduler-quote-dead').value) }, rates);
       // The second driver's pay. The formula reads only the two drivers'
       // combined miles and their last day, so any split of each day's miles
       // gives the same pay, and halves stand in for it.
@@ -236,31 +230,34 @@
         driver2: half,
         drivers: 2,
       }, rates);
-      const other = extras ? num($('scheduler-quote-other').value) : 0;
+      const other = num($('scheduler-quote-other').value);
       const total = other + (quote.amount ?? 0) + (driver?.amount ?? 0);
 
-      const miles = plural(quote.total, 'mile', 'miles');
+      // The miles and days lead the quote, so the notes under the charges
+      // leave them out.
+      $('scheduler-quote-miles-out').textContent = count.format(quote.total);
+      $('scheduler-quote-days-out').textContent = count.format(quote.days ?? 0);
+
       $('scheduler-quote-mileage').textContent = quote.amount === null ? '—' : money.format(quote.amount);
       $('scheduler-quote-mileage-note').textContent =
         quote.days === null ? 'No miles yet'
-        : quote.local ? `${miles} · ${plural(quote.days, 'local day', 'local days')}`
-        : quote.free === null ? `${miles} · past the free-day table, counted as $0`
-        : `${miles} · ${plural(quote.days, 'day', 'days')} · ${plural(quote.free, 'free day', 'free days')} · ${plural(quote.extra, 'extra day', 'extra days')}`;
+        : quote.local ? 'Local daily rate'
+        : quote.free === null ? 'Past the free-day table, counted as $0'
+        : `${plural(quote.free, 'free day', 'free days')} · ${plural(quote.extra, 'extra day', 'extra days')}`;
 
       $('scheduler-quote-driver-line').hidden = !driver;
       if (driver) {
-        const driverMiles = `${plural(driver.total, 'mile', 'miles')} combined`;
         const meal = driver.meal == null ? '' : ` · meals ${money.format(driver.meal)} not included`;
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =
-          driver.days === null ? 'No driver miles yet'
-          : driver.band === 'under200' ? `${driverMiles} · under-200 rate${meal}`
-          : driver.band === 'under430' ? `${driverMiles} · 200-to-429 rate${meal}`
-          : driver.amount === null ? `${driverMiles} · past the free-day table, counted as $0`
-          : `${driverMiles} · ${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
+          driver.days === null ? 'No miles yet'
+          : driver.band === 'under200' ? `Under-200 rate${meal}`
+          : driver.band === 'under430' ? `200-to-429 rate${meal}`
+          : driver.amount === null ? 'Past the free-day table, counted as $0'
+          : `${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
       }
 
-      $('scheduler-quote-other-line').hidden = !extras;
+      $('scheduler-quote-other-line').hidden = other === 0;
       $('scheduler-quote-other-out').textContent = money.format(other);
 
       // Two totals, one showing at each width: the quote's own, and the bar's.
@@ -285,10 +282,7 @@
 
     form.addEventListener('input', compute);
     form.addEventListener('change', compute);
-    // js/form-controls.js flips the switch and says so with `rux:toggle`.
-    form.addEventListener('rux:toggle', compute);
     form.addEventListener('reset', () => setTimeout(() => {
-      window.Rux.formControls?.toggle($('scheduler-quote-extras-toggle'), false);
       dayCount = 1;
       $('scheduler-quote-day-rows').replaceChildren();
       drawDays();

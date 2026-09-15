@@ -16,7 +16,8 @@ customer requests, are rebuilt with Design here and open without a login.
 - **Each account has an owner switch and a list of apps.** The owner opens
   every page, with the switcher, and manages access. Any other account opens
   Home and the apps ticked for it, and a page of an app it lacks sends it Home,
-  or to its one app when it has only one.
+  or to its one app when it has only one. Home's tiles and the app switcher show
+  only the apps the account can open.
   An account with no owner switch and no apps is not let in.
 - **Access sits in the account's `app_metadata`** as `owner` and `apps`,
   Supabase's standard place for it, which the account's own login cannot

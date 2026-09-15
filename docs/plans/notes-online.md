@@ -47,8 +47,6 @@ files, and can be read by Claude in a session.
   or a repository.
 - **The walk form on the private preview stays** until the online one
   replaces it.
-- **The work sits on a `notes-online` branch in both repositories** until the
-  migration is applied and rux has tried it signed in.
 
 ## Questions
 
@@ -61,8 +59,8 @@ files, and can be read by Claude in a session.
 
 - [ ] rux stores the project's secret key in the Keychain for the pull.
 - [ ] Signed in, on the Mac and on the phone: send a review, answer an
-      experiment on both, walk a few steps with a screenshot, run
-      `python3 tools/pull.py`, then merge both `notes-online` branches.
+      experiment on both, walk a few steps with a screenshot, and run
+      `python3 tools/pull.py`.
 - [ ] Carry each document's review status into atlas's export and show it on
       every Notes page, once the question is answered.
 - [ ] Retire the private-preview walk form and its save service.

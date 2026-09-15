@@ -34,8 +34,13 @@
   const allows = (granted, path) =>
     canEnter(granted) && (granted.owner || appOf(path) === '' || granted.apps.includes(appOf(path)));
   const landing = granted => (!granted.owner && granted.apps.length === 1 ? `/${granted.apps[0]}/` : '/');
+  // The user of the login this browser keeps, or null.
+  const storedUser = () => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
+    catch { return null; }
+  };
   window.Rux = window.Rux || {};
-  window.Rux.access = { accessOf, appOf, canEnter, allows, landing };
+  window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser };
 
   const open = () => document.documentElement.setAttribute('data-rux-open', '');
   const path = location.pathname;
@@ -46,9 +51,7 @@
     return;
   }
 
-  let user = null;
-  try { user = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
-  catch { /* storage blocked or unreadable: no login to read */ }
+  const user = storedUser();
   const granted = accessOf(user);
   if (!user || user.is_anonymous || !canEnter(granted)) {
     location.replace(`/login/?next=${encodeURIComponent(path + location.search + location.hash)}`);

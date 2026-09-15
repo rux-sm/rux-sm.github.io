@@ -499,7 +499,7 @@
       return;
     }
     for (const btn of headerBtns) btn.hidden = false;
-    if (switcherBtn) switcherBtn.hidden = !staff.sees_all_apps;
+    if (switcherBtn) switcherBtn.hidden = false;
     client = account.client;
     try {
       await load();

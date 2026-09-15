@@ -13,17 +13,16 @@ files in its `inbox/`, and can be read by Claude in a session.
 
 ## Decisions
 
-- **The tools appear only for rux's staff account**, a signed-in session whose
-  profile has `sees_all_apps`. A visitor sees the published pages and nothing
-  else. Sign-in itself is the staff sign-in plan's: this plan starts once
-  `account.js` offers `signInStaff`, `staffProfile` and `onAuthChange`.
+- **The tools appear only for the owner**, the account with the owner switch
+  (`is_owner()`). Anyone else with Notes ticked sees the published pages and
+  nothing else. Logging in is the site's log-in page.
 - **Every published page shows its review status:** Not reviewed, Approved
   with its date, or Changes requested. Unreviewed content publishes, labelled.
 - **A review box at the foot of every page** records Approve, or Request
   changes with feedback. A review never edits a document: a session applies
   it, and a changed document returns to Not reviewed.
 - **Experiment answers save to rux's account**, and the browser copy stays for
-  anyone not signed in.
+  anyone who is not the owner.
 - **The walk form works online**, with screenshots uploaded from any device.
   Each entry carries its time, so a walk is still written on the day it was
   walked, and the walk pins the atlas commit the published pages were built
@@ -48,8 +47,8 @@ None open.
 ## Tasks
 
 - [ ] Migration `notes_online_add`: tables for reviews, experiment answers,
-      walks and walk steps; access rules for the staff account with
-      `sees_all_apps`; a private bucket for screenshots.
+      walks and walk steps; access rules for the owner through `is_owner()`;
+      a private bucket for screenshots.
 - [ ] Carry each document's review status into atlas's export and show it on
       every Notes page.
 - [ ] Add the review box to every Notes page, saving to the reviews table.

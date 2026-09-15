@@ -81,12 +81,10 @@ None open.
 
 ## Tasks
 
-- [ ] Remove the scheduler's own login form, `sees_all_apps` and the
-      `rux.team-account` record from the site.
-- [ ] Replace `sees_all_apps` with the owner switch and ticked apps in the
-      staff sign-in and Notes online plans.
+- [ ] Remove the scheduler's own login form, and `signInStaff` with it.
 - [ ] Build the driver, maintenance, document and request pages in
       `/scheduler/share/`, each tested against a real link without saving.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making
       code to the new addresses.
-- [ ] Migration `profiles_sees_all_apps_drop`, once nothing reads the column.
+- [ ] Migration `profiles_sees_all_apps_drop`: drop the column, which no code
+      reads, and its key from `my_staff_profile()`.

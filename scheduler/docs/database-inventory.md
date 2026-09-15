@@ -94,7 +94,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
 | `maintenance_schedule_shares` | `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements and billing defaults live here. |
-| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; `sees_all_apps`, which the site still reads until the owner switch in `app_metadata` replaces it. Not `platform.profiles`. |
+| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; `sees_all_apps`, which no code reads; the owner switch in `app_metadata` decides instead. Not `platform.profiles`. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
 | `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
 | `dev_notes` | dev notes popover | dropped |

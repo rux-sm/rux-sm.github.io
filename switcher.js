@@ -8,6 +8,15 @@
   try { apps = (await (await fetch('/switcher.json', { cache: 'no-store' })).json()).apps; }
   catch { return; }
   if (!Array.isArray(apps) || !apps.length) return;
+  // THE LIST FOLLOWS THE ACCOUNT'S ACCESS: Home and the apps the login in this
+  // browser can open, by window.Rux.access from /funnel.js. With no login, as
+  // in a local preview without the lock, every app is listed.
+  const access = window.Rux?.access;
+  const user = access?.storedUser();
+  if (user) {
+    const granted = access.accessOf(user);
+    apps = apps.filter(a => a.path === '/' || access.allows(granted, a.path));
+  }
   const here = location.pathname;
   const current = a => a.path === '/' ? here === '/' || here === '/index.html' : here.startsWith(a.path);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

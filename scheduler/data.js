@@ -4375,11 +4375,11 @@
     document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
   ].filter(Boolean);
   let started = false;
-  // The menu and account buttons are for a logged-in staff account; the app
-  // switcher only for one whose profile sees every app.
+  // The menu, account and switcher buttons are for a logged-in staff account;
+  // /switcher.js lists only the apps that account can open.
   const showHeader = staff => {
     for (const btn of headerBtns) btn.hidden = !staff;
-    if (switcherBtn) switcherBtn.hidden = !staff?.sees_all_apps;
+    if (switcherBtn) switcherBtn.hidden = !staff;
   };
 
   const loginSay = text => {

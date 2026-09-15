@@ -9,9 +9,9 @@
    staff session uses these pages with the profile this browser keeps.
 
    WITH A STAFF SESSION the name and theme sync to platform.profiles, cloud
-   first on load and local edits pushed up after, debounced. A team account,
-   one whose profile lacks sees_all_apps, has the app switcher hidden. Which
-   pages any account opens is /funnel.js's.
+   first on load and local edits pushed up after, debounced. Which pages any
+   account opens is /funnel.js's, and which apps the switcher lists is
+   /switcher.js's.
 
    THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS. Both are
    meant to sit in client code; the paired secret keys stay in the Supabase
@@ -46,7 +46,6 @@
   // STORAGE_KEY is supabase-js's own default for this project, which
   // /funnel.js reads by name, so the two files cannot drift.
   const STORAGE_KEY = 'sb-udnmqhayzhrbltxzzhjw-auth-token';
-  const TEAM_KEY = 'rux.team-account';
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: STORAGE_KEY } });
   const profiles = () => sb.schema('platform').from('profiles');
@@ -160,18 +159,9 @@
     if (!staff || staffReady) return;
     staffReady = true;
 
-    // A team account has no switcher. Which pages any account opens is
-    // /funnel.js's.
-    if (!staff.sees_all_apps) {
-      try { localStorage.setItem(TEAM_KEY, session.user.id); } catch {}
-      document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
-      document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
-    } else {
-      try { localStorage.removeItem(TEAM_KEY); } catch {}
-    }
-    if (staff.sees_all_apps && panelButton) {
-      // THE ONE DOOR INTO THE FULLER ACCOUNT PAGE, for the account that sees
-      // every app; a team account has no reason to leave the scheduler.
+    if (panelButton) {
+      // The account panel's door into the Account page, which every account
+      // with access opens.
       const link = document.createElement('a');
       link.className = 'rux--link rux--link--inline';
       link.href = '/account/';
@@ -215,7 +205,6 @@
   // awaited inside its own auth callback.
   sb.auth.onAuthStateChange((event, next) => {
     if (event === 'SIGNED_IN') setTimeout(() => setupStaff(next), 0);
-    if (event === 'SIGNED_OUT') try { localStorage.removeItem(TEAM_KEY); } catch {}
   });
 
   let session;

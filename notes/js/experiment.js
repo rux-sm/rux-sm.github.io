@@ -41,10 +41,18 @@
   };
   let state = load();
   let timer = null;
+  // `t` is when the worksheet last changed here, so a copy kept elsewhere
+  // (online.js keeps one in the owner's account) can tell which is newer.
+  const listeners = [];
+  const store = () => {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* read-only page */ }
+  };
   const save = () => {
+    state.t = Date.now();
     clearTimeout(timer);
     timer = setTimeout(() => {
-      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* read-only page */ }
+      store();
+      for (const fn of listeners) fn();
     }, 200);
   };
 
@@ -117,21 +125,31 @@
   };
 
   // ---- hydrate ------------------------------------------------------------
+  // `paint` puts the state into the controls. It runs once here, and again
+  // when a newer copy of the worksheet replaces this browser's.
+  const paint = () => {
+    for (const ta of answers) {
+      const saved = state.a[ta.dataset.notesAnswer];
+      ta.value = typeof saved === 'string' ? saved : (ta.dataset.notesGiven ?? '');
+      autosize(ta);
+    }
+    for (const box of checks) box.checked = Boolean(state.c[box.dataset.notesCheck]);
+    for (const box of passes) box.checked = Boolean(state.p[box.dataset.notesPass]);
+    if (notes) { notes.value = state.notes || ''; autosize(notes); }
+    refresh();
+    // Re-open what was open, only where the space still holds text.
+    for (const btn of reveals) setRevealed(btn, Boolean(state.r[btn.dataset.notesReveal]) && !btn.disabled);
+  };
   for (const ta of answers) {
-    const saved = state.a[ta.dataset.notesAnswer];
-    if (typeof saved === 'string') ta.value = saved;
-    autosize(ta);
     ta.addEventListener('input', () => {
       state.a[ta.dataset.notesAnswer] = ta.value;
       autosize(ta); save(); refresh();
     });
   }
   for (const box of checks) {
-    box.checked = Boolean(state.c[box.dataset.notesCheck]);
     box.addEventListener('change', () => { state.c[box.dataset.notesCheck] = box.checked; save(); refresh(); });
   }
   for (const box of passes) {
-    box.checked = Boolean(state.p[box.dataset.notesPass]);
     box.addEventListener('change', () => { state.p[box.dataset.notesPass] = box.checked; save(); refresh(); });
   }
   for (const btn of reveals) {
@@ -142,15 +160,9 @@
     });
   }
   if (notes) {
-    notes.value = state.notes || '';
-    autosize(notes);
     notes.addEventListener('input', () => { state.notes = notes.value; autosize(notes); save(); });
   }
-  refresh();
-  // Re-open what was open, only where the space still holds text.
-  for (const btn of reveals) {
-    if (state.r[btn.dataset.notesReveal] && !btn.disabled) setRevealed(btn, true);
-  }
+  paint();
   window.addEventListener('resize', () => { for (const ta of [...answers, notes].filter(Boolean)) autosize(ta); });
 
   // ---- export -------------------------------------------------------------
@@ -229,14 +241,26 @@
     } catch { btn.textContent = 'Copy failed'; }
   });
 
+  // Clearing is a change like any other, so a copy kept elsewhere clears too.
   root.querySelector('[data-notes-clear]')?.addEventListener('click', () => {
     if (!window.confirm('Clear every answer, tick and note on this page? Export first if you want to keep them.')) return;
     state = empty();
-    try { localStorage.removeItem(KEY); } catch { /* nothing to remove */ }
-    for (const ta of answers) { ta.value = ta.dataset.notesGiven ?? ''; autosize(ta); }
-    for (const box of [...checks, ...passes]) box.checked = false;
-    if (notes) { notes.value = ''; autosize(notes); }
-    for (const btn of reveals) setRevealed(btn, false);
-    refresh();
+    save();
+    paint();
   });
+
+  // ---- the worksheet for online.js ----------------------------------------
+  // The owner's tools keep a copy in the account: they read the state and its
+  // Markdown, hear each save, and put a newer copy in place of this one.
+  window.Notes = window.Notes || {};
+  window.Notes.worksheet = {
+    state: () => JSON.parse(JSON.stringify(state)),
+    markdown,
+    onSave: fn => { listeners.push(fn); },
+    replace: next => {
+      state = { ...empty(), ...next };
+      store();
+      paint();
+    },
+  };
 })();

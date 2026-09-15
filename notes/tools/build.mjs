@@ -773,7 +773,13 @@ ${items}
         </ul>
       </li>
 
-      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
+${PRIVATE ? '' : `      <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
+           owner's log-in. The private preview has its own walk form instead. -->
+      <li class="rux--side-nav__item" data-notes-owner hidden>
+        <a class="rux--side-nav__link" href="${activeId === null ? 'pages/' : ''}walk.html"${activeId === 'walk' ? ' aria-current="page"' : ''}><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
+      </li>
+
+`}      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
            get their own group because a learner opens one to predict, record
            and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item${practiceOpen ? ' rux--side-nav__item--active' : ''}">
@@ -832,12 +838,69 @@ const REVISION = (() => {
 const revisionLine = () => REVISION
   ? `<p class="rux--type-caption-01 notes-revision">Built from ${esc(REVISION)}</p>`
   : '';
+// The whole commit, for what the owner sends from a page: a review or a walk
+// records the build it was made on, and atlas resolves it as a commit.
+const PIN_COMMIT = (() => {
+  const pin = join(DATA, 'PIN');
+  return existsSync(pin) ? /^commit\s+([0-9a-f]{40})/m.exec(readFileSync(pin, 'utf8'))?.[1] ?? null : null;
+})();
+
+// THE REVIEW BOX, at the foot of every document page and hidden. js/online.js
+// shows it to the owner alone; for everyone else, and on a page with no
+// log-in, it stays hidden, so it is inert markup. `hidden` sits on a plain
+// wrapper because a stack class sets its own display.
+const reviewBox = () => `
+        <div data-notes-owner data-notes-review hidden>
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-review">
+          <h2 id="h-review" class="rux--type-productive-heading-03">Review</h2>
+          <p class="rux--type-body-compact-01" data-notes-review-last>Reading the last review</p>
+          <form id="notes-review-form">
+            <div class="rux--stack-vertical rux--stack-scale-5">
+              <div class="rux--form-item">
+                <fieldset class="rux--radio-button-group rux--radio-button-group--label-right">
+                  <legend class="rux--label">Decision</legend>
+                  <div class="rux--radio-button-wrapper">
+                    <input id="notes-review-approve" class="rux--radio-button" type="radio" name="notes-review-decision" value="approve">
+                    <label for="notes-review-approve" class="rux--radio-button__label">
+                      <span class="rux--radio-button__appearance"></span>
+                      <span class="rux--radio-button__label-text">Approve</span>
+                    </label>
+                  </div>
+                  <div class="rux--radio-button-wrapper">
+                    <input id="notes-review-changes" class="rux--radio-button" type="radio" name="notes-review-decision" value="changes">
+                    <label for="notes-review-changes" class="rux--radio-button__label">
+                      <span class="rux--radio-button__appearance"></span>
+                      <span class="rux--radio-button__label-text">Request changes</span>
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="rux--form-item">
+                <div class="rux--text-area__label-wrapper">
+                  <label class="rux--label" for="notes-review-feedback">What should change</label>
+                </div>
+                <div class="rux--text-area__wrapper">
+                  <textarea id="notes-review-feedback" class="rux--text-area" rows="3"></textarea>
+                  <span class="rux--text-area__counter-alert" role="alert"></span>
+                </div>
+                <div class="rux--form__helper-text">Needed to request changes. The page changes only once a session applies it.</div>
+              </div>
+              <div>
+                <button type="submit" class="rux--btn rux--btn--primary" id="notes-review-send" disabled>Send review</button>
+              </div>
+              <p class="rux--form__helper-text" id="notes-review-status" role="status"></p>
+            </div>
+          </form>
+        </section>
+        </div>`;
 
 // SINCE 2026-09-10 EVERY Design RESOURCE IS
 // ABSOLUTE, `/design/…`, regardless of a page's own depth -- this project
 // vendors no copy. `up` still governs this project's OWN relative paths:
 // brand/, the two delta stylesheets, and a page's own scripts.
-function page({ title, site, activeId, body, depth, scripts = [] }) {
+// `doc` is the document a page shows, which is what a review names; a page
+// that is not one document, like the walk page, passes null and gets no box.
+function page({ title, site, activeId, body, depth, scripts = [], doc = activeId }) {
   const up = depth ? '../' : '';
   return `<!doctype html>
 <html lang="en" data-theme="white">
@@ -892,6 +955,17 @@ function page({ title, site, activeId, body, depth, scripts = [] }) {
    children in a narrow column. Plain class, not a \`rux--\` one: check-classes
    ignores non-rux-- names, so an invented \`rux--\` one would be unpoliced. */
 .notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* THE WALK PAGE. The form keeps a reading width, and the step comes before the
+   progress list so a phone shows the step first; from lg the list moves to the
+   step's left. */
+.notes-walk-form { max-inline-size: 40rem; }
+.notes-walk-run { display: grid; gap: 2rem; grid-template-columns: minmax(0, 40rem); }
+@media (min-width: 66rem) {
+  .notes-walk-run { grid-template-columns: 16rem minmax(0, 40rem); }
+  .notes-walk-progress { grid-column: 1; grid-row: 1; }
+  .notes-walk-step { grid-column: 2; grid-row: 1; }
+}
 
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
@@ -1922,11 +1996,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 ${nav(site, activeId)}
 </header>
 
-<main id="main-content" class="rux--content">
+<main id="main-content" class="rux--content"${doc ? ` data-notes-page="${esc(doc)}"` : ''}${PIN_COMMIT ? ` data-notes-commit="${PIN_COMMIT}"` : ''}>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
 ${body}
+${doc ? reviewBox() : ''}
 ${revisionLine()}
       </div>
     </div>
@@ -1938,6 +2013,7 @@ ${scripts.map(s => `<script src="${up}${s}"></script>`).join('\n')}
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
+<script src="${up}js/online.js"></script>
 </body>
 </html>
 `;
@@ -2221,7 +2297,7 @@ function exercisePage(e, site) {
               <div class="rux--text-area__wrapper">
                 <textarea id="notes-notes" class="rux--text-area" rows="6" data-notes-notes placeholder="Anything worth writing down as you go"></textarea>
               </div>
-              <div class="rux--form__helper-text">Saved in this browser only, with your answers. Export to keep or send them.</div>
+              <div class="rux--form__helper-text" data-notes-sync>Saved in this browser only, with your answers. Export to keep or send them.</div>
             </div>
             <div class="notes-ex-actions">
               <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export answers</button>
@@ -2749,7 +2825,8 @@ function guidePage(g, site) {
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated ${esc(g.updated)}</span></span>
             ${issuesTag(g.openIssues ?? 0)}
           </div>
-          <p class="rux--type-body-02">${esc(g.module)}</p>
+          <p class="rux--type-body-02">${esc(g.module)}</p>${PRIVATE ? '' : `
+          <p data-notes-owner hidden><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="walk.html#${esc(g.id)}">Walk this walkthrough</a></p>`}
         </div>
 
       ${sections(front)}
@@ -2773,6 +2850,182 @@ function guidePage(g, site) {
     body: `<div data-notes-doc="${esc(g.id)}">${body}
       </div>`, depth: 1,
     scripts: ['js/walkthrough.js'] });
+}
+
+// THE WALK PAGE, the owner's: one run of a walkthrough, one step at a time,
+// saved to the account as it goes by js/walk.js. It carries the walkthroughs'
+// ids and titles only; a walk reads its steps from data/atlas/ when it opens.
+// Published builds only -- the private preview keeps its own walk form, which
+// writes into atlas directly. The step comes before the progress list, so a
+// phone shows the step first; at lg width the list moves to its left.
+function walkPage(site) {
+  const list = JSON.stringify(site.walkthroughs.map(g => ({ id: g.id, title: g.title })))
+    .replace(/</g, '\\u003c');
+  const body = `        <div class="rux--stack-vertical rux--stack-scale-5">
+          <h1 id="walk-title">Walk</h1>
+          <p class="rux--type-body-02" id="walk-gate">Checking your log-in</p>
+          <div id="walk-message" hidden>
+            <div class="rux--inline-notification rux--inline-notification--error" role="status">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__title">Not saved</div>
+                  <div class="rux--inline-notification__subtitle" id="walk-message-text"></div>
+                </div>
+              </div>
+              <button type="button" class="rux--inline-notification__close-button" aria-label="Close" id="walk-message-close">
+                <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="walk-start" hidden>
+          <section class="notes-walk-form rux--stack-vertical rux--stack-scale-7" aria-labelledby="walk-start-h">
+            <h2 id="walk-start-h">Start a walk</h2>
+            <form id="walk-start-form">
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <div class="rux--form-item">
+                  <div class="rux--select rux--layout--size-md">
+                    <label class="rux--label" for="walk-walkthrough">Walkthrough</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="walk-walkthrough" class="rux--select-input" required></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper">
+                    <label class="rux--label" for="walk-company">Company</label>
+                  </div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="walk-company" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" inputmode="numeric">
+                    </div>
+                    <div class="rux--form__helper-text">As the LN status bar shows it.</div>
+                  </div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper">
+                    <label class="rux--label" for="walk-user">User</label>
+                  </div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="walk-user" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="rux--form__helper-text">As the LN status bar shows it.</div>
+                  </div>
+                </div>
+                <div>
+                  <button type="submit" class="rux--btn rux--btn--primary">Start</button>
+                </div>
+              </div>
+            </form>
+            <div id="walk-resume-section" hidden>
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <h2 id="walk-resume-h">Continue a walk</h2>
+                <form id="walk-resume-form">
+                  <div class="rux--stack-vertical rux--stack-scale-7">
+                    <div class="rux--form-item">
+                      <div class="rux--select rux--layout--size-md">
+                        <label class="rux--label" for="walk-resume">Today's walks</label>
+                        <div class="rux--select-input__wrapper">
+                          <select id="walk-resume" class="rux--select-input"></select>
+                          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <button type="submit" class="rux--btn rux--btn--secondary">Continue</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div id="walk-run" hidden>
+          <div class="notes-walk-run">
+            <section class="notes-walk-step" aria-labelledby="walk-step-h">
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <div class="rux--tile">
+                  <div class="rux--stack-vertical rux--stack-scale-5">
+                    <div>
+                      <p id="walk-where"></p>
+                      <h2 class="rux--type-heading-04" id="walk-step-h" tabindex="-1"></h2>
+                    </div>
+                    <div>
+                      <p>Do this</p>
+                      <p class="rux--type-heading-compact-02" id="walk-do"></p>
+                    </div>
+                    <div>
+                      <p>You should see</p>
+                      <p class="rux--type-heading-compact-02" id="walk-see"></p>
+                    </div>
+                  </div>
+                </div>
+                <form id="walk-step-form">
+                  <div class="rux--stack-vertical rux--stack-scale-7">
+                    <div class="rux--form-item">
+                      <div class="rux--text-area__label-wrapper">
+                        <label class="rux--label" for="walk-actual">What happened</label>
+                      </div>
+                      <div class="rux--text-area__wrapper">
+                        <textarea id="walk-actual" class="rux--text-area" rows="3"></textarea>
+                        <span class="rux--text-area__counter-alert" role="alert"></span>
+                      </div>
+                    </div>
+                    <div class="rux--form-item">
+                      <div class="rux--text-area__label-wrapper">
+                        <label class="rux--label" for="walk-notes">Notes</label>
+                      </div>
+                      <div class="rux--text-area__wrapper">
+                        <textarea id="walk-notes" class="rux--text-area" rows="3"></textarea>
+                        <span class="rux--text-area__counter-alert" role="alert"></span>
+                      </div>
+                      <div class="rux--form__helper-text">Errors, comments, and how the map tile helped.</div>
+                    </div>
+                    <div class="rux--form-item rux--text-input-wrapper">
+                      <div class="rux--text-input__label-wrapper">
+                        <label class="rux--label" for="walk-what">What the screenshot shows</label>
+                      </div>
+                      <div class="rux--text-input__field-outer-wrapper">
+                        <div class="rux--text-input__field-wrapper">
+                          <input id="walk-what" class="rux--text-input" type="text" autocomplete="off">
+                        </div>
+                        <div class="rux--form__helper-text">Optional. Becomes part of the file name.</div>
+                      </div>
+                    </div>
+                    <div class="rux--form-item">
+                      <p class="rux--file--label">Screenshots</p>
+                      <div class="rux--file">
+                        <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="walk-drop">Choose a screenshot, or drop or paste one here</button>
+                        <label class="rux--visually-hidden" for="walk-file">Screenshot</label>
+                        <input id="walk-file" type="file" accept="image/png,image/jpeg" class="rux--file-input rux--visually-hidden" tabindex="-1">
+                      </div>
+                      <ul class="rux--list--unordered" id="walk-shots" hidden></ul>
+                    </div>
+                  </div>
+                </form>
+                <p class="rux--form__helper-text" id="walk-status" role="status"></p>
+                <div class="rux--btn-set">
+                  <button type="button" class="rux--btn rux--btn--secondary" id="walk-back">Back</button>
+                  <button type="button" class="rux--btn rux--btn--primary" id="walk-next">Next</button>
+                </div>
+                <div>
+                  <button type="button" class="rux--btn rux--btn--ghost" id="walk-exit">Save and exit</button>
+                </div>
+              </div>
+            </section>
+            <div class="notes-walk-progress">
+              <ul class="rux--progress rux--progress--vertical" id="walk-progress"></ul>
+            </div>
+          </div>
+        </div>
+        <script type="application/json" id="walk-walkthroughs">${list}</script>`;
+  return page({ title: 'Walk — Notes', site, activeId: 'walk', body, depth: 1, doc: null,
+    scripts: ['js/walk.js'] });
 }
 
 // ---------------------------------------------------------------- build
@@ -2923,6 +3176,11 @@ for (const c of concepts) {
 for (const r of references) {
   const file = join(OUT_DIR, `${r.id}.html`);
   writeFileSync(file, referencePage(r, site));
+  written.push(file);
+}
+if (!PRIVATE) {
+  const file = join(OUT_DIR, 'walk.html');
+  writeFileSync(file, walkPage(site));
   written.push(file);
 }
 

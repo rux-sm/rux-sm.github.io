@@ -18,6 +18,14 @@ question with a key can reveal it once something has been written. What a
 learner types stays in their own browser, and the rail exports it as Markdown.
 `js/experiment.js` is the whole of that.
 
+**For the owner, signed in,** `js/online.js` shows what every page carries
+hidden: a review box at its foot, which records Approve or Request changes,
+and a link to the walk page, `pages/walk.html`, where `js/walk.js` saves a
+walk and its screenshots as it goes. It also keeps an experiment's worksheet in
+the account, so another device opens the same answers. All of it is kept in
+`platform.notes_*` and a private bucket that only the owner can reach, and
+atlas's `tools/pull.py` brings it into atlas.
+
 ## How pages are made
 
 1. `sh tools/sync-export.sh` copies atlas's **export tier** into `data/atlas/`

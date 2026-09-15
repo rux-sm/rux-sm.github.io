@@ -61,10 +61,9 @@ rux-ui still uploads them, into `trip_documents` and the public
 - **The Files tab carries the Itinerary not needed switch,** above the list,
   writing `itinerary_not_needed` with the editor's Save and its `updated_at`
   check, like every other field.
-- **Documents are read, not written.** Upload, replace and delete wait for
-  Design's file uploader and for the trip documents' storage to be closed,
-  both on the status list; rux-ui keeps doing them. Closing the storage
-  changes the panel's fetch to a signed address.
+- **Documents are read here, not written.** Upload, replace and delete are
+  `docs/plans/scheduler-trip-files.md`. Closing the storage changes the
+  panel's fetch to a signed address.
 - **The board reads `itinerary_not_needed` with the trip and `file_name` and
   `file_path` with each document,** and makes no new query: the documents
   already come with the trips.

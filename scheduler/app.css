@@ -684,19 +684,6 @@ button.scheduler-row-head__num {
    header is never hidden, because the switch is in it. */
 .scheduler-list-body[hidden] { display: none; }
 
-.scheduler-billing-section { margin-block-start: var(--rux-spacing-05); }
-
-/* ── Section dividers ────────────────────────────────────────────────────────
-   A 1px rule parts the billing tab's sections. The section's top margin
-   becomes padding under the rule, and 8px under the content keeps a field's
-   own bottom border off the next rule. */
-.scheduler-billing-rule {
-  margin-block-start: 0;
-  border-block-start: 1px solid var(--rux-border-subtle-01);
-  padding-block-start: var(--rux-spacing-05);
-  padding-block-end: var(--rux-spacing-03);
-}
-
 /* The add button is the list's last row, lined up with the rows and 2.5rem
    tall, the height of a `size-md` contained-list row. */
 .scheduler-list-additem { padding: 0; }
@@ -728,6 +715,9 @@ button.scheduler-row-head__num {
   gap: var(--rux-spacing-05);
   min-block-size: var(--rux-layout-size-height-sm);
 }
+/* Centred beside its control, a title keeps no bottom margin, which would lift
+   it 4px off the control's middle. */
+.scheduler-panel-section__head .scheduler-panel-section__title { margin-block-end: 0; }
 
 /* A section pulled out to the panel's edges by the panel body's own padding,
    so a contained list's band runs edge to edge while its text lines up with
@@ -737,13 +727,24 @@ button.scheduler-row-head__num {
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
 
+/* A section of an editor tab sits 24px below what comes before it. Its heading
+   is `heading-compact-01`, 14px at 600 in primary text, so it reads as a
+   heading over the 12px secondary field labels beneath it. */
 .scheduler-panel-section { margin-block-start: var(--rux-spacing-06); }
 .scheduler-panel-section__title {
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-  color: var(--rux-text-secondary);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-03);
+}
+/* A 1px rule opens every section after the first in the Details and Billing
+   tabs, with 16px under it, so 24px above and 16px below part the groups more
+   than the 16px between fields does. */
+.scheduler-panel-section--rule {
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+  padding-block-start: var(--rux-spacing-05);
 }
 
 /* ── Board layout ────────────────────────────────────────────────────────────

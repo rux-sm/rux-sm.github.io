@@ -1044,6 +1044,20 @@
     return wrap;
   };
 
+  /* A run of fields under one heading is a fieldset, so a screen reader names
+     each field with its group, "Booking contact, Name", and the labels need not
+     repeat the heading. The rule is on a wrapper, because a fieldset draws its
+     legend across its own top border. */
+  const fieldGroup = (title, ...nodes) => {
+    const set = el('fieldset', 'rux--fieldset');
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    stack.append(...nodes);
+    set.append(el('legend', 'scheduler-panel-section__title', title), stack);
+    const wrap = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
+    wrap.appendChild(set);
+    return wrap;
+  };
+
   /* ── A milestone that is a list ──
      Payments, purchase orders and invoices share this list and `listRow`, so
      they cannot drift in height, density or row grid. The label and switch sit
@@ -2339,7 +2353,6 @@
     })();
 
     panelDetails.replaceChildren();
-    const form = el('div', 'rux--stack-vertical rux--stack-scale-5');
     /* Type comes first because it decides the form's shape: a drop-off and
        pick-up trip has two date ranges, every other type one. The return pair
        is a second outing, since the bus is free between drop-off and pick-up,
@@ -2380,7 +2393,7 @@
       textField('scheduler-f-customer', 'Organization', trip.customer),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
-    form.appendChild(topFields);
+    panelDetails.appendChild(topFields);
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone
@@ -2390,16 +2403,17 @@
     const allContacts = panelIndex.contacts || [];
     {
       /* The contacts render on a new trip too, since a booking contact is often
-         the first thing known. One field per row, each label naming its
-         contact, because no heading sits above them. */
-      topFields.append(
-        withCopy(contactSearch('scheduler-f-cfind', 'Booking contact name', allContacts, contact),
+         the first thing known. A field's label is its own word alone, because
+         the group's heading says whose it is; the copy button still names the
+         contact in full. */
+      panelDetails.appendChild(fieldGroup('Booking contact',
+        withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
           'scheduler-f-cfind', 'Booking contact name'),
-        withCopy(textField('scheduler-f-cphone', 'Booking contact phone', contact?.phone),
+        withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
           'scheduler-f-cphone', 'Booking contact phone'),
-        withCopy(textField('scheduler-f-cemail', 'Booking contact email', contact?.email),
+        withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
-      );
+      ));
       // Phone and email are this trip's copy; editing them never changes the
       // shared contact record. `linkContacts` keeps the link.
 
@@ -2409,23 +2423,22 @@
          when it has none, and `Add another contact` adds rows up to the
          schema's five. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      // A stack, so each day-of field keeps the form's gap.
+      // A stack, so each day-of field keeps the group's gap.
       const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      /* Name over phone, each labelled with its contact because no heading says
-         which. The number follows the noun, `Day of contact name 2`, so it
-         reads as the second contact's name. */
+      /* Name over phone, under the group's heading. From the second contact the
+         number follows the noun, `Name 2`, so it reads as the second contact's
+         name. */
       const drawRow = (c, n) => {
         const suffix = n === 1 ? '' : ` ${n}`;
         rowsHost.append(
-          withCopy(contactSearch(`scheduler-f-d${n}`, `Day of contact name${suffix}`, allContacts, c),
-            `scheduler-f-d${n}`, `Day of contact name${suffix}`),
-          withCopy(textField(`scheduler-f-dphone${n}`, `Day of contact phone${suffix}`, c?.phone),
-            `scheduler-f-dphone${n}`, `Day of contact phone${suffix}`),
+          withCopy(contactSearch(`scheduler-f-d${n}`, `Name${suffix}`, allContacts, c),
+            `scheduler-f-d${n}`, `Day-of contact name${suffix}`),
+          withCopy(textField(`scheduler-f-dphone${n}`, `Phone${suffix}`, c?.phone),
+            `scheduler-f-dphone${n}`, `Day-of contact phone${suffix}`),
         );
       };
       const shown = dayRows.length ? dayRows : [null];
       shown.forEach((c, i) => drawRow(c, i + 1));
-      topFields.appendChild(rowsHost);
 
       // The button names what it adds, and stops at five because the schema does.
       const addBtn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Add another contact');
@@ -2445,15 +2458,16 @@
         syncAdd();
       });
       syncAdd();
-      // On `form` rather than in the run of fields, so the stack's gap sits above
-      // it. overrides.css spans it across the column.
-      form.appendChild(addBtn);
+      // After the rows in the group's stack, so the stack's gap sits above it.
+      // overrides.css spans it across the column.
+      panelDetails.appendChild(fieldGroup('Day-of contacts', rowsHost, addBtn));
     }
 
     /* Equipment is Carbon's horizontal checkbox group, one row that wraps if
        the labels outgrow the panel. Its legend takes the app's section title
-       class, like the other sections. */
-    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal scheduler-panel-section');
+       class, like the other sections, and a wrapper carries the rule, as in
+       `fieldGroup`. */
+    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal');
     flags.setAttribute('aria-disabled', 'false');
     const legend = el('legend', 'scheduler-panel-section__title', 'Equipment');
     flags.append(
@@ -2462,11 +2476,11 @@
       checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
       checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
     );
-    // Equipment is appended to the panel, not into `form`, so the section's own
-    // top margin is not added to the stack's gap.
-    panelDetails.appendChild(form);
-    panelDetails.appendChild(flags);
-    panelDetails.appendChild(colorField('scheduler-f-color', trip));
+    const equipment = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
+    equipment.appendChild(flags);
+    // Trip color follows with a section's space and no rule, because a rule
+    // between two one-row sections would part almost nothing.
+    panelDetails.append(equipment, colorField('scheduler-f-color', trip));
 
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.
@@ -2805,11 +2819,9 @@
       const invWrap = section('Invoice sent', bleed(invList.list), invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
 
-      // A border separates the sections; `.scheduler-billing-rule` turns the top
-      // margin into padding under it (app.css).
+      // A rule opens each section, as in the Details tab.
       for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
-        wrap.classList.replace('scheduler-panel-section', 'scheduler-billing-section');
-        wrap.classList.add('scheduler-billing-rule');
+        wrap.classList.add('scheduler-panel-section--rule');
       }
       panelBilling.append(
         contractSection,

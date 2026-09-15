@@ -59,9 +59,6 @@ files, and can be read by Claude in a session.
 
 ## Tasks
 
-- [ ] rux reads migration `notes_online_add` and its rollback, a dry run
-      inside a transaction that is rolled back shows the owner reading and
-      writing and nobody else, and rux says yes to apply it.
 - [ ] rux stores the project's secret key in the Keychain for the pull.
 - [ ] Signed in, on the Mac and on the phone: send a review, answer an
       experiment on both, walk a few steps with a screenshot, run

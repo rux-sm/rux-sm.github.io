@@ -18,6 +18,8 @@ rate is written here, because this repository is public.
 - The dead-mile discount lowers only the mileage charge. Driver pay counts dead
   miles like any other mile.
 - The rates page's one-driver rate for 1,000+ miles is not used.
+- The spreadsheet's local church choice is not offered, so its rate is not on
+  the rates page.
 
 ## Where it follows the spreadsheet
 

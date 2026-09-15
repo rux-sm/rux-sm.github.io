@@ -1197,7 +1197,6 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-quote[hidden],
 .scheduler-quote-line[hidden],
 .scheduler-quote__fields[hidden],
-.scheduler-quote__church[hidden],
 .scheduler-quote-rates__form[hidden] { display: none; }
 .scheduler-quote__inputs { grid-area: inputs; min-inline-size: 0; }
 .scheduler-quote__quote {

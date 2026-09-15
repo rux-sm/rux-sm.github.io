@@ -31,7 +31,6 @@
       { key: 'trip_dead_miles', label: 'Dead miles rate', unit: '$/mi' },
     ],
     driver: [
-      { key: 'driver_church_daily', label: 'Local church', unit: '$/day' },
       { key: 'driver_local_daily', label: 'Under 200 miles', unit: '$/day' },
       { key: 'driver_short_first_day', label: '200 to 429 miles, first day', unit: '$' },
       { key: 'driver_extra_day', label: 'Extra day', unit: '$/day' },
@@ -85,8 +84,9 @@
     return out;
   };
 
-  // E18, with AF18 to AF22. `drivers` is AF17; `church` is AF5.
-  const driverPay = ({ driver1, driver2, drivers, church }, r) => {
+  // E18, with AF18 to AF22. `drivers` is AF17. The sheet's local church
+  // choice, AF5, is not offered.
+  const driverPay = ({ driver1, driver2, drivers }, r) => {
     const perDay = driver1.map((m, i) => m + (driver2[i] || 0));
     const total = sum(perDay);
     const days = lastDay(perDay);
@@ -94,7 +94,6 @@
     const extra = free === null || days === null ? null : Math.max(0, days - free);
     const out = { total, days, free, extra, meal: days === null ? null : r.driver_meal_daily * days, band: null, amount: null };
     if (days === null) return out;
-    if (church) { out.band = 'church'; out.amount = r.driver_church_daily * days; return out; }
     if (total < 200) { out.band = 'under200'; out.amount = r.driver_local_daily * days; return out; }
     if (total < 430) { out.band = 'under430'; out.amount = r.driver_short_first_day + r.driver_extra_day * (days - 1); return out; }
     if (extra === null) return out;
@@ -199,12 +198,6 @@
       }
       $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
       $('scheduler-quote-remove-day').disabled = dayCount <= 1;
-      showDrivers();
-    };
-
-    // Local church changes only the second driver's pay.
-    const showDrivers = () => {
-      $('scheduler-quote-church-item').hidden = driversChosen() < 2;
     };
 
     const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
@@ -227,7 +220,6 @@
         driver1: half,
         driver2: half,
         drivers: 2,
-        church: $('scheduler-quote-church').checked,
       }, rates);
       const other = extras ? num($('scheduler-quote-other').value) : 0;
       const total = other + (quote.amount ?? 0) + (driver?.amount ?? 0);
@@ -247,7 +239,6 @@
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =
           driver.days === null ? 'No driver miles yet'
-          : driver.band === 'church' ? `${driverMiles} · church rate${meal}`
           : driver.band === 'under200' ? `${driverMiles} · under-200 rate${meal}`
           : driver.band === 'under430' ? `${driverMiles} · 200-to-429 rate${meal}`
           : driver.amount === null ? `${driverMiles} · past the free-day table, counted as $0`
@@ -290,7 +281,6 @@
       drawRateSelect(true);
       compute();
     }));
-    $('scheduler-quote-drivers').addEventListener('change', showDrivers);
     $('scheduler-quote-add-day').addEventListener('click', () => {
       if (dayCount >= MAX_DAYS) return;
       dayCount++;

@@ -235,15 +235,17 @@
         : `${plural(quote.free, 'free day', 'free days')} · ${plural(quote.extra, 'extra day', 'extra days')}`;
 
       $('scheduler-quote-driver-line').hidden = !driver;
+      // The meal allowance has a row of its own and is added to nothing.
+      $('scheduler-quote-meals-line').hidden = driver?.meal == null;
       if (driver) {
-        const meal = driver.meal == null ? '' : ` · meals ${money.format(driver.meal)} not included`;
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =
           driver.days === null ? 'No miles yet'
-          : driver.band === 'under200' ? `Under-200 rate${meal}`
-          : driver.band === 'under430' ? `200-to-429 rate${meal}`
+          : driver.band === 'under200' ? 'Under-200 rate'
+          : driver.band === 'under430' ? '200-to-429 rate'
           : driver.amount === null ? 'Past the free-day table, counted as $0'
-          : `${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}${meal}`;
+          : `${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}`;
+        if (driver.meal != null) $('scheduler-quote-meals').textContent = money.format(driver.meal);
       }
 
       $('scheduler-quote-other-line').hidden = other === 0;

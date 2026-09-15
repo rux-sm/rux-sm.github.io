@@ -290,36 +290,48 @@
           <section class="rux--tile scheduler-quote__quote" aria-labelledby="scheduler-quote-heading">
             <div class="rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
               <h2 class="rux--type-heading-compact-02" id="scheduler-quote-heading">Quote</h2>
-              <dl class="scheduler-quote-lines">
-                <div class="scheduler-quote-line">
-                  <dt class="rux--type-body-compact-02">Miles</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-miles-out">0</dd>
+              <!-- Each row is a field's height, a 16px label line over a 40px
+                   value line, and rows are 24px apart as the fields are, so
+                   the quote's rows line up with the days and modifiers beside
+                   it. A row's note sits at the end of its label line. -->
+              <dl class="scheduler-quote-rows">
+                <div class="scheduler-quote-row">
+                  <dt class="scheduler-quote-row__label">Miles</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-miles-out">0</dd>
                 </div>
-                <div class="scheduler-quote-line">
-                  <dt class="rux--type-body-compact-02">Days</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-days-out">0</dd>
+                <div class="scheduler-quote-row">
+                  <dt class="scheduler-quote-row__label">Days</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-days-out">0</dd>
+                </div>
+                <div class="scheduler-quote-row scheduler-quote-row--ruled">
+                  <dt class="scheduler-quote-row__label">Mileage</dt>
+                  <dd class="scheduler-quote-row__note" id="scheduler-quote-mileage-note"></dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-mileage">—</dd>
+                </div>
+                <div class="scheduler-quote-row" id="scheduler-quote-driver-line" hidden>
+                  <dt class="scheduler-quote-row__label">2nd driver</dt>
+                  <dd class="scheduler-quote-row__note" id="scheduler-quote-driver-note"></dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-driver">—</dd>
+                </div>
+                <!-- The spreadsheet's meal allowance: shown for reference and
+                     added to nothing, so its figure is in the quieter colour. -->
+                <div class="scheduler-quote-row" id="scheduler-quote-meals-line" hidden>
+                  <dt class="scheduler-quote-row__label">Driver meals</dt>
+                  <dd class="scheduler-quote-row__note">Not in total</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value scheduler-quote-row__value--reference" id="scheduler-quote-meals">—</dd>
+                </div>
+                <div class="scheduler-quote-row" id="scheduler-quote-other-line" hidden>
+                  <dt class="scheduler-quote-row__label">Other charges</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-other-out">$0.00</dd>
+                </div>
+                <!-- The total comes straight after the rows, not at the tile's
+                     foot: the tiles share the tallest's height, and a foot
+                     would drop the total out of view on a long trip. -->
+                <div class="scheduler-quote-row scheduler-quote-row--ruled scheduler-quote__total" aria-live="polite">
+                  <dt class="scheduler-quote-row__label">Total</dt>
+                  <dd class="scheduler-quote-row__value scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</dd>
                 </div>
               </dl>
-              <dl class="scheduler-quote-lines scheduler-quote-lines--charges">
-                <div class="scheduler-quote-line">
-                  <dt class="rux--type-body-compact-02">Mileage</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-mileage">—</dd>
-                  <dd class="scheduler-quote-line__note" id="scheduler-quote-mileage-note"></dd>
-                </div>
-                <div class="scheduler-quote-line" id="scheduler-quote-driver-line" hidden>
-                  <dt class="rux--type-body-compact-02">2nd driver</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-driver">—</dd>
-                  <dd class="scheduler-quote-line__note" id="scheduler-quote-driver-note"></dd>
-                </div>
-                <div class="scheduler-quote-line" id="scheduler-quote-other-line" hidden>
-                  <dt class="rux--type-body-compact-02">Other charges</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-other-out">$0.00</dd>
-                </div>
-              </dl>
-              <div class="scheduler-quote-total scheduler-quote__total" aria-live="polite">
-                <span class="rux--type-heading-compact-02">Total</span>
-                <span class="scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</span>
-              </div>
               <div>
                 <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
               </div>

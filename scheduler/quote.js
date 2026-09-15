@@ -9,8 +9,8 @@
    public file.
 
    The regular quote pays for one driver. Choosing two adds the second
-   driver's pay, with each day's trip miles split equally between the two
-   drivers, as the spreadsheet's two driver columns take them.
+   driver's pay, worked out on both drivers' combined miles, which are the
+   trip's miles; how they are split between the drivers does not change it.
 
    A local preview has no account layer. Both pages still draw, and rates
    saved on the rates page are kept in this browser tab only, so the
@@ -219,8 +219,9 @@
 
       const trip = column('trip');
       const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead: extras ? num($('scheduler-quote-dead').value) : 0 }, rates);
-      // The second driver's pay, from each day's miles split in half, one half
-      // a driver: the formula adds the halves back together.
+      // The second driver's pay. The formula reads only the two drivers'
+      // combined miles and their last day, so any split of each day's miles
+      // gives the same pay, and halves stand in for it.
       const half = trip.map(miles => miles / 2);
       const driver = n < 2 ? null : driverPay({
         driver1: half,
@@ -241,7 +242,7 @@
 
       $('scheduler-quote-driver-line').hidden = !driver;
       if (driver) {
-        const driverMiles = `${plural(driver.total, 'mile', 'miles')}, half each`;
+        const driverMiles = `${plural(driver.total, 'mile', 'miles')} combined`;
         const meal = driver.meal == null ? '' : ` · meals ${money.format(driver.meal)} not included`;
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =

@@ -4,10 +4,25 @@ type: reference
 
 # The quote calculator
 
-Where the quote calculator follows the office spreadsheet's Calculator tab
-even though the result looks wrong. The calculator matches the spreadsheet on
-each of these until rux decides otherwise. No rate is written here, because
-this repository is public.
+How the quote calculator prices drivers and dead miles, and where it follows
+the office spreadsheet's Calculator tab even though the result looks wrong. No
+rate is written here, because this repository is public.
+
+## Drivers and dead miles
+
+- The regular quote includes one driver. Choosing two drivers adds the second
+  driver's pay.
+- That pay is worked out on both drivers' combined miles, which are the trip's
+  miles, at the two-driver rates. How the miles are split between the drivers
+  doesn't change it, as long as the days are the same.
+- The dead-mile discount lowers only the mileage charge. Driver pay counts dead
+  miles like any other mile.
+- The rates page's one-driver rate for 1,000+ miles is not used.
+
+## Where it follows the spreadsheet
+
+The calculator matches the spreadsheet on each of these until rux decides
+otherwise.
 
 1. **Crossing 295 miles can lower the price.** Under 295 total miles a trip is
    billed per day at the local rate. From 295 it is billed by the mile with
@@ -18,19 +33,11 @@ this repository is public.
    miles. An empty day in the middle counts; an empty day at the end doesn't.
 4. **Very long trips drop a charge.** From 10,250 trip miles, or 6,250 driver
    miles, the free-day table runs out and that charge counts as $0.
-5. **The second driver is paid on all the trip miles.** The spreadsheet's
-   "2nd Driver" row takes a column of miles for each driver and adds them
-   together. With each day's miles split equally between the two drivers,
-   that is the whole trip, at the two-driver rates.
-6. **Dead miles are free while their rate is $0.** They still count toward
+5. **Dead miles are free while their rate is $0.** They still count toward
    the 295-mile line and the free days.
-7. **The two free-day tables differ.** At 750 to 999 miles a quote gets 1.5
+6. **The two free-day tables differ.** At 750 to 999 miles a quote gets 1.5
    free days and driver pay gets 1.
-8. **The meal allowance isn't added to anything.** The quote shows it under
+7. **The meal allowance isn't added to anything.** The quote shows it under
    driver pay for reference only.
-9. **No miles means no charge.** A quote with no miles entered comes to $0
+8. **No miles means no charge.** A quote with no miles entered comes to $0
    plus other charges.
-
-Two things are the page's own. The regular quote includes one driver, so only
-a second driver adds pay, with each day's trip miles split equally between the
-two. So the rates page's one-driver rate for 1,000+ miles is not used.

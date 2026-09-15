@@ -38,7 +38,7 @@ done and how.
 ## Scheduler
 
 - Trip search shows the 50 newest matches, with no ranking by relevance.
-- The quote calculator's nine spreadsheet quirks are kept until decided. The
+- The quote calculator's eight spreadsheet quirks are kept until decided. The
   list is in `scheduler/docs/quote-calculator.md`.
 - The quote calculator doesn't warn when dead miles are more than the trip
   miles, which makes the mileage charge negative.

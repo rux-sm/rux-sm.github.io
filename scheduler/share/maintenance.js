@@ -276,20 +276,23 @@
       ? shortDates.formatRange(a, b)
       : `${shortDates.format(a)} – ${shortDates.format(b)}`;
   };
+  // A bus name never breaks inside itself, so a narrow column wraps only
+  // between buses: "Bus 133 →" over "Bus 506".
+  const keep = s => String(s).replace(/ /g, ' ');
   const describe = (row, tripsById) => {
     if (row.action === 'created') {
       // "Bus 506", as the history writes a bus; a vehicle named rather than
       // numbered, such as the van, keeps its name alone.
       const buses = [...new Set((tripsById.get(String(row.tripId))?.assignments || [])
         .filter(a => a.busNumber != null)
-        .map(a => (/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
-      return { change: 'Trip added', bus: buses.length ? `${buses.join(', ')} now` : 'No bus yet' };
+        .map(a => keep(/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
+      return { change: 'Trip added', bus: buses.length ? `${buses.join(', ')} now` : 'No bus yet' };
     }
     if (row.action === 'deleted') return { change: 'Trip removed', bus: 'Not recorded' };
     const bus = (row.changes || []).find(c => c.field === 'bus');
-    if (bus?.before && bus?.after) return { change: 'Bus changed', bus: `${bus.before} → ${bus.after}` };
-    if (bus?.after) return { change: 'Bus assigned', bus: bus.after };
-    if (bus?.before) return { change: 'Bus unassigned', bus: `${bus.before} → none` };
+    if (bus?.before && bus?.after) return { change: 'Bus changed', bus: `${keep(bus.before)} → ${keep(bus.after)}` };
+    if (bus?.after) return { change: 'Bus assigned', bus: keep(bus.after) };
+    if (bus?.before) return { change: 'Bus unassigned', bus: `${keep(bus.before)} → none` };
     return { change: 'Trip changed', bus: '' };
   };
 
@@ -321,7 +324,8 @@
     }
     const rows = changesFor(result.data?.changes, data);
     const tripsById = new Map((data.trips || []).map(t => [String(t.id), t]));
-    // Short cells stay on one line; the trip's name may wrap.
+    // Short cells stay on one line; the bus and the trip's name may wrap, so
+    // on a phone the first columns fit before the list scrolls sideways.
     const NOWRAP = 'rux--structured-list-td rux--structured-list-content--nowrap';
     const cell = (text, cls = NOWRAP) => {
       const td = el('div', cls, text);
@@ -333,12 +337,14 @@
       tr.setAttribute('role', 'row');
       const when = new Date(row.createdAt);
       const { change, bus } = describe(row, tripsById);
+      // In the order the maintenance crew reads a change: when, which bus,
+      // what happened, the days that bus is out, then the trip and who did it.
       tr.append(
         cell(Number.isNaN(when.getTime()) ? '' : stamp.format(when)),
+        cell(bus, 'rux--structured-list-td'),
         cell(change),
-        cell(row.destination || row.tripRef || 'Unnamed trip', 'rux--structured-list-td'),
         cell(tripDates(row)),
-        cell(bus),
+        cell(row.destination || row.tripRef || 'Unnamed trip', 'rux--structured-list-td'),
         cell(String(row.actorName || '').trim() || 'Dispatcher'),
       );
       changeRows.append(tr);

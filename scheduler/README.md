@@ -24,7 +24,8 @@ spreadsheet's quirks.
 
 The pages in `share/` are for people without a log-in, who arrive by a link:
 `share/document.html` opens a trip document, and `share/maintenance.html`
-shows the maintenance crew two weeks of buses and the recent changes.
+shows the maintenance crew two weeks of buses and the recent changes. Staff
+open the maintenance page from the side nav, whose link `nav.js` fills in.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here and

@@ -340,12 +340,13 @@
             </div>
           </section>
 
-          <!-- Below md the tiles stack, so the quote's total is this bar, pinned
-               to the bottom of the screen until the page reaches the quote,
-               where it lands as the quote's last line. -->
-          <div class="scheduler-quote-total scheduler-quote-bar" aria-live="polite">
-            <span class="rux--type-heading-compact-02">Total</span>
-            <span class="rux--type-productive-heading-05 scheduler-quote-total__value" id="scheduler-quote-bar-total">$0.00</span>
+          <!-- Below lg the quote's total is this bar, pinned to the bottom of
+               the screen until the page reaches the quote, where it lands as
+               the quote's last row, in the rows' shape: a label line over the
+               figure. -->
+          <div class="scheduler-quote-bar" aria-live="polite">
+            <span class="scheduler-quote-row__label">Total</span>
+            <span class="rux--type-productive-heading-05 scheduler-quote-row__value scheduler-quote-total__value" id="scheduler-quote-bar-total">$0.00</span>
           </div>
         </form>
       </div>

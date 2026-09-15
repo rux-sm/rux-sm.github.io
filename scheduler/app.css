@@ -1283,14 +1283,6 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 /* The total's value line grows to its figure; nothing lines up below it. */
 .scheduler-quote-row.scheduler-quote__total { grid-template-rows: 1rem auto; }
-/* The pinned bar's total: a figure too wide for the row wraps under its
-   label, still at the end. */
-.scheduler-quote-total {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--rux-spacing-02) var(--rux-spacing-05);
-}
 .scheduler-quote-total__value { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
 /* The quote tile's total, in Carbon's productive-heading-06 tokens. A tile
    too narrow for that figure, as at the narrowest lg widths, takes 05. */
@@ -1335,17 +1327,29 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   }
   .scheduler-quote__quote > .scheduler-quote__body { position: static; }
   .scheduler-quote__total { display: none; }
-  /* The bar is the quote's last line. The gap above it is taken back, so it
-     lands flush under the quote's tile, in the tile's colour, lined up with
-     the quote's inset, and it clears the phone's home bar while pinned. */
+  /* The bar is the quote's last row, in the rows' shape: a label line over
+     the figure, 24px under the row above with its rule halfway, inset like
+     theirs. The tile's gap and 12px of its inset are taken back so it lands
+     there, in the tile's colour, and it clears the phone's home bar while
+     pinned. */
   .scheduler-quote-bar {
     grid-area: bar;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 1rem auto;
+    row-gap: var(--rux-spacing-03);
+    align-items: center;
     position: sticky;
     inset-block-end: 0;
-    margin-block-start: calc(-1 * var(--scheduler-quote-gap));
+    margin-block-start: calc(-1 * var(--scheduler-quote-gap) - var(--rux-spacing-04));
     padding: var(--rux-spacing-04) var(--rux-spacing-06) calc(var(--rux-spacing-04) + var(--scheduler-safe-bottom));
     background: var(--rux-layer-01);
+  }
+  .scheduler-quote-bar::before {
+    content: "";
+    position: absolute;
+    inset-inline: var(--rux-spacing-06);
+    inset-block-start: 0;
     border-block-start: 1px solid var(--rux-border-subtle-01);
   }
 }

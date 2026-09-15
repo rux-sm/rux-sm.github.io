@@ -261,15 +261,36 @@
   };
 
   // -- recent changes ------------------------------------------------------------
-  const changeLine = row => {
-    const label = row.destination || row.tripRef || 'a trip';
-    if (row.action === 'created') return `Added ${label}`;
-    if (row.action === 'deleted') return `Removed ${label}`;
+  /* Every change names the same things in the same columns: what happened,
+     the trip, its dates and the bus. The history records a bus only for a bus
+     change, as "Bus 133" before and after. An added trip shows the buses it is
+     on now, read from the schedule on this page and marked "now", because a
+     later move is a row of its own; a removed trip's bus was never recorded. */
+  const shortDates = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+  const tripDates = row => {
+    if (!isDate(row.tripStartDate)) return '';
+    const a = parseISO(row.tripStartDate);
+    const b = isDate(row.tripEndDate) ? parseISO(row.tripEndDate) : a;
+    if (b <= a) return shortDates.format(a);
+    return typeof shortDates.formatRange === 'function'
+      ? shortDates.formatRange(a, b)
+      : `${shortDates.format(a)} – ${shortDates.format(b)}`;
+  };
+  const describe = (row, tripsById) => {
+    if (row.action === 'created') {
+      // "Bus 506", as the history writes a bus; a vehicle named rather than
+      // numbered, such as the van, keeps its name alone.
+      const buses = [...new Set((tripsById.get(String(row.tripId))?.assignments || [])
+        .filter(a => a.busNumber != null)
+        .map(a => (/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
+      return { change: 'Trip added', bus: buses.length ? `${buses.join(', ')} now` : 'No bus yet' };
+    }
+    if (row.action === 'deleted') return { change: 'Trip removed', bus: 'Not recorded' };
     const bus = (row.changes || []).find(c => c.field === 'bus');
-    if (bus?.before && bus?.after) return `Moved ${label} from ${bus.before} to ${bus.after}`;
-    if (bus?.after) return `Put ${label} on ${bus.after}`;
-    if (bus?.before) return `Took ${label} off ${bus.before}`;
-    return `Changed ${label}`;
+    if (bus?.before && bus?.after) return { change: 'Bus changed', bus: `${bus.before} → ${bus.after}` };
+    if (bus?.after) return { change: 'Bus assigned', bus: bus.after };
+    if (bus?.before) return { change: 'Bus unassigned', bus: `${bus.before} → none` };
+    return { change: 'Trip changed', bus: '' };
   };
 
   /* A change belongs to these two weeks when its trip is on them, by id, or
@@ -299,19 +320,26 @@
       return;
     }
     const rows = changesFor(result.data?.changes, data);
+    const tripsById = new Map((data.trips || []).map(t => [String(t.id), t]));
+    // Short cells stay on one line; the trip's name may wrap.
+    const NOWRAP = 'rux--structured-list-td rux--structured-list-content--nowrap';
+    const cell = (text, cls = NOWRAP) => {
+      const td = el('div', cls, text);
+      td.setAttribute('role', 'cell');
+      return td;
+    };
     for (const row of rows) {
       const tr = el('div', 'rux--structured-list-row');
       tr.setAttribute('role', 'row');
-      const cell = (text, cls) => {
-        const td = el('div', cls, text);
-        td.setAttribute('role', 'cell');
-        return td;
-      };
       const when = new Date(row.createdAt);
+      const { change, bus } = describe(row, tripsById);
       tr.append(
-        cell(Number.isNaN(when.getTime()) ? '' : stamp.format(when), 'rux--structured-list-td rux--structured-list-content--nowrap'),
-        cell(String(row.actorName || '').trim() || 'Dispatcher', 'rux--structured-list-td rux--structured-list-content--nowrap'),
-        cell(changeLine(row), 'rux--structured-list-td'),
+        cell(Number.isNaN(when.getTime()) ? '' : stamp.format(when)),
+        cell(change),
+        cell(row.destination || row.tripRef || 'Unnamed trip', 'rux--structured-list-td'),
+        cell(tripDates(row)),
+        cell(bus),
+        cell(String(row.actorName || '').trim() || 'Dispatcher'),
       );
       changeRows.append(tr);
     }

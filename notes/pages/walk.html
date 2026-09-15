@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Check an item&#39;s inventory — Notes</title>
+<title>Walk — Notes</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-open]){visibility:hidden}</style>
 <!-- PLEX FIRST, THEN rux.css, WHICH IS THE ORDER Design USES IN ITS OWN
@@ -1161,15 +1161,15 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
            make, move, ship, then the end-to-end run. Atlas got there by reading
            Prerequisite callouts as dependency edges; on Downstream rows alone
            the walkthrough that builds the test data came fourth. -->
-      <li class="rux--side-nav__item rux--side-nav__item--active">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="true">
+      <li class="rux--side-nav__item">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <span class="rux--side-nav__submenu-title">Walkthroughs</span>
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
-        <ul class="rux--side-nav__menu">
+        <ul class="rux--side-nav__menu" hidden>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="check-item-inventory.html" aria-current="page"><span class="rux--side-nav__link-text">Check an item&#39;s inventory</span></a></li>
+          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="check-item-inventory.html"><span class="rux--side-nav__link-text">Check an item&#39;s inventory</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
@@ -1181,7 +1181,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
            owner's log-in. The private preview has its own walk form instead. -->
       <li class="rux--side-nav__item" data-notes-owner hidden>
-        <a class="rux--side-nav__link" href="walk.html"><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
+        <a class="rux--side-nav__link" href="walk.html" aria-current="page"><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
       </li>
 
       <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
@@ -1235,200 +1235,174 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="check-item-inventory" data-notes-commit="9892f04fe60d5c5fbaf458bc7b90f3706bb1c7a3">
+<main id="main-content" class="rux--content" data-notes-commit="9892f04fe60d5c5fbaf458bc7b90f3706bb1c7a3">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
-<div data-notes-doc="check-item-inventory">        <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Check an item&#39;s inventory</h1>
-          <div class="notes-tag-row">
-            <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
-            <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">2 phases</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-13</span></span>
-            <span class="rux--tag rux--tag--magenta" title="3 open issues recorded against this document"><span class="rux--tag__label">3 open</span></span>
-          </div>
-          <p class="rux--type-body-02">Warehousing</p>
-          <p data-notes-owner hidden><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="walk.html#check-item-inventory">Walk this walkthrough</a></p>
-        </div>
-
-      <p class="notes-prose-measure"><strong>Objective:</strong> find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it.</p>
-      <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle"><strong>This changes nothing in LN.</strong> Both screens only report. The figures written down at the end are the baseline a later walkthrough compares against.</div>
-    </div>
-  </div>
-</div>
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-glance">
-      <h2 id="s-glance">At a glance</h2>
-      <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label"></div></th><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Where</div></th><th scope="col"><div class="rux--table-header-label">What it achieves</div></th></tr></thead>
-            <tbody>
-          <tr><td>☐</td><td><span class="notes-t-named">0</span> Find the item</td><td>Inventory 360</td><td>The item&#39;s on hand, blocked, on order and allocated are known</td></tr>
-          <tr><td>☐</td><td><span class="notes-t-named">1</span> Read the stock by warehouse</td><td>Warehouse - Item Inventory</td><td>The warehouse to work from, and its figures, are written down</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-
-        <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-phases">
-          <h2 id="h-phases">Phases</h2>
-          <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-0">
-        <h3 id="p-0">Phase 0 — Find the item</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Inventory 360 is the starting point for any question about an item&#39;s stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen.</p>
-        <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
-            <tbody>
-          <tr><th scope="row" class="notes-step-id">0.1</th><td>Enter the item in <span class="notes-t-named">Filter Items</span> and run it</td><td class="notes-see">Grid shows <span class="notes-t-named">On Hand</span> · <span class="notes-t-named">Blocked</span> · <span class="notes-t-named">On Order</span> · <span class="notes-t-named">Allocated</span></td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">0.2</th><td>Read the four quantities on the item&#39;s row</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">on hand</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">blocked</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">on order</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">allocated</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-0.2">Write it down</label>
-              <div class="rux--text-area__wrapper">
-                <textarea id="n-0.2" class="rux--text-area" rows="1" data-notes-note="0.2" placeholder="The value you saw"></textarea>
-              </div>
-            </div></td></tr>
-          <tr><th scope="row" class="notes-step-id">0.3</th><td>Tick the item row</td><td class="notes-see">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="p-1">
-        <h3 id="p-1">Phase 1 — Read the stock by warehouse</h3>
-        <dl class="notes-meta"><div class="notes-meta-row"><dt>Route</dt><dd>Warehousing ➔ Inventory 360</dd></div><div class="notes-meta-row"><dt>Session</dt><dd>Inventory 360 <span class="rux--type-code-01">whwmd4300m000</span></dd></div></dl>
-        <p class="notes-prose-measure"><strong>What LN is doing.</strong> Stock is normally spread over several warehouses, and a warehouse&#39;s name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. <em>Economic Stock</em> on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects.</p>
-        <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
-            <tbody>
-          <tr><th scope="row" class="notes-step-id">1.1</th><td>In the <span class="notes-t-named">Inventory</span> group of the header, click <span class="notes-t-press">Warehouse Inventory</span></td><td class="notes-see"><span class="notes-t-named">Warehouse - Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span> opens, item carried through</td></tr>
-          <tr><th scope="row" class="notes-step-id">1.2</th><td>Read each row&#39;s <span class="notes-t-named">Inventory on Hand</span>, <span class="notes-t-named">Inventory on Order</span>, <span class="notes-t-named">Inventory Allocated</span> and <span class="notes-t-named">Inventory Blocked</span></td><td class="notes-see">One row per warehouse holding or expecting the item</td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">1.3</th><td>Choose the warehouse to work from by its figures, not its name</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">warehouse</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">on hand</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">allocated</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">blocked</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-1.3">Write it down</label>
-              <div class="rux--text-area__wrapper">
-                <textarea id="n-1.3" class="rux--text-area" rows="1" data-notes-note="1.3" placeholder="The value you saw"></textarea>
-              </div>
-            </div></td></tr>
-          <tr data-produces="true"><th scope="row" class="notes-step-id">1.4</th><td>Read the totals beneath the grid</td><td class="notes-see"><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">total on hand</span>, <svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="notes-t-exact">total allocated</span><div class="rux--form-item notes-note">
-              <label class="rux--label" for="n-1.4">Write it down</label>
-              <div class="rux--text-area__wrapper">
-                <textarea id="n-1.4" class="rux--text-area" rows="1" data-notes-note="1.4" placeholder="The value you saw"></textarea>
-              </div>
-            </div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-troubleshooting">
-      <h2 id="s-troubleshooting">Troubleshooting</h2>
-      <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">Phase</div></th><th scope="col"><div class="rux--table-header-label">Symptom</div></th><th scope="col"><div class="rux--table-header-label">What to check or do</div></th></tr></thead>
-            <tbody>
-          <tr><td>0</td><td>The item returns no row</td><td>The item has no inventory records yet, so there is nothing to report</td></tr>
-          <tr><td>0</td><td><span class="notes-t-named">Item Order Plan</span> is greyed out in the header</td><td>Expected. Open it through Planning, as the phase 0 notes say</td></tr>
-          <tr><td>1</td><td>On hand looks sufficient but an order will not fill</td><td>Check <span class="notes-t-named">Inventory Allocated</span>. Much of the on-hand may be committed elsewhere</td></tr>
-          <tr><td>1</td><td><span class="notes-t-named">Economic Stock</span> is negative</td><td>The warehouse is over-allocated: more is committed than it holds and expects</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </section>
-
-        <!-- The generated verification sentence. It is NOT a substitute for
-             the status badge and README says why: one walkthrough's sentence claims
-             every phase was performed against a live system and confirmed
-             while the walkthrough itself is status: draft. Both are shown. -->
-        <p class="rux--type-body-01">Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.</p>
-      
-      <section class="notes-notepad" aria-labelledby="h-notes">
-        <h2 id="h-notes" class="rux--type-productive-heading-03">Your notes</h2>
-        <div class="rux--form-item">
-          <label class="rux--label" for="notes-notes">Anything else worth keeping</label>
-          <div class="rux--text-area__wrapper">
-            <textarea id="notes-notes" class="rux--text-area" rows="5" data-notes-notes placeholder="What surprised you, what you would check next time"></textarea>
-          </div>
-          <div class="rux--form__helper-text">Saved in this browser only, with the values you noted beside the steps. There is no server and no account behind this page. Export to keep them.</div>
-        </div>
-        <div class="notes-notepad-actions">
-          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export notes</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-copy>Copy</button>
-          <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm" data-notes-clear>Clear</button>
-        </div>
-      </section>
-      
-      <section class="notes-key" aria-labelledby="h-key">
-        <h2 id="h-key" class="rux--type-productive-heading-03">How to read a step</h2>
-        <dl class="notes-key-grid">
-          <dt><span class="notes-t-press">Press it</span></dt>
-          <dd>A control you act on.</dd>
-          <dt><span class="notes-t-named">Named on screen</span></dt>
-          <dd>A tab, panel, field or column label &mdash; something you look for.</dd>
-          <dt><span class="notes-t-exact">Exact string</span></dt>
-          <dd>Type or match it character for character.</dd>
-          <dt><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">A state</span></span></dt>
-          <dd>Confirm you see it before moving on.</dd>
-          <dt><svg class="notes-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg></dt>
-          <dd>The step yields a value worth writing down.</dd>
-        </dl>
-      </section>
-      </div>
-
-        <div data-notes-owner data-notes-review hidden>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-review">
-          <h2 id="h-review" class="rux--type-productive-heading-03">Review</h2>
-          <p class="rux--type-body-compact-01" data-notes-review-last>Reading the last review</p>
-          <form id="notes-review-form">
-            <div class="rux--stack-vertical rux--stack-scale-5">
-              <div class="rux--form-item">
-                <fieldset class="rux--radio-button-group rux--radio-button-group--label-right">
-                  <legend class="rux--label">Decision</legend>
-                  <div class="rux--radio-button-wrapper">
-                    <input id="notes-review-approve" class="rux--radio-button" type="radio" name="notes-review-decision" value="approve">
-                    <label for="notes-review-approve" class="rux--radio-button__label">
-                      <span class="rux--radio-button__appearance"></span>
-                      <span class="rux--radio-button__label-text">Approve</span>
-                    </label>
-                  </div>
-                  <div class="rux--radio-button-wrapper">
-                    <input id="notes-review-changes" class="rux--radio-button" type="radio" name="notes-review-decision" value="changes">
-                    <label for="notes-review-changes" class="rux--radio-button__label">
-                      <span class="rux--radio-button__appearance"></span>
-                      <span class="rux--radio-button__label-text">Request changes</span>
-                    </label>
-                  </div>
-                </fieldset>
-              </div>
-              <div class="rux--form-item">
-                <div class="rux--text-area__label-wrapper">
-                  <label class="rux--label" for="notes-review-feedback">What should change</label>
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <h1 id="walk-title">Walk</h1>
+          <p class="rux--type-body-02" id="walk-gate">Checking your log-in</p>
+          <div id="walk-message" hidden>
+            <div class="rux--inline-notification rux--inline-notification--error" role="status">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__title">Not saved</div>
+                  <div class="rux--inline-notification__subtitle" id="walk-message-text"></div>
                 </div>
-                <div class="rux--text-area__wrapper">
-                  <textarea id="notes-review-feedback" class="rux--text-area" rows="3"></textarea>
-                  <span class="rux--text-area__counter-alert" role="alert"></span>
-                </div>
-                <div class="rux--form__helper-text">Needed to request changes. The page changes only once a session applies it.</div>
               </div>
-              <div>
-                <button type="submit" class="rux--btn rux--btn--primary" id="notes-review-send" disabled>Send review</button>
-              </div>
-              <p class="rux--form__helper-text" id="notes-review-status" role="status"></p>
+              <button type="button" class="rux--inline-notification__close-button" aria-label="Close" id="walk-message-close">
+                <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
             </div>
-          </form>
-        </section>
+          </div>
         </div>
+
+        <div id="walk-start" hidden>
+          <section class="notes-walk-form rux--stack-vertical rux--stack-scale-7" aria-labelledby="walk-start-h">
+            <h2 id="walk-start-h">Start a walk</h2>
+            <form id="walk-start-form">
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <div class="rux--form-item">
+                  <div class="rux--select rux--layout--size-md">
+                    <label class="rux--label" for="walk-walkthrough">Walkthrough</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="walk-walkthrough" class="rux--select-input" required></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper">
+                    <label class="rux--label" for="walk-company">Company</label>
+                  </div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="walk-company" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" inputmode="numeric">
+                    </div>
+                    <div class="rux--form__helper-text">As the LN status bar shows it.</div>
+                  </div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper">
+                    <label class="rux--label" for="walk-user">User</label>
+                  </div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="walk-user" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="rux--form__helper-text">As the LN status bar shows it.</div>
+                  </div>
+                </div>
+                <div>
+                  <button type="submit" class="rux--btn rux--btn--primary">Start</button>
+                </div>
+              </div>
+            </form>
+            <div id="walk-resume-section" hidden>
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <h2 id="walk-resume-h">Continue a walk</h2>
+                <form id="walk-resume-form">
+                  <div class="rux--stack-vertical rux--stack-scale-7">
+                    <div class="rux--form-item">
+                      <div class="rux--select rux--layout--size-md">
+                        <label class="rux--label" for="walk-resume">Today's walks</label>
+                        <div class="rux--select-input__wrapper">
+                          <select id="walk-resume" class="rux--select-input"></select>
+                          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <button type="submit" class="rux--btn rux--btn--secondary">Continue</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div id="walk-run" hidden>
+          <div class="notes-walk-run">
+            <section class="notes-walk-step" aria-labelledby="walk-step-h">
+              <div class="rux--stack-vertical rux--stack-scale-7">
+                <div class="rux--tile">
+                  <div class="rux--stack-vertical rux--stack-scale-5">
+                    <div>
+                      <p id="walk-where"></p>
+                      <h2 class="rux--type-heading-04" id="walk-step-h" tabindex="-1"></h2>
+                    </div>
+                    <div>
+                      <p>Do this</p>
+                      <p class="rux--type-heading-compact-02" id="walk-do"></p>
+                    </div>
+                    <div>
+                      <p>You should see</p>
+                      <p class="rux--type-heading-compact-02" id="walk-see"></p>
+                    </div>
+                  </div>
+                </div>
+                <form id="walk-step-form">
+                  <div class="rux--stack-vertical rux--stack-scale-7">
+                    <div class="rux--form-item">
+                      <div class="rux--text-area__label-wrapper">
+                        <label class="rux--label" for="walk-actual">What happened</label>
+                      </div>
+                      <div class="rux--text-area__wrapper">
+                        <textarea id="walk-actual" class="rux--text-area" rows="3"></textarea>
+                        <span class="rux--text-area__counter-alert" role="alert"></span>
+                      </div>
+                    </div>
+                    <div class="rux--form-item">
+                      <div class="rux--text-area__label-wrapper">
+                        <label class="rux--label" for="walk-notes">Notes</label>
+                      </div>
+                      <div class="rux--text-area__wrapper">
+                        <textarea id="walk-notes" class="rux--text-area" rows="3"></textarea>
+                        <span class="rux--text-area__counter-alert" role="alert"></span>
+                      </div>
+                      <div class="rux--form__helper-text">Errors, comments, and how the map tile helped.</div>
+                    </div>
+                    <div class="rux--form-item rux--text-input-wrapper">
+                      <div class="rux--text-input__label-wrapper">
+                        <label class="rux--label" for="walk-what">What the screenshot shows</label>
+                      </div>
+                      <div class="rux--text-input__field-outer-wrapper">
+                        <div class="rux--text-input__field-wrapper">
+                          <input id="walk-what" class="rux--text-input" type="text" autocomplete="off">
+                        </div>
+                        <div class="rux--form__helper-text">Optional. Becomes part of the file name.</div>
+                      </div>
+                    </div>
+                    <div class="rux--form-item">
+                      <p class="rux--file--label">Screenshots</p>
+                      <div class="rux--file">
+                        <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="walk-drop">Choose a screenshot, or drop or paste one here</button>
+                        <label class="rux--visually-hidden" for="walk-file">Screenshot</label>
+                        <input id="walk-file" type="file" accept="image/png,image/jpeg" class="rux--file-input rux--visually-hidden" tabindex="-1">
+                      </div>
+                      <ul class="rux--list--unordered" id="walk-shots" hidden></ul>
+                    </div>
+                  </div>
+                </form>
+                <p class="rux--form__helper-text" id="walk-status" role="status"></p>
+                <div class="rux--btn-set">
+                  <button type="button" class="rux--btn rux--btn--secondary" id="walk-back">Back</button>
+                  <button type="button" class="rux--btn rux--btn--primary" id="walk-next">Next</button>
+                </div>
+                <div>
+                  <button type="button" class="rux--btn rux--btn--ghost" id="walk-exit">Save and exit</button>
+                </div>
+              </div>
+            </section>
+            <div class="notes-walk-progress">
+              <ul class="rux--progress rux--progress--vertical" id="walk-progress"></ul>
+            </div>
+          </div>
+        </div>
+        <script type="application/json" id="walk-walkthroughs">[{"id":"create-basic-test-items-and-defaults","title":"Create test items"},{"id":"run-order-planning-for-one-item","title":"Run order planning"},{"id":"check-item-inventory","title":"Check an item's inventory"},{"id":"purchase-order-to-warehouse-receipt","title":"Purchase to receipt"},{"id":"manual-production-order-existing-master-data","title":"Production order"},{"id":"transfer-item-between-warehouses","title":"Warehouse transfer"},{"id":"ship-from-stock","title":"Ship from stock"},{"id":"demand-to-shipment-via-planning","title":"Plan to shipment"}]</script>
+
 <p class="rux--type-caption-01 notes-revision">Built from atlas 9892f04 · contract 10</p>
       </div>
     </div>
@@ -1450,7 +1424,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 <script src="/design/js/tile.js"></script>
 <script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
-<script src="../js/walkthrough.js"></script>
+<script src="../js/walk.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>

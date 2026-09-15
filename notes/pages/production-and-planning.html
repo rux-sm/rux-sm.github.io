@@ -52,6 +52,17 @@
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
 .notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
+/* THE WALK PAGE. The form keeps a reading width, and the step comes before the
+   progress list so a phone shows the step first; from lg the list moves to the
+   step's left. */
+.notes-walk-form { max-inline-size: 40rem; }
+.notes-walk-run { display: grid; gap: 2rem; grid-template-columns: minmax(0, 40rem); }
+@media (min-width: 66rem) {
+  .notes-walk-run { grid-template-columns: 16rem minmax(0, 40rem); }
+  .notes-walk-progress { grid-column: 1; grid-row: 1; }
+  .notes-walk-step { grid-column: 2; grid-row: 1; }
+}
+
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
@@ -1167,6 +1178,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
       </li>
 
+      <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
+           owner's log-in. The private preview has its own walk form instead. -->
+      <li class="rux--side-nav__item" data-notes-owner hidden>
+        <a class="rux--side-nav__link" href="walk.html"><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
+      </li>
+
       <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
            get their own group because a learner opens one to predict, record
            and explain, not to perform an SOP-like runbook. -->
@@ -1218,7 +1235,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content">
+<main id="main-content" class="rux--content" data-notes-page="production-and-planning" data-notes-commit="9892f04fe60d5c5fbaf458bc7b90f3706bb1c7a3">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -2366,7 +2383,7 @@ What remains unexplained:</code></pre></div>
               <div class="rux--text-area__wrapper">
                 <textarea id="notes-notes" class="rux--text-area" rows="6" data-notes-notes placeholder="Anything worth writing down as you go"></textarea>
               </div>
-              <div class="rux--form__helper-text">Saved in this browser only, with your answers. Export to keep or send them.</div>
+              <div class="rux--form__helper-text" data-notes-sync>Saved in this browser only, with your answers. Export to keep or send them.</div>
             </div>
             <div class="notes-ex-actions">
               <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-export>Export answers</button>
@@ -2375,6 +2392,50 @@ What remains unexplained:</code></pre></div>
             </div>
           </div>
         </aside>
+        </div>
+
+        <div data-notes-owner data-notes-review hidden>
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-review">
+          <h2 id="h-review" class="rux--type-productive-heading-03">Review</h2>
+          <p class="rux--type-body-compact-01" data-notes-review-last>Reading the last review</p>
+          <form id="notes-review-form">
+            <div class="rux--stack-vertical rux--stack-scale-5">
+              <div class="rux--form-item">
+                <fieldset class="rux--radio-button-group rux--radio-button-group--label-right">
+                  <legend class="rux--label">Decision</legend>
+                  <div class="rux--radio-button-wrapper">
+                    <input id="notes-review-approve" class="rux--radio-button" type="radio" name="notes-review-decision" value="approve">
+                    <label for="notes-review-approve" class="rux--radio-button__label">
+                      <span class="rux--radio-button__appearance"></span>
+                      <span class="rux--radio-button__label-text">Approve</span>
+                    </label>
+                  </div>
+                  <div class="rux--radio-button-wrapper">
+                    <input id="notes-review-changes" class="rux--radio-button" type="radio" name="notes-review-decision" value="changes">
+                    <label for="notes-review-changes" class="rux--radio-button__label">
+                      <span class="rux--radio-button__appearance"></span>
+                      <span class="rux--radio-button__label-text">Request changes</span>
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="rux--form-item">
+                <div class="rux--text-area__label-wrapper">
+                  <label class="rux--label" for="notes-review-feedback">What should change</label>
+                </div>
+                <div class="rux--text-area__wrapper">
+                  <textarea id="notes-review-feedback" class="rux--text-area" rows="3"></textarea>
+                  <span class="rux--text-area__counter-alert" role="alert"></span>
+                </div>
+                <div class="rux--form__helper-text">Needed to request changes. The page changes only once a session applies it.</div>
+              </div>
+              <div>
+                <button type="submit" class="rux--btn rux--btn--primary" id="notes-review-send" disabled>Send review</button>
+              </div>
+              <p class="rux--form__helper-text" id="notes-review-status" role="status"></p>
+            </div>
+          </form>
+        </section>
         </div>
 <p class="rux--type-caption-01 notes-revision">Built from atlas 9892f04 · contract 10</p>
       </div>
@@ -2401,5 +2462,6 @@ What remains unexplained:</code></pre></div>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
+<script src="../js/online.js"></script>
 </body>
 </html>

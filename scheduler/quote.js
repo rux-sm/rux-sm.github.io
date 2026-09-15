@@ -194,10 +194,25 @@
       rows.replaceChildren();
       for (let d = 1; d <= dayCount; d++) {
         const id = `scheduler-quote-trip-${d}`;
-        rows.append(textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' }));
+        const row = document.createElement('div');
+        row.className = 'scheduler-quote-day';
+        const field = textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' });
+        // Carbon's large field, 48px, because the miles are what most quotes are.
+        field.querySelector('.rux--text-input__field-wrapper').classList.add('rux--layout--size-lg');
+        row.append(field);
+        // Only the last day can be removed, so no day renumbers under a person.
+        if (d === dayCount && d > 1) {
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'rux--btn rux--btn--ghost rux--btn--icon-only';
+          remove.setAttribute('aria-label', `Remove day ${d}`);
+          remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>';
+          remove.addEventListener('click', removeDay);
+          row.append(remove);
+        }
+        rows.append(row);
       }
       $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
-      $('scheduler-quote-remove-day').disabled = dayCount <= 1;
     };
 
     const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
@@ -280,19 +295,33 @@
       // A reset puts the select on its first option, the cheapest rate.
       drawRateSelect(true);
       compute();
+      $('scheduler-quote-trip-1').focus();
     }));
-    $('scheduler-quote-add-day').addEventListener('click', () => {
+
+    const addDay = () => {
       if (dayCount >= MAX_DAYS) return;
       dayCount++;
       drawDays();
       $(`scheduler-quote-trip-${dayCount}`)?.focus();
       compute();
-    });
-    $('scheduler-quote-remove-day').addEventListener('click', () => {
+    };
+    const removeDay = () => {
       if (dayCount <= 1) return;
       dayCount--;
       drawDays();
+      $(`scheduler-quote-trip-${dayCount}`)?.focus();
       compute();
+    };
+    $('scheduler-quote-add-day').addEventListener('click', addDay);
+    // Enter moves down the column of days, and in a last day that has miles it
+    // adds the next day, so a trip is typed without reaching for the mouse.
+    form.addEventListener('keydown', e => {
+      const at = e.key === 'Enter' && /^scheduler-quote-trip-(\d+)$/.exec(e.target.id);
+      if (!at) return;
+      e.preventDefault();
+      const day = Number(at[1]);
+      if (day < dayCount) $(`scheduler-quote-trip-${day + 1}`).focus();
+      else if (e.target.value.trim()) addDay();
     });
 
     return {
@@ -302,6 +331,8 @@
         drawDays();
         drawRateSelect();
         compute();
+        // Most quotes start with the first day's miles.
+        $('scheduler-quote-trip-1').focus({ preventScroll: true });
       },
     };
   };

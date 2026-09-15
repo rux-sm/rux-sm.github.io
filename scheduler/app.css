@@ -1231,11 +1231,19 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 .scheduler-quote__clear { margin-block-start: var(--rux-spacing-03); }
 
-/* The miles: a field a day, as wide as a mileage reads, in day order. */
-.scheduler-quote-days {
+/* The miles: a column of days, each field as wide as a mileage reads, with
+   the last day's remove button beside it. */
+.scheduler-quote-days { display: grid; gap: var(--rux-spacing-05); }
+.scheduler-quote-day {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 8rem);
-  gap: var(--rux-spacing-07) var(--rux-spacing-05);
+  grid-template-columns: 12rem auto;
+  align-items: end;
+  gap: var(--rux-spacing-03);
+}
+/* The options' own area, under the miles: a rule, then space. */
+.scheduler-quote__options {
+  padding-block-start: var(--rux-spacing-07);
+  border-block-start: 1px solid var(--rux-border-subtle-00);
 }
 .scheduler-quote-days .rux--text-input { font-variant-numeric: tabular-nums; }
 

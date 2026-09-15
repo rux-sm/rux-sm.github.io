@@ -215,81 +215,86 @@
         <form class="scheduler-quote" id="scheduler-quote-form" novalidate hidden>
           <div class="scheduler-quote__inputs rux--stack-vertical rux--stack-scale-8">
 
-            <!-- The rate and the drivers are set once a quote. The regular
-                 quote includes one driver; a second adds its own pay. -->
+            <!-- The miles come first and largest: most quotes are only miles
+                 and days, at the default rate with one driver. quote.js draws a
+                 field a day, in a column, and Enter in the last day adds the
+                 next. -->
             <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Trip</legend>
-              <div class="scheduler-quote__pair">
-                <div class="rux--form-item">
-                  <div class="rux--select">
-                    <label class="rux--label" for="scheduler-quote-rate">Mileage rate</label>
-                    <div class="rux--select-input__wrapper">
-                      <select id="scheduler-quote-rate" class="rux--select-input"></select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                    </div>
-                  </div>
-                </div>
-                <div class="rux--form-item">
-                  <div class="rux--select">
-                    <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
-                    <div class="rux--select-input__wrapper">
-                      <select id="scheduler-quote-drivers" class="rux--select-input">
-                        <option class="rux--select-option" value="1">1 driver</option>
-                        <option class="rux--select-option" value="2">2 drivers</option>
-                      </select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-
-            <!-- quote.js draws a field a day, labelled with the day. -->
-            <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Miles per day</legend>
+              <legend class="rux--type-heading-03">Miles per day</legend>
               <div class="scheduler-quote-days" id="scheduler-quote-day-rows"></div>
               <div class="scheduler-quote__actions">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day">Remove last day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg></button>
               </div>
             </fieldset>
 
-            <!-- Dead miles and other charges are occasional, so they wait
-                 behind a switch. While it is off both count as 0. -->
-            <fieldset class="scheduler-quote__group">
-              <legend class="rux--type-heading-compact-02">Extras</legend>
-              <div class="rux--stack-vertical rux--stack-scale-7">
-                <div class="rux--toggle" id="scheduler-quote-extras-toggle">
-                  <button id="scheduler-quote-extras" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="scheduler-quote-extras-l" aria-controls="scheduler-quote-extras-fields"></button>
-                  <label class="rux--toggle__label" for="scheduler-quote-extras" id="scheduler-quote-extras-l">
-                    <span class="rux--toggle__label-text">Dead miles and other charges</span>
-                    <div class="rux--toggle__appearance rux--toggle__appearance--sm">
-                      <div class="rux--toggle__switch">
-                        <svg class="rux--toggle__check" width="6px" height="5px" viewBox="0 0 6 5"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>
+            <!-- The options are rarely changed, so they sit below the miles in
+                 an area of their own, in the order they are used: the rate, the
+                 drivers, then dead miles and other charges. The regular quote
+                 includes one driver; a second adds its own pay. -->
+            <!-- The rule is on a div, because a fieldset draws its legend
+                 across its own top border. -->
+            <div class="scheduler-quote__options">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-01">Options</legend>
+                <div class="rux--stack-vertical rux--stack-scale-7">
+                  <div class="scheduler-quote__pair">
+                    <div class="rux--form-item">
+                      <div class="rux--select">
+                        <label class="rux--label" for="scheduler-quote-rate">Mileage rate</label>
+                        <div class="rux--select-input__wrapper">
+                          <select id="scheduler-quote-rate" class="rux--select-input"></select>
+                          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                        </div>
                       </div>
                     </div>
-                  </label>
-                </div>
-                <div class="scheduler-quote__fields" id="scheduler-quote-extras-fields" hidden>
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+                    <div class="rux--form-item">
+                      <div class="rux--select">
+                        <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
+                        <div class="rux--select-input__wrapper">
+                          <select id="scheduler-quote-drivers" class="rux--select-input">
+                            <option class="rux--select-option" value="1">1 driver</option>
+                            <option class="rux--select-option" value="2">2 drivers</option>
+                          </select>
+                          <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-other">Other charges ($)</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-other" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
+
+                  <!-- Dead miles and other charges wait behind a switch. While it
+                       is off both count as 0. -->
+                  <div class="rux--toggle" id="scheduler-quote-extras-toggle">
+                    <button id="scheduler-quote-extras" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="scheduler-quote-extras-l" aria-controls="scheduler-quote-extras-fields"></button>
+                    <label class="rux--toggle__label" for="scheduler-quote-extras" id="scheduler-quote-extras-l">
+                      <span class="rux--toggle__label-text">Dead miles and other charges</span>
+                      <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+                        <div class="rux--toggle__switch">
+                          <svg class="rux--toggle__check" width="6px" height="5px" viewBox="0 0 6 5"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="scheduler-quote__fields" id="scheduler-quote-extras-fields" hidden>
+                    <div class="rux--form-item rux--text-input-wrapper">
+                      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
+                      <div class="rux--text-input__field-outer-wrapper">
+                        <div class="rux--text-input__field-wrapper">
+                          <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="rux--form-item rux--text-input-wrapper">
+                      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-other">Other charges ($)</label></div>
+                      <div class="rux--text-input__field-outer-wrapper">
+                        <div class="rux--text-input__field-wrapper">
+                          <input id="scheduler-quote-other" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </fieldset>
+              </fieldset>
+            </div>
 
             <div class="scheduler-quote__clear">
               <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>

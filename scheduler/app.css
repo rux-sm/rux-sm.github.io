@@ -1192,12 +1192,6 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-board[hidden],
 .scheduler-header-search[hidden] { display: none; }
 
-/* Below md the header keeps the company's logo and drops the app's name, so
-   the search, account and switcher buttons stay on the screen. */
-@media (max-width: 41.98rem) {
-  .scheduler-header-app { display: none; }
-}
-
 /* The maintenance link's grid is read-only: nothing opens from a bar, so a bar
    takes no pointer and no hover. */
 .scheduler-week--static .scheduler-bar { cursor: default; }

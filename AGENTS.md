@@ -136,7 +136,7 @@ Every app has one word, and its names derive from it.
 | Home | `/` | Rux Home | none | `home` |
 | Design | `design/` | Rux Design | `rux--` | `design` |
 | Notes | `notes/` | Rux Notes | `notes-` | `notes` |
-| Scheduler | `scheduler/` | Scheduler | `scheduler-` | `scheduler` |
+| Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
 
 - **Names people read are sentence case.** A page title is `Page — App`, and
   an app's front page is titled with the app name alone.

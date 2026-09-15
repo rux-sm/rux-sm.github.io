@@ -365,11 +365,32 @@
                   </table>
                 </div>
               </section>
-              <div class="rux--inline-notification rux--inline-notification--error" role="status" id="acct-access-error" hidden>
-                <div class="rux--inline-notification__details">
-                  <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
-                  <div class="rux--inline-notification__text-wrapper">
-                    <div class="rux--inline-notification__title" id="acct-access-error-text"></div>
+              <!-- Save and Discard show once a tick differs from what is saved.
+                   The wrappers carry `hidden`, since Carbon gives the button set
+                   and the notifications a display of their own. -->
+              <div id="acct-access-actions" hidden>
+                <div class="rux--btn-set">
+                  <button type="button" class="rux--btn rux--btn--secondary" id="acct-access-discard">Discard</button>
+                  <button type="button" class="rux--btn rux--btn--primary" id="acct-access-save">Save</button>
+                </div>
+              </div>
+              <div id="acct-access-error" hidden>
+                <div class="rux--inline-notification rux--inline-notification--error" role="status">
+                  <div class="rux--inline-notification__details">
+                    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+                    <div class="rux--inline-notification__text-wrapper">
+                      <div class="rux--inline-notification__title" id="acct-access-error-text"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="acct-access-saved" hidden>
+                <div class="rux--inline-notification rux--inline-notification--success" role="status">
+                  <div class="rux--inline-notification__details">
+                    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+                    <div class="rux--inline-notification__text-wrapper">
+                      <div class="rux--inline-notification__title" id="acct-access-saved-text"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -381,6 +402,28 @@
     </div>
   </div>
 </main>
+
+<!-- Confirms a save that takes access away, listing every change in the save.
+     data.js fills the list; js/modal.js opens and closes it. -->
+<div class="rux--layer-one rux--modal" id="acct-access-confirm" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="acct-access-confirm-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="acct-access-confirm-h">Save these access changes?</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Keep editing" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <ul class="rux--list--unordered" id="acct-access-changes"></ul>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary" id="acct-access-confirm-save">Save changes</button>
+    </div>
+  </div>
+</div>
 
 <!-- The behaviour layer. The kernel loads FIRST; the others delegate to it. -->
 <script src="/design/js/overlay.js"></script>

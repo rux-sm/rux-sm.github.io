@@ -30,8 +30,9 @@ customer requests, are rebuilt with Design here and open without a login.
   Scheduler ticked, so a Notes reader never sees trip data.
 - **An Access page for the owner**, on the Account page: a row per account and
   a checkbox per app in `switcher.json` other than Home, so a new app gets its
-  checkbox with no code. A tick saves through a database function that first
-  checks the caller is the owner. The owner switch changes only by migration,
+  checkbox with no code. Ticks wait for Save, and a save that takes access away
+  first lists every change for confirmation. It saves through a database
+  function that first checks the caller is the owner. The owner switch changes only by migration,
   so the owner cannot untick themself out. Creating accounts and resetting
   passwords stay in the Supabase dashboard, because they need the secret key.
 - **One login page for the whole site, at `/login/`, built from Design.** An

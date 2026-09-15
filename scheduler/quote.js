@@ -194,25 +194,17 @@
       rows.replaceChildren();
       for (let d = 1; d <= dayCount; d++) {
         const id = `scheduler-quote-trip-${d}`;
-        const row = document.createElement('div');
-        row.className = 'scheduler-quote-day';
         const field = textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' });
         // Carbon's large field, 48px, because the miles are what most quotes are.
         field.querySelector('.rux--text-input__field-wrapper').classList.add('rux--layout--size-lg');
-        row.append(field);
-        // Only the last day can be removed, so no day renumbers under a person.
-        if (d === dayCount && d > 1) {
-          const remove = document.createElement('button');
-          remove.type = 'button';
-          remove.className = 'rux--btn rux--btn--ghost rux--btn--icon-only';
-          remove.setAttribute('aria-label', `Remove day ${d}`);
-          remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>';
-          remove.addEventListener('click', removeDay);
-          row.append(remove);
-        }
-        rows.append(row);
+        rows.append(field);
       }
       $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
+      // Only the last day can be removed, so no day renumbers under a person,
+      // and the button names the day it removes.
+      const remove = $('scheduler-quote-remove-day');
+      remove.hidden = dayCount <= 1;
+      remove.firstChild.nodeValue = `Remove day ${dayCount}`;
     };
 
     const column = col => Array.from({ length: dayCount }, (_, i) => Math.max(0, num($(`scheduler-quote-${col}-${i + 1}`)?.value)));
@@ -307,6 +299,7 @@
       compute();
     };
     $('scheduler-quote-add-day').addEventListener('click', addDay);
+    $('scheduler-quote-remove-day').addEventListener('click', removeDay);
     // Enter moves down the column of days, and in a last day that has miles it
     // adds the next day, so a trip is typed without reaching for the mouse.
     form.addEventListener('keydown', e => {

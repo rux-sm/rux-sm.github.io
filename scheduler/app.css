@@ -1173,9 +1173,12 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-menu-trigger[hidden] { display: none; }
 
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
-   The calculator is two tiles: the inputs, in the order a quote is built, and
-   beside them the quote, sticky, so its lines and total stay in view while the
-   miles table grows. Below lg the quote follows the inputs, and its total is a
+   Both pages use Carbon's editorial style model, which Carbon names for
+   low-density product screens such as checkout: centred at lg, the calculator
+   in twelve of the grid's sixteen columns and the rates form in eight from the
+   same left edge. The calculator's form sits on the page, as a dedicated-page
+   form does, and beside it the quote is the one tile, sticky, so its lines and
+   total stay in view. Below lg the quote follows the form, and its total is a
    bar pinned to the bottom of the screen until the page reaches the quote. */
 .scheduler-quote-title {
   display: flex;
@@ -1183,71 +1186,56 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   align-items: center;
   justify-content: space-between;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
-  max-inline-size: 76rem;
 }
 .scheduler-quote {
+  --scheduler-quote-gap: var(--rux-spacing-07);
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   grid-template-areas: "inputs quote";
   align-items: start;
-  gap: var(--rux-spacing-05);
-  max-inline-size: 76rem;
+  gap: var(--scheduler-quote-gap);
 }
 /* Each of these has a display rule that beats the browser's [hidden]. */
 .scheduler-quote[hidden],
 .scheduler-quote-line[hidden],
-.scheduler-quote__fields[hidden],
-.scheduler-quote-rates__form[hidden] { display: none; }
+.scheduler-quote__fields[hidden] { display: none; }
 .scheduler-quote__inputs { grid-area: inputs; min-inline-size: 0; }
 .scheduler-quote__quote {
   grid-area: quote;
   position: sticky;
-  inset-block-start: calc(3rem + var(--rux-spacing-05));
+  inset-block-start: calc(3rem + var(--rux-spacing-07));
 }
+/* The quote's inset is 24px: the tile's 16 and 8 more. */
+.scheduler-quote__body { padding: var(--rux-spacing-03); }
 
+/* Carbon's spacing for a dedicated-page form: 32px between fields, 40px
+   between groups, which is the form's stack, and 48px before its action. */
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
-.scheduler-quote__group > legend {
-  display: flex;
-  align-items: center;
-  margin-block-end: var(--rux-spacing-05);
-}
-/* The number before each group's name: the order a quote is built in. */
-.scheduler-quote__step {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
-  margin-inline-end: var(--rux-spacing-03);
-  border: 1px solid var(--rux-border-strong-01);
-  border-radius: 50%;
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  font-variant-numeric: tabular-nums;
-}
+.scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
 .scheduler-quote__pair {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-07);
 }
 .scheduler-quote__fields {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-  gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-07) var(--rux-spacing-05);
   align-items: end;
 }
 .scheduler-quote__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--rux-spacing-03);
-  margin-block-start: var(--rux-spacing-03);
+  margin-block-start: var(--rux-spacing-05);
 }
+.scheduler-quote__clear { margin-block-start: var(--rux-spacing-03); }
 
-/* The miles: a field a day, as many across as fit, in day order. */
+/* The miles: a field a day, as wide as a mileage reads, in day order. */
 .scheduler-quote-days {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-  gap: var(--rux-spacing-05);
+  grid-template-columns: repeat(auto-fill, 8rem);
+  gap: var(--rux-spacing-07) var(--rux-spacing-05);
 }
 .scheduler-quote-days .rux--text-input { font-variant-numeric: tabular-nums; }
 
@@ -1281,8 +1269,7 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-quote-total__value { font-variant-numeric: tabular-nums; }
 .scheduler-quote-bar { display: none; }
 
-/* The rates page: its mileage list is rate, note, the default radio, remove. */
-.scheduler-quote-rates { max-inline-size: 48rem; }
+/* The rates page's mileage list: rate, note, the default radio, remove. */
 .scheduler-quote-mileage__head,
 .scheduler-quote-mileage__row {
   display: grid;
@@ -1301,24 +1288,23 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-quote-mileage__default { justify-content: center; }
 
 @media (max-width: 65.98rem) {
-  .scheduler-quote-title { max-inline-size: 42rem; }
   .scheduler-quote {
+    --scheduler-quote-gap: var(--rux-spacing-08);
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "inputs" "quote" "bar";
-    max-inline-size: 42rem;
   }
   .scheduler-quote__quote { position: static; }
   .scheduler-quote__total { display: none; }
   /* The bar is the quote's last line. The gap above it is taken back, so it
-     lands flush under the quote's tile, in the tile's colour, and it clears
-     the phone's home bar while pinned. */
+     lands flush under the quote's tile, in the tile's colour, lined up with
+     the quote's inset, and it clears the phone's home bar while pinned. */
   .scheduler-quote-bar {
     grid-area: bar;
     display: flex;
     position: sticky;
     inset-block-end: 0;
-    margin-block-start: calc(-1 * var(--rux-spacing-05));
-    padding: var(--rux-spacing-04) var(--rux-spacing-05) calc(var(--rux-spacing-04) + var(--scheduler-safe-bottom));
+    margin-block-start: calc(-1 * var(--scheduler-quote-gap));
+    padding: var(--rux-spacing-04) var(--rux-spacing-06) calc(var(--rux-spacing-04) + var(--scheduler-safe-bottom));
     background: var(--rux-layer-01);
     border-block-start: 1px solid var(--rux-border-subtle-01);
   }

@@ -188,8 +188,9 @@
 
 <main id="main-content" class="rux--content scheduler-quote-page">
   <div class="rux--css-grid">
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
-      <div class="rux--stack-vertical rux--stack-scale-6 scheduler-quote-rates">
+    <!-- The calculator's left edge, in the eight columns Carbon shows a form in. -->
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-8">
+      <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-3">
           <nav aria-label="Breadcrumb">
             <ol class="rux--breadcrumb">
@@ -211,10 +212,10 @@
           </div>
         </div>
 
-        <!-- One tile, painting layer, so its fields step up to layer-two.
-             Carbon puts a form's buttons at its end. -->
-        <form class="rux--tile scheduler-quote-rates__form" id="scheduler-quote-rates-form" novalidate hidden>
-          <div class="rux--layer-two rux--stack-vertical rux--stack-scale-7">
+        <!-- A dedicated-page form, on the page like the calculator's, with
+             Carbon's 40px between groups. Its buttons come at its end. -->
+        <form id="scheduler-quote-rates-form" novalidate hidden>
+          <div class="rux--stack-vertical rux--stack-scale-8">
             <fieldset class="scheduler-quote__group">
               <legend class="rux--type-heading-compact-02">Trip</legend>
               <div class="scheduler-quote__fields" id="scheduler-quote-rates-trip"></div>

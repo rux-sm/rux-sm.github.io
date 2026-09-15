@@ -1544,6 +1544,23 @@
     return item;
   }
 
+  /* Notes grows to fit its text from one row, so a long note is read whole
+     rather than scrolled inside the box. The height is measured, so it is set on
+     every edit and whenever the box changes size, which covers the tab opening
+     from hidden and the text rewrapping. The panel's scroll is kept, because
+     the box collapses for a moment while it is measured. */
+  const fitNotes = ta => {
+    if (!ta.clientWidth) return;
+    const body = ta.closest('#scheduler-panel-body');
+    const top = body?.scrollTop;
+    ta.style.blockSize = 'auto';
+    ta.style.blockSize = `${ta.scrollHeight + ta.offsetHeight - ta.clientHeight}px`;
+    if (body) body.scrollTop = top;
+  };
+  // One observer for the one Notes box: a rebuilt panel's old box is let go
+  // before the new one is watched.
+  const notesObserver = new ResizeObserver(([entry]) => fitNotes(entry.target));
+
   function notesField(id, label, value) {
     const item = el('div', 'rux--form-item');
     const lw = el('div', 'rux--text-area__label-wrapper');
@@ -1555,6 +1572,9 @@
     ta.id = id;
     ta.rows = 1;
     ta.value = value ?? '';
+    ta.addEventListener('input', () => fitNotes(ta));
+    notesObserver.disconnect();
+    notesObserver.observe(ta);
     wrap.append(ta, el('span', 'rux--text-area__counter-alert'));
     wrap.lastChild.setAttribute('role', 'alert');
     item.append(lw, wrap);

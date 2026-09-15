@@ -22,6 +22,9 @@
    `inline-size: 100%`. */
 .rux--side-panel .rux--text-area { flex: 1 1 auto; }
 
+/* Notes sizes itself to its text (data.js), so its drag handle comes off. */
+#scheduler-f-notes { resize: none; }
+
 /* From Carbon's md up, the trip editor is a column in `.scheduler-board`
    rather than a fixed overlay, so the panel's positioning and transition are
    undone; `.scheduler-trip` in app.css sets its width and height. Below md

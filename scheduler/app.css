@@ -475,6 +475,13 @@ button.scheduler-row-head__num {
 .scheduler-bar__warn-chip svg { display: block; }
 /* On an amber bar the chip would vanish into its own fill. */
 .scheduler-bar--amber .scheduler-bar__warn-chip { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+/* A booked hotel keeps its icon, in the bar's own text colour with no warning
+   fill: the trip has a hotel, and nothing is left to do about it. */
+.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
+  background: none;
+  color: inherit;
+  box-shadow: none;
+}
 
 /* A double booking: a strip over the last row, in the error tokens. */
 .scheduler-bar__conflict {
@@ -861,6 +868,19 @@ button.scheduler-row-head__num {
 .scheduler-pair .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
 .scheduler-pair .rux--text-input,
 .scheduler-pair .rux--select-input { inline-size: 100%; min-inline-size: 0; }
+/* A field beside a checkbox: bottoms aligned, and the checkbox centred on the
+   field's 40px, as a hotel's confirmation number and Booked are. Carbon's
+   margin under the checkbox comes off in overrides.css. */
+.scheduler-pair--end { align-items: end; }
+.scheduler-pair--end > .rux--checkbox-wrapper {
+  justify-content: center;
+  min-block-size: var(--rux-layout-size-height-md);
+}
+/* A hotel's rows show only while Hotel is ticked, and the pick-up row only on a
+   drop-off and pick-up trip. Stacks and pairs are grids, which beat the
+   browser's `[hidden]`. */
+.scheduler-hotel[hidden],
+.scheduler-hotel > [hidden] { display: none; }
 
 /* ── Board layout ────────────────────────────────────────────────────────────
    `.scheduler-board` is a flex row: the roster, the schedule's frame and the

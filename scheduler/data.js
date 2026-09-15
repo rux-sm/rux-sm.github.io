@@ -261,6 +261,9 @@
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
+    // Each leg's hotel: the bar's hotel mark, its menu item and the Details tab.
+    'hotel_booked_outbound', 'hotel_booked_return',
+    'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
@@ -497,6 +500,10 @@
     // The itinerary shortcut and menu item open this document.
     const itinerary = latestItinerary(trip);
     bar.dataset.itineraryId = itinerary?.id ?? '';
+    // The bar menu's hotel item reads both: whether the trip needs a hotel, and
+    // whether this leg's is booked.
+    bar.dataset.needHotel = trip.need_hotel ? 'true' : '';
+    bar.dataset.hotelBooked = trip[`hotel_booked_${leg.leg}`] ? 'true' : '';
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
@@ -535,6 +542,13 @@
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
     if (!itinerary && !trip.itinerary_not_needed) lacks.push({ href: '#i-attachment', label: 'No itinerary yet' });
+    /* A trip that needs a hotel shows a building for this leg's: amber while it
+       is not booked, like the warnings, and in the bar's own text colour once it
+       is, so the bar still says the trip has a hotel. */
+    if (trip.need_hotel) {
+      const booked = !!trip[`hotel_booked_${leg.leg}`];
+      lacks.push({ href: '#i-building', label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked });
+    }
     // Drawn on the drivers row and again on the destination row; app.css shows
     // the second only while the drivers row is turned off, so hiding a row
     // never hides the warning. The bar's label carries it for a screen reader.
@@ -542,7 +556,7 @@
       if (!lacks.length) return null;
       const box = el('span', `scheduler-bar__warn scheduler-bar__warn--${where}`);
       for (const w of lacks) {
-        const chip = el('span', 'scheduler-bar__warn-chip');
+        const chip = el('span', w.done ? 'scheduler-bar__warn-chip scheduler-bar__warn-chip--done' : 'scheduler-bar__warn-chip');
         chip.title = w.label;
         chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
         box.appendChild(chip);
@@ -1781,6 +1795,11 @@
     { key: 'req_56pax', get: f => f['scheduler-f-56pax'].checked },
     // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
     { key: 'need_hotel', get: f => f['scheduler-f-hotel'].checked },
+    // Each leg's hotel: whether it is booked, and its confirmation number.
+    ...['outbound', 'return'].flatMap(l => [
+      { key: `hotel_booked_${l}`, get: () => !!document.getElementById(`scheduler-f-hotelbooked-${l}`)?.checked },
+      { key: `hotel_itinerary_number_${l}`, get: () => fieldVal(`scheduler-f-hotelref-${l}`) ?? null },
+    ]),
     { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
     /* Billing. Money goes to the column as a number or null, never NaN, which
        Postgres rejects with an error that does not name the field. The two
@@ -2402,6 +2421,10 @@
       req_ada: !!trip.req_ada,
       req_56pax: !!trip.req_56pax,
       need_hotel: !!trip.need_hotel,
+      hotel_booked_outbound: !!trip.hotel_booked_outbound,
+      hotel_booked_return: !!trip.hotel_booked_return,
+      hotel_itinerary_number_outbound: trip.hotel_itinerary_number_outbound ?? null,
+      hotel_itinerary_number_return: trip.hotel_itinerary_number_return ?? null,
       notes: trip.notes ?? null,
       start_date: trip.start_date ?? null,
       end_date: trip.end_date ?? trip.start_date ?? null,
@@ -2496,6 +2519,32 @@
       checkField('scheduler-f-hotel', 'Hotel', trip.need_hotel),
     );
 
+    /* While Hotel is ticked, each leg the trip has shows its hotel's
+       confirmation number beside a Booked box, the leg's
+       `hotel_itinerary_number_` and `hotel_booked_` columns rux-ui writes too;
+       a drop-off and pick-up trip has two. Unticking hides them and clears
+       nothing, so a slip loses no confirmation number. */
+    const hotelLeg = (legKey, label) => {
+      const row = pair(
+        textField(`scheduler-f-hotelref-${legKey}`, label, trip[`hotel_itinerary_number_${legKey}`]),
+        checkField(`scheduler-f-hotelbooked-${legKey}`, 'Booked', trip[`hotel_booked_${legKey}`]),
+      );
+      row.classList.add('scheduler-pair--end');
+      return row;
+    };
+    const hotelOut = hotelLeg('outbound', 'Hotel confirmation');
+    const hotelBack = hotelLeg('return', 'Pick-up hotel confirmation');
+    const hotelBox = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-hotel');
+    hotelBox.append(hotelOut, hotelBack);
+    // A split trip's first hotel is the drop-off's, and its second row shows.
+    const setHotelLegs = split => {
+      hotelBack.hidden = !split;
+      hotelOut.querySelector('.rux--label').textContent = split ? 'Drop-off hotel confirmation' : 'Hotel confirmation';
+    };
+    setHotelLegs(trip.trip_type === SPLIT);
+    hotelBox.hidden = !trip.need_hotel;
+    flags.querySelector('#scheduler-f-hotel').addEventListener('change', e => { hotelBox.hidden = !e.target.checked; });
+
     /* The trip's own fields are one stack, 24px apart. Type and Trip bar color
        share a row, each one pick from a short list; the bar color is a property
        of the trip, not a section of its own. */
@@ -2517,6 +2566,7 @@
       ),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
       flags,
+      hotelBox,
     );
     panelDetails.appendChild(topFields);
 
@@ -3088,6 +3138,7 @@
       const split = e.target.value === SPLIT;
       returnDates.hidden = !split;
       setOutLabels(split);
+      setHotelLegs(split);
       refreshDirty();
     });
 
@@ -3934,6 +3985,24 @@
       return;
     }
 
+    // Marking the hotel saves at once, like a colour: one column of this leg.
+    if (item.id === 'scheduler-bar-menu-hotel') {
+      if (!['outbound', 'return'].includes(bar.dataset.leg)) return;
+      const booked = !bar.dataset.hotelBooked;
+      toast('info', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
+      try {
+        const { error } = await withTimeout(
+          client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
+            .eq('id', bar.dataset.tripId).then(r => r));
+        if (error) throw new Error(error.message);
+        await show();
+        toast('success', booked ? 'The hotel is booked.' : 'The hotel is not booked.');
+      } catch (err) {
+        toast('error', `The hotel was not marked. ${err.message}`);
+      }
+      return;
+    }
+
     // A colour saves at once, like Take off this bus: one column, no form.
     if (item.dataset.color != null) {
       const value = item.dataset.color || null;
@@ -3981,6 +4050,12 @@
       }
     }
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
+    // Mark this leg's hotel booked or not, on a trip that needs one, and not for
+    // the trip open in the editor, which has its own Booked box.
+    const hotelItem = document.getElementById('scheduler-bar-menu-hotel');
+    hotelItem.hidden = !bar.dataset.needHotel || locked;
+    hotelItem.querySelector('.rux--menu-item__label').textContent =
+      bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
   }
 
   // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.

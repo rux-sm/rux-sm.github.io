@@ -94,7 +94,6 @@ None open.
 
 ## Tasks
 
-- [ ] Build the maintenance page, tested against the real link.
 - [ ] Build the request page, tested without sending a request.
 - [ ] Build the driver page, tested against a real link without accepting or
       declining.

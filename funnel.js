@@ -1,24 +1,26 @@
 /* ==========================================================================
-   Rux Apps — FUNNEL
+   Rux Apps — FUNNEL, the site's page lock
    --------------------------------------------------------------------------
-   Every page outside /scheduler/ loads this first in its <head>.
+   Every full page loads this first in its <head>, followed by a style that
+   keeps the page hidden until this script marks it open, so a browser with
+   scripts off draws nothing. It reads the login supabase-js keeps in this
+   browser, with no network, before the page draws:
+   - no login, or an account with no access: to /login/?next=<this address>;
+   - a page of an app the account lacks: to Home, or to its one app;
+   - otherwise the page opens.
+   /login/ and /scheduler/share/ open without a login. A local preview has no
+   lock unless ?cloud is on the address, as account.js behaves.
 
-   ACCESS, SHARED. window.Rux.access says which pages an account's access
-   opens and where it lands, for the log-in page. Access is the owner switch
-   and the ticked apps in the account's app_metadata. An app is a page's first
-   path segment; the root, account/ and login/ are Home, which every account
-   with access opens.
+   ACCESS, SHARED. window.Rux.access holds these rules for the log-in page too.
+   Access is the owner switch and the ticked apps in the account's
+   app_metadata. An app is a page's first path segment; the root, account/ and
+   login/ are Home, which every account with access opens.
 
-   A TEAM ACCOUNT uses only the scheduler, and is sent there before the page
-   draws. A team account is a staff profile without sees_all_apps; account.js
-   records its user id under rux.team-account when it logs in and clears it on
-   log out. This file compares that record with the session supabase-js keeps,
-   so it needs no network and waits for nothing.
-
-   A WALL, NOT SECURITY. The database rules decide what staff data anyone can
-   reach; this only keeps an account inside the apps it was given. */
+   A CURTAIN, NOT A LOCK. Anyone with a file's address can still fetch it; the
+   database rules decide what data anyone can reach. */
 (() => {
   'use strict';
+  const STORAGE_KEY = 'sb-udnmqhayzhrbltxzzhjw-auth-token';
   const HOME = new Set(['', 'account', 'login']);
   const accessOf = user => ({
     owner: user?.app_metadata?.owner === true,
@@ -35,11 +37,26 @@
   window.Rux = window.Rux || {};
   window.Rux.access = { accessOf, appOf, canEnter, allows, landing };
 
-  if (location.pathname.startsWith('/scheduler/')) return;
-  try {
-    const team = localStorage.getItem('rux.team-account');
-    if (!team) return;
-    const session = JSON.parse(localStorage.getItem('sb-udnmqhayzhrbltxzzhjw-auth-token') || 'null');
-    if (session?.user?.id === team) location.replace('/scheduler/');
-  } catch { /* storage blocked or unreadable: nothing to compare */ }
+  const open = () => document.documentElement.setAttribute('data-rux-open', '');
+  const path = location.pathname;
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  if ((local && !new URLSearchParams(location.search).has('cloud'))
+      || path.startsWith('/login/') || path.startsWith('/scheduler/share/')) {
+    open();
+    return;
+  }
+
+  let user = null;
+  try { user = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
+  catch { /* storage blocked or unreadable: no login to read */ }
+  const granted = accessOf(user);
+  if (!user || user.is_anonymous || !canEnter(granted)) {
+    location.replace(`/login/?next=${encodeURIComponent(path + location.search + location.hash)}`);
+    return;
+  }
+  if (!allows(granted, path)) {
+    location.replace(landing(granted));
+    return;
+  }
+  open();
 })();

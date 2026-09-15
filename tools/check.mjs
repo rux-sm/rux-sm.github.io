@@ -79,17 +79,18 @@ if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
 console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps.length} in switcher.json${bad ? '' : ', every path and icon well formed'}`);
 if (bad) failed.push('switcher');
 
-// THE FUNNEL RULE. A page that forgets /funnel.js is a door a team account
-// can walk through, and nothing on it looks wrong. Every full page outside
-// the scheduler loads it before any other script, so it runs before the page
-// draws; the scheduler is where the funnel leads.
+// THE LOCK RULE. A page that forgets /funnel.js, or the style after it, opens
+// without a log-in, and nothing on it looks wrong. Every full page loads the
+// script before any other and the style straight after, so the page stays
+// hidden until the script lets it open.
 console.log('\n── funnel');
-const pages = text.filter(p => p.endsWith('.html') && !p.startsWith('scheduler/'))
+const LOCK = '<script src="/funnel.js"></script>\n<style>html:not([data-rux-open]){visibility:hidden}</style>';
+const pages = text.filter(p => p.endsWith('.html'))
   .map(p => [p, readFileSync(join(ROOT, p), 'utf8')])
   .filter(([, s]) => s.includes('<head>'));
-const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<script src="/funnel.js">').map(([p]) => p);
-for (const p of open) console.log(`  FAIL  ${p}: its first script is not <script src="/funnel.js">`);
-console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages outside the scheduler${open.length ? '' : ', each loads /funnel.js first'}`);
+const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<script src="/funnel.js">' || !s.includes(LOCK)).map(([p]) => p);
+for (const p of open) console.log(`  FAIL  ${p}: its first script is not <script src="/funnel.js"> with the lock style after it`);
+console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages${open.length ? '' : ', each loads /funnel.js first and starts hidden'}`);
 if (open.length) failed.push('funnel');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });

@@ -10,9 +10,8 @@
 
    WITH A STAFF SESSION the name and theme sync to platform.profiles, cloud
    first on load and local edits pushed up after, debounced. A team account,
-   one whose profile lacks sees_all_apps, uses only the scheduler on this
-   site: the app switcher is hidden for it, and /funnel.js sends it to the
-   scheduler from every other page.
+   one whose profile lacks sees_all_apps, has the app switcher hidden. Which
+   pages any account opens is /funnel.js's.
 
    THE PUBLISHABLE KEY AND THE TURNSTILE SITE KEY ARE NOT SECRETS. Both are
    meant to sit in client code; the paired secret keys stay in the Supabase
@@ -44,8 +43,8 @@
   // name on the reserved staff domain, which nobody can own; a full email
   // address is used as typed.
   const STAFF_EMAIL_DOMAIN = 'staff.invalid';
-  // Both keys are read by /funnel.js by name. STORAGE_KEY is supabase-js's
-  // own default for this project, named so the two files cannot drift.
+  // STORAGE_KEY is supabase-js's own default for this project, which
+  // /funnel.js reads by name, so the two files cannot drift.
   const STORAGE_KEY = 'sb-udnmqhayzhrbltxzzhjw-auth-token';
   const TEAM_KEY = 'rux.team-account';
 
@@ -161,14 +160,10 @@
     if (!staff || staffReady) return;
     staffReady = true;
 
-    // A TEAM ACCOUNT STAYS IN THE SCHEDULER. The record lets /funnel.js send
-    // it back from any other page before that page draws.
+    // A team account has no switcher. Which pages any account opens is
+    // /funnel.js's.
     if (!staff.sees_all_apps) {
       try { localStorage.setItem(TEAM_KEY, session.user.id); } catch {}
-      if (!location.pathname.startsWith('/scheduler/')) {
-        location.replace('/scheduler/');
-        return;
-      }
       document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]')?.setAttribute('hidden', '');
       document.getElementById('rux-switcher-panel')?.setAttribute('hidden', '');
     } else {

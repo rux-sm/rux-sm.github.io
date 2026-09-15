@@ -81,11 +81,6 @@ None open.
 
 ## Tasks
 
-- [ ] `funnel.js` reads the access from the stored login, sends no login to
-      `/login/` and a page of an app not ticked to Home, and lets through `/login/`
-      and `/scheduler/share/`. Every page, generators included, starts hidden
-      until it passes, and the check requires both.
-- [ ] `robots.txt` at the root disallows every crawler.
 - [ ] Load `account.js` on every page, including the Design and Notes
       generators, confirming the login after the page opens.
 - [ ] Remove the scheduler's own login form, `sees_all_apps` and the

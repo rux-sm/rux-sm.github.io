@@ -479,7 +479,13 @@
 
   // The same staff gate as the schedule: the page waits for the staff profile,
   // and an account with none, or a profile that would not load, gets the
-  // notice instead.
+  // notice instead. A staff account also gets the header's buttons.
+  const headerBtns = [
+    document.querySelector('.scheduler-menu-trigger'),
+    document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]'),
+  ].filter(Boolean);
+  const switcherBtn = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
+
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {

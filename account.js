@@ -5,11 +5,12 @@
    that have the account panel. Holds the site's one Supabase client
    and the log-in /login/ uses. A staff account is a Supabase user linked to a row
    in public.profiles, which my_staff_profile() returns. There is no
-   anonymous session and no GitHub or Google log-in: a visitor without a
-   staff session uses these pages with the profile this browser keeps.
+   anonymous session and no GitHub or Google log-in. Without a login, as in a
+   local preview, these pages use the profile this browser keeps.
 
-   WITH A STAFF SESSION the name and theme sync to platform.profiles, cloud
-   first on load and local edits pushed up after, debounced. Which pages any
+   WITH A LOGIN, staff or not, the account panel offers Account settings and
+   Log out, and the name and theme sync to platform.profiles, cloud first on
+   load and local edits pushed up after, debounced. Which pages any
    account opens is /funnel.js's, and which apps the switcher lists is
    /switcher.js's.
 
@@ -126,12 +127,11 @@
   const panel = document.getElementById('rux-account-panel');
   const panelButton = panel?.querySelector('#rux-profile-sign-in');
 
-  // THE STAFF SIDE OF A PAGE, run at load once the login is confirmed.
-  const setupStaff = async session => {
+  // THE ACCOUNT SIDE OF A PAGE, run at load once the login is confirmed, for
+  // every account, staff or not: platform.profiles lets any login keep its
+  // own row.
+  const setupAccount = async session => {
     if (!profile || !session || session.user.is_anonymous) return;
-    let staff = null;
-    try { staff = await staffProfile(); } catch { return; }
-    if (!staff) return;
 
     if (panelButton) {
       // The account panel's door into the Account page, which every account
@@ -221,5 +221,5 @@
       if (event === 'SIGNED_OUT') location.replace(loginAddress());
     });
   }
-  await setupStaff(session);
+  await setupAccount(session);
 })();

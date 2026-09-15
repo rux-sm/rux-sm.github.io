@@ -39,7 +39,9 @@ rux-ui still uploads them, into `trip_documents` and the public
 - **Print opens the print dialog on the frame directly.** Zoom reloads the
   frame at the new zoom, which returns it to the first page. Page search,
   thumbnails and rotate are in the browser's own viewer, through Open in new
-  tab, which is also Safari's way to print.
+  tab.
+- **Safari shows no zoom buttons,** because its PDF view ignores the zoom an
+  address asks for and draws its own zoom controls over the page.
 - **The head is the destination, after an attachment icon, and Close,** laid
   out as the trip editor's head is.
 - **Below Carbon's xlg breakpoint, 82rem, an itinerary opens in a new tab**

@@ -566,6 +566,9 @@ button.scheduler-row-head__num {
   padding-inline: var(--rux-spacing-03);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
+/* A button's own display beats the browser's `[hidden]`, so the zoom buttons
+   data.js hides in Safari are hidden here. */
+.scheduler-itinerary__toolbar > [hidden] { display: none; }
 .scheduler-itinerary__uploaded {
   margin-inline-start: auto;
   padding-inline-end: var(--rux-spacing-03);

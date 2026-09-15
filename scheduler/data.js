@@ -4021,6 +4021,11 @@
   const itinNewTab = document.getElementById('scheduler-itinerary-new-tab');
   const itinClose = document.getElementById('scheduler-itinerary-close');
   const itinZooms = [...document.querySelectorAll('[data-itinerary-zoom]')];
+  /* Safari's PDF view, which every browser on an iPad uses too, ignores the
+     zoom an address asks for and draws its own zoom controls over the page, so
+     there the panel's zoom buttons are hidden rather than left doing nothing.
+     No feature tells which PDF viewer a frame gets; the vendor string does. */
+  if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of itinZooms) btn.hidden = true;
   // The 40rem panel beside the 30rem editor, with the board still in view.
   const itinWide = matchMedia('(min-width: 82rem)');
   // The zooms Zoom in and Zoom out step through, in percent.

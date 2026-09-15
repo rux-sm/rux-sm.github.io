@@ -1177,11 +1177,12 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
    low-density product screens such as checkout: centred at lg, the calculator
    in twelve of the grid's sixteen columns and the rates form in eight from the
    same left edge. The calculator is three tiles in a row, in the order a quote
-   is made: the miles, the modifiers, and the quote, sticky. Each tile is as
-   tall as what it holds, so adding days grows only the miles tile. At md the
-   quote goes under the other two; below md the tiles stack. Below lg the
-   quote's total is a bar pinned to the bottom of the screen until the page
-   reaches the quote. */
+   is made: the miles, the modifiers, and the quote. The tiles share one
+   height, the tallest's, and adding days moves nothing inside the other two;
+   the quote's contents are sticky inside its tile, so the total stays in view
+   beside a long column of days. At md the quote goes under the other two;
+   below md the tiles stack. Below lg the quote's total is a bar pinned to the
+   bottom of the screen until the page reaches the quote. */
 .scheduler-quote-title {
   display: flex;
   flex-wrap: wrap;
@@ -1194,7 +1195,6 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-areas: "miles modifiers quote";
-  align-items: start;
   gap: var(--scheduler-quote-gap);
 }
 /* Each of these has a display rule that beats the browser's [hidden]. */
@@ -1202,14 +1202,13 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-quote-line[hidden] { display: none; }
 .scheduler-quote__miles { grid-area: miles; min-inline-size: 0; }
 .scheduler-quote__modifiers { grid-area: modifiers; min-inline-size: 0; }
-.scheduler-quote__quote {
-  grid-area: quote;
-  min-inline-size: 0;
+.scheduler-quote__quote { grid-area: quote; min-inline-size: 0; }
+/* Each tile's inset is 24px: the tile's 16 and 8 more. */
+.scheduler-quote__body { padding: var(--rux-spacing-03); }
+.scheduler-quote__quote > .scheduler-quote__body {
   position: sticky;
   inset-block-start: calc(3rem + var(--rux-spacing-07));
 }
-/* Each tile's inset is 24px: the tile's 16 and 8 more. */
-.scheduler-quote__body { padding: var(--rux-spacing-03); }
 
 .scheduler-quote__group { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
 .scheduler-quote__group > legend { margin-block-end: var(--rux-spacing-05); }
@@ -1295,7 +1294,7 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas: "miles modifiers" "quote quote" "bar bar";
   }
-  .scheduler-quote__quote { position: static; }
+  .scheduler-quote__quote > .scheduler-quote__body { position: static; }
   .scheduler-quote__total { display: none; }
   /* The bar is the quote's last line. The gap above it is taken back, so it
      lands flush under the quote's tile, in the tile's colour, lined up with

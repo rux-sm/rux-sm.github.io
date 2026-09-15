@@ -7,28 +7,33 @@ type: plan
 ## Goal
 
 Every page of rux-sm.github.io opens only for a logged-in account, and the
-account's role decides which pages it can open and where everything else sends
-it. The scheduler's public link pages, for drivers, maintenance, documents and
+apps ticked for the account decide which pages it can open and where everything
+else sends it. The scheduler's public link pages, for drivers, maintenance, documents and
 customer requests, are rebuilt with Design here and open without a login.
 
 ## Decisions
 
-- **Each account has one role, and the role decides everything.** `owner`
-  opens every page, with the switcher. `scheduler` opens only the scheduler.
-  Later roles follow the same rule, such as `notes` for a friend who reads
-  Notes and nothing else. A role is named for its home app, and every page
-  outside it sends the account there. An account with no role is not let in.
-- **The role sits in the account's `app_metadata`**, Supabase's standard place
-  for roles. Only a migration or the dashboard can set it. The database reads
-  it from the account record, so a change applies at once and nobody already
-  logged in loses staff access; the pages read its copy in the login token.
-- **The role replaces `sees_all_apps` and the `rux.team-account` record.**
-  Staff in the database becomes a linked profile with the role `owner` or
-  `scheduler`, so a Notes reader never sees trip data or appears among staff.
+- **Each account has an owner switch and a list of apps.** The owner opens
+  every page, with the switcher, and manages access. Any other account opens
+  Home and the apps ticked for it, and a page of an app it lacks sends it Home.
+  An account with no owner switch and no apps is not let in.
+- **Access sits in the account's `app_metadata`** as `owner` and `apps`,
+  Supabase's standard place for it, which the account's own login cannot
+  change. The database reads it from the account record, so a change applies
+  at once; the pages read its copy in the login token.
+- **Access replaces `sees_all_apps` and the `rux.team-account` record.** Staff
+  in the database is a linked profile whose account is the owner or has
+  Scheduler ticked, so a Notes reader never sees trip data.
+- **An Access page for the owner**, on the Account page: a row per account and
+  a checkbox per app in `switcher.json` other than Home, so a new app gets its
+  checkbox with no code. A tick saves through a database function that first
+  checks the caller is the owner. The owner switch changes only by migration,
+  so the owner cannot untick themself out. Creating accounts and resetting
+  passwords stay in the Supabase dashboard, because they need the secret key.
 - **One login page for the whole site, at `/login/`, built from Design.** An
   address opened without a login goes there and remembers the address. After
-  logging in, the account lands on that address if its role allows it, and on
-  its home app if not. It replaces the scheduler's own login form, and Log out
+  logging in, the account lands on that address if its access allows it, and
+  on Home if not, or on its one app when it has only one. It replaces the scheduler's own login form, and Log out
   everywhere returns to it.
 - **`funnel.js` is the gate**, the first script on every page. It reads the
   stored login and redirects before the page draws, with no network. It lets
@@ -58,12 +63,12 @@ customer requests, are rebuilt with Design here and open without a login.
   pages. The scheduler making links is a plan of its own.
 - **rux-ui keeps its own login and session.** It is a separate site that this
   lock does not reach.
-- **The role migration and the login page come before the database close** in
-  the staff sign-in plan, so the close checks roles from the start. The link
-  pages can come before or after it.
-- **rux creates accounts in the dashboard, and a migration sets the role**, on
-  rux's yes. A role change reaches someone already logged in within an hour, or
-  at their next login.
+- **The access migration and the login page come before the database close**
+  in the staff sign-in plan, so the close checks access from the start. The
+  link pages can come before or after it.
+- **rux creates accounts in the dashboard and ticks their apps on the Access
+  page.** A change reaches the pages of someone already logged in within an
+  hour, or at their next login.
 
 ## Questions
 
@@ -71,12 +76,15 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `site_roles_add`: role `owner` on rux's account and
-      `scheduler` on the six others; `is_staff()` checks the role;
-      `my_staff_profile()` returns the role.
+- [ ] Migration `site_access_add`: `owner` on rux's account and Scheduler
+      ticked for the six others; staff is the owner or Scheduler ticked;
+      `my_staff_profile()` returns both.
+- [ ] Migration `site_access_manage` and the Access page: owner-only
+      `list_accounts()` and `set_account_apps()`, and the checkbox table on the
+      Account page.
 - [ ] Build `/login/` from Design, with Turnstile and the remembered address.
-- [ ] `funnel.js` reads the role from the stored login, sends no login to
-      `/login/` and a wrong page to the role's home, and lets through `/login/`
+- [ ] `funnel.js` reads the access from the stored login, sends no login to
+      `/login/` and a page of an app not ticked to Home, and lets through `/login/`
       and `/scheduler/share/`. Every page, generators included, starts hidden
       until it passes, and the check requires both.
 - [ ] `robots.txt` at the root disallows every crawler.
@@ -84,8 +92,8 @@ None open.
       generators, confirming the login after the page opens.
 - [ ] Remove the scheduler's own login form, `sees_all_apps` and the
       `rux.team-account` record from the site.
-- [ ] Replace `sees_all_apps` with the `owner` role in the staff sign-in and
-      Notes online plans.
+- [ ] Replace `sees_all_apps` with the owner switch and ticked apps in the
+      staff sign-in and Notes online plans.
 - [ ] Build the driver, maintenance, document and request pages in
       `/scheduler/share/`, each tested against a real link without saving.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making

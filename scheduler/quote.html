@@ -194,7 +194,12 @@
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="scheduler-quote-title">
           <h1 class="rux--type-productive-heading-04">Quote calculator</h1>
-          <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" href="quote-rates.html">Edit rates<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></a>
+          <!-- The page's two actions. Clear quote sits outside the form, so its
+               form attribute ties it to the form it resets. -->
+          <div class="scheduler-quote-title__actions">
+            <button type="reset" form="scheduler-quote-form" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
+            <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" href="quote-rates.html">Edit rates<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></a>
+          </div>
         </div>
 
         <!-- One notice for the whole page: no log-in, a local preview, or rates
@@ -332,9 +337,6 @@
                   <dd class="scheduler-quote-row__value scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</dd>
                 </div>
               </dl>
-              <div>
-                <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
-              </div>
             </div>
           </section>
 

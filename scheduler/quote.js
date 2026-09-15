@@ -194,10 +194,7 @@
       rows.replaceChildren();
       for (let d = 1; d <= dayCount; d++) {
         const id = `scheduler-quote-trip-${d}`;
-        const field = textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' });
-        // Carbon's large field, 48px, because the miles are what most quotes are.
-        field.querySelector('.rux--text-input__field-wrapper').classList.add('rux--layout--size-lg');
-        rows.append(field);
+        rows.append(textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' }));
       }
       $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
       // Only the last day can be removed, so no day renumbers under a person,

@@ -216,7 +216,7 @@
         <form class="scheduler-quote" id="scheduler-quote-form" novalidate hidden>
 
           <!-- Most quotes are only miles and days, at the default rate with one
-               driver, so the miles come first, in Carbon's 48px field.
+               driver, so the miles come first.
                quote.js draws a field a day, and Enter in the last day adds the
                next. -->
           <div class="rux--tile scheduler-quote__miles">
@@ -291,32 +291,32 @@
               <dl class="scheduler-quote-lines">
                 <div class="scheduler-quote-line">
                   <dt class="rux--type-body-compact-02">Miles</dt>
-                  <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-miles-out">0</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-miles-out">0</dd>
                 </div>
                 <div class="scheduler-quote-line">
                   <dt class="rux--type-body-compact-02">Days</dt>
-                  <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-days-out">0</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-days-out">0</dd>
                 </div>
               </dl>
               <dl class="scheduler-quote-lines scheduler-quote-lines--charges">
                 <div class="scheduler-quote-line">
                   <dt class="rux--type-body-compact-02">Mileage</dt>
-                  <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-mileage">—</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-mileage">—</dd>
                   <dd class="scheduler-quote-line__note" id="scheduler-quote-mileage-note"></dd>
                 </div>
                 <div class="scheduler-quote-line" id="scheduler-quote-driver-line" hidden>
                   <dt class="rux--type-body-compact-02">2nd driver</dt>
-                  <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-driver">—</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-driver">—</dd>
                   <dd class="scheduler-quote-line__note" id="scheduler-quote-driver-note"></dd>
                 </div>
                 <div class="scheduler-quote-line" id="scheduler-quote-other-line" hidden>
                   <dt class="rux--type-body-compact-02">Other charges</dt>
-                  <dd class="rux--type-heading-compact-02 scheduler-quote-line__value" id="scheduler-quote-other-out">$0.00</dd>
+                  <dd class="rux--type-heading-03 scheduler-quote-line__value" id="scheduler-quote-other-out">$0.00</dd>
                 </div>
               </dl>
               <div class="scheduler-quote-total scheduler-quote__total" aria-live="polite">
                 <span class="rux--type-heading-compact-02">Total</span>
-                <span class="rux--type-productive-heading-05 scheduler-quote-total__value" id="scheduler-quote-total">$0.00</span>
+                <span class="scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</span>
               </div>
               <div>
                 <button type="reset" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>

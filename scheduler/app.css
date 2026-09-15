@@ -1202,7 +1202,7 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-quote-line[hidden] { display: none; }
 .scheduler-quote__miles { grid-area: miles; min-inline-size: 0; }
 .scheduler-quote__modifiers { grid-area: modifiers; min-inline-size: 0; }
-.scheduler-quote__quote { grid-area: quote; min-inline-size: 0; }
+.scheduler-quote__quote { grid-area: quote; min-inline-size: 0; container-type: inline-size; }
 /* Each tile's inset is 24px: the tile's 16 and 8 more. */
 .scheduler-quote__body { padding: var(--rux-spacing-03); }
 .scheduler-quote__quote > .scheduler-quote__body {
@@ -1255,17 +1255,35 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
 }
+/* A total too wide for its row wraps under its label, still at the end. */
 .scheduler-quote-total {
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-02) var(--rux-spacing-05);
 }
 .scheduler-quote__total {
   display: flex;
   padding-block-start: var(--rux-spacing-05);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
-.scheduler-quote-total__value { font-variant-numeric: tabular-nums; }
+.scheduler-quote-total__value { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+/* The quote tile's total, in Carbon's productive-heading-06 tokens. A tile
+   too narrow for that figure, as at the narrowest lg widths, takes 05. */
+.scheduler-quote__total-value {
+  font-size: var(--rux-productive-heading-06-font-size);
+  font-weight: var(--rux-productive-heading-06-font-weight);
+  line-height: var(--rux-productive-heading-06-line-height);
+  letter-spacing: var(--rux-productive-heading-06-letter-spacing);
+}
+@container (max-width: 16rem) {
+  .scheduler-quote__total-value {
+    font-size: var(--rux-productive-heading-05-font-size);
+    font-weight: var(--rux-productive-heading-05-font-weight);
+    line-height: var(--rux-productive-heading-05-line-height);
+    letter-spacing: var(--rux-productive-heading-05-letter-spacing);
+  }
+}
 .scheduler-quote-bar { display: none; }
 
 /* The rates page's mileage list: rate, note, the default radio, remove. */

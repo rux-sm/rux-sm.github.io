@@ -5,7 +5,7 @@ https://rux-sm.github.io/. The folders are the site:
 
 | Folder | Serves | What |
 | :--- | :--- | :--- |
-| `index.html`, `account/`, `switcher.json`, `switcher.js`, `account.js` | `/` | the hub: the front door and the account panel |
+| `index.html`, `account/`, `login/`, `switcher.json`, `switcher.js`, `account.js`, `funnel.js` | `/` | the hub: the front door, the account panel and the log-in page |
 | `design/` | `/design/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
 | `notes/` | `/notes/` | Infor LN walkthroughs, rendered from the private `atlas` |

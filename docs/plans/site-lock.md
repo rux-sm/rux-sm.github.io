@@ -81,7 +81,6 @@ None open.
 
 ## Tasks
 
-- [ ] Build `/login/` from Design, with Turnstile and the remembered address.
 - [ ] `funnel.js` reads the access from the stored login, sends no login to
       `/login/` and a page of an app not ticked to Home, and lets through `/login/`
       and `/scheduler/share/`. Every page, generators included, starts hidden

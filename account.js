@@ -1,8 +1,8 @@
 /* ==========================================================================
    Rux Apps — ACCOUNT
    --------------------------------------------------------------------------
-   Loads after Design's js/profile.js, which must run first and which this
-   depends on for window.Rux.profile. Holds the site's one Supabase client
+   Loads after Design's js/profile.js, and syncs window.Rux.profile on pages
+   that have the account panel. Holds the site's one Supabase client
    and the staff log-in. A staff account is a Supabase user linked to a row
    in public.profiles, which my_staff_profile() returns. There is no
    anonymous session and no GitHub or Google log-in: a visitor without a
@@ -24,8 +24,10 @@
    undefined behaviour in supabase-js. */
 (async () => {
   'use strict';
+  // Absent on a page without the account panel, such as the log-in page, where
+  // the client and log-in still work and nothing syncs to a profile.
   const profile = window.Rux?.profile;
-  if (!profile || !window.supabase) return;
+  if (!window.supabase) return;
 
   // A LOCAL PREVIEW NEVER TOUCHES THE CLOUD, so a `npm run serve` visit does
   // not reach production auth; `?cloud` on the URL opts back in.
@@ -112,10 +114,35 @@
     return null;
   };
 
+  // The site's log-in page: resolves null once an account with access is
+  // logged in, or a sentence to show. An account with no owner switch and no
+  // ticked apps is logged straight out again. Access is read by
+  // window.Rux.access, which /funnel.js defines on every page that uses this.
+  const signIn = async (username, password, captchaHost) => {
+    const email = usernameToEmail(username);
+    if (!email) return 'Type your username.';
+    if (!password) return 'Type your password.';
+    const token = await captchaToken(captchaHost);
+    if (!token) return "The security check didn't finish. Try again.";
+    const { data, error } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken: token } });
+    if (error) {
+      return /invalid login/i.test(error.message)
+        ? "That username and password don't match."
+        : "Can't log in right now. Try again.";
+    }
+    const access = window.Rux.access;
+    if (!access?.canEnter(access.accessOf(data.user))) {
+      await sb.auth.signOut().catch(() => {});
+      return "This account can't open any app yet. Ask the owner to give it one.";
+    }
+    return null;
+  };
+
   window.Rux.account = {
     client: sb,
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),
+    signIn,
     signInStaff,
     staffProfile,
     onAuthChange: callback => sb.auth.onAuthStateChange((event, session) => callback(event, session)),
@@ -128,7 +155,7 @@
   // exists, or when someone logs in on the page, as the scheduler's form does.
   let staffReady = false;
   const setupStaff = async session => {
-    if (staffReady || !session || session.user.is_anonymous) return;
+    if (staffReady || !profile || !session || session.user.is_anonymous) return;
     let staff = null;
     try { staff = await staffProfile(); } catch { return; }
     if (!staff || staffReady) return;

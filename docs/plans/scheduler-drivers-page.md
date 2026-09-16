@@ -28,10 +28,11 @@ opens rux-ui to change a phone number, an expiry date or time off.
 - **Five fixed columns, with no column picker:** Driver (avatar with photo or
   initials, name, short name beneath), Phone, CDL class, Employment (full or
   part time and priority), Compliance. A whole row opens the driver.
-- **Compliance is one tag per row** for whichever of the licence and medical
-  card expires first: red for expired, yellow within 45 days as rux-ui's
-  newer roster warns, otherwise the date, gray for not on file. The default
-  sort puts the soonest first.
+- **Compliance is one status icon per row**, Carbon's icon indicator, since
+  Carbon has no yellow tag: for whichever of the licence and medical card
+  expires first, red for expired, yellow within 45 days as rux-ui's newer
+  roster warns, otherwise the date, gray for not on file. The default sort
+  puts the soonest first. A phone shows the driver, phone and compliance only.
 - **The editor is one form in sections, no tabs**, each a fieldset with a
   legend: Profile, Emergency contact, Licence, Employment, Time off, Schedule
   link, Trips. Tabs would hide which section holds unsaved changes.
@@ -39,16 +40,16 @@ opens rux-ui to change a phone number, an expiry date or time off.
   avatar and a status tag; text inputs; selects for state, CDL class,
   employment type and priority; checkboxes for endorsements; date pickers for
   birth, hire and both expiries, with a warning under an expiry that is soon;
-  radio buttons for Active and Inactive; a text area for notes; a file
-  uploader button for the photo; Save as primary and Cancel as secondary,
-  left-aligned at the foot.
+  radio buttons for Active and Inactive; a text area for notes; a tertiary
+  button that opens the file picker for the photo; and form-page.html's button
+  set, Cancel then Save, stacked on a phone.
 - **Time off is a contained list** of date ranges with an Add row; a modal
   adds or edits one range with a date range picker, a reason select and notes.
 - **The schedule link section is read-only:** the link's state and dates, and
   Copy link. Making, changing and deactivating links stays in rux-ui until the
   plan for making links in the scheduler.
-- **Trips is a structured list** of the driver's upcoming assignments, each
-  opening the trip on the board.
+- **Trips is a contained list** of the driver's upcoming assignments, each
+  opening the trip on the board through `./?trip=<id>&date=<day>`.
 - **Status is Active or Inactive.** The database holds only those two, and
   rux-ui's On leave is never saved.
 - **A driver is never deleted here, only set Inactive,** so past trips keep
@@ -74,13 +75,5 @@ None open.
 
 ## Tasks
 
-- [ ] Add `scheduler/drivers.html` from `design/templates/table-page.html`
-      with the list, search, switcher and Compliance tags.
-- [ ] Add the editor view from `design/templates/form-page.html`, with every
-      section but Time off, and Save, Cancel and the unsaved-change prompt.
-- [ ] Add Time off with its modal, and the photo upload.
-- [ ] Add the read-only schedule link and Trips sections.
-- [ ] Add the side nav link on every scheduler page, and update
-      `scheduler/docs/screen-inventory.md` and `scheduler/README.md`.
-- [ ] Open both pages in every theme and at phone width; rux saves one real
-      edit, since the database is live.
+- [ ] rux saves one real driver edit and opens both pages on a phone, since
+      the database is live and the page was tried only with invented drivers.

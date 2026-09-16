@@ -294,14 +294,15 @@
 
 /* A single date picker in a dialog's grid fills its cell. Carbon's
    `.rux--date-picker.rux--date-picker--single .rux--date-picker__input` is a
-   fixed 18rem, and the picker's root, container and wrapper each size to their
-   content, so every level is set. */
+   fixed 18rem, its container is held to 18rem at most, and the picker's root,
+   container and wrapper each size to their content, so every level is set. */
 .scheduler-dialog-grid .rux--date-picker--single,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-container,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker__input {
   inline-size: 100%;
+  max-inline-size: none;
 }
 
 /* A date range fills its row. Carbon fixes each of the two dates at
@@ -367,4 +368,23 @@
 .scheduler-row-head .rux--popover {
   inset-block: var(--rux-spacing-03) auto;
   block-size: 1rem;
+}
+
+/* A driver's photo fills its round avatar. Carbon stretches the image to the
+   box, which squashes a photo that is not square. */
+.rux--user-avatar__photo {
+  object-fit: cover;
+}
+
+/* A driver's notes take the form's width, as the side panel's do above. */
+.scheduler-driver-notes .rux--text-area { flex: 1 1 auto; }
+
+/* A status icon keeps its size when the words beside it wrap onto a second
+   line, as a licence warning does in a narrow table column. */
+.rux--icon-indicator svg { flex: none; }
+
+/* On a phone the Drivers form's Cancel and Save stack, as Carbon stacks a
+   button set that does not fit, with Save at the bottom. */
+@media (max-width: 41.98rem) {
+  .scheduler-drivers-page .rux--btn-set { flex-direction: column; }
 }

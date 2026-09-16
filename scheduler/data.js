@@ -5325,20 +5325,9 @@
         mark([trip.customer, trip.booking_contact_name].filter(Boolean).join(' · ') || 'No organization',
           'scheduler-search__meta', safe),
       );
-      /* Going to a result moves to the week of its start date, reads it, then
-         selects the trip's bar and opens it through `whenSafe`. A trip with no
-         bar on that week still moves the week, and a toast says so. */
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', () => {
         collapseSearch();
-        if (!trip.start_date) return;
-        cursor = mondayOf(parseISO(trip.start_date));
-        await show();
-        const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(trip.id)}"]`);
-        if (!bar) { toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.'); return; }
-        bar.scrollIntoView({ block: 'center', inline: 'center' });
-        const ref = barRef(bar);
-        selectBar(bar);
-        if (!isEditorBar(bar)) whenSafe(() => openRef(ref));
+        goToTrip(trip.id, trip.start_date);
       });
       row.appendChild(btn);
       list.appendChild(row);
@@ -5528,6 +5517,22 @@
     syncExpanded();
   }
 
+  /* Going to a trip moves to the week of the given day, reads it, then selects
+     the trip's bar and opens it through `whenSafe`. A trip with no bar on that
+     week still moves the week, and a toast says so. Search and the Drivers
+     page's `?trip=<id>&date=<day>` both come here. */
+  async function goToTrip(id, day) {
+    if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
+    cursor = mondayOf(parseISO(day));
+    await show();
+    const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`);
+    if (!bar) { toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.'); return; }
+    bar.scrollIntoView({ block: 'center', inline: 'center' });
+    const ref = barRef(bar);
+    selectBar(bar);
+    if (!isEditorBar(bar)) whenSafe(() => openRef(ref));
+  }
+
   /* Changing the week drops the toast. An undo for a move on the old week
      would still work, by assignment id, and silently move a trip no longer on
      screen. */
@@ -5563,7 +5568,15 @@
       stop('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
       return;
     }
-    show();
+    // A link to one trip opens it once, and the address drops the request so a
+    // reload shows the week rather than reopening the trip.
+    const asked = new URLSearchParams(location.search);
+    if (asked.has('trip')) {
+      history.replaceState(null, '', location.pathname);
+      goToTrip(asked.get('trip'), asked.get('date'));
+    } else {
+      show();
+    }
     loadShortcuts();
   })();
 })();

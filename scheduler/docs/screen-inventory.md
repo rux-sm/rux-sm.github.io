@@ -20,7 +20,6 @@ of Design's `js/*.js` behaviours; an *app component* is this app's own.
 
 | Old view | Verdict | Becomes |
 |---|---|---|
-| Drivers and Driver Roster | keep, merged | One Drivers page on `table-page`, with the roster's columns. |
 | Fleet | keep | `table-page`, sortable, out-of-service shown as a tag column. |
 | Customers | keep | `table-page`, four columns. |
 | Requests | keep | `table-page` with a content switcher for status. Detail opens in the panel. |
@@ -37,7 +36,6 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch, Carbon's file uploader and the trip's itineraries, contracts and POs, newest first, each replaced or deleted from its row menu; a file writes at once, stored as rux-ui stores it. The itinerary grid is *later*. |
 | Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
-| Driver editor | keep | Panel with tabs Profile, License, Status, Time off, Trips. |
 | Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |
 | Customer editor | keep | Panel, four fields (§7). |
 | Request detail | keep | Panel with a Create draft trip button. |
@@ -87,7 +85,7 @@ Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 Each step ends with the page opened in every theme.
 
-4. Fleet, Drivers and Customers as tables with their editors.
+4. Fleet and Customers as tables with their editors.
 5. Print schedule. Requests and `../rux-ui/request.html`. Driver page.
 6. Everything marked *later*.
 
@@ -106,8 +104,10 @@ Three homes, and one rule for choosing.
 | **A page** | A list, a feed or a workspace: something you navigate to. |
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
-- **Trip, driver, bus, request and customer detail go in the panel.** One
-  editing surface beats two, so the customer editor is not a modal.
+- **Trip, bus, request and customer detail go in the panel.** One editing
+  surface beats two, so the customer editor is not a modal. A driver is edited
+  on its own page, `drivers.html?id=`, because the form is long and edited now
+  and then, which Carbon's forms pattern gives a page.
 - **Tasks and History are pages.** Neither is the detail of anything, and as
   panels they would hold the panel open. History sits below Settings in the nav:
   it is consulted, not worked in.

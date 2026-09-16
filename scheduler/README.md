@@ -16,7 +16,13 @@ invoices — and is that app's replacement, mid-flight.
 That database is production and shared with `rux-ui`, so nothing here is
 ever tried with a test record.
 
-Its second page, `quote.html`, is the quote calculator: the office spreadsheet's
+`drivers.html` lists every driver, flags a licence or medical card that has
+run out or will within 45 days, and edits one driver at `drivers.html?id=`:
+details, photo and time off. A driver is set Inactive, never deleted, and the
+driver's schedule link is shown there but still made in rux-ui. A trip in a
+driver's list opens on the board through `./?trip=<id>&date=<day>`.
+
+The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates are edited on `quote-rates.html` and kept in
 the `quote_rates` and `quote_mileage_rates` tables, which only a staff session
 can read or change. `docs/quote-calculator.md` lists where it copies the

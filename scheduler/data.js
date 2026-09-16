@@ -1404,10 +1404,14 @@
   const fluidTab = root => {
     for (const item of root.querySelectorAll('.rux--form-item, .rux--list-box__wrapper')) fluidField(item);
     /* A stack holding fluid fields is marked, so app.css can close the gap
-       between them and run them edge to edge. It is marked here rather than
-       at each stack's construction because a stack does not know whether the
-       tab it lands in is fluid. */
+       between them, run them edge to edge and draw the line above them. It is
+       marked here rather than at each stack's construction because a stack
+       does not know whether the tab it lands in is fluid. A stack inside a
+       marked one is skipped -- the hotel box is one -- because the group's
+       line belongs at the top of the group, not partway down it. Document
+       order puts an outer stack first, so its mark is there to be seen. */
     for (const stack of root.querySelectorAll('.rux--stack-vertical')) {
+      if (stack.parentElement?.closest('.scheduler-fluid-group')) continue;
       if (stack.querySelector('[class*="--fluid"]')) stack.classList.add('scheduler-fluid-group');
     }
   };

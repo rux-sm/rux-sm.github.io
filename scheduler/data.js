@@ -4118,20 +4118,34 @@
   let cellMenuAt = null;
   let barMenuFor = null;
 
-  /* Places a menu at a point inside `.scheduler-page`. It shifts left only as
-     far as it must to stay within the page, as Carbon's menus do, so it stays
-     under what opened it. Its width is read after `hidden` comes off and after
-     the append, when it has its real box. The block axis is not clamped,
-     because the page grows and scrolls to a menu near its bottom. */
+  /* Places a menu at a point, inside `.scheduler-page`, fitted to the window
+     on both axes the way Carbon's menu fits itself: from the point where it
+     fits, else flipped to end at the point, else against the far edge 8px in,
+     so a click near the bottom or the right opens it upward or leftward and
+     it stays under the pointer. Its box is read after `hidden` comes off and
+     after the append, when it has its real size. A menu opened from the
+     keyboard has no pointer, so it opens from the lower start corner of what
+     was pressed. */
+  const MENU_SPACING = 8;
   function popMenuAt(menu, e) {
-    const page = pageEl?.getBoundingClientRect();
+    const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
     menu.hidden = false;
     menu.style.position = 'absolute';
-    menu.style.insetBlockStart = `${e.clientY - (page?.top ?? 0)}px`;
     pageEl?.appendChild(menu);
-    const room = page?.width ?? document.documentElement.clientWidth;
-    const want = e.clientX - (page?.left ?? 0);
-    menu.style.insetInlineStart = `${Math.max(0, Math.min(want, room - menu.offsetWidth))}px`;
+    let { clientX: px, clientY: py } = e;
+    if (!px && !py) {
+      const from = e.target.getBoundingClientRect();
+      px = from.left;
+      py = from.bottom;
+    }
+    const { width, height } = menu.getBoundingClientRect();
+    const fit = (at, size, max) => (at + size <= max - MENU_SPACING ? at
+      : at - size >= 0 ? at - size
+      : Math.max(0, max - MENU_SPACING - size));
+    const x = fit(px, width, document.documentElement.clientWidth);
+    const y = fit(py, height, document.documentElement.clientHeight);
+    menu.style.insetInlineStart = `${x - page.left}px`;
+    menu.style.insetBlockStart = `${y - page.top}px`;
     window.Rux?.menu?.open?.(menu, null);
   }
 

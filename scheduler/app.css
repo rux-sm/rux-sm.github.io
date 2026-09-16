@@ -877,13 +877,19 @@ button.scheduler-row-head__num {
 .scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair) {
   padding-inline: var(--rux-spacing-05);
 }
-/* Such a group opens 16px under the rule above it and ends 24px above what
-   follows, the spacing IBM's fluid form gives a group label and its rows. The
-   16px is a margin, because a legend sits on the fieldset's border rather than
-   inside its padding and so a padding would not move it. */
+/* Such a group sits in the same 16px every heading does, over and under, and
+   its rows end level with where a field's own edge would be. The 16px above is
+   a margin, because a legend sits on the fieldset's border rather than inside
+   its padding and so a padding would not move it; the rows carry about 3px of
+   their own below them, which the padding allows for. */
 .scheduler-fluid-group > .rux--checkbox-group {
   margin-block-start: var(--rux-spacing-05);
-  padding-block-end: var(--rux-spacing-06);
+  padding-block-end: 0;
+}
+/* Its legend is a field's label, not a section heading, so it sits over its
+   rows the way a field's label sits over its value. */
+.scheduler-fluid-group > .rux--checkbox-group > legend {
+  margin-block-end: var(--rux-spacing-03);
 }
 
 /* A fluid form is one unbroken surface: IBM's spec paints the fields, the group
@@ -910,7 +916,10 @@ button.scheduler-row-head__num {
    above the 24px between fields. Its heading is `heading-compact-01`, 14px at
    600 in primary text, so it reads as a heading over the 12px secondary field
    labels beneath it. */
-.scheduler-panel-section { margin-block-start: var(--rux-spacing-07); }
+/* A section is parted from what precedes it by the same 16px that sits around
+   every heading, and by its own rule; in a fluid form the gap does the parting
+   and the fields' own edges are the lines. */
+.scheduler-panel-section { margin-block-start: var(--rux-spacing-05); }
 .scheduler-panel-section__title {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);

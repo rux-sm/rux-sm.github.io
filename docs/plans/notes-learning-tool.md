@@ -43,40 +43,47 @@ arriving, never knowledge verified.
 
 ### What a tile offers, and how you leave it
 
-- **Three states, computed and never typed, and one verb for all of them.**
-  **Empty** when no procedure phase covers the node: the quest is to find
-  anything at all, by opening the named screen or reading the help, a vendor
-  guide or a recording. **Partly known** when a phase covers it but a step is
-  missing or a gap is open against its screens: run what exists, with the holes
-  shown in place so the shape of what is missing stays visible. **Known** when a
-  phase covers it, nothing is open, and every covering phase carries a walked
-  date: run the steps, with one understanding check at the end. A node with a
-  session code finds its phases through that code; one without, like the
-  planning gates, carries an authored link.
+- **Three states, computed and never typed, each named for what it measures.**
+  **No procedure** — no phase is associated, whatever reference the node has;
+  the quest is to find anything to do, by opening the named screen or reading
+  the help, a vendor guide or a recording. **Not verified** — phases exist, but a
+  step is missing, a relevant gap is open, or the walk evidence is absent or
+  invalid; run what exists, with the holes shown in place. **Verified** — every
+  associated phase meets atlas's own requirement and the relevant gaps are
+  closed; run the steps, with one understanding check at the end.
+
+- **Verified means a covering walk file, not a date in the frontmatter**, which
+  is atlas's own rule; a tile may not claim more than the library does. And
+  **reference stays available in every state** — a node with rich screens and no
+  procedure is not empty, and saying so would misdescribe the best-documented
+  parts of the library.
 
 - **A tile opens on one target, with its question inside.** Design ships
   `rux--popover` with a caret. The scheduler's bar has zones, but a tile already
   carries a name, a count and a quest badge, and zones are where minimal slips.
 
-- **Three ways a tile moves on, and they are not the same.** A **question** the
-  learner answers — node 2 already asks *"Does on-hand cover it?"*, and its own
-  note says nothing announces the answer. A **fork decided elsewhere**, like
-  supply source purchase or job shop, which the item's setup chooses and the
-  learner looks up. And a **single way on**, with nothing to ask. Rendering a
-  fork as a choice would teach something false, so one asks what you found and
-  the other what the item says. Answering draws the line and greys what it
-  skips.
+- **Three ways a tile moves on.** A **question** the learner answers — node 2
+  already asks *"Does on-hand cover it?"* A **fork decided elsewhere**, like
+  supply source purchase or job shop, which the item chooses and the learner
+  looks up. And a **single way on**. Rendering a fork as a choice would teach
+  something false, so one asks what you found and the other what the item says.
+  Answering draws the line and greys what it skips.
+
+- **An association is authored, and a session code only suggests.** Which
+  phases a node opens is recorded in atlas; matching a code finds candidates and
+  never decides ownership, because one session appears in several procedures and
+  an issue against a screen is not relevant to every use of it. A quest keeps one
+  identity however many tiles show it.
 
 - **A tile that should continue but cannot is a quest, and the map already says
-  which those are.** Its four shortage checkpoints are declared placeholders,
-  each naming what has not been walked. Its two lookups carry no edge *by
-  design* — a detour taken for information, where the walk is the same whether or
-  not you take it — so they are linked in context and never given a process
+  which those are.** Its four shortage checkpoints are declared placeholders;
+  its two lookups carry no edge *by design*, a detour where the walk is the same
+  whether or not you take it, so they are linked in context and never given a
   dependency they do not have.
 
 - **A tile says which kind of work its holes need**, a trip into LN or a read at
-  the desk: of 175 open gaps 98 name a screen, and sending rux into the
-  environment for a question a PDF answers is the failure this prevents.
+  the desk: 98 of 175 open gaps name a screen, and sending rux into the
+  environment for what a PDF answers is the failure this prevents.
 
 ### Quests
 
@@ -195,6 +202,12 @@ arriving, never knowledge verified.
   was opened from. The map becomes tiles by lane, each carrying what must come
   before it, where it branches and what follows.
 
+- **A tile entered mid-procedure opens with what must already be true.** A short
+  "Before starting" view is composed from the prerequisites the procedure itself
+  names, each linking back to the step that satisfies it. Original step numbers
+  are kept, so 4.5 still says it needs the cluster and site from 0.4 and the
+  reader can reach it.
+
 - **A procedure puts its steps first**, each naming its screen as a chip, with
   the `What LN is doing` paragraph above the table.
 
@@ -244,6 +257,12 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
   unverified speech; a capture establishes what was visible, not every sentence
   citing it. The scope rule comes before any label wording.
 
+- **How does a desk investigation, or a tile with no procedure, submit
+  anything?** A walk pins an existing walkthrough and the generator refuses a
+  subject without one. The slice does not need this — its test quest is tied to
+  an existing procedure — but quests cannot reach all four kinds until it is
+  answered.
+
 - **What does clearing a capture attest, and who withdraws it?** Transcribing
   every field label is not review of every value, title bar and notification.
   Clearance is its own attestation, distinct from `transcribed`, and the upload
@@ -255,10 +274,16 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
 ### First — one tile, worked through
 
 - [ ] Fix the first tile as map node 5, **Generate Order Planning (Item)**
-      (`cprrp1220m000`): it opens phases 3 to 5 of
-      `run-order-planning-for-one-item`, owns their quests, and takes
-      `cprrp0520m000` as its lookup panel — the detour the map already places
-      beside it. Record where that association lives.
+      (`cprrp1220m000`): record in atlas that it opens phases 3 to 5 of
+      `run-order-planning-for-one-item`, and derive its counts and quests from
+      that record rather than from the code. Its lookup panel is
+      `cprrp0520m000`, the detour the map already places beside it.
+- [ ] Build its "Before starting" view from phase 2's horizon, step 0.4's
+      cluster and site, and step 0.6's plan data — the three the procedure
+      itself names across phases 3 to 5.
+- [ ] Take **sitting 4, horizons, time fences and run scope** as the tile's
+      understanding check: it is the only one of the eight naming this node's
+      own session.
 - [ ] rux attests to `order-planning` and `planned-order`, the two concepts
       whose terms those phases use.
 - [ ] Simplify that procedure: separate its essential warnings from its optional

@@ -38,6 +38,11 @@
   --scheduler-bar-rows: 6;
   --scheduler-fs: var(--rux-label-01-font-size);
   --scheduler-ls: var(--rux-label-01-letter-spacing);
+  /* Carbon writes label-01's line height as 1.33333, so a row comes to
+     15.99996px and a six-row bar to 103.99976px. The bar then ends a fraction
+     above the whole pixel its gap was measured from, and the shortfall lands
+     in the gap below it. Snapped to whole pixels just below, where the browser
+     can do it. */
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
   /* One square slot on the selected trip's shortcut bar: Carbon's md control
@@ -62,6 +67,10 @@
   overscroll-behavior: contain;
   background: var(--rux-layer);
 }
+@supports (block-size: round(1px, 1px)) {
+  .scheduler-week { --scheduler-row-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px); }
+}
+
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and
    every row shares the same columns. The track spans the days and is the
@@ -850,12 +859,11 @@ button.scheduler-row-head__num {
   --rux-stack-gap: 0;
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
-/* The block closes at the top as it does at every other field edge. A fluid
-   field draws its own bottom edge, so every line in the form is the line under
-   something; the first group carries the one above it, whether it opens the
-   tab or sits under the tab's first heading. */
-#scheduler-panel-body .rux--tab-content > .scheduler-fluid-group:first-child,
-#scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child > .scheduler-fluid-group {
+/* Every group closes at the top as its fields close at the bottom. A fluid
+   field draws its own bottom edge, so without this the line under a group's
+   heading would be missing while every other line in the form is there. A
+   section's own rule sits above its heading, so the two never double up. */
+#scheduler-panel-body .rux--tab-content .scheduler-fluid-group {
   border-block-start: 1px solid var(--rux-border-strong);
 }
 /* A tab's first section opens at the tab's own 16px, not 32px below it. */

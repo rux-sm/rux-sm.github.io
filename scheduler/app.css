@@ -30,8 +30,11 @@
   --scheduler-ls: var(--rux-label-01-letter-spacing);
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
-  /* One square slot on the selected trip's shortcut bar. */
-  --scheduler-slot-w: 2rem;
+  /* One square slot on the selected trip's shortcut bar: Carbon's md control
+     height, as the board's toolbar buttons are. The bar floats clear of the
+     trip, so nothing about the trip caps this the way the old tab's width
+     capped it at the sm height. */
+  --scheduler-slot-w: var(--rux-layout-size-height-md, 2.5rem);
   /* A bar keeps `--scheduler-gap` at its day's start and its row's bottom, and
      `--scheduler-gap-clear`, a pixel less, at its day's end and its row's top,
      allowing for the 1px rule on one side of each boundary. */
@@ -450,7 +453,8 @@ button.scheduler-row-head__num {
   border: 0;
   color: var(--rux-icon-inverse);
   cursor: pointer;
-}
+  /* Square, and the same on every trip however short or narrow that trip is:
+     the bar floats clear, so nothing about the trip sets its size. */
   inline-size: var(--scheduler-slot-w);
   block-size: var(--scheduler-slot-w);
   background: transparent;
@@ -542,14 +546,14 @@ button.scheduler-row-head__num {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
-   `rux--side-panel--sm` class, and the two move together; the five tabs,
-   split evenly, still keep whole labels at this width. */
+   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
+   `rux--side-panel--md` class, and the two move together; it is md rather
+   than sm so the five tabs, split evenly, keep whole labels. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 20rem;
-  min-inline-size: 20rem;
+  flex: 0 0 30rem;
+  min-inline-size: 30rem;
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a

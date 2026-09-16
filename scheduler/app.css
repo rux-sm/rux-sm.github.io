@@ -861,10 +861,11 @@ button.scheduler-row-head__num {
 }
 /* Every group closes at the top as its fields close at the bottom. A fluid
    field draws its own bottom edge, so without this the line under a group's
-   heading would be missing while every other line in the form is there. A
-   section's own rule sits above its heading, so the two never double up. */
+   heading would be missing while every other line in the form is there. It is
+   the subtler border, because it parts a heading from its fields rather than
+   one field from the next. */
 #scheduler-panel-body .rux--tab-content .scheduler-fluid-group {
-  border-block-start: 1px solid var(--rux-border-strong);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 /* A tab's first section opens at the tab's own 16px, not 32px below it. */
 #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {

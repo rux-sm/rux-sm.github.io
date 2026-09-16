@@ -13,11 +13,9 @@ applied at the end.** Where a decision trades simplicity against completeness,
 simplicity wins and this plan says what was left out.
 
 **The map is the way in, and a tile is a level.** Every tile can be opened and
-attempted, whether the library knows it well, partly or not at all. A tile that
-is known teaches; a tile with holes teaches and asks; a tile that is empty is an
-investigation. There is one verb — open a tile and work through it — and every
-one of the three ends the same way: a record reaches atlas and the tile is
-fuller next time.
+attempted, however well the library knows it. There is one verb — open a tile
+and work through it — and it always ends the same way: a record reaches atlas
+and the tile is fuller next time.
 
 **Learning and filling gaps are the same act, not two.** What the tool collects
 is evidence arriving, never knowledge verified: atlas decides what a source
@@ -42,37 +40,32 @@ settles, and a page changes only when its owning document does.
   cutting across tiles arrives through search or the glossary instead, and opens
   the screen or concept that owns it. Two questions, two doors.
 
-### What a tile offers, in each of its three states
+### What a tile offers, and how you leave it
 
-- **Known — run it**: the steps, everything the library has about them, and one
-  understanding check at the end.
+- **Three states, one verb.** **Known** — run the steps, with everything the
+  library has about them and one understanding check at the end. **Partly
+  known** — run what exists, and the holes are the quests, shown in place rather
+  than hidden so the shape of what is missing is visible while working.
+  **Empty** — the quest is to find anything at all: open the named screen, or
+  read the help, the vendor guide or a recording.
 
-- **Partly known — run what exists, and the holes are the quests.** A missing
-  step says what to look at instead of hiding, so the shape of what is unknown
-  is visible while working.
-
-- **Empty — the quest is to find anything at all**: open the named screen, or
-  read the help, the vendor guide or a recording, and record what is there.
-
-- **A tile opens on one target, and its question is inside.** Design ships
+- **A tile opens on one target, with its question inside.** Design ships
   `rux--popover` with a caret, so nothing is invented. The scheduler's bar has
-  zones; a tile already carries a name, a count and a quest badge, and zones are
-  where minimal starts slipping.
+  zones, but a tile already carries a name, a count and a quest badge, and zones
+  are where minimal starts slipping.
 
 - **Three ways a tile moves on, and they are not the same.** A **question** the
-  learner answers — node 2 already asks *"Does on-hand cover it?"* and its own
+  learner answers — node 2 already asks *"Does on-hand cover it?"*, and its own
   note says nothing announces the answer. A **fork decided elsewhere**, like
-  supply source purchase or job shop, where the item's setup chooses and the
-  learner looks it up. And a **single way on**, where there is nothing to ask.
-  Rendering a fork as a choice would teach something false, so the two are
-  worded differently: one asks what you found, the other what the item says.
+  supply source purchase or job shop, which the item's setup chooses and the
+  learner looks up. And a **single way on**, with nothing to ask. Rendering a
+  fork as a choice would teach something false, so one asks what you found and
+  the other what the item says. Answering draws the line and greys what it
+  skips.
 
-- **Answering draws the line on and greys what it skips.**
-
-- **A tile that should ask but cannot is a quest.** Five tiles dead-end with no
-  outcome written, two lookup nodes have no edges at all, and one fork has
-  outcomes but no question. Each is tagged and worked like any other gap, which
-  is how the map fills itself in.
+- **A tile that should ask but cannot is a quest**, which is how the map fills
+  itself in: five tiles dead-end with no outcome written, two lookup nodes have
+  no edges at all, and one fork has outcomes but no question.
 
 - **A tile says which kind of work its holes need**, a trip into LN or a read at
   the desk. Of 175 open gaps 98 name a screen; sending rux into the environment
@@ -161,8 +154,22 @@ settles, and a page changes only when its owning document does.
   never closable by screenshots. Mining help, resolving contradictory sources and
   reviewing a recording are the others, and they need no environment time.
 
-- **A correction is finished when rux can see its outcome** — accepted or
-  rejected, and the revision that carried it. An empty inbox is not a result.
+- **A correction has two signals, and the page shows both.** **Applied** when the
+  owning document changed and rux can see the revision, which lands as soon as
+  the review does. **Confirmed** when someone has since done it and it held,
+  which arrives as a new quest on the tile. An empty inbox is not a result.
+
+- **A tile's count grows only on confirmation**, so the number that means
+  something is the one evidence backs.
+
+- **The confirm quest matches the correction's kind**: fixed from a capture, go
+  look again; from help, re-read it; a disagreement, check both sides still say
+  what they said; a step, walk it. Confirming a step produces the walked date
+  atlas already requires before calling a procedure approved.
+
+- **Confirming is an offer, never a debt.** Reading and practising succeed
+  without submitting anything, so a tile full of confirm quests is not homework
+  owed.
 
 - **How affected documents are found is decided per intake kind.** `fanout.py`
   answers for a capture and not for a corrected meaning.
@@ -172,10 +179,6 @@ settles, and a page changes only when its owning document does.
 
 - **One queue page for the owner**, every quest in one list, ordered by priority
   and marked by which kind of work closes it.
-
-- **Reading and practice succeed without submitting anything.** Capture and
-  correction are optional and contextual; study must not become documentation
-  work.
 
 ### The site layout
 
@@ -246,8 +249,6 @@ settles, and a page changes only when its owning document does.
   Clearance is its own attestation, distinct from `transcribed`, and the upload
   path must refuse a capture without it. A ledger itself never publishes, at any
   tier. Capture release is evaluated on its own, after the first slice.
-
-- **What signals that a correction is complete**, in a form the page can show?
 
 ## Tasks
 

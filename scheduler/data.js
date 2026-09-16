@@ -4402,6 +4402,11 @@
   // How many actions follow Open trip, and so how many dropdowns Customize
   // shortcuts shows.
   const SHORTCUT_SLOTS = 5;
+  /* The fewest slots the bar ever shows, Open trip included. Three at the md
+     slot size is 120px, which fits inside the 129px a one-day trip bar has at
+     the narrowest day column, so the bar never overhangs the trip it points
+     at when it is at its smallest. */
+  const SHORTCUT_MIN = 3;
   const SHORTCUT_DEFAULT = ['itinerary', 'color', null, null, null];
   // Where the choice is kept when no one is signed in, as in a local preview.
   const SHORTCUT_KEY = 'rux.scheduler.shortcuts';
@@ -4419,11 +4424,12 @@
 
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
-    // Open trip, then the chosen actions with the empty choices left out, then
-    // one empty slot to add another while there is room for one.
-    const chosen = shortcutChoice.filter(Boolean);
-    const slots = ['open', ...chosen];
-    if (chosen.length < SHORTCUT_SLOTS) slots.push(null);
+    /* Open trip, then the chosen actions with the empty choices left out. An
+       empty slot only ever pads the row up to three, so the bar is never
+       narrower than three slots and never carries a dashed circle it does not
+       need. A fourth and beyond are added from the right-click menu. */
+    const slots = ['open', ...shortcutChoice.filter(Boolean)];
+    while (slots.length < SHORTCUT_MIN) slots.push(null);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
       bar.dataset.hotelBooked, isEditorBar(bar), slots.join()].join('|');

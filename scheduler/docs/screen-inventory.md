@@ -153,8 +153,11 @@ slots are the same on every trip however short or narrow. It holds Open trip,
 then the person's own choices in the order they set them — Open itinerary, Mark
 hotel booked, Color, Take off this bus or Cancel trip — set from the
 right-click menu's Customize shortcuts and saved on their profile. An empty
-choice is left out, and one empty slot closes the row while there is room for
-another: it shows a dashed circle and opens Customize shortcuts. A shortcut
+choice is left out, and an empty slot only pads the row up to three, the
+fewest it ever shows: three slots at 40px come to 120px, which sits inside
+the 129px a one-day trip bar has at the narrowest day column. A padding slot
+shows a dashed circle and opens Customize shortcuts; a fourth action and
+beyond are added from the right-click menu. A shortcut
 that cannot act on the trip, such as Open itinerary without one, shows faint
 with the reason as its label. Escape clears the selection and takes the bar
 with it. The

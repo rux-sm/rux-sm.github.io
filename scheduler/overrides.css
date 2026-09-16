@@ -247,13 +247,15 @@
   align-items: center;
 }
 
-/* The Notes box stands as tall as the fields beside it. Carbon's fluid text
-   area is 32px of label over a 64px box, 96px in all, where every other fluid
-   field is 64px, and its own padding makes one line 39px whatever the minimum
-   says. 6px over and under a 20px line is 32px, which with the label's 32px
-   makes 64; `fitNotes` measures from there, so a note that wraps still grows. */
+/* The Notes box stands as tall as the fields beside it and starts its text on
+   the same line as theirs. Carbon's fluid text area is 32px of label over a
+   64px box, 96px in all, and the size context here overrides its padding to
+   9.5px, which drops the first line below every other field's. These are the
+   values Carbon's own rule asks for: nothing over the text, so it starts at
+   the 32px the label leaves, and 13px under it. `fitNotes` measures from
+   there, so a note that wraps still grows. */
 #scheduler-panel-body .rux--text-area--fluid .rux--text-area {
-  padding-block: 0.375rem;
+  padding-block: 0 0.8125rem;
   min-block-size: var(--rux-layout-size-height-sm);
 }
 

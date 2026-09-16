@@ -67,7 +67,7 @@ constraints, not types; there are no views.
 | `trips` | `id`; `trip_ref`; `booking_contact_id` and `trip_contact_1..5_id` to `contacts` | 93 columns. Scheduling: `destination`, `customer`, `notes`, `start_date`, `end_date`, `departure_time`, `spot_time`, `return_time`, `return_start_date`, `return_end_date`, `bus_count`, `return_bus_count`, `trip_type` (round_trip, one_way, dropoff_pickup), `trip_bar_color`, `is_self_organized`. Contacts: `booking_contact_name`, `_phone`, `_email`, `_missive_url`; `trip_contact_1..5_name` and `_phone`; `contact_not_needed`. Money: `quoted_price`, `deposit_amount`, `contract_status`, `contract_note`, `po_received`, `po_ref`, `po_amount`, `invoiced`, `invoice_status`, `invoice_number`, `balance_paid`, `date_paid`, `payment_ref_1..3`. Needs: `req_sleeper`, `req_56pax`, `req_ada`, `need_hotel`, `need_fuel_card`, `trip_reqs` jsonb. Distance: `pickup_address`, `est_miles`, `actual_miles`, `driving_hours`, `on_duty_hours`. Per-leg workflow, `_outbound` and `_return`: `driver_contact_sent`, `trip_reminder_sent`, `envelope_printed`, `fuel_card_assigned`, `fuel_card_number`, `hotel_booked`, `hotel_itinerary_number`, `itinerary_printed`, `hos_form_printed`. After the trip: `post_trip_survey_sent`, `post_trip_survey_message`, `post_trip_incident`, `post_trip_note`. Status: `updated_at` (trigger), `confirmed`, `itinerary_confirmed`, `itinerary_not_needed`, `cancelled_at`, `cancellation_reason`. |
 | `buses` | `id`; `bus_ref` generated `BUS-###` by trigger | `number`, `capacity`, `type`, `ada_lift`, `sleeper`, `status` (active, inactive), `make`, `model`, `year`, `vin`, `color`, `mileage`, `last_service`, `next_service`, `insurance_exp`, `registration_exp`, `inspection_exp`, `sort_order`, `notes` |
 | `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, `address`, `city`, `address_state`, `zip`, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes` |
-| `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `dwell_reset`, `route_status` |
+| `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `route_status` |
 | `trip_assignments` | `id`; `trip_id` to `trips` cascade; `bus_id` to `buses` set null | `position`, `leg` (outbound, return), `active_roles` text[] |
 | `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, `trip_reminder_sent`, `envelope_printed` |
 
@@ -145,7 +145,7 @@ as in `screen-inventory.md`.
 |---|---|---|
 | `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them |
 | `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Fleet tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
-| `trip_stops` | Trip editor Itinerary tab, driver page | Trip editor |
+| `trip_stops` | Schedule, Trip editor Route tab, driver page | Trip editor Route tab: a leg's pickup, drop-off and return rows, added when missing |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |
 | `contacts` | Trip editor, Customers | Customer editor, trip editor |
@@ -156,7 +156,7 @@ as in `screen-inventory.md`.
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
-| `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1` | Settings |
+| `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's `yard-location-v1` and `mapbox-token-v1` | Settings |
 | `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
 | `trip_itineraries` | Itineraries, deferred | intake, deferred |
 

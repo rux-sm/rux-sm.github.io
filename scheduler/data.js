@@ -311,8 +311,10 @@
     // POs and invoices, one row each, written by id like the payments.
     'trip_pos(id,position,ref,amount,date)',
     'trip_invoices(id,position,number,amount,date)',
-    // `miles` sums to the estimate a trip without its own shows.
-    'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot,miles)',
+    // `miles` sums to the estimate a trip without its own shows. The rest are
+    // what the Route tab edits on a leg's pickup, drop-off and return rows.
+    'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
+      + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -350,9 +352,19 @@
       // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-      // rux-ui's billing workflow. A refused read keeps its defaults, as rux-ui does.
-      client.from('settings').select('value').eq('key', 'billing-workflow-v1').maybeSingle()
-        .then(r => { if (!r.error) setBillingWorkflow(r.data?.value); }),
+      /* rux-ui's settings this app follows: the billing workflow, the yard and
+         the Mapbox token the Route tab looks drives up with. A refused read
+         keeps what was there, as rux-ui does. */
+      client.from('settings').select('key,value')
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1'])
+        .then(r => {
+          if (r.error) return;
+          const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
+          setBillingWorkflow(byKey.get('billing-workflow-v1'));
+          const yard = byKey.get('yard-location-v1');
+          if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
+          if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
+        }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
     // which is what an ended log-in or removed access looks like; a reload
@@ -1345,6 +1357,8 @@
       li.querySelector('.rux--menu-item__label').textContent =
         actions[`${pick}Text`] ?? (pick === 'edit' ? 'Edit' : 'Remove');
       const off = !!actions[`${pick}Disabled`];
+      // The second item is a danger item unless the caller says it is not.
+      if (pick === 'remove') li.classList.toggle('rux--menu-item--danger', actions.removeDanger !== false);
       li.classList.toggle('rux--menu-item--disabled', off);
       li.setAttribute('aria-disabled', String(off));
     }
@@ -2544,6 +2558,76 @@
     return wrap;
   }
 
+  /* A search over places, as Carbon's combo box, for the Route tab. Its
+     options are Mapbox's answers to what is typed, drawn when they arrive, as
+     two lines like a contact's: the place's name over its address. `onPick`
+     gets the place picked, or null and the text when the field is typed in. */
+  function placeSearch(id, label, place, onPick) {
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const field = el('div', 'rux--list-box__field');
+    const input = el('input', place?.name ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
+    input.type = 'text';
+    input.id = id;
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = NO_AUTOFILL;
+    input.placeholder = mapboxToken ? 'Search places' : 'Address';
+    input.value = place?.name ?? '';
+    input.title = place?.address ?? '';
+    field.append(input);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    root.append(field, menu);
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root);
+
+    let found = [];
+    let timer = 0;
+    let asked = 0;
+    const draw = () => {
+      menu.replaceChildren(...found.map((p, i) => {
+        const option = el('li', 'rux--list-box__menu-item scheduler-contact-option');
+        option.setAttribute('role', 'option');
+        option.setAttribute('aria-selected', 'false');
+        option.dataset.placeIndex = String(i);
+        option.dataset.ruxText = p.name;
+        const body = el('div', 'rux--list-box__menu-item__option scheduler-contact-option__body');
+        body.appendChild(el('span', 'scheduler-contact-option__name', p.name));
+        if (p.address) body.appendChild(el('span', 'scheduler-contact-option__detail', p.address));
+        option.appendChild(body);
+        return option;
+      }));
+      // `list-box.js` shows the list only if it had options when it opened.
+      menu.hidden = !found.length || !root.classList.contains('rux--list-box--expanded');
+    };
+    // Mapbox is asked a quarter second after typing stops, and only the
+    // latest answer is drawn.
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      const text = input.value;
+      timer = setTimeout(async () => {
+        const n = ++asked;
+        try {
+          const got = await searchPlaces(text);
+          if (n === asked) { found = got; draw(); }
+        } catch { if (n === asked) { found = []; draw(); } }
+      }, 250);
+    });
+    root.addEventListener('rux:listbox-selected', e => {
+      const index = e.detail?.option?.dataset.placeIndex;
+      if (index === undefined) { onPick(null, input.value.trim()); return; }
+      const picked = found[Number(index)];
+      input.title = picked?.address ?? '';
+      onPick(picked ?? null, input.value.trim());
+    });
+    return wrap;
+  }
+
   /* A copy button in a contact field: Design's copy button in its tooltip.
      `js/copy-button.js` copies the button's `data-rux-copy`, which `syncCopy`
      keeps equal to the field, so what is copied is what is on screen. It shows
@@ -3425,34 +3509,228 @@
 
 
 
-  /* What the Route tab writes to `trip_stops` on an existing trip: one
-     update per changed row, or [] when nothing moved. A leg with no pickup or
-     return stop gets no new row, because where it belongs among the stops is
-     the itinerary editor's business; those controls render disabled. */
-  function stopsPatch() {
-    if (!editing?.stops) return [];
-    const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const out = [];
-    const p = editing.stops.pickup;
-    if (p) {
-      const patch = {};
-      const where = val('scheduler-f-pickup') || null;
-      const depart = val('scheduler-f-depart') || null;
-      const spot = val('scheduler-f-spot') || null;
-      // The two name parts are shown joined and are edited as one string, so
-      // the whole of it goes back to `name` and `address` is left alone rather
-      // than guessed at from a separator the person may have typed themselves.
-      if (!same(where, p.where)) patch.name = where;
-      if (!same(depart, p.depart_prev)) patch.depart_prev = depart;
-      if (!same(spot, p.spot)) patch.spot = spot;
-      if (Object.keys(patch).length) out.push({ id: p.id, patch });
+  /* ── The Route tab's model ──
+     A leg is two times a person types, when the group leaves its pickup and
+     when its trip ends, and the times worked out from them, kept in the rows
+     rux-ui's itinerary writes and the board reads. The leg's `pickup` stop
+     holds the pickup place, the drive from the yard, the yard departure in
+     `depart_prev` and the spot time. The first `stop` after it holds the
+     departure from the pickup in `depart_prev`, as rux-ui keeps it. Its last
+     `return` stop, the yard, holds when the trip ends in `depart_prev`, the
+     yard return in `arrive` and the drive back. A trip that is not a round
+     trip ends somewhere else, the last `stop` before the return, which may be
+     the first. Every other stop, rux-ui's itinerary, is left as it is. */
+  let yardPlace = null;     // `yard-location-v1`: { name, address, lat, lng }
+  let mapboxToken = null;   // `mapbox-token-v1`, Mapbox's public token
+
+  // Minutes after midnight, and back, wrapping round the clock.
+  const toMin = t => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''));
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  };
+  const fromMin = n => {
+    const d = ((n % 1440) + 1440) % 1440;
+    return `${String(Math.floor(d / 60)).padStart(2, '0')}:${String(d % 60).padStart(2, '0')}`;
+  };
+  // A drive as rux-ui stores it, "H:MM", and as a person types it: "1:48",
+  // "108" minutes or "1h 48m".
+  const driveText = n => (n == null ? null : `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`);
+  const driveMin = t => {
+    const v = String(t ?? '').trim();
+    if (!v) return null;
+    let m = /^(\d+):(\d{1,2})$/.exec(v);
+    if (m) return Number(m[1]) * 60 + Number(m[2]);
+    if (/^\d+$/.test(v)) return Number(v);
+    m = /^(?:(\d+)\s*h\w*)?\s*(?:(\d+)\s*m\w*)?$/i.exec(v);
+    return m && (m[1] || m[2]) ? Number(m[1] || 0) * 60 + Number(m[2] || 0) : null;
+  };
+  const driveWords = (min, miles) => [
+    min == null ? null : min >= 60 ? `${Math.floor(min / 60)} h ${min % 60} min` : `${min} min`,
+    miles == null ? null : `${Math.round(miles)} mi`,
+  ].filter(Boolean).join(' · ');
+  const numOrNull = v => (v === null || v === undefined || v === '' ? null : Number(v));
+  const dayAfter = (d, n) => (d ? iso(addDays(parseISO(d), n)) : null);
+
+  /* Mapbox, as rux-ui calls it: Search Box for places, which knows schools
+     and venues by name, and Directions for the drive between two. */
+  async function mapboxJson(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`Mapbox answered ${r.status}.`);
+    return r.json();
+  }
+  async function searchPlaces(text) {
+    if (!mapboxToken || text.trim().length < 3) return [];
+    const q = new URLSearchParams({ q: text.trim(), auto_complete: 'true', limit: '6',
+                                    country: 'us,mx', access_token: mapboxToken });
+    if (yardPlace) q.set('proximity', `${yardPlace.lng},${yardPlace.lat}`);
+    const data = await mapboxJson(`https://api.mapbox.com/search/searchbox/v1/forward?${q}`);
+    return (data.features || []).map(f => {
+      const p = f.properties || {};
+      return { name: p.name || p.full_address || '', address: p.full_address || p.place_formatted || null,
+               lat: p.coordinates?.latitude ?? null, lng: p.coordinates?.longitude ?? null,
+               mapbox_id: p.mapbox_id || null };
+    }).filter(p => p.name && p.lat != null);
+  }
+  const drives = new Map();
+  function driveBetween(a, b) {
+    if (!mapboxToken || a?.lat == null || b?.lat == null) return Promise.resolve(null);
+    const key = `${a.lng},${a.lat};${b.lng},${b.lat}`;
+    if (!drives.has(key)) {
+      drives.set(key, mapboxJson(`https://api.mapbox.com/directions/v5/mapbox/driving/${key}`
+        + `?overview=false&access_token=${encodeURIComponent(mapboxToken)}`)
+        .then(d => {
+          const route = d.routes?.[0];
+          return route ? { min: Math.round(route.duration / 60), miles: Math.round(route.distance / 160.934) / 10 } : null;
+        })
+        .catch(e => { drives.delete(key); throw e; }));
     }
-    const b = editing.stops.back;
-    if (b) {
-      const arrive = val('scheduler-f-return') || null;
-      if (!same(arrive, b.arrive)) out.push({ id: b.id, patch: { arrive } });
+    return drives.get(key);
+  }
+
+  // A round trip ends where it began; every other type ends somewhere else.
+  const routeRound = () => {
+    const type = document.getElementById('scheduler-f-type')?.value || editing?.route?.type || '';
+    return !type || type === 'round_trip';
+  };
+  // The leg's dates as the Details tab has them now.
+  const routeDates = leg => {
+    const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
+    const from = leg === 'return' ? v('scheduler-f-rstart') : v('scheduler-f-start');
+    const to = leg === 'return' ? (v('scheduler-f-rend') ?? from) : (v('scheduler-f-end') ?? from);
+    return { from, to };
+  };
+  const placeOf = row => (row ? { name: row.name ?? null, address: row.address ?? null,
+    lat: numOrNull(row.lat), lng: numOrNull(row.lng), mapbox_id: row.mapbox_id ?? null } : null);
+
+  /* The rows the form asks for, as column values. A date goes with its time:
+     the departure on the leg's first day, the spot time and the yard
+     departure a day earlier when they fall before midnight, the end on the
+     leg's last day and the yard return a day later after midnight. A place or
+     a drive is asked for only once it has changed, so a row's own values
+     stand until then. */
+  function routeWanted() {
+    const r = editing?.route;
+    if (!r) return null;
+    const v = id => document.getElementById(id)?.value.trim() || null;
+    const { from, to } = routeDates(r.leg);
+    const leave = v('scheduler-f-leave'), spot = v('scheduler-f-spot'), yardOut = v('scheduler-f-depart');
+    const end = v('scheduler-f-endtrip'), yardBack = v('scheduler-f-return');
+    const round = routeRound();
+    const drive = driveMin(v('scheduler-f-drive'));
+    const driveBack = round ? r.backDrive : driveMin(v('scheduler-f-driveback'));
+    const driveCols = (row, min, miles, source) => (same(driveText(min), row?.drive ?? null) ? {} : {
+      drive: driveText(min), miles: min == null ? null : miles,
+      drive_source: min == null ? null : source, miles_source: min == null ? null : source,
+    });
+    const earlier = (a, b, day) => (a && b && toMin(a) > toMin(b) ? dayAfter(day, -1) : day);
+    const spotDate = spot ? earlier(spot, leave, from) : null;
+    const pickup = {
+      ...(r.pickupPlace !== r.pickupOpen ? r.pickupPlace ?? placeOf({}) : {}),
+      spot, spot_date: spotDate,
+      depart_prev: yardOut, depart_prev_date: yardOut ? earlier(yardOut, spot, spotDate ?? from) : null,
+      ...driveCols(r.pickup, drive, r.driveMiles, r.driveSource),
+    };
+    const first = { depart_prev: leave, depart_prev_date: leave ? from : null };
+    const drop = round ? null : {
+      ...(r.dropPlace !== r.dropOpen ? r.dropPlace ?? placeOf({}) : {}),
+      arrive: end, arrive_date: end ? to : null,
+    };
+    const ret = {
+      depart_prev: end, depart_prev_date: end ? to : null,
+      arrive: yardBack, arrive_date: yardBack ? (end && toMin(yardBack) < toMin(end) ? dayAfter(to, 1) : to) : null,
+      ...driveCols(r.back, driveBack, r.backMiles, r.backSource),
+    };
+    return { pickup, first, drop, ret };
+  }
+
+  // Whether a stored value and a wanted one are the same, times cut to HH:MM
+  // and numbers compared as numbers.
+  const TIME_KEYS = ['depart_prev', 'arrive', 'spot'];
+  const NUM_KEYS = ['lat', 'lng', 'miles'];
+  const sameValue = (key, a, b) => (TIME_KEYS.includes(key) ? same(hhmmOrNull(a), hhmmOrNull(b))
+    : NUM_KEYS.includes(key) ? same(numOrNull(a), numOrNull(b)) : same(a || null, b || null));
+  // A date is written only beside its own time, or when the leg's dates moved.
+  const DATE_OF = { spot_date: 'spot', depart_prev_date: 'depart_prev', arrive_date: 'arrive' };
+
+  function rowPatch(row, wanted, datesMoved) {
+    const patch = {};
+    for (const [key, value] of Object.entries(wanted)) {
+      if (key in DATE_OF) continue;
+      if (!sameValue(key, row[key], value)) patch[key] = value;
     }
-    return out;
+    for (const [key, time] of Object.entries(DATE_OF)) {
+      if (!(key in wanted)) continue;
+      if ((time in patch || datesMoved) && !same(row[key] ?? null, wanted[key])) patch[key] = wanted[key];
+    }
+    return patch;
+  }
+  const hasAny = o => Object.values(o).some(v => v !== null && v !== undefined && v !== '');
+
+  /* What the Route tab writes to `trip_stops`: updates to the rows the leg
+     has, and the rows it lacks, each placed where rux-ui keeps it: the pickup
+     first on its leg, the first stop just after it, the return last. */
+  function routePlan() {
+    const r = editing?.route;
+    const wanted = routeWanted();
+    if (!r || !wanted) return { updates: [], inserts: [], work: false };
+    const { from, to } = routeDates(r.leg);
+    const datesMoved = !same(from, r.from) || !same(to, r.to);
+    const updates = [];
+    const inserts = [];
+    const plan = (row, want, insert) => {
+      if (row) {
+        const patch = rowPatch(row, want, datesMoved);
+        if (Object.keys(patch).length) updates.push({ id: row.id, patch });
+      } else if (insert && hasAny(want)) {
+        inserts.push(insert(want));
+      }
+    };
+    plan(r.pickup, wanted.pickup, want => ({ at: 'start', row: { type: 'pickup', ...want } }));
+    /* The departure goes on the first stop. A round trip's new first stop is
+       named for the trip's destination; on any other trip the stop the group
+       leaves for is its drop-off, so a leg with no stops gets one row that is
+       both, and a leg with one stop has it hold both. */
+    if (!wanted.drop) {
+      const destination = document.getElementById('scheduler-f-destination')?.value.trim() || null;
+      plan(r.first, wanted.first, want => ({ at: 'after-pickup', row: { type: 'stop', name: destination, ...want } }));
+    } else if (!r.first || r.first === r.drop) {
+      plan(r.first, { ...wanted.first, ...wanted.drop }, want => ({ at: 'after-pickup', row: { type: 'stop', ...want } }));
+    } else {
+      plan(r.first, wanted.first);
+      plan(r.drop, wanted.drop);
+    }
+    const yard = r.back ? {} : { name: yardPlace?.name ?? 'Yard', address: yardPlace?.address ?? null,
+                                  lat: yardPlace?.lat ?? null, lng: yardPlace?.lng ?? null };
+    plan(r.back, wanted.ret, want => ({ at: 'end', row: { type: 'return', ...yard, ...want } }));
+    return { updates, inserts, work: !!(updates.length || inserts.length) };
+  }
+
+  /* Writes the plan. A new row takes its place by moving the rows at and
+     after it one down, since rux-ui orders a trip's stops by `position`
+     across both legs. */
+  async function saveRoute(tripId, write) {
+    const r = editing?.route;
+    const { updates, inserts } = routePlan();
+    for (const u of updates) {
+      await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
+    }
+    const rows = (r?.all ?? []).map(x => ({ ...x }));
+    const legRows = () => rows.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const top = () => rows.reduce((n, x) => Math.max(n, x.position), -1);
+    for (const ins of inserts) {
+      const mine = legRows();
+      const pick = mine.find(x => x.type === 'pickup');
+      const pos = ins.at === 'start' ? (mine[0]?.position ?? top() + 1)
+        : ins.at === 'after-pickup' ? (pick ? pick.position + 1 : (mine[0]?.position ?? top() + 1))
+        : (mine.at(-1)?.position ?? top()) + 1;
+      for (const x of rows.filter(x => x.position >= pos).sort((a, b) => b.position - a.position)) {
+        x.position += 1;
+        await write('its route', client.from('trip_stops').update({ position: x.position }).eq('id', x.id));
+      }
+      const saved = await write('its route', client.from('trip_stops')
+        .insert({ trip_id: tripId, leg: r.leg, position: pos, ...ins.row }).select('id').single());
+      rows.push({ id: saved.id, leg: r.leg, type: ins.row.type, position: pos });
+    }
   }
 
   const same = (a, b) => (a ?? null) === (b ?? null);
@@ -3470,7 +3748,7 @@
   function changed() {
     if (!editing) return false;
     const patch = patchOf();
-    return stopsPatch().length > 0 || !!paymentsPatch()?.work
+    return routePlan().work || !!paymentsPatch()?.work
       || !!posPatch()?.work || !!invoicesPatch()?.work || fleetChanged()
       || (!!patch && Object.keys(patch).length > 0);
   }
@@ -3631,17 +3909,37 @@
     editing.pos = creating ? [] : byPosition(trip.trip_pos);
     editing.invoices = creating ? [] : byPosition(trip.trip_invoices);
 
-    // The stops' before is kept apart from `editing.before`: they are
-    // `trip_stops` rows, not `trips` columns, so they diff and write separately.
-    editing.stops = creating ? null : (() => {
-      const { pickup, back } = stopsOfLeg(trip, legName);
+    /* The route's rows are kept apart from `editing.before`: they are
+       `trip_stops` rows, not `trips` columns, so they diff and write
+       separately. `pickup`, `drop` and `back` are the rows as they opened;
+       the places and drives are what the tab has picked since, which
+       `routeWanted` reads. A new trip has no rows, and Save makes them. */
+    editing.route = (() => {
+      const leg = creating ? 'outbound' : legName;
+      const stops = creating ? [] : stopsOfLeg(trip, leg).stops;
+      const pickup = stops.find(x => x.type === 'pickup') ?? null;
+      const backIndex = stops.map(x => x.type).lastIndexOf('return');
+      const back = backIndex >= 0 ? stops[backIndex] : null;
+      // The stops between pickup and return: the first holds the departure,
+      // and the last is where a trip that is not a round trip ends.
+      const inner = stops.slice(pickup ? stops.indexOf(pickup) + 1 : 0, backIndex >= 0 ? backIndex : stops.length)
+        .filter(x => x.type === 'stop');
+      const first = inner[0] ?? null;
+      const drop = inner.at(-1) ?? null;
+      const dates = leg === 'return'
+        ? { from: trip.return_start_date ?? null, to: trip.return_end_date ?? trip.return_start_date ?? null }
+        : { from: trip.start_date ?? null, to: trip.end_date ?? trip.start_date ?? null };
       return {
-        pickup: pickup ? { id: pickup.id,
-          where: [pickup.name, pickup.address].filter(Boolean).join(' — ') || null,
-          depart_prev: hhmmOrNull(pickup.depart_prev), spot: hhmmOrNull(pickup.spot) } : null,
-        back: back ? { id: back.id, arrive: hhmmOrNull(back.arrive) } : null,
+        leg, type: trip.trip_type ?? '', pickup, first, drop, back, ...dates,
+        between: inner.length,
+        all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: x.leg || 'outbound', type: x.type, position: x.position ?? 0 })),
+        driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
+        backDrive: driveMin(back?.drive), backMiles: numOrNull(back?.miles), backSource: back?.drive_source ?? 'estimated',
       };
     })();
+    // The places as they opened, so `routeWanted` can tell a new pick.
+    editing.route.pickupOpen = editing.route.pickupPlace = placeOf(editing.route.pickup);
+    editing.route.dropOpen = editing.route.dropPlace = placeOf(editing.route.drop);
 
     panelDetails.replaceChildren();
     /* The dates lead the tab, because a trip is found by when it runs. Type,
@@ -3859,24 +4157,240 @@
     panelCancel.hidden = creating || !trip.id;
 
     /* ── Route ──
-       These controls write the leg's `trip_stops` rows, which is where
-       `timesOf` reads the board's times, falling back to a trip column only for
-       departure. They are leg-scoped: the panel opens from one bar, and
-       `stopsOfLeg` picks the same pickup and return rows `timesOf` places that
-       bar by. */
+       The leg's pickup, its spot time and when its trip ends, from which the
+       tab works out when the bus leaves the yard and gets back. The panel
+       opens from one bar, so the fields are that leg's; a drop-off and pick-up
+       trip shows its other leg from the other bar. `editing.route` holds the
+       rows and what has been picked since. */
     panelRoute.replaceChildren();
     {
-      /* On a new trip there are no stops yet, and Save inserts the first ones on
-         the outbound leg, where nothing else can come before them. On an
-         existing leg a missing stop is not invented. */
-      const { pickup, back } = creating ? { pickup: null, back: null } : stopsOfLeg(trip, legName);
-      const sched = el('div', 'rux--stack-vertical rux--stack-scale-6');
-      const times = el('div', 'scheduler-times');
-      times.append(
-        timeField('scheduler-f-depart', 'Yard depart', pickup?.depart_prev),
-        timeField('scheduler-f-spot', 'Spot', pickup?.spot),
-        timeField('scheduler-f-return', 'Return', back?.arrive),
+      const r = editing.route;
+      // A line under a field, hidden while it has nothing to say.
+      const note = text => {
+        const line = el('p', 'rux--form__helper-text scheduler-route-note', text);
+        line.hidden = !text;
+        return line;
+      };
+      const numberField = (id, label, value) => {
+        const item = textField(id, label, value);
+        item.querySelector('input').inputMode = 'numeric';
+        return item;
+      };
+      const val = id => document.getElementById(id)?.value.trim() || '';
+      const setVal = (id, value) => { const input = document.getElementById(id); if (input) input.value = value ?? ''; };
+
+      /* Padding is how long before departure the bus is spotted, and is not
+         stored: it opens as what the saved departure and spot time leave
+         between them, and 15 minutes on a trip that has neither. */
+      const leaveMin = toMin(r.first?.depart_prev), spotMin = toMin(r.pickup?.spot);
+      const driveOpen = driveMin(r.pickup?.drive);
+      const gap = leaveMin != null && spotMin != null ? ((leaveMin - spotMin) % 1440 + 1440) % 1440 : null;
+      const padding = gap != null && gap <= 180 ? gap : 15;
+      /* The worked-out times are not fields: they are kept in hidden inputs,
+         which `routeWanted` reads, and drawn as a timeline under the fields. */
+      const kept = (id, value) => {
+        const input = el('input');
+        input.type = 'hidden';
+        input.id = id;
+        input.value = hhmmOrNull(value) ?? '';
+        return input;
+      };
+
+      /* Spot time is the departure less the padding, and yard depart is spot
+         time less the drive from the yard; yard return is the end plus the
+         drive back. Each is worked out only from what was just typed. */
+      const recalcYard = () => {
+        const spot = toMin(val('scheduler-f-spot'));
+        const drive = driveMin(val('scheduler-f-drive'));
+        if (spot != null && drive != null) setVal('scheduler-f-depart', fromMin(spot - drive));
+      };
+      const recalcSpot = () => {
+        const leave = toMin(val('scheduler-f-leave'));
+        if (leave == null) return;
+        setVal('scheduler-f-spot', fromMin(leave - (driveMin(val('scheduler-f-padding')) ?? 0)));
+        recalcYard();
+      };
+      const recalcReturn = () => {
+        const end = toMin(val('scheduler-f-endtrip'));
+        const back = routeRound() ? r.backDrive : driveMin(val('scheduler-f-driveback'));
+        if (end != null && back != null) setVal('scheduler-f-return', fromMin(end + back));
+      };
+      // A round trip drives home the way it came.
+      const syncBack = () => {
+        if (!routeRound()) return;
+        r.backDrive = driveMin(val('scheduler-f-drive'));
+        r.backMiles = r.driveMiles;
+        r.backSource = r.driveSource;
+      };
+      const lookupFailed = (e, what) => toast('warning', `The drive ${what} was not found.`,
+        `${e?.message || 'Mapbox did not answer.'} Type it in the drive field.`);
+      let showDrives = () => {};
+
+      /* The day in order: yard depart, spot time, depart, end and yard return,
+         each with what it was worked out from. A time before the departure's
+         clock time is the day before, and a yard return before the end's is
+         the day after. */
+      const timeline = el('dl', 'scheduler-def scheduler-route-timeline');
+      const clock = t => {
+        const m = toMin(t);
+        if (m == null) return '—';
+        return `${(Math.floor(m / 60) % 12) || 12}:${String(m % 60).padStart(2, '0')} ${m < 720 ? 'AM' : 'PM'}`;
+      };
+      const drawTimeline = () => {
+        const leave = val('scheduler-f-leave'), spot = val('scheduler-f-spot'), yard = val('scheduler-f-depart');
+        const end = val('scheduler-f-endtrip'), home = val('scheduler-f-return');
+        const drive = driveMin(val('scheduler-f-drive'));
+        const back = routeRound() ? r.backDrive : driveMin(val('scheduler-f-driveback'));
+        const pad = driveMin(val('scheduler-f-padding'));
+        const before = (a, b) => a && b && toMin(a) > toMin(b) ? 'the day before' : null;
+        const { from, to } = routeDates(r.leg);
+        const endDay = end && to && from && to !== from
+          ? parseISO(to).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : null;
+        const rows = [
+          ['Yard depart', yard, [driveWords(drive, r.driveMiles) && `${driveWords(drive, r.driveMiles)} from the yard`, before(yard, spot)]],
+          ['Spot time', spot, [pad != null && `${pad} min before depart`, before(spot, leave)]],
+          ['Depart', leave, [r.pickupPlace?.name]],
+          ['End', end, [routeRound() ? r.pickupPlace?.name : r.dropPlace?.name, endDay]],
+          ['Yard return', home, [driveWords(back, r.backMiles) && `${driveWords(back, r.backMiles)} back to the yard`,
+                                 home && end && toMin(home) < toMin(end) ? 'the next day' : null]],
+        ];
+        timeline.replaceChildren();
+        for (const [label, time, notes] of rows) {
+          const dd = el('dd');
+          dd.appendChild(el('span', 'scheduler-route-time', clock(time)));
+          const said = notes.filter(Boolean).join(' · ');
+          if (said) dd.appendChild(el('span', 'scheduler-route-why', said));
+          timeline.append(el('dt', null, label), dd);
+        }
+      };
+
+      const pickupField = placeSearch('scheduler-f-pickup', 'Pickup location', r.pickupPlace, async (place, typed) => {
+        if (!place) {
+          if ((typed || null) !== (r.pickupPlace?.name ?? null)) {
+            r.pickupPlace = typed ? { name: typed, address: null, lat: null, lng: null, mapbox_id: null } : null;
+          }
+          drawTimeline();
+          return;
+        }
+        r.pickupPlace = place;
+        drawTimeline();
+        try {
+          const drive = await driveBetween(yardPlace, place);
+          if (!drive || r.pickupPlace !== place) return;
+          setVal('scheduler-f-drive', driveText(drive.min));
+          r.driveMiles = drive.miles;
+          r.driveSource = 'estimated';
+          syncBack();
+          recalcYard();
+          recalcReturn();
+          drawTimeline();
+        } catch (e) { lookupFailed(e, 'from the yard'); showDrives(); }
+        refreshDirty();
+      });
+      const dropField = placeSearch('scheduler-f-dropoff', 'Drop-off location', r.dropPlace, async (place, typed) => {
+        if (!place) {
+          if ((typed || null) !== (r.dropPlace?.name ?? null)) {
+            r.dropPlace = typed ? { name: typed, address: null, lat: null, lng: null, mapbox_id: null } : null;
+          }
+          drawTimeline();
+          return;
+        }
+        r.dropPlace = place;
+        drawTimeline();
+        try {
+          const drive = await driveBetween(place, yardPlace);
+          if (!drive || r.dropPlace !== place) return;
+          setVal('scheduler-f-driveback', driveText(drive.min));
+          r.backDrive = drive.min;
+          r.backMiles = drive.miles;
+          r.backSource = 'estimated';
+          recalcReturn();
+          drawTimeline();
+        } catch (e) { lookupFailed(e, 'back to the yard'); showDrives(); }
+        refreshDirty();
+      });
+
+      /* The fields are what a dispatcher knows: where the group is picked up,
+         when it leaves and when its trip ends, and where it ends when that is
+         not the pickup. The padding and the drives, which the 15-minute
+         default and Mapbox usually have right, open from the section's
+         overflow menu, and open on their own when a lookup fails. */
+      const dropBox = el('div');
+      dropBox.appendChild(dropField);
+      const fields = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      fields.append(
+        pickupField,
+        pair(timeField('scheduler-f-leave', 'Depart', r.first?.depart_prev),
+             timeField('scheduler-f-endtrip', 'End', r.back?.depart_prev)),
+        dropBox,
       );
+
+      // Plain boxes, because a form item's own display outranks `hidden`.
+      const padBox = el('div');
+      padBox.hidden = true;
+      padBox.appendChild(pair(numberField('scheduler-f-padding', 'Padding, minutes', String(padding))));
+      const drivesBox = el('div');
+      drivesBox.hidden = true;
+      const driveBack = el('div');
+      driveBack.appendChild(textField('scheduler-f-driveback', 'Drive back', driveText(r.backDrive)));
+      const drives = pair(textField('scheduler-f-drive', 'Drive from yard', driveText(driveOpen)), driveBack);
+      drivesBox.appendChild(drives);
+      fields.append(padBox, drivesBox);
+      showDrives = () => { drivesBox.hidden = false; };
+
+      const menuBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+      menuBtn.type = 'button';
+      menuBtn.id = 'scheduler-f-routemenu';
+      menuBtn.setAttribute('aria-haspopup', 'true');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.setAttribute('aria-label', 'Route options');
+      menuBtn.title = 'Route options';
+      menuBtn.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+      menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
+      const reveal = (box, field) => {
+        box.hidden = !box.hidden;
+        if (!box.hidden) document.getElementById(field)?.focus();
+        else menuBtn.focus();
+      };
+      menuBtn.addEventListener('click', () => {
+        openRowMenu(menuBtn, {
+          editText: padBox.hidden ? `Change padding (${val('scheduler-f-padding') || 0} min)` : 'Hide padding',
+          edit: () => reveal(padBox, 'scheduler-f-padding'),
+          removeText: drivesBox.hidden ? 'Type drive times' : 'Hide drive times',
+          removeDanger: false,
+          remove: () => reveal(drivesBox, 'scheduler-f-drive'),
+        });
+      });
+      // The section is a group named by its title, as Day-of contacts is,
+      // because its title line also holds the menu.
+      const routeBox = el('div', 'scheduler-panel-section');
+      const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Trip');
+      routeTitle.id = 'scheduler-f-routegroup';
+      const routeHead = el('div', 'scheduler-group__head');
+      routeHead.append(routeTitle, menuBtn);
+      const routeGroup = el('div');
+      routeGroup.setAttribute('role', 'group');
+      routeGroup.setAttribute('aria-labelledby', routeTitle.id);
+      routeGroup.append(routeHead, fields);
+      routeBox.appendChild(routeGroup);
+
+      const times = el('div');
+      times.append(timeline,
+        kept('scheduler-f-spot', r.pickup?.spot), kept('scheduler-f-depart', r.pickup?.depart_prev),
+        kept('scheduler-f-return', r.back?.arrive));
+      // The stops between, which only rux-ui's itinerary edits, are named last.
+      if (r.between) {
+        times.appendChild(note(r.between === 1
+          ? "This leg has one stop from rux-ui's itinerary. It stays as it is."
+          : `This leg has ${r.between} stops from rux-ui's itinerary. They stay as they are.`));
+      }
+      const showRound = () => {
+        const round = routeRound();
+        dropBox.hidden = round;
+        driveBack.hidden = round;
+      };
+      showRound();
+
       /* The trip's miles, both legs together. The estimate is an override, as
          in rux-ui: left blank, the stops' own miles stand, and the field shows
          their sum as its placeholder. */
@@ -3886,26 +4400,37 @@
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
       if (stopMiles > 0) miles.querySelector('#scheduler-f-estmiles').placeholder = `${Math.round(stopMiles)} by route`;
-      sched.append(
-        textField('scheduler-f-pickup', 'Pickup location',
-          [pickup?.name, pickup?.address].filter(Boolean).join(' — ')),
-        times,
-        miles,
+
+      // A return leg says so, since a split trip's two outings look alike.
+      panelRoute.append(
+        routeBox,
+        section('Times', times),
+        section('Miles', miles),
       );
-      /* A control with no stop row behind it is disabled, not merely empty:
-         `stopsPatch` creates no rows, so an enabled input there could not save. */
-      for (const [id, row] of [['scheduler-f-pickup', pickup], ['scheduler-f-depart', pickup],
-                               ['scheduler-f-spot', pickup], ['scheduler-f-return', back]]) {
-        // On create there is no row yet, which is not the same as a leg that
-        // has none: the save makes them. Only an existing leg disables.
-        if (row || creating) continue;
-        const input = sched.querySelector(`#${id}`);
-        if (input) { input.disabled = true; input.title = 'This leg has no stop to hold it yet.'; }
+      drawTimeline();
+
+      for (const id of ['scheduler-f-leave', 'scheduler-f-padding']) {
+        document.getElementById(id)?.addEventListener('input', recalcSpot);
       }
-      // The tab is the heading. A return leg gets its own, to say which of a
-      // split trip's two outings these times belong to.
-      panelRoute.appendChild(
-        legName === 'return' ? section('Return leg', sched) : sched);
+      // The timeline follows every field, after the handlers above.
+      fields.addEventListener('input', drawTimeline);
+      document.getElementById('scheduler-f-drive')?.addEventListener('input', () => {
+        r.driveSource = 'manual';
+        syncBack();
+        recalcYard();
+        recalcReturn();
+      });
+      document.getElementById('scheduler-f-endtrip')?.addEventListener('input', recalcReturn);
+      document.getElementById('scheduler-f-driveback')?.addEventListener('input', e => {
+        r.backDrive = driveMin(e.target.value);
+        r.backSource = 'manual';
+        recalcReturn();
+      });
+      document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
+        showRound();
+        syncBack();
+        drawTimeline();
+      });
     }
 
     /* ── Billing ── */
@@ -4800,6 +5325,10 @@
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
   // Files has one switch.
   panelFiles?.addEventListener('rux:toggle', refreshDirty);
+  // Route has fields and two place searches.
+  panelRoute?.addEventListener('input', refreshDirty);
+  panelRoute?.addEventListener('change', refreshDirty);
+  panelRoute?.addEventListener('rux:listbox-selected', refreshDirty);
 
   /* Reset replays `openPanel` with the arguments that opened it, which rewrites
      every field from the trip at once, date labels, return pair, added contact
@@ -4909,7 +5438,6 @@
       const onBus = !!editing.fleet?.outbound.some(b => b.busId);
       // An edit to a time alone leaves the trip patch empty, and an empty
       // update is skipped rather than sent.
-      const stopWork = creating ? [] : stopsPatch();
       const tripWork = creating || Object.keys(row || {}).length > 0;
       /* A new trip carries its own id, made when the panel opened, so Save
          pressed again after a timeout cannot make a second copy: the database
@@ -4929,26 +5457,11 @@
       }
       const tripId = creating ? row.id : id;
 
-      /* A new trip's first stops: a pickup row with the location, yard
-         departure and spot, and a return row with the arrival, each written
-         only when something was typed into it. Leg and position are known for
-         a new trip; on an existing one `stopsPatch` only updates the rows the
-         editor opened with. */
-      if (creating) {
-        const v = id => document.getElementById(id)?.value.trim() || null;
-        const where = v('scheduler-f-pickup'), dep = v('scheduler-f-depart'), spot = v('scheduler-f-spot');
-        const back = v('scheduler-f-return');
-        const rows = [];
-        if (where || dep || spot) {
-          rows.push({ trip_id: tripId, leg: 'outbound', position: 0, type: 'pickup',
-                      name: where, depart_prev: dep, spot });
-        }
-        if (back) {
-          rows.push({ trip_id: tripId, leg: 'outbound', position: rows.length, type: 'return',
-                      arrive: back });
-        }
-        if (rows.length) await write('its schedule', client.from('trip_stops').insert(rows));
-      }
+      /* The route's rows: a new trip's first ones, or an existing leg's
+         changes and the rows it lacks. Each is written one at a time, since an
+         upsert would need every column and write back stale copies of those
+         the tab never shows. */
+      await saveRoute(tripId, write);
 
       /* Payments, then `deposit_amount`, which holds their sum despite its
          name: rux-ui reads it as the amount paid (`normalizeRecord` in its
@@ -4985,12 +5498,6 @@
         }
       }
 
-      /* Existing stops are updated one row at a time, since an upsert would
-         need every column and write back stale copies of those the form never
-         shows. */
-      for (const w of stopWork) {
-        await write('its schedule', client.from('trip_stops').update(w.patch).eq('id', w.id));
-      }
       if (fleet?.work) await saveFleet(tripId, write, fleet);
       // Read back rather than trusting the write, as the drag does.
       await show();

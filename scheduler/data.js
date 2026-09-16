@@ -1121,7 +1121,7 @@
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
     stack.append(...nodes);
     set.append(el('legend', 'scheduler-panel-section__title', title), stack);
-    const wrap = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
+    const wrap = el('div', 'scheduler-panel-section');
     wrap.appendChild(set);
     return wrap;
   };
@@ -2788,7 +2788,7 @@
       /* The section is a group named by its title, not a fieldset, because the
          title line also holds the menu, and a legend must be the fieldset's
          first child and nothing beside it. */
-      const days = el('div', 'scheduler-panel-section scheduler-panel-section--rule');
+      const days = el('div', 'scheduler-panel-section');
       const dayTitle = el('div', 'scheduler-panel-section__title', 'Day-of contacts');
       dayTitle.id = 'scheduler-f-dgroup';
       const dayHead = el('div', 'scheduler-group__head');
@@ -3140,7 +3140,6 @@
 
       // A rule opens each section, as in the Details tab.
       for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
-        wrap.classList.add('scheduler-panel-section--rule');
       }
       panelBilling.append(
         contractSection,
@@ -3231,7 +3230,6 @@
       docsNode = el('p', 'scheduler-panel-hint', 'Itineraries uploaded to the trip in rux-ui are listed here.');
     }
     const docsWrap = section('Itineraries', docsNode);
-    docsWrap.classList.add('scheduler-panel-section--rule');
     panelFiles.append(notNeeded, docsWrap);
 
     /* The date-picker module claims pickers on load; these were just built, so

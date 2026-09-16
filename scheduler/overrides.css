@@ -225,6 +225,14 @@
   align-items: center;
 }
 
+/* A fluid control paints its surface on its own root rather than on the input,
+   and Carbon's side-panel rule names the inputs, so these two sit a shade
+   darker than every field beside them. They take `field-02` like the rest. */
+.rux--side-panel .rux--date-picker--fluid,
+.rux--side-panel .rux--text-area--fluid .rux--text-area__wrapper {
+  background-color: var(--rux-field-02);
+}
+
 /* Fields in a modal take `field-02`, as rux.css does for fields in a side
    panel. A modal is `rux--layer-one`, where `field-01` barely differs from the
    modal's surface in several themes. Two classes, the side-panel rule's

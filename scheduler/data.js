@@ -1368,10 +1368,11 @@
     const picker = item.querySelector('.rux--date-picker');
     if (picker) {
       item.classList.add('rux--date-picker--fluid');
-      for (const c of picker.querySelectorAll('.rux--date-picker-container')) {
-        // Fluid has one height, so the picker's own size modifier comes off.
-        c.querySelector('.rux--date-picker__input')?.classList.remove('rux--date-picker__input--sm');
-        c.appendChild(el('hr', 'rux--date-picker__divider'));
+      /* No divider: `fluiddatepicker--range-with-calendar` renders none, alone
+         among the fluid controls, and its containers part by their own edges.
+         Fluid has one height, so the picker's size modifier comes off. */
+      for (const c of picker.querySelectorAll('.rux--date-picker__input')) {
+        c.classList.remove('rux--date-picker__input--sm');
       }
       return;
     }
@@ -1382,7 +1383,12 @@
       return;
     }
     const area = item.querySelector('.rux--text-area__wrapper');
-    if (area) { item.classList.add('rux--text-area--fluid'); return; }
+    if (area) {
+      item.classList.add('rux--text-area--fluid');
+      // The divider is the wrapper's last child, as `fluidtextarea--default` has it.
+      area.appendChild(el('hr', 'rux--text-area__divider'));
+      return;
+    }
     const text = item.querySelector('.rux--text-input__field-wrapper');
     if (text) {
       item.classList.add('rux--text-input--fluid');
@@ -4190,7 +4196,7 @@
      there the panel's zoom buttons are hidden rather than left doing nothing.
      No feature tells which PDF viewer a frame gets; the vendor string does. */
   if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of itinZooms) btn.hidden = true;
-  // The 30rem panel beside the 30rem editor, with the board still in view.
+  // The 30rem panel beside the 20rem editor, with the board still in view.
   const itinWide = matchMedia('(min-width: 82rem)');
   // The zooms Zoom in and Zoom out step through, in percent.
   const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];

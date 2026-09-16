@@ -542,14 +542,14 @@ button.scheduler-row-head__num {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
-   `rux--side-panel--md` class, and the two move together; it is md rather
-   than sm so the five tabs, split evenly, keep whole labels. */
+   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
+   `rux--side-panel--sm` class, and the two move together; the five tabs,
+   split evenly, still keep whole labels at this width. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 30rem;
-  min-inline-size: 30rem;
+  flex: 0 0 20rem;
+  min-inline-size: 20rem;
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -834,6 +834,15 @@ button.scheduler-row-head__num {
 .scheduler-fluid-group {
   --rux-stack-gap: 0;
   margin-inline: calc(-1 * var(--rux-spacing-05));
+}
+
+/* Two fluid fields side by side butt together, as stacked ones do, and part by
+   an upright border: Carbon asks for one between fluid components in either
+   direction, and a stacked field's own bottom edge is the level one. The date
+   picker draws its own between its two halves, so only a pair needs this. */
+.scheduler-fluid-group .scheduler-pair { gap: 0; }
+.scheduler-fluid-group .scheduler-pair > * + * {
+  border-inline-start: 1px solid var(--rux-border-strong);
 }
 
 /* A section of an editor tab sits 32px below what comes before it, a step

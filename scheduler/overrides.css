@@ -201,9 +201,11 @@
   padding-block-end: 0;
 }
 /* The tab opens 16px under the strip and fills what the strip leaves, so its
-   surface reaches the action bar however short the form is. */
+   surface reaches the action bar however short the form is, and it ends 48px
+   above the actions, the spacer IBM's fluid form puts between the last input
+   and the button group. */
 #scheduler-panel-body .rux--tab-content {
-  padding-block-start: var(--rux-spacing-05);
+  padding-block: var(--rux-spacing-05) var(--rux-spacing-09);
   min-block-size: calc(100% - var(--rux-layout-size-height-sm));
 }
 

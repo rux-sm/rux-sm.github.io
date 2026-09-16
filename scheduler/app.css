@@ -549,14 +549,14 @@ button.scheduler-row-head__num {
   block-size: max(24rem, calc(100dvh - 15rem));
 }
 
-/* The itinerary panel's column, left of everything on the board. 40rem matches
-   the panel's `rux--side-panel--lg` class, and the two move together. Like the
+/* The itinerary panel's column, left of everything on the board. 30rem matches
+   the panel's `rux--side-panel--md` class, and the two move together. Like the
    editor's column it never shrinks and app.js gives it a definite height;
    data.js opens it only from 82rem up, where both columns fit. */
 .scheduler-itinerary {
   order: -2;
-  flex: 0 0 40rem;
-  min-inline-size: 40rem;
+  flex: 0 0 30rem;
+  min-inline-size: 30rem;
   max-inline-size: 100%;
   block-size: max(24rem, calc(100dvh - 15rem));
 }

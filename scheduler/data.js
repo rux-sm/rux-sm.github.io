@@ -4083,7 +4083,7 @@
      The panel fetches the file and frames a blob address of it, because a frame
      of the bucket's own address is another origin, which the page may not
      print. The browser's PDF toolbar is hidden, since Chrome's scrolls sideways
-     at 40rem, and the panel's action toolbar stands in for it. The panel stays
+     at 30rem, and the panel's action toolbar stands in for it. The panel stays
      open through week changes and selections, like the editor, and another
      itinerary replaces the one shown. */
   const itinEl = document.getElementById('scheduler-itinerary');
@@ -4101,7 +4101,7 @@
      there the panel's zoom buttons are hidden rather than left doing nothing.
      No feature tells which PDF viewer a frame gets; the vendor string does. */
   if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of itinZooms) btn.hidden = true;
-  // The 40rem panel beside the 30rem editor, with the board still in view.
+  // The 30rem panel beside the 30rem editor, with the board still in view.
   const itinWide = matchMedia('(min-width: 82rem)');
   // The zooms Zoom in and Zoom out step through, in percent.
   const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];

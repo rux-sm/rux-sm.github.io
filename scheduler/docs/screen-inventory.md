@@ -35,7 +35,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Old surface | Verdict | Becomes |
 |---|---|---|
 | Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch and the trip's itineraries, newest first, read only; upload waits for Design's file uploader. The itinerary grid is *later*. |
-| Document viewer | keep | A `rux--side-panel--lg` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
+| Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
 | Driver editor | keep | Panel with tabs Profile, License, Status, Time off, Trips. |
 | Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |

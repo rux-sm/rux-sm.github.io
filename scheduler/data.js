@@ -333,7 +333,7 @@
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
     const [buses, trips, drivers, contacts, oos, timeOff] = await withTimeout(Promise.all([
-      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper').order('sort_order').then(unwrap),
+      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,year,make,model,color,vin').order('sort_order').then(unwrap),
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),

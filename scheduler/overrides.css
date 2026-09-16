@@ -180,9 +180,10 @@
    scrolls. It has an opaque surface and a z-index so fields pass under it,
    while the date picker's calendar still opens over it. Negative margins and
    `inline-size: auto` run it edge to edge across `__inner-content`'s padding.
-   The 16px gap under the tabs is the strip's own bottom padding rather than
-   the tab content's, so the gap travels with it; the height is the 32px band
-   plus that gap, because the tabs stretch to the strip's content box. */
+   The strip is the 32px band alone: the 16px under it belongs to the fluid
+   surface below, so the surface is unbroken from the tabs to the actions, and
+   a field scrolling away passes under an opaque strip rather than under a
+   band of the panel's own colour. */
 #scheduler-panel-body .rux--tabs {
   position: sticky;
   inset-block-start: 0;
@@ -190,12 +191,20 @@
   background: var(--rux-layer-01);
   margin-inline: calc(-1 * var(--rux-spacing-05));
   inline-size: auto;
-  padding-block-end: var(--rux-spacing-05);
-  block-size: calc(var(--rux-layout-size-height-sm) + var(--rux-spacing-05));
+  block-size: var(--rux-layout-size-height-sm);
   max-block-size: none;
 }
+/* Carbon's own 16px under `__inner-content` would show as a band of the panel's
+   colour between the fluid surface and the action bar, so it goes and the tab
+   fills the body instead. */
+#scheduler-panel-body {
+  padding-block-end: 0;
+}
+/* The tab opens 16px under the strip and fills what the strip leaves, so its
+   surface reaches the action bar however short the form is. */
 #scheduler-panel-body .rux--tab-content {
-  padding-block-start: 0;
+  padding-block-start: var(--rux-spacing-05);
+  min-block-size: calc(100% - var(--rux-layout-size-height-sm));
 }
 
 

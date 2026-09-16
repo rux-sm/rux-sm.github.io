@@ -30,6 +30,11 @@ Route and Files are not, and a tab strip cannot be right for both at once.
   running editor.
 - **Billing's contained lists and its status tile sit on the fluid surface,**
   like every other thing on a fluid tab.
+- **The surface is unbroken from the tabs to the action bar,** as IBM's spec
+  draws it. The 16px under the tab strip belongs to the surface rather than to
+  the strip, and the tab fills the body however short its form is, so no band
+  of the panel's own colour is left at either end. A field scrolling away now
+  passes under an opaque strip instead of under that band.
 - **The surface carries across a whole tab,** edge to edge, and the tab's own
   16px padding puts headings back under the field labels. Every label on a tab
   lines up at 16px.
@@ -49,8 +54,6 @@ Route and Files are not, and a tab strip cannot be right for both at once.
 
 ## Questions
 
-- **Does the surface run down to the action bar,** as IBM's spec draws it, or
-  stop at the last field as Details does today?
 - **Fleet drew nothing under invented data,** so its controls are unsurveyed.
   What is on it?
 
@@ -62,5 +65,5 @@ Route and Files are not, and a tab strip cannot be right for both at once.
       drew nothing under invented data, so nothing about it is confirmed.
 - [ ] Fix the Billing tab's 16px sideways scroll, which predates this work and
       shows at every panel width.
-- [ ] Answer the two questions above.
+- [ ] Answer the question above.
 - [ ] rux reads every tab on real trips, in Chrome, Safari and on the phone.

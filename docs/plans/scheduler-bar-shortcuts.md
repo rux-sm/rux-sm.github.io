@@ -71,11 +71,22 @@ stops costing that trip anything.
 - **The choice stays in `platform.profiles.scheduler_shortcuts`.** No database
   change.
 
+### The trip in the editor
+
+- **Close trip loses its tab too.** It was the last thing taking 32px from a
+  bar, and it was never the only way out: the panel has its own close button
+  and Escape closes it. The shortcut bar's first slot turns into an X on the
+  bar the panel holds, so one slot works the editor both ways.
+- **The trip's other bars wear a dashed ring** in the selection's colour. The
+  tab was the only thing saying which bars belong to the open trip, and without
+  a mark they would refuse to drag with no reason given.
+- **A slot the editor has taken over stays in place and says so** — change the
+  colour, the hotel or the bus in the editor — because a write from the board
+  would move `updated_at` under the panel and turn its next Save into a
+  conflict.
+
 ### What does not change
 
-- **Close trip keeps the tab.** The X down the start edge of every bar of the
-  trip in the editor is a different signal — this trip is open and locked — and
-  it is on several bars at once, which nothing floating can be.
 - **The right-click menu is untouched,** and still carries every action.
 - **Customize shortcuts is untouched** but for the two actions added to its
   dropdowns.

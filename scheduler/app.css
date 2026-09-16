@@ -30,8 +30,8 @@
   --scheduler-ls: var(--rux-label-01-letter-spacing);
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
-  /* Close trip's tab on a bar's start edge, and one square shortcut slot. */
-  --scheduler-tab-w: 2rem;
+  /* One square slot on the selected trip's shortcut bar. */
+  --scheduler-slot-w: 2rem;
   /* A bar keeps `--scheduler-gap` at its day's start and its row's bottom, and
      `--scheduler-gap-clear`, a pixel less, at its day's end and its row's top,
      allowing for the 1px rule on one side of each boundary. */
@@ -403,27 +403,14 @@ button.scheduler-row-head__num {
 /* The phone sits straight after the name rather than at the bar's far end. */
 .scheduler-bar__contact { justify-content: flex-start; }
 .scheduler-bar__ref { opacity: .75; }
-/* Close trip: a tab down the start edge of every bar of the trip in the
-   editor, inside the bar's border, the same on a one-day trip and a week-long
-   one. It takes the selection ring's colour, so it reads on every bar colour
-   and joins the ring, and data.js sets `--scheduler-open-top`,
-   `--scheduler-open-start` and `--scheduler-open-h` from the bar. Carbon has
-   no such control, so it is the app's own. The focus ring is the inverse focus
-   colour, because the plain one matches the fill on dark themes. The bars' own
-   layer, so the tab slides under the sticky bus column with its bar; coming
-   after the bar, it still draws on top of it. */
-.scheduler-bar-close {
-  position: absolute;
-  z-index: 1;
-  inset-block-start: var(--scheduler-open-top, 0px);
-  inset-inline-start: var(--scheduler-open-start, 0px);
-  inline-size: var(--scheduler-tab-w);
-  block-size: var(--scheduler-open-h, var(--scheduler-bar-h));
-  background: var(--rux-layer-selected-inverse);
-}
-/* A bar wearing the tab moves its text, and its double-booking strip, clear. */
-.scheduler-bar:has(+ .scheduler-bar-close) { padding-inline-start: calc(var(--scheduler-tab-w) + var(--rux-spacing-03)); }
-.scheduler-bar:has(+ .scheduler-bar-close) .scheduler-bar__conflict { inset-inline-start: var(--scheduler-tab-w); }
+/* A bar of the trip in the editor that is not the selected one: its return
+   leg, or the same leg on another bus. It is locked -- it does not drag, and
+   its bus, colour and hotel are the editor's to change -- so it is marked as
+   belonging to the open trip. The selection's own colour says which trip, and
+   the dashes say this is not the bar in hand; an outline inside the bar costs
+   none of its writing, where the tab this replaces took 32px of it. The bar's
+   own `:focus-visible` outranks it on specificity, so focus still shows. */
+.scheduler-bar--locked { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
 
 /* The selected trip's shortcuts: a row of square slots floating clear of the
    trip, so a selected trip loses none of its writing. data.js places it inside
@@ -455,8 +442,7 @@ button.scheduler-row-head__num {
 }
 .scheduler-bar-shortcuts[data-side="above"]::after { inset-block-start: 100%; border-block-start: 6px solid var(--rux-layer-selected-inverse); }
 .scheduler-bar-shortcuts[data-side="below"]::after { inset-block-end: 100%; border-block-end: 6px solid var(--rux-layer-selected-inverse); }
-.scheduler-bar-shortcut,
-.scheduler-bar-close {
+.scheduler-bar-shortcut {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -465,17 +451,12 @@ button.scheduler-row-head__num {
   color: var(--rux-icon-inverse);
   cursor: pointer;
 }
-/* Every slot is the tab's own width square, so the row is the same on every
-   trip however short or narrow that trip is. */
-.scheduler-bar-shortcut {
-  inline-size: var(--scheduler-tab-w);
-  block-size: var(--scheduler-tab-w);
+  inline-size: var(--scheduler-slot-w);
+  block-size: var(--scheduler-slot-w);
   background: transparent;
 }
-.scheduler-bar-shortcut:hover,
-.scheduler-bar-close:hover { background: var(--rux-background-inverse-hover); }
-.scheduler-bar-shortcut:focus-visible,
-.scheduler-bar-close:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+.scheduler-bar-shortcut:hover { background: var(--rux-background-inverse-hover); }
+.scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 /* An empty slot's dashed circle, and an action that cannot act on this trip,
    are drawn faint in the bar's own icon colour, so they read on every theme. */
 .scheduler-bar-shortcut--empty svg,
@@ -841,6 +822,17 @@ button.scheduler-row-head__num {
    the tab's fields. The margin is on this app's wrapper, never on
    `.rux--contained-list`. */
 .scheduler-panel-section--bleed {
+  margin-inline: calc(-1 * var(--rux-spacing-05));
+}
+
+/* A stack of fluid fields. The gap between them closes to nothing, because
+   each fluid field carries its own divider and that rule is what parts it from
+   the next; and the stack runs edge to edge across `__inner-content`'s 16px,
+   because fluid fields make a container rather than sitting on the page.
+   `--rux-stack-gap` is Carbon's own hook, set from this app's class, so no
+   rule is written on a `rux--*` class. */
+.scheduler-fluid-group {
+  --rux-stack-gap: 0;
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
 

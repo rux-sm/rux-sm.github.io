@@ -1395,6 +1395,13 @@
      a bare list-box wrapper is swept too, because the contact search is one. */
   const fluidTab = root => {
     for (const item of root.querySelectorAll('.rux--form-item, .rux--list-box__wrapper')) fluidField(item);
+    /* A stack holding fluid fields is marked, so app.css can close the gap
+       between them and run them edge to edge. It is marked here rather than
+       at each stack's construction because a stack does not know whether the
+       tab it lands in is fluid. */
+    for (const stack of root.querySelectorAll('.rux--stack-vertical')) {
+      if (stack.querySelector('[class*="--fluid"]')) stack.classList.add('scheduler-fluid-group');
+    }
   };
 
   /* No browser autofill on a trip's fields. They hold a customer's data, never
@@ -3397,18 +3404,8 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* Close trip's tab runs down its bar's start edge, inside the bar's border,
-     so a partial PO's border and the dotted edge of a trip from last week
-     still show. It goes straight after its bar, so app.css can move that bar's
-     text clear of it. */
-  function placeAtStart(btn, bar) {
-    btn.style.setProperty('--scheduler-open-top', `${bar.offsetTop + bar.clientTop}px`);
-    btn.style.setProperty('--scheduler-open-start', `${bar.offsetLeft + bar.clientLeft}px`);
-    btn.style.setProperty('--scheduler-open-h', `${bar.clientHeight}px`);
-  }
-
-  /* The shortcut bar follows the selection, except onto the trip in the editor,
-     whose bars carry Close trip instead. It is placed the way a tooltip is:
+  /* The shortcut bar follows the selection, the trip in the editor included:
+     there its first slot closes the editor. It is placed the way a tooltip is:
      above the trip where there is room and below it where there is not, and
      slid back inside the board at either edge with its arrow still pointing at
      the trip. Nothing is taken from the trip itself, so the slots are the same
@@ -3419,7 +3416,7 @@
   const TIP_GAP = 4;
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
-    const none = !bar?.dataset.tripId || isEditorTrip(bar) || gridEl.querySelector('.scheduler-bar--dragging');
+    const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
     if (none) return;
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
@@ -3447,32 +3444,23 @@
       `${Math.max(8, Math.min(tip.width - 20, box.left - x + 16))}px`);
   }
 
-  /* Close trip on every bar of the trip in the editor. Those bars are locked,
-     and the tab marks the trip as open, which is why they do not drag. A bar
-     keeps its button from one call to the next, so focus on the button
-     survives a selection change. */
-  function placeBarClose() {
-    const keep = new Set();
+  /* The other bars of the trip in the editor: its return leg, or the same leg
+     on another bus. They are locked -- they do not drag, and their bus, colour
+     and hotel are the editor's to change -- so they are marked as belonging to
+     the open trip. A dashed ring in the selection's own colour, which costs
+     none of the bar's writing: the same trip, but not the one in hand. Closing
+     is the shortcut bar's first slot and the editor's own close button. */
+  function markEditorBars() {
+    const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
-      if (!isEditorTrip(bar)) continue;
-      let btn = bar.nextElementSibling;
-      if (!btn?.matches('.scheduler-bar-close')) {
-        btn = el('button', 'scheduler-bar-close');
-        btn.type = 'button';
-        btn.setAttribute('aria-label', 'Close trip');
-        btn.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
-        bar.after(btn);
-      }
-      placeAtStart(btn, bar);
-      keep.add(btn);
+      bar.classList.toggle('scheduler-bar--locked', isEditorTrip(bar) && bar !== picked);
     }
-    for (const btn of gridEl.querySelectorAll('.scheduler-bar-close')) if (!keep.has(btn)) btn.remove();
   }
 
   function syncSelection() {
     const bar = selectedBar();
     placeBarOpen(bar);
-    placeBarClose();
+    markEditorBars();
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
   }
@@ -3562,12 +3550,9 @@
     if (unsavedWork()) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  gridEl.addEventListener('click', e => {
-    if (e.target.closest('.scheduler-bar-close')) whenSafe(() => closePanel());
-  });
   // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBarClose(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); })).observe(gridEl);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. Close trip is a tab on its bar and needs nothing. */
@@ -3645,7 +3630,7 @@
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.
     placeBarOpen();
-    placeBarClose();
+    markEditorBars();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = !!view[key];
@@ -4022,7 +4007,7 @@
 
   gridEl.addEventListener('contextmenu', e => {
     const track = e.target.closest('.scheduler-track');
-    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts, .scheduler-bar-close')) return;
+    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts')) return;
     if (!shown) return;
     e.preventDefault();
 
@@ -4374,21 +4359,39 @@
      room for another, so Customize shortcuts is always one press away. A slot
      whose action cannot act on the trip shows disabled, with the reason as its
      label, so the slots keep their order from trip to trip. */
+  /* While a trip is in the editor, the editor owns its colour, its hotel and
+     its bus: a write from the board would move `updated_at` under the panel
+     and turn its next Save into a conflict. The slot stays in place and says
+     where to do it instead, so the row never changes shape. */
+  const EDITOR_HAS = {
+    color: bar => (isEditorTrip(bar) ? 'Change the color in the editor' : null),
+    hotel: bar => (isEditorTrip(bar) ? 'Mark the hotel in the editor' : null),
+    bus: bar => (isEditorTrip(bar) ? 'Change the bus in the editor' : null),
+  };
+
   const SHORTCUT_ACTIONS = [
+    /* Slot 1 works the editor both ways: it opens the trip, and on the very bar
+       the editor holds it closes it. That is what the tab down the bar's start
+       edge used to do, without taking any of the bar's writing. */
     { id: 'open', label: 'Open trip', icon: '#i-launch',
-      applies: () => true, run: () => openSelected() },
-    { id: 'itinerary', label: 'Open itinerary', icon: '#i-attachment', reason: 'No itinerary yet',
-      applies: bar => !!bar.dataset.itineraryId, run: bar => openItinerary(bar) },
-    { id: 'hotel', label: 'Mark hotel booked', icon: '#i-building', reason: 'No hotel on this trip',
-      applies: bar => !!bar.dataset.needHotel && !isEditorTrip(bar),
+      label_for: bar => (isEditorBar(bar) ? 'Close trip' : 'Open trip'),
+      icon_for: bar => (isEditorBar(bar) ? '#i-close' : '#i-launch'),
+      blocked: () => null,
+      run: bar => (isEditorBar(bar) ? whenSafe(() => closePanel()) : openSelected()) },
+    { id: 'itinerary', label: 'Open itinerary', icon: '#i-attachment',
+      blocked: bar => (bar.dataset.itineraryId ? null : 'No itinerary yet'),
+      run: bar => openItinerary(bar) },
+    { id: 'hotel', label: 'Mark hotel booked', icon: '#i-building',
       label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
+      blocked: bar => (!bar.dataset.needHotel ? 'No hotel on this trip' : EDITOR_HAS.hotel(bar)),
       run: bar => markHotel(bar) },
     { id: 'color', label: 'Color', icon: '#i-color-palette',
-      applies: bar => !isEditorTrip(bar), run: (bar, slot) => openColorFrom(bar, slot) },
-    { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract', reason: 'Not on a bus',
-      applies: bar => !!bar.dataset.assignmentId && !!bar.dataset.busId, run: bar => takeOffBus(bar) },
+      blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
+    { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract',
+      blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
+      run: bar => takeOffBus(bar) },
     { id: 'cancel', label: 'Cancel trip…', icon: '#i-trash-can',
-      applies: () => true, run: bar => openCancelModal(bar.dataset.tripId) },
+      blocked: () => null, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
   // How many actions follow Open trip, and so how many dropdowns Customize
   // shortcuts shows.
@@ -4417,7 +4420,7 @@
     if (chosen.length < SHORTCUT_SLOTS) slots.push(null);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
-      bar.dataset.hotelBooked, slots.join()].join('|');
+      bar.dataset.hotelBooked, isEditorBar(bar), slots.join()].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     if (key === shortcutsDrawn && barShortcuts.childElementCount === slots.length) return;
     shortcutsDrawn = key;
@@ -4433,14 +4436,14 @@
         btn.appendChild(svgUse('#i-circle-dash', '16', '0 0 32 32'));
         return btn;
       }
-      const ok = action.applies(bar);
-      // Mark hotel booked says which way it marks this leg.
-      const label = action.label_for ? action.label_for(bar) : action.label;
+      // Open trip and Mark hotel booked each say which way they act on this bar.
+      const why = action.blocked(bar);
+      const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
       btn.dataset.shortcut = action.id;
-      btn.setAttribute('aria-label', ok ? label : action.reason);
-      btn.title = ok ? label : action.reason;
-      if (!ok) btn.setAttribute('aria-disabled', 'true');
-      btn.appendChild(svgUse(action.icon, '16', '0 0 32 32'));
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+      if (why) btn.setAttribute('aria-disabled', 'true');
+      btn.appendChild(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'));
       return btn;
     }));
   }
@@ -4938,7 +4941,7 @@
   // A click on empty board space puts the selection down. A click on a bar is
   // app.js's toggle and opens nothing; a click on a bar's button is the button's.
   gridEl.addEventListener('click', e => {
-    if (e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts, .scheduler-bar-close') || !e.target.closest('.scheduler-track')) return;
+    if (e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts') || !e.target.closest('.scheduler-track')) return;
     clearSelection();
   });
 

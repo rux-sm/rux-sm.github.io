@@ -39,9 +39,10 @@
      trip, so nothing about the trip caps this the way the old tab's width
      capped it at the sm height. */
   --scheduler-slot-w: var(--rux-layout-size-height-md, 2.5rem);
-  /* A bar keeps `--scheduler-gap` at its day's start and its row's bottom, and
-     `--scheduler-gap-clear`, a pixel less, at its day's end and its row's top,
-     allowing for the 1px rule on one side of each boundary. */
+  /* A bar keeps `--scheduler-gap-clear` of clear space on all four sides, and
+     the 1px rule at each boundary sits outside that. `--scheduler-gap` is the
+     pair -- the clear space plus its rule -- which is what a bar's size and a
+     track's height subtract to leave the clear space even. */
   --scheduler-gap: var(--rux-spacing-02);
   --scheduler-gap-clear: calc(var(--scheduler-gap) - 1px);
   /* No rule runs between stacked bars, so they keep the full gap. */
@@ -243,7 +244,7 @@ button.scheduler-row-head__num {
 .scheduler-skeleton-bar {
   position: absolute;
   inset-block-start: var(--scheduler-gap-clear);
-  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap));
+  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap-clear));
   inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
 }
@@ -278,7 +279,7 @@ button.scheduler-row-head__num {
   --scheduler-border: var(--rux-tag-border-gray);
   position: absolute;
   inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
-  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap));
+  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap-clear));
   inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
@@ -384,7 +385,7 @@ button.scheduler-row-head__num {
    bar in that day ends. */
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
-  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap-clear));
+  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap));
   border-inline-start: 3px dotted var(--scheduler-border);
 }
 .scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); }

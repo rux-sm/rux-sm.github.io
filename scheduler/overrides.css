@@ -358,3 +358,13 @@
 .rux--search--expandable .rux--search-magnifier:focus {
   outline-offset: -2px;
 }
+
+/* A bus number's toggletip opens from anywhere in the row head, so the head,
+   not the container, is the positioned box. The surface then covers only the
+   number's line, the head's top padding down, so the tip still points at the
+   number rather than at the middle of a tall row. */
+.scheduler-row-head .rux--popover-container { position: static; }
+.scheduler-row-head .rux--popover {
+  inset-block: var(--rux-spacing-03) auto;
+  block-size: 1rem;
+}

@@ -187,6 +187,13 @@ button.scheduler-row-head__num {
   font-family: inherit;
   text-align: inherit;
 }
+/* The whole head is the number's click target: this layer covers the head,
+   the nearest positioned box once overrides.css makes the container static. */
+button.scheduler-row-head__num::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
 /* Carbon's toggletip content is prose; these are one-line facts. */
 .scheduler-bus-tip p { margin: 0; }
 .scheduler-row-head__num {
@@ -200,6 +207,8 @@ button.scheduler-row-head__num {
 /* The out-of-service mark, stacked under the number so the number stays the
    widest thing in the cell. */
 .scheduler-row-head__kit {
+  /* Above the number's click layer, so the mark keeps its hover label. */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-02);

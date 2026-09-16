@@ -115,7 +115,6 @@
   // Size classes written out whole, for the class sweep.
   const PHOTO_SIZE = {
     sm: 'rux--user-avatar__photo rux--user-avatar__photo--sm',
-    lg: 'rux--user-avatar__photo rux--user-avatar__photo--lg',
     xl: 'rux--user-avatar__photo rux--user-avatar__photo--xl',
   };
   // Fills an avatar with the photo, or the initials while there is none or it
@@ -219,7 +218,7 @@
       avatar.setAttribute('aria-hidden', 'true');
       paintAvatar(avatar, d.name, d.photo_path, 'sm');
       const names = el('div', 'scheduler-driver-cell__names');
-      const link = el('a', 'rux--link', d.name || 'Unnamed driver');
+      const link = el('a', 'scheduler-driver-cell__name', d.name || 'Unnamed driver');
       link.href = `drivers.html?id=${encodeURIComponent(d.id)}`;
       names.appendChild(link);
       if (d.short_name && d.short_name !== d.name) names.appendChild(el('span', 'scheduler-driver-cell__short', d.short_name));
@@ -323,6 +322,13 @@
   const dateOf = id => (ISO.test(field(id).value.trim()) ? field(id).value.trim() : null);
   const upper = id => text(id)?.toUpperCase() ?? null;
 
+  // Cancel and Save stack on a phone, as Carbon's stacked button set does.
+  const narrow = matchMedia('(max-width: 41.98rem)');
+  const stackButtons = () => document.querySelector('.scheduler-driver-buttons')
+    ?.classList.toggle('rux--btn-set--stacked', narrow.matches);
+  stackButtons();
+  narrow.addEventListener('change', stackButtons);
+
   let loaded = null;        // the driver row as the page read it
   let loadedOff = [];       // its time off, as read
   let off = [];             // the time off on the page, saved with the form
@@ -422,21 +428,31 @@
       tag.className = active ? 'rux--tag rux--tag--green' : 'rux--tag rux--tag--gray';
       tag.querySelector('.rux--tag__label').textContent = active ? 'Active' : 'Inactive';
     }
-    paintAvatar($('scheduler-driver-avatar'), name || '', loaded?.photo_path, 'lg');
     paintAvatar($('scheduler-driver-photo'), name || '', loaded?.photo_path, 'xl');
     $('scheduler-driver-photo-remove').hidden = !loaded?.photo_path;
     $('scheduler-driver-photo-help').hidden = !!loaded;
     $('scheduler-driver-photo-add').disabled = !loaded;
   }
 
-  // A warning under an expiry that has passed or is close.
+  /* A warning under an expiry that has passed or is close, with the list's
+     red or yellow status icon. Carbon shows the requirement only beside a
+     wrapper in its warn state. */
   function drawExpiry() {
     for (const help of document.querySelectorAll('.scheduler-driver-expiry')) {
-      const v = $(help.dataset.expiryFor).value.trim();
-      if (!ISO.test(v)) { help.hidden = true; continue; }
-      const n = daysUntil(v);
-      help.hidden = n > WARN_DAYS;
-      help.textContent = n < 0 ? `Expired ${plural(-n, 'day')} ago` : n === 0 ? 'Expires today' : `Expires in ${plural(n, 'day')}`;
+      const input = $(help.dataset.expiryFor);
+      const wrap = input.closest('.rux--date-picker-input__wrapper');
+      const v = input.value.trim();
+      const n = ISO.test(v) ? daysUntil(v) : Infinity;
+      const on = n <= WARN_DAYS;
+      wrap.classList.toggle('rux--date-picker-input__wrapper--warn', on);
+      if (on) input.setAttribute('aria-describedby', help.id); else input.removeAttribute('aria-describedby');
+      help.hidden = !on;
+      help.replaceChildren();
+      if (!on) continue;
+      help.appendChild(indicator({
+        kind: n < 0 ? 'expired' : 'soon',
+        text: n < 0 ? `Expired ${plural(-n, 'day')} ago` : n === 0 ? 'Expires today' : `Expires in ${plural(n, 'day')}`,
+      }));
     }
   }
 
@@ -681,6 +697,8 @@
   });
 
   const LEG = { outbound: 'Outbound', return: 'Return' };
+  // A stored role, such as `relief-driver`, as words in sentence case.
+  const sentence = s => { const t = s.replace(/[-_]/g, ' '); return t[0].toUpperCase() + t.slice(1); };
   async function drawTrips() {
     const section = $('scheduler-driver-trips-section');
     const list = $('scheduler-driver-trips');
@@ -720,7 +738,7 @@
         l.t.customer,
         l.t.return_start_date ? LEG[l.leg] || null : null,
         l.bus ? `Bus ${l.bus}` : 'No bus',
-        l.role && l.role !== 'driver' ? l.role.replace(/-/g, ' ') : null,
+        l.role && l.role !== 'driver' ? sentence(l.role) : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-driver-item__detail', detail));
       a.appendChild(lines);

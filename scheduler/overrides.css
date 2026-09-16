@@ -292,15 +292,20 @@
   overflow: visible;
 }
 
-/* A single date picker in a dialog's grid fills its cell. Carbon's
-   `.rux--date-picker.rux--date-picker--single .rux--date-picker__input` is a
-   fixed 18rem, its container is held to 18rem at most, and the picker's root,
+/* A single date picker in a dialog's or the Drivers form's grid fills its
+   cell. Carbon's `.rux--date-picker.rux--date-picker--single
+   .rux--date-picker__input` is a fixed 18rem, its container is held to 18rem at most, and the picker's root,
    container and wrapper each size to their content, so every level is set. */
 .scheduler-dialog-grid .rux--date-picker--single,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-container,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
-.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker__input {
+.scheduler-dialog-grid .rux--date-picker--single .rux--date-picker__input,
+.scheduler-driver-grid .rux--date-picker--single,
+.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-container,
+.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
+.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
+.scheduler-driver-grid .rux--date-picker--single .rux--date-picker__input {
   inline-size: 100%;
   max-inline-size: none;
 }
@@ -383,8 +388,8 @@
    line, as a licence warning does in a narrow table column. */
 .rux--icon-indicator svg { flex: none; }
 
-/* On a phone the Drivers form's Cancel and Save stack, as Carbon stacks a
-   button set that does not fit, with Save at the bottom. */
+/* On a phone drivers.js stacks the Drivers form's Cancel and Save with
+   Carbon's stacked button set, and each takes the form's full width. */
 @media (max-width: 41.98rem) {
-  .scheduler-drivers-page .rux--btn-set { flex-direction: column; }
+  .scheduler-driver-buttons .rux--btn { max-inline-size: none; }
 }

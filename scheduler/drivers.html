@@ -248,7 +248,7 @@
               <div class="rux--search rux--layout--size-lg rux--toolbar-search-container-persistent" role="search">
                 <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
                 <label class="rux--label" for="scheduler-drivers-search">Search drivers</label>
-                <input id="scheduler-drivers-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search by name, phone or licence" autocomplete="off">
+                <input id="scheduler-drivers-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search drivers" autocomplete="off">
                 <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear search input" id="scheduler-drivers-search-clear">
                   <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
                 </button>
@@ -260,7 +260,7 @@
           </section>
 
           <div class="rux--data-table-content">
-            <table class="rux--data-table rux--data-table--md rux--data-table--sort" aria-labelledby="scheduler-drivers-h">
+            <table class="rux--data-table rux--data-table--lg rux--data-table--sort" aria-labelledby="scheduler-drivers-h">
               <thead>
                 <tr>
                   <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="name">
@@ -324,7 +324,6 @@
             </ol>
           </nav>
           <div class="scheduler-driver-title">
-            <div class="rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--lg" id="scheduler-driver-avatar" aria-hidden="true"></div>
             <h1 class="rux--type-productive-heading-04" id="scheduler-driver-h">New driver</h1>
             <div class="rux--tag rux--tag--green" id="scheduler-driver-status" hidden><span class="rux--tag__label"></span></div>
           </div>
@@ -360,7 +359,7 @@
                   <p class="rux--form__helper-text" id="scheduler-driver-photo-help" hidden>Save the driver before adding a photo.</p>
                 </div>
               </div>
-              <div class="scheduler-dialog-grid">
+              <div class="scheduler-driver-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-first">First name</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -396,7 +395,7 @@
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-dob">Date of birth</label>
-                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-dob" class="rux--date-picker__input" type="text" autocomplete="off"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-dob" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="yyyy-mm-dd"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
                   </div>
@@ -417,7 +416,7 @@
                   <div class="rux--text-input__field-wrapper"><input id="scheduler-d-address" class="rux--text-input" type="text" autocomplete="off"></div>
                 </div>
               </div>
-              <div class="scheduler-driver-city">
+              <div class="scheduler-driver-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-city">City</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -442,8 +441,8 @@
 
           <fieldset class="scheduler-driver-group">
             <legend class="rux--type-heading-compact-02">Emergency contact</legend>
-            <div class="scheduler-dialog-grid">
-              <div class="rux--form-item rux--text-input-wrapper">
+            <div class="scheduler-driver-grid">
+              <div class="rux--form-item rux--text-input-wrapper scheduler-driver-grid__wide">
                 <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-ename">Name</label></div>
                 <div class="rux--text-input__field-outer-wrapper">
                   <div class="rux--text-input__field-wrapper"><input id="scheduler-d-ename" class="rux--text-input" type="text" autocomplete="off"></div>
@@ -461,7 +460,7 @@
           <fieldset class="scheduler-driver-group">
             <legend class="rux--type-heading-compact-02">Licence</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
-              <div class="scheduler-dialog-grid">
+              <div class="scheduler-driver-grid">
                 <div class="rux--form-item">
                   <div class="rux--select">
                     <label class="rux--label" for="scheduler-d-cdl">CDL class</label>
@@ -489,13 +488,13 @@
                   </div>
                 </div>
               </div>
-              <div class="scheduler-dialog-grid">
+              <div class="scheduler-driver-grid">
                 <div class="rux--form-item">
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-lexp">Licence expires</label>
-                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-lexp" class="rux--date-picker__input" type="text" autocomplete="off"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
-                      <div class="rux--form__helper-text scheduler-driver-expiry" data-expiry-for="scheduler-d-lexp" hidden></div>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-lexp" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="yyyy-mm-dd"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
+                      <div class="rux--form-requirement scheduler-driver-expiry" id="scheduler-d-lexp-expiry" data-expiry-for="scheduler-d-lexp" hidden></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
                   </div>
@@ -504,8 +503,8 @@
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-medexp">Medical card expires</label>
-                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-medexp" class="rux--date-picker__input" type="text" autocomplete="off"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
-                      <div class="rux--form__helper-text scheduler-driver-expiry" data-expiry-for="scheduler-d-medexp" hidden></div>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-medexp" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="yyyy-mm-dd"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
+                      <div class="rux--form-requirement scheduler-driver-expiry" id="scheduler-d-medexp-expiry" data-expiry-for="scheduler-d-medexp" hidden></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
                   </div>
@@ -555,7 +554,7 @@
                   <label for="scheduler-d-status-inactive" class="rux--radio-button__label"><span class="rux--radio-button__appearance"></span><span class="rux--radio-button__label-text">Inactive</span></label>
                 </div>
               </fieldset>
-              <div class="scheduler-dialog-grid">
+              <div class="scheduler-driver-grid">
                 <div class="rux--form-item">
                   <div class="rux--select">
                     <label class="rux--label" for="scheduler-d-type">Employment type</label>
@@ -575,11 +574,11 @@
                     <label class="rux--label" for="scheduler-d-priority">Priority</label>
                     <div class="rux--select-input__wrapper">
                       <select id="scheduler-d-priority" class="rux--select-input">
-                        <option class="rux--select-option" value="1">1, first called</option>
+                        <option class="rux--select-option" value="1">1, called first</option>
                         <option class="rux--select-option" value="2">2</option>
                         <option class="rux--select-option" value="3">3</option>
                         <option class="rux--select-option" value="4">4</option>
-                        <option class="rux--select-option" value="5">5, last called</option>
+                        <option class="rux--select-option" value="5">5, called last</option>
                       </select>
                       <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                     </div>
@@ -589,7 +588,7 @@
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-hire">Hire date</label>
-                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-hire" class="rux--date-picker__input" type="text" autocomplete="off"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-hire" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="yyyy-mm-dd"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button></span></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
                   </div>
@@ -621,7 +620,7 @@
           <!-- Read only: rux-ui makes, changes and turns off driver links. -->
           <section class="rux--stack-vertical rux--stack-scale-4" aria-labelledby="scheduler-driver-link-h" id="scheduler-driver-link-section" hidden>
             <h2 class="rux--type-heading-compact-02" id="scheduler-driver-link-h">Schedule link</h2>
-            <p class="scheduler-driver-note" id="scheduler-driver-link-text"></p>
+            <p class="rux--type-body-compact-01 scheduler-driver-note" id="scheduler-driver-link-text"></p>
             <div id="scheduler-driver-link-copy" hidden>
               <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-driver-link-button">Copy link
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
@@ -637,7 +636,7 @@
           </section>
 
           <!-- The button set and its order are form-page.html's. -->
-          <div class="rux--btn-set">
+          <div class="rux--btn-set scheduler-driver-buttons">
             <a class="rux--btn rux--btn--secondary" href="drivers.html" id="scheduler-driver-cancel">Cancel</a>
             <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-driver-save">Save</button>
           </div>

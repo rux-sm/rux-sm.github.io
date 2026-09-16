@@ -1676,6 +1676,19 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   flex-direction: column;
   min-inline-size: 0;
 }
+/* The name is the link a keyboard reaches, but the whole row opens the
+   driver, so it reads as the row's text rather than a second target. */
+.scheduler-driver-cell__name {
+  color: var(--rux-text-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scheduler-driver-cell__name:focus {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+}
 .scheduler-driver-cell__short,
 .scheduler-driver-item__detail,
 .scheduler-driver-note {
@@ -1685,13 +1698,16 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-drivers-row { cursor: pointer; }
 .scheduler-drivers-row td:nth-child(2) { white-space: nowrap; }
 /* The table scrolls inside its own box rather than widening the page, and a
-   phone shows the driver, the phone and the licence only. */
+   phone shows the driver and the licence only, each name on one line. */
 .scheduler-drivers-page .rux--css-grid-column { min-inline-size: 0; }
 @media (max-width: 41.98rem) {
+  #scheduler-drivers-list th:nth-child(2),
   #scheduler-drivers-list th:nth-child(3),
   #scheduler-drivers-list th:nth-child(4),
+  .scheduler-drivers-row td:nth-child(2),
   .scheduler-drivers-row td:nth-child(3),
   .scheduler-drivers-row td:nth-child(4) { display: none; }
+  .scheduler-drivers-row td:first-child { max-inline-size: 10rem; }
 }
 .scheduler-drivers-switcher { max-inline-size: 24rem; }
 
@@ -1719,19 +1735,20 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   align-items: center;
   gap: var(--rux-spacing-03);
 }
-/* City takes the room; state and ZIP are short. One column on a phone. */
-.scheduler-driver-city {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--rux-spacing-05);
-}
-@media (max-width: 41.98rem) {
-  .scheduler-driver-city { grid-template-columns: minmax(0, 1fr); }
-}
+/* Every row of fields sits on the same three columns, so field edges line
+   up down the form, whatever a row holds. One column on a phone. */
+.scheduler-driver-grid,
 .scheduler-driver-endorsements {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: var(--rux-spacing-05);
+}
+.scheduler-driver-grid { row-gap: var(--rux-spacing-05); }
+.scheduler-driver-grid__wide { grid-column: span 2; }
+@media (max-width: 41.98rem) {
+  .scheduler-driver-grid,
+  .scheduler-driver-endorsements { grid-template-columns: minmax(0, 1fr); }
+  .scheduler-driver-grid__wide { grid-column: auto; }
 }
 .scheduler-driver-endorsements > legend { grid-column: 1 / -1; }
 .scheduler-driver-item {
@@ -1741,5 +1758,4 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 }
 /* A trip is a link that reads as a list row, as the search results do. */
 .scheduler-driver-trip { text-decoration: none; }
-.scheduler-driver-expiry { color: var(--rux-text-error); }
 .scheduler-off-error { color: var(--rux-text-error); }

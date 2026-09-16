@@ -98,6 +98,7 @@
     // stylesheet sizes, not at the sizes the last pass pinned.
     sch.style.removeProperty('inline-size');
     sch.style.removeProperty('--scheduler-day-track');
+    sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
     // The bus column is `max-content`, so its width is measured from the
     // corner cell, which is that column.
@@ -122,6 +123,9 @@
       head = pane - day * days;
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
+    // Bars, stripes and day rules are placed from this rather than from a
+    // percentage of the track, so every edge lands on a whole pixel.
+    sch.style.setProperty('--scheduler-day-w', `${day}px`);
     // The head is pinned to a whole width that carries the remainder, so the
     // columns sum to the pane exactly.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);

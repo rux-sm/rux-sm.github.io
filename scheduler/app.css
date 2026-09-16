@@ -917,7 +917,9 @@ button.scheduler-row-head__num {
   line-height: var(--rux-heading-compact-01-line-height);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   color: var(--rux-text-primary);
-  margin-block-end: var(--rux-spacing-03);
+  /* 16px under every heading, the same as the 16px over it, so a heading sits
+     in equal air wherever it is on the tab. */
+  margin-block-end: var(--rux-spacing-05);
 }
 /* A section's rule reaches the panel's edges, as the fields' own dividers do,
    rather than stopping at the tab's 16px; the padding puts its heading back
@@ -928,23 +930,24 @@ button.scheduler-row-head__num {
 }
 
 /* A 1px rule opens every section after the first in the Details and Billing
-   tabs, with 24px under it, so 32px above and 24px below part the groups more
-   than the 24px between fields does. */
+   tabs, with 16px between it and the heading under it -- the same 16px the
+   heading has beneath it, and the same the tab's first heading gets from the
+   tab's own padding. */
 .scheduler-panel-section--rule {
   border-block-start: 1px solid var(--rux-border-subtle-01);
-  padding-block-start: var(--rux-spacing-06);
+  padding-block-start: var(--rux-spacing-05);
 }
 
 /* A group's heading line with an overflow menu trigger at its end. The line
-   keeps the title's own height, so the title sits 8px over the first label as
-   every group's does, and the 32px trigger reaches 7px above and below it,
+   keeps the title's own height, so the title sits 16px over the first label as
+   every heading does, and the 32px trigger reaches 7px above and below it,
    (18px line - 32px button) / 2, into the gaps around it. */
 .scheduler-group__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--rux-spacing-05);
-  margin-block-end: var(--rux-spacing-03);
+  margin-block-end: var(--rux-spacing-05);
 }
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
 .scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }

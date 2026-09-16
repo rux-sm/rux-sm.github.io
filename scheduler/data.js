@@ -302,6 +302,7 @@
     'trip_contact_5_name', 'trip_contact_5_phone',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     'contract_status,invoice_status,balance_paid,date_paid',
+    'est_miles,actual_miles',
     // The PO and invoice switches' flags, and the contract note.
     'contract_note,po_received,invoiced',
     // Save inserts, updates and deletes payment rows one at a time, by id.
@@ -309,7 +310,8 @@
     // POs and invoices, one row each, written by id like the payments.
     'trip_pos(id,position,ref,amount,date)',
     'trip_invoices(id,position,number,amount,date)',
-    'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot)',
+    // `miles` sums to the estimate a trip without its own shows.
+    'trip_stops(id,position,leg,type,name,address,depart_prev,arrive,spot,miles)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -346,6 +348,9 @@
       // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+      // rux-ui's billing workflow. A refused read keeps its defaults, as rux-ui does.
+      client.from('settings').select('value').eq('key', 'billing-workflow-v1').maybeSingle()
+        .then(r => { if (!r.error) setBillingWorkflow(r.data?.value); }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
     // which is what an ended log-in or removed access looks like; a reload
@@ -2090,8 +2095,8 @@
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
     // Standard is the empty value and stores null.
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
-    // `confirmed`, `balance_paid` and `date_paid` are not written: rux-ui
-    // derives all three on every save, so a value set here would be overwritten.
+    // `confirmed`, `balance_paid` and `date_paid` are derived, not edited:
+    // `derivedBilling` writes them with any billing change.
     { key: 'req_sleeper', get: f => pressed(f['scheduler-f-sleeper']) },
     { key: 'req_ada', get: f => pressed(f['scheduler-f-ada']) },
     { key: 'req_56pax', get: f => pressed(f['scheduler-f-56pax']) },
@@ -2112,15 +2117,18 @@
        `collectTrip` follows too. `invoiced` is written beside `invoice_status`
        so the two always agree. */
     { key: 'quoted_price', get: f => money(f['scheduler-f-quoted'].value) },
-    { key: 'contract_status', get: f => on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
+    // The route's miles, on the Route tab.
+    { key: 'est_miles', get: () => money(document.getElementById('scheduler-f-estmiles')?.value) },
+    { key: 'actual_miles', get: () => money(document.getElementById('scheduler-f-actmiles')?.value) },
+    { key: 'contract_status', get: f => stepOn('contractSigned') && on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
     { key: 'contract_note',
-      get: f => on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
+      get: f => stepOn('contractSigned') && on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
     /* The PO and invoice columns are filled from the rows in `trip_pos` and
        `trip_invoices`: `po_ref` is the first PO's reference, `po_amount` the sum
        of the PO amounts and `invoice_number` the first invoice's number, because
        rux-ui and other readers still use the columns. `listRowsToSave` is the
        list Save writes, so the columns and the rows agree. */
-    { key: 'po_received', get: f => on(f['scheduler-f-poreceived']) },
+    { key: 'po_received', get: f => stepOn('poReceived') && on(f['scheduler-f-poreceived']) },
     { key: 'po_ref', get: () => listRowsToSave('po')[0]?.ref ?? null },
     { key: 'po_amount', get: () => sumOrNull(listRowsToSave('po')) },
     { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
@@ -2277,6 +2285,89 @@
     const n = Number(t);
     return Number.isFinite(n) ? n : null;
   };
+
+  /* The billing workflow rux-ui keeps in the `billing-workflow-v1` settings
+     row: which milestones are in use, and which billing statuses confirm a
+     trip. `read` fills it with the week; these are rux-ui's defaults for a
+     missing row or a missing part of one. */
+  const CONFIRMING = ['contract_signed', 'po_partial', 'po_received', 'deposit_received', 'paid_full', 'overpaid'];
+  const BILLING_DEFAULT = { steps: { contractSigned: true, poReceived: true, invoiced: true },
+                            confirmWhen: ['contract_signed', 'po_received', 'deposit_received', 'paid_full'] };
+  let billingWorkflow = BILLING_DEFAULT;
+  function setBillingWorkflow(value) {
+    const steps = { ...BILLING_DEFAULT.steps };
+    for (const key of Object.keys(steps)) {
+      if (value?.workflow?.[key]?.active === false) steps[key] = false;
+    }
+    const listed = Array.isArray(value?.confirmWhen) ? value.confirmWhen.filter(k => CONFIRMING.includes(k)) : [];
+    billingWorkflow = { steps, confirmWhen: listed.length ? [...new Set(listed)] : BILLING_DEFAULT.confirmWhen };
+  }
+  // Whether a milestone is in use. One that is not counts as off.
+  const stepOn = key => billingWorkflow.steps[key] !== false;
+
+  /* The billing status ladder, rux-ui's `deriveStatus` in its
+     `js/core/billing-config.js`; first match wins:
+
+       overpaid          price > 0 && balance < 0
+       paid_full         price > 0 && paid > 0 && balance <= 0
+       po_partial        poReceived && price > 0 && poAmount < remaining
+       po_received       poReceived
+       deposit_received  paid > 0 && (balance > 0 || price <= 0)
+       contract_signed   contractSigned
+       pending           -- everything else
+
+     The invoice milestone moves neither the status nor the confirmation. */
+  function billingStatus({ contractSigned, poReceived, poAmount, price, paid }) {
+    const balance = price - paid;
+    const remaining = Math.max(0, balance);
+    if (price > 0 && balance < 0) return 'overpaid';
+    if (price > 0 && paid > 0 && balance <= 0) return 'paid_full';
+    if (poReceived && price > 0 && poAmount < remaining) return 'po_partial';
+    if (poReceived) return 'po_received';
+    if (paid > 0 && (balance > 0 || price <= 0)) return 'deposit_received';
+    if (contractSigned) return 'contract_signed';
+    return 'pending';
+  }
+  // A partial PO confirms whenever a PO does, as in rux-ui.
+  const confirmRungOf = rung => (rung === 'po_partial' ? 'po_received' : rung);
+  const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung));
+
+  /* The open editor's billing as it stands: the status, whether it confirms
+     the trip, and whether the payments reach the quote, with the latest
+     payment's date. The tab's summary draws from it and Save writes from it,
+     so what the tab says is what the trip becomes. */
+  function billingNow() {
+    const quoted = money(document.getElementById('scheduler-f-quoted')?.value);
+    const price = quoted ?? 0;
+    const amounts = payPending.map(p => Number(p.amount) || 0);
+    const paid = amounts.reduce((n, a) => n + a, 0);
+    const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
+    const poReceived = stepOn('poReceived') && on(document.getElementById('scheduler-f-poreceived'));
+    const rung = billingStatus({
+      contractSigned: stepOn('contractSigned') && on(document.getElementById('scheduler-f-contract')),
+      poReceived, poAmount, price, paid,
+    });
+    const fullyPaid = price > 0 && price - paid <= 0;
+    const lastPaid = payPending.filter((p, i) => amounts[i] > 0 && p.date).map(p => p.date).sort().pop() || null;
+    return { quoted, price, paid, poAmount, poReceived, rung, confirmed: confirmsTrip(rung),
+             fullyPaid, datePaid: fullyPaid ? lastPaid : null };
+  }
+
+  // The trip columns a save that changes billing derives, as rux-ui's does.
+  const BILLING_KEYS = ['quoted_price', 'contract_status', 'contract_note', 'po_received', 'po_ref',
+                        'po_amount', 'invoice_status', 'invoiced', 'invoice_number'];
+  function derivedBilling() {
+    const b = billingNow();
+    return { confirmed: b.confirmed, balance_paid: b.fullyPaid, date_paid: b.datePaid };
+  }
+
+  /* A trip's milestones as rux-ui opens them. A confirmed trip with no
+     contract status predates the column and counts as signed; a PO reference
+     or an invoice number turns its milestone on. */
+  const contractSignedOf = trip => stepOn('contractSigned')
+    && (trip.contract_status === 'Signed' || (trip.contract_status == null && !!trip.confirmed));
+  const poReceivedOf = trip => stepOn('poReceived') && !!(trip.po_received || trip.po_ref);
+  const invoicedOf = trip => !!(trip.invoiced || trip.invoice_number || trip.invoice_status === 'Invoiced');
 
   let editing = null;   // { id, before: {...} }
 
@@ -2736,13 +2827,15 @@
       po_ref: trip.po_ref ?? null,
       po_amount: trip.po_amount ?? null,
       invoice_number: trip.invoice_number ?? null,
-      // A null status reads as Pending.
-      contract_status: trip.contract_status === 'Signed' ? 'Signed' : 'Pending',
-      invoice_status: trip.invoice_status === 'Invoiced' ? 'Invoiced' : 'Pending',
-      contract_note: trip.contract_note ?? null,
+      // The milestones as the switches open, so an untouched trip saves none.
+      contract_status: contractSignedOf(trip) ? 'Signed' : 'Pending',
+      invoice_status: invoicedOf(trip) ? 'Invoiced' : 'Pending',
+      contract_note: contractSignedOf(trip) ? (trip.contract_note ?? null) : null,
       // Booleans take `!!`, not `?? null`, because `same(false, null)` is a change.
-      po_received: !!trip.po_received,
-      invoiced: !!trip.invoiced,
+      po_received: poReceivedOf(trip),
+      invoiced: invoicedOf(trip),
+      est_miles: trip.est_miles ?? null,
+      actual_miles: trip.actual_miles ?? null,
       itinerary_not_needed: !!trip.itinerary_not_needed,
       booking_contact_id: trip.booking_contact_id ?? null,
       trip_contact_1_id: trip.trip_contact_1_id ?? null,
@@ -3014,10 +3107,20 @@
         timeField('scheduler-f-spot', 'Spot', pickup?.spot),
         timeField('scheduler-f-return', 'Return', back?.arrive),
       );
+      /* The trip's miles, both legs together. The estimate is an override, as
+         in rux-ui: left blank, the stops' own miles stand, and the field shows
+         their sum as its placeholder. */
+      const stopMiles = (trip.trip_stops || []).reduce((n, st) => n + (Number(st.miles) || 0), 0);
+      const miles = pair(
+        moneyField('scheduler-f-estmiles', 'Estimated miles', trip.est_miles),
+        moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
+      );
+      if (stopMiles > 0) miles.querySelector('#scheduler-f-estmiles').placeholder = `${Math.round(stopMiles)} by route`;
       sched.append(
         textField('scheduler-f-pickup', 'Pickup location',
           [pickup?.name, pickup?.address].filter(Boolean).join(' — ')),
         times,
+        miles,
       );
       /* A control with no stop row behind it is disabled, not merely empty:
          `stopsPatch` creates no rows, so an enabled input there could not save. */
@@ -3055,18 +3158,18 @@
       const contract = gate(
         [textField('scheduler-f-contractnote', 'Contract note', trip.contract_note, 'Note')]);
       const contractSwitch = toggleAction('scheduler-f-contract', 'Contract signed',
-        trip.contract_status === 'Signed');
+        contractSignedOf(trip));
 
       /* The PO coverage line. A PO confirms the trip whatever its amount
          (rux-ui's `isStatusConfirmed`), so the line only says what the POs and
-         payments leave uncovered, counted as `deriveStatus` counts it:
+         payments leave uncovered, counted as `billingStatus` counts it:
 
              shortfall = max(0, (quoted - paid) - po_amount) */
       const poCoverage = el('p', 'rux--form__helper-text scheduler-po-coverage');
       const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
-        !!trip.po_received);
+        poReceivedOf(trip));
       const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
-        trip.invoice_status === 'Invoiced');
+        invoicedOf(trip));
 
       /* PO and invoice are lists, one row per record with no limit, built from
          the same `rowList` as Payments. Off hides and clears the rows, as it
@@ -3156,25 +3259,6 @@
         fig.append(top, bottom);
         return fig;
       };
-      const quotedNow = () => {
-        const raw = document.getElementById('scheduler-f-quoted')?.value;
-        return raw === undefined || raw === null ? null : money(String(raw));
-      };
-      /* The billing status ladder, mirrored from `deriveStatus` in rux-ui's
-         `js/core/billing-config.js`; first match wins:
-
-           overpaid          price > 0 && balance < 0
-           paid_full         price > 0 && paid > 0 && balance <= 0
-           po_partial        poReceived && price > 0 && poAmount < remaining
-           po_received       poReceived
-           deposit_received  paid > 0 && (balance > 0 || price <= 0)
-           contract_signed   contractSigned
-           pending           -- everything else
-
-         The invoice switch moves neither the status nor confirmation. The
-         result is a prediction and writes nothing: rux-ui owns `confirmed`, and
-         `CONFIRM_WHEN` copies the `billing-workflow-v1` settings row rather than
-         fetching it. */
       /* The tone shows how far along, not which rung: the three rungs that mean
          someone has committed share blue, purple wants a second look, green is
          done, magenta is overpaid and cool gray is nothing yet. A partial PO
@@ -3188,12 +3272,7 @@
         contract_signed: ['Contract signed', 'rux--tag--blue'],
         pending: ['Pending', 'rux--tag--cool-gray'],
       };
-      // Overpaid confirms too. `po_partial` is remapped to `po_received` below
-      // rather than listed, because it is the same rung with a gap.
-      const CONFIRM_WHEN = ['contract_signed', 'po_received', 'deposit_received',
-                            'paid_full', 'overpaid'];
-      // What to say once it is confirmed, per rung. `po_partial` is remapped
-      // to `po_received` before this is read.
+      // What to say once it is confirmed, per rung, after `confirmRungOf`.
       const CONFIRM_BY = {
         contract_signed: 'Confirmed by the signed contract.',
         po_received: 'Confirmed by the purchase order.',
@@ -3201,34 +3280,28 @@
         paid_full: 'Confirmed — paid in full.',
         overpaid: 'Confirmed — paid above the quote.',
       };
-      const deriveStatus = ({ contractSigned, poReceived, poAmount, price, paid }) => {
-        const balance = price - paid;
-        const remaining = Math.max(0, balance);
-        if (price > 0 && balance < 0) return 'overpaid';
-        if (price > 0 && paid > 0 && balance <= 0) return 'paid_full';
-        if (poReceived && price > 0 && poAmount < remaining) return 'po_partial';
-        if (poReceived) return 'po_received';
-        if (paid > 0 && (balance > 0 || price <= 0)) return 'deposit_received';
-        if (contractSigned) return 'contract_signed';
-        return 'pending';
-      };
+      // The unconfirmed line names what would confirm the trip, from the workflow.
+      const WOULD_CONFIRM = [
+        ['contract_signed', 'a signed contract'],
+        ['po_received', 'a PO'],
+        ['deposit_received', 'any payment'],
+      ].filter(([rung]) => billingWorkflow.confirmWhen.includes(rung)
+        && (rung !== 'contract_signed' || stepOn('contractSigned'))
+        && (rung !== 'po_received' || stepOn('poReceived')))
+        .map(([, words]) => words);
+      const wouldConfirm = WOULD_CONFIRM.length
+        ? `${WOULD_CONFIRM.length > 1 ? `${WOULD_CONFIRM.slice(0, -1).join(', ')} or ${WOULD_CONFIRM.at(-1)}` : WOULD_CONFIRM[0]} confirms it.`
+        : 'Payment in full confirms it.';
+      const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
 
       const figures = el('div', 'scheduler-billing-figures');
       const derived = el('div');
       const confirmWhy = el('p', 'rux--form__helper-text');
       const drawSummary = () => {
-        const quoted = quotedNow();
-        const paid = pending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
-        const price = quoted ?? 0;
-        const poOn = on(document.getElementById('scheduler-f-poreceived'));
         // The PO amount is the sum of the PO rows, so coverage counts every PO.
-        const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
+        const { quoted, price, paid, poAmount, poReceived: poOn, rung, confirmed } = billingNow();
         const remaining = Math.max(0, price - paid);
         const shortfall = Math.max(0, remaining - poAmount);
-        const rung = deriveStatus({
-          contractSigned: on(document.getElementById('scheduler-f-contract')),
-          poReceived: poOn, poAmount, price, paid,
-        });
 
         // The coverage line gives the amount, which is what the next PO or
         // payment has to close.
@@ -3238,8 +3311,7 @@
           : `${usd(shortfall)} uncovered. Add a PO or payment.`;
 
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
-        const confirmRung = rung === 'po_partial' ? 'po_received' : rung;
-        const confirmed = CONFIRM_WHEN.includes(confirmRung);
+        const confirmRung = confirmRungOf(rung);
 
         // The headline is the trip's confirmation, which is never empty; Balance
         // and Paid sit below it.
@@ -3257,26 +3329,21 @@
         // The line names what confirmed the trip or, unconfirmed, states the rule.
         confirmWhy.textContent = confirmed
           ? (CONFIRM_BY[confirmRung] || 'Confirmed.')
-          : 'A signed contract, a PO or any payment confirms it.';
+          : cap(wouldConfirm);
       };
-      /* The summary tile: the confirmation and its status tag, the reason line,
-         then Balance and Paid. It takes no section margin, because the sticky
-         tab strip already gives it room. */
+      /* The summary tile: the confirmation and its status tag, then the reason
+         line. It takes no section margin, because the sticky tab strip already
+         gives it room. */
       const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed');
       const tileStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      tileStack.append(
-        figures,
-        confirmWhy,
-        derived,
-      );
+      tileStack.append(figures, confirmWhy);
       tile.appendChild(tileStack);
+      panelBilling.appendChild(tile);
 
-      const summary = el('div', 'rux--stack-vertical rux--stack-scale-6');
-      summary.append(
-        tile,
-        moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price),
-      );
-      panelBilling.appendChild(summary);
+      // The price, then what is left of it and what is in.
+      const price = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      price.append(moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price), derived);
+      panelBilling.appendChild(section('Price', price));
 
       /* Payments use the same `rowList` as PO and invoice, with a method tag on
          each row and no switch: a receipt has no milestone to gate. */
@@ -3328,6 +3395,10 @@
       const invWrap = section('Invoice sent', bleed(invList.list), invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
 
+      // A milestone the workflow does not use is not shown, and counts as off.
+      contractSection.hidden = !stepOn('contractSigned');
+      poWrap.hidden = !stepOn('poReceived');
+      invWrap.hidden = !stepOn('invoiced');
       panelBilling.append(
         contractSection,
         poWrap,
@@ -4048,10 +4119,14 @@
          `bus_count` is written as 1 rather than left for `legsOf`'s fallback. */
       const form = creating ? readForm() : null;
       if (creating && !form) throw new Error('The form is not complete — a field is missing from the panel.');
-      /* `confirmed: false` is written once, at insert: rux-ui derives the
-         column afterwards, a new trip has nothing that confirms it, and it
-         colours the bar, so it is not left to a database default. */
-      const row = creating ? { id: editing.newId, ...form, bus_count: 1, confirmed: false } : patch;
+      const row = creating ? { id: editing.newId, ...form, bus_count: 1 } : patch;
+      /* A new trip, or a save that changes its billing, writes the confirmation
+         and the paid fields the billing now gives, as rux-ui's save does. A
+         save that touches no billing leaves them as they are. */
+      if (creating || BILLING_KEYS.some(k => k in patch) || paymentsPatch()?.work
+          || posPatch()?.work || invoicesPatch()?.work) {
+        Object.assign(row, derivedBilling());
+      }
       // Contacts are linked, and added to the list, before the trip is written.
       const unlinked = await linkContacts(row, creating);
       const wantBus = creating ? createBusId : null;

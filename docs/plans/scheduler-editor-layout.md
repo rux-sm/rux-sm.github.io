@@ -44,7 +44,5 @@ and reads right on real trips in every theme.
 
 - [ ] Check the editor in all eight themes on a real trip.
 - [ ] Survey Fleet against a real trip.
-- [ ] Fix the Billing tab's 16px sideways scroll, which shows at every panel
-      width.
 - [ ] Answer the questions above.
 - [ ] rux reads every tab on real trips, in Chrome, Safari and on the phone.

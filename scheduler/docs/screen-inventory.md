@@ -36,6 +36,8 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch, Carbon's file uploader and the trip's itineraries, contracts and POs, newest first, each replaced or deleted from its row menu; a file writes at once, stored as rux-ui stores it. The itinerary grid is *later*. |
 | Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
+| Trip editor, Billing tab | keep | A summary card with the confirmation and billing status, then Price, Contract signed, PO received, Invoice sent and Payments, each milestone a switch on its heading. The switches open as rux-ui opens them, and a milestone the billing workflow turns off is hidden. |
+| Charter or Ticketed, ticket prices | later | With the trip manifest. |
 | Trip editor, driver assignment | later | Changing a driver resets that driver's status to Off, as rux-ui does. |
 | Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |
 | Customer editor | keep | Panel, four fields (§7). |

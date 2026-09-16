@@ -143,7 +143,7 @@ as in `screen-inventory.md`.
 
 | Table | Read by | Written by |
 |---|---|---|
-| `trips` | Schedule, Trips search, driver page | Trip editor |
+| `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them |
 | `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
 | `trip_stops` | Trip editor Itinerary tab, driver page | Trip editor |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
@@ -156,7 +156,7 @@ as in `screen-inventory.md`.
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
-| `settings` | Settings, trip editor defaults | Settings |
+| `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1` | Settings |
 | `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
 | `trip_itineraries` | Itineraries, deferred | intake, deferred |
 

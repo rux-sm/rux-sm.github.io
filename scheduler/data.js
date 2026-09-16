@@ -1934,13 +1934,17 @@
       input.dataset.fleetSeat = role;
       input.dataset.fleetField = f === time ? 'reportTime' : 'note';
     }
-    box.append(line, pair(time, note));
+    // Stacked, since the tile leaves each too narrow for a pair.
+    box.append(line, time, note);
     return box;
   }
 
+  /* One bus and its crew, as a Carbon tile on the next layer, as the Billing
+     summary sits, so each bus has an edge of its own. The fields inside step
+     up a layer again, or they would take the tile's own colour. */
   function busGroup(leg, bus, i, count, dups) {
     const n = i + 1;
-    const group = el('div', 'scheduler-fleet-bus');
+    const group = el('div', 'rux--layer-three scheduler-fleet-bus');
     group.setAttribute('role', 'group');
     const title = el('div', 'scheduler-panel-section__title', `Bus ${n}`);
     title.id = `scheduler-fleet-${leg}-${bus.key}-title`;
@@ -1997,7 +2001,9 @@
     stack.append(full(busPick));
     for (const r of ROLES) if (bus.seats[r.role].on) stack.appendChild(seatBlock(leg, bus, r.role, n, dups));
     group.append(head, stack);
-    return group;
+    const tile = el('div', 'rux--tile rux--layer-two');
+    tile.appendChild(group);
+    return tile;
   }
 
   // Carbon's small number input, the steppers `js/form-controls.js` drives.
@@ -2049,7 +2055,10 @@
       const buses = editing.fleet[leg];
       const body = el('div', 'rux--stack-vertical rux--stack-scale-7');
       body.appendChild(busCountField(leg, buses.length));
-      buses.forEach((b, i) => body.appendChild(busGroup(leg, b, i, buses.length, dups)));
+      // The tiles part by 16px, closer than the 32px under Buses needed.
+      const tiles = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      buses.forEach((b, i) => tiles.appendChild(busGroup(leg, b, i, buses.length, dups)));
+      body.appendChild(tiles);
       const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pick-up buses';
       const sec = section(title, body);
       sec.dataset.fleetSection = leg;

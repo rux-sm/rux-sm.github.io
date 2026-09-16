@@ -273,6 +273,14 @@
   background-color: var(--rux-field-02);
 }
 
+/* A Fleet bus is a tile on layer two, which is `field-02`'s own colour, so its
+   fields take the field token of the layer they sit on, `field-03`, rather
+   than the side panel's fixed `field-02`. Two classes, the side-panel rule's
+   specificity, and later in the cascade. */
+.scheduler-fleet-bus .rux--text-input {
+  background-color: var(--rux-field);
+}
+
 /* Room for the copy button at the end of a contact field while it shows, so a
    long value runs under nothing: the button ends 2.25rem in. A contact search
    has no clear or open button, so the 4.375rem Carbon reserves for them goes

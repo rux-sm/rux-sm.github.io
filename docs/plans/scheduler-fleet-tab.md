@@ -26,12 +26,15 @@ driver pages show the same crew.
   names its dates, and the second shows only while Type is Split. Each opens
   with Carbon's small number input, Buses needed, from 1 to 20. Leaving Split
   deletes the pick-up buses on Save, as rux-ui does.
-- **Each bus is a group titled Bus 1, Bus 2…** with the Day-of contacts
-  overflow menu: Add co-driver, Add relief at start, Add relief at end, and
-  Remove bus. Inside it, top to bottom: the bus, then the driver, then each
-  seat that is on, each a combo box across the row, and for a relief seat,
-  Swap time beside Note. A seat's menu item turns into Remove co-driver or
-  Remove relief while it is on.
+- **Each bus is a tile titled Bus 1, Bus 2…,** Carbon's tile on layer two as
+  the Billing summary is, 16px apart, so each crew has an edge of its own. Its
+  fields take `field-03`, since the side panel's `field-02` is the tile's own
+  colour. The title line holds the Day-of contacts overflow menu: Add
+  co-driver, Add relief at start, Add relief at end, and Remove bus. Inside,
+  top to bottom: the bus, then the driver, then each seat that is on, each a
+  combo box across the row, and for a relief seat, Swap time over Note, which
+  the tile leaves too narrow to pair. A seat's menu item turns into Remove
+  co-driver or Remove relief while it is on.
 - **Pay is not on the Fleet tab.** It waits for a later plan, perhaps a
   section on Billing; the save never writes `trip_drivers.pay`, so pay set in
   rux-ui stays as it is.

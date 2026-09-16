@@ -31,9 +31,9 @@ settles, and a page changes only when its owning document does.
   across six lanes. There is no route page and no syllabus: a hand-made order
   would only be a worse copy of the dependency the map already holds.
 
-- **A line above the map says where to start.** One sentence, changed whenever
-  rux wants it changed. A map with no starting point is a map a beginner cannot
-  use, and this is a line rather than a page.
+- **A line above the map says where to start**, changed whenever rux wants. A
+  map with no starting point is one a beginner cannot use, and this is a line
+  rather than a page.
 
 - **A tile is a level: self-contained and not gated by another** — a thing you
   can take on, not a fixed sequence.
@@ -44,16 +44,35 @@ settles, and a page changes only when its owning document does.
 
 ### What a tile offers, in each of its three states
 
-- **Known — run it.** The procedure's steps, everything the library has about
-  them, and one understanding check at the end.
+- **Known — run it**: the steps, everything the library has about them, and one
+  understanding check at the end.
 
 - **Partly known — run what exists, and the holes are the quests.** A missing
-  step says what to look at rather than being hidden, so the shape of what is
-  unknown is visible while working.
+  step says what to look at instead of hiding, so the shape of what is unknown
+  is visible while working.
 
-- **Empty — the quest is to find anything at all.** No steps to follow: open the
-  named screen, or read the help, the vendor guide or a recording, and record
-  what is there.
+- **Empty — the quest is to find anything at all**: open the named screen, or
+  read the help, the vendor guide or a recording, and record what is there.
+
+- **A tile opens on one target, and its question is inside.** Design ships
+  `rux--popover` with a caret, so nothing is invented. The scheduler's bar has
+  zones; a tile already carries a name, a count and a quest badge, and zones are
+  where minimal starts slipping.
+
+- **Three ways a tile moves on, and they are not the same.** A **question** the
+  learner answers — node 2 already asks *"Does on-hand cover it?"* and its own
+  note says nothing announces the answer. A **fork decided elsewhere**, like
+  supply source purchase or job shop, where the item's setup chooses and the
+  learner looks it up. And a **single way on**, where there is nothing to ask.
+  Rendering a fork as a choice would teach something false, so the two are
+  worded differently: one asks what you found, the other what the item says.
+
+- **Answering draws the line on and greys what it skips.**
+
+- **A tile that should ask but cannot is a quest.** Five tiles dead-end with no
+  outcome written, two lookup nodes have no edges at all, and one fork has
+  outcomes but no question. Each is tagged and worked like any other gap, which
+  is how the map fills itself in.
 
 - **A tile says which kind of work its holes need**, a trip into LN or a read at
   the desk. Of 175 open gaps 98 name a screen; sending rux into the environment
@@ -61,9 +80,8 @@ settles, and a page changes only when its owning document does.
 
 ### Quests
 
-- **A quest is an open gap, written as something to do.** Thirty are already
-  phrased that way — "has never been opened", "has never been captured" — and
-  those are the first ones.
+- **A quest is an open gap written as something to do.** Thirty already read
+  that way — "has never been opened" — and those are the first.
 
 - **Each gap gains one authored field saying its kind:** capture it, mine it,
   resolve a disagreement, or verify a claim. **The kind cannot be inferred** — a
@@ -96,10 +114,9 @@ settles, and a page changes only when its owning document does.
   and the check arrives at the end of working through a tile. The seven-sitting
   curriculum was a hand-made ordering, and the map already orders by dependency.
 
-- **A screen is a panel, not a destination.** atlas's own publishing test is that
-  a page is what someone sits down and reads, and reference consulted while
-  walking such a page is not. It opens beside the step that names it and closes
-  again, so a reader mid-task in LN never loses their place.
+- **A screen is a panel, not a destination**, which is atlas's own publishing
+  test applied. It opens beside the step that names it and closes again, so a
+  reader mid-task in LN never loses their place.
 
 - **A screen still has an address**, so search and a link from atlas reach it.
   Arrived at directly it is a page; opened from a step it is the panel.
@@ -114,9 +131,7 @@ settles, and a page changes only when its owning document does.
 ### Saying where a fact came from
 
 - **A label names what kind of fact a statement is, never how much to trust
-  it.** atlas's principle 3 is that there is no single ranking — a capture
-  settles configuration, help settles meaning — and treating one as universally
-  stronger is the named cause of the previous library's errors.
+  it**, because atlas's principle 3 is that there is no single ranking.
 
 - **Scope before wording.** A source's reach is decided first: which section or
   row it covers, and what it inherits. A page says which sources it rests on,
@@ -138,9 +153,9 @@ settles, and a page changes only when its owning document does.
 
 ### One intake, and what feeds it
 
-- **One process, whatever the source:** a question, then the source that can
-  settle it, then a proposed correction, then rux's review, then the owning
-  document changes, then everything citing it is checked.
+- **One process, whatever the source:** a question, the source that can settle
+  it, a proposed correction, rux's review, the owning document changes, then
+  everything citing it is checked.
 
 - **Walking is one feed, not the engine.** OI-008 records that field meanings are
   never closable by screenshots. Mining help, resolving contradictory sources and
@@ -150,13 +165,10 @@ settles, and a page changes only when its owning document does.
   rejected, and the revision that carried it. An empty inbox is not a result.
 
 - **How affected documents are found is decided per intake kind.** `fanout.py`
-  takes a capture and filters by documents older than its date; its own
-  docstring calls it a candidate list and never a rule, so it does not answer
-  for a corrected meaning.
+  answers for a capture and not for a corrected meaning.
 
-- **The label publishes; the errand does not.** The export tier carries no issue
-  ids, no evidence stamps and no paths into the library, because the site is a
-  curtain over a public repository and not a lock.
+- **The label publishes; the errand does not**, because the site is a curtain
+  over a public repository and not a lock. The export tier is unchanged.
 
 - **One queue page for the owner**, every quest in one list, ordered by priority
   and marked by which kind of work closes it.
@@ -183,15 +195,14 @@ settles, and a page changes only when its owning document does.
   the owner's live quests.
 
 - **Accepted with keyboard and phone in mind**: focus returns from the panel to
-  the step, long field tables stay readable, and nothing depends on telling grey
+  its step, long field tables stay readable, and nothing depends on telling grey
   from highlighted.
 
 ### Signing in, reviewing, walking
 
-- **The owner's tools appear only for the owner.**
-
-- **A review box at the foot of every page** records Approve, or Request changes
-  with feedback. A review never edits a document; it enters the intake.
+- **The owner's tools appear only for the owner.** A review box at the foot of
+  every page records Approve, or Request changes with feedback; a review never
+  edits a document, it enters the intake.
 
 - **A walk follows the revision it was started on.** Resuming currently fetches
   the current procedure while the record keeps its older pinned commit, so
@@ -202,12 +213,10 @@ settles, and a page changes only when its owning document does.
   second mechanism.
 
 - **The data sits in five `platform.notes_*` tables and the private bucket
-  `notes-walk-shots`**, readable and writable only by the owner. Each database
-  change is a named migration shown to rux and applied on a yes.
+  `notes-walk-shots`**, readable and writable only by the owner.
 
-- **atlas's `tools/pull.py`** writes each walk into `walks/` and the rest into
-  `inbox/`; atlas refuses a commit while the inbox holds anything. It reads with
-  the project's secret key, kept in the Mac's Keychain.
+- **atlas's `tools/pull.py`** brings each walk and everything else home, reading
+  with the project's secret key kept in the Mac's Keychain.
 
 ### What retires, and how addresses survive
 
@@ -226,13 +235,6 @@ settles, and a page changes only when its owning document does.
   not before the revision defect above is fixed.
 
 ## Questions
-
-- **What are the rules for walking the map, as opposed to drawing it?** The
-  graph carries relationships, not navigation rules: two lookup nodes have no
-  edges at all, two shortage gates dead-end, one decision has no outcomes, and
-  planning emits both a purchase and a production proposal, so one branch
-  cannot grey out another. Interactive routing is evaluated on its own, after
-  the first slice, and until then the map gives context and links.
 
 - **What does a source establish, and how far does its reach extend?** Help can
   make a configuration claim; a recording holds both observed screen and
@@ -278,7 +280,10 @@ settles, and a page changes only when its owning document does.
 
 ### Later, each on its own
 
-- [ ] Evaluate interactive route selection, once the navigation rules exist.
+- [ ] Build walking the map, after the first slice so it cannot obscure whether
+      the content itself got easier to learn.
+- [ ] Phrase the question on forks that have outcomes but none, write the five
+      dead ends' outcomes, and connect the two lookup nodes.
 - [ ] Evaluate capture release, once clearance is defined and atlas's evidence
       rule is amended.
 - [ ] Tag the remaining gaps, tile by tile, as each is taken on.

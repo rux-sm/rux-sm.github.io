@@ -25,11 +25,11 @@ opens rux-ui to change a phone number, an expiry date or time off.
   toolbar holding the search, a content switcher for Active, Inactive and All
   with counts, and a primary New driver button. No checkboxes, batch actions or
   pagination: there are 40 drivers and nothing to do to several at once.
-- **Columns:** Driver (avatar with photo or initials, name, short name
-  beneath), Phone, CDL class, Employment (full or part time and priority),
-  Compliance. A whole row opens the driver.
+- **Five fixed columns, with no column picker:** Driver (avatar with photo or
+  initials, name, short name beneath), Phone, CDL class, Employment (full or
+  part time and priority), Compliance. A whole row opens the driver.
 - **Compliance is one tag per row** for whichever of the licence and medical
-  card expires first: red for expired, yellow within 45 days, otherwise the
+  card expires first: red for expired, yellow within 45 days, the newer rux-ui roster's window, otherwise the
   date, gray for not on file. The default sort puts the soonest first.
 - **The editor is one form in sections, no tabs**, each a fieldset with a
   legend: Profile, Emergency contact, Licence, Employment, Time off, Schedule
@@ -50,6 +50,10 @@ opens rux-ui to change a phone number, an expiry date or time off.
   opening the trip on the board.
 - **Status is Active or Inactive.** The database holds only those two, and
   rux-ui's On leave is never saved.
+- **A driver is never deleted here, only set Inactive,** so past trips keep
+  the driver's name.
+- **The Workload view waits for a later plan,** so this one builds the list
+  and the editor.
 - **Fields and storage are rux-ui's**, so both apps read the same driver: the
   `drivers` columns, `driver_time_off` rows, and photos in the public
   `driver-photos` bucket at `<driver id>/photo-<milliseconds>.<ext>`. A new
@@ -65,12 +69,7 @@ opens rux-ui to change a phone number, an expiry date or time off.
 
 ## Questions
 
-- Keep a Delete button, or only Inactive? rux-ui deletes the row outright,
-  which loses the driver from past trips' history.
-- Which columns does the list show by default, and may a person hide some?
-- Is 45 days the right warning for an expiry? rux-ui uses 30, 45 and 90 in
-  different places.
-- Show the Workload view, trips, days and miles per driver, now or later?
+None open.
 
 ## Tasks
 

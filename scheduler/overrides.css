@@ -62,6 +62,17 @@
   box-shadow: none;
 }
 }
+/* Nor a rule down its edge, for the same reason: Carbon parts a left-placed
+   panel from the page it floats over, and this one floats over nothing. The
+   board's regions are parted by its own 16px gap, which is what parts the
+   editor on the other side, and a rule 16px from anything reads as an edge on
+   the panel rather than a boundary between two things. Carbon's own two-class
+   specificity. */
+@media (min-width: 42rem) {
+.rux--side-panel.rux--side-panel--left-placement {
+  border-inline-end: 0;
+}
+}
 
 /* On a phone the panel fills the screen. `--rux-side-panel-modified-size` is
    Carbon's hook for the `--sm` width, which would otherwise leave a narrow

@@ -884,6 +884,10 @@ button.scheduler-row-head__num {
    their own below them, which the padding allows for. */
 .scheduler-fluid-group > .scheduler-needs {
   margin-block-start: var(--rux-spacing-05);
+  /* It closes with a line as a field does, 16px under its tags, so the group
+     below it starts against an edge rather than against the tags themselves. */
+  padding-block-end: var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-strong);
 }
 /* Its label is a field's label, not a section heading, so it sits over its tags
    the way a field's label sits over its value. */

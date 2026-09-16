@@ -849,105 +849,49 @@ button.scheduler-row-head__num {
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
 
-/* A stack of fluid fields. The gap between them closes to nothing, because
-   each fluid field carries its own divider and that rule is what parts it from
-   the next; and the stack runs edge to edge across `__inner-content`'s 16px,
-   because fluid fields make a container rather than sitting on the page.
-   `--rux-stack-gap` is Carbon's own hook, set from this app's class, so no
-   rule is written on a `rux--*` class. */
-.scheduler-fluid-group {
-  --rux-stack-gap: 0;
-  margin-inline: calc(-1 * var(--rux-spacing-05));
-}
-/* Every group closes at the top as its fields close at the bottom. A fluid
-   field draws its own bottom edge, so without this the line under a group's
-   heading would be missing while every other line in the form is there. It is
-   the subtler border, because it parts a heading from its fields rather than
-   one field from the next. */
-#scheduler-panel-body .rux--tab-content .scheduler-fluid-group {
-  border-block-start: 1px solid var(--rux-border-subtle-01);
-}
 /* A tab's first section opens at the tab's own 16px, not 32px below it. */
 #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {
   margin-block-start: 0;
 }
 
-/* What sits in a fluid stack but is not a field -- the Needs tags -- is padded
-   back to where a fluid field's own label sits, 16px in, so every label on the
-   tab lines up. */
-.scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair):not(.scheduler-hotel) {
-  padding-inline: var(--rux-spacing-05);
-}
-/* The hotel box is a stack of fluid rows inside the group, so its rows butt
-   together and reach the group's edges as the fields above them do. It is not
-   a group itself, because the group's line belongs at the group's top. */
-.scheduler-fluid-group > .scheduler-hotel {
-  --rux-stack-gap: 0;
-}
-/* Such a group sits in the same 16px every heading does, over and under, and
-   its rows end level with where a field's own edge would be. The 16px above is
-   a margin, because a legend sits on the fieldset's border rather than inside
-   its padding and so a padding would not move it; the rows carry about 3px of
-   their own below them, which the padding allows for. */
-.scheduler-fluid-group > .scheduler-needs {
-  margin-block-start: var(--rux-spacing-05);
-  /* It closes with a line as a field does, 16px under its tags, so the group
-     below it starts against an edge rather than against the tags themselves. */
-  padding-block-end: var(--rux-spacing-05);
-  border-block-end: 1px solid var(--rux-border-strong);
-}
-/* Its label is a field's label, not a section heading, so it sits over its tags
-   the way a field's label sits over its value. */
+/* The Needs label is a field's label, so it sits over its tags the way a
+   field's label sits over its input. */
 .scheduler-needs > .rux--label {
   margin-block-end: var(--rux-spacing-03);
 }
-/* The tags wrap if a theme's type runs wide, and part by 8px, half the 16px
-   that parts the groups. */
+/* The tags wrap if a theme's type runs wide, and part by 8px. */
 .scheduler-needs__tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--rux-spacing-03);
 }
 
-/* A fluid form is one unbroken surface: IBM's spec paints the fields, the group
-   labels, the checkbox rows and every space between them the same colour, and
-   the 1px dividers are the only parting. Each tab carries that surface and runs
-   edge to edge; its own 16px padding puts the headings back under the field
-   labels, and a fluid stack's bleed takes the fields out to the edges again. */
-#scheduler-panel-body .rux--tab-content {
-  background-color: var(--rux-field-02);
-  margin-inline: calc(-1 * var(--rux-spacing-05));
-  padding-inline: var(--rux-spacing-05);
-}
-
-/* Two fluid fields side by side butt together, as stacked ones do, and part by
-   an upright border: Carbon asks for one between fluid components in either
-   direction, and a stacked field's own bottom edge is the level one. The date
-   picker draws its own between its two halves, so only a pair needs this. */
-.scheduler-fluid-group .scheduler-pair { gap: 0; }
-.scheduler-fluid-group .scheduler-pair > * + * {
-  border-inline-start: 1px solid var(--rux-border-strong);
-}
-
 /* A section of an editor tab sits 32px below what comes before it, a step
-   above the 24px between fields. Its heading is `heading-compact-01`, 14px at
-   600 in primary text, so it reads as a heading over the 12px secondary field
-   labels beneath it. */
-/* A section is parted from what precedes it by the same 16px that sits around
-   every heading, and by its own rule; in a fluid form the gap does the parting
-   and the fields' own edges are the lines. */
-.scheduler-panel-section { margin-block-start: var(--rux-spacing-05); }
+   above the 24px between fields, which is the spacing Carbon's form pattern
+   gives a side panel. Its heading is `heading-compact-01`, 14px at 600 in
+   primary text: over the 12px field labels and under the panel's 16px title,
+   the order Carbon asks a group heading to keep. It stands 16px over its first
+   label, twice the 8px between a label and its field, so the heading and the
+   label read as two levels. */
+.scheduler-panel-section { margin-block-start: var(--rux-spacing-07); }
 .scheduler-panel-section__title {
-  /* `heading-compact-02`, 16px at 600: a step over the 14px the editor's own
-     text runs at, so a heading reads as one against the fields' 12px labels. */
-  font-size: var(--rux-heading-compact-02-font-size);
-  font-weight: var(--rux-heading-compact-02-font-weight);
-  line-height: var(--rux-heading-compact-02-line-height);
-  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   color: var(--rux-text-primary);
-  /* 16px under every heading, the same as the 16px over it, so a heading sits
-     in equal air wherever it is on the tab. */
   margin-block-end: var(--rux-spacing-05);
+}
+/* A section that follows anything on its tab opens with a 1px rule, 32px under
+   what precedes it and 24px over its heading. Carbon has no rule for rules in a
+   form; this is its subtle border, the one for dividers on the panel's layer,
+   run to the panel's edges like the header's and the tab strip's lines. */
+#scheduler-panel-body .rux--tab-content > * + .scheduler-panel-section::before {
+  content: "";
+  display: block;
+  margin-inline: calc(-1 * var(--rux-spacing-05));
+  margin-block-end: var(--rux-spacing-06);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 /* A group's heading line with an overflow menu trigger at its end. The line
    keeps the title's own height, so the title sits 16px over the first label as
@@ -963,14 +907,16 @@ button.scheduler-row-head__num {
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
 .scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
 /* Two fields side by side, each half the row, tops aligned so a helper text
-   under one does not move the other: Type and Trip bar color, and each contact's
-   Name and Phone. */
+   under one does not move the other. The editor keeps pairs to what fits half
+   of its 20rem: a date range, and a hotel's confirmation beside Booked. */
 .scheduler-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: var(--rux-spacing-05);
 }
+/* One field across the row, for a control that would not fill it alone. */
+.scheduler-pair--single { grid-template-columns: minmax(0, 1fr); }
 /* A form control keeps an intrinsic width and ignores its track, so every box
    down to the input gets a zero minimum and fills, as in `.scheduler-times`. */
 .scheduler-pair > *,
@@ -980,13 +926,18 @@ button.scheduler-row-head__num {
 .scheduler-pair .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
 .scheduler-pair .rux--text-input,
 .scheduler-pair .rux--select-input { inline-size: 100%; min-inline-size: 0; }
-/* A field beside a checkbox: bottoms aligned, and the checkbox centred on the
-   field's 40px, as a hotel's confirmation number and Booked are. Carbon's
-   margin under the checkbox comes off in overrides.css. */
-.scheduler-pair--end { align-items: end; }
+/* A field beside a checkbox, as a hotel's confirmation number and Booked are.
+   The checkbox takes only its own width, so the field keeps the rest and its
+   label stays on one line; bottoms align, and the checkbox is centred on the
+   field's 32px, the height the panel's size-sm sets. Carbon's margin under the
+   checkbox comes off in overrides.css. */
+.scheduler-pair--end {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
 .scheduler-pair--end > .rux--checkbox-wrapper {
   justify-content: center;
-  min-block-size: var(--rux-layout-size-height-md);
+  min-block-size: var(--rux-layout-size-height-sm);
 }
 /* A hotel's rows show only while Hotel is ticked, and the pick-up row only on a
    drop-off and pick-up trip. Stacks and pairs are grids, which beat the

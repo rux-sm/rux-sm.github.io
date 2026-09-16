@@ -1095,7 +1095,7 @@
      section uses it, so the switches share one right edge. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
-    // A titleless section still keeps the `spacing-06` above it.
+    // A titleless section still keeps the `spacing-07` above it.
     if (!title) { wrap.appendChild(node); return wrap; }
     const head = el('div', 'scheduler-panel-section__title', title);
     if (!action) { wrap.append(head, node); return wrap; }
@@ -1111,11 +1111,19 @@
     row.append(...nodes);
     return row;
   };
+  /* One field across the whole row. A dropdown or a contact search keeps its
+     own width and ignores its container, so it takes the pair's one-column
+     form, whose sizing makes every box down to the input fill. */
+  const full = node => {
+    const row = el('div', 'scheduler-pair scheduler-pair--single');
+    row.appendChild(node);
+    return row;
+  };
 
   /* A run of fields under one heading is a fieldset, so a screen reader names
      each field with its group, "Booking contact, Name", and the labels need not
-     repeat the heading. The rule is on a wrapper, because a fieldset draws its
-     legend across its own top border. */
+     repeat the heading. The section's spacing is on a wrapper, so the
+     fieldset stays Carbon's own. */
   const fieldGroup = (title, ...nodes) => {
     const set = el('fieldset', 'rux--fieldset');
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
@@ -1343,77 +1351,6 @@
     const item = el('div', cls);
     item.appendChild(control);
     return item;
-  };
-
-  /* ── Fluid fields ──
-     Fluid is a style, not a component: the label moves inside the field's box
-     and an `<hr>` divider goes under it, and every fluid field is 64px, its
-     one height. Each control names its own fluid class and its own divider,
-     and a list-box takes fluid on its wrapper rather than on itself, so the
-     tab is swept once it is built rather than every builder carrying a flag.
-     Carbon has no fluid checkbox, radio or toggle; those fall through
-     untouched, and so does a field whose control is none of these.
-
-     The list-box test comes first, because a combo box holds a text input and
-     a dropdown sits inside a form-item, and both would match a later test. */
-  const fluidField = item => {
-    /* A combo box returns its wrapper and no form-item, so a wrapper is swept
-       on its own as well as inside one; the guard is for the second visit. */
-    const box = item.matches('.rux--list-box__wrapper')
-      ? item : item.querySelector('.rux--list-box__wrapper');
-    if (box) {
-      if (box.classList.contains('rux--list-box__wrapper--fluid')) return;
-      box.classList.add('rux--list-box__wrapper--fluid');
-      box.appendChild(el('hr', 'rux--list-box__divider'));
-      return;
-    }
-    const picker = item.querySelector('.rux--date-picker');
-    if (picker) {
-      item.classList.add('rux--date-picker--fluid');
-      /* No divider: `fluiddatepicker--range-with-calendar` renders none, alone
-         among the fluid controls, and its containers part by their own edges.
-         Fluid has one height, so the picker's size modifier comes off. */
-      for (const c of picker.querySelectorAll('.rux--date-picker__input')) {
-        c.classList.remove('rux--date-picker__input--sm');
-      }
-      return;
-    }
-    const select = item.querySelector('.rux--select-input__wrapper');
-    if (select) {
-      item.classList.add('rux--select--fluid');
-      select.appendChild(el('hr', 'rux--select__divider'));
-      return;
-    }
-    const area = item.querySelector('.rux--text-area__wrapper');
-    if (area) {
-      item.classList.add('rux--text-area--fluid');
-      // The divider is the wrapper's last child, as `fluidtextarea--default` has it.
-      area.appendChild(el('hr', 'rux--text-area__divider'));
-      return;
-    }
-    const text = item.querySelector('.rux--text-input__field-wrapper');
-    if (text) {
-      item.classList.add('rux--text-input--fluid');
-      text.appendChild(el('hr', 'rux--text-input__divider'));
-    }
-  };
-
-  /* Every field of a built tab, fluid. A `rux--form-item` is what most builders
-     return, so this reaches the ones inside a pair, a group and a copy wrapper;
-     a bare list-box wrapper is swept too, because the contact search is one. */
-  const fluidTab = root => {
-    for (const item of root.querySelectorAll('.rux--form-item, .rux--list-box__wrapper')) fluidField(item);
-    /* A stack holding fluid fields is marked, so app.css can close the gap
-       between them, run them edge to edge and draw the line above them. It is
-       marked here rather than at each stack's construction because a stack
-       does not know whether the tab it lands in is fluid. A stack inside a
-       marked one is skipped -- the hotel box is one -- because the group's
-       line belongs at the top of the group, not partway down it. Document
-       order puts an outer stack first, so its mark is there to be seen. */
-    for (const stack of root.querySelectorAll('.rux--stack-vertical')) {
-      if (stack.parentElement?.closest('.scheduler-fluid-group')) continue;
-      if (stack.querySelector('[class*="--fluid"]')) stack.classList.add('scheduler-fluid-group');
-    }
   };
 
   /* No browser autofill on a trip's fields. They hold a customer's data, never
@@ -2616,7 +2553,7 @@
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
-    /* Needs is Carbon's horizontal checkbox group under its legend, one row
+    /* Needs is a row of Carbon's selectable tags under a field label, one row
        that wraps if the labels outgrow the panel. Sleeper, ADA lift and 56 pax
        are asked of the bus; Hotel is a reminder that one has to be booked. */
     const flags = el('div', 'scheduler-needs');
@@ -2660,8 +2597,9 @@
     flags.querySelector('#scheduler-f-hotel').addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
     /* The trip's own fields are one stack, 24px apart. Type and Trip bar color
-       share a row, each one pick from a short list; the bar color is a property
-       of the trip, not a section of its own. */
+       each take a row, because half the panel cuts off "Drop-off and pick-up"
+       and "Standard"; the bar color is a property of the trip, not a section
+       of its own. */
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-6');
     topFields.append(
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
@@ -2669,15 +2607,13 @@
       textField('scheduler-f-destination', 'Destination', trip.destination),
       // The organization is `trips.customer`; the contact's own `client` is not shown.
       textField('scheduler-f-customer', 'Organization', trip.customer),
-      pair(
-        selectField('scheduler-f-type', 'Type', trip.trip_type, [
-          ['', '—'],
-          ['round_trip', 'Round trip'],
-          ['one_way', 'One way'],
-          [SPLIT, 'Drop-off and pick-up'],
-        ]),
-        colorField('scheduler-f-color', trip),
-      ),
+      full(selectField('scheduler-f-type', 'Type', trip.trip_type, [
+        ['', '—'],
+        ['round_trip', 'Round trip'],
+        ['one_way', 'One way'],
+        [SPLIT, 'Drop-off and pick-up'],
+      ])),
+      full(colorField('scheduler-f-color', trip)),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
       flags,
       hotelBox,
@@ -2695,15 +2631,13 @@
          the first thing known. A field's label is its own word alone, because
          the group's heading says whose it is; the copy button still names the
          contact in full. */
-      // Name and Phone side by side, as each day-of contact has them; Email,
-      // the longest value, keeps the whole row.
+      // Each field takes a row: beside its copy button, half the panel leaves a
+      // name or a phone number about 80px, too little to read.
       panelDetails.appendChild(fieldGroup('Booking contact',
-        pair(
-          withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
-            'scheduler-f-cfind', 'Booking contact name'),
-          withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
-            'scheduler-f-cphone', 'Booking contact phone'),
-        ),
+        full(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
+          'scheduler-f-cfind', 'Booking contact name')),
+        withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
+          'scheduler-f-cphone', 'Booking contact phone'),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
       ));
@@ -2716,8 +2650,9 @@
          contact when it has none, and the section's menu adds one up to the
          schema's five or removes the last. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      // A stack, so each contact keeps the group's gap.
-      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      /* A stack, 32px between contacts, a step over the 24px between one
+         contact's own fields, so each name reads with the phone under it. */
+      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-7');
 
       // What the drawn contacts hold, in `tripContact`'s shape.
       const readContacts = () => [...rowsHost.children].map((_, i) => {
@@ -2727,7 +2662,7 @@
                  phone: document.getElementById(`scheduler-f-dphone${i + 1}`)?.value.trim() || null };
       });
 
-      /* Each contact is one row, Name and Phone side by side, as a group named
+      /* Each contact is a stack, Name over Phone, as a group named
          Contact 1 to 5, which a screen reader says before its labels, so the
          tab needs no heading between the section title and the fields. Adding
          and removing are on the overflow menu at the end of the section's title
@@ -2740,9 +2675,10 @@
         rowsHost.replaceChildren();
         list.forEach((c, i) => {
           const n = i + 1;
-          const row = pair(
-            withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
-              `scheduler-f-d${n}`, `Contact ${n} name`),
+          const row = el('div', 'rux--stack-vertical rux--stack-scale-6');
+          row.append(
+            full(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
+              `scheduler-f-d${n}`, `Contact ${n} name`)),
             withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
               `scheduler-f-dphone${n}`, `Contact ${n} phone`),
           );
@@ -3138,9 +3074,6 @@
       const invWrap = section('Invoice sent', bleed(invList.list), invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
 
-      // A rule opens each section, as in the Details tab.
-      for (const wrap of [contractSection, poWrap, invWrap, listWrap]) {
-      }
       panelBilling.append(
         contractSection,
         poWrap,
@@ -3236,10 +3169,6 @@
        it is asked again for the whole panel body. An unclaimed picker renders
        its calendar open, because the module closes a calendar by detaching it. */
     window.Rux?.datePicker?.init?.(panelBody);
-
-    /* Every tab is fluid, so the editor has one content surface and the tab
-       strip's selected tab can match it. Swept here, where all five are built. */
-    for (const tp of [panelDetails, panelBilling, panelFleet, panelRoute, panelFiles]) fluidTab(tp);
 
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring

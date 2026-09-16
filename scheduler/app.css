@@ -546,14 +546,14 @@ button.scheduler-row-head__num {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
-   `rux--side-panel--md` class, and the two move together; it is md rather
-   than sm so the five tabs, split evenly, keep whole labels. */
+   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
+   `rux--side-panel--sm` class, and the two move together; the five tabs,
+   split evenly, still keep whole labels at this width. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 30rem;
-  min-inline-size: 30rem;
+  flex: 0 0 20rem;
+  min-inline-size: 20rem;
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -838,6 +838,23 @@ button.scheduler-row-head__num {
 .scheduler-fluid-group {
   --rux-stack-gap: 0;
   margin-inline: calc(-1 * var(--rux-spacing-05));
+}
+/* What sits in a fluid stack but is not a field -- the Needs checkboxes, the
+   hotel box -- is padded back to where a fluid field's own label sits, 16px
+   in, so every label on the tab lines up. */
+.scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair) {
+  padding-inline: var(--rux-spacing-05);
+}
+
+/* A fluid form is one unbroken surface: IBM's spec paints the fields, the group
+   labels, the checkbox rows and every space between them the same colour, and
+   the 1px dividers are the only parting. The tab carries that surface and runs
+   edge to edge; its own 16px padding puts the headings back under the field
+   labels, and a fluid stack's bleed takes the fields out to the edges again. */
+#scheduler-panel-details {
+  background-color: var(--rux-field-02);
+  margin-inline: calc(-1 * var(--rux-spacing-05));
+  padding-inline: var(--rux-spacing-05);
 }
 
 /* Two fluid fields side by side butt together, as stacked ones do, and part by

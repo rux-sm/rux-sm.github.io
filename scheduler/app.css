@@ -872,11 +872,17 @@ button.scheduler-row-head__num {
   margin-block-start: 0;
 }
 
-/* What sits in a fluid stack but is not a field -- the Needs checkboxes, the
-   hotel box -- is padded back to where a fluid field's own label sits, 16px
-   in, so every label on the tab lines up. */
-.scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair) {
+/* What sits in a fluid stack but is not a field -- the Needs tags -- is padded
+   back to where a fluid field's own label sits, 16px in, so every label on the
+   tab lines up. */
+.scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair):not(.scheduler-hotel) {
   padding-inline: var(--rux-spacing-05);
+}
+/* The hotel box is a stack of fluid rows inside the group, so its rows butt
+   together and reach the group's edges as the fields above them do. It is not
+   a group itself, because the group's line belongs at the group's top. */
+.scheduler-fluid-group > .scheduler-hotel {
+  --rux-stack-gap: 0;
 }
 /* Such a group sits in the same 16px every heading does, over and under, and
    its rows end level with where a field's own edge would be. The 16px above is

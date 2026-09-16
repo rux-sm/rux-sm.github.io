@@ -34,7 +34,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 
 | Old surface | Verdict | Becomes |
 |---|---|---|
-| Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch and the trip's itineraries, newest first, read only; upload waits for Design's file uploader. The itinerary grid is *later*. |
+| Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch, Carbon's file uploader and the trip's itineraries, contracts and POs, newest first, each replaced or deleted from its row menu; a file writes at once, stored as rux-ui stores it. The itinerary grid is *later*. |
 | Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
 | Driver editor | keep | Panel with tabs Profile, License, Status, Time off, Trips. |
@@ -62,7 +62,8 @@ Design account panel replaces it).
 | Tasks, History | later | Pages (§7). |
 | Print envelope on the bar menu | later | With printing. |
 | Pending itinerary mark | keep | A warning chip on a bar whose trip has no itinerary and is not marked as not needing one. |
-| Upload itinerary, open email thread | later | Upload waits for Design's file uploader and closed document storage; the thread waits for the Missive decision. |
+| Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
+| Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to

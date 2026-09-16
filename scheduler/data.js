@@ -119,6 +119,22 @@
     return svg;
   };
 
+  // Carbon's small loading spinner, the inline loading's and the file item's.
+  function loadingSpinner(extra = '') {
+    const spin = el('div', `rux--loading rux--loading--small${extra}`);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'rux--loading__svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    for (const part of ['rux--loading__background', 'rux--loading__stroke']) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('class', part);
+      c.setAttribute('cx', '50%'); c.setAttribute('cy', '50%'); c.setAttribute('r', '42');
+      svg.appendChild(c);
+    }
+    spin.appendChild(svg);
+    return spin;
+  }
+
   // Every class is written out in full, never `--${kind}`: check-classes reads
   // the source and cannot see through an interpolation.
   const NOTE = {
@@ -267,7 +283,7 @@
     'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
-    'trip_documents(id,label,created_at,file_name,file_path)',
+    'trip_documents(id,label,created_at,file_name,file_path,file_size)',
     // Set in the Files tab; a trip that does not need an itinerary is not marked.
     'itinerary_not_needed',
     'booking_contact_id',
@@ -481,6 +497,9 @@
     .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const latestItinerary = trip => itinerariesOf(trip)[0] ?? null;
+  // Every document the trip holds, newest first, as the Files tab lists them.
+  const documentsOf = trip => [...(trip.trip_documents || [])]
+    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 
   // A document's upload day as mm/dd/yyyy on this computer's calendar. The
   // column is a timestamp, so `mdy` would print its UTC day.
@@ -1254,7 +1273,8 @@
      The code is never the only name: a code means nothing to a screen reader,
      so the row button carries the whole row in `aria-label` and the tag its
      long form in `title`. */
-  const listRow = ({ code, tone, codeTitle, when, much, title, edit, remove, removeLabel }) => {
+  const listRow = ({ code, tone, codeTitle, when, much, title, edit, remove, removeLabel,
+                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText }) => {
     const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action rux--contained-list-item--clickable');
     const open = el('button', 'rux--contained-list-item__content');
     open.type = 'button';
@@ -1269,8 +1289,8 @@
                 el('span', 'scheduler-listrow__much', much ?? ''));
     open.appendChild(line);
     open.title = title;
-    open.setAttribute('aria-label', `Edit ${title}`);
-    open.addEventListener('click', edit);
+    open.setAttribute('aria-label', openLabel);
+    open.addEventListener('click', openRow);
     li.appendChild(open);
     const act = el('div', 'rux--contained-list-item__action');
     const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
@@ -1282,30 +1302,159 @@
     more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
     more.addEventListener('click', () => openRowMenu(more, {
-      edit, remove, removeLabel,
+      edit, remove, removeLabel, editText, removeText,
     }));
     act.appendChild(more);
     li.appendChild(act);
     return li;
   };
 
-  /* A trip document as a list row that opens it in the itinerary panel: the
-     file's name, cut to one line, and its upload date. */
-  const documentRow = (trip, doc) => {
-    const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
-    const open = el('button', 'rux--contained-list-item__content');
-    open.type = 'button';
+  /* ── The Files tab ──
+     Its list is every file the trip holds, newest first, in the rows payments
+     use: the type as a tag, the upload day, the size, and the file name on
+     hover. An itinerary that is not the trip's newest is tagged Previous. A
+     row opens its file, the itinerary panel for an itinerary and a new tab
+     otherwise, and its menu holds Replace and Delete. The list is drawn again
+     on its own after a file changes, so the form's unsaved edits stay. */
+  const FILE_TAGS = {
+    itinerary: { code: 'Itinerary', tone: 'rux--tag--blue' },
+    contract: { code: 'Contract', tone: 'rux--tag--purple' },
+    po: { code: 'PO', tone: 'rux--tag--teal', title: 'Purchase order' },
+  };
+  const PREVIOUS_TAG = { code: 'Previous', tone: 'rux--tag--gray', title: 'An earlier itinerary' };
+
+  const fileSize = n => {
+    const bytes = Number(n);
+    if (!Number.isFinite(bytes) || bytes <= 0) return '';
+    return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
+  };
+
+  const docUrl = doc => (client && doc.file_path
+    ? client.storage.from(DOC_BUCKET).getPublicUrl(doc.file_path).data?.publicUrl : null);
+
+  const fileRow = (trip, doc, previous) => {
+    const kind = String(doc.label || '').toLowerCase();
+    const tag = previous ? PREVIOUS_TAG : (FILE_TAGS[kind] ?? { code: doc.label || 'File', tone: 'rux--tag--gray' });
+    const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
-    const line = el('span', 'scheduler-listrow scheduler-listrow--document');
-    line.append(el('span', 'scheduler-listrow__when', doc.file_name || 'Itinerary'),
-                el('span', 'scheduler-listrow__much', when));
-    open.appendChild(line);
-    if (doc.file_name) open.title = doc.file_name;
-    open.setAttribute('aria-label', when ? `Open the itinerary uploaded ${when}` : 'Open the itinerary');
-    open.addEventListener('click', () => openDocument(trip, doc, open));
-    li.appendChild(open);
+    const li = listRow({
+      code: tag.code, tone: tag.tone, codeTitle: tag.title,
+      when, much: fileSize(doc.file_size), title: name,
+      openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
+      open: e => {
+        if (kind === 'itinerary') { openDocument(trip, doc, e.currentTarget); return; }
+        window.open(docUrl(doc) || documentLink(doc.id), '_blank', 'noopener');
+      },
+      editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
+      removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
+    });
+    // Closing the itinerary panel finds the row by it after the list is redrawn.
+    li.querySelector('.rux--contained-list-item__content').dataset.documentId = doc.id;
     return li;
   };
+
+  let filesBody = null;
+  let filesEmpty = null;
+  function drawFiles(trip) {
+    if (!filesBody || !trip) return;
+    const docs = documentsOf(trip);
+    const newest = latestItinerary(trip);
+    filesBody.replaceChildren(...docs.map(doc => fileRow(trip, doc,
+      String(doc.label || '').toLowerCase() === 'itinerary' && newest && doc.id !== newest.id)));
+    filesEmpty.hidden = docs.length > 0;
+  }
+
+  /* Carbon's file item for the file going up, from `sink/file-uploader.html`:
+     a spinner while it uploads, gone once it is added, and the invalid item
+     with its reason and a close button if it is not. */
+  function fileItem(container, name) {
+    const box = el('span', 'rux--file__selected-file rux--file__selected-file--md');
+    const wrap = el('div', 'rux--file-filename-container-wrap');
+    const label = el('p', 'rux--file-filename', name);
+    label.title = name;
+    wrap.appendChild(label);
+    const stateWrap = el('div');
+    const state = el('span', 'rux--file__state-container');
+    state.appendChild(loadingSpinner(' rux--file-loading'));
+    stateWrap.appendChild(state);
+    box.append(wrap, stateWrap);
+    container.replaceChildren(box);
+    return {
+      done: () => box.remove(),
+      fail: (title, text) => {
+        box.classList.add('rux--file__selected-file--invalid');
+        wrap.className = 'rux--file-filename-container-wrap-invalid';
+        const icon = svgUse('#i-warning--filled', '16', '0 0 16 16');
+        icon.setAttribute('class', 'rux--file-invalid');
+        const close = el('button', 'rux--file-close');
+        close.type = 'button';
+        close.setAttribute('aria-label', `Dismiss ${name}`);
+        close.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
+        close.addEventListener('click', () => box.remove());
+        state.replaceChildren(icon, close);
+        const req = el('div', 'rux--form-requirement');
+        req.setAttribute('role', 'alert');
+        req.append(el('div', 'rux--form-requirement__title', title),
+                   el('p', 'rux--form-requirement__supplement', text));
+        box.appendChild(req);
+      },
+    };
+  }
+
+  /* Carbon's file uploader, from `sink/file-uploader.html`: a Type dropdown
+     over a drop zone that also opens the file dialog. Design ships no module
+     for it, so the drop, the dialog and the item are wired here. One file at a
+     time, and the zone is disabled while one goes up. */
+  function fileUploader(tripId) {
+    const type = selectField('scheduler-f-filetype', 'Type', 'Itinerary',
+      [['Itinerary', 'Itinerary'], ['Contract', 'Contract'], ['PO', 'Purchase order']]);
+    const item = el('div', 'rux--form-item');
+    const drop = el('button', 'rux--file__drop-container rux--file-browse-btn', 'Drag and drop a PDF here or click to upload');
+    drop.type = 'button';
+    const inputLabel = el('label', 'rux--visually-hidden', 'PDF file');
+    inputLabel.htmlFor = 'scheduler-f-file';
+    const input = el('input', 'rux--file-input rux--visually-hidden');
+    input.type = 'file';
+    input.id = 'scheduler-f-file';
+    input.accept = '.pdf,application/pdf';
+    input.tabIndex = -1;
+    const zone = el('div', 'rux--file');
+    zone.append(drop, inputLabel, input);
+    const container = el('div', 'rux--file-container rux--file-container--drop');
+    item.append(el('p', 'rux--file--label', 'File'),
+      el('p', 'rux--label-description', 'PDF only. It is added to the trip at once, without Save.'),
+      zone, container);
+
+    const busy = on => {
+      drop.disabled = on;
+      drop.classList.toggle('rux--file-browse-btn--disabled', on);
+    };
+    const start = async file => {
+      if (!file || drop.disabled) return;
+      const label = document.getElementById('scheduler-f-filetype')?.value || 'Itinerary';
+      busy(true);
+      try { await uploadFrom(tripId, label, file, fileItem(container, file.name)); }
+      finally { busy(false); }
+    };
+    drop.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => {
+      const file = input.files?.[0];
+      input.value = '';
+      start(file);
+    });
+    const over = on => drop.classList.toggle('rux--file__drop-container--drag-over', on);
+    drop.addEventListener('dragover', e => { e.preventDefault(); if (!drop.disabled) over(true); });
+    drop.addEventListener('dragleave', () => over(false));
+    drop.addEventListener('drop', e => {
+      e.preventDefault();
+      over(false);
+      start(e.dataTransfer?.files?.[0]);
+    });
+
+    const wrap = el('div', 'scheduler-file-add');
+    wrap.append(full(type), item);
+    return wrap;
+  }
 
   // The editor is a flex child of the board, not an animated overlay, so
   // closing it is setting `hidden`.
@@ -3146,24 +3295,28 @@
       ['Needs', reqs],
     ]));
 
-    /* Files is the trip's itineraries, newest first, and only reads them:
-       upload, replace and delete stay in rux-ui. Its switch writes
-       `itinerary_not_needed` with Save, like any field. */
+    /* Files holds the Itinerary not needed switch, which Save writes like any
+       field, then the uploader and the trip's files, which write at once. A
+       trip not yet saved has no id to file under. */
     panelFiles.replaceChildren();
     const notNeeded = section('Itinerary not needed',
       el('p', 'scheduler-panel-hint', 'On for a trip that runs without one, so its bars stop showing No itinerary yet.'),
       toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
-    const itineraries = creating ? [] : itinerariesOf(trip);
-    let docsNode;
-    if (itineraries.length) {
-      const { list, body } = rowList();
-      body.append(...itineraries.map(doc => documentRow(trip, doc)));
-      docsNode = list;
+    if (creating || !client) {
+      filesBody = null;
+      filesEmpty = null;
+      panelFiles.append(notNeeded, section('Files', el('p', 'scheduler-panel-hint', creating
+        ? 'Save the trip first, then add its itinerary, contract and purchase order here.'
+        : 'This preview has no connection, so files cannot be listed or added.')));
     } else {
-      docsNode = el('p', 'scheduler-panel-hint', 'Itineraries uploaded to the trip in rux-ui are listed here.');
+      const { list, body } = rowList();
+      filesBody = body;
+      filesEmpty = el('p', 'scheduler-panel-hint', 'No files yet. An itinerary, contract or purchase order added above is listed here.');
+      const listWrap = el('div');
+      listWrap.append(list, filesEmpty);
+      panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap));
+      drawFiles(trip);
     }
-    const docsWrap = section('Itineraries', docsNode);
-    panelFiles.append(notNeeded, docsWrap);
 
     /* The date-picker module claims pickers on load; these were just built, so
        it is asked again for the whole panel body. An unclaimed picker renders
@@ -4029,6 +4182,12 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-upload') {
+      const tripId = bar.dataset.tripId;
+      pickFile(file => uploadFrom(tripId, 'Itinerary', file));
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-shortcuts') {
       openShortcutsModal(1);
       return;
@@ -4091,6 +4250,7 @@
       }
     }
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
+    document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
     const hotelItem = document.getElementById('scheduler-bar-menu-hotel');
@@ -4150,6 +4310,7 @@
   const itinTitle = document.getElementById('scheduler-itinerary-title');
   const itinTitleCollapsed = document.getElementById('scheduler-itinerary-title-collapsed');
   const itinUploaded = document.getElementById('scheduler-itinerary-uploaded');
+  const itinStatus = document.getElementById('scheduler-itinerary-status');
   const itinPrint = document.getElementById('scheduler-itinerary-print');
   const itinDownload = document.getElementById('scheduler-itinerary-download');
   const itinNewTab = document.getElementById('scheduler-itinerary-new-tab');
@@ -4170,6 +4331,11 @@
   let itinShown = null;
   // Counts opens, so a slow fetch that a later open overtook is dropped.
   let itinSeq = 0;
+  // The document the panel is on, loaded or not, so a replace or a delete
+  // elsewhere can follow it.
+  let itinDocId = null;
+  // The download running: its document id, and the controller that stops it.
+  let itinLoading = null;
   const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
 
   /* Each load gets a new frame: a PDF viewer does not read a changed fragment
@@ -4205,17 +4371,44 @@
     if (itinShown.zoom !== now) frameItinerary();
   }
 
-  // The actions that need the fetched file wait for it; Open in new tab does not.
+  /* The actions that need the fetched file wait for it; Open in new tab does
+     not. Download is a link, which has no `disabled`, so it takes Carbon's
+     disabled class and leaves the tab order with its address. */
   function setItineraryReady(ready) {
     for (const btn of [...itinZooms, itinPrint]) btn.disabled = !ready;
-    if (!ready) itinDownload.removeAttribute('href');
+    itinDownload.classList.toggle('rux--btn--disabled', !ready);
+    if (ready) itinDownload.removeAttribute('aria-disabled');
+    else {
+      itinDownload.removeAttribute('href');
+      itinDownload.setAttribute('aria-disabled', 'true');
+    }
   }
 
-  // Lets go of the file showing: the frame empties and its blob is freed.
+  // The line over the frame: Carbon's inline loading for the wait, an inline
+  // notification for a failure, and nothing once the file shows.
+  function itineraryStatus(kind, why) {
+    if (!itinStatus) return;
+    itinStatus.hidden = !kind;
+    if (kind === 'loading') {
+      const box = el('div', 'rux--inline-loading');
+      const anim = el('div', 'rux--inline-loading__animation');
+      anim.appendChild(loadingSpinner());
+      box.append(anim, el('div', 'rux--inline-loading__text', 'Loading the itinerary…'));
+      itinStatus.replaceChildren(box);
+    } else if (kind === 'error') {
+      itinStatus.replaceChildren(note('error', 'The itinerary did not load.', `${why} Open in new tab still opens it.`));
+    } else itinStatus.replaceChildren();
+  }
+
+  // Lets go of the file showing: a download running stops, the frame empties
+  // and its blob is freed.
   function dropItinerary() {
+    itinLoading?.ctrl.abort();
+    itinLoading = null;
     if (itinShown) URL.revokeObjectURL(itinShown.blob);
     itinShown = null;
     setItineraryReady(false);
+    itineraryStatus(null);
     swapFrame(null);
   }
 
@@ -4239,22 +4432,33 @@
     const when = uploadedOn(doc.created_at);
     itinUploaded.textContent = when ? `Uploaded ${when}` : '';
     itinNewTab.href = url;
+    itinDocId = String(doc.id);
     if (itinEl.hidden) {
       itinOpener = opener ?? null;
       itinEl.hidden = false;
       window.Rux?.schedule?.fit?.();
     }
     itinClose?.focus();
-    // The file showing is not fetched again, so its zoom stays.
-    if (itinShown?.id === doc.id) return;
+    // The file showing, or downloading, is not fetched again, so its zoom stays.
+    if (itinShown?.id === doc.id || itinLoading?.id === doc.id) return;
     const seq = ++itinSeq;
     dropItinerary();
+    /* The time limit covers the whole download, not only the storage's first
+       answer, and running out of it stops the download, as a close does. */
+    const ctrl = new AbortController();
+    itinLoading = { id: doc.id, ctrl };
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, READ_TIMEOUT);
+    itineraryStatus('loading');
     try {
-      const res = await withTimeout(fetch(url));
+      const res = await fetch(url, { signal: ctrl.signal });
       if (!res.ok) throw new Error(`The storage answered ${res.status}.`);
-      const bytes = await res.arrayBuffer();
+      // Typed as a PDF whatever the storage says, so the frame shows it.
+      const file = new Blob([await res.blob()], { type: 'application/pdf' });
       if (seq !== itinSeq) return;
-      const blob = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      itinLoading = null;
+      itineraryStatus(null);
+      const blob = URL.createObjectURL(file);
       itinShown = { id: doc.id, blob, zoom: null };
       itinFrame.title = `Itinerary for ${dest}`;
       itinDownload.href = blob;
@@ -4263,9 +4467,12 @@
       frameItinerary();
     } catch (err) {
       if (seq !== itinSeq) return;
-      // `withTimeout` words its timeout for the schedule, so it is reworded here.
-      const why = err.timedOut ? 'The storage did not answer in time.' : err.message;
-      toast('error', `The itinerary did not load. ${why} Open in new tab still opens it.`);
+      itinLoading = null;
+      const why = timedOut ? `The storage did not send it within ${READ_TIMEOUT / 1000} seconds.`
+        : err instanceof TypeError ? 'The storage could not be reached.' : err.message;
+      itineraryStatus('error', why);
+    } finally {
+      clearTimeout(timer);
     }
   }
 
@@ -4290,17 +4497,28 @@
   function closeItinerary(returnFocus = true) {
     if (!itinEl || itinEl.hidden) return;
     itinEl.hidden = true;
+    itinDocId = null;
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     itinSeq++;
     dropItinerary();
     window.Rux?.schedule?.fit?.();
+    /* Focus goes back to what opened the panel. A Files tab row is rebuilt
+       whenever the editor redraws, so its row is found again by document id;
+       failing that, the selected bar takes it. */
     const opener = itinOpener;
     itinOpener = null;
-    if (returnFocus && opener?.isConnected) opener.focus();
+    if (!returnFocus) return;
+    const id = opener?.dataset.documentId;
+    const target = opener?.isConnected ? opener
+      : (id && panelFiles.querySelector(`[data-document-id="${CSS.escape(id)}"]`)) || selectedBar();
+    target?.focus();
   }
   itinClose?.addEventListener('click', () => closeItinerary());
-  // A window narrowed below xlg has no room for the panel.
-  itinWide.addEventListener('change', e => { if (!e.matches) closeItinerary(false); });
+  // A window narrowed below xlg has no room for the panel. Focus inside it
+  // goes back to the opener rather than to the page.
+  itinWide.addEventListener('change', e => {
+    if (!e.matches) closeItinerary(!!itinEl?.contains(document.activeElement));
+  });
 
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
   function openItinerary(bar) {
@@ -4311,6 +4529,254 @@
     if (doc) openDocument(trip, doc, bar);
     else window.open(documentLink(id), '_blank', 'noopener');
   }
+
+  /* ── A trip's files ──
+     Upload, replace and delete write at once, not with Save, and store a file
+     exactly as rux-ui does, so either app reads what the other wrote: the
+     `trip-documents` bucket at `<trip id>/<milliseconds>/<file name>`, a
+     `trip_documents` row, and a `record_trip_history` entry. Unlike rux-ui,
+     every step's error is checked, and the order leaves a stored file at worst,
+     never a row that points at nothing. Nothing here writes to `trips`, and no
+     trigger on `trip_documents` does, so a file never turns the editor's next
+     Save into a conflict. */
+  const DOC_BUCKET = 'trip-documents';
+  const DOC_LABELS = ['Itinerary', 'Contract', 'PO'];
+
+  // rux-ui's `documentFileSlug`: accents stripped, lowercased, hyphenated.
+  const docSlug = (value, fallback) => String(value ?? '')
+    .normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fallback;
+
+  // rux-ui's `buildDocumentFileName`, from the trip as saved, not as typed:
+  // `<start date>_<client>_<label>_<trip ref>.pdf`.
+  async function documentName(tripId, label) {
+    const { data: trip, error } = await withTimeout(client.from('trips')
+      .select('trip_ref,customer,start_date,booking_contact_name,trip_contact_1_name,trip_contact_2_name')
+      .eq('id', tripId).single().then(r => r));
+    if (error) throw new Error(error.message);
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(trip.start_date ?? '') ? trip.start_date : 'unknown-date';
+    const who = trip.customer || trip.booking_contact_name || trip.trip_contact_1_name || trip.trip_contact_2_name;
+    const ref = trip.trip_ref || String(tripId).slice(0, 8);
+    return `${[date, docSlug(who, 'unnamed'), docSlug(label, 'document'), docSlug(ref, 'trip')].join('_')}.pdf`;
+  }
+
+  // A PDF by its type or name, as rux-ui checks, and by its first bytes, so a
+  // renamed file of another kind is refused.
+  async function isPdf(file) {
+    if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name || '')) return false;
+    try { return (await file.slice(0, 5).text()) === '%PDF-'; } catch { return false; }
+  }
+
+  /* The history's actor is the person's rux-ui profile name, the one rux-ui
+     records, found by the account's id; the platform profile's name stands in
+     for an account rux-ui never saw, and with neither the function's own
+     default does. Read once per page. */
+  let actorPromise = null;
+  const actorName = () => (actorPromise ??= (async () => {
+    const uid = await personId();
+    if (!uid) return null;
+    for (const [schema, key] of [['public', 'user_id'], ['platform', 'id']]) {
+      try {
+        const { data } = await withTimeout(client.schema(schema).from('profiles')
+          .select('display_name').eq(key, uid).limit(1).maybeSingle().then(r => r));
+        if (data?.display_name?.trim()) return data.display_name.trim();
+      } catch { /* the next source, or the default */ }
+    }
+    return null;
+  })());
+
+  /* One history entry as rux-ui writes it: the trip's snapshot, one `document`
+     change, and the file in the metadata. A failed entry is logged and does not
+     undo the file change, as in rux-ui. */
+  async function recordFileHistory(tripId, action, before, after, metadata) {
+    try {
+      const { data: snapshot } = await withTimeout(client.from('trips')
+        .select('id,trip_ref,start_date,end_date,customer,destination').eq('id', tripId).single().then(r => r));
+      const args = {
+        p_trip_id: tripId, p_action: action, p_snapshot: snapshot || {},
+        p_changes: [{ field: 'document', label: 'Document', before, after }],
+        p_metadata: metadata,
+      };
+      const actor = await actorName();
+      if (actor) args.p_actor_name = actor;
+      const { error } = await withTimeout(client.rpc('record_trip_history', args).then(r => r));
+      if (error) throw new Error(error.message);
+    } catch (err) {
+      console.warn('The trip history entry was not written:', err);
+    }
+  }
+
+  // Stores the file and adds its row. A row that fails takes the stored file
+  // back out, so nothing is left behind.
+  async function storeDocument(tripId, label, file) {
+    const fileName = await documentName(tripId, label);
+    const path = `${tripId}/${Date.now()}/${fileName}`;
+    const bucket = client.storage.from(DOC_BUCKET);
+    const { error: upErr } = await bucket.upload(path, file, { contentType: 'application/pdf', upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    try {
+      const { data, error } = await withTimeout(client.from('trip_documents')
+        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size })
+        .select('id,label,created_at,file_name,file_path,file_size').single().then(r => r));
+      if (error) throw new Error(error.message);
+      return data;
+    } catch (err) {
+      bucket.remove([path]).catch(() => {});
+      throw err;
+    }
+  }
+
+  // The row goes first, then the stored file; a file that stays is unused and
+  // only logged.
+  async function unstoreDocument(doc) {
+    const { error } = await withTimeout(client.from('trip_documents').delete().eq('id', doc.id).then(r => r));
+    if (error) throw new Error(error.message);
+    if (!doc.file_path) return;
+    try {
+      const { error: rmErr } = await client.storage.from(DOC_BUCKET).remove([doc.file_path]);
+      if (rmErr) throw new Error(rmErr.message);
+    } catch (err) {
+      console.warn(`The stored file ${doc.file_path} was not removed:`, err);
+    }
+  }
+
+  async function uploadDocument(tripId, label, file) {
+    const doc = await storeDocument(tripId, label, file);
+    await recordFileHistory(tripId, 'document_uploaded', null, `${label} uploaded`,
+      { documentId: doc.id, fileName: doc.file_name });
+    return doc;
+  }
+
+  // The new file is stored before the old one goes, so a failure part way
+  // leaves the trip with a file. The new file has a new id.
+  async function replaceDocument(tripId, old, file) {
+    const doc = await storeDocument(tripId, old.label, file);
+    await unstoreDocument(old);
+    await recordFileHistory(tripId, 'document_replaced', old.label || 'Previous file', `${old.label || 'Document'} replaced`,
+      { documentId: doc.id, fileName: doc.file_name });
+    return doc;
+  }
+
+  async function deleteDocument(tripId, doc) {
+    await unstoreDocument(doc);
+    await recordFileHistory(tripId, 'document_deleted', doc.label || doc.file_name || 'Document', 'Deleted',
+      { documentId: doc.id, fileName: doc.file_name });
+  }
+
+  /* One file dialog for every entry point: the Files tab's drop zone has its
+     own input, and Replace and the bar menu's Upload itinerary use this one. */
+  const filePicker = el('input', 'rux--visually-hidden');
+  filePicker.type = 'file';
+  filePicker.accept = '.pdf,application/pdf';
+  filePicker.tabIndex = -1;
+  filePicker.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(filePicker);
+  let filePicked = null;
+  filePicker.addEventListener('change', () => {
+    const file = filePicker.files?.[0];
+    const then = filePicked;
+    filePicked = null;
+    filePicker.value = '';
+    if (file && then) then(file);
+  });
+  function pickFile(then) {
+    filePicked = then;
+    filePicker.click();
+  }
+
+  /* After a change: the trip's documents are read again, the open editor's
+     Files list redraws from them without touching the form, and the board
+     reads its week, so the bar's mark and Open itinerary follow. */
+  async function refreshDocuments(tripId) {
+    try {
+      const { data, error } = await withTimeout(client.from('trip_documents')
+        .select('id,label,created_at,file_name,file_path,file_size').eq('trip_id', tripId).then(r => r));
+      if (error) throw new Error(error.message);
+      for (const trip of [panelArgs?.trip, panelIndex.trips.get(tripId)]) {
+        if (trip?.id === tripId) trip.trip_documents = data || [];
+      }
+      if (editing?.id === tripId && !panelEl.hidden) drawFiles(panelArgs?.trip);
+    } catch { /* the week's read below brings the list back */ }
+    await show();
+  }
+
+  /* An upload from any entry point. `item` is the Files tab's Carbon file item
+     when the upload started there; elsewhere the toasts say how it went. A PO
+     turns the Billing tab's PO received switch on in the open editor, which
+     Save then writes, as rux-ui does. */
+  async function uploadFrom(tripId, label, file, item) {
+    if (!(await isPdf(file))) {
+      if (item) item.fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
+      else toast('error', 'Only PDF files can be added. Export the file as a PDF, then add it again.');
+      return false;
+    }
+    if (!item) toast('info', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
+    try {
+      await uploadDocument(tripId, label, file);
+    } catch (err) {
+      if (item) item.fail('The file was not added', `${err.message} Try again.`);
+      else toast('error', `The file was not added. ${err.message}`);
+      return false;
+    }
+    item?.done();
+    if (label === 'PO' && editing?.id === tripId && !panelEl.hidden) {
+      const sw = document.getElementById('scheduler-f-poreceived');
+      if (sw && sw.getAttribute('aria-checked') !== 'true') window.Rux?.formControls?.toggle?.(sw.closest('.rux--toggle'), true);
+    }
+    await refreshDocuments(tripId);
+    toast('success', `${file.name} was added to the trip.`);
+    return true;
+  }
+
+  function replaceFrom(tripId, old) {
+    pickFile(async file => {
+      if (!(await isPdf(file))) {
+        toast('error', 'Only PDF files can be added. Export the file as a PDF, then try again.');
+        return;
+      }
+      toast('info', 'Replacing the file…');
+      let doc;
+      try {
+        doc = await replaceDocument(tripId, old, file);
+      } catch (err) {
+        toast('error', `The file was not replaced. ${err.message}`);
+        await refreshDocuments(tripId);
+        return;
+      }
+      await refreshDocuments(tripId);
+      // The panel on the old itinerary moves to the new one.
+      if (itinDocId === String(old.id)) {
+        const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
+        const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
+        openDocument(trip, fresh || doc, null);
+      }
+      toast('success', 'The file was replaced.');
+    });
+  }
+
+  let deletingDoc = null;
+  function openDeleteFile(tripId, doc) {
+    deletingDoc = { tripId, doc };
+    document.getElementById('scheduler-file-delete-what').textContent =
+      `${doc.file_name || doc.label || 'This file'}, uploaded ${uploadedOn(doc.created_at) || 'on an unknown day'}.`;
+    window.Rux?.modal?.open?.('scheduler-file-delete-modal');
+  }
+  document.getElementById('scheduler-file-delete-confirm')?.addEventListener('click', async () => {
+    const target = deletingDoc;
+    deletingDoc = null;
+    window.Rux?.modal?.close?.('scheduler-file-delete-modal');
+    if (!target) return;
+    try {
+      await deleteDocument(target.tripId, target.doc);
+    } catch (err) {
+      toast('error', `The file was not deleted. ${err.message}`);
+      return;
+    }
+    // The panel on the deleted file has nothing left to show.
+    if (itinDocId === String(target.doc.id)) closeItinerary(false);
+    await refreshDocuments(target.tripId);
+    toast('success', 'The file was deleted.');
+  });
 
   // Color from a slot opens the bar menu beside the slot, with Color's own
   // submenu already open.

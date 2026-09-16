@@ -151,7 +151,7 @@ as in `screen-inventory.md`.
 | `contacts` | Trip editor, Customers | Customer editor, trip editor |
 | `trip_payments`, `trip_pos`, `trip_invoices`, `trip_ticket_options` | Trip editor Billing | Trip editor |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
-| `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor |
+| `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor Files and the bar menu's Upload itinerary, each change with a `trip_history` entry |
 | `trip_requests` (RPC) | Requests, `../rux-ui/request.html` | `../rux-ui/request.html` submits; Requests changes status and links |
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Tasks, Drivers | driver page accepts and declines |

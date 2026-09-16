@@ -33,7 +33,6 @@ done and how.
   scheduler means Pending/Signed and Pending/Invoiced.
 - A compiled size for the icon in `.rux--header__action`, so header icons can
   follow the button-icon rule.
-- A file uploader, for the trip editor's planned Files tab.
 
 ### Asked for by Notes
 

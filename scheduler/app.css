@@ -618,6 +618,12 @@ button.scheduler-row-head__num {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
   white-space: nowrap;
 }
+/* The wait or the failure, inset as the panel's content is. */
+.scheduler-itinerary__status {
+  flex: none;
+  padding: var(--rux-spacing-05);
+}
+.scheduler-itinerary__status[hidden] { display: none; }
 .scheduler-itinerary__frame {
   display: block;
   flex: 1 1 auto;
@@ -800,6 +806,13 @@ button.scheduler-row-head__num {
   color: var(--rux-text-primary);
   text-align: end;
   font-variant-numeric: tabular-nums;
+}
+/* The Files tab's uploader: the Type dropdown over the drop zone, spaced as
+   the form's fields are. */
+.scheduler-file-add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-06);
 }
 /* A list's rows, hidden while its switch is off. Restated because an element
    inside a Carbon component may be given a display that beats `[hidden]`. The

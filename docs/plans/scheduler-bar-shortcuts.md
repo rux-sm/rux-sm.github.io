@@ -57,9 +57,11 @@ stops costing that trip anything.
   while the row is small and no dashed circle trails a row that is already
   full enough. Three slots are 120px, inside the 129px a one-day trip bar has
   at the narrowest day column, so the bar never overhangs the trip it points at.
-- **The day column keeps its 8.5rem minimum.** Narrowing it to 127px would make
-  a three-slot bar exactly as wide as a one-day trip, and cost every one-day
-  trip 9px of writing all week to do it.
+- **The day column's minimum is the shortcut bar at its smallest,** three slots
+  plus the gaps a bar keeps: 127px, where it was 8.5rem. A one-day trip is then
+  exactly as wide as the bar pointing at it. A board wider than about 1000px is
+  on `1fr` and never meets the figure; below it the week fits where it used to
+  scroll, and a one-day trip gives up 9px of writing for that.
 - **The phone gets the same bar.** One behaviour and one lot of code; it covers
   more of a neighbour there, which the phone board will have to answer for
   itself when it is built.

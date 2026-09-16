@@ -154,8 +154,9 @@ then the person's own choices in the order they set them — Open itinerary, Mar
 hotel booked, Color, Take off this bus or Cancel trip — set from the
 right-click menu's Customize shortcuts and saved on their profile. An empty
 choice is left out, and an empty slot only pads the row up to three, the
-fewest it ever shows: three slots at 40px come to 120px, which sits inside
-the 129px a one-day trip bar has at the narrowest day column. A padding slot
+fewest it ever shows: three slots at 40px come to 120px, which is exactly what
+a one-day trip bar is at the narrowest day column, because that column is
+sized from this bar. A padding slot
 shows a dashed circle and opens Customize shortcuts; a fourth action and
 beyond are added from the right-click menu. A shortcut
 that cannot act on the trip, such as Open itinerary without one, shows faint

@@ -29,11 +29,23 @@
 
      This script is an enhancement: without it the stylesheet's own
      `minmax(--scheduler-day-min, 1fr)` renders. */
+  /* A custom property's computed value is the tokens it was written with, so a
+     `calc()` comes back as a `calc()` and no arithmetic here would read it.
+     The browser is asked instead: a hidden box inside the element takes the
+     value as its width, and its measured width is the answer in pixels. One
+     box is kept and reused, so a pass costs no more than the measure. */
+  let ruler = null;
   const px = (el, name) => {
-    const raw = getComputedStyle(el).getPropertyValue(name).trim();
-    if (raw.endsWith('px')) return parseFloat(raw);
-    if (raw.endsWith('rem')) return parseFloat(raw) * parseFloat(getComputedStyle(document.documentElement).fontSize);
-    return NaN;
+    if (!ruler) {
+      ruler = document.createElement('div');
+      ruler.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0';
+      ruler.setAttribute('aria-hidden', 'true');
+    }
+    ruler.style.inlineSize = `var(${name})`;
+    el.appendChild(ruler);
+    const width = ruler.getBoundingClientRect().width;
+    ruler.remove();
+    return width > 0 ? width : NaN;
   };
 
   /* The pane's height is measured from its own top rather than capped at the

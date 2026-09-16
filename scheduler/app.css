@@ -22,8 +22,12 @@
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
   /* The narrowest a day column gets; past it the grid scrolls rather than
-     squeezing. */
-  --scheduler-day-min: 8.5rem;
+     squeezing. It is a shortcut bar at its smallest -- three slots -- plus the
+     gaps a bar keeps at either end, so the bar at its smallest is exactly as
+     wide as the one-day trip it points at. Below this the week scrolls, which
+     is every board under about 1000px; a wider board is on `1fr` and never
+     sees this figure. */
+  --scheduler-day-min: calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear));
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
   --scheduler-bar-rows: 6;
   --scheduler-fs: var(--rux-label-01-font-size);

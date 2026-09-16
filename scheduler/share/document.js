@@ -4,8 +4,8 @@
    document.html?id=<document id> opens one trip document without a log-in.
    get_trip_document() returns the file's path for that id, and the page moves
    on to the file in the public trip-documents bucket, so the id is the link's
-   only secret, as on rux-ui's doc.html. A local preview without ?cloud has no
-   client, and says so.
+   only secret, as on rux-ui's doc.html. A local preview other than the cloud
+   preview has no client, and says so.
    ========================================================================== */
 (() => {
   'use strict';
@@ -27,7 +27,7 @@
     return;
   }
   if (!client) {
-    say('This preview has no connection', 'Add ?cloud to the address to open the document.');
+    say('This preview has no connection', 'Open http://localhost:8641/, the cloud preview, to open the document.');
     return;
   }
 

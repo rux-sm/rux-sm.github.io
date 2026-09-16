@@ -41,7 +41,8 @@ deliberate step, never by a website deploy.
 
 ## The four commands
 
-    npm run serve               the site at http://localhost:8640/, loopback only
+    npm run serve               the site at http://localhost:8640/, loopback only, offline
+    npm run serve -- --cloud    the same at http://localhost:8641/, with log-in and live data
     npm run serve -- --private  atlas's internal tier, rendered and served on :8644, never published
     npm run build               regenerate what is committed but derived
     npm run check               every app through the shared check, Notes' gates, the names sweep

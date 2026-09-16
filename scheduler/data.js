@@ -5518,7 +5518,7 @@
      account with Scheduler, and /account.js sends a log-in that ends to the
      log-in page. The board and its search wait for the staff profile. An
      account without one, a profile that would not load, or a local preview
-     without ?cloud gets a notice in their place, and nothing is read. */
+     other than the cloud preview gets a notice in their place, and nothing is read. */
   const boardEl = document.querySelector('.scheduler-board');
   const stop = (kind, title, subtitle) => {
     if (boardEl) boardEl.hidden = true;
@@ -5529,7 +5529,7 @@
   (async () => {
     const account = window.Rux?.account;
     if (!account?.staffProfile) {
-      stop('info', 'This preview has no log-in', 'Add ?cloud to the address to load the schedule.');
+      stop('info', 'This preview has no log-in', 'Open http://localhost:8641/, the cloud preview, to load the schedule.');
       return;
     }
     let staff;

@@ -35,9 +35,9 @@
     location.replace(next && access.allows(granted, next) ? next : access.landing(granted));
   };
 
-  // A local preview has no account layer unless ?cloud is on the address.
+  // A local preview has no account layer, except the cloud preview on :8641.
   if (!account?.signIn || !access) {
-    say('This preview has no log-in. Add ?cloud to the address to log in.');
+    say('This preview has no log-in. Open http://localhost:8641/, the cloud preview, to log in.');
     submit.disabled = true;
     return;
   }

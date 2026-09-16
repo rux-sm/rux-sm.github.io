@@ -258,7 +258,7 @@
     ? document.addEventListener('DOMContentLoaded', run, { once: true }) : run());
   whenReady(async () => {
     const account = window.Rux?.account;
-    if (!account) { gate('This preview has no log-in. Add ?cloud to the address to walk with your account.'); return; }
+    if (!account) { gate('This preview has no log-in. Open http://localhost:8641/, the cloud preview, to walk with your account.'); return; }
     let session = null;
     try { session = await account.getSession(); } catch { /* answered below */ }
     if (!session?.user || session.user.is_anonymous || !window.Rux?.access?.accessOf(session.user).owner) {

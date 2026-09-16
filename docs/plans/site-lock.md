@@ -56,7 +56,7 @@ customer requests, are rebuilt with Design here and open without a login.
   browsing while the database rules protect the data. Truly private pages would
   need a login service in front of the host on rux's own domain, which is a
   separate decision.
-- **A local preview has no lock** unless `?cloud` is on the address, as
+- **A local preview has no lock,** except the cloud preview on port 8641, as
   `account.js` behaves today.
 - **The link pages live in `/scheduler/share/`** as driver, maintenance,
   document and request pages. They use Design and the `scheduler-` prefix, are

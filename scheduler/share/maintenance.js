@@ -15,7 +15,7 @@
    The grid and bars are the schedule's own (app.css), placed by data.js's
    rules: a leg clipped to the range with a dotted edge where it runs past,
    lanes packed greedily, and the colour `hueFor` picks. A local preview
-   without ?cloud has no client, and says so.
+   other than the cloud preview has no client, and says so.
    ========================================================================== */
 (() => {
   'use strict';
@@ -374,7 +374,7 @@
   }
   if (!client) {
     rangeEl.textContent = '';
-    say('info', 'This preview has no connection', 'Add ?cloud to the address to load the schedule.');
+    say('info', 'This preview has no connection', 'Open http://localhost:8641/, the cloud preview, to load the schedule.');
     return;
   }
 

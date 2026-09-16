@@ -322,7 +322,7 @@
 
     return {
       app: form,
-      preview: 'This preview has no log-in, so the rates are blank until they are saved on the rates page. Add ?cloud to the address to load the real ones.',
+      preview: 'This preview has no log-in, so the rates are blank until they are saved on the rates page. Open http://localhost:8641/, the cloud preview, to load the real ones.',
       start: () => {
         drawDays();
         drawRateSelect();
@@ -467,7 +467,7 @@
     return {
       app: form,
       actions: $('scheduler-quote-rates-actions'),
-      preview: 'This preview has no log-in, so rates saved here stay in this browser tab. Add ?cloud to the address to load the real ones.',
+      preview: 'This preview has no log-in, so rates saved here stay in this browser tab. Open http://localhost:8641/, the cloud preview, to load the real ones.',
       start: () => {
         drawRates();
         $('scheduler-quote-rates-actions').hidden = false;

@@ -11,7 +11,7 @@
    - a page of an app the account lacks: to Home, or to its one app;
    - otherwise the page opens.
    /login/ and /scheduler/share/ open without a login. A local preview has no
-   lock unless ?cloud is on the address, as account.js behaves.
+   lock, except the cloud preview on port 8641, as account.js behaves.
 
    ACCESS, SHARED. window.Rux.access holds these rules for the log-in page too.
    Access is the owner switch and the ticked apps in the account's
@@ -46,8 +46,9 @@
 
   const open = () => document.documentElement.setAttribute('data-rux-unlocked', '');
   const path = location.pathname;
-  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-  if ((local && !new URLSearchParams(location.search).has('cloud'))
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)
+    && location.port !== '8641';
+  if (local
       || path.startsWith('/login/') || path.startsWith('/scheduler/share/')) {
     open();
     return;

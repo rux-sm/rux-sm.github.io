@@ -5,7 +5,12 @@
 // -- so Design's static server in plain mode, rooted here, is the whole thing.
 // Loopback only.
 //
-//   npm run serve                 http://localhost:8640/
+//   npm run serve                 http://localhost:8640/, offline: no log-in,
+//                                 nothing read from or written to the database
+//   npm run serve -- --cloud      http://localhost:8641/, the same files with the
+//                                 log-in and live data, a fixed address to
+//                                 bookmark; account.js and funnel.js know it by
+//                                 its port
 //   npm run serve -- --private    render Atlas's internal tier into
 //                                 notes/build/ (git-ignored) and serve
 //                                 it on :8644, beside the public one,
@@ -34,6 +39,10 @@ if (process.argv.includes('--private')) {
   console.log(`  private preview: http://localhost:${env.PORT ?? 8644}/  (never published)`);
   spawn(process.execPath, [SERVER], { cwd: site, stdio: 'inherit', env: { ...env, PORT: env.PORT ?? '8644' } });
   spawn(process.execPath, [join(notes, 'tools', 'serve-walk.mjs')], { stdio: 'inherit', env: { ...env, ATLAS: atlas, PREVIEW_PORT: env.PORT ?? '8644' } });
+} else if (process.argv.includes('--cloud')) {
+  // Always 8641, whatever PORT says: the pages decide by this port alone.
+  console.log('  cloud preview: http://localhost:8641/  (live log-in and data)');
+  spawn(process.execPath, [SERVER], { cwd: ROOT, stdio: 'inherit', env: { ...env, PORT: '8641' } });
 } else {
   spawn(process.execPath, [SERVER], { cwd: ROOT, stdio: 'inherit', env: { ...env, PORT: env.PORT ?? '8640' } });
 }

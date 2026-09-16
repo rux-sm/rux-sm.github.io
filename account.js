@@ -30,10 +30,13 @@
   if (!window.supabase) return;
 
   // A LOCAL PREVIEW NEVER TOUCHES THE CLOUD, so a `npm run serve` visit does
-  // not reach production auth; `?cloud` on the URL opts back in.
-  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-  if (local && !new URLSearchParams(location.search).has('cloud')) {
-    console.info('account: local preview, cloud sync off (add ?cloud to the URL to enable)');
+  // not reach production auth. The cloud preview, `npm run serve -- --cloud`,
+  // is the one loopback port that does: a port rather than a flag on the
+  // address, so no redirect or link can drop it, and a bookmark keeps it.
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)
+    && location.port !== '8641';
+  if (local) {
+    console.info('account: local preview, cloud sync off (the cloud preview is http://localhost:8641/)');
     return;
   }
 

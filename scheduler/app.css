@@ -845,6 +845,14 @@ button.scheduler-row-head__num {
 .scheduler-fluid-group > :not(.rux--form-item):not(.scheduler-pair) {
   padding-inline: var(--rux-spacing-05);
 }
+/* Such a group opens 16px under the rule above it and ends 24px above what
+   follows, the spacing IBM's fluid form gives a group label and its rows. The
+   16px is a margin, because a legend sits on the fieldset's border rather than
+   inside its padding and so a padding would not move it. */
+.scheduler-fluid-group > .rux--checkbox-group {
+  margin-block-start: var(--rux-spacing-05);
+  padding-block-end: var(--rux-spacing-06);
+}
 
 /* A fluid form is one unbroken surface: IBM's spec paints the fields, the group
    labels, the checkbox rows and every space between them the same colour, and
@@ -879,6 +887,14 @@ button.scheduler-row-head__num {
   color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-03);
 }
+/* On the fluid tab a section's rule reaches the panel's edges, as the fields'
+   own dividers do, rather than stopping at the tab's 16px; the padding puts its
+   heading back under the field labels. */
+#scheduler-panel-details .scheduler-panel-section--rule {
+  margin-inline: calc(-1 * var(--rux-spacing-05));
+  padding-inline: var(--rux-spacing-05);
+}
+
 /* A 1px rule opens every section after the first in the Details and Billing
    tabs, with 24px under it, so 32px above and 24px below part the groups more
    than the 24px between fields does. */

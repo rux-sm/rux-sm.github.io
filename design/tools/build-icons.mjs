@@ -87,6 +87,9 @@ const ICONS = [
   // no multi-person glyph among its 68 sixteens, which is its own judgement about
   // this same risk, and the reason the ask was for two and not one.
   'user--multiple',
+  // A FILE GOING UP, for Scheduler's Upload itinerary menu item. Carbon's
+  // file uploader draws no icon of its own, and `download` points the other way.
+  'upload',
 ];
 
 const symbols = [], missing = [], from = {};

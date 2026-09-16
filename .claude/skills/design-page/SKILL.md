@@ -54,7 +54,7 @@ call", take the default and say which one you took.
 | 2 | Theme | `white` `g10` `g90` `g100` `rux` | `data-theme` on `<html>` | `white`; `g10` when cards should stand off the page; `g90`/`g100` for a dark tool |
 | 3 | Header nav links | present, absent | the `<nav class="rux--header__nav">` block | present |
 | 4 | Global actions and the switcher panel | present, absent | `rux--header__global` and its sibling panel | present |
-| 5 | Field style | regular, fluid | the six controls that have both: text input, text area, select, number input, search, date picker | regular |
+| 5 | Field style | regular, fluid | the ten controls that have both: text input, text area, select, number input, search, date picker, time picker, dropdown, combo box, multi-select | regular |
 | 6 | Button kinds | primary, secondary, tertiary, ghost, danger, danger tertiary, danger ghost | the modifier on each `rux--btn` | one primary per view, secondary beside it, ghost for the quiet action |
 | 7 | Button size | `xs` `sm` `md` `lg` `xl` | the size class | `lg`, which carries no class; every template button is `lg` |
 | 8 | Body blocks | any name in `design/sink/ORDER` | what goes inside `.rux--content` | the template's own |
@@ -67,8 +67,9 @@ call", take the default and say which one you took.
 - **The mark.** It is the brand.
 - **Button states**: disabled, loading, selected. The page sets them; they are
   not decided at creation.
-- **Fluid for checkbox, radio, toggle and the list-box family.** No fluid form
-  exists for them, so row 5 cannot reach them.
+- **Fluid for checkbox, radio and toggle.** No fluid form exists for those
+  three, so row 5 cannot reach them. It does reach the list-box family, which
+  takes fluid on its wrapper, `rux--list-box__wrapper--fluid`.
 
 **Row 5 is one decision for the whole form, not one per field.** Carbon does not
 mix regular and fluid in a group.

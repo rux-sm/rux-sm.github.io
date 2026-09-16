@@ -79,12 +79,16 @@ paragraph. It is one class on the page's outer grid.
 
 ## Fields — regular or fluid
 
-Six controls exist in both styles: text input, text area, select, number
-input, search, date picker. Fluid packs the label inside the field's box so
+Ten controls exist in both styles: text input, text area, select, number
+input, search, date picker, time picker, and the list-box three — dropdown,
+combo box and multi-select. Fluid packs the label inside the field's box so
 a dense form aligns; regular keeps the label above and is what every other
 control matches. Suggestion: regular unless the whole form is fluid, since
-Carbon does not mix them in one group. Checkbox, radio, toggle and the
-list-box family have no fluid form.
+Carbon does not mix them in one group. Only checkbox, radio and toggle have
+no fluid form.
+
+A list-box control takes fluid on its wrapper, `rux--list-box__wrapper--fluid`,
+rather than a `--fluid` class of its own, which is why it reads as missing.
 
 ## Buttons — kinds, sizes, states
 

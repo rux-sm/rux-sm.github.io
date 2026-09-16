@@ -41,10 +41,12 @@ the schema to match the page.
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
-- **The publishable key can run 35 of the 44 `security definer` functions.**
-  The nine it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
+- **The publishable key can run 33 of the 44 `security definer` functions.**
+  The eleven it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
   `my_staff_profile`, `signal_maintenance_schedule`, `is_owner`,
-  `list_accounts`, `set_account_apps` and `replace_maintenance_schedule_share`.
+  `list_accounts`, `set_account_apps`, `replace_maintenance_schedule_share`,
+  `get_trip_driver_statuses` and `sync_trip_driver_statuses`. The last two
+  also call `assert_staff`, because an anonymous sign-in is signed in.
 
 **What this means for this app.** A staff session and the publishable key
 alone reach the same rows until the open rules come down. That is a cutover

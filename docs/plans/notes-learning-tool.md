@@ -14,12 +14,13 @@ simplicity wins and this plan says what was left out.
 
 **The map is the way in, and a tile is a level.** Every tile can be opened and
 attempted, however well the library knows it. There is one verb — open a tile
-and work through it — and it always ends the same way: a record reaches atlas
-and the tile is fuller next time.
+and work through it.
 
-**Learning and filling gaps are the same act, not two.** What the tool collects
-is evidence arriving, never knowledge verified: atlas decides what a source
-settles, and a page changes only when its owning document does.
+**Working through a tile can produce evidence or feedback for atlas.** Verified
+contributions improve its content; reading and practice require no submission.
+Finding nothing new, contradicting what is written, and being rejected are all
+valid outcomes rather than failures. What the tool collects is evidence
+arriving, never knowledge verified.
 
 ## Decisions
 
@@ -63,9 +64,19 @@ settles, and a page changes only when its owning document does.
   the other what the item says. Answering draws the line and greys what it
   skips.
 
-- **A tile that should ask but cannot is a quest**, which is how the map fills
-  itself in: five tiles dead-end with no outcome written, two lookup nodes have
-  no edges at all, and one fork has outcomes but no question.
+- **A tile that should continue but cannot is a quest, and the map already says
+  which those are.** Its four shortage checkpoints are declared placeholders,
+  each naming what has not been walked. Its two lookups carry no edge *by
+  design* — a detour taken for information, where the walk is the same whether or
+  not you take it — so they are linked in context and never given a process
+  dependency they do not have.
+
+- **The three states are computed, never typed.** **Empty** when no procedure
+  phase covers the node; **partly known** when one does but a step is missing or
+  a gap is open against its screens; **known** when one does, nothing is open,
+  and every covering phase carries a walked date. A node carrying a session code
+  finds its phases through that code; a node without one, like the planning
+  gates, carries an authored link instead.
 
 - **A tile says which kind of work its holes need**, a trip into LN or a read at
   the desk. Of 175 open gaps 98 name a screen; sending rux into the environment
@@ -87,10 +98,14 @@ settles, and a page changes only when its owning document does.
 
 ### Progress that cannot lie
 
-- **A tile shows what it has, and separately what is open.** What it has —
-  screens documented, steps written, phases walked — only grows. What is open is
-  a count of quests, and it grows too whenever the library learns that it did
-  not know something.
+- **A tile shows current counts, each with its unit**, and every one of them may
+  fall as well as rise: screens documented, steps written, phases walked, quests
+  open. A redundant step is removed, wrong documentation is withdrawn, and a
+  corrected phase loses its walked date until it is run again.
+
+- **A cumulative tally, if one is ever wanted, is labelled as contributions
+  made** and never as how much of the tile is covered. The two are different
+  numbers and only one of them describes the content.
 
 - **No percentage, ever.** A percentage needs a denominator, and nobody knows
   how much there is to know. A bar that falls because rux discovered a gap would
@@ -154,22 +169,19 @@ settles, and a page changes only when its owning document does.
   never closable by screenshots. Mining help, resolving contradictory sources and
   reviewing a recording are the others, and they need no environment time.
 
-- **A correction has two signals, and the page shows both.** **Applied** when the
-  owning document changed and rux can see the revision, which lands as soon as
-  the review does. **Confirmed** when someone has since done it and it held,
-  which arrives as a new quest on the tile. An empty inbox is not a result.
+- **Applied means the owning document changed**, and the page links the revision
+  that carried it. A review enters the intake rather than editing anything, so
+  Applied lands when the document does and not when the review is sent. An empty
+  inbox is not a result.
 
-- **A tile's count grows only on confirmation**, so the number that means
-  something is the one evidence backs.
+- **A confirmation quest is raised only where the change leaves something
+  specific unverified**, never as a second gate on every correction. Revised
+  instructions have not been walked, so the affected phase is rerun; a wording
+  fixed against a source that did not move was already verified during review
+  and needs no second reading.
 
-- **The confirm quest matches the correction's kind**: fixed from a capture, go
-  look again; from help, re-read it; a disagreement, check both sides still say
-  what they said; a step, walk it. Confirming a step produces the walked date
-  atlas already requires before calling a procedure approved.
-
-- **Confirming is an offer, never a debt.** Reading and practising succeed
-  without submitting anything, so a tile full of confirm quests is not homework
-  owed.
+- **Confirming is an offer, never a debt**, and the walked date it produces is
+  the one atlas already requires before calling a procedure approved.
 
 - **How affected documents are found is decided per intake kind.** `fanout.py`
   answers for a capture and not for a corrected meaning.
@@ -212,8 +224,12 @@ settles, and a page changes only when its owning document does.
   answers can attach to steps the learner never saw. Either the pinned revision
   is loaded, or resuming is refused and a fresh run offered.
 
-- **An investigation is a walk.** Same recording, same pull, same intake — not a
-  second mechanism.
+- **An investigation shares a walk's transport, not its record.** A walk pins an
+  existing walkthrough, its commit and its declared phases, and the generator
+  refuses a subject with no file under `walkthroughs/` — which is exactly the
+  empty tile this plan promises can be attempted. So the form, the upload, the
+  pull and the intake are shared, and the record is its own: the question, its
+  subject, the source examined, what was observed, and what rux concludes.
 
 - **The data sits in five `platform.notes_*` tables and the private bucket
   `notes-walk-shots`**, readable and writable only by the owner.
@@ -254,8 +270,13 @@ settles, and a page changes only when its owning document does.
 
 ### First — one tile, worked through
 
+- [ ] Fix the first tile as map node 5, **Generate Order Planning (Item)**
+      (`cprrp1220m000`): it opens phases 3 to 5 of
+      `run-order-planning-for-one-item`, owns their quests, and takes
+      `cprrp0520m000` as its lookup panel — the detour the map already places
+      beside it. Record where that association lives.
 - [ ] rux attests to `order-planning` and `planned-order`, the two concepts
-      whose terms `run-order-planning-for-one-item` uses across its six phases.
+      whose terms those phases use.
 - [ ] Simplify that procedure: separate its essential warnings from its optional
       detail, and move only the detail out.
 - [ ] Decide the source scope rule, then label that tile at the levels its own
@@ -281,20 +302,15 @@ settles, and a page changes only when its owning document does.
 
 ### Later, each on its own
 
-- [ ] Build walking the map, after the first slice so it cannot obscure whether
-      the content itself got easier to learn.
-- [ ] Phrase the question on forks that have outcomes but none, write the five
-      dead ends' outcomes, and connect the two lookup nodes.
-- [ ] Evaluate capture release, once clearance is defined and atlas's evidence
-      rule is amended.
-- [ ] Tag the remaining gaps, tile by tile, as each is taken on.
-- [ ] Attest the remaining concepts and carry the remaining screens through.
-- [ ] Label, expand and score the other five lanes.
-- [ ] Carry each phase's walked date into the export and show it.
-- [ ] Add the header search over the library's own pages.
-- [ ] Build the owner's queue page.
-- [ ] Cut the side nav to Map, Procedures and Concepts.
-- [ ] Simplify the other seven procedures, one at a time.
-- [ ] Retire the meeting pages to landings that keep their addresses.
-- [ ] Confirm the session map's four silent-failure notes, then retire it.
+Each waits on the first slice holding. The decisions above say what they are;
+these say only what must not be started early.
+
+- [ ] Walking the map, after the slice, so it cannot obscure whether the content
+      itself got easier to learn.
+- [ ] Capture release, once clearance is defined and atlas's evidence rule is
+      amended.
+- [ ] The rest of the map: the forks' questions, the checkpoints' outcomes where
+      evidence establishes them, the other five lanes, the remaining concepts and
+      screens, the walked dates, search, the queue page, the nav cut, the other
+      seven procedures, the meeting landings, and retiring the session map.
 - [ ] Decide publication separately from rendering, and publish deliberately.

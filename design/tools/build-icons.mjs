@@ -90,6 +90,10 @@ const ICONS = [
   // A FILE GOING UP, for Scheduler's Upload itinerary menu item. Carbon's
   // file uploader draws no icon of its own, and `download` points the other way.
   'upload',
+  // A DRIVER'S ROLE, for Scheduler's trip bar: `user` is a driver or co-driver,
+  // and `channels`, two opposite arrows, is a relief driver's handover, so
+  // relief is the one role that is not a person.
+  'user', 'channels',
 ];
 
 const symbols = [], missing = [], from = {};

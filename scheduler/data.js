@@ -280,7 +280,8 @@
     // Each leg's hotel: the bar's hotel mark, its menu item and the Details tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
-    'trip_assignments(id,bus_id,position,leg,trip_drivers(driver_id,role))',
+    // The roles an assignment turns on, and who fills them: the drivers row.
+    'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(driver_id,role))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
@@ -350,7 +351,12 @@
     // which is what an ended log-in or removed access looks like; a reload
     // sends the account where it can go.
     if (!buses.length) throw new Error('The schedule came back empty. Reload the page.');
-    return { buses, trips, drivers, contacts, oos, timeOff, weekStart, weekEnd };
+    // Each driver's status on these trips, from the table rux-ui and the driver
+    // page write, keyed as `statusKey` builds it.
+    const statusRows = trips.length ? await withTimeout(
+      client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
+    const statuses = new Map(statusRows.map(r => [statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    return { buses, trips, drivers, contacts, oos, timeOff, statuses, weekStart, weekEnd };
   }
 
   function setRange(weekStart, weekEnd) {
@@ -509,7 +515,108 @@
       : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
   };
 
-  function barEl(b, driversById, busesById) {
+  /* A driver's role and status on a bar. The roles are rux-ui's four, in the
+     order the drivers row lists them. Relief is the one role that is not a
+     person, so it cannot be taken for a co-driver at 12px. */
+  const ROLES = [
+    { role: 'driver', label: 'Driver', icon: '#i-user', box: '0 0 16 16' },
+    { role: 'co-driver', label: 'Co-driver', icon: '#i-user', box: '0 0 16 16' },
+    { role: 'relief-start', label: 'Relief start', icon: '#i-channels', box: '0 0 32 32' },
+    { role: 'relief-end', label: 'Relief end', icon: '#i-channels', box: '0 0 32 32' },
+  ];
+  // The five states `trip_driver_statuses` holds, and the tone each paints.
+  const DRIVER_STATUSES = [
+    { value: 'off', label: 'Off' },
+    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error' },
+    { value: 'pending-response', label: 'Pending response', tone: 'warning' },
+    { value: 'confirmed', label: 'Confirmed', tone: 'success' },
+    { value: 'declined', label: 'Declined', tone: 'error' },
+  ];
+  // A status row's identity, as rux-ui keys it: trip, driver, leg and role.
+  const statusKey = (tripId, driverId, leg, role) =>
+    [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
+
+  // The tone names rux-ui once saved in place of a status.
+  const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
+
+  /* The roles an assignment turns on, each with the status rux-ui once saved
+     after it as `role:state`, which a trip with no status row still shows. An
+     assignment without the column keeps every role it has a driver in, and
+     the driver role is always on. */
+  function activeRolesOf(assign) {
+    const on = new Map([['driver', 'off']]);
+    const saved = Array.isArray(assign.active_roles)
+      ? assign.active_roles.map(String)
+      : (assign.trip_drivers || []).map(d => d.role || 'driver');
+    for (const entry of saved) {
+      const [role, state] = entry.split(':');
+      on.set(role, LEGACY_STATUS[state] ?? state ?? 'off');
+    }
+    return on;
+  }
+
+  /* An assignment's crew in role order: each driver in a role that is on, with
+     their status, and each role that is on with nobody in it. */
+  function crewOf(trip, assign, driversById, statuses) {
+    const on = activeRolesOf(assign);
+    const leg = assign.leg || 'outbound';
+    const crew = [];
+    for (const r of ROLES) {
+      if (!on.has(r.role)) continue;
+      const filled = (assign.trip_drivers || []).filter(d => d.driver_id && (d.role || 'driver') === r.role);
+      for (const d of filled) {
+        const row = statuses?.get(statusKey(trip.id, d.driver_id, leg, r.role)) ?? null;
+        const value = row ? row.status : on.get(r.role);
+        crew.push({
+          ...r, leg, row, driverId: d.driver_id, who: driversById.get(d.driver_id),
+          status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
+        });
+      }
+      if (!filled.length) crew.push({ ...r, leg, needed: true });
+    }
+    return crew;
+  }
+
+  const crewName = c => (c.who ? (c.who.short_name || c.who.name) : 'Unknown driver');
+
+  // When a status was set, as "Sep 12, 3:40 PM" on this computer's clock.
+  const setAt = at => {
+    const d = new Date(at || '');
+    return Number.isNaN(d.getTime()) ? ''
+      : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  };
+
+  /* A crew member in words, for the tooltip and the bar's label: the role, the
+     name, and a status other than Off with who set it and when. */
+  function crewText(c) {
+    if (c.needed) return `${c.label} needed`;
+    const parts = [c.label, c.who ? (c.who.name || c.who.short_name) : 'Unknown driver'];
+    const { value, label } = c.status;
+    if (value !== 'off') {
+      parts.push(c.row?.source === 'driver' ? `${label} by the driver` : `${label}, set by dispatch`);
+      const at = setAt((value === 'confirmed' && c.row?.acceptedAt)
+        || (value === 'declined' && c.row?.declinedAt) || c.row?.updatedAt);
+      if (at) parts.push(at);
+    }
+    return parts.join(' · ');
+  }
+
+  /* One crew member on the drivers row: the role's icon on a disc in the
+     status's tone, then the short name. A role nobody fills is the icon alone,
+     in the error tone, and a declined driver's name is struck through, so the
+     colour is never the only signal. */
+  function crewEl(c) {
+    const tone = c.needed ? 'error' : c.status.tone;
+    const item = el('span', c.status?.value === 'declined' ? 'scheduler-crew scheduler-crew--declined' : 'scheduler-crew');
+    const mark = el('span', tone ? `scheduler-crew__mark scheduler-crew__mark--${tone}` : 'scheduler-crew__mark');
+    mark.appendChild(svgUse(c.icon, '12', c.box));
+    item.appendChild(mark);
+    if (!c.needed) item.appendChild(el('span', 'scheduler-crew__name', crewName(c)));
+    item.title = crewText(c);
+    return item;
+  }
+
+  function barEl(b, driversById, busesById, statuses) {
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
     const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
@@ -608,32 +715,31 @@
     if (trip.notes) note.title = trip.notes;
     addRow(bar, 'scheduler-bar__notes', note);
 
-    const names = assign
-      ? (assign.trip_drivers || [])
-          .map(d => driversById.get(d.driver_id))
-          .filter(Boolean)
-          .map(who => who.short_name || who.name)
-      : [];
-    addRow(bar, 'scheduler-bar__drivers', el('span', null, assign ? (names.join(' · ') || 'No driver') : 'Needs a bus'), warn('drivers'));
+    // The crew in role order, or what the bar needs before it can have one.
+    const crew = assign ? crewOf(trip, assign, driversById, statuses) : [];
+    const crewBox = el('span', 'scheduler-bar__crew', assign ? null : 'Needs a bus');
+    crewBox.append(...crew.map(crewEl));
+    addRow(bar, 'scheduler-bar__drivers', crewBox, warn('drivers'));
 
     bar.setAttribute('aria-label', [
       trip.destination || 'No destination', trip.customer, ref,
       place.fromPrev ? 'continues from the previous week' : null,
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
+      ...crew.map(crewText),
       ...lacks.map(w => w.label),
     ].filter(Boolean).join(', '));
     return bar;
   }
 
   function render(data) {
-    const { buses, trips, drivers, contacts, oos, timeOff, weekStart, weekEnd } = data;
+    const { buses, trips, drivers, contacts, oos, timeOff, statuses, weekStart, weekEnd } = data;
     const driversById = new Map(drivers.map(d => [d.id, d]));
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
     // for nothing.
     const busesById = new Map(buses.map(b => [b.id, b]));
-    panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, contacts: contacts || [] };
+    panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses, contacts: contacts || [] };
 
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
@@ -795,7 +901,7 @@
         span.setAttribute('aria-label', `Out of service, ${w.reason || 'no reason given'}`);
         track.appendChild(span);
       }
-      for (const b of bars) { const el = barEl(b, driversById, busesById); installDrag(el); track.appendChild(el); }
+      for (const b of bars) { const el = barEl(b, driversById, busesById, statuses); installDrag(el); track.appendChild(el); }
 
       rowEl.append(head, track);
       gridEl.appendChild(rowEl);
@@ -1075,7 +1181,7 @@
   // The most trips a search lists. One more is fetched, so the count can say
   // "More than 50 trips match" without claiming a total it did not count.
   const SEARCH_CAP = 50;
-  let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), contacts: [] };
+  let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), statuses: new Map(), contacts: [] };
   let panelOpener = null;
   const panelDetails = document.getElementById('scheduler-panel-details');
   const panelFleet = document.getElementById('scheduler-panel-fleet');
@@ -4224,6 +4330,11 @@
       return;
     }
 
+    if (item.dataset.driverStatus) {
+      await setDriverStatus(bar, item.dataset.driverId, item.dataset.crewRole, item.dataset.driverStatus);
+      return;
+    }
+
     // A colour saves at once, like Take off this bus: one column, no form.
     if (item.dataset.color != null) {
       const value = item.dataset.color || null;
@@ -4247,7 +4358,8 @@
   // The Color submenu's own close bubbles here too, and must not hide the menu.
   barMenu?.addEventListener('rux:menu-closed', e => { if (e.target === barMenu) barMenu.hidden = true; });
 
-  // Fills the bar menu for one bar: which items apply, and the Color chips.
+  // Fills the bar menu for one bar: which items apply, the Color chips and
+  // the drivers' statuses.
   function prepareBarMenu(bar) {
     barMenuFor = bar;
     document.getElementById('scheduler-bar-menu-unassign').hidden =
@@ -4270,6 +4382,7 @@
         item.querySelector('.scheduler-swatch').className = `scheduler-swatch scheduler-bar--${bar.dataset.standardHue || 'blue'}`;
       }
     }
+    fillCrewItems(bar);
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
@@ -4278,6 +4391,95 @@
     hotelItem.hidden = !bar.dataset.needHotel || locked;
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
+  }
+
+  // The bar's crew, read again from the trip the board holds.
+  function barCrew(bar) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    const assign = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
+    return assign ? { trip, crew: crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses) } : null;
+  }
+
+  /* One status item per driver on the bar, after Color: the driver's role
+     icon in their status's tone, their name and status, and a submenu of the
+     five statuses with theirs checked. A role nobody fills has no status. */
+  function fillCrewItems(bar) {
+    for (const old of barMenu.querySelectorAll('[data-crew-part]')) old.remove();
+    const found = barCrew(bar);
+    const anchor = document.getElementById('scheduler-bar-menu-color');
+    const items = (found?.crew ?? []).filter(c => !c.needed).map(c => {
+      const name = crewName(c);
+      const item = el('li', 'rux--menu-item');
+      item.setAttribute('role', 'menuitem');
+      item.tabIndex = -1;
+      item.setAttribute('aria-haspopup', 'true');
+      item.setAttribute('aria-expanded', 'false');
+      item.dataset.crewPart = '';
+      const icon = el('div', 'rux--menu-item__icon');
+      icon.appendChild(crewEl(c).firstChild);
+      const caret = el('div', 'rux--menu-item__shortcut');
+      caret.appendChild(svgUse('#i-caret--right', '16', '0 0 32 32'));
+      const sub = el('ul', 'rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items');
+      sub.setAttribute('role', 'menu');
+      sub.setAttribute('aria-label', `${c.label} status`);
+      sub.tabIndex = -1;
+      const groupItem = el('li', 'rux--menu-item-radio-group');
+      groupItem.setAttribute('role', 'none');
+      const group = el('ul');
+      group.setAttribute('role', 'group');
+      group.setAttribute('aria-label', `${name}'s status`);
+      for (const st of DRIVER_STATUSES) {
+        const on = st.value === c.status.value;
+        const opt = el('li', 'rux--menu-item');
+        opt.setAttribute('role', 'menuitemradio');
+        opt.setAttribute('aria-checked', String(on));
+        opt.tabIndex = -1;
+        opt.dataset.driverId = c.driverId;
+        opt.dataset.crewRole = c.role;
+        opt.dataset.driverStatus = st.value;
+        const check = el('div', 'rux--menu-item__selection-icon');
+        if (on) check.appendChild(svgUse('#i-checkmark', '16', '0 0 20 20'));
+        const mark = el('div', 'rux--menu-item__icon');
+        mark.appendChild(crewEl({ ...c, status: st }).firstChild);
+        opt.append(check, mark, el('div', 'rux--menu-item__label', st.label));
+        group.appendChild(opt);
+      }
+      groupItem.appendChild(group);
+      sub.appendChild(groupItem);
+      item.append(el('div', 'rux--menu-item__selection-icon'), icon,
+        el('div', 'rux--menu-item__label', `${name}: ${c.status.label}`), caret, sub);
+      return item;
+    });
+    let at = anchor;
+    for (const item of items) { at.after(item); at = item; }
+  }
+
+  /* Saves one driver's status. `sync_trip_driver_statuses` takes the trip's
+     whole crew, deletes any status the list leaves out, and changes only the
+     rows marked dirty, so every driver in a role that is on is sent with the
+     status they have and only the picked one is marked. */
+  async function setDriverStatus(bar, driverId, role, value) {
+    const found = barCrew(bar);
+    const target = found?.crew.find(c => !c.needed && String(c.driverId) === driverId && c.role === role);
+    if (!target || target.status.value === value) return;
+    const { trip } = found;
+    const list = (trip.trip_assignments || []).flatMap(a =>
+      crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
+        const picked = c.driverId === target.driverId && c.leg === target.leg && c.role === target.role;
+        return { driverId: c.driverId, leg: c.leg, role: c.role,
+          status: picked ? value : c.status.value, dirty: picked };
+      }));
+    const label = DRIVER_STATUSES.find(x => x.value === value).label;
+    toast('info', 'Changing the driver status…');
+    try {
+      const { error } = await withTimeout(
+        client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));
+      if (error) throw new Error(error.message);
+      await show();
+      toast('success', `${crewName(target)} is ${label.toLowerCase()} now.`);
+    } catch (err) {
+      toast('error', `The driver status did not change. ${err.message}`);
+    }
   }
 
   /* Marks this leg's hotel booked or not. It saves at once, like a colour: one

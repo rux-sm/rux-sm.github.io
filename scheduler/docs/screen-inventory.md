@@ -36,13 +36,14 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch, Carbon's file uploader and the trip's itineraries, contracts and POs, newest first, each replaced or deleted from its row menu; a file writes at once, stored as rux-ui stores it. The itinerary grid is *later*. |
 | Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
 | Trip editor, bus assignment | keep | The Fleet tab is read-only; the bus picker becomes a combo box. |
+| Trip editor, driver assignment | later | Changing a driver resets that driver's status to Off, as rux-ui does. |
 | Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |
 | Customer editor | keep | Panel, four fields (§7). |
 | Request detail | keep | Panel with a Create draft trip button. |
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
 | Trip finder results page | keep | Results in a data table on a page. The header search and Cmd-K exist. |
-| Contact info, Driver week info | later | Modals with a text area and the copy button module. |
+| Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
 | Print schedule, trip envelope, driver sheet | later, in that order | Print stylesheets over the same page, options in a modal. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
 | Notifications | later | Shell header panel, the one the switcher uses. |
@@ -61,6 +62,8 @@ Design account panel replaces it).
 | Print envelope on the bar menu | later | With printing. |
 | Pending itinerary mark | keep | A warning chip on a bar whose trip has no itinerary and is not marked as not needing one. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
+| Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour: green confirmed, amber pending response, red pending assignment or declined, none for Off. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. The tooltip names the role, the status, who set it and when. |
+| Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |
 | Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
 

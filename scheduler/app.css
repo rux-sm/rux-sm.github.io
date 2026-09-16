@@ -528,6 +528,36 @@ button.scheduler-row-head__num::after {
   box-shadow: none;
 }
 
+/* The drivers row's crew: each driver's role icon and short name, in role
+   order. The row gives way from the end, a whole name at a time. */
+.scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
+.scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
+.scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
+.scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
+/* The role icon. Off is the bar's own text colour on no fill; a status is a
+   disc in its support colour. On green and red the icon is the inverse text
+   colour: white in a light theme, where white clears 3:1 on both, and dark in
+   a dark theme, where white does not. On amber it is dark in every theme, as
+   the warning chips are. */
+.scheduler-crew__mark {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--scheduler-row-h);
+  block-size: var(--scheduler-row-h);
+  border-radius: 50%;
+}
+.scheduler-crew__mark svg { display: block; }
+.scheduler-crew__mark--success { background: var(--rux-support-success); color: var(--rux-text-inverse); }
+.scheduler-crew__mark--error { background: var(--rux-support-error); color: var(--rux-text-inverse); }
+.scheduler-crew__mark--warning { background: var(--rux-support-warning); color: var(--scheduler-on-warning); }
+/* In the bar menu the disc is the size of a menu icon. */
+.rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
+/* On an amber bar the amber disc would vanish into its own fill, so it takes
+   a ring inside its edge, where the row does not clip it. */
+.scheduler-bar--amber .scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+
 /* A double booking: a strip over the last row, in the error tokens. */
 .scheduler-bar__conflict {
   position: absolute; inset-inline: 0; inset-block-end: 0;

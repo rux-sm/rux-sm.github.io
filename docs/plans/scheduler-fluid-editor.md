@@ -18,9 +18,18 @@ Route and Files are not, and a tab strip cannot be right for both at once.
   fluid block landed on the colour the unselected tabs already wear, and the
   selected tab kept the darker `layer`. One tab strip cannot serve four regular
   tabs and one fluid one.
-- **The fields stay light.** A field sits one step above its surface, which in
-  a side panel is `field-02` over `layer`. Darkening the fields to match the
-  panel collapses that step and the form loses its edge.
+- **`field-N` and `layer-N` are the same value.** In g90 both level 01 are
+  #393939 and both level 02 are #525252; a field is not inherently a step above
+  its surface. The step inside the editor comes from Carbon's own side-panel
+  rule, which lifts a field to `field-02` while the panel stays at level 01.
+- **The tab strip goes to `rux--layer-two`.** Then the selected tab, which is
+  painted `--rux-layer`, lands on #525252, the same as the fluid surface, and
+  the unselected tabs, painted `--rux-layer-accent`, go to #6f6f6f and stay a
+  step lighter. Carbon's light-to-dark order is kept, no colour is invented,
+  and the whole answer is one of Carbon's own layer classes. Measured in the
+  running editor.
+- **Billing's contained lists and its status tile sit on the fluid surface,**
+  like every other thing on a fluid tab.
 - **The surface carries across a whole tab,** edge to edge, and the tab's own
   16px padding puts headings back under the field labels. Every label on a tab
   lines up at 16px.
@@ -40,14 +49,6 @@ Route and Files are not, and a tab strip cannot be right for both at once.
 
 ## Questions
 
-- **What colour is the selected tab once every tab is fluid?** Taking
-  `field-02` matches its content and satisfies the rule, but that is the colour
-  the unselected tabs wear, so selection would rest on the blue bar and the
-  bolder text alone. Moving the unselected tabs darker instead inverts Carbon's
-  own light-to-dark order. Which?
-- **Billing's three contained lists and its status tile** — do they sit on the
-  fluid surface as they are, or keep their own surfaces inside it? They are not
-  form controls and have no fluid form, and the lists already run full bleed.
 - **Does the surface run down to the action bar,** as IBM's spec draws it, or
   stop at the last field as Details does today?
 - **Fleet drew nothing under invented data,** so its controls are unsurveyed.
@@ -55,8 +56,8 @@ Route and Files are not, and a tab strip cannot be right for both at once.
 
 ## Tasks
 
-- [ ] Answer the four questions above.
-- [ ] Decide and apply the tab strip's colours, the reason this work exists.
+- [ ] Raise the tab strip to `rux--layer-two`, the reason this work exists,
+      and check it in all eight themes.
 - [ ] Make Route fluid: four text fields, no sections, the smallest tab.
 - [ ] Make Files fluid: one contained list and the Itinerary not needed switch.
 - [ ] Make Billing fluid: two text fields, three switches, three contained

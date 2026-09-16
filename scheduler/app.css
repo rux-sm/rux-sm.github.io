@@ -139,10 +139,23 @@
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
 .scheduler-day--weekend { color: var(--rux-text-placeholder); }
-/* Today: an interactive underline and a bold date. data.js also sets
-   `aria-current="date"` on the cell. */
-.scheduler-day--today { box-shadow: inset 0 -2px 0 var(--rux-border-interactive); }
-.scheduler-day--today .scheduler-day__num { color: var(--rux-text-primary); font-weight: 600; }
+/* Today, marked as Carbon's calendar marks it: the day in `link-primary` over
+   a 4px square, rather than an underline, which the editor's tabs use for the
+   selected tab. The square sits 2px off the bottom, under the text in the 32px
+   band, where Carbon's 7px would overlap it. It follows the weekend rule, so a
+   weekend today is marked the same. data.js also sets `aria-current="date"` on
+   the cell. */
+.scheduler-day--today { color: var(--rux-link-primary); }
+.scheduler-day--today::after {
+  content: "";
+  position: absolute;
+  inset-block-end: var(--rux-spacing-01);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  inline-size: 0.25rem;
+  block-size: 0.25rem;
+  background-color: var(--rux-link-primary);
+}
 
 /* ── Bus column ─────────────────────────────────────────────────────────────
    The bus number and its out-of-service mark, sticky on the left. The lift and
@@ -719,12 +732,6 @@ button.scheduler-row-head__num {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
-/* The pencil that starts the trip editor's title, sitting on the text's
-   baseline with the same gap the week button keeps before its caret. */
-.scheduler-panel-title__icon {
-  vertical-align: -0.1875rem;
-  margin-inline-end: var(--rux-spacing-03);
 }
 /* Everything before this sits left, everything after it right. */
 .scheduler-toolbar__spacer { flex: 1; }

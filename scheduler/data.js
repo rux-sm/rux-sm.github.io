@@ -2498,17 +2498,16 @@
   function unsavedWork() { return !panelEl.hidden && changed(); }
 
   /* The title names the trip being edited, from the destination as typed, since
-     the selected bar can be a different trip: a pencil and the destination on
-     one line, the whole name on hover, and "Edit trip" for a screen reader in
-     place of the pencil. A new trip is titled in words. */
+     the selected bar can be a different trip: the destination on one line, the
+     whole name on hover, and "Edit trip" before it for a screen reader, as the
+     roster's and the schedule's titles carry no icon. A new trip is titled in
+     words. */
   function setTitle() {
     if (!editing) return;
     const dest = document.getElementById('scheduler-f-destination')?.value.trim();
-    for (const [h, size] of [[panelTitle, '16'], [panelTitleCollapsed, '16']]) {
+    for (const h of [panelTitle, panelTitleCollapsed]) {
       if (editing.creating) { h.textContent = 'New trip'; h.removeAttribute('title'); continue; }
-      const icon = svgUse('#i-edit', size, '0 0 32 32');
-      icon.setAttribute('class', 'scheduler-panel-title__icon');
-      h.replaceChildren(icon, el('span', 'rux--visually-hidden', 'Edit trip: '), document.createTextNode(dest || 'No destination'));
+      h.replaceChildren(el('span', 'rux--visually-hidden', 'Edit trip: '), document.createTextNode(dest || 'No destination'));
       if (dest) h.title = dest; else h.removeAttribute('title');
     }
   }
@@ -4420,13 +4419,11 @@
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
-    // The head names the trip as the editor's does: an icon, then the
-    // destination, with "Itinerary" for a screen reader in place of the icon.
+    // The head names the trip as the editor's does: the destination, with
+    // "Itinerary" before it for a screen reader.
     const dest = trip?.destination || 'No destination';
     for (const h of [itinTitle, itinTitleCollapsed]) {
-      const icon = svgUse('#i-attachment', '16', '0 0 32 32');
-      icon.setAttribute('class', 'scheduler-panel-title__icon');
-      h.replaceChildren(icon, el('span', 'rux--visually-hidden', 'Itinerary: '), document.createTextNode(dest));
+      h.replaceChildren(el('span', 'rux--visually-hidden', 'Itinerary: '), document.createTextNode(dest));
       h.title = dest;
     }
     const when = uploadedOn(doc.created_at);

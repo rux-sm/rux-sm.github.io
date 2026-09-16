@@ -114,15 +114,6 @@ arriving, never knowledge verified.
 
 ### What a reader meets
 
-- **Three things in the side nav: Map, Procedures, Concepts.** The glossary is
-  part of Concepts, not a fourth item: its 51 terms are generated from the
-  concepts' own frontmatter, each with exactly one owner, so they are one body
-  of content with two views.
-
-- **Homework is not a destination.** Its sittings attach to the tiles they test,
-  and the check arrives at the end of working through a tile. The seven-sitting
-  curriculum was a hand-made ordering, and the map already orders by dependency.
-
 - **A screen is a panel, not a destination**, which is atlas's own publishing
   test applied. It opens beside the step that names it and closes again, so a
   reader mid-task in LN never loses their place.
@@ -198,10 +189,6 @@ arriving, never knowledge verified.
 - **A tile expands in place** into what its stage does, its procedures, its
   screens, its quests and its progress. No stage page and no new address.
 
-- **On a phone the panel is a full-screen sheet** and back returns to the step it
-  was opened from. The map becomes tiles by lane, each carrying what must come
-  before it, where it branches and what follows.
-
 - **A tile entered mid-procedure opens with what must already be true.** A short
   "Before starting" view is composed from the prerequisites the procedure itself
   names, each linking back to the step that satisfies it. Original step numbers
@@ -210,8 +197,6 @@ arriving, never knowledge verified.
 
 - **A procedure puts its steps first**, each naming its screen as a chip, with
   the `What LN is doing` paragraph above the table.
-
-- **One search box in the header**, over the library's own pages.
 
 - **Pages are generated, with a few KB of behaviour** for the panel, search and
   the owner's live quests.
@@ -233,22 +218,6 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
   the current procedure while the record keeps its older pinned commit, so
   answers can attach to steps the learner never saw. Either the pinned revision
   is loaded, or resuming is refused and a fresh run offered.
-
-### What retires, and how addresses survive
-
-- **A retired page keeps its address and becomes a short landing** saying what it
-  was and linking to what now holds its content. Nothing 404s.
-
-- **Meeting reviews and summaries stop being pages**, becoming the sources a page
-  cites and is read through.
-
-- **Before a phase's long notes move**, its essential warnings are separated
-  from its optional detail, and the essentials stay with the step.
-
-- **The session map retires** once its four silent-failure notes are confirmed.
-
-- **The private-preview walk form retires** when the online walk replaces it, and
-  not before the revision defect above is fixed.
 
 ## Questions
 
@@ -299,7 +268,8 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
       checks above.
 - [ ] Answer in writing before extending: can rux find it unprompted; see what
       must exist first; read a field without losing their place; explain the
-      result; send a correction worth acting on.
+      result; send a correction worth acting on; and reach the tile cold, at
+      node 5, without having opened the whole procedure first.
 
 ### Second — one quest, all the way through
 
@@ -308,18 +278,3 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
       see its outcome on the page.
 - [ ] Time it, against what the same correction costs today. One number with no
       baseline proves nothing.
-
-### Later, each on its own
-
-Each waits on the first slice holding. The decisions above say what they are;
-these say only what must not be started early.
-
-- [ ] Walking the map, after the slice, so it cannot obscure whether the content
-      itself got easier to learn.
-- [ ] Capture release, once clearance is defined and atlas's evidence rule is
-      amended.
-- [ ] The rest of the map: the forks' questions, the checkpoints' outcomes where
-      evidence establishes them, the other five lanes, the remaining concepts and
-      screens, the walked dates, search, the queue page, the nav cut, the other
-      seven procedures, the meeting landings, and retiring the session map.
-- [ ] Decide publication separately from rendering, and publish deliberately.

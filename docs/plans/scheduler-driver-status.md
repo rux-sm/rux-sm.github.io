@@ -65,10 +65,10 @@ in use.
   week info turns a sent driver amber unless already confirmed or declined,
   and the driver's Accept on the share link turns them green; the board shows
   both on its next load.
-- **Assigning drivers and sending driver info are out of scope**, because the
-  scheduler has neither yet. When they are built, changing a driver resets its
-  status to Off and sending marks it amber, as rux-ui does, and
-  `scheduler/docs/screen-inventory.md` says so now.
+- **Sending driver info is out of scope**, because the scheduler cannot send
+  it yet. When it is built, sending marks a driver amber, as rux-ui does, and
+  `scheduler/docs/screen-inventory.md` says so now. The Fleet tab assigns
+  drivers, and a changed driver starts at Off.
 
 ## Questions
 

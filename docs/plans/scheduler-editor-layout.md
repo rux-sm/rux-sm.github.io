@@ -35,14 +35,11 @@ and reads right on real trips in every theme.
 
 ## Questions
 
-- **Fleet drew nothing under invented data,** so its controls are unsurveyed.
-  What is on it?
 - **Should the editor become a full page** for the tabs Carbon would not put in
   a side panel, or stay a column beside the board?
 
 ## Tasks
 
 - [ ] Check the editor in all eight themes on a real trip.
-- [ ] Survey Fleet against a real trip.
 - [ ] Answer the questions above.
 - [ ] rux reads every tab on real trips, in Chrome, Safari and on the phone.

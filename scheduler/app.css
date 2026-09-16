@@ -949,6 +949,19 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
 .scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
+/* A Fleet seat: the driver's combo box, then its status button, which sits
+   level with the field under the field's 16px label and 8px gap, so a
+   warning under the field does not move it. */
+.scheduler-fleet-seat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--rux-spacing-03);
+}
+.scheduler-fleet-status { margin-block-start: calc(1rem + var(--rux-spacing-03)); }
+/* A hidden leg's section stays hidden; the section class sets no display. */
+.scheduler-panel-section[hidden] { display: none; }
+
 /* Two fields side by side, each half the row, tops aligned so a helper text
    under one does not move the other. The editor keeps pairs to what fits half
    of its 20rem: a date range, and a hotel's confirmation beside Booked. */

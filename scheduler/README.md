@@ -10,7 +10,7 @@ lists what is unfinished here.
 
 A week board: buses down the side, days across, one bar per assignment, behind
 a staff log-in. It reads and writes the Supabase tables the `rux-ui` app also
-writes — trips and their stops, bus assignments, contacts, payments, POs and
+writes — trips and their stops, bus and driver assignments, contacts, payments, POs and
 invoices — and is that app's replacement, mid-flight.
 
 That database is production and shared with `rux-ui`, so nothing here is

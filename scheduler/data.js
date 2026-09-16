@@ -281,7 +281,8 @@
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
-    'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(driver_id,role))',
+    // The Fleet tab edits each seat by its row id, with its relief swap time and note.
+    'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(id,driver_id,role,report_time,instructions))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
@@ -340,7 +341,8 @@
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
-      client.from('drivers').select('id,name,short_name').then(unwrap),
+      // `status`, so the Fleet tab offers active drivers.
+      client.from('drivers').select('id,name,short_name,status').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client').order('name').then(unwrap),
@@ -1419,6 +1421,756 @@
     li.appendChild(act);
     return li;
   };
+
+  /* ── A menu of any items ──
+     The row menu above has two fixed items. The Fleet tab's bus and status
+     menus have more, so this menu is rebuilt from its items on every open and
+     placed the way the row menu is. An item with `checked` is a radio item. */
+  let itemsMenuEl = null;
+  let itemsMenuTrigger = null;
+  const placeMenuAt = (menu, trigger) => {
+    menu.hidden = false;
+    menu.style.position = 'fixed';
+    menu.style.insetInlineStart = '0px';
+    menu.style.insetBlockStart = '0px';
+    const box = trigger.getBoundingClientRect();
+    const width = menu.offsetWidth;
+    const height = menu.offsetHeight;
+    const left = Math.max(0, Math.min(box.right - width, window.innerWidth - width));
+    const top = box.bottom + height <= window.innerHeight ? box.bottom : Math.max(0, box.top - height);
+    menu.style.insetInlineStart = `${Math.round(left)}px`;
+    menu.style.insetBlockStart = `${Math.round(top)}px`;
+  };
+  const openItemsMenu = (trigger, items, label) => {
+    if (!itemsMenuEl) {
+      itemsMenuEl = el('ul', 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown');
+      itemsMenuEl.setAttribute('role', 'menu');
+      itemsMenuEl.tabIndex = -1;
+      itemsMenuEl.hidden = true;
+      itemsMenuEl.addEventListener('rux:menu-closed', () => {
+        itemsMenuEl.hidden = true;
+        itemsMenuTrigger?.setAttribute('aria-expanded', 'false');
+        itemsMenuTrigger = null;
+      });
+      document.body.appendChild(itemsMenuEl);
+    }
+    const menu = itemsMenuEl;
+    const radio = items.some(i => i.checked !== undefined);
+    menu.className = radio
+      ? 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items'
+      : 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown';
+    menu.setAttribute('aria-label', label);
+    menu.replaceChildren(...items.map(it => {
+      const li = el('li', it.danger ? 'rux--menu-item rux--menu-item--danger' : 'rux--menu-item');
+      li.setAttribute('role', radio ? 'menuitemradio' : 'menuitem');
+      if (radio) li.setAttribute('aria-checked', String(!!it.checked));
+      li.tabIndex = -1;
+      if (it.disabled) {
+        li.classList.add('rux--menu-item--disabled');
+        li.setAttribute('aria-disabled', 'true');
+      }
+      if (radio) {
+        const check = el('div', 'rux--menu-item__selection-icon');
+        if (it.checked) check.appendChild(svgUse('#i-checkmark', '16', '0 0 20 20'));
+        li.appendChild(check);
+      }
+      if (it.icon) {
+        const icon = el('div', 'rux--menu-item__icon');
+        icon.appendChild(it.icon);
+        li.appendChild(icon);
+      }
+      li.appendChild(el('div', 'rux--menu-item__label', it.label));
+      li.addEventListener('click', () => {
+        if (it.disabled) return;
+        window.Rux?.menu?.close?.(menu);
+        it.run();
+      });
+      return li;
+    }));
+    placeMenuAt(menu, trigger);
+    window.Rux?.menu?.open?.(menu, null);
+    trigger.setAttribute('aria-expanded', 'true');
+    itemsMenuTrigger = trigger;
+  };
+
+  /* ══ The Fleet tab ══
+     How many buses each leg needs, the bus on each, and who fills each bus's
+     four seats, as rux-ui stores them: `bus_count` and `return_bus_count` on
+     the trip, a `trip_assignments` row per bus, a `trip_drivers` row per
+     filled seat, and each seat's status through `sync_trip_driver_statuses`.
+     The tab edits a model, `editing.fleet`, and Save writes the difference
+     from `editing.fleetBefore` by id. Pay is left to rux-ui. */
+  const MAX_BUSES = 20;
+  const SEAT_LABEL = {
+    driver: 'Driver', 'co-driver': 'Co-driver',
+    'relief-start': 'Relief at start', 'relief-end': 'Relief at end',
+  };
+  const RELIEF = new Set(['relief-start', 'relief-end']);
+  let fleetSeq = 0;
+
+  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, status: 'off', statusDirty: false });
+  const blankBus = () => {
+    const seats = Object.fromEntries(ROLES.map(r => [r.role, blankSeat()]));
+    seats.driver.on = true;
+    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, seats };
+  };
+
+  // One bus as the trip holds it: the first row per seat is the seat, and a
+  // seat is on when `active_roles` says so, as the bar reads it.
+  function fleetBusOf(trip, a, statuses) {
+    const bus = blankBus();
+    bus.key = `a-${a.id}`;
+    bus.id = a.id;
+    bus.position = a.position ?? null;
+    bus.busId = a.bus_id ?? null;
+    const on = activeRolesOf(a);
+    const leg = a.leg || 'outbound';
+    for (const r of ROLES) {
+      const seat = bus.seats[r.role];
+      seat.on = on.has(r.role);
+      const row = (a.trip_drivers || []).find(d => (d.role || 'driver') === r.role);
+      if (!row) continue;
+      seat.rowId = row.id ?? null;
+      seat.driverId = row.driver_id ?? null;
+      seat.reportTime = hhmmOrNull(row.report_time);
+      seat.note = row.instructions ?? null;
+      const saved = row.driver_id ? statuses?.get(statusKey(trip.id, row.driver_id, leg, r.role)) : null;
+      const value = saved ? saved.status : on.get(r.role);
+      seat.status = DRIVER_STATUSES.some(s => s.value === value) ? value : 'off';
+    }
+    return bus;
+  }
+
+  // Each leg's buses in position order, padded with empty buses up to its count.
+  function fleetOf(trip, creating) {
+    const legs = {};
+    for (const leg of ['outbound', 'return']) {
+      const buses = (trip.trip_assignments || [])
+        .filter(a => (a.leg || 'outbound') === leg)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .map(a => fleetBusOf(trip, a, panelIndex.statuses));
+      const count = leg === 'outbound' ? (trip.bus_count || 1) : (trip.return_bus_count || trip.bus_count || 1);
+      while (buses.length < Math.min(MAX_BUSES, Math.max(1, count))) buses.push(blankBus());
+      legs[leg] = buses;
+    }
+    if (creating && createBusId) legs.outbound[0].busId = createBusId;
+    return legs;
+  }
+
+  const cloneFleet = legs => JSON.parse(JSON.stringify(legs));
+  const seatFilled = s => s.on && !!s.driverId;
+  // A bus with nothing on it is only a count, so it gets no row until it has.
+  const busEmpty = b => !b.busId && ROLES.every(r => r.role === 'driver' || !b.seats[r.role].on)
+    && !seatFilled(b.seats.driver);
+
+  // `active_roles` as rux-ui writes it: the driver first, then each seat that
+  // is on, with its status after a colon unless it is Off.
+  const activeRolesValue = bus => ROLES
+    .filter(r => r.role === 'driver' || bus.seats[r.role].on)
+    .map(r => (bus.seats[r.role].status !== 'off' ? `${r.role}:${bus.seats[r.role].status}` : r.role));
+
+  const fleetSplit = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
+  const fleetLegs = () => (fleetSplit() ? ['outbound', 'return'] : ['outbound']);
+
+  // The legs Save touches: the ones shown, and the return leg of a trip that
+  // stopped being a split in this editor, whose buses go as rux-ui drops them.
+  const fleetLegsToSave = () => {
+    const legs = fleetLegs();
+    if (!fleetSplit() && editing?.before.trip_type === SPLIT) legs.push('return');
+    return legs;
+  };
+
+  /* Save's work for the fleet, or null before the tab was built. Positions
+     are rewritten only on a leg whose buses were added, removed or reordered,
+     so a trip rux-ui numbered with gaps opens with nothing to save. The
+     counts compare with the buses the tab opened on, so a trip whose count
+     and rows disagree opens unchanged too. */
+  function fleetWork() {
+    const now = editing?.fleet;
+    const before = editing?.fleetBefore;
+    if (!now || !before) return null;
+    const work = { trip: {}, legs: [], statuses: false, work: false };
+    const outCount = now.outbound.length;
+    if (outCount !== editing.fleetCounts.outbound || editing.creating) work.trip.bus_count = outCount;
+    if (fleetSplit() && (now.return.length !== editing.fleetCounts.return || editing.creating)) {
+      work.trip.return_bus_count = now.return.length;
+    }
+    for (const leg of fleetLegsToSave()) {
+      const dropped = leg === 'return' && !fleetSplit();
+      const buses = dropped ? [] : now[leg];
+      const old = before[leg];
+      const oldById = new Map(old.filter(b => b.id).map(b => [b.id, b]));
+      const keptIds = new Set(buses.filter(b => b.id).map(b => b.id));
+      const renumber = buses.length !== old.length || buses.some((b, i) => b.key !== old[i]?.key);
+      const ops = { leg, inserts: [], updates: [], deletes: old.filter(b => b.id && !keptIds.has(b.id)).map(b => b.id) };
+      buses.forEach((b, i) => {
+        const prev = b.id ? oldById.get(b.id) : null;
+        const roles = activeRolesValue(b);
+        if (!prev) {
+          if (!busEmpty(b)) ops.inserts.push({ bus: b, row: { leg, position: i, bus_id: b.busId, active_roles: roles } });
+          return;
+        }
+        const patch = {};
+        if (!same(b.busId, prev.busId)) patch.bus_id = b.busId;
+        if (renumber && prev.position !== i) patch.position = i;
+        if (JSON.stringify(roles) !== JSON.stringify(activeRolesValue(prev))) patch.active_roles = roles;
+        const seats = [];
+        for (const r of ROLES) {
+          const s = b.seats[r.role], p = prev.seats[r.role];
+          if (seatFilled(s) && s.rowId) {
+            const sp = {};
+            if (!same(s.driverId, p.driverId)) sp.driver_id = s.driverId;
+            if (!same(s.reportTime, p.reportTime)) sp.report_time = s.reportTime;
+            if (!same(s.note, p.note)) sp.instructions = s.note;
+            if (Object.keys(sp).length) seats.push({ op: 'update', id: s.rowId, patch: sp });
+          } else if (seatFilled(s)) {
+            seats.push({ op: 'insert', row: seatRow(r.role, s) });
+          } else if (s.rowId && seatFilled(p)) {
+            seats.push({ op: 'delete', id: s.rowId });
+          }
+        }
+        if (Object.keys(patch).length || seats.length) ops.updates.push({ id: b.id, patch, seats });
+      });
+      if (ops.inserts.length || ops.updates.length || ops.deletes.length) work.legs.push(ops);
+    }
+    // Any change to who sits where, or a status picked here, sends the crew.
+    const statusPicked = fleetLegsToSave().some(leg => now[leg].some(b => ROLES.some(r => b.seats[r.role].statusDirty)));
+    work.statuses = work.legs.length > 0 || statusPicked;
+    work.work = Object.keys(work.trip).length > 0 || work.statuses;
+    return work;
+  }
+
+  const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note });
+
+  const fleetChanged = () => !!fleetWork()?.work;
+
+  // A driver in two seats of one leg is the one thing that blocks Save.
+  function fleetDuplicates() {
+    const dup = new Set();
+    for (const leg of fleetLegs()) {
+      const seen = new Set();
+      for (const b of editing?.fleet?.[leg] ?? []) {
+        for (const r of ROLES) {
+          const s = b.seats[r.role];
+          if (!seatFilled(s)) continue;
+          if (seen.has(s.driverId)) dup.add(`${leg}:${s.driverId}`);
+          seen.add(s.driverId);
+        }
+      }
+    }
+    return dup;
+  }
+
+  /* Writes the fleet after the trip. New buses are inserted with their seats,
+     changed ones updated, removed ones deleted, which takes their seats with
+     them; then every filled seat's status is sent at once, since the function
+     deletes a status the list leaves out. */
+  async function saveFleet(tripId, write, work) {
+    for (const ops of work.legs) {
+      for (const delId of ops.deletes) {
+        await write('its buses', client.from('trip_assignments').delete().eq('trip_id', tripId).eq('id', delId));
+      }
+      for (const u of ops.updates) {
+        if (Object.keys(u.patch).length) {
+          await write('its buses', client.from('trip_assignments').update(u.patch).eq('trip_id', tripId).eq('id', u.id));
+        }
+        for (const s of u.seats) {
+          if (s.op === 'update') await write('its drivers', client.from('trip_drivers').update(s.patch).eq('id', s.id));
+          else if (s.op === 'delete') await write('its drivers', client.from('trip_drivers').delete().eq('id', s.id));
+          else await write('its drivers', client.from('trip_drivers').insert({ assignment_id: u.id, ...s.row }));
+        }
+      }
+      for (const ins of ops.inserts) {
+        const made = await write('its buses', client.from('trip_assignments')
+          .insert({ trip_id: tripId, ...ins.row }).select('id').single());
+        const rows = ROLES.filter(r => seatFilled(ins.bus.seats[r.role]))
+          .map(r => ({ assignment_id: made.id, ...seatRow(r.role, ins.bus.seats[r.role]) }));
+        if (rows.length) await write('its drivers', client.from('trip_drivers').insert(rows));
+      }
+    }
+    if (!work.statuses) return;
+    const list = fleetLegs().flatMap(leg => editing.fleet[leg].flatMap(b => ROLES
+      .filter(r => seatFilled(b.seats[r.role]))
+      .map(r => ({ driverId: b.seats[r.role].driverId, leg, role: r.role,
+                   status: b.seats[r.role].status, dirty: b.seats[r.role].statusDirty }))));
+    await write('its driver statuses', client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list }));
+  }
+
+  /* ── What clashes ──
+     Read when the tab is built and again when it is chosen, for the trip's
+     dates as the Details tab holds them, so a picker can say which buses and
+     drivers are taken. A clash warns; it never stops a pick. */
+  let fleetClashes = null;
+  let fleetClashKey = '';
+
+  const fleetLegDates = leg => {
+    const v = id => isoOrNull(document.getElementById(id)?.value);
+    if (leg === 'return') {
+      const from = v('scheduler-f-rstart');
+      return from ? { from, to: v('scheduler-f-rend') || from } : null;
+    }
+    const from = v('scheduler-f-start');
+    return from ? { from, to: v('scheduler-f-end') || from } : null;
+  };
+  const datesOverlap = (a, b) => a.from <= b.to && b.from <= a.to;
+
+  async function loadFleetClashes() {
+    if (!client || !editing?.fleet) return;
+    const ranges = Object.fromEntries(['outbound', 'return'].map(l => [l, fleetLegDates(l)]));
+    const all = Object.values(ranges).filter(Boolean);
+    if (!all.length) return;
+    const key = JSON.stringify(ranges);
+    if (key === fleetClashKey) return;
+    fleetClashKey = key;
+    const lo = all.map(r => r.from).sort()[0];
+    const hi = all.map(r => r.to).sort().at(-1);
+    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    const forTrip = editing;
+    let trips, off, oos;
+    try {
+      [trips, off, oos] = await withTimeout(Promise.all([
+        client.from('trips')
+          .select('id,destination,start_date,end_date,return_start_date,return_end_date,bus_count,return_bus_count,trip_assignments(bus_id,leg,active_roles,trip_drivers(driver_id,role))')
+          .is('cancelled_at', null).lte('start_date', hi).gte('start_date', iso(addDays(parseISO(lo), -90)))
+          .then(unwrap),
+        client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+        client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+      ]));
+    } catch {
+      fleetClashKey = '';
+      return;
+    }
+    if (editing !== forTrip) return;
+    const clashes = {};
+    for (const leg of ['outbound', 'return']) {
+      const range = ranges[leg];
+      const buses = new Map(), drivers = new Map();
+      const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
+      if (range) {
+        for (const t of trips) {
+          if (t.id === editing.id) continue;
+          for (const l of legsOf(t)) {
+            if (!datesOverlap(range, l)) continue;
+            for (const a of t.trip_assignments || []) {
+              if ((a.leg || 'outbound') !== l.leg) continue;
+              const text = `On trip ${t.destination || 'with no destination'}`;
+              add(buses, a.bus_id, text);
+              const on = activeRolesOf(a);
+              for (const d of a.trip_drivers || []) if (on.has(d.role || 'driver')) add(drivers, d.driver_id, text);
+            }
+          }
+        }
+        for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
+        for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
+      }
+      clashes[leg] = { buses, drivers };
+    }
+    fleetClashes = clashes;
+    drawFleet();
+  }
+
+  const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
+
+  // What the trip needs that a bus lacks, in the bar's words.
+  function busLacks(bus) {
+    if (!bus) return [];
+    const need = id => pressed(document.getElementById(id));
+    return [
+      need('scheduler-f-sleeper') && !bus.sleeper ? `Needs a sleeper, bus ${bus.number} has none` : null,
+      need('scheduler-f-ada') && !bus.ada_lift ? `Needs an ADA lift, bus ${bus.number} has none` : null,
+      need('scheduler-f-56pax') && bus.capacity != null && bus.capacity < 56 ? `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` : null,
+    ].filter(Boolean);
+  }
+
+  /* ── The pickers ──
+     Carbon's combo box, as the contact search builds it, over the active
+     buses or drivers plus whoever the trip already has. Each option carries
+     its id, its name as the text a pick writes, and a second line with what
+     clashes. The field's own warning or error sits under it in Carbon's
+     requirement. */
+  function fleetPicker({ id, label, options, current, warn, error, placeholder }) {
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const field = el('div', 'rux--list-box__field');
+    const chosen = options.find(o => String(o.id) === String(current ?? ''));
+    const input = el('input', chosen ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
+    input.type = 'text';
+    input.id = id;
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = NO_AUTOFILL;
+    input.placeholder = placeholder;
+    input.value = chosen?.name ?? '';
+    input.dataset.fleetText = input.value;
+    field.appendChild(input);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    for (const o of options) {
+      const on = o === chosen;
+      const option = el('li', on
+        ? 'rux--list-box__menu-item rux--list-box__menu-item--active scheduler-contact-option'
+        : 'rux--list-box__menu-item scheduler-contact-option');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.fleetId = o.id;
+      option.dataset.ruxText = o.name;
+      const body = el('div', 'rux--list-box__menu-item__option scheduler-contact-option__body');
+      body.appendChild(el('span', 'scheduler-contact-option__name', o.name));
+      const detail = [o.detail, o.clash].filter(Boolean).join(' · ');
+      if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
+      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      tick.classList.add('rux--list-box__menu-item__selected-icon');
+      body.appendChild(tick);
+      option.appendChild(body);
+      menu.appendChild(option);
+    }
+    root.append(field, menu);
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root);
+    const say = error || warn;
+    if (say) {
+      if (error) {
+        root.setAttribute('data-invalid', '');
+        input.setAttribute('aria-invalid', 'true');
+      } else root.classList.add('rux--list-box--warning');
+      const icon = svgUse(error ? '#i-warning--filled' : '#i-warning--alt--filled', '16', '0 0 32 32');
+      icon.setAttribute('class', error
+        ? 'rux--list-box__invalid-icon'
+        : 'rux--list-box__invalid-icon rux--list-box__invalid-icon--warning');
+      field.appendChild(icon);
+      const req = el('div', 'rux--form-requirement', say);
+      req.id = `${id}-req`;
+      input.setAttribute('aria-describedby', req.id);
+      wrap.appendChild(req);
+    }
+    return wrap;
+  }
+
+  const fleetBusOptions = (leg, currentId) => {
+    const out = [];
+    for (const b of panelIndex.buses.values()) {
+      if (b.status && b.status !== 'active' && String(b.id) !== String(currentId)) continue;
+      out.push({
+        id: b.id, name: `Bus ${b.number}`,
+        detail: [b.capacity ? `${b.capacity} seats` : null, b.type].filter(Boolean).join(' · '),
+        clash: clashText(leg, 'buses', b.id),
+      });
+    }
+    return out;
+  };
+
+  const fleetDriverOptions = (leg, currentId) => [...panelIndex.driversById.values()]
+    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId))
+    .sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? '')))
+    .map(d => ({
+      id: d.id, name: d.name || d.short_name || 'Unnamed driver',
+      detail: d.status && d.status !== 'active' ? 'Inactive' : '',
+      clash: clashText(leg, 'drivers', d.id),
+    }));
+
+  /* A seat's status as the bar shows it, the role's icon on a disc in the
+     status's tone, on a small ghost button that opens the five statuses. It
+     is disabled while the seat has nobody in it. */
+  function seatStatusButton(leg, bus, role, n) {
+    const r = ROLES.find(x => x.role === role);
+    const seat = bus.seats[role];
+    const status = DRIVER_STATUSES.find(s => s.value === seat.status) ?? DRIVER_STATUSES[0];
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm scheduler-fleet-status');
+    btn.type = 'button';
+    btn.disabled = !seat.driverId;
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    const name = `Bus ${n} ${SEAT_LABEL[role].toLowerCase()} status`;
+    btn.setAttribute('aria-label', `${name}: ${status.label}`);
+    btn.title = seat.driverId ? `${SEAT_LABEL[role]} status: ${status.label}` : `${SEAT_LABEL[role]} status: pick a driver first`;
+    btn.appendChild(crewEl({ ...r, status }).firstChild);
+    btn.addEventListener('click', () => openItemsMenu(btn, DRIVER_STATUSES.map(st => ({
+      label: st.label,
+      checked: st.value === seat.status,
+      icon: crewEl({ ...r, status: st }).firstChild,
+      run: () => {
+        if (seat.status === st.value) return;
+        seat.status = st.value;
+        seat.statusDirty = true;
+        drawFleet(`scheduler-fleet-${leg}-${bus.key}-${role}-status`);
+        refreshDirty();
+      },
+    })), name));
+    btn.id = `scheduler-fleet-${leg}-${bus.key}-${role}-status`;
+    return btn;
+  }
+
+  function seatBlock(leg, bus, role, n, dups) {
+    const seat = bus.seats[role];
+    const id = `scheduler-fleet-${leg}-${bus.key}-${role}`;
+    const dup = seat.driverId && dups.has(`${leg}:${seat.driverId}`);
+    const picker = fleetPicker({
+      id, label: SEAT_LABEL[role], placeholder: 'Choose a driver',
+      options: fleetDriverOptions(leg, seat.driverId),
+      current: seat.driverId,
+      error: dup ? 'This driver is in another seat on this leg' : '',
+      warn: seat.on ? clashText(leg, 'drivers', seat.driverId) : '',
+    });
+    picker.dataset.fleetLeg = leg;
+    picker.dataset.fleetBus = bus.key;
+    picker.dataset.fleetSeat = role;
+    const line = el('div', 'scheduler-fleet-seat');
+    line.append(picker, seatStatusButton(leg, bus, role, n));
+    if (!RELIEF.has(role)) return line;
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    const time = timeField(`${id}-time`, 'Swap time', seat.reportTime);
+    const note = textField(`${id}-note`, 'Note', seat.note);
+    const noteInput = note.querySelector('input');
+    noteInput.maxLength = 160;
+    noteInput.placeholder = 'Where the drivers meet';
+    for (const f of [time, note]) {
+      const input = f.querySelector('input');
+      input.dataset.fleetLeg = leg;
+      input.dataset.fleetBus = bus.key;
+      input.dataset.fleetSeat = role;
+      input.dataset.fleetField = f === time ? 'reportTime' : 'note';
+    }
+    box.append(line, pair(time, note));
+    return box;
+  }
+
+  function busGroup(leg, bus, i, count, dups) {
+    const n = i + 1;
+    const group = el('div', 'scheduler-fleet-bus');
+    group.setAttribute('role', 'group');
+    const title = el('div', 'scheduler-panel-section__title', `Bus ${n}`);
+    title.id = `scheduler-fleet-${leg}-${bus.key}-title`;
+    group.setAttribute('aria-labelledby', title.id);
+    const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+    more.type = 'button';
+    more.id = `scheduler-fleet-${leg}-${bus.key}-menu`;
+    more.setAttribute('aria-haspopup', 'true');
+    more.setAttribute('aria-expanded', 'false');
+    more.setAttribute('aria-label', `Bus ${n} actions`);
+    more.title = `Bus ${n} actions`;
+    more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+    more.lastChild.setAttribute('class', 'rux--btn__icon');
+    more.addEventListener('click', () => openItemsMenu(more, [
+      ...ROLES.filter(r => r.role !== 'driver').map(r => {
+        const seat = bus.seats[r.role];
+        const word = SEAT_LABEL[r.role].toLowerCase();
+        return {
+          label: seat.on ? `Remove ${word}` : `Add ${word}`,
+          run: () => {
+            seat.on = !seat.on;
+            if (seat.on) drawFleet(`scheduler-fleet-${leg}-${bus.key}-${r.role}`);
+            else drawFleet(more.id);
+            refreshDirty();
+          },
+        };
+      }),
+      {
+        label: 'Remove bus', danger: true, disabled: count <= 1,
+        run: () => {
+          const list = editing.fleet[leg];
+          list.splice(list.indexOf(bus), 1);
+          drawFleet(`scheduler-fleet-${leg}-count`);
+          refreshDirty();
+        },
+      },
+    ], `Bus ${n} actions`));
+    const head = el('div', 'scheduler-group__head');
+    head.append(title, more);
+
+    const busRow = panelIndex.buses.get(bus.busId);
+    // The same bus twice on one leg of this trip is a warning, as a clash is.
+    const twin = bus.busId == null ? -1
+      : editing.fleet[leg].findIndex(b => b !== bus && same(b.busId, bus.busId));
+    const busPick = fleetPicker({
+      id: `scheduler-fleet-${leg}-${bus.key}-bus`, label: 'Bus', placeholder: 'Choose a bus',
+      options: fleetBusOptions(leg, bus.busId), current: bus.busId,
+      warn: [twin >= 0 ? `Also Bus ${twin + 1} on this trip` : null,
+             clashText(leg, 'buses', bus.busId), ...busLacks(busRow)].filter(Boolean).join(' · '),
+    });
+    busPick.dataset.fleetLeg = leg;
+    busPick.dataset.fleetBus = bus.key;
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    stack.append(full(busPick));
+    for (const r of ROLES) if (bus.seats[r.role].on) stack.appendChild(seatBlock(leg, bus, r.role, n, dups));
+    group.append(head, stack);
+    return group;
+  }
+
+  // Carbon's small number input, the steppers `js/form-controls.js` drives.
+  function busCountField(leg, count) {
+    const id = `scheduler-fleet-${leg}-count`;
+    const root = el('div', 'rux--number rux--number--sm');
+    const lab = el('label', 'rux--label', 'Buses needed');
+    lab.setAttribute('for', id);
+    const wrap = el('div', 'rux--number__input-wrapper');
+    const input = el('input');
+    input.type = 'number';
+    input.id = id;
+    input.min = '1';
+    input.max = String(MAX_BUSES);
+    input.step = '1';
+    input.value = String(count);
+    input.dataset.fleetCount = leg;
+    const controls = el('div', 'rux--number__controls');
+    const stepBtn = (cls, icon, text) => {
+      const b = el('button', `rux--number__control-btn ${cls}`);
+      b.type = 'button';
+      b.setAttribute('aria-label', text);
+      b.appendChild(svgUse(icon, '16', '0 0 32 32'));
+      return b;
+    };
+    controls.append(stepBtn('down-icon', '#i-subtract', 'Fewer buses'), el('div', 'rux--number__rule-divider'),
+                    stepBtn('up-icon', '#i-add', 'More buses'), el('div', 'rux--number__rule-divider'));
+    wrap.append(input, controls);
+    root.append(lab, wrap);
+    const item = el('div', 'rux--form-item');
+    item.appendChild(root);
+    return item;
+  }
+
+  /* Draws the tab from the model. `focusId` names the control to focus after
+     a redraw that replaced the one in use. */
+  function drawFleet(focusId) {
+    if (!editing?.fleet) return;
+    const dups = fleetDuplicates();
+    panelFleet.replaceChildren();
+    const reqs = [
+      pressed(document.getElementById('scheduler-f-sleeper')) ? 'Sleeper' : null,
+      pressed(document.getElementById('scheduler-f-ada')) ? 'ADA lift' : null,
+      pressed(document.getElementById('scheduler-f-56pax')) ? '56 pax' : null,
+    ].filter(Boolean).join(', ');
+    if (reqs) panelFleet.appendChild(section(null, def([['Needs', reqs]])));
+    const split = fleetSplit();
+    for (const leg of ['outbound', 'return']) {
+      const buses = editing.fleet[leg];
+      const body = el('div', 'rux--stack-vertical rux--stack-scale-7');
+      body.appendChild(busCountField(leg, buses.length));
+      buses.forEach((b, i) => body.appendChild(busGroup(leg, b, i, buses.length, dups)));
+      const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pick-up buses';
+      const sec = section(title, body);
+      sec.dataset.fleetSection = leg;
+      sec.hidden = leg === 'return' && !split;
+      panelFleet.appendChild(sec);
+    }
+    if (focusId) document.getElementById(focusId)?.focus();
+  }
+
+  const fleetBus = node => {
+    const leg = node?.dataset.fleetLeg;
+    return leg ? { leg, bus: editing?.fleet?.[leg]?.find(b => b.key === node.dataset.fleetBus) } : {};
+  };
+
+  // Fewer buses: the last ones go, after a question when any has a bus or a driver.
+  const fleetRemoveModal = document.getElementById('scheduler-fleet-remove-modal');
+  let fleetRemoveAfter = null;
+  function setBusCount(leg, want) {
+    const list = editing.fleet[leg];
+    const n = Math.min(MAX_BUSES, Math.max(1, Math.round(Number(want)) || 1));
+    if (n > list.length) {
+      while (list.length < n) list.push(blankBus());
+      drawFleet(`scheduler-fleet-${leg}-count`);
+      refreshDirty();
+      return;
+    }
+    if (n === list.length) { drawFleet(`scheduler-fleet-${leg}-count`); return; }
+    const gone = list.slice(n);
+    const apply = () => {
+      list.length = n;
+      drawFleet(`scheduler-fleet-${leg}-count`);
+      refreshDirty();
+    };
+    const held = gone.filter(b => b.busId || ROLES.some(r => seatFilled(b.seats[r.role])));
+    if (!held.length || !fleetRemoveModal) { apply(); return; }
+    // What goes, in words: each bus by its number and each driver by name.
+    const names = held.flatMap(b => [
+      b.busId && panelIndex.buses.get(b.busId) ? `Bus ${panelIndex.buses.get(b.busId).number}` : null,
+      ...ROLES.filter(r => seatFilled(b.seats[r.role]))
+        .map(r => panelIndex.driversById.get(b.seats[r.role].driverId)?.name),
+    ]).filter(Boolean);
+    const said = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
+    document.getElementById('scheduler-fleet-remove-text').textContent =
+      `${said} will come off this trip when you save.`;
+    fleetRemoveAfter = apply;
+    window.Rux?.modal?.open?.(fleetRemoveModal);
+  }
+  document.getElementById('scheduler-fleet-remove-ok')?.addEventListener('click', () => {
+    const run = fleetRemoveAfter;
+    fleetRemoveAfter = null;
+    window.Rux?.modal?.close?.(fleetRemoveModal);
+    run?.();
+  });
+  // Keeping the buses puts the count back as it was.
+  fleetRemoveModal?.addEventListener('rux:modal-closed', () => {
+    if (!fleetRemoveAfter) return;
+    fleetRemoveAfter = null;
+    drawFleet();
+  });
+
+  panelFleet?.addEventListener('change', e => {
+    const t = e.target;
+    if (t.dataset?.fleetCount) { setBusCount(t.dataset.fleetCount, t.value); return; }
+    const { bus } = fleetBus(t);
+    if (!bus || !t.dataset.fleetField) return;
+    bus.seats[t.dataset.fleetSeat][t.dataset.fleetField] =
+      t.dataset.fleetField === 'reportTime' ? (t.value || null) : (t.value.trim() || null);
+    refreshDirty();
+  });
+  panelFleet?.addEventListener('input', e => {
+    const t = e.target;
+    const { bus } = fleetBus(t);
+    if (!bus || !t.dataset.fleetField) return;
+    bus.seats[t.dataset.fleetSeat][t.dataset.fleetField] =
+      t.dataset.fleetField === 'reportTime' ? (t.value || null) : (t.value.trim() || null);
+    refreshDirty();
+  });
+  // A pick sets the bus or the driver; a new driver starts at Off.
+  panelFleet?.addEventListener('rux:listbox-selected', e => {
+    const wrap = e.target.closest?.('.rux--list-box__wrapper');
+    const { bus } = fleetBus(wrap);
+    if (!bus) return;
+    const picked = e.detail?.option?.dataset.fleetId ?? null;
+    const input = wrap.querySelector('input[role="combobox"]');
+    const role = wrap.dataset.fleetSeat;
+    const find = (map, id) => (id == null ? null : [...map.keys()].find(k => String(k) === String(id)) ?? null);
+    if (role) {
+      const seat = bus.seats[role];
+      const next = find(panelIndex.driversById, picked);
+      if (same(next, seat.driverId)) return;
+      seat.driverId = next;
+      seat.status = 'off';
+      seat.statusDirty = false;
+    } else {
+      const next = find(panelIndex.buses, picked);
+      if (same(next, bus.busId)) return;
+      bus.busId = next;
+    }
+    drawFleet(input?.id);
+    refreshDirty();
+  });
+  // Text that no option owns goes back to the pick, and an emptied field clears it.
+  panelFleet?.addEventListener('focusout', e => {
+    const input = e.target;
+    if (!(input instanceof HTMLInputElement) || input.getAttribute('role') !== 'combobox') return;
+    const wrap = input.closest('.rux--list-box__wrapper');
+    const { bus } = fleetBus(wrap);
+    if (!bus) return;
+    if (input.value === input.dataset.fleetText) return;
+    if (input.value.trim()) { input.value = input.dataset.fleetText; return; }
+    const role = wrap.dataset.fleetSeat;
+    if (role) Object.assign(bus.seats[role], { driverId: null, status: 'off', statusDirty: false });
+    else bus.busId = null;
+    refreshDirty();
+    // Redrawn once focus has landed, so its warning and status button follow.
+    setTimeout(() => drawFleet(document.activeElement?.id), 0);
+  });
+  // The dates may have moved on Details, so choosing the tab reads the clashes again.
+  document.addEventListener('rux:tab-selected', e => {
+    if (e.detail?.panel === panelFleet) loadFleetClashes();
+  });
 
   /* ── The Files tab ──
      Its list is every file the trip holds, newest first, in the rows payments
@@ -2687,7 +3439,7 @@
     if (!editing) return false;
     const patch = patchOf();
     return stopsPatch().length > 0 || !!paymentsPatch()?.work
-      || !!posPatch()?.work || !!invoicesPatch()?.work
+      || !!posPatch()?.work || !!invoicesPatch()?.work || fleetChanged()
       || (!!patch && Object.keys(patch).length > 0);
   }
 
@@ -2725,7 +3477,9 @@
        from its draft, so an untouched panel is unchanged either way. */
     const nothingChanged = !changed();
     const nothingToDo = !editing?.creating && nothingChanged;
-    panelSave.disabled = !startOk || !destOk || nothingToDo;
+    // A driver in two seats of one leg is the Fleet tab's one blocking error.
+    const fleetOk = !fleetDuplicates().size;
+    panelSave.disabled = !startOk || !destOk || !fleetOk || nothingToDo;
     setTitle();
     /* Reset follows `nothingChanged`, not `nothingToDo`, which is always false
        while creating. It ignores the required fields: an invalid form is when
@@ -2775,8 +3529,6 @@
     panelArgs = { ref, draft, trip: creating ? null : trip };
     const legName = ref?.leg || 'outbound';
     const leg = legsOf(trip).find(l => l.leg === legName) ?? legsOf(trip)[0];
-    const bus = ref ? panelIndex.buses.get(ref.busId) : null;
-    const assign = ref ? (trip.trip_assignments || []).find(a => a.id === ref.assignmentId) : null;
 
     // A plain heading until `refreshDirty` calls `setTitle`, which names the trip.
     const heading = creating ? 'New trip' : 'Edit trip';
@@ -2787,20 +3539,6 @@
     const when = !leg ? '' : leg.from === leg.to
       ? parseISO(leg.from).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
       : `${parseISO(leg.from).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} to ${parseISO(leg.to).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} (${legDays} days)`;
-
-    const names = assign
-      ? (assign.trip_drivers || []).map(d => {
-          const who = panelIndex.driversById.get(d.driver_id);
-          const name = who ? (who.name || who.short_name) : null;
-          return name ? (d.role && d.role !== 'driver' ? `${name} (${d.role})` : name) : null;
-        }).filter(Boolean)
-      : [];
-
-    const reqs = [
-      trip.req_sleeper ? 'Sleeper' : null,
-      trip.req_ada ? 'ADA lift' : null,
-      trip.req_56pax ? '56 pax' : null,
-    ].filter(Boolean).join(', ');
 
     editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, before: {
       destination: trip.destination ?? null,
@@ -3456,20 +4194,15 @@
       drawSummary();
     }
 
-    // Fleet is the bus and who is on it; the dates are in Details and the times
-    // in Route.
-    panelFleet.replaceChildren();
-    if (creating) {
-      const onBus = createBusId ? panelIndex.buses.get(createBusId) : null;
-      panelFleet.appendChild(onBus
-        ? def([['Bus', `${onBus.number}`], ['Drivers', 'None yet']])
-        : el('p', 'scheduler-panel-hint',
-            'A new trip starts with no bus. Save it and it lands in the Unassigned row, where it can be dragged onto one.'));
-    } else panelFleet.appendChild(def([
-      ['Bus', bus ? `${bus.number}${(leg.count || 1) > 1 ? ` — ${(assign?.position ?? 0) + 1} of ${leg.count}` : ''}` : 'Not assigned'],
-      ['Drivers', names.join(', ') || (assign ? 'None assigned' : null)],
-      ['Needs', reqs],
-    ]));
+    /* Fleet is how many buses each leg needs, the bus on each and who fills its
+       seats; the dates are in Details and the times in Route. A new trip from a
+       cell starts on that cell's bus. */
+    editing.fleet = fleetOf(trip, creating);
+    editing.fleetBefore = cloneFleet(editing.fleet);
+    editing.fleetCounts = { outbound: editing.fleet.outbound.length, return: editing.fleet.return.length };
+    fleetClashes = null;
+    fleetClashKey = '';
+    drawFleet();
 
     /* Files holds the Itinerary not needed switch, which Save writes like any
        field, then the uploader and the trip's files, which write at once. A
@@ -3513,10 +4246,12 @@
       returnDates.hidden = !split;
       setOutLabels(split);
       setHotelLegs(split);
+      drawFleet();
       refreshDirty();
     });
 
     refreshDirty();
+    loadFleetClashes();
 
     if (!again) panelOpener = bar;
     const wasOpen = !panelEl.hidden;
@@ -4074,6 +4809,10 @@
      which reports its own errors. */
   async function saveEditor(after, force = false) {
     if (!editing || (!editing.creating && !changed())) return false;
+    if (fleetDuplicates().size) {
+      toast('error', 'The trip was not saved.', 'A driver is in two seats on one leg. Choose another driver on the Fleet tab.');
+      return false;
+    }
     const patch = patchOf() || {};
     const id = editing.id;
     const creating = editing.creating;
@@ -4116,10 +4855,13 @@
       /* Create writes every field, not the diff. `readForm` returns null when a
          field is missing, and spreading null would insert a trip with no
          destination or start date, so a missing field fails loudly instead.
-         `bus_count` is written as 1 rather than left for `legsOf`'s fallback. */
+         The bus counts come from the Fleet tab, and a new trip always has one. */
       const form = creating ? readForm() : null;
       if (creating && !form) throw new Error('The form is not complete — a field is missing from the panel.');
-      const row = creating ? { id: editing.newId, ...form, bus_count: 1 } : patch;
+      const fleet = fleetWork();
+      const row = creating
+        ? { id: editing.newId, ...form, bus_count: 1, ...(fleet?.trip ?? {}) }
+        : { ...patch, ...(fleet?.trip ?? {}) };
       /* A new trip, or a save that changes its billing, writes the confirmation
          and the paid fields the billing now gives, as rux-ui's save does. A
          save that touches no billing leaves them as they are. */
@@ -4129,10 +4871,10 @@
       }
       // Contacts are linked, and added to the list, before the trip is written.
       const unlinked = await linkContacts(row, creating);
-      const wantBus = creating ? createBusId : null;
-      /* A trip created from a cell also gets an assignment row, written last
-         because it needs the trip to exist. If that write fails the trip
-         stands, in the Unassigned row, and the message says so. */
+      /* The fleet is written last, because its rows need the trip to exist. If
+         that write fails the trip stands, in the Unassigned row, and the
+         message says so. */
+      const onBus = !!editing.fleet?.outbound.some(b => b.busId);
       // An edit to a time alone leaves the trip patch empty, and an empty
       // update is skipped rather than sent.
       const stopWork = creating ? [] : stopsPatch();
@@ -4217,16 +4959,13 @@
       for (const w of stopWork) {
         await write('its schedule', client.from('trip_stops').update(w.patch).eq('id', w.id));
       }
-      if (wantBus) {
-        await write('its bus', client.from('trip_assignments')
-          .insert({ trip_id: tripId, bus_id: wantBus, leg: 'outbound', position: 0 }));
-      }
+      if (fleet?.work) await saveFleet(tripId, write, fleet);
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
       if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
-      else if (creating) toast('success', wantBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
+      else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
       return true;
     } catch (e) {
@@ -4244,7 +4983,7 @@
          match the database, and sending them again would save some twice, so
          the board is read back and the editor lets them go. A new trip closes,
          since it exists now; an existing one reopens as it is saved. */
-      const check = part === 'its bus' ? 'It is in the Unassigned row and can be dragged onto one.'
+      const check = part === 'its buses' ? 'Check its buses on the Fleet tab.'
         : part === 'the trip' ? 'Check the trip and make the change again if it is missing.'
         : `Check ${part} and add what is missing.`;
       const didNot = e.timedOut ? 'may not have saved' : 'did not save';

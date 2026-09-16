@@ -1005,6 +1005,29 @@
     </div>
   </div>
 
+  <!-- Fewer buses on the Fleet tab, when a bus that goes has a bus or a driver
+       on it. Nothing is written until Save; keeping the buses puts the count
+       back. data.js fills the sentence. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-fleet-remove-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-fleet-remove-h" aria-describedby="scheduler-fleet-remove-text" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-fleet-remove-h">Remove buses?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Keep buses" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="scheduler-fleet-remove-text"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep buses</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-fleet-remove-ok">Remove</button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- The toast reports what a person just did, such as a move, a save or a

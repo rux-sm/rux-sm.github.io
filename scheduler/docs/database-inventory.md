@@ -144,7 +144,7 @@ as in `screen-inventory.md`.
 | Table | Read by | Written by |
 |---|---|---|
 | `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them |
-| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
+| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Fleet tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
 | `trip_stops` | Trip editor Itinerary tab, driver page | Trip editor |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |

@@ -29,8 +29,9 @@ opens rux-ui to change a phone number, an expiry date or time off.
   initials, name, short name beneath), Phone, CDL class, Employment (full or
   part time and priority), Compliance. A whole row opens the driver.
 - **Compliance is one tag per row** for whichever of the licence and medical
-  card expires first: red for expired, yellow within 45 days, the newer rux-ui roster's window, otherwise the
-  date, gray for not on file. The default sort puts the soonest first.
+  card expires first: red for expired, yellow within 45 days as rux-ui's
+  newer roster warns, otherwise the date, gray for not on file. The default
+  sort puts the soonest first.
 - **The editor is one form in sections, no tabs**, each a fieldset with a
   legend: Profile, Emergency contact, Licence, Employment, Time off, Schedule
   link, Trips. Tabs would hide which section holds unsaved changes.

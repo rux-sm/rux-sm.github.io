@@ -932,10 +932,12 @@ button.scheduler-row-head__num {
    and the fields' own edges are the lines. */
 .scheduler-panel-section { margin-block-start: var(--rux-spacing-05); }
 .scheduler-panel-section__title {
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  /* `heading-compact-02`, 16px at 600: a step over the 14px the editor's own
+     text runs at, so a heading reads as one against the fields' 12px labels. */
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
   color: var(--rux-text-primary);
   /* 16px under every heading, the same as the 16px over it, so a heading sits
      in equal air wherever it is on the tab. */

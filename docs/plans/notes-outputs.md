@@ -109,6 +109,26 @@ using the tool is what fills it in.
   much it would unblock, so an hour in LN has a shopping list. It is not part of
   the published set.
 
+### Evidence and search
+
+- **Evidence stays in git, and the bucket is a publishing target rather than a
+  new home.** atlas is a private repository, so nothing is exposed by keeping
+  it; moving files out would not shrink the history, which keeps every blob;
+  and one source of truth is the rule everywhere else here. The export uploads
+  a copy of each capture a published page shows, the way it already emits JSON.
+
+- **A reference page shows its capture to a signed-in owner**, through a link
+  the database signs on request, never a public address. This is why the copy
+  exists at all: git cannot serve a file to a page.
+
+- **Search covers the library's own pages.** It needs no bucket and no
+  licensing call, and those pages are written for the reader rather than by the
+  vendor, which is most of the value.
+
+- **Searching Infor's help is its own later decision.** The text of all 117
+  help documents is already extracted locally and is what principle 6 greps, so
+  the work is small; the question is licensing, not technique.
+
 ### What retires
 
 - **Meeting reviews and summaries stop being pages.** They become the sources a
@@ -126,19 +146,7 @@ using the tool is what fills it in.
 
 ## Questions
 
-- **Do the 119 MB of captures move out of git and into the private bucket?**
-  They are committed forever, cannot be removed without rewriting history, and
-  git is the one place they can never be served from. This is atlas-only work
-  and gets its own plan there; the answer decides whether a reference page can
-  show the screen it describes.
-
-- **Should a signed-in owner be able to open the help and the captures behind a
-  reference page?** It needs the move above, and it is a licensing question
-  about Infor's material as much as a technical one.
-
-- **Do meeting summaries really stop publishing?** This plan says yes and the
-  previous one said they stay. They are a real record; they are just not a
-  learning output.
+None open.
 
 ## Tasks
 
@@ -162,7 +170,9 @@ using the tool is what fills it in.
 - [ ] Carry the remaining screens and ideas through the export.
 - [ ] Grade, tile and link the other five lanes.
 - [ ] Build the phone view: one tile per node, grouped by lane.
-- [ ] Add the header search over every reference page.
+- [ ] Add the header search over every reference page, the library's own only.
+- [ ] Upload each published page's captures to the private bucket at export,
+      and show one to a signed-in owner through a signed link.
 - [ ] Cut the side nav to Map and Procedures.
 - [ ] Build the owner's queue page, ordered by what each answer would unblock.
 - [ ] Move Ship from stock's long phase notes into the screen or idea page that

@@ -432,6 +432,8 @@
     $('scheduler-driver-photo-remove').hidden = !loaded?.photo_path;
     $('scheduler-driver-photo-help').hidden = !!loaded;
     $('scheduler-driver-photo-add').disabled = !loaded;
+    // A driver not yet saved has no schedule, so no Schedule tab.
+    $('scheduler-driver-tabs').hidden = !loaded;
   }
 
   /* A warning under an expiry that has passed or is close, with the list's

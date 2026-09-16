@@ -1754,6 +1754,20 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   min-inline-size: 0;
 }
 .scheduler-driver-group > legend { margin-block-end: var(--rux-spacing-05); }
+/* A section that follows another opens with a 1px rule, 32px under what
+   precedes it (the tab's stack gap) and 24px over its heading, as the trip
+   editor's sections do. A legend floats so it sits under the rule rather than
+   on it, as a fieldset draws its legend across its top border. */
+.scheduler-driver-group > legend {
+  float: inline-start;
+  inline-size: 100%;
+  padding: 0;
+}
+.scheduler-driver-group > legend + * { clear: both; }
+.scheduler-driver-group + .scheduler-driver-group {
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+  padding-block-start: var(--rux-spacing-06);
+}
 .scheduler-driver-photo {
   display: flex;
   align-items: center;

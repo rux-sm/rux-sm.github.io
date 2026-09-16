@@ -33,9 +33,11 @@ opens rux-ui to change a phone number, an expiry date or time off.
   expires first, red for expired, yellow within 45 days as rux-ui's newer
   roster warns, otherwise the date, gray for not on file. The default sort
   puts the soonest first. A phone shows the driver and compliance only.
-- **The editor is one form in sections, no tabs**, each a fieldset with a
-  legend: Profile, Emergency contact, Licence, Employment, Time off, Schedule
-  link, Trips. Tabs would hide which section holds unsaved changes.
+- **The editor has two line tabs, Details and Schedule.** Details is the one
+  form, in sections parted by the trip editor's rule: Profile, Emergency
+  contact, Licence, Employment, Time off, then Cancel and Save. Schedule holds
+  the schedule link and Trips, which are only read, so it has no Save. Every
+  unsaved change stays on one tab, and a new driver shows no tabs.
 - **Components in the editor:** breadcrumb back to Drivers; the title with a
   status tag; text inputs; selects for state, CDL class, employment type and
   priority; checkboxes for endorsements; date pickers for birth, hire and both

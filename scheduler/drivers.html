@@ -315,7 +315,8 @@
   <!-- ── One driver ───────────────────────────────────────────────────────
        drivers.html?id=<driver id> edits a driver and drivers.html?new makes
        one. Centred in eight of the sixteen columns at lg: one long form in
-       sections, no tabs, so every unsaved change is on the page. -->
+       sections on its Details tab, so every unsaved change is on one tab;
+       the Schedule tab holds what is only read, and has nothing to save. -->
   <div class="rux--css-grid" id="scheduler-driver" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -343,7 +344,25 @@
           </div>
         </div>
 
-        <form class="rux--stack-vertical rux--stack-scale-8" id="scheduler-driver-form" novalidate autocomplete="off">
+        <!-- The tab strip and its panels are one stack child, as detail-page.html
+             has them, so the stack's gap falls above the strip and not between
+             it and its panel. A new driver has no Schedule, so no strip. -->
+        <div>
+        <div class="rux--tabs" id="scheduler-driver-tabs" hidden>
+          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+          <div class="rux--tab--list" role="tablist" aria-label="Driver">
+            <button id="scheduler-driver-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-driver-panel-details" tabindex="0">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
+            </button>
+            <button id="scheduler-driver-tab-schedule" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-driver-panel-schedule" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Schedule</span></div>
+            </button>
+          </div>
+          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+        </div>
+
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-details" aria-labelledby="scheduler-driver-tab-details" tabindex="0">
+        <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-driver-form" novalidate autocomplete="off">
 
           <fieldset class="scheduler-driver-group">
             <legend class="rux--type-heading-compact-02">Profile</legend>
@@ -607,7 +626,7 @@
 
           <!-- Time off saves with the form. Each range is edited in the dialog
                below and kept here until Save. -->
-          <section class="rux--stack-vertical rux--stack-scale-4" aria-labelledby="scheduler-driver-off-h">
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-driver-group" aria-labelledby="scheduler-driver-off-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-driver-off-h">Time off</h2>
             <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-driver-list">
               <ul role="list" id="scheduler-driver-off"></ul>
@@ -619,30 +638,37 @@
             </div>
           </section>
 
-          <!-- Read only: rux-ui makes, changes and turns off driver links. -->
-          <section class="rux--stack-vertical rux--stack-scale-4" aria-labelledby="scheduler-driver-link-h" id="scheduler-driver-link-section" hidden>
-            <h2 class="rux--type-heading-compact-02" id="scheduler-driver-link-h">Schedule link</h2>
-            <p class="rux--type-body-compact-01 scheduler-driver-note" id="scheduler-driver-link-text"></p>
-            <div id="scheduler-driver-link-copy" hidden>
-              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-driver-link-button">Copy link
-                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
-              </button>
-            </div>
-          </section>
-
-          <section class="rux--stack-vertical rux--stack-scale-4" aria-labelledby="scheduler-driver-trips-h" id="scheduler-driver-trips-section" hidden>
-            <h2 class="rux--type-heading-compact-02" id="scheduler-driver-trips-h">Upcoming trips</h2>
-            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-driver-list">
-              <ul role="list" id="scheduler-driver-trips"></ul>
-            </div>
-          </section>
-
           <!-- The button set and its order are form-page.html's. -->
           <div class="rux--btn-set scheduler-driver-buttons">
             <a class="rux--btn rux--btn--secondary" href="drivers.html" id="scheduler-driver-cancel">Cancel</a>
             <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-driver-save">Save</button>
           </div>
         </form>
+        </div>
+
+        <!-- Read only, so no Save: rux-ui makes, changes and turns off driver
+             links, and trips are assigned on the board. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-schedule" aria-labelledby="scheduler-driver-tab-schedule" tabindex="0" hidden>
+          <div class="rux--stack-vertical rux--stack-scale-7">
+            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-driver-group" aria-labelledby="scheduler-driver-link-h" id="scheduler-driver-link-section" hidden>
+              <h2 class="rux--type-heading-compact-02" id="scheduler-driver-link-h">Schedule link</h2>
+              <p class="rux--type-body-compact-01 scheduler-driver-note" id="scheduler-driver-link-text"></p>
+              <div id="scheduler-driver-link-copy" hidden>
+                <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-driver-link-button">Copy link
+                  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg>
+                </button>
+              </div>
+            </section>
+
+            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-driver-group" aria-labelledby="scheduler-driver-trips-h" id="scheduler-driver-trips-section" hidden>
+              <h2 class="rux--type-heading-compact-02" id="scheduler-driver-trips-h">Upcoming trips</h2>
+              <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-driver-list">
+                <ul role="list" id="scheduler-driver-trips"></ul>
+              </div>
+            </section>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
   </div>
@@ -711,6 +737,7 @@
 </main>
 
 <script src="/design/js/overlay.js"></script>
+<script src="/design/js/tabs.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/date-picker.js"></script>
 <script src="/design/js/form-controls.js"></script>

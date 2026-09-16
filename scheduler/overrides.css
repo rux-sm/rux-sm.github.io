@@ -12,6 +12,13 @@
    already pads 1rem, so the fields line up with the panel's title. */
 .rux--side-panel .rux--tab-content { padding-inline: 0; }
 
+/* The Drivers page's tab panels line up with the page title rather than
+   inset 16px from it, and open 32px under the tab strip. */
+.scheduler-drivers-page .rux--tab-content {
+  padding-inline: 0;
+  padding-block: var(--rux-spacing-07) 0;
+}
+
 /* Carbon outlines `.rux--tab-content:focus`, and each tab panel has
    `tabindex="0"`, so a click inside one would ring the whole panel. Only a
    click's focus loses the ring; keyboard focus keeps it. */

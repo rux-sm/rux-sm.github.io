@@ -195,6 +195,9 @@ arriving, never knowledge verified.
   are kept, so 4.5 still says it needs the cluster and site from 0.4 and the
   reader can reach it.
 
+- **On a phone the panel is a full-screen sheet**, and back returns to the step
+  it was opened from.
+
 - **A procedure puts its steps first**, each naming its screen as a chip, with
   the `What LN is doing` paragraph above the table.
 
@@ -247,9 +250,10 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
       `run-order-planning-for-one-item`, and derive its counts and quests from
       that record rather than from the code. Its lookup panel is
       `cprrp0520m000`, the detour the map already places beside it.
-- [ ] Build its "Before starting" view from phase 2's horizon, step 0.4's
-      cluster and site, and step 0.6's plan data — the three the procedure
-      itself names across phases 3 to 5.
+- [ ] Build its "Before starting" view from step 0.4's cluster and site, step
+      0.6's plan data, phase 1's demand — step 4.1 looks for that sales order
+      row — and phase 2's horizon. Each links back to the step that satisfies
+      it.
 - [ ] Take **sitting 4, horizons, time fences and run scope** as the tile's
       understanding check: it is the only one of the eight naming this node's
       own session.

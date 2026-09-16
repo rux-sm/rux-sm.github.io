@@ -26,9 +26,9 @@ has been used and what it got wrong is written down.
 
 - **One search box in the header**, over the library's own pages.
 
-- **On a phone the panel is a full-screen sheet** and back returns to the step it
-  was opened from. The map becomes tiles by lane, each carrying what must come
-  before it, where it branches and what follows.
+- **On a phone the map becomes tiles by lane**, each carrying what must come
+  before it, where it branches and what follows. The panel's own phone
+  behaviour is in the first-slice plan, which tests it.
 
 ### What retires, and how addresses survive
 
@@ -44,12 +44,18 @@ has been used and what it got wrong is written down.
 - **The session map retires** once its four silent-failure notes are confirmed.
 
 - **The private-preview walk form retires** when the online walk replaces it, and
-  not before the revision defect above is fixed.
+  not before the walk revision defect in
+  `notes-learning-tool.md` is fixed.
 
 ## Questions
 
-None open. The two the slice carries — what a source establishes, and what
-clearing a capture attests — are answered there before anything here begins.
+None open here. Three carried by `notes-learning-tool.md` gate different work,
+and only the work they gate:
+
+- **What a source establishes, and how far its reach extends** — before labels.
+- **How a tile with no procedure submits anything** — before quests reach beyond
+  a procedure run.
+- **What clearing a capture attests** — before any capture is released.
 
 ## Tasks
 

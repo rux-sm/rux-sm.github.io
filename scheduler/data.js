@@ -672,9 +672,11 @@
       const parts = [];
       let prev = '0';
       for (const i of ruleCols) {
-        const at = `${i * 100 / 7}%`;
-        parts.push(`transparent ${prev} calc(${at} - 1px)`);
-        parts.push(`var(--scheduler-day-rule) calc(${at} - 1px) ${at}`);
+        // From the day's own width, not a percentage of the track: a seventh
+        // lands on Blink's 1/64px and paints the rule across two device pixels.
+        const at = `calc(${i} * var(--scheduler-day-w))`;
+        parts.push(`transparent ${prev} calc(${i} * var(--scheduler-day-w) - 1px)`);
+        parts.push(`var(--scheduler-day-rule) calc(${i} * var(--scheduler-day-w) - 1px) ${at}`);
         prev = at;
       }
       parts.push(`transparent ${prev} 100%`);
@@ -2646,7 +2648,7 @@
       flags,
       hotelBox,
     );
-    panelDetails.appendChild(topFields);
+    panelDetails.appendChild(section('Trip', topFields));
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone

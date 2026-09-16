@@ -29,6 +29,12 @@
      sees this figure. */
   --scheduler-day-min: calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear));
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
+  /* One day's width, which every bar, stripe and day rule is placed from. A
+     percentage of the track by default, so the stylesheet stands alone; app.js
+     replaces it with the whole pixels it floored the columns to, because a
+     percentage of seven lands on Blink's 1/64px and paints a bar edge across
+     two device pixels. */
+  --scheduler-day-w: calc(100% / var(--scheduler-days));
   --scheduler-bar-rows: 6;
   --scheduler-fs: var(--rux-label-01-font-size);
   --scheduler-ls: var(--rux-label-01-letter-spacing);
@@ -244,8 +250,8 @@ button.scheduler-row-head__num {
 .scheduler-skeleton-bar {
   position: absolute;
   inset-block-start: var(--scheduler-gap-clear);
-  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap-clear));
-  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
+  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear));
+  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
 }
 
@@ -262,8 +268,8 @@ button.scheduler-row-head__num {
 .scheduler-oos {
   position: absolute;
   inset-block: 0;
-  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)));
-  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)));
+  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w));
+  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w));
   background: repeating-linear-gradient(135deg,
     transparent 0, transparent 6px,
     var(--rux-support-warning) 6px, var(--rux-support-warning) 7px);
@@ -279,8 +285,8 @@ button.scheduler-row-head__num {
   --scheduler-border: var(--rux-tag-border-gray);
   position: absolute;
   inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
-  inset-inline-start: calc(var(--scheduler-start) * (100% / var(--scheduler-days)) + var(--scheduler-gap-clear));
-  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap) - var(--scheduler-gap-clear));
+  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear));
+  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
@@ -385,7 +391,7 @@ button.scheduler-row-head__num {
    bar in that day ends. */
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
-  inline-size: calc(var(--scheduler-span) * (100% / var(--scheduler-days)) - var(--scheduler-gap));
+  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
   border-inline-start: 3px dotted var(--scheduler-border);
 }
 .scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); }
@@ -846,9 +852,15 @@ button.scheduler-row-head__num {
 }
 /* The block closes at the top as it does at every other field edge. A fluid
    field draws its own bottom edge, so every line in the form is the line under
-   something; the first group carries the one above it. */
-#scheduler-panel-body .rux--tab-content > .scheduler-fluid-group:first-child {
+   something; the first group carries the one above it, whether it opens the
+   tab or sits under the tab's first heading. */
+#scheduler-panel-body .rux--tab-content > .scheduler-fluid-group:first-child,
+#scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child > .scheduler-fluid-group {
   border-block-start: 1px solid var(--rux-border-strong);
+}
+/* A tab's first section opens at the tab's own 16px, not 32px below it. */
+#scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {
+  margin-block-start: 0;
 }
 
 /* What sits in a fluid stack but is not a field -- the Needs checkboxes, the

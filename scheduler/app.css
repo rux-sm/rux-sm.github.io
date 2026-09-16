@@ -467,6 +467,8 @@ button.scheduler-row-head__num {
 }
 /* The row's display rule beats the browser's own `[hidden]`. */
 .scheduler-bar-shortcuts[hidden] { display: none; }
+/* Its trip is scrolled out of sight; data.js sets this. */
+.scheduler-bar-shortcuts[data-out] { visibility: hidden; }
 /* The arrow, in the bar's own fill, on whichever side the trip is. */
 .scheduler-bar-shortcuts::after {
   content: '';

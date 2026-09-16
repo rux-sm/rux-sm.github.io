@@ -3553,11 +3553,19 @@
     const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const ceiling = band ? band.bottom : pane.top;
+    const first = (column ? column.right : pane.left) + TIP_GAP;
+    /* A trip scrolled wholly under a sticky band, or out past an edge, leaves
+       nothing to point at, so its shortcuts are put out of sight until it
+       comes back, rather than riding over the day band after it. Visibility
+       rather than `hidden`, so the row still has a size to measure; a row
+       holding focus stays, so a keyboard user does not lose their place. */
+    const gone = box.bottom <= ceiling || box.top >= pane.bottom
+      || box.right <= first - TIP_GAP || box.left >= pane.right;
+    barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
     const above = box.top - ceiling >= tip.height + TIP_GAP;
     barShortcuts.dataset.side = above ? 'above' : 'below';
     barShortcuts.style.setProperty('--scheduler-open-top',
       `${(above ? box.top - tip.height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
-    const first = (column ? column.right : pane.left) + TIP_GAP;
     const last = pane.right - tip.width - TIP_GAP;
     const x = Math.max(first, Math.min(box.left, last));
     barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);

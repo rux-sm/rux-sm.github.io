@@ -43,17 +43,20 @@ arriving, never knowledge verified.
 
 ### What a tile offers, and how you leave it
 
-- **Three states, one verb.** **Known** — run the steps, with everything the
-  library has about them and one understanding check at the end. **Partly
-  known** — run what exists, and the holes are the quests, shown in place rather
-  than hidden so the shape of what is missing is visible while working.
-  **Empty** — the quest is to find anything at all: open the named screen, or
-  read the help, the vendor guide or a recording.
+- **Three states, computed and never typed, and one verb for all of them.**
+  **Empty** when no procedure phase covers the node: the quest is to find
+  anything at all, by opening the named screen or reading the help, a vendor
+  guide or a recording. **Partly known** when a phase covers it but a step is
+  missing or a gap is open against its screens: run what exists, with the holes
+  shown in place so the shape of what is missing stays visible. **Known** when a
+  phase covers it, nothing is open, and every covering phase carries a walked
+  date: run the steps, with one understanding check at the end. A node with a
+  session code finds its phases through that code; one without, like the
+  planning gates, carries an authored link.
 
 - **A tile opens on one target, with its question inside.** Design ships
-  `rux--popover` with a caret, so nothing is invented. The scheduler's bar has
-  zones, but a tile already carries a name, a count and a quest badge, and zones
-  are where minimal starts slipping.
+  `rux--popover` with a caret. The scheduler's bar has zones, but a tile already
+  carries a name, a count and a quest badge, and zones are where minimal slips.
 
 - **Three ways a tile moves on, and they are not the same.** A **question** the
   learner answers — node 2 already asks *"Does on-hand cover it?"*, and its own
@@ -71,16 +74,9 @@ arriving, never knowledge verified.
   not you take it — so they are linked in context and never given a process
   dependency they do not have.
 
-- **The three states are computed, never typed.** **Empty** when no procedure
-  phase covers the node; **partly known** when one does but a step is missing or
-  a gap is open against its screens; **known** when one does, nothing is open,
-  and every covering phase carries a walked date. A node carrying a session code
-  finds its phases through that code; a node without one, like the planning
-  gates, carries an authored link instead.
-
 - **A tile says which kind of work its holes need**, a trip into LN or a read at
-  the desk. Of 175 open gaps 98 name a screen; sending rux into the environment
-  for a question a PDF answers is the failure this prevents.
+  the desk: of 175 open gaps 98 name a screen, and sending rux into the
+  environment for a question a PDF answers is the failure this prevents.
 
 ### Quests
 
@@ -103,13 +99,11 @@ arriving, never knowledge verified.
   open. A redundant step is removed, wrong documentation is withdrawn, and a
   corrected phase loses its walked date until it is run again.
 
-- **A cumulative tally, if one is ever wanted, is labelled as contributions
-  made** and never as how much of the tile is covered. The two are different
-  numbers and only one of them describes the content.
+- **A cumulative tally, if one is ever wanted, is labelled contributions made**
+  and never coverage. Only one of those two numbers describes the content.
 
-- **No percentage, ever.** A percentage needs a denominator, and nobody knows
-  how much there is to know. A bar that falls because rux discovered a gap would
-  punish exactly the thing this tool exists to encourage.
+- **No percentage, ever.** It needs a denominator nobody has, and a bar falling
+  because rux found a gap would punish the thing this tool encourages.
 
 ### What a reader meets
 
@@ -215,27 +209,17 @@ arriving, never knowledge verified.
 
 ### Signing in, reviewing, walking
 
-- **The owner's tools appear only for the owner.** A review box at the foot of
-  every page records Approve, or Request changes with feedback; a review never
-  edits a document, it enters the intake.
+The owner's tools, their five tables, the private bucket and the pull command
+are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
+
+- **A review enters the intake rather than editing anything.** It records
+  Approve, or Request changes with feedback, and says what was last sent and
+  whether atlas has it.
 
 - **A walk follows the revision it was started on.** Resuming currently fetches
   the current procedure while the record keeps its older pinned commit, so
   answers can attach to steps the learner never saw. Either the pinned revision
   is loaded, or resuming is refused and a fresh run offered.
-
-- **An investigation shares a walk's transport, not its record.** A walk pins an
-  existing walkthrough, its commit and its declared phases, and the generator
-  refuses a subject with no file under `walkthroughs/` — which is exactly the
-  empty tile this plan promises can be attempted. So the form, the upload, the
-  pull and the intake are shared, and the record is its own: the question, its
-  subject, the source examined, what was observed, and what rux concludes.
-
-- **The data sits in five `platform.notes_*` tables and the private bucket
-  `notes-walk-shots`**, readable and writable only by the owner.
-
-- **atlas's `tools/pull.py`** brings each walk and everything else home, reading
-  with the project's secret key kept in the Mac's Keychain.
 
 ### What retires, and how addresses survive
 

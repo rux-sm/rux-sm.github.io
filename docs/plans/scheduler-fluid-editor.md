@@ -56,13 +56,11 @@ Route and Files are not, and a tab strip cannot be right for both at once.
 
 ## Tasks
 
-- [ ] Raise the tab strip to `rux--layer-two`, the reason this work exists,
-      and check it in all eight themes.
-- [ ] Make Route fluid: four text fields, no sections, the smallest tab.
-- [ ] Make Files fluid: one contained list and the Itinerary not needed switch.
-- [ ] Make Billing fluid: two text fields, three switches, three contained
-      lists, one status tile, four sections.
-- [ ] Survey Fleet against a real trip, then make it fluid.
+- [ ] Check the editor in all eight themes; only g90 has been looked at, and
+      the tab strip's new level is a colour decision in each of them.
+- [ ] Survey Fleet against a real trip. The sweep already covers it, but it
+      drew nothing under invented data, so nothing about it is confirmed.
 - [ ] Fix the Billing tab's 16px sideways scroll, which predates this work and
       shows at every panel width.
+- [ ] Answer the two questions above.
 - [ ] rux reads every tab on real trips, in Chrome, Safari and on the phone.

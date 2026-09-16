@@ -860,10 +860,10 @@ button.scheduler-row-head__num {
 
 /* A fluid form is one unbroken surface: IBM's spec paints the fields, the group
    labels, the checkbox rows and every space between them the same colour, and
-   the 1px dividers are the only parting. The tab carries that surface and runs
+   the 1px dividers are the only parting. Each tab carries that surface and runs
    edge to edge; its own 16px padding puts the headings back under the field
    labels, and a fluid stack's bleed takes the fields out to the edges again. */
-#scheduler-panel-details {
+#scheduler-panel-body .rux--tab-content {
   background-color: var(--rux-field-02);
   margin-inline: calc(-1 * var(--rux-spacing-05));
   padding-inline: var(--rux-spacing-05);
@@ -891,10 +891,10 @@ button.scheduler-row-head__num {
   color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-03);
 }
-/* On the fluid tab a section's rule reaches the panel's edges, as the fields'
-   own dividers do, rather than stopping at the tab's 16px; the padding puts its
-   heading back under the field labels. */
-#scheduler-panel-details .scheduler-panel-section--rule {
+/* A section's rule reaches the panel's edges, as the fields' own dividers do,
+   rather than stopping at the tab's 16px; the padding puts its heading back
+   under the field labels. */
+#scheduler-panel-body .rux--tab-content .scheduler-panel-section--rule {
   margin-inline: calc(-1 * var(--rux-spacing-05));
   padding-inline: var(--rux-spacing-05);
 }

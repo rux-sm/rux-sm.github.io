@@ -2765,9 +2765,6 @@
       panelDetails.appendChild(days);
     }
 
-    // The Details tab is fluid; the other tabs keep the default style.
-    fluidTab(panelDetails);
-
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.
     panelCancel.hidden = creating || !trip.id;
@@ -3205,6 +3202,10 @@
        it is asked again for the whole panel body. An unclaimed picker renders
        its calendar open, because the module closes a calendar by detaching it. */
     window.Rux?.datePicker?.init?.(panelBody);
+
+    /* Every tab is fluid, so the editor has one content surface and the tab
+       strip's selected tab can match it. Swept here, where all five are built. */
+    for (const tp of [panelDetails, panelBilling, panelFleet, panelRoute, panelFiles]) fluidTab(tp);
 
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring

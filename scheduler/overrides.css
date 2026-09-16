@@ -281,6 +281,17 @@
   background-color: var(--rux-field);
 }
 
+/* A Fleet seat's status icon keeps its indicator's colour in its ghost button
+   and in the status menu. Carbon's `.rux--btn--ghost:not([disabled]) svg` and
+   the menu item's icon rule both outrank the indicator's one class, so the
+   indicator's own tokens are restated here at the ghost button's specificity,
+   later in the cascade. */
+svg.scheduler-status-icon.rux--icon-indicator--not-started { fill: var(--rux-status-gray, #6f6f6f); }
+svg.scheduler-status-icon.rux--icon-indicator--caution-major { fill: var(--rux-status-orange, #ff832b); }
+svg.scheduler-status-icon.rux--icon-indicator--caution-minor { fill: var(--rux-status-yellow, #f1c21b); }
+svg.scheduler-status-icon.rux--icon-indicator--succeeded { fill: var(--rux-status-green, #24a148); }
+svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-red, #da1e28); }
+
 /* Room for the copy button at the end of a contact field while it shows, so a
    long value runs under nothing: the button ends 2.25rem in. A contact search
    has no clear or open button, so the 4.375rem Carbon reserves for them goes

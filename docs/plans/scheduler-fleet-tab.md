@@ -38,9 +38,13 @@ driver pages show the same crew.
 - **Pay is not on the Fleet tab.** It waits for a later plan, perhaps a
   section on Billing; the save never writes `trip_drivers.pay`, so pay set in
   rux-ui stays as it is.
-- **Each filled seat shows its status and sets it,** as the bar does: the role
-  icon in the status colour, which opens the five statuses; a status picked
-  here saves with the trip. Choosing a different driver sets that seat to Off,
+- **Each filled seat shows its status and sets it** from a small ghost button
+  at the end of its field, which opens the five statuses; a status picked here
+  saves with the trip. The icon is Carbon's icon indicator rather than the
+  bar's role icon on a disc, since the label already names the role: a dashed
+  circle for Off, caution major for Pending assignment, caution minor for
+  Pending response, a check for Confirmed and an error for Declined, each a
+  shape as well as a colour, and the yellow one legible in the light themes. Choosing a different driver sets that seat to Off,
   as rux-ui does and the driver status plan asks.
 - **The pickers are Carbon combo boxes over active buses and drivers,** plus
   whoever the trip already has, so an inactive driver stays readable. An option

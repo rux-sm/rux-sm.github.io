@@ -1872,26 +1872,44 @@
       clash: clashText(leg, 'drivers', d.id),
     }));
 
-  /* A seat's status as the bar shows it, the role's icon on a disc in the
-     status's tone, on a small ghost button that opens the five statuses. It
-     is disabled while the seat has nobody in it. */
+  /* A status as Carbon's icon indicator: a shape per status as well as a
+     colour, and the yellow one carries its own dark mark, so each reads in
+     every theme without the bar's disc. The field's label already names the
+     role, so the form needs no role icon. Each class is written out whole,
+     for the class sweep. */
+  const STATUS_ICON = {
+    off: { cls: 'rux--icon-indicator--not-started', icon: '#i-circle-dash' },
+    'pending-assignment': { cls: 'rux--icon-indicator--caution-major', icon: '#i-warning--alt-inverted--filled' },
+    'pending-response': { cls: 'rux--icon-indicator--caution-minor', icon: '#i-warning--alt--filled' },
+    confirmed: { cls: 'rux--icon-indicator--succeeded', icon: '#i-checkmark--filled' },
+    declined: { cls: 'rux--icon-indicator--failed', icon: '#i-error--filled' },
+  };
+  const statusIcon = value => {
+    const svg = svgUse(STATUS_ICON[value].icon, '16', '0 0 32 32');
+    svg.setAttribute('class', `${STATUS_ICON[value].cls} scheduler-status-icon`);
+    return svg;
+  };
+
+  /* A filled seat's status, a small ghost button at the end of its field that
+     opens the five statuses. It is in the combo box's root, not its field,
+     because `js/list-box.js` opens the list on any click in the field. A seat
+     with nobody in it has no status and no button. */
   function seatStatusButton(leg, bus, role, n) {
-    const r = ROLES.find(x => x.role === role);
     const seat = bus.seats[role];
+    if (!seat.driverId) return null;
     const status = DRIVER_STATUSES.find(s => s.value === seat.status) ?? DRIVER_STATUSES[0];
     const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm scheduler-fleet-status');
     btn.type = 'button';
-    btn.disabled = !seat.driverId;
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
     const name = `Bus ${n} ${SEAT_LABEL[role].toLowerCase()} status`;
     btn.setAttribute('aria-label', `${name}: ${status.label}`);
-    btn.title = seat.driverId ? `${SEAT_LABEL[role]} status: ${status.label}` : `${SEAT_LABEL[role]} status: pick a driver first`;
-    btn.appendChild(crewEl({ ...r, status }).firstChild);
+    btn.title = `${SEAT_LABEL[role]} status: ${status.label}`;
+    btn.appendChild(statusIcon(status.value));
     btn.addEventListener('click', () => openItemsMenu(btn, DRIVER_STATUSES.map(st => ({
       label: st.label,
       checked: st.value === seat.status,
-      icon: crewEl({ ...r, status: st }).firstChild,
+      icon: statusIcon(st.value),
       run: () => {
         if (seat.status === st.value) return;
         seat.status = st.value;
@@ -1918,8 +1936,13 @@
     picker.dataset.fleetLeg = leg;
     picker.dataset.fleetBus = bus.key;
     picker.dataset.fleetSeat = role;
-    const line = el('div', 'scheduler-fleet-seat');
-    line.append(picker, seatStatusButton(leg, bus, role, n));
+    const statusBtn = seatStatusButton(leg, bus, role, n);
+    if (statusBtn) {
+      const root = picker.querySelector('.rux--combo-box');
+      root.classList.add('scheduler-fleet-status-host');
+      root.appendChild(statusBtn);
+    }
+    const line = picker;
     if (!RELIEF.has(role)) return line;
     const box = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const time = timeField(`${id}-time`, 'Swap time', seat.reportTime);

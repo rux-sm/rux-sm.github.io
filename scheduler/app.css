@@ -949,16 +949,16 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
 .scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
-/* A Fleet seat: the driver's combo box, then its status button, which sits
-   level with the field under the field's 16px label and 8px gap, so a
-   warning under the field does not move it. */
-.scheduler-fleet-seat {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: var(--rux-spacing-03);
+/* A Fleet seat's status button sits over the end of its field, where Carbon
+   keeps room for a combo box's own buttons, so the field's text never runs
+   under it and a warning icon stays clear of it, 2.5rem in. The combo box's
+   root is already `position: relative`, and the button is the field's height. */
+.scheduler-fleet-status-host > .scheduler-fleet-status {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-end: 0;
 }
-.scheduler-fleet-status { margin-block-start: calc(1rem + var(--rux-spacing-03)); }
 /* A hidden leg's section stays hidden; the section class sets no display. */
 .scheduler-panel-section[hidden] { display: none; }
 

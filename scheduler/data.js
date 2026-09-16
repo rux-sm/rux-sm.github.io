@@ -1637,6 +1637,32 @@
     return item;
   }
 
+  /* A need as Carbon's selectable tag, from the capture `components-tag--selectable`:
+     a button that carries its own state in `aria-pressed`, with the label in a
+     span inside a span. Four checkboxes need 337px of a 288px row and wrap; four
+     tags fit, because the tag is its own hit area with no separate box beside it. */
+  function tagField(id, label, on) {
+    const tag = el('button', on ? 'rux--tag rux--tag--selectable rux--tag--selectable-selected'
+                                : 'rux--tag rux--tag--selectable');
+    tag.type = 'button';
+    tag.id = id;
+    tag.setAttribute('aria-pressed', String(!!on));
+    const outer = el('span');
+    outer.appendChild(el('span', 'rux--tag__label', label));
+    tag.appendChild(outer);
+    tag.addEventListener('click', () => {
+      const now = tag.getAttribute('aria-pressed') !== 'true';
+      tag.setAttribute('aria-pressed', String(now));
+      tag.classList.toggle('rux--tag--selectable-selected', now);
+      // The panel watches `input` to know the form is dirty; a button fires none.
+      tag.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    return tag;
+  }
+
+  // A selectable tag holds its state in `aria-pressed`; there is no input to read.
+  const pressed = node => node?.getAttribute('aria-pressed') === 'true';
+
   function checkField(id, label, checked) {
     const item = el('div', 'rux--form-item rux--checkbox-wrapper');
     const input = el('input', 'rux--checkbox');
@@ -1874,11 +1900,11 @@
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     // `confirmed`, `balance_paid` and `date_paid` are not written: rux-ui
     // derives all three on every save, so a value set here would be overwritten.
-    { key: 'req_sleeper', get: f => f['scheduler-f-sleeper'].checked },
-    { key: 'req_ada', get: f => f['scheduler-f-ada'].checked },
-    { key: 'req_56pax', get: f => f['scheduler-f-56pax'].checked },
+    { key: 'req_sleeper', get: f => pressed(f['scheduler-f-sleeper']) },
+    { key: 'req_ada', get: f => pressed(f['scheduler-f-ada']) },
+    { key: 'req_56pax', get: f => pressed(f['scheduler-f-56pax']) },
     // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
-    { key: 'need_hotel', get: f => f['scheduler-f-hotel'].checked },
+    { key: 'need_hotel', get: f => pressed(f['scheduler-f-hotel']) },
     // Each leg's hotel: whether it is booked, and its confirmation number.
     ...['outbound', 'return'].flatMap(l => [
       { key: `hotel_booked_${l}`, get: () => !!document.getElementById(`scheduler-f-hotelbooked-${l}`)?.checked },
@@ -2593,15 +2619,19 @@
     /* Needs is Carbon's horizontal checkbox group under its legend, one row
        that wraps if the labels outgrow the panel. Sleeper, ADA lift and 56 pax
        are asked of the bus; Hotel is a reminder that one has to be booked. */
-    const flags = el('fieldset', 'rux--checkbox-group rux--checkbox-group--horizontal');
-    flags.setAttribute('aria-disabled', 'false');
-    flags.append(
-      el('legend', 'rux--label', 'Needs'),
-      checkField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
-      checkField('scheduler-f-ada', 'ADA lift', trip.req_ada),
-      checkField('scheduler-f-56pax', '56 pax', trip.req_56pax),
-      checkField('scheduler-f-hotel', 'Hotel', trip.need_hotel),
+    const flags = el('div', 'scheduler-needs');
+    const needsLabel = el('div', 'rux--label', 'Needs');
+    needsLabel.id = 'scheduler-f-needs-label';
+    const needsRow = el('div', 'scheduler-needs__tags');
+    needsRow.setAttribute('role', 'group');
+    needsRow.setAttribute('aria-labelledby', needsLabel.id);
+    needsRow.append(
+      tagField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
+      tagField('scheduler-f-ada', 'ADA lift', trip.req_ada),
+      tagField('scheduler-f-56pax', '56 pax', trip.req_56pax),
+      tagField('scheduler-f-hotel', 'Hotel', trip.need_hotel),
     );
+    flags.append(needsLabel, needsRow);
 
     /* While Hotel is ticked, each leg the trip has shows its hotel's
        confirmation number beside a Booked box, the leg's
@@ -2627,7 +2657,7 @@
     };
     setHotelLegs(trip.trip_type === SPLIT);
     hotelBox.hidden = !trip.need_hotel;
-    flags.querySelector('#scheduler-f-hotel').addEventListener('change', e => { hotelBox.hidden = !e.target.checked; });
+    flags.querySelector('#scheduler-f-hotel').addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
     /* The trip's own fields are one stack, 24px apart. Type and Trip bar color
        share a row, each one pick from a short list; the bar color is a property

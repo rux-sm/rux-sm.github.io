@@ -882,14 +882,20 @@ button.scheduler-row-head__num {
    a margin, because a legend sits on the fieldset's border rather than inside
    its padding and so a padding would not move it; the rows carry about 3px of
    their own below them, which the padding allows for. */
-.scheduler-fluid-group > .rux--checkbox-group {
+.scheduler-fluid-group > .scheduler-needs {
   margin-block-start: var(--rux-spacing-05);
-  padding-block-end: 0;
 }
-/* Its legend is a field's label, not a section heading, so it sits over its
-   rows the way a field's label sits over its value. */
-.scheduler-fluid-group > .rux--checkbox-group > legend {
+/* Its label is a field's label, not a section heading, so it sits over its tags
+   the way a field's label sits over its value. */
+.scheduler-needs > .rux--label {
   margin-block-end: var(--rux-spacing-03);
+}
+/* The tags wrap if a theme's type runs wide, and part by 8px, half the 16px
+   that parts the groups. */
+.scheduler-needs__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-03);
 }
 
 /* A fluid form is one unbroken surface: IBM's spec paints the fields, the group

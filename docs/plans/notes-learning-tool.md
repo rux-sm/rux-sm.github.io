@@ -48,21 +48,32 @@ settles, and the page changes only when the owning document does.
   measurement, because a process passes state through the ERP rather than
   through its prose. The data was the real problem and it has moved.
 
-### The route through it
+### The route is the map, walked
 
-- **The map gives context; a route gives an order.** The map answers "where does
-  this sit", and a beginner's first question is "what do I learn next". A short
-  route, ordered by what must exist before what, answers it. atlas's principle 8
-  already says teach by dependency, never alphabetically and never by the menu;
-  this applies it.
+- **There is no route page.** A linear syllabus over a process that branches
+  would be an invention laid on top of data that already says more. The map
+  holds seven decision points with labelled outcomes, and one of them already
+  carries an explicit skip: *is stock available* answers YES and jumps three
+  stages straight to shipping, or NO and continues into planning, which then
+  branches again on supply source.
 
-- **A learning unit is composed, never a new class.** Each one names its
-  outcome, its prerequisites, a short explanation, the procedure, the expected
-  result, one understanding check, and the next step — assembled from the idea,
-  procedure and homework that already exist.
+- **Choosing an outcome walks the map.** Pick a shipment, answer the question at
+  each decision, and the path lights up while the tiles that no longer apply
+  grey out. Answering by hand is the point: the decision is the teaching.
 
-- **The route is one page, and it is short.** It is not a syllabus of
-  everything; it is the path from nothing to a shipment.
+- **Any tile is a starting point**, and its prerequisites are the arrows coming
+  into it: start at planning rather than at a sales order and the tool says what
+  it assumes already exists. No ordering is written by hand, so none can drift
+  from the map.
+
+- **A learning unit is composed, never a new class**: the outcome, what must
+  exist first, the procedure, the expected result, one understanding check, and
+  where the path goes next — assembled from what exists.
+
+- **A tile with no procedure behind it says so.** The map has 26 tiles and eight
+  procedures, so most tiles open to screens, ideas and open questions with
+  nothing yet to walk. That is the honest state and it is the gap made visible,
+  not a hole to hide.
 
 ### Saying where a fact came from
 
@@ -80,10 +91,15 @@ settles, and the page changes only when the owning document does.
   help conflict, both appear. atlas already logs these, and a visible
   contradiction teaches more than a tidy answer.
 
-- **Labels start where the contract already supports them.** The export carries
-  `sources` per document and strips the per-claim `sources` blocks at the export
-  tier, so a page and a section can be labelled today and a single claim cannot.
-  Per-claim labelling needs a contract change and is not assumed here.
+- **The export emits the kind of a source, never its filename.** Sources are
+  stripped today because they are filenames, which are internal paths. A kind —
+  `help`, `capture`, `meeting`, `vendor` — is the label itself, leaks nothing,
+  and is derived from the string an author already wrote.
+
+- **Three levels of provenance, all of them things that already exist:** the
+  document's `sources` list, a section's capture dates, and the Source column
+  already authored on every field row of a screen page. Nothing per-claim is
+  invented; the export stops throwing away what the author did.
 
 - **A phase walked in LN carries its own date**, which is what OI-275 asks for.
 
@@ -143,7 +159,7 @@ settles, and the page changes only when the owning document does.
 - **A procedure puts its steps first**, each step naming its screen as a chip
   that opens the panel, with the `What LN is doing` paragraph above the table.
 
-- **The side nav keeps Route, Map, Procedures, Ideas, Glossary and Homework.**
+- **The side nav keeps Map, Procedures, Ideas, Glossary and Homework.**
   Screens are not in it.
 
 - **One search box in the header**, over the library's own pages.
@@ -173,10 +189,34 @@ settles, and the page changes only when the owning document does.
   change is a named migration shown to rux and applied on a yes.
 
 - **A pull command on the Mac, atlas's `tools/pull.py`,** writes each walk into
-  `walks/` and the rest into `inbox/`, then marks them pulled. Atlas refuses a
-  commit while the inbox holds anything.
+  `walks/` and the rest into `inbox/`, then marks them pulled; atlas refuses a
+  commit while the inbox holds anything. It reads with the project's secret key,
+  kept in the Mac's Keychain.
 
-- **The pull reads with the project's secret key, kept in the Mac's Keychain.**
+### Showing a capture, and the gate that allows it
+
+- **atlas's rule that evidence never leaves is amended, narrowly.** Its reason
+  was the public site, not privacy in general. A screen is worth more to a
+  visual reader than a table describing it, and atlas is private.
+
+- **The ledger is the release gate.** A ledger already transcribes one capture,
+  lists every field label legible on the frame, and is signed by the person who
+  read it — so that person has looked at every part of that image. A capture may
+  leave only when its ledger exists and marks it clear.
+
+- **Why a gate and not a sweep:** every other publishable check is a regex over
+  text and no regex reads an image, and a capture carries item codes, partner
+  names and user names that only a person will catch. A cleared one goes to the
+  private bucket, shown to a signed-in owner through a link the database signs,
+  never to the public tier.
+
+- **This paces itself, and that is accepted.** Nineteen of 147 captures have a
+  ledger, so most frames cannot be shown yet. Writing a ledger is work that
+  already has value, and tying release to it adds no new chore.
+
+- **A ledger's transcription publishes as text today**, swept like everything
+  else, so every field label legible on a frame is readable before any image
+  moves.
 
 ### What retires, and how addresses survive
 
@@ -202,18 +242,7 @@ settles, and the page changes only when the owning document does.
 
 ## Questions
 
-- **Does atlas's rule that evidence never leaves change, and for which subset?**
-  Showing a capture on a page needs that rule amended in atlas on its own terms,
-  with a permitted subset and an access lifetime. Until then no capture is
-  uploaded and none is shown; this plan assumes it stays as it is.
-
-- **What must the export contract carry for a claim to be labelled?** Today it
-  carries sources per document and strips them per claim, so section-level is
-  the honest limit. Going finer is a contract change with its own cost.
-
-- **What is the first route, and who says so?** The order must be rux's, because
-  only rux knows what they need next. A candidate: test items, then order
-  planning, then the planned-order boundary, then a shipment.
+None open.
 
 ## Tasks
 
@@ -225,6 +254,9 @@ settles, and the page changes only when the owning document does.
 - [ ] Publish it with its two ideas, its screens as panels, the glossary, and
       its homework as the understanding check.
 - [ ] Label at page and section level, with disagreements shown.
+- [ ] Make its stretch of the map walkable: answer the decision, watch the path
+      light up and the skipped tiles grey out, and start from a tile mid-way.
+- [ ] Show one cleared capture on its screen panel, to prove the ledger gate.
 - [ ] Preview it on desktop and on the phone before anything else is built.
 - [ ] Answer these, in writing, before extending: can rux find it without being
       told where it is; can rux see what must exist first; can rux read a field
@@ -241,7 +273,8 @@ settles, and the page changes only when the owning document does.
 
 ### Third — extend what held
 
-- [ ] Build the route page, in the order rux gives.
+- [ ] Amend atlas's evidence rule and write the ledger's clear mark into it.
+- [ ] Emit each source's kind, and label field rows from it.
 - [ ] Attest to the remaining ideas and carry the remaining screens through.
 - [ ] Label, tile and expand the other five lanes.
 - [ ] Carry each phase's walked date into the export and show it.
@@ -249,7 +282,7 @@ settles, and the page changes only when the owning document does.
       what follows.
 - [ ] Add the header search over the library's own pages.
 - [ ] Build the owner's queue page, marked by which feed can close each item.
-- [ ] Cut the side nav to Route, Map, Procedures, Ideas, Glossary and Homework.
+- [ ] Cut the side nav to Map, Procedures, Ideas, Glossary and Homework.
 - [ ] Simplify the other seven procedures, one at a time.
 - [ ] Turn the planning route into a route across the map's tiles.
 - [ ] Retire the meeting reviews and summaries to landing pages that keep their

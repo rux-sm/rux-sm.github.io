@@ -144,15 +144,20 @@ menu.
 ### Selecting is not opening
 
 A click selects a trip bar: its outline, and its days in the driver grid. The
-Open trip slot at the top of the selected bar's shortcut tab, Enter or the
-bar's right-click menu loads it into the panel. The tab runs down the bar's
-start edge, 32px wide, the same on a one-day trip and a week-long one, and the
-bar's text moves over for it rather than under it. It holds up to four slots,
-as many 24px slots as the bar's height fits: Open trip, then the person's own
-choice of Open itinerary, Color or Take off this bus, set from the right-click
-menu's Customize shortcuts and saved on their profile. An empty slot shows a
-dashed circle and opens Customize shortcuts; a shortcut that cannot act on the
-trip, such as Open itinerary without one, shows faint. The
+Open trip slot on the selected bar's shortcut bar, Enter or the bar's
+right-click menu loads it into the panel. The shortcut bar floats clear of the
+trip, placed the way a tooltip is: above it where there is room, below it where
+the day band is in the way, and slid back inside the board at either edge with
+its arrow still pointing at the trip. Nothing is taken from the trip, so the
+slots are the same on every trip however short or narrow. It holds Open trip,
+then the person's own choices in the order they set them — Open itinerary, Mark
+hotel booked, Color, Take off this bus or Cancel trip — set from the
+right-click menu's Customize shortcuts and saved on their profile. An empty
+choice is left out, and one empty slot closes the row while there is room for
+another: it shows a dashed circle and opens Customize shortcuts. A shortcut
+that cannot act on the trip, such as Open itinerary without one, shows faint
+with the reason as its label. Escape clears the selection and takes the bar
+with it. The
 panel keeps its trip through week changes and other selections, so a call
 about another trip does not cost an edit in progress, and it asks before
 unsaved changes are lost.

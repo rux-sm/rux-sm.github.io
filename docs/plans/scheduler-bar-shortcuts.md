@@ -50,6 +50,16 @@ stops costing that trip anything.
   the customizing does so little. Cancel trip opens its confirming box as it
   does from the menu.
 - **Slot 1 is still Open trip,** with Carbon's Launch icon.
+- **Icons only, no words.** Width is no longer scarce, but a wider bar covers
+  more of the trip next door, and the icons are already learned.
+- **The row grows with what is chosen, up to six slots,** and one empty slot
+  closes it while there is room for another, so Customize shortcuts is always
+  one press away. No floor is padded with empty circles.
+- **The phone gets the same bar.** One behaviour and one lot of code; it covers
+  more of a neighbour there, which the phone board will have to answer for
+  itself when it is built.
+- **Cancel trip is offered,** because it asks before it cancels, exactly as it
+  does from the right-click menu.
 - **The default set is unchanged:** Open trip, Open itinerary, Color, and an
   empty slot.
 - **An empty slot still shows the dashed circle** and opens Customize
@@ -72,29 +82,8 @@ stops costing that trip anything.
 
 ## Questions
 
-- **Does the floating bar carry words as well as icons?** Width is no longer
-  scarce, so "Open itinerary" could be written out. Icons alone stay smaller
-  and quieter.
-- **How many slots?** Six was what fitted the mock. It could be four, or it
-  could grow to hold whatever is chosen.
-- **What happens on the phone?** The board shows about two days at that width
-  and the driver page is not built yet. The floating bar would cover more of a
-  neighbour there than it does on the computer.
-- **Is Cancel trip wanted as a shortcut at all?** It is guarded by its
-  confirming box, but it is the one destructive action in the set.
+None open.
 
 ## Tasks
 
-- [ ] Answer the four questions above.
-- [ ] Add the floating bar to `scheduler/index.html` and the placing to
-      `scheduler/data.js`, with its rules in `scheduler/app.css` under the
-      `scheduler-` prefix.
-- [ ] Take the shortcut column, its tab rules and the bar's start padding out,
-      leaving Close trip's tab in place.
-- [ ] Add Mark hotel booked and Cancel trip to the actions table and to
-      Customize shortcuts' dropdowns.
-- [ ] Re-place the bar on scroll, on resize and when the week changes.
-- [ ] Reach every slot by keyboard from the selected trip, and take the bar
-      away on Escape.
-- [ ] Say what changed in `scheduler/docs/screen-inventory.md`.
 - [ ] rux uses the floating bar on real trips, on the computer and the phone.

@@ -477,7 +477,11 @@
       <!-- Tabs, with the panels as siblings of .rux--tabs, as
            components-tabs--default places them; js/tabs.js drives the arrow
            keys. -->
-      <div class="rux--side-panel__inner-content rux--side-panel--scrolls" id="scheduler-panel-body">
+      <!-- size-sm sets the height every control inside inherits, so the form's
+           fields are 32px rather than Carbon's default 40px and more of a tab
+           fits without scrolling. The action bar below is outside this, and
+           keeps its own size. -->
+      <div class="rux--side-panel__inner-content rux--side-panel--scrolls rux--layout--size-sm" id="scheduler-panel-body">
         <!-- Contained and full width together make Carbon lay the tabs out as
              even columns, so a label longer than its column truncates. -->
         <!-- size-sm, so the tab strip is as tall as the grids' day and column
@@ -649,10 +653,10 @@
     </li>
   </ul>
 
-  <!-- The selected bar's shortcuts: a column of up to four slots down the
-       bar's start edge. data.js places it straight after the selected bar and
-       draws its slots, and app.css moves the bar's text clear of it. A sibling,
-       not a child, because the bar is itself a button. -->
+  <!-- The selected trip's shortcuts: a small bar that floats clear of the trip,
+       placed the way a tooltip is, so a selected trip loses none of its width
+       or height. data.js moves it into the board's scroll pane, draws its
+       slots and places it above or below the trip. It lives here until then. -->
   <div class="scheduler-bar-shortcuts" id="scheduler-bar-shortcuts" role="group" aria-label="Trip shortcuts" hidden></div>
 
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
@@ -743,9 +747,10 @@
     </li>
   </ul>
 
-  <!-- Customize shortcuts: which action fills slots 2 to 4 of the selected
-       bar's shortcuts. Slot 1 is always Open trip. data.js fills the choices
-       and saves them to the person's profile. -->
+  <!-- Customize shortcuts: which actions follow Open trip on the selected
+       trip's shortcut bar. data.js fills every dropdown from its one table of
+       actions, so an action added there appears here, and saves the choice to
+       the person's profile. An empty dropdown is skipped rather than drawn. -->
   <div class="rux--layer-one rux--modal" id="scheduler-shortcuts-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-shortcuts-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
@@ -758,45 +763,48 @@
       </div>
       <div class="rux--modal-content">
         <div class="rux--stack-vertical rux--stack-scale-6">
-          <p class="rux--type-body-01">Slot 1 is always Open trip.</p>
+          <p class="rux--type-body-01">Open trip comes first on every trip. These follow it, in this order, and an empty one is left out.</p>
           <div class="rux--form-item">
             <div class="rux--select">
-              <label class="rux--label" for="scheduler-shortcut-2">Slot 2</label>
+              <label class="rux--label" for="scheduler-shortcut-1">Shortcut 1</label>
               <div class="rux--select-input__wrapper">
-                <select id="scheduler-shortcut-2" class="rux--select-input">
-                  <option class="rux--select-option" value="">None</option>
-                  <option class="rux--select-option" value="itinerary">Open itinerary</option>
-                  <option class="rux--select-option" value="color">Color</option>
-                  <option class="rux--select-option" value="unassign">Take off this bus</option>
-                </select>
+                <select id="scheduler-shortcut-1" class="rux--select-input"></select>
                 <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
               </div>
             </div>
           </div>
           <div class="rux--form-item">
             <div class="rux--select">
-              <label class="rux--label" for="scheduler-shortcut-3">Slot 3</label>
+              <label class="rux--label" for="scheduler-shortcut-2">Shortcut 2</label>
               <div class="rux--select-input__wrapper">
-                <select id="scheduler-shortcut-3" class="rux--select-input">
-                  <option class="rux--select-option" value="">None</option>
-                  <option class="rux--select-option" value="itinerary">Open itinerary</option>
-                  <option class="rux--select-option" value="color">Color</option>
-                  <option class="rux--select-option" value="unassign">Take off this bus</option>
-                </select>
+                <select id="scheduler-shortcut-2" class="rux--select-input"></select>
                 <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
               </div>
             </div>
           </div>
           <div class="rux--form-item">
             <div class="rux--select">
-              <label class="rux--label" for="scheduler-shortcut-4">Slot 4</label>
+              <label class="rux--label" for="scheduler-shortcut-3">Shortcut 3</label>
               <div class="rux--select-input__wrapper">
-                <select id="scheduler-shortcut-4" class="rux--select-input">
-                  <option class="rux--select-option" value="">None</option>
-                  <option class="rux--select-option" value="itinerary">Open itinerary</option>
-                  <option class="rux--select-option" value="color">Color</option>
-                  <option class="rux--select-option" value="unassign">Take off this bus</option>
-                </select>
+                <select id="scheduler-shortcut-3" class="rux--select-input"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="scheduler-shortcut-4">Shortcut 4</label>
+              <div class="rux--select-input__wrapper">
+                <select id="scheduler-shortcut-4" class="rux--select-input"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="scheduler-shortcut-5">Shortcut 5</label>
+              <div class="rux--select-input__wrapper">
+                <select id="scheduler-shortcut-5" class="rux--select-input"></select>
                 <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
               </div>
             </div>

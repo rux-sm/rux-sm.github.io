@@ -956,6 +956,7 @@
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
         tracks = [...gridEl.querySelectorAll('.scheduler-track')].map(t => ({ track: t, rect: t.getBoundingClientRect() }));
         bar.classList.add('scheduler-bar--dragging');
+        placeBarOpen();
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
@@ -974,6 +975,7 @@
         if (!moved) return;              // a press that never lifted still selects
         document.body.style.cursor = '';
         bar.classList.remove('scheduler-bar--dragging');
+        placeBarOpen();
         clear();
         if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
         // The browser fires a click after this; suppress the one that would
@@ -1069,7 +1071,7 @@
   const panelTitle = document.getElementById('scheduler-panel-title');
   const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
   const pageEl = document.querySelector('.scheduler-page');
-  // The selected bar's shortcut column, placed and drawn by placeBarOpen.
+  // The selected trip's shortcut bar, placed and drawn by placeBarOpen.
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
@@ -1341,6 +1343,60 @@
     return item;
   };
 
+  /* ── Fluid fields ──
+     Fluid is a style, not a component: the label moves inside the field's box
+     and an `<hr>` divider goes under it, and every fluid field is 64px, its
+     one height. Each control names its own fluid class and its own divider,
+     and a list-box takes fluid on its wrapper rather than on itself, so the
+     tab is swept once it is built rather than every builder carrying a flag.
+     Carbon has no fluid checkbox, radio or toggle; those fall through
+     untouched, and so does a field whose control is none of these.
+
+     The list-box test comes first, because a combo box holds a text input and
+     a dropdown sits inside a form-item, and both would match a later test. */
+  const fluidField = item => {
+    /* A combo box returns its wrapper and no form-item, so a wrapper is swept
+       on its own as well as inside one; the guard is for the second visit. */
+    const box = item.matches('.rux--list-box__wrapper')
+      ? item : item.querySelector('.rux--list-box__wrapper');
+    if (box) {
+      if (box.classList.contains('rux--list-box__wrapper--fluid')) return;
+      box.classList.add('rux--list-box__wrapper--fluid');
+      box.appendChild(el('hr', 'rux--list-box__divider'));
+      return;
+    }
+    const picker = item.querySelector('.rux--date-picker');
+    if (picker) {
+      item.classList.add('rux--date-picker--fluid');
+      for (const c of picker.querySelectorAll('.rux--date-picker-container')) {
+        // Fluid has one height, so the picker's own size modifier comes off.
+        c.querySelector('.rux--date-picker__input')?.classList.remove('rux--date-picker__input--sm');
+        c.appendChild(el('hr', 'rux--date-picker__divider'));
+      }
+      return;
+    }
+    const select = item.querySelector('.rux--select-input__wrapper');
+    if (select) {
+      item.classList.add('rux--select--fluid');
+      select.appendChild(el('hr', 'rux--select__divider'));
+      return;
+    }
+    const area = item.querySelector('.rux--text-area__wrapper');
+    if (area) { item.classList.add('rux--text-area--fluid'); return; }
+    const text = item.querySelector('.rux--text-input__field-wrapper');
+    if (text) {
+      item.classList.add('rux--text-input--fluid');
+      text.appendChild(el('hr', 'rux--text-input__divider'));
+    }
+  };
+
+  /* Every field of a built tab, fluid. A `rux--form-item` is what most builders
+     return, so this reaches the ones inside a pair, a group and a copy wrapper;
+     a bare list-box wrapper is swept too, because the contact search is one. */
+  const fluidTab = root => {
+    for (const item of root.querySelectorAll('.rux--form-item, .rux--list-box__wrapper')) fluidField(item);
+  };
+
   /* No browser autofill on a trip's fields. They hold a customer's data, never
      the person typing, yet Chrome reads labels like `Booking contact name` or
      `Pickup location` and offers the user's own saved address. Chrome ignores
@@ -1596,7 +1652,7 @@
     };
     const lab = el('label', 'rux--label', 'Trip bar color');
     lab.id = `${id}-label`;
-    const root = el('div', 'rux--dropdown rux--list-box rux--layout--size-md');
+    const root = el('div', 'rux--dropdown rux--list-box');
     root.id = id;
     const field = el('button', 'rux--list-box__field');
     field.type = 'button';
@@ -1699,13 +1755,22 @@
     to: 'rux--date-picker-container rux--date-picker-container--to',
   };
 
-  const dpContainer = (which, id, labelText, value) => {
+  /* The date picker's own size modifiers, because its input takes a class
+     rather than reading the height every other control inherits from
+     `rux--layout--size-*` on a container. Written out whole, not built from
+     the size, so the class sweep can resolve them. */
+  const DP_INPUT = {
+    sm: 'rux--date-picker__input rux--date-picker__input--sm',
+    lg: 'rux--date-picker__input rux--date-picker__input--lg',
+  };
+
+  const dpContainer = (which, id, labelText, value, size) => {
     const c = el('div', DP_CONTAINER[which]);
     const lab = el('label', 'rux--label', labelText);
     lab.setAttribute('for', id);
     const wrap = el('div', 'rux--date-picker-input__wrapper');
     const span = el('span');
-    const input = el('input', 'rux--date-picker__input');
+    const input = el('input', DP_INPUT[size] ?? 'rux--date-picker__input');
     input.type = 'text';
     input.id = id;
     input.value = value || '';
@@ -1759,8 +1824,8 @@
   function dateRange(fromId, toId, fromLabel, toLabel, fromVal, toVal) {
     const root = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--range');
     root.append(
-      dpContainer('from', fromId, fromLabel, fromVal),
-      dpContainer('to', toId, toLabel, toVal),
+      dpContainer('from', fromId, fromLabel, fromVal, 'sm'),
+      dpContainer('to', toId, toLabel, toVal, 'sm'),
     );
     root.appendChild(calendarBody());
     const item = el('div', 'rux--form-item');
@@ -2687,6 +2752,9 @@
       panelDetails.appendChild(days);
     }
 
+    // The Details tab is fluid; the other tabs keep the default style.
+    fluidTab(panelDetails);
+
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.
     panelCancel.hidden = creating || !trip.id;
@@ -3329,29 +3397,54 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* A trip tab runs down its bar's start edge, inside the bar's border, so a
-     partial PO's border and the dotted edge of a trip from last week still
-     show. It goes straight after its bar, so app.css can move that bar's text
-     clear of it. */
+  /* Close trip's tab runs down its bar's start edge, inside the bar's border,
+     so a partial PO's border and the dotted edge of a trip from last week
+     still show. It goes straight after its bar, so app.css can move that bar's
+     text clear of it. */
   function placeAtStart(btn, bar) {
     btn.style.setProperty('--scheduler-open-top', `${bar.offsetTop + bar.clientTop}px`);
     btn.style.setProperty('--scheduler-open-start', `${bar.offsetLeft + bar.clientLeft}px`);
     btn.style.setProperty('--scheduler-open-h', `${bar.clientHeight}px`);
   }
 
-  /* The shortcut column follows the selection, except onto the trip in the
-     editor, whose bars carry Close trip in the same place. It splits the bar's
-     height into as many 24px slots as fit, up to four, so a bar with rows turned
-     off keeps its first slots, and slot 1 is always Open trip. */
-  const SLOT_MIN_PX = 24;
+  /* The shortcut bar follows the selection, except onto the trip in the editor,
+     whose bars carry Close trip instead. It is placed the way a tooltip is:
+     above the trip where there is room and below it where there is not, and
+     slid back inside the board at either edge with its arrow still pointing at
+     the trip. Nothing is taken from the trip itself, so the slots are the same
+     on every trip. It goes straight after its bar, inside that bar's own track,
+     so Tab reaches the slots from the selected trip; the track does not clip,
+     so the bar can sit outside it. It is taken away while a bar is dragged,
+     because the trip it points at is moving. */
+  const TIP_GAP = 4;
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
-    const none = !bar?.dataset.tripId || isEditorTrip(bar);
+    const none = !bar?.dataset.tripId || isEditorTrip(bar) || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
     if (none) return;
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
-    placeAtStart(barShortcuts, bar);
-    drawShortcuts(bar, Math.max(1, Math.min(4, Math.floor(bar.clientHeight / SLOT_MIN_PX))));
+    drawShortcuts(bar);
+    /* The room is measured on screen, against the pane and the two bands that
+       stick to its edges, and then written in the track's own coordinates,
+       which is where the bar is laid out. */
+    const pane = schEl.getBoundingClientRect();
+    const host = barShortcuts.parentElement.getBoundingClientRect();
+    const box = bar.getBoundingClientRect();
+    const tip = barShortcuts.getBoundingClientRect();
+    const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
+    const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
+    const ceiling = band ? band.bottom : pane.top;
+    const above = box.top - ceiling >= tip.height + TIP_GAP;
+    barShortcuts.dataset.side = above ? 'above' : 'below';
+    barShortcuts.style.setProperty('--scheduler-open-top',
+      `${(above ? box.top - tip.height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
+    const first = (column ? column.right : pane.left) + TIP_GAP;
+    const last = pane.right - tip.width - TIP_GAP;
+    const x = Math.max(first, Math.min(box.left, last));
+    barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
+    // Half a slot in from the trip's own start edge, wherever the bar ended up.
+    barShortcuts.style.setProperty('--scheduler-open-tip',
+      `${Math.max(8, Math.min(tip.width - 20, box.left - x + 16))}px`);
   }
 
   /* Close trip on every bar of the trip in the editor. Those bars are locked,
@@ -3475,6 +3568,12 @@
   // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
   new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBarClose(); })).observe(gridEl);
+  /* The shortcut bar scrolls with its trip, but which side of the trip it fits
+     on changes as the board scrolls under the sticky day band, so it is placed
+     again. Close trip is a tab on its bar and needs nothing. */
+  schEl.addEventListener('scroll', () => {
+    if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
+  }, { passive: true });
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and
   // only selects that bar, even while a different one is selected.
@@ -3976,7 +4075,7 @@
     }
 
     if (item.id === 'scheduler-bar-menu-shortcuts') {
-      openShortcutsModal(2);
+      openShortcutsModal(1);
       return;
     }
 
@@ -3985,21 +4084,8 @@
       return;
     }
 
-    // Marking the hotel saves at once, like a colour: one column of this leg.
     if (item.id === 'scheduler-bar-menu-hotel') {
-      if (!['outbound', 'return'].includes(bar.dataset.leg)) return;
-      const booked = !bar.dataset.hotelBooked;
-      toast('info', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
-      try {
-        const { error } = await withTimeout(
-          client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
-            .eq('id', bar.dataset.tripId).then(r => r));
-        if (error) throw new Error(error.message);
-        await show();
-        toast('success', booked ? 'The hotel is booked.' : 'The hotel is not booked.');
-      } catch (err) {
-        toast('error', `The hotel was not marked. ${err.message}`);
-      }
+      markHotel(bar);
       return;
     }
 
@@ -4056,6 +4142,24 @@
     hotelItem.hidden = !bar.dataset.needHotel || locked;
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
+  }
+
+  /* Marks this leg's hotel booked or not. It saves at once, like a colour: one
+     column, no form. The menu item and a shortcut slot both come here. */
+  async function markHotel(bar) {
+    if (!['outbound', 'return'].includes(bar.dataset.leg)) return;
+    const booked = !bar.dataset.hotelBooked;
+    toast('info', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
+    try {
+      const { error } = await withTimeout(
+        client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
+          .eq('id', bar.dataset.tripId).then(r => r));
+      if (error) throw new Error(error.message);
+      await show();
+      toast('success', booked ? 'The hotel is booked.' : 'The hotel is not booked.');
+    } catch (err) {
+      toast('error', `The hotel was not marked. ${err.message}`);
+    }
   }
 
   // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.
@@ -4264,38 +4368,56 @@
     if (sub) window.Rux?.menu?.open?.(sub, color);
   }
 
-  /* THE SELECTED BAR'S SHORTCUTS. Slot 1 is always Open trip; slots 2 to 4 hold
-     the person's choice, saved on their profile, or the default set until they
-     choose. A slot whose action cannot act on the bar shows it disabled, with
-     the reason as its label, so the slots keep their order from trip to trip. */
+  /* THE SELECTED TRIP'S SHORTCUTS. Open trip comes first on every trip; the
+     person's own choices follow it, in the order they set, and an empty choice
+     is left out rather than drawn. One empty slot closes the row while there is
+     room for another, so Customize shortcuts is always one press away. A slot
+     whose action cannot act on the trip shows disabled, with the reason as its
+     label, so the slots keep their order from trip to trip. */
   const SHORTCUT_ACTIONS = [
     { id: 'open', label: 'Open trip', icon: '#i-launch',
       applies: () => true, run: () => openSelected() },
     { id: 'itinerary', label: 'Open itinerary', icon: '#i-attachment', reason: 'No itinerary yet',
       applies: bar => !!bar.dataset.itineraryId, run: bar => openItinerary(bar) },
+    { id: 'hotel', label: 'Mark hotel booked', icon: '#i-building', reason: 'No hotel on this trip',
+      applies: bar => !!bar.dataset.needHotel && !isEditorTrip(bar),
+      label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
+      run: bar => markHotel(bar) },
     { id: 'color', label: 'Color', icon: '#i-color-palette',
-      applies: () => true, run: (bar, slot) => openColorFrom(bar, slot) },
+      applies: bar => !isEditorTrip(bar), run: (bar, slot) => openColorFrom(bar, slot) },
     { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract', reason: 'Not on a bus',
       applies: bar => !!bar.dataset.assignmentId && !!bar.dataset.busId, run: bar => takeOffBus(bar) },
+    { id: 'cancel', label: 'Cancel trip…', icon: '#i-trash-can',
+      applies: () => true, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
-  const SHORTCUT_DEFAULT = ['itinerary', 'color', null];
+  // How many actions follow Open trip, and so how many dropdowns Customize
+  // shortcuts shows.
+  const SHORTCUT_SLOTS = 5;
+  const SHORTCUT_DEFAULT = ['itinerary', 'color', null, null, null];
   // Where the choice is kept when no one is signed in, as in a local preview.
   const SHORTCUT_KEY = 'rux.scheduler.shortcuts';
   let shortcutChoice = SHORTCUT_DEFAULT.slice();
 
-  // A stored choice is three slots of known actions; anything else is the default.
+  /* A stored choice is a list of known actions, or None, cut or padded to the
+     number of slots; anything else is the default set. The padding is what
+     reads a choice saved when there were three slots. */
   const cleanShortcuts = value => {
+    if (!Array.isArray(value)) return SHORTCUT_DEFAULT.slice();
     const known = new Set(SHORTCUT_ACTIONS.map(a => a.id).filter(id => id !== 'open'));
-    return Array.isArray(value) && value.length === 3
-      ? value.map(v => (known.has(v) ? v : null))
-      : SHORTCUT_DEFAULT.slice();
+    return Array.from({ length: SHORTCUT_SLOTS },
+      (_, i) => (known.has(value[i]) ? value[i] : null));
   };
 
   let shortcutsDrawn = '';
-  function drawShortcuts(bar, count) {
-    const slots = ['open', ...shortcutChoice].slice(0, count);
+  function drawShortcuts(bar) {
+    // Open trip, then the chosen actions with the empty choices left out, then
+    // one empty slot to add another while there is room for one.
+    const chosen = shortcutChoice.filter(Boolean);
+    const slots = ['open', ...chosen];
+    if (chosen.length < SHORTCUT_SLOTS) slots.push(null);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
-      bar.dataset.assignmentId, bar.dataset.busId, slots.join()].join('|');
+      bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
+      bar.dataset.hotelBooked, slots.join()].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     if (key === shortcutsDrawn && barShortcuts.childElementCount === slots.length) return;
     shortcutsDrawn = key;
@@ -4312,9 +4434,11 @@
         return btn;
       }
       const ok = action.applies(bar);
+      // Mark hotel booked says which way it marks this leg.
+      const label = action.label_for ? action.label_for(bar) : action.label;
       btn.dataset.shortcut = action.id;
-      btn.setAttribute('aria-label', ok ? action.label : action.reason);
-      btn.title = ok ? action.label : action.reason;
+      btn.setAttribute('aria-label', ok ? label : action.reason);
+      btn.title = ok ? label : action.reason;
       if (!ok) btn.setAttribute('aria-disabled', 'true');
       btn.appendChild(svgUse(action.icon, '16', '0 0 32 32'));
       return btn;
@@ -4327,22 +4451,42 @@
     const btn = e.target.closest('.scheduler-bar-shortcut');
     const bar = selectedBar();
     if (!btn || !bar || btn.getAttribute('aria-disabled') === 'true') return;
-    if (!btn.dataset.shortcut) { openShortcutsModal(Number(btn.dataset.slot)); return; }
+    if (!btn.dataset.shortcut) {
+      const first = shortcutChoice.findIndex(id => !id);
+      openShortcutsModal(first < 0 ? SHORTCUT_SLOTS : first + 1);
+      return;
+    }
     SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut)?.run(bar, btn);
   });
 
   const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');
+  const shortcutSelect = n => document.getElementById(`scheduler-shortcut-${n}`);
+  /* Every dropdown is filled from the one table of actions, so an action added
+     there is offered here without the page being touched. Open trip is not
+     among them: it always comes first. */
+  for (let n = 1; n <= SHORTCUT_SLOTS; n++) {
+    const select = shortcutSelect(n);
+    if (!select) continue;
+    const none = el('option', 'rux--select-option', 'None');
+    none.value = '';
+    select.replaceChildren(none, ...SHORTCUT_ACTIONS.filter(a => a.id !== 'open').map(a => {
+      const option = el('option', 'rux--select-option', a.label);
+      option.value = a.id;
+      return option;
+    }));
+  }
+
+  // Opened at a dropdown: the slot pressed, or the first empty one when the
+  // empty slot was pressed.
   function openShortcutsModal(slot) {
     if (!shortcutsModal) return;
-    for (let n = 2; n <= 4; n++) {
-      document.getElementById(`scheduler-shortcut-${n}`).value = shortcutChoice[n - 2] ?? '';
-    }
+    for (let n = 1; n <= SHORTCUT_SLOTS; n++) shortcutSelect(n).value = shortcutChoice[n - 1] ?? '';
     window.Rux?.modal?.open?.(shortcutsModal);
-    document.getElementById(`scheduler-shortcut-${Math.min(4, Math.max(2, slot))}`)?.focus();
+    shortcutSelect(Math.min(SHORTCUT_SLOTS, Math.max(1, slot)))?.focus();
   }
   document.getElementById('scheduler-shortcuts-save')?.addEventListener('click', () => {
     window.Rux?.modal?.close?.(shortcutsModal);
-    saveShortcuts([2, 3, 4].map(n => document.getElementById(`scheduler-shortcut-${n}`).value || null));
+    saveShortcuts(Array.from({ length: SHORTCUT_SLOTS }, (_, i) => shortcutSelect(i + 1).value || null));
   });
 
   // The signed-in person's id, or null in a preview with no log-in.

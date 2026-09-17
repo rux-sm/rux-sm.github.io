@@ -1,5 +1,5 @@
 {
-  "contract": 12,
+  "contract": 13,
   "tier": "export",
   "id": "transfer-item-between-warehouses",
   "title": "Warehouse transfer",
@@ -622,7 +622,11 @@
               ],
               "id": "1.5",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "0.1",
+                "0.2"
+              ]
             },
             {
               "cells": [
@@ -753,7 +757,10 @@
               ],
               "id": "1.8",
               "optional": false,
-              "produces": true
+              "produces": true,
+              "refs": [
+                "0.1"
+              ]
             },
             {
               "cells": [
@@ -901,7 +908,10 @@
               ],
               "id": "2.2",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "1.6"
+              ]
             },
             {
               "cells": [

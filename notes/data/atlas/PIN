@@ -1,10 +1,10 @@
-commit   0c59bcd1b47e285bce9ad30634562a40004e3f15
-date     2026-09-17T04:29:09Z
-subject  feat(maps): Name the homework that tests each tile
-contract 12 
+commit   0ec7f729e624dfa768cf88adcaf6dd74c8c93f92
+date     2026-09-17T05:27:59Z
+subject  feat(tools): Emit step references, screen routes
+contract 13 
 tier     export
-sha256   2bfa9739fbf48a0a2b71823a068e59dc798425eb321dab16ea064be00ab84e82
+sha256   5d75f3afafe497b934932ef73c658d6117dfa470d6ffacd6c8cbc1687346406a
 
-Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
+Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync
 overwrites them, and the real fix belongs in the walkthrough in atlas.

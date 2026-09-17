@@ -1,5 +1,5 @@
 {
-  "contract": 12,
+  "contract": 13,
   "tier": "export",
   "id": "check-item-inventory",
   "title": "Check an item's inventory",

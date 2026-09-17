@@ -430,7 +430,7 @@ function callout({ label, level, body }) {
 // two shapes. `kind` cannot tell them apart and the keys can.
 const isRows = b => Array.isArray(b.rows);
 
-function table(block, { numbered = false, write = true, stepIds = false } = {}) {
+function table(block, { numbered = false, write = true, stepIds = false, after = null } = {}) {
   const cols = block.columns ?? [];
   const head = cols.map(c =>
     `<th scope="col"><div class="rux--table-header-label">${esc(c)}</div></th>`).join('');
@@ -463,7 +463,8 @@ function table(block, { numbered = false, write = true, stepIds = false } = {}) 
                 <textarea id="n-${esc(row.id)}" class="rux--text-area" rows="1" data-notes-note="${esc(row.id)}" placeholder="The value you saw"></textarea>
               </div>
             </div>` : '';
-      return `<td${last ? ' class="notes-see"' : ''}>${inner}${writeHere}</td>`;
+      const extra = after && numbered && i === 1 ? after(row) : '';
+      return `<td${last ? ' class="notes-see"' : ''}>${inner}${extra}${writeHere}</td>`;
     }).join('');
     // `produces` marks a step that yields a value worth noting. It is the same
     // fact the `pencil` token carries inline; the attribute lets the row be
@@ -2721,7 +2722,22 @@ function pathValues(blocks) {
   return (blocks ?? []).flatMap(b => isRows(b) ? (b.rows ?? []).flatMap(r => r.cells ?? []) : [b]);
 }
 
-function pathPhase(node, w, p) {
+// A SCREEN OPENS UNDER THE STEP THAT FIRST NAMES IT in a tile: how it is
+// reached and what it is for, from atlas's screen reference.
+function pathScreens(row, seen) {
+  const codes = (row.cells ?? []).flatMap(c => (c.tokens ?? []).filter(t => t.t === 'session').map(t => t.code));
+  return [...new Set(codes)].filter(code => !seen.has(code) && SCREENS.has(code)).map(code => {
+    seen.add(code);
+    const e = SCREENS.get(code);
+    if (!e.route && !e.purpose) return '';
+    return `<details class="notes-path-screen"><summary>About ${esc(e.name)}</summary><dl class="notes-meta">${
+      e.route ? `<div class="notes-meta-row"><dt>Route</dt><dd>${esc(e.route)}</dd></div>` : ''}${
+      e.purpose ? `<div class="notes-meta-row"><dt>Purpose</dt><dd>${esc(e.purpose)}</dd></div>` : ''}${
+      `<div class="notes-meta-row"><dt>Session</dt><dd><span class="rux--type-code-01">${esc(code)}</span></dd></div>`}</dl></details>`;
+  }).join('');
+}
+
+function pathPhase(node, w, p, seen = new Set()) {
   const id = `t-${node.id}-${w.id}-p${p.n}`;
   const open = (p.blocks ?? []).filter(b => b.kind !== 'notes');
   const notes = (p.blocks ?? []).filter(b => b.kind === 'notes');
@@ -2729,7 +2745,7 @@ function pathPhase(node, w, p) {
   return `<section class="notes-path-phase" aria-labelledby="${esc(id)}">
               <h3 id="${esc(id)}" class="rux--type-productive-heading-02">Phase ${esc(p.n)} — ${esc(p.title)}</h3>
               ${route}
-              ${open.map(b => block(b, { numbered: true, write: false, stepIds: true })).join('\n              ')}
+              ${open.map(b => block(b, { numbered: true, write: false, stepIds: true, after: row => pathScreens(row, seen) })).join('\n              ')}
               ${notes.length ? `<details class="notes-notes"><summary>Notes on phase ${esc(p.n)}</summary>
                 ${notes.map(b => block(b)).join('\n                ')}
               </details>` : ''}
@@ -2767,7 +2783,8 @@ function pathNext(dg, n) {
   return html;
 }
 
-function pathTile(dg, n, cat, docs, task = false, experiments = new Map()) {
+function pathTile(dg, n, cat, ctx, task = false) {
+  const { docs, experiments, opensIndex } = ctx;
   const opens = (n.opens ?? []).flatMap(o => {
     const w = docs.get(o.walkthrough);
     if (!w) throw new Error(`node ${n.id} opens ${o.walkthrough}, which is not in this build`);
@@ -2789,6 +2806,34 @@ function pathTile(dg, n, cat, docs, task = false, experiments = new Map()) {
     ? [`${opens.length} phase${opens.length > 1 ? 's' : ''}`, `${steps} step${steps === 1 ? '' : 's'}`,
       `${screens.size} screen${screens.size === 1 ? '' : 's'}`]
     : [];
+
+  const seen = new Set();
+
+  // BEFORE STARTING: a step in this tile that points back at a step this tile
+  // does not open, and where that step is done.
+  const inTile = new Set(opens.map(({ w, p }) => `${w.id}:${p.n}`));
+  const before = new Map();
+  for (const { w, p } of opens) {
+    for (const r of (p.blocks ?? []).filter(isRows).flatMap(b => b.rows ?? [])) {
+      for (const ref of r.refs ?? []) {
+        const k = Number(ref.split('.')[0]);
+        const key = `${w.id}:${ref}`;
+        if (inTile.has(`${w.id}:${k}`) || before.has(key)) continue;
+        const phase = w.phases.find(x => x.n === k);
+        const target = (phase?.blocks ?? []).filter(isRows).flatMap(b => b.rows ?? []).find(x => x.id === ref);
+        if (!target) continue;
+        before.set(key, { ref, by: r.id, w, phase, target, host: opensIndex.get(`${w.id}:${k}`) });
+      }
+    }
+  }
+  const beforeList = before.size ? `
+            <h3 class="rux--type-productive-heading-02">Before starting</h3>
+            <ul class="notes-path-before">${[...before.values()].map(b => `
+              <li><span class="rux--type-code-01">${esc(b.ref)}</span> ${tokens(b.target.cells?.[1]?.tokens ?? [])} <span class="notes-path-meta">Step ${esc(b.by)} needs it. ${
+                b.host && b.host.id !== n.id
+                  ? `Done in <a class="rux--link" href="#tile-${esc(b.host.id)}" data-notes-path-go="${esc(b.host.id)}">${esc(tileLabel(b.host))}</a>.`
+                  : `Done in <a class="rux--link" href="${PAGE_BASE}${esc(b.w.id)}.html#p-${b.phase.n}">Phase ${esc(b.phase.n)} — ${esc(b.phase.title)}</a>.`}</span></li>`).join('')}
+            </ul>` : '';
 
   const byWalkthrough = [];
   for (const o of opens) {
@@ -2818,7 +2863,7 @@ function pathTile(dg, n, cat, docs, task = false, experiments = new Map()) {
   const procedure = byWalkthrough.map(({ w, ps }) => `
             <div class="notes-path-procedure" data-notes-tile-procedure="${esc(w.id)}">
             <p class="rux--type-body-01"><a class="rux--link" href="${PAGE_BASE}${esc(w.id)}.html#p-${ps[0].n}">${esc(w.title)}</a></p>${walkBlock(w)}
-            ${ps.map(p => pathPhase(n, w, p)).join('\n            ')}
+            ${ps.map(p => pathPhase(n, w, p, seen)).join('\n            ')}
             </div>`).join('');
   const reference = opens.length ? '' : `
             ${n.route ? `<p class="rux--type-body-01"><strong>Route</strong> ${tokens(n.route.tokens ?? [])}</p>` : ''}
@@ -2853,7 +2898,7 @@ function pathTile(dg, n, cat, docs, task = false, experiments = new Map()) {
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">${[state, ...counts].map(esc).join(' · ')}${n.code ? ` · <span class="rux--type-code-01">${esc(n.code)}</span>` : ''}</p>
-            ${procedure}${reference}
+            ${beforeList}${procedure}${reference}
             ${task ? '' : `<h3 class="rux--type-productive-heading-02">Next</h3>
             ${pathNext(dg, n)}`}${checkList}${questList}
           </div>
@@ -2901,6 +2946,9 @@ const PATH_CSS = `
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
 .notes-path-questbox { display: grid; gap: .5rem; }
+.notes-path-before { display: grid; gap: .375rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
+.notes-path-screen { margin-block-start: .375rem; font-size: .75rem; }
+.notes-path-screen > summary { cursor: pointer; color: var(--rux-link-primary); }
 .notes-path-checks { display: grid; gap: .375rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-files { display: grid; gap: .75rem; }
 .notes-path-file-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
@@ -2950,11 +2998,21 @@ const tileLabel = n => `${n.n != null ? `${n.n} · ` : ''}${n.session}`;
 
 function pathPage(site) {
   const { ref, dg, cat, tasks, taskCat, setup, numbered, under, others, byLane } = pathLayout(site);
-  const docs = new Map(site.walkthroughs.map(w => [w.id, w]));
-  const experiments = new Map(site.experiments.map(e => [e.id, e]));
+  // Which tile opens each walkthrough phase, the first that does.
+  const opensIndex = new Map();
+  for (const n of [...dg.nodes, ...(tasks?.nodes ?? [])]) {
+    for (const o of n.opens ?? []) for (const k of o.phases) {
+      if (!opensIndex.has(`${o.walkthrough}:${k}`)) opensIndex.set(`${o.walkthrough}:${k}`, n);
+    }
+  }
+  const ctx = {
+    docs: new Map(site.walkthroughs.map(w => [w.id, w])),
+    experiments: new Map(site.experiments.map(e => [e.id, e])),
+    opensIndex,
+  };
   const start = dg.nodes.find(n => n.id === PATH_START);
-  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs, false, experiments));
-  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true, experiments));
+  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, ctx));
+  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, ctx, true));
   const tile = n => taskCat.has(n.id) ? taskTile(n) : one(n);
   const stages = [];
   for (const n of numbered) {
@@ -3410,17 +3468,21 @@ function assertNoRawBlockquotes(walkthroughs) {
 // content type -- so its absence is what identifies one, and a document
 // carrying an unknown `kind` stops the build instead of being rendered as
 // whatever it least resembles.
-const docs = readdirSync(DATA)
+const allDocs = readdirSync(DATA)
   .filter(f => f.endsWith('.json'))
   .map(f => JSON.parse(readFileSync(join(DATA, f), 'utf8')));
+// THE SCREEN REFERENCE IS DATA, NOT A PAGE: code, name, purpose and route for
+// each screen the walkthroughs cite. The path shows it under a step.
+const SCREENS = new Map((allDocs.find(d => d.kind === 'screens')?.entries ?? []).map(e => [e.code, e]));
+const docs = allDocs.filter(d => d.kind !== 'screens');
 
 // THE CONTRACT IS PINNED HERE, NOT ONLY REPORTED. sync-export.sh prints the
 // contract set and enforces nothing, so a renderer written for one shape could
 // silently consume the next. Bump this constant when this file is updated for
-// a new contract, and not before. Contracts 11 and 12 only add optional node
-// and block fields, so this reads 10 to 12 alike.
-const CONTRACTS = [10, 11, 12];
-for (const d of docs) if (!CONTRACTS.includes(Number(d.contract)))
+// a new contract, and not before. Contracts 11 to 13 only add optional fields,
+// so this reads 10 to 13 alike.
+const CONTRACTS = [10, 11, 12, 13];
+for (const d of allDocs) if (!CONTRACTS.includes(Number(d.contract)))
   throw new Error(`${d.id ?? '?'}: contract ${d.contract}, this renderer reads ${CONTRACTS.join(' and ')} -- update build.mjs for it, then this constant`);
 
 for (const d of docs) {

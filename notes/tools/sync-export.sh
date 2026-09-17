@@ -62,7 +62,7 @@ mkdir -p "$OUT"
 # longer sends this" from "atlas sent it and I kept it".
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
-( cd "$ATLAS" && python3 tools/emit.py --all --reviews --experiments --references --out "$STAGE" )
+( cd "$ATLAS" && python3 tools/emit.py --all --reviews --experiments --references --screens --out "$STAGE" )
 
 # REFUSE AN EMPTY RESULT RATHER THAN ACTING ON ONE. emit.py fails closed and
 # set -e catches a non-zero exit, but a run that succeeds and writes nothing
@@ -98,7 +98,7 @@ contract $CONTRACTS
 tier     export
 sha256   $HASH
 
-Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
+Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync
 overwrites them, and the real fix belongs in the walkthrough in atlas.
 EOF

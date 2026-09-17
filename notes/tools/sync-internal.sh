@@ -25,6 +25,8 @@ OUT="$HERE/build/internal"
 rm -rf "$OUT"
 mkdir -p "$OUT/data" "$OUT/site"
 (cd "$ATLAS" && python3 tools/emit.py --all --reviews --experiments --references --concepts --internal --out "$OUT/data" >/dev/null)
+# The screen reference has only an export tier, and the private path reads it too.
+(cd "$ATLAS" && python3 tools/emit.py --screens --out "$OUT/data" >/dev/null)
 # The pages reach the design system at /design/ -- absolute, since 2026-09-10
 # -- so the private site root gets a folder of
 # exactly that name, symlinked rather than copied, and served by design's OWN

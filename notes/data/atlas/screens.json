@@ -1,0 +1,595 @@
+{
+  "contract": 13,
+  "tier": "export",
+  "kind": "screens",
+  "entries": [
+    {
+      "code": "cppat1210m000",
+      "name": "Transfer Order Planning",
+      "purpose": "Converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer.",
+      "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+    },
+    {
+      "code": "cprpd0100m000",
+      "name": "Planning Parameters"
+    },
+    {
+      "code": "cprpd1100m000",
+      "name": "Items - Planning",
+      "purpose": "Holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned.",
+      "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+    },
+    {
+      "code": "cprpd1200m000",
+      "name": "Check Horizons"
+    },
+    {
+      "code": "cprpd4100m000",
+      "name": "Scenarios",
+      "purpose": "Defines the scenario a planning run executes in — the horizon, whether the plan rolls, and whether the run is a net change or a full regeneration.",
+      "route": "Planning ➔ Master Data ➔ Scenarios ➔ Scenarios"
+    },
+    {
+      "code": "cprrp0240m000",
+      "name": "Generate Pegging Relations"
+    },
+    {
+      "code": "cprrp0520m000",
+      "name": "Item Order Plan",
+      "purpose": "A time-phased view of one item's order planning: demand and forecast against scheduled receipts and planned supply.",
+      "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+    },
+    {
+      "code": "cprrp0740m200",
+      "name": "Order Pegging"
+    },
+    {
+      "code": "cprrp1100m000",
+      "name": "Planned Orders",
+      "purpose": "Lists the planned orders MRP produced, for review and selection before they are transferred to execution.",
+      "route": "Planning ➔ Order Planning ➔ Planned Orders"
+    },
+    {
+      "code": "cprrp1200m000",
+      "name": "Confirm Order Planning"
+    },
+    {
+      "code": "cprrp1210m000",
+      "name": "Generate Order Planning",
+      "purpose": "Runs the range-based order-planning process that turns demand into planned orders.",
+      "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
+    },
+    {
+      "code": "cprrp1220m000",
+      "name": "Generate Order Planning (Item)",
+      "purpose": "Runs order planning for a single item.",
+      "route": "no menu entry; the range-based Generate Order Planning (cprrp1210m000) sits at Planning - Order Planning - Generate Order Planning"
+    },
+    {
+      "code": "cprrp1600m000",
+      "name": "Planned Order"
+    },
+    {
+      "code": "tccom0100s000",
+      "name": "Implemented Software Components"
+    },
+    {
+      "code": "tccom0500m000",
+      "name": "Implemented Software Components",
+      "purpose": "Records which LN concepts and modules are switched on for this company.",
+      "route": "Master Data ➔ Enterprise Model ➔ Company Data ➔ Implemented Software Components"
+    },
+    {
+      "code": "tccom4120s000",
+      "name": "Buy-from Business Partner"
+    },
+    {
+      "code": "tccom4520m000",
+      "name": "Buy-from Business Partners",
+      "purpose": "Lists buy-from business partners and their status, for viewing rather than editing.",
+      "route": "Product Lifecycle Management ➔ PLM Administration ➔ Master Data ➔ Business Partners ➔ Buy-from Business Partners"
+    },
+    {
+      "code": "tcemm1170m000",
+      "name": "tcemm1170m000"
+    },
+    {
+      "code": "tcemm4600m000",
+      "name": "Concept Activation",
+      "purpose": "Shows and maintains the activation status of one LN concept, chosen upstream.",
+      "route": "Options ➔ Run Program, session code typed directly — absent from the 2026-08-20 navigation extract"
+    },
+    {
+      "code": "tcibd0102m000",
+      "name": "Item Defaults",
+      "purpose": "The default data template applied when a new item is created.",
+      "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults"
+    },
+    {
+      "code": "tcibd0500m000",
+      "name": "Item Code Segmentation"
+    },
+    {
+      "code": "tcibd0501m000",
+      "name": "Items",
+      "purpose": "Maintains global item data at the company level — the centrally controlled item record and its subentities.",
+      "route": "Master Data ➔ Items ➔ Items"
+    },
+    {
+      "code": "tcibd0501m100",
+      "name": "Item",
+      "purpose": "Specifies and maintains one item's global data across its subentities.",
+      "route": "tick a row in Items (tcibd0501m000) and drill in"
+    },
+    {
+      "code": "tcibd0502m000",
+      "name": "Item Defaults",
+      "purpose": "The detail form behind Item Defaults, holding the default item data for one item type and item group combination.",
+      "route": "from Item Defaults (tcibd0102m000), by specifying or modifying a global item default"
+    },
+    {
+      "code": "tcibd1550m000",
+      "name": "Items by Site",
+      "purpose": "Holds the per-site row for an item under multisite, where site data can mirror or diverge from the global item.",
+      "route": "Master Data ➔ Items ➔ Items by Site"
+    },
+    {
+      "code": "tcibd1551m000",
+      "name": "Item Defaults by Site",
+      "purpose": "The site-level counterpart of Item Defaults, holding default item data for a site, item type and item group combination.",
+      "route": "unstated in the help; no filed source gives a route"
+    },
+    {
+      "code": "tcibd1552m000",
+      "name": "Item Control and Defaults by Site",
+      "purpose": "Decides, per site, which per-module item records are generated for a new item.",
+      "route": "Master Data ➔ Items ➔ Defaults ➔ Item Control and Defaults by Site"
+    },
+    {
+      "code": "tcibd2100m000",
+      "name": "Items - Ordering",
+      "purpose": "Governs supply-planning boundaries, lot sizing and ordering intervals — how much LN plans and in how many orders.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering"
+    },
+    {
+      "code": "tcibd2101m000",
+      "name": "Item - Ordering Defaults",
+      "purpose": "Holds the default ordering data for an item type and item group combination.",
+      "route": "the blue [Ordering] link on Item Defaults (tcibd0502m000)"
+    },
+    {
+      "code": "tcibd2600m000",
+      "name": "Item - Ordering",
+      "purpose": "The global item ordering record — lot-size limits, intervals and safety settings that the site and warehouse levels inherit from.",
+      "route": "drill-in from Items - Ordering (tcibd2100m000) by double-clicking a record, or stand-alone"
+    },
+    {
+      "code": "tcmcs0123m000",
+      "name": "Item Groups",
+      "purpose": "Defines the item group half of the key — together with item type — that the item defaults chain is keyed on.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Item Groups"
+    },
+    {
+      "code": "tcmcs0152s000",
+      "name": "General Projects",
+      "purpose": "Records a general project as a code; the plan itself lives in whichever package claims it.",
+      "route": "the Project lookup on the Item identifier, per the item walkthrough's 2026-08-16 walk"
+    },
+    {
+      "code": "tcmcs0565m000",
+      "name": "Departments"
+    },
+    {
+      "code": "tdipu0102m000",
+      "name": "Items - Purchase Defaults",
+      "purpose": "Holds the default purchasing data — buy-from partner, unit, currency, receipt tolerances — for a new purchased item.",
+      "route": "Procurement ➔ Master Data ➔ Items ➔ Item Purchase Defaults"
+    },
+    {
+      "code": "tdipu0182m000",
+      "name": "Item Purchase Defaults by Site"
+    },
+    {
+      "code": "tdipu0601m000",
+      "name": "Item - Purchase",
+      "purpose": "The global purchase data for one item, holding what is needed to buy it at all.",
+      "route": "Go to Details on a record in Items - Purchase (tdipu0101m000), or opened stand-alone"
+    },
+    {
+      "code": "tdisa0102s000",
+      "name": "Item - Sales Defaults",
+      "purpose": "Holds the default sales data for an item type and item group combination.",
+      "route": "the blue [Sales] link on Item Defaults (tcibd0502m000)"
+    },
+    {
+      "code": "tdisa0202m000",
+      "name": "Global Update of Item with Defaults",
+      "purpose": "Assigns new default values to sales items in bulk.",
+      "route": "starts automatically from Item - Sales Defaults (tdisa0102s000) on answering Yes to the global update question"
+    },
+    {
+      "code": "tdisa0601m000",
+      "name": "Item - Sales"
+    },
+    {
+      "code": "tdpur0143m000",
+      "name": "Procurement User Profiles"
+    },
+    {
+      "code": "tdpur4100m900",
+      "name": "Purchase Order",
+      "purpose": "Enters, maintains and processes one purchase order and its lines on a single screen.",
+      "route": "drill in from the purchase order list, or from Purchase Order Intake Workbench (tdpur4601m200)"
+    },
+    {
+      "code": "tdpur4101m000",
+      "name": "Purchase Order Lines"
+    },
+    {
+      "code": "tdpur4106m000",
+      "name": "tdpur4106m000"
+    },
+    {
+      "code": "tdpur4501m140",
+      "name": "Purchase Order - Lines to be Released"
+    },
+    {
+      "code": "tdpur4534m000",
+      "name": "Purchase Order Line Status"
+    },
+    {
+      "code": "tdpur4601m200",
+      "name": "Purchase Order Intake Workbench",
+      "purpose": "A dashboard of purchase-order activity awaiting attention.",
+      "route": "Procurement ➔ Orders ➔ Order Intake Workbench"
+    },
+    {
+      "code": "tdsls4246m000",
+      "name": "Release Sales Orders to Warehousing",
+      "purpose": "Releases a range of sales order lines to Warehousing, turning them into warehousing orders.",
+      "route": "Release Sales Orders to Warehousing on the appropriate menu of tdsls4501m140"
+    },
+    {
+      "code": "tdsls4501m140",
+      "name": "Release Sales Order Lines to Warehousing",
+      "purpose": "The entry point for releasing a sales order line to Warehousing; the release itself runs from a menu action here.",
+      "route": "the Release to Warehousing tab of Sales Order (tdsls4100m900)"
+    },
+    {
+      "code": "tdsls4534s000",
+      "name": "Sales Order Line Status",
+      "purpose": "Lists a sales order line's activities and the next order step that must be performed.",
+      "route": "Status on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)"
+    },
+    {
+      "code": "tdsls4601m200",
+      "name": "Sales Order Intake Workbench",
+      "purpose": "A dashboard of sales-order activity awaiting attention.",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+    },
+    {
+      "code": "tibom3100m000",
+      "name": "Job Shop Bills of Material",
+      "purpose": "Manages bill-of-material header data for multi-site BOMs used in job shop production.",
+      "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material"
+    },
+    {
+      "code": "tibom3110m000",
+      "name": "Job Shop List of Materials",
+      "purpose": "Specifies the materials and quantities required to manufacture a product — a BOM's material lines.",
+      "route": "the Materials tab of Job Shop Bill of Material (tibom3600m000)"
+    },
+    {
+      "code": "tibom3600m000",
+      "name": "Job Shop Bill of Material",
+      "purpose": "The single-BOM detail view behind Job Shop Bills of Material.",
+      "route": "drill-in from Job Shop Bills of Material (tibom3100m000)"
+    },
+    {
+      "code": "ticpr0100m000",
+      "name": "Standard Cost Calculation Parameters",
+      "purpose": "The module-level switches that decide what a standard cost calculation is allowed to do.",
+      "route": "Common ➔ Standard Costs ➔ Parameters"
+    },
+    {
+      "code": "ticpr0107m000",
+      "name": "Item - Costing",
+      "purpose": "Maintains an item's cost data, within whatever the cost calculation parameters permit.",
+      "route": "Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing"
+    },
+    {
+      "code": "ticpr1100m000",
+      "name": "Cost Calculation Codes",
+      "purpose": "Lists and maintains named cost-calculation recipes that other sessions reference by code.",
+      "route": "Common ➔ Standard Costs ➔ Master Data ➔ Cost Calculation Codes"
+    },
+    {
+      "code": "ticpr3501m000",
+      "name": "Item Standard Costs",
+      "purpose": "Displays an item's actual and historical standard cost structures by date — read-only history.",
+      "route": "Common ➔ Standard Costs ➔ Item Costs ➔ Item Standard Costs"
+    },
+    {
+      "code": "ticst0101m000",
+      "name": "Estimated Materials"
+    },
+    {
+      "code": "ticst0101m100",
+      "name": "Material to Issue for Production Orders",
+      "purpose": "Shows and maintains the material quantities that must be issued from the warehouse to the production centre.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+    },
+    {
+      "code": "ticst0201m000",
+      "name": "Close Production Orders",
+      "purpose": "Settles the financial side of a production order once its goods are already in inventory.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Costing ➔ Close Production Orders"
+    },
+    {
+      "code": "ticst0210m000",
+      "name": "Calculate Estimated End Item Unit Costs",
+      "purpose": "Calculates the estimated unit cost of an end item.",
+      "route": "runs automatically when estimates freeze; no filed source gives a manual route"
+    },
+    {
+      "code": "tiipd0102m100",
+      "name": "Item - Production Defaults",
+      "purpose": "Holds the default production data for an item type and item group combination.",
+      "route": "the blue [Production] link on Item Defaults (tcibd0502m000)"
+    },
+    {
+      "code": "tiipd0152m000",
+      "name": "Item - Production Defaults by Site",
+      "purpose": "The site-level counterpart of Item - Production Defaults, including backflushing and material-issue defaults.",
+      "route": "unstated in the help; no filed source gives a route"
+    },
+    {
+      "code": "tiipd0601m000",
+      "name": "Item - Production"
+    },
+    {
+      "code": "timfc0100m000",
+      "name": "Product Engineering Parameters"
+    },
+    {
+      "code": "tirou0100m000",
+      "name": "Job Shop Master Data Parameters",
+      "purpose": "The parameter set that controls how routings, operations and work centres behave in job shop production.",
+      "route": "Manufacturing ➔ Parameters ➔ Job Shop Master Data"
+    },
+    {
+      "code": "tirou0101m000",
+      "name": "Work Centers",
+      "purpose": "Lists work centres, used for cost estimating and planning — not a one-for-one model of the physical shop floor.",
+      "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers"
+    },
+    {
+      "code": "tirou0101s000",
+      "name": "tirou0101s000"
+    },
+    {
+      "code": "tirou0601m000",
+      "name": "Work Center"
+    },
+    {
+      "code": "tirou1102m000",
+      "name": "Routing Operations",
+      "purpose": "Maintains operation data by item and routing — the individual steps a routing carries out in succession.",
+      "route": "Common ➔ Unit Effectivity ➔ Design ➔ Routing Operations"
+    },
+    {
+      "code": "tirou4100m000",
+      "name": "Job Shop Routings",
+      "purpose": "Lists job shop routing operations.",
+      "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings"
+    },
+    {
+      "code": "tirou4150m000",
+      "name": "Reference Operations",
+      "purpose": "A read-only view of reusable operation templates — work centre, machine type, and standard times — that routings point to instead of retyping.",
+      "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations"
+    },
+    {
+      "code": "tirou4600m000",
+      "name": "Job Shop Routing",
+      "purpose": "Manages routings by revision and site, displaying the data listed in Job Shop Routings.",
+      "route": "drill in from Job Shop Routings (tirou4100m000)"
+    },
+    {
+      "code": "tisfc0100s000",
+      "name": "Production Order Parameters",
+      "purpose": "The parameter set governing Job Shop Control — where material is issued from, printing requirements, and shortage checks at release.",
+      "route": "from the Job Shop Control parameters list"
+    },
+    {
+      "code": "tisfc0101m100",
+      "name": "Production Order",
+      "purpose": "Views and maintains one production order, covering both its materials and its operations.",
+      "route": "double-click a row in Production Orders (tisfc0501m000)"
+    },
+    {
+      "code": "tisfc0105m000",
+      "name": "Production Order Distribution"
+    },
+    {
+      "code": "tisfc0110m000",
+      "name": "Production Planning"
+    },
+    {
+      "code": "tisfc0120s000",
+      "name": "Report Orders Completed",
+      "purpose": "An order-level view of production orders that must be, or have been, reported complete.",
+      "route": "from the production order; the range-based variant is a separate session"
+    },
+    {
+      "code": "tisfc0130m000",
+      "name": "Report Operations Completed",
+      "purpose": "Reports quantities completed or rejected for successive operations on a production order.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+    },
+    {
+      "code": "tisfc0204m000",
+      "name": "Release Production Orders",
+      "purpose": "Releases production orders to the job shop, so material can be issued and hours accounted.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
+    },
+    {
+      "code": "tisfc0207m000",
+      "name": "Initiate Inventory Issue",
+      "purpose": "Issues material from inventory to a production order, activating the corresponding warehouse order line.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Initiate Inventory Issue"
+    },
+    {
+      "code": "tisfc0501m000",
+      "name": "Production Orders",
+      "purpose": "An overview of production orders — identity, item, dates, status, warehouse and key quantities.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
+    },
+    {
+      "code": "tisfc0516m000",
+      "name": "Inventory by Production Order"
+    },
+    {
+      "code": "whinh0100m000",
+      "name": "Inventory Handling Parameters",
+      "purpose": "Company-wide picking and shipping parameters, held as a dated history with one current set.",
+      "route": "Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
+    },
+    {
+      "code": "whinh0110m000",
+      "name": "Warehousing Order Types"
+    },
+    {
+      "code": "whinh0120m000",
+      "name": "Default Order Types by Origin",
+      "purpose": "Links a warehousing order type to an order origin, so orders generated from that origin default to that type and its procedure.",
+      "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Default Order Types by Origin"
+    },
+    {
+      "code": "whinh2100m000",
+      "name": "Warehousing Orders",
+      "purpose": "Lists warehousing orders — the starting point for almost every warehousing procedure.",
+      "route": "Warehousing ➔ Orders ➔ Orders"
+    },
+    {
+      "code": "whinh2100m100",
+      "name": "Warehousing Order",
+      "purpose": "The order that initiates and controls one inventory transaction in Warehousing, generated automatically or entered by hand.",
+      "route": "drill into an order row on Warehouse Manager Dashboard (whinh2300m000), or on Orders (whinh2100m000)"
+    },
+    {
+      "code": "whinh2104m000",
+      "name": "Activities by Warehousing Order",
+      "purpose": "Sets which warehousing procedure activities apply to one order — the only place that can be changed for an individual order.",
+      "route": "the appropriate menu of Warehousing Orders (whinh2100m000)"
+    },
+    {
+      "code": "whinh2120m000",
+      "name": "Outbound Order Lines",
+      "purpose": "Releases outbound advice for individual order lines.",
+      "route": "the Outbound Lines tab of Warehousing Order (whinh2100m100)"
+    },
+    {
+      "code": "whinh2129m000",
+      "name": "Outbound Line Status Overview",
+      "purpose": "Shows, for one outbound order line, which procedure activities will run and the quantity progression they produce.",
+      "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview"
+    },
+    {
+      "code": "whinh2300m000",
+      "name": "Warehouse Manager Dashboard",
+      "purpose": "Management overviews of inbound and outbound warehousing orders.",
+      "route": "Warehousing ➔ Manager Dashboard"
+    },
+    {
+      "code": "whinh3112s000",
+      "name": "Receipt Lines"
+    },
+    {
+      "code": "whinh3122m000",
+      "name": "Warehouse Inspections Overview",
+      "purpose": "Where inbound and outbound inspections are viewed and maintained — the step that can hold a receipt.",
+      "route": "Warehousing ➔ Receipts/Inspections ➔ Inspections Overview"
+    },
+    {
+      "code": "whinh3201m000",
+      "name": "Generate Inbound Advice"
+    },
+    {
+      "code": "whinh3512m000",
+      "name": "Warehouse Receipt",
+      "purpose": "Creates and confirms receipts — where inbound goods become inventory.",
+      "route": "Actions - Receive from the inbound order line, or drill in from the receipt list"
+    },
+    {
+      "code": "whinh3530m000",
+      "name": "Receipt Message Log",
+      "purpose": "Logs the error and information messages raised by actions on a receipt line, kept readable after the dialog is dismissed.",
+      "route": "the Message Log tab in the lines pane of Warehouse Receipt (whinh3512m000), or opened from it"
+    },
+    {
+      "code": "whinh4130m000",
+      "name": "Shipments",
+      "purpose": "Views, maintains and confirms shipments.",
+      "route": "Warehousing ➔ Shipments ➔ Shipments"
+    },
+    {
+      "code": "whinh4131m000",
+      "name": "Shipment Lines",
+      "purpose": "The only place a shipped quantity can be changed, before the shipment line is confirmed.",
+      "route": "drill-in from Shipments (whinh4130m000)"
+    },
+    {
+      "code": "whinh4525m100",
+      "name": "Picking List",
+      "purpose": "Confirms an advised quantity as picked, where picking is an activity in the warehousing procedure.",
+      "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List"
+    },
+    {
+      "code": "whinh4630m000",
+      "name": "Shipment",
+      "purpose": "Views and maintains shipments — where a shipment is frozen and confirmed and inventory finally leaves.",
+      "route": "drill into a row on Shipments (whinh4130m000)"
+    },
+    {
+      "code": "whinh5821m000",
+      "name": "Approve Adjustment Order Variances",
+      "purpose": "Approves adjustment-order lines that require approval — the second stage, not the booking.",
+      "route": "unstated in the help; the Cycle Counting/Adjustment Orders node is on the menu"
+    },
+    {
+      "code": "whwmd1140s000",
+      "name": "Warehousing User Profiles"
+    },
+    {
+      "code": "whwmd2500m000",
+      "name": "Warehouses",
+      "purpose": "Lists the warehouses defined for the current logistics company.",
+      "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses"
+    },
+    {
+      "code": "whwmd2515m000",
+      "name": "Warehouse - Item Inventory",
+      "purpose": "One row per warehouse holding or expecting an item — where a warehouse to ship from is chosen.",
+      "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory"
+    },
+    {
+      "code": "whwmd4101s000",
+      "name": "Item - Warehousing Defaults",
+      "purpose": "Holds the default warehousing data — lot, serial, ownership and cross-docking behaviour — for an item type and item group combination.",
+      "route": "the blue [Warehousing] link on Item Defaults (tcibd0502m000)"
+    },
+    {
+      "code": "whwmd4300m000",
+      "name": "Inventory 360",
+      "purpose": "The starting point for any question about where an item's stock is and what state it is in.",
+      "route": "Warehousing ➔ Inventory 360"
+    },
+    {
+      "code": "whwmd4600m000",
+      "name": "Item - Warehousing",
+      "purpose": "The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.",
+      "route": "drill-in from Item (tcibd0501m100); it opens as a dialog over that session"
+    }
+  ]
+}

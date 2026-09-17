@@ -84,13 +84,13 @@ arriving, never knowledge verified.
   "Before starting" list, what LN is doing, the steps of the phases it opens,
   how to move on, and its quests. There is no stage page and no new address.
 
-- **"Before starting" is composed from the prerequisites the procedure names**,
-  each linking back to the step that satisfies it. Original step numbers are
-  kept, so 4.5 still points at the cluster and site from 0.4.
+- **"Before starting" lists the steps this tile's steps point back at**, as
+  atlas emits them, each linking to the tile that does it. Original step numbers
+  are kept, so 4.5 still points at the cluster and site from 0.4.
 
-- **A screen opens inside the card, under the step that names it**, and closes
-  again, so a reader mid-task never loses their place. It still has its own
-  address, so search and a link from atlas reach it.
+- **A screen opens inside the card, under the first step that names it**: its
+  route and purpose from atlas's screen reference, so a reader mid-task never
+  loses their place. A page of its own waits until a screen has more to show.
 
 - **Three ways a tile moves on.** A **question** the learner answers, like node
   2's *"Does on-hand cover it?"* A **fork decided elsewhere**, like supply
@@ -254,8 +254,6 @@ Neither holds up building; each gates only the one thing it names.
 
 - [ ] rux reads the path in the private preview and checks the tile links:
       which phases each linked tile opens, and where each task sits.
-- [ ] Add "Before starting" to an open tile, and open a screen under the step
-      that names it.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows

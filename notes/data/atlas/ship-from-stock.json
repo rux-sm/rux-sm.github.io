@@ -1,5 +1,5 @@
 {
-  "contract": 12,
+  "contract": 13,
   "tier": "export",
   "id": "ship-from-stock",
   "title": "Ship from stock",
@@ -711,7 +711,10 @@
               ],
               "id": "1.6",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "0.4"
+              ]
             },
             {
               "cells": [
@@ -1872,7 +1875,10 @@
               ],
               "id": "4.1",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "3.5"
+              ]
             },
             {
               "cells": [
@@ -1918,7 +1924,10 @@
               ],
               "id": "4.2",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "3.5"
+              ]
             },
             {
               "cells": [

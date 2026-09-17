@@ -38,7 +38,8 @@ atlas's `tools/pull.py` brings it into atlas.
 
 ## How pages are made
 
-1. `sh tools/sync-export.sh` copies atlas's **export tier** into `data/atlas/`
+1. `sh tools/sync-export.sh` copies atlas's **export tier**, with its screen
+   reference, into `data/atlas/`
    and writes `data/atlas/PIN`: the atlas commit, the contract and a sha256 of
    the bytes. `tools/check-data.mjs` refuses data that does not match it.
 2. `tools/build.mjs` turns each JSON file into a page. All markup lives there;

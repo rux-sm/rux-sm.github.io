@@ -251,8 +251,6 @@ Neither holds up building; each gates only the one thing it names.
 
 - [ ] rux reads the path in the private preview and checks the tile links:
       which phases each linked tile opens, and where each task sits.
-- [ ] rux stores the project's secret key for atlas's pull, once:
-      `security add-generic-password -s rux-notes-pull -a supabase -w`.
 - [ ] Add "Before starting" to an open tile, and open a screen under the step
       that names it.
 - [ ] Tag every quest with its kind, starting with node 5's.

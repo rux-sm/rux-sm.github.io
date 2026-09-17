@@ -134,28 +134,6 @@
     if (state) state.cursor = option;
   }
 
-  /* A FIXED MENU CLEARS A SCROLLING PANEL. The menu is `position: absolute`
-     inside its field, so an ancestor that scrolls -- a side panel, a modal
-     body, a data table's content -- cuts it off at that ancestor's edge, and
-     the options past the cut can be neither seen nor reached. A fixed box is
-     laid out against the viewport instead and escapes every such clip, which is
-     how a menu's own surface has always avoided this. Nothing is portaled: it
-     stays where its markup puts it and only its used value changes.
-
-     `fixed` loses the field's width, so the anchor restores it, and `fit` caps
-     the menu to the roomier side when neither holds it rather than letting it
-     overhang the field being typed into.
-
-     THE STATIC SPECIMENS ARE SAFE WITHOUT A GUARD HERE: this module claims a
-     list box by its FIELD, list-box.html's specimen has a plain <div>, so it is
-     never opened and never placed. */
-  function place(root) {
-    const field = fieldOf(root), menu = menuOf(root);
-    if (!field || !menu || menu.hidden) return;
-    menu.style.position = 'fixed';
-    window.Rux?.anchorTo?.(menu, field, { matchWidth: true, fit: true });
-  }
-
   function close(root, options = {}) {
     const state = live.get(root);
     if (!state) return;
@@ -169,10 +147,6 @@
     }
     const menu = menuOf(root);
     if (menu && menu.children.length) menu.hidden = true;
-    if (menu) {
-      menu.style.position = '';
-      window.Rux?.unanchor?.(menu);
-    }
     const field = fieldOf(root);
     field?.setAttribute('aria-expanded', 'false');
     setCursor(root, null);
@@ -192,9 +166,6 @@
       element: root,
       anchor: field,
       close: opts => close(root, opts),
-      // The kernel calls this on resize AND on scroll in the capture phase,
-      // which is what keeps a fixed menu with a field inside a scrolling panel.
-      reposition: () => place(root),
     });
 
     root.classList.add('rux--list-box--expanded');
@@ -222,9 +193,6 @@
     setCursor(root, isCombo(root)
       ? (selected && !selected.hidden ? selected : null)
       : (selected || optionsOf(root)[0] || null));
-    // After the filter and the unhide, so the menu is measured at the height it
-    // actually has.
-    place(root);
     root.dispatchEvent(new CustomEvent('rux:listbox-opened', { bubbles: true }));
   }
 

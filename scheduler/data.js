@@ -290,6 +290,9 @@
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
     // Set in the Files tab; a trip that does not need an itinerary is not marked.
     'itinerary_not_needed',
+    // Its twin for the day-of contact: a trip nobody needs to be called on is
+    // not marked as missing one.
+    'contact_not_needed',
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
     // The trip's own copy of the booking contact, which rux-ui reads and writes.
@@ -713,6 +716,11 @@
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
     if (!itinerary && !trip.itinerary_not_needed) lacks.push({ href: '#i-attachment', label: 'No itinerary yet' });
+    /* And the day-of contact the same way: nobody to call on the day, and the
+       trip not marked as needing no one. Any of the five counts, since the
+       warning is that the list is empty, not that the first slot is. */
+    const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
+    if (!dayOf && !trip.contact_not_needed) lacks.push({ href: '#i-phone', label: 'No day-of contact' });
     /* A trip that needs a hotel shows a building for this leg's: amber while it
        is not booked, like the warnings, and in the bar's own text colour once it
        is, so the bar still says the trip has a hotel. */

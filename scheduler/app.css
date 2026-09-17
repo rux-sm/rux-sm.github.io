@@ -901,10 +901,10 @@ button.scheduler-row-head__num::after {
    beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }
 
-/* The add button is the list's last item, drawn as a dashed tile the size
-   of a record: a place a new record goes, the way Ant's list forms add a
-   row. The icon leads the words and both sit in the middle, so Carbon's
-   trailing icon is taken back into the row. Its corners follow the theme's
+/* The add button is the list's last item, drawn as a dashed tile at the md
+   button height, 40px: a place a new record goes, the way Ant's list forms
+   add a row. The icon leads the words and both sit in the middle, so
+   Carbon's trailing icon is taken back into the row. Its corners follow the theme's
    surfaces, square in Carbon's themes, and a hover turns the edge and the
    words to the link colour over Carbon's ghost hover fill. */
 .scheduler-list-additem .scheduler-list-add {
@@ -912,7 +912,6 @@ button.scheduler-row-head__num::after {
   justify-content: center;
   gap: var(--rux-spacing-03);
   inline-size: 100%;
-  min-block-size: 3rem;
   padding-inline: var(--rux-spacing-05);
   border: 1px dashed var(--rux-border-strong-01);
   border-radius: var(--scheduler-surface-radius, 0);

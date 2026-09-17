@@ -1313,7 +1313,7 @@
      empty list draws it alone. */
   const listAddRow = ({ label, id, onClick }) => {
     const li = el('li', 'scheduler-list-additem');
-    const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
     const icon = svgUse('#i-add', '16', '0 0 32 32');

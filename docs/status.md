@@ -32,8 +32,6 @@ done and how.
   `inset-block: 0` and `align-items: center`.
 - `setToggle` words a product can choose. It always says On/Off, where the
   scheduler means Pending/Signed and Pending/Invoiced.
-- A compiled size for the icon in `.rux--header__action`, so header icons can
-  follow the button-icon rule.
 
 ### Asked for by Notes
 

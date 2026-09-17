@@ -147,6 +147,16 @@
     - button-disabled: the same rgba(241, 241, 243, 0.25) already used
       for text-disabled/icon-disabled.
 
+  ANT-DARK FOLLOWS ANT DESIGN'S DARK ALGORITHM (`theme.darkAlgorithm` on
+  the default seed): its neutrals, text alphas, fills, and its dark blue,
+  red, gold, green, orange and purple palettes. Where Ant's own dark value
+  misses 4.5:1 for text or 3:1 for a shape here, the nearest readable step
+  of the same palette stands in: links, focus and info stay #4096ff, since
+  Ant's #1668dc is 3.2:1 on layer-02; text-error is #e86e6b; helper text
+  is 0.5 alpha and placeholder 0.35. layer-03 and the toggle track have no
+  Ant counterpart, and the tag, notification and content-switcher sets stay
+  Carbon's dark set, as the header above says.
+
   DERIVED BUTTON TOKENS, ANT-DARK. White text needs 4.5:1 on a filled
   button, which Ant's light-mode blue #1677ff (4.1:1) and red #ff4d4f
   (3.3:1) miss, so the filled buttons take Ant's own dark palette, the
@@ -161,9 +171,10 @@
     - button-secondary: the layer-active ladder (#303030 → #424242
       hover → #595959 active) — the same move as geist's and linear's
       secondary, reusing already-given values.
-    - button-danger-primary: Ant's dark error red #d32029 (5.2:1), then
-      #a61d24 and #791a1f for hover and active. button-danger-secondary
-      stays support-error #ff4d4f, because it is text on the page.
+    - button-danger-primary: Ant's dark red #d32029 (5.2:1), then
+      #a61d24 and #791a1f for hover and active; its dark error red
+      #dc4446 is 4.2:1. button-danger-secondary is text on the page, so it
+      takes text-error #e86e6b.
     - button-separator: background (#000000) — the darkest surface,
       the same move as every other theme here.
     - button-disabled: the same rgba(255, 255, 255, 0.25) already used
@@ -715,11 +726,11 @@
   --rux-layer-hover-03: #303030;
   --rux-layer-selected-01: #112545;
   --rux-layer-selected-02: #15325b;
-  --rux-layer-selected-03: #17406f;
+  --rux-layer-selected-03: #15417e;
   --rux-layer-selected-disabled: #595959;
   --rux-layer-selected-hover-01: #15325b;
-  --rux-layer-selected-hover-02: #17406f;
-  --rux-layer-selected-hover-03: #19518c;
+  --rux-layer-selected-hover-02: #15417e;
+  --rux-layer-selected-hover-03: #1554ad;
   --rux-layer-selected-inverse: #f5f5f5;
 
   /* field */
@@ -750,13 +761,13 @@
 
   /* text */
   --rux-text-disabled: rgba(255, 255, 255, 0.25);
-  --rux-text-error: #ff7875;
+  --rux-text-error: #e86e6b;
   --rux-text-helper: rgba(255, 255, 255, 0.5);
   --rux-text-inverse: #000000;
   --rux-text-on-color: #ffffff;
   --rux-text-on-color-disabled: rgba(255, 255, 255, 0.3);
   --rux-text-placeholder: rgba(255, 255, 255, 0.35);
-  --rux-text-primary: rgba(255, 255, 255, 0.88);
+  --rux-text-primary: rgba(255, 255, 255, 0.85);
   --rux-text-secondary: rgba(255, 255, 255, 0.65);
 
   /* link */
@@ -765,9 +776,9 @@
   --rux-link-inverse-hover: #003eb3;
   --rux-link-inverse-visited: #531dab;
   --rux-link-primary: #4096ff;
-  --rux-link-primary-hover: #69b1ff;
-  --rux-link-secondary: #69b1ff;
-  --rux-link-visited: #b37feb;
+  --rux-link-primary-hover: #65a9f3;
+  --rux-link-secondary: #65a9f3;
+  --rux-link-visited: #ab7ae0;
 
   /* icon */
   --rux-icon-disabled: rgba(255, 255, 255, 0.25);
@@ -775,20 +786,20 @@
   --rux-icon-inverse: #000000;
   --rux-icon-on-color: #ffffff;
   --rux-icon-on-color-disabled: rgba(255, 255, 255, 0.3);
-  --rux-icon-primary: rgba(255, 255, 255, 0.88);
+  --rux-icon-primary: rgba(255, 255, 255, 0.85);
   --rux-icon-secondary: rgba(255, 255, 255, 0.65);
 
   /* support */
-  --rux-support-caution-major: #fa8c16;
-  --rux-support-caution-minor: #faad14;
-  --rux-support-caution-undefined: #9254de;
-  --rux-support-error: #ff4d4f;
+  --rux-support-caution-major: #d87a16;
+  --rux-support-caution-minor: #d89614;
+  --rux-support-caution-undefined: #ab7ae0;
+  --rux-support-error: #dc4446;
   --rux-support-error-inverse: #cf1322;
   --rux-support-info: #4096ff;
   --rux-support-info-inverse: #0958d9;
-  --rux-support-success: #52c41a;
+  --rux-support-success: #49aa19;
   --rux-support-success-inverse: #389e0d;
-  --rux-support-warning: #faad14;
+  --rux-support-warning: #d89614;
   --rux-support-warning-inverse: #d48806;
 
   /* focus */
@@ -801,27 +812,27 @@
   --rux-chat-avatar-bot: #8c8c8c;
   --rux-chat-avatar-user: #1677ff;
   --rux-chat-bubble-agent: #1f1f1f;
-  --rux-chat-bubble-agent-text: rgba(255, 255, 255, 0.88);
+  --rux-chat-bubble-agent-text: rgba(255, 255, 255, 0.85);
   --rux-chat-bubble-border: #303030;
   --rux-chat-bubble-user: #262626;
-  --rux-chat-bubble-user-text: rgba(255, 255, 255, 0.88);
+  --rux-chat-bubble-user-text: rgba(255, 255, 255, 0.85);
   --rux-chat-button: #4096ff;
   --rux-chat-button-active: rgba(22, 119, 255, 0.3);
   --rux-chat-button-hover: rgba(22, 119, 255, 0.12);
   --rux-chat-button-selected: rgba(22, 119, 255, 0.2);
-  --rux-chat-button-text-hover: #69b1ff;
+  --rux-chat-button-text-hover: #65a9f3;
   --rux-chat-button-text-selected: rgba(255, 255, 255, 0.65);
   --rux-chat-header-background: #141414;
-  --rux-chat-header-text: rgba(255, 255, 255, 0.88);
+  --rux-chat-header-text: rgba(255, 255, 255, 0.85);
   --rux-chat-prompt-background: #141414;
   --rux-chat-prompt-border-end: rgba(38, 38, 38, 0);
   --rux-chat-prompt-border-start: #262626;
-  --rux-chat-prompt-text: rgba(255, 255, 255, 0.88);
+  --rux-chat-prompt-text: rgba(255, 255, 255, 0.85);
   --rux-chat-shell-background: #141414;
 
   /* misc */
   --rux-interactive: #1668dc;
-  --rux-highlight: #111d2c;
+  --rux-highlight: #111a2c;
   --rux-overlay: rgba(0, 0, 0, 0.68);
   --rux-shadow: rgba(0, 0, 0, 0.85);
   --rux-skeleton-background: #1f1f1f;
@@ -833,13 +844,13 @@
   --rux-button-primary-hover: #1554ad;
   --rux-button-primary-active: #15417e;
   --rux-button-tertiary: #4096ff;
-  --rux-button-tertiary-hover: #69b1ff;
+  --rux-button-tertiary-hover: #65a9f3;
   --rux-button-tertiary-active: #1677ff;
   --rux-button-secondary: #303030;
   --rux-button-secondary-hover: #424242;
   --rux-button-secondary-active: #595959;
   --rux-button-danger-primary: #d32029;
-  --rux-button-danger-secondary: #ff4d4f;
+  --rux-button-danger-secondary: #e86e6b;
   --rux-button-danger-hover: #a61d24;
   --rux-button-danger-active: #791a1f;
   --rux-button-separator: #000000;
@@ -900,16 +911,16 @@
   --rux-notification-action-tertiary-inverse-text: #ffffff;
   --rux-notification-action-tertiary-inverse-text-on-color-disabled: #8d8d8d;
 
-  /* status indicator (component tokens — Carbon's own dark set) */
-  --rux-status-red: #fa4d56;
-  --rux-status-orange: #ff832b;
-  --rux-status-orange-outline: #ff832b;
-  --rux-status-yellow: #f1c21b;
-  --rux-status-yellow-outline: #f1c21b;
-  --rux-status-green: #42be65;
-  --rux-status-blue: #4589ff;
-  --rux-status-purple: #a56eff;
-  --rux-status-gray: #8d8d8d;
+  /* status indicator (component tokens — Ant's dark palette) */
+  --rux-status-red: #dc4446;
+  --rux-status-orange: #d87a16;
+  --rux-status-orange-outline: #d87a16;
+  --rux-status-yellow: #d8bd14;
+  --rux-status-yellow-outline: #d8bd14;
+  --rux-status-green: #49aa19;
+  --rux-status-blue: #4096ff;
+  --rux-status-purple: #ab7ae0;
+  --rux-status-gray: #8c8c8c;
 
   /* content switcher (component tokens — Carbon's own dark set) */
   --rux-content-switcher-background: rgba(0, 0, 0, 0);

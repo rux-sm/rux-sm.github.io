@@ -850,8 +850,10 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
+/* The amount sits 4px under its label: read-only, so tighter than a field's
+   8px, with room to breathe. */
 .scheduler-billing-figures dd {
-  margin: 0;
+  margin: var(--rux-spacing-02) 0 0;
   font-size: var(--rux-heading-compact-02-font-size);
   font-weight: var(--rux-heading-compact-02-font-weight);
   line-height: var(--rux-heading-compact-02-line-height);

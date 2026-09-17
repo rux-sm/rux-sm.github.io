@@ -2863,8 +2863,8 @@ function pathTile(dg, n, cat, docs, task = false) {
   ]);
   const steps = opens.reduce((sum, { p }) => sum + (p.blocks ?? []).filter(isRows)
     .reduce((c, b) => c + (b.rows ?? []).filter(r => r.id).length, 0), 0);
-  const screens = new Set(opens.flatMap(({ p }) => pathValues((p.blocks ?? []).filter(isRows))
-    .flatMap(v => (v.tokens ?? []).filter(t => t.t === 'session').map(t => t.code))));
+  const screens = new Set([n.code, ...opens.flatMap(({ p }) => [p.sessionCode, ...pathValues((p.blocks ?? []).filter(isRows))
+    .flatMap(v => (v.tokens ?? []).filter(t => t.t === 'session').map(t => t.code))])].filter(Boolean));
   // NOT VERIFIED IS THE MOST A TILE CAN SAY TODAY. Verified needs each phase's
   // walked date, which the data does not carry yet (OI-275).
   const state = opens.length ? 'Not verified' : 'No procedure';
@@ -2881,7 +2881,7 @@ function pathTile(dg, n, cat, docs, task = false) {
   }
   const walkBlock = w => PRIVATE ? '' : `
             <div class="notes-path-walk" data-notes-owner hidden data-notes-tile-walk="${esc(w.id)}">
-              <div><button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-tile-walk-start>Walk this</button></div>
+              <div class="notes-path-row"><button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-tile-walk-start>Walk this</button><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" data-notes-tile-walk-change hidden>Change company or user</button></div>
               <form class="notes-path-walk-form" data-notes-tile-walk-form hidden>
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-company-${esc(n.id)}">Company</label></div>
@@ -2922,7 +2922,7 @@ function pathTile(dg, n, cat, docs, task = false) {
             <span class="notes-path-does">${esc(pathLine(n.does))}</span>
             ${quests.length ? `<span class="rux--tag rux--tag--purple rux--layout--size-sm"><span class="rux--tag__label">${quests.length} quest${quests.length > 1 ? 's' : ''}</span></span>` : ''}
           </summary>
-          <div class="notes-path-card">
+          <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">${[state, ...counts].map(esc).join(' · ')}${n.code ? ` · <span class="rux--type-code-01">${esc(n.code)}</span>` : ''}</p>
             ${procedure}${reference}
             ${task ? '' : `<h3 class="rux--type-productive-heading-02">Next</h3>

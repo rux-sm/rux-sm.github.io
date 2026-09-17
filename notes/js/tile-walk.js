@@ -127,8 +127,9 @@
         if (item) { event.preventDefault(); attach(item.getAsFile()); }
       });
     }
-    say.textContent = `Walking since ${state.walk.started.slice(11, 16)}. Each step saves as you leave it; atlas's pull brings the walk home.`;
+    say.textContent = `Walking as ${state.walk.company} · ${state.walk.ln_user} since ${state.walk.started.slice(11, 16)}. Each step saves as you leave it; atlas's pull brings the walk home.`;
     block.querySelector('[data-notes-tile-walk-start]').hidden = true;
+    block.querySelector('[data-notes-tile-walk-change]').hidden = true;
     block.querySelector('[data-notes-tile-walk-form]').hidden = true;
   }
 
@@ -141,24 +142,45 @@
     const user = form.querySelector('[data-notes-tile-walk-user]');
     const say = block.querySelector('[data-notes-tile-walk-status]');
 
+    const change = block.querySelector('[data-notes-tile-walk-change]');
+    const ask = () => {
+      const saved = remembered();
+      company.value = saved.company ?? '';
+      user.value = saved.user ?? '';
+      form.hidden = false;
+      company.focus();
+    };
+    // The site knows who is signed in, not which LN company and user the walk
+    // runs as. Once this device knows them, a walk starts without asking.
+    const known = () => {
+      const saved = remembered();
+      const ok = /^[A-Za-z0-9]{1,10}$/.test(saved.company ?? '') && /^[A-Za-z0-9._-]{1,32}$/.test(saved.user ?? '');
+      return ok ? saved : null;
+    };
+    if (known()) {
+      change.hidden = false;
+      change.textContent = `As ${known().company} · ${known().user} — change`;
+    }
+    change.addEventListener('click', ask);
+
     start.addEventListener('click', async () => {
       try {
-        const known = walks.get(walkthrough);
-        if (known) { arm(block, known); return; }
+        const open = walks.get(walkthrough);
+        if (open) { arm(block, open); return; }
         const today = await todaysWalk(walkthrough);
         if (today) { arm(block, await loadWalk(today)); return; }
-        const saved = remembered();
-        company.value = saved.company ?? '';
-        user.value = saved.user ?? '';
-        form.hidden = false;
-        company.focus();
+        const saved = known();
+        if (saved) await begin(saved.company, saved.user);
+        else ask();
       } catch (e) { say.textContent = `Your walks could not be read: ${e.message}`; }
     });
 
     form.addEventListener('submit', async event => {
       event.preventDefault();
-      const c = company.value.trim();
-      const u = user.value.trim();
+      await begin(company.value.trim(), user.value.trim());
+    });
+
+    async function begin(c, u) {
       if (!/^[A-Za-z0-9]{1,10}$/.test(c)) { say.textContent = 'The company is letters and digits, as the LN status bar shows it.'; return; }
       if (!/^[A-Za-z0-9._-]{1,32}$/.test(u)) { say.textContent = 'The user is letters, digits, dots, dashes or underscores, as the LN status bar shows it.'; return; }
       try { localStorage.setItem(REMEMBER, JSON.stringify({ company: c, user: u })); } catch { /* not remembered */ }
@@ -173,7 +195,7 @@
         walks.set(walkthrough, state);
         arm(block, state);
       } catch (e) { say.textContent = `The walk did not start: ${e.message}`; }
-    });
+    }
   }
 
   // After every script on the page has run: this file loads before account.js.

@@ -25,14 +25,10 @@ and opens the booking's email thread, as rux-ui does.
 
 - **The types are Coach and Van, and the list comes from the fleet:** the
   dropdown offers the distinct `buses.type` values, so a new type needs no
-  code. The 10 `Motorcoach` buses become `Coach` and the one `Sprinter` becomes
-  `Van`.
-- **rux-ui changes in the same step as the rename,** because its bus form only
-  knows `Motorcoach` and `Sprinter` and would write `Motorcoach` back on save.
-  Its type select, `TYPE_ICONS` and defaults in `js/panels/fleet-panel.js` and
-  `index.html` take the new names.
-- **A new nullable text column on `trips` holds the type,** and null means
-  Any, so the 822 existing trips raise no warning.
+  code. rux-ui's bus form offers the same two names.
+- **A new nullable text column, `trips.vehicle_type`, holds the type,** and
+  null means Any, so existing trips raise no warning. rux-ui's trip
+  save sends only its form's fields, so it leaves the column alone.
 - **Type and Vehicle share a row** in the editor's Trip section. Half the row
   leaves about 72px for text, so "Drop-off and pick-up" is shown as "Split";
   the date labels still say Drop-off and Pick-up.
@@ -49,16 +45,9 @@ and opens the booking's email thread, as rux-ui does.
 
 ## Questions
 
-- **Does rux-ui leave the new trip column alone** when it saves a trip? Check
-  its trip save before the column is added.
 
 ## Tasks
 
-- [ ] Check rux-ui's trip save against the new column.
-- [ ] Show rux the migration (bus type rename, trip column) and apply it on a
-      yes.
-- [ ] Rename the types in rux-ui's bus form and icons, in the same session as
-      the migration.
 - [ ] Add the Email thread field and its open button to Booking contact.
 - [ ] Add Vehicle beside Type, shorten the split type's name, and make the
       Needs tags follow the vehicle.

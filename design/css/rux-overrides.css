@@ -165,6 +165,18 @@
 [data-theme="ant-dark"] .rux--tag {
   border-radius: 4px;
 }
+/* The option at each end of a list takes the menu's curve. A selected or
+   highlighted row paints its own background across the full width, and a
+   square one shows in the rounded menu's corners -- most visible on a search
+   that returns a single row, which is the first and the last at once. */
+[data-theme="ant-dark"] .rux--list-box__menu-item:first-child {
+  border-start-start-radius: 8px;
+  border-start-end-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--list-box__menu-item:last-child {
+  border-end-start-radius: 8px;
+  border-end-end-radius: 8px;
+}
 /* A date range reads as one box, the way Ant's range picker does: its two
    inputs keep Carbon's 1px seam and square the corners that meet there. */
 [data-theme="ant-dark"] .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {

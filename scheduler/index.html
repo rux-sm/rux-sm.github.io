@@ -535,19 +535,21 @@
       </div>
     </aside>
           </div>
-          <!-- The itinerary panel, a column left of the board from Carbon's xlg
-               breakpoint up. data.js opens it on an itinerary and frames the
-               file; narrower, it opens the file in a new tab instead. order: -2
+          <!-- The document panel, a column left of the board from Carbon's xlg
+               breakpoint up. data.js opens it on any of a trip's files and
+               frames the file, with its type in Carbon's label line above the
+               destination; narrower, it opens the file in a new tab instead. order: -2
                in app.css draws it left of the driver availability pane. -->
           <div class="scheduler-itinerary" id="scheduler-itinerary" hidden>
-    <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-itinerary-panel" aria-label="Itinerary">
+    <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-itinerary-panel" aria-label="Document">
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
+        <p class="rux--side-panel__label-text" id="scheduler-itinerary-label">Itinerary</p>
         <div class="rux--side-panel__title">
           <h2 class="rux--side-panel__title-text" id="scheduler-itinerary-title">Itinerary</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-itinerary-title-collapsed">Itinerary</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
-          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-itinerary-close" aria-label="Close itinerary">
+          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-itinerary-close" aria-label="Close document">
             <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -559,7 +561,7 @@
            Chrome's scrolls sideways at 30rem. The file's actions start disabled
            and data.js enables them once the file has loaded. -->
       <div class="scheduler-itinerary__body">
-        <div class="rux--side-panel__action-toolbar scheduler-itinerary__toolbar" role="group" aria-label="Itinerary actions">
+        <div class="rux--side-panel__action-toolbar scheduler-itinerary__toolbar" role="group" aria-label="Document actions">
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--out"/></svg>
           </button>
@@ -584,7 +586,7 @@
              loading while the file downloads, an inline notification if it
              does not. -->
         <div class="scheduler-itinerary__status" id="scheduler-itinerary-status" role="status" hidden></div>
-        <iframe class="scheduler-itinerary__frame" id="scheduler-itinerary-frame" title="Itinerary"></iframe>
+        <iframe class="scheduler-itinerary__frame" id="scheduler-itinerary-frame" title="Document"></iframe>
       </div>
     </aside>
           </div>

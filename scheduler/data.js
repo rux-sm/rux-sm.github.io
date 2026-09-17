@@ -2269,9 +2269,9 @@
      Its list is every file the trip holds, newest first, in the tiles payments
      use: the type as the name, the upload day and size under it, and the file
      name on hover. An itinerary that is not the trip's newest is tagged
-     Previous. A tile opens its file, the itinerary panel for an itinerary and
-     a new tab otherwise, and its menu holds Replace and Delete. The list is drawn again
-     on its own after a file changes, so the form's unsaved edits stay. */
+     Previous. A tile opens its file in the document panel, and its menu holds
+     Replace and Delete. The list is drawn again on its own after a file
+     changes, so the form's unsaved edits stay. */
   /* The Type list: each type's stored label and the name it shows, rux-ui's
      three first. A label is free text in `trip_documents`, and rux-ui shows
      one it does not know by the label itself, so Something else stores the
@@ -2283,6 +2283,8 @@
   const DOC_OTHER = 'other';
   const DOC_LABEL_MAX = 60;
   const FILE_NAMES = Object.fromEntries(DOC_TYPES.map(([label, name]) => [label.toLowerCase(), name]));
+  // The name a file's type shows: a listed type's, else its own label.
+  const docTypeName = doc => FILE_NAMES[String(doc.label || '').toLowerCase()] ?? (doc.label || 'File');
   // The label a typed name stores: a known type's own label when it names one,
   // so "itinerary" is still the trip's itinerary, and otherwise the name.
   const docLabelFor = typed => {
@@ -2299,27 +2301,20 @@
     return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
   };
 
-  const docUrl = doc => (client && doc.file_path
-    ? client.storage.from(DOC_BUCKET).getPublicUrl(doc.file_path).data?.publicUrl : null);
-
   const fileRow = (trip, doc, previous) => {
-    const kind = String(doc.label || '').toLowerCase();
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
     const li = listRow({
-      name: FILE_NAMES[kind] ?? (doc.label || 'File'),
+      name: docTypeName(doc),
       tag: previous ? PREVIOUS_TAG : null,
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
-      open: e => {
-        if (kind === 'itinerary') { openDocument(trip, doc, e.currentTarget); return; }
-        window.open(docUrl(doc) || documentLink(doc.id), '_blank', 'noopener');
-      },
+      open: e => openDocument(trip, doc, e.currentTarget),
       editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
     });
-    // Closing the itinerary panel finds the tile by it after the list is redrawn.
+    // Closing the document panel finds the tile by it after the list is redrawn.
     li.querySelector('.scheduler-item__open').dataset.documentId = doc.id;
     return li;
   };
@@ -5995,8 +5990,9 @@
     }
   }
 
-  /* ── The itinerary panel ──
-     From Carbon's xlg breakpoint up, an itinerary opens in a side panel left of
+  /* ── The document panel ──
+     From Carbon's xlg breakpoint up, a trip's file, an itinerary or any other,
+     opens in a side panel left of
      the board, beside the trip editor. Narrower, the two panels do not fit and
      a phone frames a PDF badly, so the document link page opens it in a new tab.
      The panel fetches the file and frames a blob address of it, because a frame
@@ -6004,11 +6000,13 @@
      print. The browser's PDF toolbar is hidden, since Chrome's scrolls sideways
      at 30rem, and the panel's action toolbar stands in for it. The panel stays
      open through week changes and selections, like the editor, and another
-     itinerary replaces the one shown. */
+     file replaces the one shown. The ids keep the itinerary name the panel
+     was built for. */
   const itinEl = document.getElementById('scheduler-itinerary');
   let itinFrame = document.getElementById('scheduler-itinerary-frame');
   const itinTitle = document.getElementById('scheduler-itinerary-title');
   const itinTitleCollapsed = document.getElementById('scheduler-itinerary-title-collapsed');
+  const itinLabel = document.getElementById('scheduler-itinerary-label');
   const itinUploaded = document.getElementById('scheduler-itinerary-uploaded');
   const itinStatus = document.getElementById('scheduler-itinerary-status');
   const itinPrint = document.getElementById('scheduler-itinerary-print');
@@ -6120,11 +6118,14 @@
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
-    // The head names the trip as the editor's does: the destination, with
-    // "Itinerary" before it for a screen reader.
+    /* The head names the file's type in the label line, and the trip as the
+       editor's does, by its destination, with the type before it for a screen
+       reader, which skips the label line's paragraph as it reads the heading. */
+    const kind = docTypeName(doc);
     const dest = trip?.destination || 'No destination';
+    itinLabel.textContent = kind;
     for (const h of [itinTitle, itinTitleCollapsed]) {
-      h.replaceChildren(el('span', 'rux--visually-hidden', 'Itinerary: '), document.createTextNode(dest));
+      h.replaceChildren(el('span', 'rux--visually-hidden', `${kind}: `), document.createTextNode(dest));
       h.title = dest;
     }
     const when = uploadedOn(doc.created_at);
@@ -6158,9 +6159,9 @@
       itineraryStatus(null);
       const blob = URL.createObjectURL(file);
       itinShown = { id: doc.id, blob, zoom: null };
-      itinFrame.title = `Itinerary for ${dest}`;
+      itinFrame.title = `${kind} for ${dest}`;
       itinDownload.href = blob;
-      itinDownload.download = doc.file_name || 'itinerary.pdf';
+      itinDownload.download = doc.file_name || `${docSlug(kind, 'document')}.pdf`;
       setItineraryReady(true);
       frameItinerary();
     } catch (err) {

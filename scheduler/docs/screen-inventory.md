@@ -123,8 +123,9 @@ Three homes, and one rule for choosing.
   spends standing space on an occasional action. On a phone the label is the
   week's months and year, "Sep – Oct 2026", so Driver availability fits beside
   it; the day header numbers the days.
-- **An itinerary reads in its own panel left of the board,** beside the trip
-  panel, because it is read while the trip is edited.
+- **A trip's file reads in its own panel left of the board,** beside the trip
+  panel, because it is read while the trip is edited. Any file opens there,
+  with its type above the destination.
 - **Print is a modal over the same page.**
 
 ### The driver availability grid

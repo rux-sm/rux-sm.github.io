@@ -164,3 +164,26 @@
 [data-theme="ant-dark"] .rux--tag {
   border-radius: 4px;
 }
+/* A button that fills its bar edge to edge is that bar's edge, so it stays
+   square, and where it sits in a rounded corner it takes that corner's
+   curve: the header's actions, the side panel's close and action row, and a
+   modal's close and footer. */
+[data-theme="ant-dark"] .rux--header__action,
+[data-theme="ant-dark"] .rux--side-panel__close-button,
+[data-theme="ant-dark"] .rux--action-set__action-button,
+[data-theme="ant-dark"] .rux--modal-close-button,
+[data-theme="ant-dark"] .rux--modal-footer .rux--btn {
+  border-radius: 0;
+}
+[data-theme="ant-dark"] .rux--side-panel__close-button,
+[data-theme="ant-dark"] .rux--modal-close-button {
+  border-start-end-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--action-set__action-button:first-child,
+[data-theme="ant-dark"] .rux--modal-footer .rux--btn:first-child {
+  border-end-start-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--action-set__action-button:last-child,
+[data-theme="ant-dark"] .rux--modal-footer .rux--btn:last-child {
+  border-end-end-radius: 8px;
+}

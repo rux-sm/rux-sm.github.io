@@ -164,6 +164,16 @@
 [data-theme="ant-dark"] .rux--tag {
   border-radius: 4px;
 }
+/* A date range reads as one box, the way Ant's range picker does: its two
+   inputs keep Carbon's 1px seam and square the corners that meet there. */
+[data-theme="ant-dark"] .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+[data-theme="ant-dark"] .rux--date-picker--range .rux--date-picker-container--to .rux--date-picker__input {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's
    curve: the header's actions, the side panel's close and action row, and a

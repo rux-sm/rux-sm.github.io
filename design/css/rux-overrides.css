@@ -179,6 +179,16 @@
 [data-theme="ant-dark"] .rux--modal-close-button {
   border-start-end-radius: 8px;
 }
+/* The side panel's header and action row paint their own fill over the
+   panel's corners, so they take its curve too. */
+[data-theme="ant-dark"] .rux--side-panel__header {
+  border-start-start-radius: 8px;
+  border-start-end-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--side-panel__actions-container {
+  border-end-start-radius: 8px;
+  border-end-end-radius: 8px;
+}
 [data-theme="ant-dark"] .rux--action-set__action-button:first-child,
 [data-theme="ant-dark"] .rux--modal-footer .rux--btn:first-child {
   border-end-start-radius: 8px;

@@ -4669,7 +4669,8 @@
       summary.append(statusLine, confirmWhy, figures);
       panelBilling.appendChild(section(null, summary));
 
-      panelBilling.appendChild(section('Price',
+      // One field needs no heading over its own label.
+      panelBilling.appendChild(section(null,
         moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price)));
 
       /* Payments use the same `rowList` as PO and invoice, named by their

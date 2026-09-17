@@ -3407,7 +3407,9 @@
     refreshDirty();
   });
 
-  // The invoice dialog mirrors the PO's: a date, the invoice number and an amount.
+  /* The invoice dialog: a date and the invoice number. An invoice's amount
+     feeds no total, so it is not asked for, and an amount rux-ui saved on the
+     row is kept as it is. */
   function openInvoiceDialog(index) {
     const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
@@ -3419,7 +3421,6 @@
     grid.append(
       dateOne('scheduler-f-idate', 'Date', v.date),
       textField('scheduler-f-inum', 'Invoice number', v.number),
-      moneyField('scheduler-f-iamount', 'Amount', v.amount),
     );
     host.replaceChildren(grid);
     window.Rux?.datePicker?.init?.(host);
@@ -3428,10 +3429,9 @@
 
   document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = { number: val('scheduler-f-inum') || null, amount: money(val('scheduler-f-iamount')),
-                  date: isoOrNull(val('scheduler-f-idate')) };
+    const row = { number: val('scheduler-f-inum') || null, date: isoOrNull(val('scheduler-f-idate')) };
     // An empty dialog adds nothing, the rule the other two dialogs follow.
-    if (row.number === null && row.amount === null && row.date === null) {
+    if (row.number === null && row.date === null) {
       window.Rux?.modal?.close?.('scheduler-inv-modal');
       return;
     }
@@ -4560,10 +4560,9 @@
 
         invPending.forEach((v, i) => {
           const num = v.number || 'No number';
-          const much = (v.amount ?? null) === null ? '' : usd(Number(v.amount) || 0);
           invList.body.appendChild(listRow({
-            name: v.number ? `Invoice ${v.number}` : num, meta: v.date ? mdy(v.date) : 'No date', much,
-            title: ['Invoice', num, v.date ? mdy(v.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
+            name: v.number ? `Invoice ${v.number}` : num, meta: v.date ? mdy(v.date) : 'No date',
+            title: ['Invoice', num, v.date ? mdy(v.date) : null].filter(Boolean).join(' · '),
             edit: () => openInvoiceDialog(i),
             removeLabel: `Remove invoice ${num}`,
             remove: () => { invPending.splice(i, 1); drawInvoices(); refreshDirty(); },

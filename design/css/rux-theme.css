@@ -147,27 +147,23 @@
     - button-disabled: the same rgba(241, 241, 243, 0.25) already used
       for text-disabled/icon-disabled.
 
-  DERIVED BUTTON TOKENS, ANT-DARK. The given palette carries a two-step
-  ladder rather than three — background-brand/interactive #1677ff (the
-  base) and border-interactive/icon-interactive/focus/link-primary
-  #4096ff (one step lighter) — so the active state needed a third rung
-  nothing in the theme's own core tokens supplies:
-    - button-primary / button-tertiary: background-brand (#1677ff) as
-      the base, mirroring linear's choice for the same reason —
-      text-on-color is WHITE, so this is a genuinely coloured button.
-      hover steps to border-interactive/focus's #4096ff (already given).
-      active has no third given tone to reuse, so it is EXTRAPOLATED
-      rather than invented from nothing: the per-channel delta from base
-      to hover (+42, +31, 0) applied once more, clamped at 255 —
-      #6ab5ff. Flagged as the least-grounded value in this file; worth
-      checking against the real page before trusting it.
+  DERIVED BUTTON TOKENS, ANT-DARK. White text needs 4.5:1 on a filled
+  button, which Ant's light-mode blue #1677ff (4.1:1) and red #ff4d4f
+  (3.3:1) miss, so the filled buttons take Ant's own dark palette, the
+  one the layer-selected tokens already come from:
+    - button-primary, background-brand and interactive: Ant's dark
+      primary #1668dc (5.2:1). hover and active step down that palette,
+      #1554ad then #15417e, darkening as Carbon's own buttons do.
+    - button-tertiary: link-primary #4096ff, because tertiary is text and
+      a border on the page and #1677ff is 4.5:1 only on black. hover
+      fills with link-primary-hover #69b1ff and active with #1677ff, both
+      under Carbon's black text-inverse.
     - button-secondary: the layer-active ladder (#303030 → #424242
       hover → #595959 active) — the same move as geist's and linear's
       secondary, reusing already-given values.
-    - button-danger-primary / -secondary: support-error (#ff4d4f,
-      already given); hover steps to support-error-inverse (#cf1322,
-      already given); active is computed at the same ~0.49 darkening
-      ratio used for geist's and linear's danger-active — #7d2627.
+    - button-danger-primary: Ant's dark error red #d32029 (5.2:1), then
+      #a61d24 and #791a1f for hover and active. button-danger-secondary
+      stays support-error #ff4d4f, because it is text on the page.
     - button-separator: background (#000000) — the darkest surface,
       the same move as every other theme here.
     - button-disabled: the same rgba(255, 255, 255, 0.25) already used
@@ -688,7 +684,7 @@
   /* background */
   --rux-background: #000000;
   --rux-background-active: rgba(255, 255, 255, 0.18);
-  --rux-background-brand: #1677ff;
+  --rux-background-brand: #1668dc;
   --rux-background-hover: rgba(255, 255, 255, 0.08);
   --rux-background-inverse: #f5f5f5;
   --rux-background-inverse-hover: #d9d9d9;
@@ -755,7 +751,7 @@
   /* text */
   --rux-text-disabled: rgba(255, 255, 255, 0.25);
   --rux-text-error: #ff7875;
-  --rux-text-helper: rgba(255, 255, 255, 0.45);
+  --rux-text-helper: rgba(255, 255, 255, 0.5);
   --rux-text-inverse: #000000;
   --rux-text-on-color: #ffffff;
   --rux-text-on-color-disabled: rgba(255, 255, 255, 0.3);
@@ -764,9 +760,9 @@
   --rux-text-secondary: rgba(255, 255, 255, 0.65);
 
   /* link */
-  --rux-link-inverse: #1677ff;
+  --rux-link-inverse: #0958d9;
   --rux-link-inverse-active: #000000;
-  --rux-link-inverse-hover: #0958d9;
+  --rux-link-inverse-hover: #003eb3;
   --rux-link-inverse-visited: #531dab;
   --rux-link-primary: #4096ff;
   --rux-link-primary-hover: #69b1ff;
@@ -824,7 +820,7 @@
   --rux-chat-shell-background: #141414;
 
   /* misc */
-  --rux-interactive: #1677ff;
+  --rux-interactive: #1668dc;
   --rux-highlight: #111d2c;
   --rux-overlay: rgba(0, 0, 0, 0.68);
   --rux-shadow: rgba(0, 0, 0, 0.85);
@@ -833,19 +829,19 @@
   --rux-toggle-off: #595959;
 
   /* button (component tokens — derived, see header) */
-  --rux-button-primary: #1677ff;
-  --rux-button-primary-hover: #4096ff;
-  --rux-button-primary-active: #6ab5ff;
-  --rux-button-tertiary: #1677ff;
-  --rux-button-tertiary-hover: #4096ff;
-  --rux-button-tertiary-active: #6ab5ff;
+  --rux-button-primary: #1668dc;
+  --rux-button-primary-hover: #1554ad;
+  --rux-button-primary-active: #15417e;
+  --rux-button-tertiary: #4096ff;
+  --rux-button-tertiary-hover: #69b1ff;
+  --rux-button-tertiary-active: #1677ff;
   --rux-button-secondary: #303030;
   --rux-button-secondary-hover: #424242;
   --rux-button-secondary-active: #595959;
-  --rux-button-danger-primary: #ff4d4f;
+  --rux-button-danger-primary: #d32029;
   --rux-button-danger-secondary: #ff4d4f;
-  --rux-button-danger-hover: #cf1322;
-  --rux-button-danger-active: #7d2627;
+  --rux-button-danger-hover: #a61d24;
+  --rux-button-danger-active: #791a1f;
   --rux-button-separator: #000000;
   --rux-button-disabled: rgba(255, 255, 255, 0.25);
 

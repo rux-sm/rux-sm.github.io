@@ -19,8 +19,6 @@ done and how.
   problems are open, and three controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
 
-- **ant-dark helper text** is 4.4:1 on `layer-02`, under the 4.5:1 body text
-  needs. The editor's Billing tab shows it.
 
 ### Asked for by Notes
 

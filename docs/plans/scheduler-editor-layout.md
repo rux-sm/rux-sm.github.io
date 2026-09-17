@@ -17,9 +17,9 @@ and reads right on real trips in every theme.
 - **24px between fields, 32px between sections, 48px above the actions,** the
   spacing Carbon's form pattern gives a contained form.
 - **Two fields share a row only when both fit half of it:** a date range, and a
-  hotel's confirmation beside Booked. Trip bar color, and every contact's
-  Name and Phone take a row each; contacts stand 32px apart. Type shares its
-  row with Vehicle, as `docs/plans/scheduler-vehicle-and-thread.md` decides.
+  hotel's confirmation beside Booked, and Type beside Vehicle, where the split
+  type reads "Split". Trip bar color, and every contact's Name and Phone take
+  a row each; contacts stand 32px apart.
 - **A 1px subtle rule opens every section after a tab's first,** edge to edge,
   32px under what precedes it and 24px over its heading. Carbon has no guidance
   on rules in forms, so this is the app's choice.

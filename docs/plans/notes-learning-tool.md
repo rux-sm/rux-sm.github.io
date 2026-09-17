@@ -31,10 +31,10 @@ arriving, never knowledge verified.
 
 ### The path is the way in
 
-- **Home is the path: the overview's 26 tiles as one column, top to bottom.**
-  The numbered tiles run in walk order under their stage, the four setup tiles
-  come first under "Before you start", and each unnumbered tile sits indented
-  under the numbered tile it belongs to. It reads the same on a phone, and the
+- **Home is the path: the overview's 26 tiles as one column, top to bottom,**
+  live on the site. The numbered tiles run in walk order under their stage, the
+  setup tiles come first under "Before you start", and each unnumbered tile and
+  each task that varies a step sits indented under the tile it belongs to. It reads the same on a phone, and the
   order is the overview's own numbering, so there is no hand-made syllabus.
 
 - **The diagram stays one link away**, for seeing how the modules connect.
@@ -105,7 +105,8 @@ arriving, never knowledge verified.
 
 - **Walking happens in the tile.** An open tile has Walk this, which records
   what happened at each step and its screenshots into the same walk tables, so
-  the pull is unchanged. The walk page retires once it does.
+  the pull is unchanged. The walk page retires once Walk this has carried a
+  real walk into atlas.
 
 ### What a tile knows
 
@@ -216,13 +217,14 @@ arriving, never knowledge verified.
 - **The session map retires** once its four silent-failure notes are confirmed.
 
 - **The walk page and the private-preview walk form retire** when Walk this
-  replaces them. **Walkthrough and experiment pages leave the nav** and become
-  landings that point at their tiles.
+  replaces them. **Walkthrough and experiment pages are out of the nav** and
+  reached from their tiles; each becomes a landing once its tiles hold
+  everything it shows.
 
 ### Signing in, reviewing, walking
 
-The owner's tools, their five tables, the private bucket and the pull command
-are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
+The owner's tools, their eight tables, the two private buckets and the pull
+command are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
 
 - **A review records Approve, or Request changes with feedback**, and says what
   was last sent and whether atlas has it.
@@ -252,15 +254,15 @@ Neither holds up building; each gates only the one thing it names.
 
 ## Tasks
 
-- [ ] rux reads the path in the private preview and checks the tile links:
-      which phases each linked tile opens, and where each task sits.
+- [ ] rux reads the path on the site and checks what atlas links: the phases
+      each tile opens, where each task sits, its homework and its quest kinds.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows
       their terms.
 - [ ] Simplify `run-order-planning-for-one-item` before it is walked: keep its
       essential warnings with the steps and move only optional detail out.
-- [ ] Take one quest from a tile through a walk, the pull, the intake and a
+- [ ] Take one quest from a tile through Walk this, the pull, the intake and a
       verified correction, and time it against what the same correction costs
       today.
 - [ ] Read the path on desktop and the phone, with the keyboard and back-button
@@ -268,4 +270,3 @@ Neither holds up building; each gates only the one thing it names.
 - [ ] Turn walkthrough, experiment and meeting pages into landings, and retire
       the session map, the walk page and the walk form when their conditions
       above are met.
-- [ ] Decide publication separately from rendering, and publish deliberately.

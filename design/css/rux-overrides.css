@@ -198,8 +198,14 @@
 [data-theme="ant-dark"] .rux--modal-footer .rux--btn {
   border-radius: 0;
 }
+/* A close button in a rounded corner takes that corner's curve, so neither its
+   hover fill nor its inset focus ring draws a square inside the curve. A
+   notification's sits in the top corner only; it is 48px tall in a taller
+   surface, so its lower corners stay square. */
 [data-theme="ant-dark"] .rux--side-panel__close-button,
-[data-theme="ant-dark"] .rux--modal-close-button {
+[data-theme="ant-dark"] .rux--modal-close-button,
+[data-theme="ant-dark"] .rux--inline-notification__close-button,
+[data-theme="ant-dark"] .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
 /* The side panel's header and action row paint their own fill over the

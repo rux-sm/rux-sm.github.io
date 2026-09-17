@@ -1308,18 +1308,17 @@
     return { list, body };
   };
 
-  /* The add is the list's last item, so it reads as the place the next record
-     appears. Its words line up with the tiles' text and its icon follows them,
-     as in Carbon's buttons, so app.css sets it under the tiles' menu buttons.
-     It is also the empty state: an empty list draws it alone. */
+  /* The add is the list's last item, a dashed tile where the next record
+     appears, with its icon before its words. It is also the empty state: an
+     empty list draws it alone. */
   const listAddRow = ({ label, id, onClick }) => {
     const li = el('li', 'scheduler-list-additem');
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
-    btn.append(label);
-    btn.appendChild(svgUse('#i-add', '16', '0 0 32 32'));
-    btn.lastChild.setAttribute('class', 'rux--btn__icon');
+    const icon = svgUse('#i-add', '16', '0 0 32 32');
+    icon.setAttribute('class', 'rux--btn__icon');
+    btn.append(icon, label);
     btn.addEventListener('click', onClick);
     li.appendChild(btn);
     return { li, btn };

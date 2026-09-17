@@ -4614,14 +4614,6 @@
         contract_signed: ['Contract signed', 'rux--tag--blue'],
         pending: ['Pending', 'rux--tag--cool-gray'],
       };
-      // What to say once it is confirmed, per rung, after `confirmRungOf`.
-      const CONFIRM_BY = {
-        contract_signed: 'Confirmed by the signed contract.',
-        po_received: 'Confirmed by the purchase order.',
-        deposit_received: 'Confirmed by the deposit.',
-        paid_full: 'Confirmed — paid in full.',
-        overpaid: 'Confirmed — paid above the quote.',
-      };
       // The unconfirmed line names what would confirm the trip, from the workflow.
       const WOULD_CONFIRM = [
         ['contract_signed', 'a signed contract'],
@@ -4653,7 +4645,6 @@
           : `${usd(shortfall)} uncovered. Add a PO or payment.`;
 
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
-        const confirmRung = confirmRungOf(rung);
 
         // The headline is the trip's confirmation, which is never empty; Balance
         // and Paid sit below it.
@@ -4668,15 +4659,15 @@
           bigNumber('Trip', confirmed ? 'Confirmed' : 'Not confirmed'),
           status,
         );
-        // The line names what confirmed the trip or, unconfirmed, states the rule.
-        confirmWhy.textContent = confirmed
-          ? (CONFIRM_BY[confirmRung] || 'Confirmed.')
-          : cap(wouldConfirm);
+        /* Unconfirmed, the line states what would confirm the trip. Confirmed,
+           the status tag already names what did, so the line is hidden. */
+        confirmWhy.textContent = confirmed ? '' : cap(wouldConfirm);
+        confirmWhy.hidden = confirmed;
       };
       /* The summary tile: the confirmation and its status tag, then the reason
-         line. It takes no section margin, because the sticky tab strip already
-         gives it room. */
-      const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed');
+         line. It is the tab's header, edge to edge and flush under the tab
+         strip, and the section after it opens with no rule (app.css). */
+      const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed scheduler-billing-summary');
       const tileStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       tileStack.append(figures, confirmWhy);
       tile.appendChild(tileStack);

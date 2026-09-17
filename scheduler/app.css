@@ -977,6 +977,15 @@ button.scheduler-row-head__num::after {
   margin-block-end: var(--rux-spacing-06);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
+/* The Billing summary is the tab's header: flush under the tab strip, taking
+   back the tab's 16px, and its own edge divides it from the section after,
+   which opens 32px below with no rule. */
+#scheduler-panel-body .rux--tab-content > .scheduler-billing-summary:first-child {
+  margin-block-start: calc(-1 * var(--rux-spacing-05));
+}
+#scheduler-panel-body .rux--tab-content > .scheduler-billing-summary + .scheduler-panel-section::before {
+  content: none;
+}
 /* A group's heading line with an overflow menu trigger at its end. The line
    keeps the title's own height, so the title sits 16px over the first label as
    every heading does, and the 32px trigger reaches 7px above and below it,

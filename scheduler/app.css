@@ -66,6 +66,11 @@
   max-block-size: max(24rem, calc(100dvh - 15rem));
   overscroll-behavior: contain;
   background: var(--rux-layer);
+  /* Square unless the theme rounds its surfaces, as ant-dark does in
+     theme.css. The head above it takes the top corners, so the pair rounds
+     as one box. */
+  border-end-start-radius: var(--scheduler-surface-radius, 0);
+  border-end-end-radius: var(--scheduler-surface-radius, 0);
 }
 @supports (block-size: round(1px, 1px)) {
   .scheduler-week { --scheduler-row-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px); }
@@ -302,10 +307,6 @@ button.scheduler-row-head__num::after {
   --scheduler-fg: var(--rux-tag-color-gray);
   --scheduler-hover: var(--rux-tag-hover-gray);
   --scheduler-border: var(--rux-tag-border-gray);
-  /* An edge in the tag-border colour, as wide as the theme's
-     `--scheduler-bar-edge`: 1px in ant-dark, whose tags are outlined, and
-     none elsewhere. */
-  box-shadow: inset 0 0 0 var(--scheduler-bar-edge, 0) var(--scheduler-border);
   position: absolute;
   inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear));
@@ -313,6 +314,8 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  /* Square unless the theme rounds its controls, as ant-dark does. */
+  border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-bg);
   color: var(--scheduler-fg);
   font-size: var(--scheduler-fs);
@@ -347,13 +350,12 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--magenta   { --scheduler-bg: var(--rux-tag-background-magenta);   --scheduler-fg: var(--rux-tag-color-magenta);   --scheduler-hover: var(--rux-tag-hover-magenta);   --scheduler-border: var(--rux-tag-border-magenta); }
 .scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
-/* Amber is the one hue Carbon's tags lack, so theme.css gives it its own
-   fill, text, hover and edge: the warning colour under dark text in most
-   themes, and an outlined gold in ant-dark. `--scheduler-amber-ring` marks a
-   hovered amber bar, and rings whatever on it is warning-coloured, where the
-   warning fill would vanish into the bar's own. */
-.scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);        --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-edge); }
-.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--scheduler-amber-ring); }
+/* Amber is the one hue Carbon's tags lack, so it takes the warning colour, and
+   its text is whichever of text-primary or text-inverse is dark in the theme
+   (`--scheduler-on-warning`, set in theme.css). The warning colour has no hover
+   step, so a hovered amber bar shows an inner outline instead. */
+.scheduler-bar--amber     { --scheduler-bg: var(--rux-support-warning);          --scheduler-fg: var(--scheduler-on-warning);      --scheduler-hover: var(--rux-support-warning);     --scheduler-border: var(--scheduler-on-warning); }
+.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 
 /* A trip colour chip, in the editor's colour field and the bar menu. It wears
    a `scheduler-bar--*` hue class for its custom properties, so it shows the
@@ -409,7 +411,7 @@ button.scheduler-row-head__num::after {
    picked colour does not show whether it is confirmed. */
 .scheduler-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
 /* On an amber bar the warning border would vanish into its own fill. */
-.scheduler-bar--amber.scheduler-bar--partial-po { border-color: var(--scheduler-amber-ring); }
+.scheduler-bar--amber.scheduler-bar--partial-po { border-color: var(--scheduler-on-warning); }
 /* A continuing edge takes no gap, since the trip runs off the week there. Only
    the gap at its other end is subtracted, so the bar ends where every other
    bar in that day ends. */
@@ -417,8 +419,10 @@ button.scheduler-row-head__num::after {
   inset-inline-start: 0;
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
   border-inline-start: 3px dotted var(--scheduler-border);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }
-.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); }
+.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
 /* The rows the view menu can turn off. `display: none` rather than
@@ -524,7 +528,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__warn-chip svg { display: block; }
 /* On an amber bar the chip would vanish into its own fill. */
-.scheduler-bar--amber .scheduler-bar__warn-chip { box-shadow: inset 0 0 0 1px var(--scheduler-amber-ring); }
+.scheduler-bar--amber .scheduler-bar__warn-chip { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
@@ -561,7 +565,7 @@ button.scheduler-row-head__num::after {
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 /* On an amber bar the amber disc would vanish into its own fill, so it takes
    a ring inside its edge, where the row does not clip it. */
-.scheduler-bar--amber .scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px var(--scheduler-amber-ring); }
+.scheduler-bar--amber .scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 
 /* A double booking: a strip over the last row, in the error tokens. */
 .scheduler-bar__conflict {
@@ -597,6 +601,8 @@ button.scheduler-row-head__num::after {
   min-block-size: var(--rux-layout-size-height-md);
   padding-inline-start: var(--rux-spacing-05);
   background: var(--rux-layer);
+  border-start-start-radius: var(--scheduler-surface-radius, 0);
+  border-start-end-radius: var(--scheduler-surface-radius, 0);
 }
 /* `heading-compact-02`, 16px at 600: the same style as the week name in the
    toolbar and the trip editor's title, so the three section heads read as one
@@ -685,6 +691,9 @@ button.scheduler-row-head__num::after {
   gap: 0;
   flex-wrap: wrap;
   background: var(--rux-layer);
+  /* The top corners of the week below it, which rounds only its bottom ones. */
+  border-start-start-radius: var(--scheduler-surface-radius, 0);
+  border-start-end-radius: var(--scheduler-surface-radius, 0);
   /* The height comes from the size token, which the media queries below set per
      width. */
   min-block-size: var(--rux-layout-size-height-md);

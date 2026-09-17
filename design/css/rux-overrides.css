@@ -12,11 +12,12 @@
   !important is aimed at the wrong selector. No Carbon file is touched, and
   `git diff css/rux.css` after any edit here is empty.
 
-  EVERY RULE BELOW REPAIRS A BOX THAT RENDERS WRONG, except one: ant-dark's
-  tag edge, which a theme needs because its reference outlines its tags and
-  Carbon's tag has no border. Nothing else has been decided about rux's look
-  beyond Carbon's. The example below is the shape of a rule that WOULD move
-  the capture for every theme, commented out:
+  EVERY RULE BELOW REPAIRS A BOX THAT RENDERS WRONG, except ant-dark's
+  shapes at the end, which a theme needs because its reference rounds its
+  corners and fills its fields where Carbon squares and underlines them.
+  Nothing else has been decided about rux's look beyond Carbon's. The
+  example below is the shape of a rule that WOULD move the capture for every
+  theme, commented out:
 
   .rux--btn { border-radius: 0.25rem; }
 
@@ -121,16 +122,45 @@
   }
 }
 
-/* ANT-DARK'S TAG EDGE. Ant's dark tag is outlined, and Carbon draws a tag's
-   border only on the operational variant, so this draws the edge from each
-   colour's own tag-border token. An inset shadow keeps the tag's size. */
-[data-theme="ant-dark"] .rux--tag--red { box-shadow: inset 0 0 0 1px var(--rux-tag-border-red); }
-[data-theme="ant-dark"] .rux--tag--magenta { box-shadow: inset 0 0 0 1px var(--rux-tag-border-magenta); }
-[data-theme="ant-dark"] .rux--tag--purple { box-shadow: inset 0 0 0 1px var(--rux-tag-border-purple); }
-[data-theme="ant-dark"] .rux--tag--blue { box-shadow: inset 0 0 0 1px var(--rux-tag-border-blue); }
-[data-theme="ant-dark"] .rux--tag--cyan { box-shadow: inset 0 0 0 1px var(--rux-tag-border-cyan); }
-[data-theme="ant-dark"] .rux--tag--teal { box-shadow: inset 0 0 0 1px var(--rux-tag-border-teal); }
-[data-theme="ant-dark"] .rux--tag--green { box-shadow: inset 0 0 0 1px var(--rux-tag-border-green); }
-[data-theme="ant-dark"] .rux--tag--gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-gray); }
-[data-theme="ant-dark"] .rux--tag--cool-gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-cool-gray); }
-[data-theme="ant-dark"] .rux--tag--warm-gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-warm-gray); }
+/* ANT-DARK'S SHAPES. Ant Design Pro rounds controls to 6px and surfaces to
+   8px, and its fields are filled boxes with no underline. These rules apply
+   under ant-dark only; every other theme keeps Carbon's square, underlined
+   controls. Focus and invalid states are outlines in Carbon, so they still
+   show without the underline. */
+[data-theme="ant-dark"] .rux--btn,
+[data-theme="ant-dark"] .rux--text-input,
+[data-theme="ant-dark"] .rux--text-area,
+[data-theme="ant-dark"] .rux--select-input,
+[data-theme="ant-dark"] .rux--date-picker__input,
+[data-theme="ant-dark"] .rux--number input[type=number],
+[data-theme="ant-dark"] .rux--number input[type=text],
+[data-theme="ant-dark"] .rux--search-input,
+[data-theme="ant-dark"] .rux--list-box,
+[data-theme="ant-dark"] .rux--dropdown {
+  border-radius: 6px;
+}
+[data-theme="ant-dark"] .rux--text-input,
+[data-theme="ant-dark"] .rux--text-area,
+[data-theme="ant-dark"] .rux--select-input,
+[data-theme="ant-dark"] .rux--date-picker__input,
+[data-theme="ant-dark"] .rux--number input[type=number],
+[data-theme="ant-dark"] .rux--number input[type=text],
+[data-theme="ant-dark"] .rux--search-input,
+[data-theme="ant-dark"] .rux--list-box,
+[data-theme="ant-dark"] .rux--dropdown {
+  border-block-end-color: transparent;
+}
+[data-theme="ant-dark"] .rux--tile,
+[data-theme="ant-dark"] .rux--side-panel,
+[data-theme="ant-dark"] .rux--modal-container,
+[data-theme="ant-dark"] .rux--list-box__menu,
+[data-theme="ant-dark"] .rux--menu,
+[data-theme="ant-dark"] .rux--date-picker__calendar,
+[data-theme="ant-dark"] .rux--popover-content,
+[data-theme="ant-dark"] .rux--inline-notification,
+[data-theme="ant-dark"] .rux--toast-notification {
+  border-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--tag {
+  border-radius: 4px;
+}

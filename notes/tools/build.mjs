@@ -2699,12 +2699,14 @@ function pathReach(dg, id, seen = new Set()) {
 // fill the same markup.
 function pathQuests(n) {
   const rows = new Map();
-  for (const q of n.quests ?? []) for (const issue of q.issues) if (!rows.has(issue)) rows.set(issue, q.text);
-  return [...rows].map(([issue, text]) => ({ issue, text }));
+  for (const q of n.quests ?? []) for (const issue of q.issues) if (!rows.has(issue)) rows.set(issue, q);
+  return [...rows].map(([issue, q]) => ({ issue, text: q.text, kind: q.kind ?? null }));
 }
 
+// The kind as a reader sees it: capture, mine, resolve or verify, or Untagged.
+const kindLabel = k => (k ? k[0].toUpperCase() + k.slice(1) : 'Untagged');
 const questItem = q => `
-              <li><span class="rux--tag rux--tag--gray rux--layout--size-sm"><span class="rux--tag__label">Untagged</span></span> <span class="rux--type-code-01">${esc(q.issue)}</span> ${esc(q.text)}</li>`;
+              <li><span class="rux--tag rux--tag--gray rux--layout--size-sm"><span class="rux--tag__label">${esc(kindLabel(q.kind))}</span></span> <span class="rux--type-code-01">${esc(q.issue)}</span> ${esc(q.text)}</li>`;
 const questCount = k => `${k} quest${k === 1 ? '' : 's'}`;
 
 // A tile's one line stops where a gap begins; the gap is listed as a quest.
@@ -3030,7 +3032,7 @@ function questsPage(site) {
   const order = layout?.order ?? [];
   const rows = order.flatMap(n => pathQuests(n).map(q => ({ n, ...q })));
   const row = r => `
-              <tr><td><a class="rux--link" href="../#tile-${esc(r.n.id)}">${esc(tileLabel(r.n))}</a></td><td><span class="rux--type-code-01">${esc(r.issue)}</span></td><td>${esc(r.text)}</td><td>Untagged</td></tr>`;
+              <tr><td><a class="rux--link" href="../#tile-${esc(r.n.id)}">${esc(tileLabel(r.n))}</a></td><td><span class="rux--type-code-01">${esc(r.issue)}</span></td><td>${esc(r.text)}</td><td>${esc(kindLabel(r.kind))}</td></tr>`;
   const tiles = order.map(n => ({ id: n.id, label: tileLabel(n) }));
   const body = `
         <div class="rux--stack-vertical rux--stack-scale-5">

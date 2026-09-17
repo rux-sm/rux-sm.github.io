@@ -140,9 +140,9 @@ arriving, never knowledge verified.
   gap is relevant to, with one identity however many tiles show it.
 
 - **A quest says which kind of work closes it:** capture it in LN, mine the help,
-  resolve a disagreement, or verify a claim. The kind is authored, because a
-  keyword pass over the 175 open gaps classified fewer than half. An untagged
-  quest still shows, marked untagged, and is tagged when its tile is worked.
+  resolve a disagreement, or verify a claim. The kind is authored in the fifth
+  column of atlas's `issues.md`, because a keyword pass over the open gaps
+  classified fewer than half. An untagged issue's quest shows as Untagged.
 
 - **The overview's placeholders are quests already.** Its four shortage
   checkpoints show as tiles with their quest; its two lookups stay detours with
@@ -256,7 +256,6 @@ Neither holds up building; each gates only the one thing it names.
       which phases each linked tile opens, and where each task sits.
 - [ ] Add "Before starting" to an open tile, and open a screen under the step
       that names it.
-- [ ] Tag every quest with its kind, starting with node 5's.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows

@@ -883,6 +883,15 @@ button.scheduler-row-head__num::after {
 /* Centred beside its control, a title keeps no bottom margin, which would lift
    it 4px off the control's middle. */
 .scheduler-panel-section__head .scheduler-panel-section__title { margin-block-end: 0; }
+/* A switch's heading is its label and takes the rest of the row, full height,
+   so a tap anywhere left of the switch flips it. */
+.scheduler-panel-section__head > label.scheduler-panel-section__title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  align-self: stretch;
+  cursor: pointer;
+}
 
 /* A section pulled out to the panel's edges by the panel body's own padding,
    so a contained list's band runs edge to edge while its text lines up with

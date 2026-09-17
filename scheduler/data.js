@@ -1254,7 +1254,11 @@
     const wrap = el('div', 'scheduler-panel-section');
     // A titleless section still keeps the `spacing-07` above it.
     if (!title) { wrap.appendChild(node); return wrap; }
-    const head = el('div', 'scheduler-panel-section__title', title);
+    /* A switch's heading is its label, so the words flip it too: a label
+       forwards its click to the switch's button. */
+    const sw = action?.querySelector('.rux--toggle__button');
+    const head = el(sw ? 'label' : 'div', 'scheduler-panel-section__title', title);
+    if (sw) head.htmlFor = sw.id;
     if (!action) { wrap.append(head, node); return wrap; }
     const bar = el('div', 'scheduler-panel-section__head');
     bar.append(head, action);
@@ -2466,10 +2470,10 @@
     return FIELD(id, label, outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* Carbon's small toggle, from `sink/toggle.html`, with no On/Off text: the
+  /* Carbon's default toggle, from `sink/toggle.html`, with no On/Off text: the
      section heading beside it names the state (Contract signed, PO received,
-     Invoice sent). `js/form-controls.js` binds it and fires `rux:toggle`. The
-     check glyph stays mounted, and Carbon hides it while off. */
+     Invoice sent) and is its label. `js/form-controls.js` binds it and fires
+     `rux:toggle`. */
   function toggleAction(id, label, on) {
     const box = el('div', 'rux--toggle');
     const btn = el('button', 'rux--toggle__button');
@@ -2480,19 +2484,9 @@
     btn.setAttribute('aria-label', label);
     const lab = el('label', 'rux--toggle__label');
     lab.setAttribute('for', id);
-    const appearance = el('div', 'rux--toggle__appearance rux--toggle__appearance--sm');
+    const appearance = el('div', 'rux--toggle__appearance');
     const sw = el('div', 'rux--toggle__switch');
     if (on) sw.classList.add('rux--toggle__switch--checked');
-    const check = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    check.setAttribute('class', 'rux--toggle__check');
-    check.setAttribute('width', '6px');
-    check.setAttribute('height', '5px');
-    check.setAttribute('viewBox', '0 0 6 5');
-    check.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z');
-    check.appendChild(path);
-    sw.appendChild(check);
     appearance.appendChild(sw);
     lab.appendChild(appearance);
     box.append(btn, lab);

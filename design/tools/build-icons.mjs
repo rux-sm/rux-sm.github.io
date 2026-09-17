@@ -97,6 +97,11 @@ const ICONS = [
   // A VEHICLE, for Scheduler's trip bar warning that a bus is the wrong type
   // for the trip. Carbon's `bus` is a coach seen from the front.
   'bus',
+  // A TELEPHONE, for Scheduler's trip bar warning that a trip has nobody to
+  // call on the day. `phone` is Carbon's plain handset, an outline like the
+  // other marks on that bar; the filled and directional variants say a call is
+  // happening, which is not what a missing number means.
+  'phone',
 ];
 
 const symbols = [], missing = [], from = {};

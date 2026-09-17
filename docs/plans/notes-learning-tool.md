@@ -194,10 +194,8 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
 - **A review records Approve, or Request changes with feedback**, and says what
   was last sent and whether atlas has it.
 
-- **A walk follows the revision it was started on.** Resuming fetches the
-  current procedure while the record keeps its older pinned commit, so answers
-  can attach to steps the learner never saw. Either the pinned revision is
-  loaded, or resuming is refused and a fresh run offered.
+- **A walk continues only on the build it started on**, so its answers always
+  match the steps it pinned; `notes/docs/owner-tools.md` describes it.
 
 ### Accepted with keyboard and phone in mind
 
@@ -221,21 +219,17 @@ Neither holds up building; each gates only the one thing it names.
 
 ## Tasks
 
-- [ ] Fix the walk revision defect, before the next walk in atlas uses the walk
-      page.
-- [ ] Build the path home in the private preview from the overview: all 26
-      tiles closed, stage headings, setup first, side tiles under their step,
-      the start line, and the tools column in place.
-- [ ] Record in atlas which phases each node opens, starting with node 5
-      opening phases 3 to 5 of `run-order-planning-for-one-item`; every node
-      without one shows as No procedure.
-- [ ] Open a tile in place: Before starting, what LN is doing, the steps, the
-      way on, and a screen opening under its step.
-- [ ] Show every open gap as a quest on its tiles, untagged until tagged, and
-      tag node 5's first.
-- [ ] Show each tile's state and counts, with no percentage.
-- [ ] Build the tools column: notepad, screenshot and document upload saved to
-      the account, each with Send for review into the intake.
+- [ ] rux reads the path in the private preview and checks the tile links:
+      which phases each of the sixteen linked tiles opens.
+- [ ] Publish the path as the Notes front page, after `npm run export` brings
+      the linked tiles to the public data.
+- [ ] Add "Before starting" to an open tile, and open a screen under the step
+      that names it.
+- [ ] Tag every quest with its kind, starting with node 5's.
+- [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
+      Verified.
+- [ ] Save the notepad to the account, add screenshot and document upload,
+      and give each a Send for review button into the intake.
 - [ ] Attach the homework sittings to the tiles they test, starting with
       sitting 4 on node 5.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows

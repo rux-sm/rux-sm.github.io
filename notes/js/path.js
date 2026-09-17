@@ -29,11 +29,15 @@
   const openTile = () => tiles.find(t => t.open);
   const nameOf = t => [...(t.querySelector('.notes-path-head')?.children ?? [])].map(e => e.textContent.trim()).join(' · ');
 
+  // The owner's notepad is kept in the account by js/tile-owner.js, which
+  // marks the box and listens for which tile is open.
+  const local = () => note && !note.dataset.notesAccount;
   function follow() {
     const t = openTile();
+    document.dispatchEvent(new CustomEvent('notes-path:open', { detail: { tile: t?.dataset.notesPathTile ?? null, name: t ? nameOf(t) : '' } }));
     if (!note) return;
     note.disabled = !t;
-    note.value = t ? notes[t.dataset.notesPathTile] ?? '' : '';
+    if (local()) note.value = t ? notes[t.dataset.notesPathTile] ?? '' : '';
     note.placeholder = t ? 'What you found, what to check next' : '';
     if (forLine) forLine.textContent = t ? `Notes on ${nameOf(t)}` : 'Open a tile to take notes on it.';
   }
@@ -97,7 +101,7 @@
 
   note?.addEventListener('input', () => {
     const t = openTile();
-    if (!t) return;
+    if (!t || !local()) return;
     if (note.value) notes[t.dataset.notesPathTile] = note.value;
     else delete notes[t.dataset.notesPathTile];
     keep();
@@ -113,6 +117,8 @@
 
   // Arriving at #tile-<id>: open it, and scroll once the page has laid out,
   // after the browser's own scroll restore.
+  document.addEventListener('notes-path:refresh', follow);
+
   const wanted = /^#tile-(.+)$/.exec(location.hash);
   if (wanted) {
     history.scrollRestoration = 'manual';

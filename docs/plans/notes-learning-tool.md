@@ -251,15 +251,13 @@ Neither holds up building; each gates only the one thing it names.
 
 - [ ] rux reads the path in the private preview and checks the tile links:
       which phases each linked tile opens, and where each task sits.
-- [ ] Show the quests to the owner on the live site, through the database, with
-      the change shown to rux before it is applied.
+- [ ] rux stores the project's secret key for atlas's pull, once:
+      `security add-generic-password -s rux-notes-pull -a supabase -w`.
 - [ ] Add "Before starting" to an open tile, and open a screen under the step
       that names it.
 - [ ] Tag every quest with its kind, starting with node 5's.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
-- [ ] Save the notepad to the account, add screenshot and document upload,
-      and give each a Send for review button into the intake.
 - [ ] Attach the homework sittings to the tiles they test, starting with
       sitting 4 on node 5.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows

@@ -2767,27 +2767,19 @@ function pathReach(dg, id, seen = new Set()) {
   return seen;
 }
 
-// A QUEST IS A GAP, and its identity is its issue ids. The internal tier marks
-// a gap with a `gap` token and names its ids beside the tokens; the quest's
-// words are the tokens after the marker. The export tier carries neither, so
-// the public build has no quests.
-function pathQuests(values) {
-  const out = new Map();
-  for (const v of values) {
-    const toks = v?.tokens ?? [];
-    const at = toks.findIndex(t => t.t === 'gap');
-    if (at < 0 || !(v.issues ?? []).length) continue;
-    const key = v.issues.join(' ');
-    // The ids show as their own labels, so the closing ", OI-###" is dropped.
-    const words = toks.slice(at + 1).map(t => ({ ...t }));
-    const last = words.at(-1);
-    if (last?.t === 'text') {
-      for (const id of v.issues) last.v = last.v.replace(new RegExp(`,? ?${id}\\.?\\s*$`), '');
-    }
-    if (!out.has(key)) out.set(key, { ids: v.issues, html: tokens(words).trim() });
-  }
-  return [...out.values()];
+// A QUEST IS A GAP, one row per issue id. atlas lists a tile's quests in the
+// internal tier (export-json.md 7.5); the live site, whose data carries none,
+// reads the same rows from the owner's quest table in js/tile-owner.js. Both
+// fill the same markup.
+function pathQuests(n) {
+  const rows = new Map();
+  for (const q of n.quests ?? []) for (const issue of q.issues) if (!rows.has(issue)) rows.set(issue, q.text);
+  return [...rows].map(([issue, text]) => ({ issue, text }));
 }
+
+const questItem = q => `
+              <li><span class="rux--tag rux--tag--gray rux--layout--size-sm"><span class="rux--tag__label">Untagged</span></span> <span class="rux--type-code-01">${esc(q.issue)}</span> ${esc(q.text)}</li>`;
+const questCount = k => `${k} quest${k === 1 ? '' : 's'}`;
 
 // A tile's one line stops where a gap begins; the gap is listed as a quest.
 function pathLine(value) {
@@ -2857,10 +2849,7 @@ function pathTile(dg, n, cat, docs, task = false) {
       return { w, p };
     });
   });
-  const quests = pathQuests([
-    ...['route', 'does', 'do', 'leaves'].map(k => n[k]), ...(n.steps ?? []),
-    ...opens.flatMap(({ p }) => pathValues(p.blocks)),
-  ]);
+  const quests = pathQuests(n);
   const steps = opens.reduce((sum, { p }) => sum + (p.blocks ?? []).filter(isRows)
     .reduce((c, b) => c + (b.rows ?? []).filter(r => r.id).length, 0), 0);
   const screens = new Set([n.code, ...opens.flatMap(({ p }) => [p.sessionCode, ...pathValues((p.blocks ?? []).filter(isRows))
@@ -2872,7 +2861,6 @@ function pathTile(dg, n, cat, docs, task = false) {
     ? [`${opens.length} phase${opens.length > 1 ? 's' : ''}`, `${steps} step${steps === 1 ? '' : 's'}`,
       `${screens.size} screen${screens.size === 1 ? '' : 's'}`]
     : [];
-  if (quests.length) counts.push(`${quests.length} quest${quests.length > 1 ? 's' : ''} open`);
 
   const byWalkthrough = [];
   for (const o of opens) {
@@ -2909,18 +2897,18 @@ function pathTile(dg, n, cat, docs, task = false) {
             ${(n.steps ?? []).length ? `<ol class="rux--list--ordered">${n.steps.map(x =>
               `<li class="rux--list__item">${tokens(x.tokens ?? [])}</li>`).join('')}</ol>` : ''}
             <p class="rux--type-body-01">No procedure yet.</p>`;
-  const questList = quests.length ? `
-            <h3 class="rux--type-productive-heading-02">Quests</h3>
-            <ul class="notes-path-quests">${quests.map(q => `
-              <li><span class="rux--tag rux--tag--gray rux--layout--size-sm"><span class="rux--tag__label">Untagged</span></span> ${
-                q.ids.map(i => `<span class="rux--type-code-01">${esc(i)}</span>`).join(' ')} ${q.html}</li>`).join('')}
-            </ul>` : '';
+  const questList = `
+            <div class="notes-path-questbox" data-notes-path-quests${quests.length ? '' : ' hidden'}>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">${quests.map(questItem).join('')}
+              </ul>
+            </div>`;
 
   return `<details class="notes-path-tile notes-path-tile--${cat.get(n.id)}" id="tile-${esc(n.id)}" name="notes-path" data-notes-path-tile="${esc(n.id)}">
           <summary class="notes-path-summary">
             <span class="notes-path-head">${n.n != null ? `<span class="notes-path-n">${n.n}</span>` : ''}<span class="notes-path-name">${esc(n.session)}</span></span>
             <span class="notes-path-does">${esc(pathLine(n.does))}</span>
-            ${quests.length ? `<span class="rux--tag rux--tag--purple rux--layout--size-sm"><span class="rux--tag__label">${quests.length} quest${quests.length > 1 ? 's' : ''}</span></span>` : ''}
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount${quests.length ? '' : ' hidden'}><span class="rux--tag__label">${questCount(quests.length)}</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">${[state, ...counts].map(esc).join(' · ')}${n.code ? ` · <span class="rux--type-code-01">${esc(n.code)}</span>` : ''}</p>
@@ -2970,6 +2958,9 @@ const PATH_CSS = `
 .notes-path-switch { max-inline-size: 20rem; }
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
+.notes-path-questbox { display: grid; gap: .5rem; }
+.notes-path-files { display: grid; gap: .75rem; }
+.notes-path-file-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-walk-form { display: grid; gap: 1rem; max-inline-size: 20rem; }
 .notes-path-walk-step { display: grid; gap: .25rem; margin-block-start: .5rem; }
 .notes-path-tasks-title { margin-block-end: .5rem; }
@@ -3049,12 +3040,23 @@ function pathPage(ref, site) {
             <div class="rux--text-area__wrapper">
               <textarea id="notes-path-note" class="rux--text-area" rows="6" disabled data-notes-path-note></textarea>
             </div>
-            <div class="rux--form__helper-text">Saved in this browser for now. Screenshots and documents come next.</div>
-          </div>
+            <div class="rux--form__helper-text" data-notes-path-note-help>Saved in this browser.</div>
+          </div>${PRIVATE ? '' : `
+          <div class="notes-path-files" data-notes-owner hidden>
+            <h3 class="rux--type-productive-heading-02">Files</h3>
+            <ul class="notes-path-file-list" data-notes-path-files></ul>
+            <div class="notes-path-row">
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-path-add="screenshot" disabled>Add screenshot</button>
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-path-add="document" disabled>Add document</button>
+            </div>
+            <input type="file" hidden data-notes-path-file>
+            <div><button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-path-send disabled>Send for review</button></div>
+            <p class="rux--type-body-01" data-notes-path-tools-status aria-live="polite"></p>
+          </div>`}
         </aside>
       </div>
 `;
-  return page({ title: 'Notes', site, activeId: null, body, depth: 0, scripts: ['js/path.js', 'js/tile-walk.js'], css: PATH_CSS });
+  return page({ title: 'Notes', site, activeId: null, body, depth: 0, scripts: ['js/path.js', 'js/tile-walk.js', 'js/tile-owner.js'], css: PATH_CSS });
 }
 
 function referencePage(r, site) {

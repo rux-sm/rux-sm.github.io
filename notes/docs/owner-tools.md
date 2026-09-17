@@ -8,19 +8,20 @@ type: reference
 collects is kept.** Anyone else with Notes ticked sees the published pages and
 nothing else. Logging in is the site's own login page.
 
-## The four scripts
+## The five scripts
 
 | File | What it does |
 | :--- | :--- |
 | `notes/js/online.js` | Loaded on every page after the site's `account.js`. For the owner it reveals what `build.mjs` wrote hidden — the review box, and the link to walk a procedure |
 | `notes/js/experiment.js` | The worksheet: answers typed into the spaces the data marks, boxes ticked, a notepad, a revealable answer key, and an export |
 | `notes/js/walk.js` | One run of a procedure, a step at a time, from any device signed in as the owner |
+| `notes/js/tile-owner.js` | On the path: each tile's quests, the notepad kept per tile in the account, a tile's screenshots and documents, and Send for review |
 | `notes/js/tile-walk.js` | Walk this, inside an open tile on the path: what happened and screenshots beside each of that tile's steps, saved as a walk of its walkthrough |
 
 ## Where what they collect is kept
 
-Five tables in the database's `platform` schema, readable and writable only by
-the owner, and one private bucket.
+Eight tables in the database's `platform` schema, readable only by the owner,
+and two private buckets. Every table but the quests is writable by the owner too.
 
 | | Holds |
 | :--- | :--- |
@@ -30,6 +31,10 @@ the owner, and one private bucket.
 | `notes_walk_steps` | What actually happened at each step, saved as the step is left |
 | `notes_walk_shots` | The screenshots taken during a run, one row per shot |
 | `notes-walk-shots` | The private bucket those screenshots are uploaded to |
+| `notes_quests` | Each path tile's open gaps, replaced by atlas's pull on every run |
+| `notes_tile_notes` | A tile's notepad, and when it was sent for review |
+| `notes_tile_files` | A tile's screenshots and documents, and when they were sent |
+| `notes-tile-files` | The private bucket those files are uploaded to |
 
 A walk pins the commit its pages came from, so a record can always be read back
 against the instructions it was made under. It can be continued only on that

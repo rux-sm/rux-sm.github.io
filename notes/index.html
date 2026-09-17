@@ -981,6 +981,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 .notes-path-switch { max-inline-size: 20rem; }
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
+.notes-path-questbox { display: grid; gap: .5rem; }
+.notes-path-files { display: grid; gap: .75rem; }
+.notes-path-file-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-walk-form { display: grid; gap: 1rem; max-inline-size: 20rem; }
 .notes-path-walk-step { display: grid; gap: .25rem; margin-block-start: .5rem; }
 .notes-path-tasks-title { margin-block-end: .5rem; }
@@ -1319,7 +1322,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Items and groups</span></span>
             <span class="notes-path-does">hold the item every other lane reads</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 11 steps · 2 screens · <span class="rux--type-code-01">tcibd0501m100</span></p>
@@ -1392,13 +1395,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-1" data-notes-path-go="1">1 · Sales Order Intake Workbench</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--config" id="tile-buyfrom" name="notes-path" data-notes-path-tile="buyfrom">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Item - Purchase</span></span>
             <span class="notes-path-does">carry the buy-from partner a purchased item needs</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdipu0601m000</span></p>
@@ -1408,13 +1416,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-6" data-notes-path-go="6">6 · Transfer Order Planning</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--config" id="tile-bom" name="notes-path" data-notes-path-tile="bom">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Bill of material and routing</span></span>
             <span class="notes-path-does">define what a made item is built from and how, both Approved</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 2 phases · 38 steps · 4 screens</p>
@@ -1529,13 +1542,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-5" data-notes-path-go="5">5 · Generate Order Planning (Item)</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--config" id="tile-cluster" name="notes-path" data-notes-path-tile="cluster">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Planning cluster row on the item</span></span>
             <span class="notes-path-does">make the item visible to order planning. Without it the item is absent from the plan rather than refused</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 3 screens</p>
@@ -1594,13 +1612,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-3" data-notes-path-go="3">3 · Planning data exists</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-std-cost" name="notes-path" data-notes-path-tile="std-cost">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Calculate Standard Cost</span></span>
             <span class="notes-path-does">calculate an item&#39;s standard cost</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">ticpr2210m000</span></p>
@@ -1609,13 +1632,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-revisions" name="notes-path" data-notes-path-tile="revisions">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Item Engineering Revisions</span></span>
             <span class="notes-path-does">keep engineering revisions of an item</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tcibd0150m000</span></p>
@@ -1624,13 +1652,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-alt-items" name="notes-path" data-notes-path-tile="alt-items">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Alternative Items</span></span>
             <span class="notes-path-does">name an alternative for an item</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tcibd0505m000</span></p>
@@ -1639,13 +1672,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-mass-change" name="notes-path" data-notes-path-tile="mass-change">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Mass Change Item Assignments</span></span>
             <span class="notes-path-does">change item assignments on many items at once</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tcibd0204m000</span></p>
@@ -1654,6 +1692,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -1663,7 +1706,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">1</span><span class="notes-path-name">Sales Order Intake Workbench</span></span>
             <span class="notes-path-does">create the demand the rest of the chain answers</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 12 steps · 1 screen · <span class="rux--type-code-01">tdsls4601m200</span></p>
@@ -1719,13 +1762,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-2" data-notes-path-go="2">Next: 2 · Does on-hand cover it?</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--step" id="tile-price-books" name="notes-path" data-notes-path-tile="price-books">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Price Books</span></span>
             <span class="notes-path-does">hold the prices an order line can take</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdpcg0111m000</span></p>
@@ -1734,13 +1782,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-change-order-line" name="notes-path" data-notes-path-tile="change-order-line">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Change or cancel an order line</span></span>
             <span class="notes-path-does">change or cancel a sales order line after it is entered</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -1749,13 +1802,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--check" id="tile-2" name="notes-path" data-notes-path-tile="2">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">2</span><span class="notes-path-name">Does on-hand cover it?</span></span>
             <span class="notes-path-does">decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -1766,13 +1824,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02"><strong>Does on-hand cover it?</strong></p>
             <div class="notes-path-row"><a data-notes-path-skip="3 4 5 planned-prod 6 7 8 9 stock short-release planned-purch" class="rux--btn rux--btn--secondary rux--btn--sm" href="#tile-10" data-notes-path-go="10">YES, and no planned order is generated → 10 · Release Sales Order Lines to Warehousing</a><a data-notes-path-skip="" class="rux--btn rux--btn--secondary rux--btn--sm" href="#tile-3" data-notes-path-go="3">NO → 3 · Planning data exists</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--check" id="tile-allocated" name="notes-path" data-notes-path-tile="allocated">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Stock promised to other orders</span></span>
             <span class="notes-path-does">decide silently how much of on-hand is free for this order. Not documented for this release.</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -1782,13 +1845,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-2" data-notes-path-go="2">2 · Does on-hand cover it?</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--info" id="tile-read-whwmd4300m000" name="notes-path" data-notes-path-tile="read-whwmd4300m000">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Inventory 360</span></span>
             <span class="notes-path-does">answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 2 phases · 7 steps · 2 screens · <span class="rux--type-code-01">whwmd4300m000</span></p>
@@ -1854,6 +1922,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
         </section>
@@ -1863,7 +1936,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">3</span><span class="notes-path-name">Planning data exists</span></span>
             <span class="notes-path-does">decide silently whether planning can see the item and every component beneath it</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 3 screens</p>
@@ -1922,13 +1995,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-4" data-notes-path-go="4">Next: 4 · Inside the order horizon</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--check" id="tile-4" name="notes-path" data-notes-path-tile="4">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">4</span><span class="notes-path-name">Inside the order horizon</span></span>
             <span class="notes-path-does">decide silently whether the delivery date is near enough to plan. Counted in workdays</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 4 steps · 2 screens</p>
@@ -1976,13 +2054,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-5" data-notes-path-go="5">Next: 5 · Generate Order Planning (Item)</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-5" name="notes-path" data-notes-path-tile="5">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">5</span><span class="notes-path-name">Generate Order Planning (Item)</span></span>
             <span class="notes-path-does">net demand against stock and explode the bill of material</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 3 phases · 13 steps · 3 screens · <span class="rux--type-code-01">cprrp1220m000</span></p>
@@ -2069,13 +2152,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-planned-prod" data-notes-path-go="planned-prod">Next: Planned production order</a><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-planned-purch" data-notes-path-go="planned-purch">Next: Planned purchase order</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--info" id="tile-read-cprrp0520m000" name="notes-path" data-notes-path-tile="read-cprrp0520m000">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Item Order Plan</span></span>
             <span class="notes-path-does">show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cprrp0520m000</span></p>
@@ -2085,13 +2173,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--result" id="tile-planned-prod" name="notes-path" data-notes-path-tile="planned-prod">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Planned production order</span></span>
             <span class="notes-path-does">propose making the shortfall. Real to nothing outside planning</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2101,13 +2194,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-6" data-notes-path-go="6">Next: 6 · Transfer Order Planning</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--result" id="tile-planned-purch" name="notes-path" data-notes-path-tile="planned-purch">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Planned purchase order</span></span>
             <span class="notes-path-does">propose buying the shortfall. Real to nothing outside planning</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2117,13 +2215,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-6" data-notes-path-go="6">Next: 6 · Transfer Order Planning</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-plan-all" name="notes-path" data-notes-path-tile="plan-all">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Generate Order Planning</span></span>
             <span class="notes-path-does">run order planning for a range of items</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cprrp1210m000</span></p>
@@ -2132,13 +2235,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-master-planning" name="notes-path" data-notes-path-tile="master-planning">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Generate Master Planning</span></span>
             <span class="notes-path-does">generate master planning</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cprmp1202m000</span></p>
@@ -2147,13 +2255,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-exception-messages" name="notes-path" data-notes-path-tile="exception-messages">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Exception Messages by Planner</span></span>
             <span class="notes-path-does">list the exception messages planning raised</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cprao1120m000</span></p>
@@ -2162,6 +2275,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
         </section>
@@ -2171,7 +2289,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">6</span><span class="notes-path-name">Transfer Order Planning</span></span>
             <span class="notes-path-does">translate a proposal into a real order in its owning module. Planning ends here</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 3 screens · <span class="rux--type-code-01">cppat1210m000</span></p>
@@ -2230,13 +2348,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-7" data-notes-path-go="7">If supply source Purchase: 7 · Purchase Order</a><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-9" data-notes-path-go="9">If supply source Job Shop: 9 · Production Orders</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--step" id="tile-confirm-planned" name="notes-path" data-notes-path-tile="confirm-planned">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Confirm Order Planning</span></span>
             <span class="notes-path-does">confirm planned orders before they are transferred</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 3 screens · <span class="rux--type-code-01">cprrp1200m000</span></p>
@@ -2294,13 +2417,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-transfer-production" name="notes-path" data-notes-path-tile="transfer-production">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Transfer planned production orders</span></span>
             <span class="notes-path-does">turn planned production orders into production orders</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2309,6 +2437,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
         </section>
@@ -2318,7 +2451,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">7</span><span class="notes-path-name">Purchase Order</span></span>
             <span class="notes-path-does">buy the components, and raise the inbound warehousing order on its own</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 2 phases · 10 steps · 3 screens · <span class="rux--type-code-01">tdpur4100m900</span></p>
@@ -2387,13 +2520,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-8" data-notes-path-go="8">Next: 8 · Warehouse Receipt</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--step" id="tile-requisition" name="notes-path" data-notes-path-tile="requisition">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Requisitions</span></span>
             <span class="notes-path-does">request a purchase before an order exists</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdpur2501m000</span></p>
@@ -2402,13 +2540,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-rfq" name="notes-path" data-notes-path-tile="rfq">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Request for Quotations</span></span>
             <span class="notes-path-does">ask suppliers to quote before ordering</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdpur8310m000</span></p>
@@ -2417,13 +2560,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--step" id="tile-8" name="notes-path" data-notes-path-tile="8">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">8</span><span class="notes-path-name">Warehouse Receipt</span></span>
             <span class="notes-path-does">book the bought components into stock</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 2 phases · 10 steps · 3 screens · <span class="rux--type-code-01">whinh3512m000</span></p>
@@ -2492,13 +2640,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-9" data-notes-path-go="9">9 · Production Orders</a>.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--step" id="tile-inspection" name="notes-path" data-notes-path-tile="inspection">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Inspections Overview</span></span>
             <span class="notes-path-does">inspect received goods before they are put away</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh3122m000</span></p>
@@ -2507,13 +2660,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-putaway" name="notes-path" data-notes-path-tile="putaway">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Generate Inbound Advice</span></span>
             <span class="notes-path-does">generate inbound advice for put-away</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh3201m000</span></p>
@@ -2522,13 +2680,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--result" id="tile-9" name="notes-path" data-notes-path-tile="9">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">9</span><span class="notes-path-name">Production Orders</span></span>
             <span class="notes-path-does">build the item: release, issue the components, report complete</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 7 steps · 4 screens · <span class="rux--type-code-01">tisfc0501m000</span></p>
@@ -2579,13 +2742,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-stock" data-notes-path-go="stock">Next: Finished item into stock</a><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-short-release" data-notes-path-go="short-release">If a component is short: Components short at release</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--check" id="tile-short-release" name="notes-path" data-notes-path-tile="short-release">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Components short at release</span></span>
             <span class="notes-path-does">decide whether a production order releases while a component is short. Not documented for this release.</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2595,13 +2763,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--result" id="tile-stock" name="notes-path" data-notes-path-tile="stock">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Finished item into stock</span></span>
             <span class="notes-path-does">hold the built item, which is only now sellable</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2611,13 +2784,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-10" data-notes-path-go="10">Next: 10 · Release Sales Order Lines to Warehousing</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-manual-production" name="notes-path" data-notes-path-tile="manual-production">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Manual production order</span></span>
             <span class="notes-path-does">make an item on a production order entered by hand</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 3 phases · 19 steps · 2 screens · <span class="rux--type-code-01">tisfc0501m000</span></p>
@@ -2709,13 +2887,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-report-completed" name="notes-path" data-notes-path-tile="report-completed">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Report Operations</span></span>
             <span class="notes-path-does">issue the material and report the work done</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 2 phases · 16 steps · 9 screens · <span class="rux--type-code-01">tisfc0130m000</span></p>
@@ -2789,13 +2972,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-cancel-production" name="notes-path" data-notes-path-tile="cancel-production">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Cancel Production Orders</span></span>
             <span class="notes-path-does">cancel production orders</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tisfc0202m000</span></p>
@@ -2804,13 +2992,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-close-production" name="notes-path" data-notes-path-tile="close-production">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Close Production Orders</span></span>
             <span class="notes-path-does">close a finished production order</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">ticst0201m000</span></p>
@@ -2819,13 +3012,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-backflush" name="notes-path" data-notes-path-tile="backflush">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Backflush Materials and Hours</span></span>
             <span class="notes-path-does">backflush materials and hours</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tisfc0220m000</span></p>
@@ -2834,13 +3032,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-subcontract" name="notes-path" data-notes-path-tile="subcontract">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Subcontract Operations</span></span>
             <span class="notes-path-does">subcontract an operation</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tisfc2210m000</span></p>
@@ -2849,6 +3052,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
         </section>
@@ -2858,7 +3066,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">10</span><span class="notes-path-name">Release Sales Order Lines to Warehousing</span></span>
             <span class="notes-path-does">hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 8 steps · 3 screens · <span class="rux--type-code-01">tdsls4501m140</span></p>
@@ -2910,13 +3118,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-11" data-notes-path-go="11">Next: 11 · Warehousing Order</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--check" id="tile-release-block" name="notes-path" data-notes-path-tile="release-block">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Blocked release</span></span>
             <span class="notes-path-does">stop a sales order line from releasing</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2925,13 +3138,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--step" id="tile-11" name="notes-path" data-notes-path-tile="11">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">11</span><span class="notes-path-name">Warehousing Order</span></span>
             <span class="notes-path-does">advise the outbound line, so there is stock to pick</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 2 screens · <span class="rux--type-code-01">whinh2100m100</span></p>
@@ -2981,13 +3199,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-12" data-notes-path-go="12">Next: 12 · Picking List</a><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-short-advice" data-notes-path-go="short-advice">If stock is short: Stock short at advice</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--check" id="tile-short-advice" name="notes-path" data-notes-path-tile="short-advice">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Stock short at advice</span></span>
             <span class="notes-path-does">decide whether outbound advice is generated when stock is short. Not documented for this release.</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -2997,13 +3220,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-advice-variants" name="notes-path" data-notes-path-tile="advice-variants">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Undo or standalone advice</span></span>
             <span class="notes-path-does">undo generated advice, or advise one outbound line on its own</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -3012,13 +3240,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--step" id="tile-12" name="notes-path" data-notes-path-tile="12">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">12</span><span class="notes-path-name">Picking List</span></span>
             <span class="notes-path-does">confirm the advised quantity as picked. The line reaches Staged and a shipment is created</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 6 steps · 1 screen · <span class="rux--type-code-01">whinh4525m100</span></p>
@@ -3068,13 +3301,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-13" data-notes-path-go="13">Next: 13 · Shipment</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--result" id="tile-13" name="notes-path" data-notes-path-tile="13">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-n">13</span><span class="notes-path-name">Shipment</span></span>
             <span class="notes-path-does">freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 1 phase · 5 steps · 3 screens · <span class="rux--type-code-01">whinh4630m000</span></p>
@@ -3123,13 +3361,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-ship-short" data-notes-path-go="ship-short">If ships less than picked: Shipped less than picked</a></div>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <div class="notes-path-side"><details class="notes-path-tile notes-path-tile--check" id="tile-ship-short" name="notes-path" data-notes-path-tile="ship-short">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Shipped less than picked</span></span>
             <span class="notes-path-does">ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release.</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -3139,13 +3382,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         <details class="notes-path-tile notes-path-tile--step" id="tile-cancel-shipment" name="notes-path" data-notes-path-tile="cancel-shipment">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Cancel Shipments</span></span>
             <span class="notes-path-does">cancel shipments</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh4230m500</span></p>
@@ -3154,6 +3402,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details></div>
         </section>
@@ -3166,7 +3419,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Business Partners</span></span>
             <span class="notes-path-does">hold a business partner and its roles</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tccom4500m000</span></p>
@@ -3175,13 +3428,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-planning-clusters" name="notes-path" data-notes-path-tile="planning-clusters">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Planning Clusters</span></span>
             <span class="notes-path-does">define planning clusters</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tcemm1135m000</span></p>
@@ -3190,13 +3448,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-calendars" name="notes-path" data-notes-path-tile="calendars">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Non-working Days</span></span>
             <span class="notes-path-does">set non-working days on a calendar</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tcccp0119m000</span></p>
@@ -3205,6 +3468,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3214,7 +3482,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Sales returns</span></span>
             <span class="notes-path-does">take goods back from a customer</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -3223,13 +3491,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-quotations" name="notes-path" data-notes-path-tile="quotations">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Quotes</span></span>
             <span class="notes-path-does">offer a quote before an order</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdsls8310m000</span></p>
@@ -3238,13 +3511,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-sales-contracts" name="notes-path" data-notes-path-tile="sales-contracts">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Sales contracts</span></span>
             <span class="notes-path-does">hold a sales contract</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdsls8330m000</span></p>
@@ -3253,13 +3531,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-project-pegging" name="notes-path" data-notes-path-tile="project-pegging">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Contract deliverables</span></span>
             <span class="notes-path-does">demand pegged to a project, recognised by planning only once active</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -3268,6 +3551,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3277,7 +3565,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Purchase contracts</span></span>
             <span class="notes-path-does">hold a purchase contract</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdpur8330m000</span></p>
@@ -3286,13 +3574,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-approved-suppliers" name="notes-path" data-notes-path-tile="approved-suppliers">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Approved Supplier List</span></span>
             <span class="notes-path-does">list the approved suppliers of an item</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tdipu0110m200</span></p>
@@ -3301,13 +3594,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-supplier-returns" name="notes-path" data-notes-path-tile="supplier-returns">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Return to supplier</span></span>
             <span class="notes-path-does">send received goods back to a supplier</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure</p>
@@ -3316,6 +3614,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3325,7 +3628,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Generate Demand and Inventory Plan</span></span>
             <span class="notes-path-does">generate a demand and inventory plan</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cpdsp1210m000</span></p>
@@ -3334,13 +3637,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-capacity" name="notes-path" data-notes-path-tile="capacity">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Resource Capacity</span></span>
             <span class="notes-path-does">set the capacity of a resource</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">cprpd2602m000</span></p>
@@ -3349,6 +3657,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3358,7 +3671,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Production Schedules</span></span>
             <span class="notes-path-does">make items on repetitive production schedules</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">tirpt4101m000</span></p>
@@ -3367,6 +3680,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3376,7 +3694,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Warehouse transfer</span></span>
             <span class="notes-path-does">move stock from one warehouse to another</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">Not verified · 7 phases · 33 steps · 8 screens · <span class="rux--type-code-01">whinh2100m000</span></p>
@@ -3552,13 +3870,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-cycle-count" name="notes-path" data-notes-path-tile="cycle-count">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Cycle Counting Orders</span></span>
             <span class="notes-path-does">count stock and settle the difference</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh5100m000</span></p>
@@ -3567,13 +3890,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-adjustment" name="notes-path" data-notes-path-tile="adjustment">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Adjustment Orders</span></span>
             <span class="notes-path-does">adjust stock with an adjustment order</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh5120m000</span></p>
@@ -3582,13 +3910,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-inventory-blocking" name="notes-path" data-notes-path-tile="inventory-blocking">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Inventory Blocking by Zone/Location</span></span>
             <span class="notes-path-does">block inventory by zone or location</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whwmd6110m000</span></p>
@@ -3597,13 +3930,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-quarantine" name="notes-path" data-notes-path-tile="quarantine">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Quarantine Inventory</span></span>
             <span class="notes-path-does">hold inventory in quarantine</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whwmd2672m100</span></p>
@@ -3612,13 +3950,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-handling-units" name="notes-path" data-notes-path-tile="handling-units">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Handling Units</span></span>
             <span class="notes-path-does">keep stock in handling units</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whwmd5130m000</span></p>
@@ -3627,13 +3970,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-lot-tracing" name="notes-path" data-notes-path-tile="lot-tracing">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Item - Lot</span></span>
             <span class="notes-path-does">look up the lots of an item</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whltc1100m000</span></p>
@@ -3642,13 +3990,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-kanban" name="notes-path" data-notes-path-tile="kanban">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Generate Orders (Kanban)</span></span>
             <span class="notes-path-does">generate replenishment orders from kanban</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh2200m000</span></p>
@@ -3657,13 +4010,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-assembly-orders" name="notes-path" data-notes-path-tile="assembly-orders">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Assembly Orders</span></span>
             <span class="notes-path-does">assemble items on an assembly order</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whinh2101m000</span></p>
@@ -3672,13 +4030,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-warehouse-setup" name="notes-path" data-notes-path-tile="warehouse-setup">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Warehouses</span></span>
             <span class="notes-path-does">define a warehouse</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">whwmd2500m000</span></p>
@@ -3687,6 +4050,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3696,7 +4064,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Order Inspections</span></span>
             <span class="notes-path-does">inspect goods against an order</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">qmptc1620m100</span></p>
@@ -3705,13 +4073,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
           <details class="notes-path-tile notes-path-tile--step" id="tile-non-conformance" name="notes-path" data-notes-path-tile="non-conformance">
           <summary class="notes-path-summary">
             <span class="notes-path-head"><span class="notes-path-name">Non-Conformance Reports</span></span>
             <span class="notes-path-does">report a non-conformance</span>
-            
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
           </summary>
           <div class="notes-path-card rux--layer-two">
             <p class="notes-path-meta">No procedure · <span class="rux--type-code-01">qmncm1600m000</span></p>
@@ -3720,6 +4093,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <ol class="rux--list--ordered"><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
             <p class="rux--type-body-01">No procedure yet.</p>
             
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
           </div>
         </details>
         </section>
@@ -3733,7 +4111,18 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <div class="rux--text-area__wrapper">
               <textarea id="notes-path-note" class="rux--text-area" rows="6" disabled data-notes-path-note></textarea>
             </div>
-            <div class="rux--form__helper-text">Saved in this browser for now. Screenshots and documents come next.</div>
+            <div class="rux--form__helper-text" data-notes-path-note-help>Saved in this browser.</div>
+          </div>
+          <div class="notes-path-files" data-notes-owner hidden>
+            <h3 class="rux--type-productive-heading-02">Files</h3>
+            <ul class="notes-path-file-list" data-notes-path-files></ul>
+            <div class="notes-path-row">
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-path-add="screenshot" disabled>Add screenshot</button>
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-path-add="document" disabled>Add document</button>
+            </div>
+            <input type="file" hidden data-notes-path-file>
+            <div><button type="button" class="rux--btn rux--btn--primary rux--btn--sm" data-notes-path-send disabled>Send for review</button></div>
+            <p class="rux--type-body-01" data-notes-path-tools-status aria-live="polite"></p>
           </div>
         </aside>
       </div>
@@ -3762,6 +4151,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 <script src="/design/js/profile.js"></script>
 <script src="js/path.js"></script>
 <script src="js/tile-walk.js"></script>
+<script src="js/tile-owner.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>

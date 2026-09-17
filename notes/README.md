@@ -29,10 +29,9 @@ A search box above the path filters the tiles, and `pages/quests.html` lists
 every quest for the owner, filled by `js/quests.js`.
 
 **For the owner, signed in,** `js/online.js` shows what every page carries
-hidden: a review box at its foot, which records Approve or Request changes,
-and a link to the walk page, `pages/walk.html`, where `js/walk.js` saves a
-walk and its screenshots as it goes. It also keeps an experiment's worksheet in
-the account, so another device opens the same answers. All of it is kept in
+hidden: a review box at its foot, which records Approve or Request changes.
+It also keeps an experiment's worksheet in the account, so another device opens
+the same answers. `pages/walk.html` only points to Walk this on the path. All of it is kept in
 `platform.notes_*` and a private bucket that only the owner can reach, and
 atlas's `tools/pull.py` brings it into atlas.
 
@@ -69,7 +68,6 @@ From the repository root:
 
 ```sh
 npm run serve -- --private   # atlas's working tree, internal tier, into build/ on :8644; never published
-                             # the walk form at /walk/ saves into atlas through tools/serve-walk.mjs on :8645
 npm run export               # sync-export.sh from ../../atlas, then build and check
 npm run serve                # the whole site on :8640, this app at /notes/
 npm run check                # every gate here, plus the rest of the site

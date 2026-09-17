@@ -12,9 +12,8 @@ nothing else. Logging in is the site's own login page.
 
 | File | What it does |
 | :--- | :--- |
-| `notes/js/online.js` | Loaded on every page after the site's `account.js`. For the owner it reveals what `build.mjs` wrote hidden — the review box, and the link to walk a procedure |
+| `notes/js/online.js` | Loaded on every page after the site's `account.js`. For the owner it reveals what `build.mjs` wrote hidden — the review box |
 | `notes/js/experiment.js` | The worksheet: answers typed into the spaces the data marks, boxes ticked, a notepad, a revealable answer key, and an export |
-| `notes/js/walk.js` | One run of a procedure, a step at a time, from any device signed in as the owner |
 | `notes/js/tile-owner.js` | On the path: each tile's quests, the notepad kept per tile in the account, a tile's screenshots and documents, and Send for review |
 | `notes/js/quests.js` | The Quests page: every quest in the owner's quest table, in the path's order, each linking to its tile |
 | `notes/js/tile-walk.js` | Walk this, inside an open tile on the path: what happened and screenshots beside each of that tile's steps, saved as a walk of its walkthrough |

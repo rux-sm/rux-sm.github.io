@@ -52,17 +52,6 @@
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
 .notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
-/* THE WALK PAGE. The form keeps a reading width, and the step comes before the
-   progress list so a phone shows the step first; from lg the list moves to the
-   step's left. */
-.notes-walk-form { max-inline-size: 40rem; }
-.notes-walk-run { display: grid; gap: 2rem; grid-template-columns: minmax(0, 40rem); }
-@media (min-width: 66rem) {
-  .notes-walk-run { grid-template-columns: 16rem minmax(0, 40rem); }
-  .notes-walk-progress { grid-column: 1; grid-row: 1; }
-  .notes-walk-step { grid-column: 2; grid-row: 1; }
-}
-
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
@@ -1214,7 +1203,6 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--magenta" title="12 open issues recorded against this document"><span class="rux--tag__label">12 open</span></span>
           </div>
           <p class="rux--type-body-02">Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing</p>
-          <p data-notes-owner hidden><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="walk.html#demand-to-shipment-via-planning">Walk this walkthrough</a></p>
         </div>
 
       <p class="notes-prose-measure"><strong>Objective:</strong> run the bamboo family down the long route of <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. <strong>Spine walkthrough</strong> — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it.</p>

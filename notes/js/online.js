@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Loaded on every Notes page after the site's account.js. For the account
    with the owner switch it shows what build.mjs wrote hidden: the review box
-   at the foot of a page, the walk links, and on an experiment it keeps the
+   at the foot of a page, and on an experiment it keeps the
    worksheet in the owner's account as well as in this browser.
 
    EVERYTHING GOES THROUGH THE SITE'S OWN LOG-IN. The client is the one

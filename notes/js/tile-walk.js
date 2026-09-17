@@ -4,11 +4,11 @@
    For the owner, signed in. An open tile's procedure gets a Walk this button;
    starting or continuing turns each step row of that tile into a place to
    write what happened and attach screenshots. Everything is saved as it goes
-   to the same tables and bucket the walk page uses, so atlas's
+   to the owner's walk tables and bucket, so atlas's
    tools/pull.py brings it home unchanged: a walk from a tile is a walk of
    that walkthrough with only this tile's steps filled in.
 
-   THE RULES ARE THE WALK PAGE'S. A walk pins the commit this build came from,
+   THE RULES ARE ATLAS'S. A walk pins the commit this build came from,
    is written on the day it is walked, and continues only on the build it
    started on (notes/docs/owner-tools.md).
 

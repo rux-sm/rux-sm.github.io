@@ -105,8 +105,8 @@ arriving, never knowledge verified.
 
 - **Walking happens in the tile.** An open tile has Walk this, which records
   what happened at each step and its screenshots into the same walk tables, so
-  the pull is unchanged. The walk page retires once Walk this has carried a
-  real walk into atlas.
+  the pull is unchanged. The walk page's address is a landing that points to
+  it, and the private preview has no walk form.
 
 ### What a tile knows
 
@@ -216,8 +216,7 @@ arriving, never knowledge verified.
 
 - **The session map retires** once its four silent-failure notes are confirmed.
 
-- **The walk page and the private-preview walk form retire** when Walk this
-  replaces them. **Walkthrough and experiment pages are out of the nav** and
+- **Walkthrough and experiment pages are out of the nav** and
   reached from their tiles; each becomes a landing once its tiles hold
   everything it shows.
 
@@ -268,5 +267,4 @@ Neither holds up building; each gates only the one thing it names.
 - [ ] Read the path on desktop and the phone, with the keyboard and back-button
       checks above, and write down what rux could not find unprompted.
 - [ ] Turn walkthrough, experiment and meeting pages into landings, and retire
-      the session map, the walk page and the walk form when their conditions
-      above are met.
+      the session map when its condition above is met.

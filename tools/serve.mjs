@@ -13,9 +13,7 @@
 //                                 its port
 //   npm run serve -- --private    render Atlas's internal tier into
 //                                 notes/build/ (git-ignored) and serve
-//                                 it on :8644, beside the public one,
-//                                 with the walk form at /walk/ saving
-//                                 through notes/tools/serve-walk.mjs on :8645
+//                                 it on :8644, beside the public one
 //
 import { spawnSync, spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -38,7 +36,6 @@ if (process.argv.includes('--private')) {
   const site = join(notes, 'build', 'internal', 'site');
   console.log(`  private preview: http://localhost:${env.PORT ?? 8644}/  (never published)`);
   spawn(process.execPath, [SERVER], { cwd: site, stdio: 'inherit', env: { ...env, PORT: env.PORT ?? '8644' } });
-  spawn(process.execPath, [join(notes, 'tools', 'serve-walk.mjs')], { stdio: 'inherit', env: { ...env, ATLAS: atlas, PREVIEW_PORT: env.PORT ?? '8644' } });
 } else if (process.argv.includes('--cloud')) {
   // Always 8641, whatever PORT says: the pages decide by this port alone.
   console.log('  cloud preview: http://localhost:8641/  (live log-in and data)');

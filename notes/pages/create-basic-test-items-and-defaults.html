@@ -52,17 +52,6 @@
    ignores non-rux-- names, so an invented `rux--` one would be unpoliced. */
 .notes-tag-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 
-/* THE WALK PAGE. The form keeps a reading width, and the step comes before the
-   progress list so a phone shows the step first; from lg the list moves to the
-   step's left. */
-.notes-walk-form { max-inline-size: 40rem; }
-.notes-walk-run { display: grid; gap: 2rem; grid-template-columns: minmax(0, 40rem); }
-@media (min-width: 66rem) {
-  .notes-walk-run { grid-template-columns: 16rem minmax(0, 40rem); }
-  .notes-walk-progress { grid-column: 1; grid-row: 1; }
-  .notes-walk-step { grid-column: 2; grid-row: 1; }
-}
-
 /* EQUAL-HEIGHT CARDS WITH THEIR ACTIONS ON ONE LINE, and it takes both rules.
    Making the grid cell a flex parent is NOT enough on its own -- measured on
    the page: `.rux--card` computes `display: block`, so stretching the card
@@ -1214,7 +1203,6 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--magenta" title="8 open issues recorded against this document"><span class="rux--tag__label">8 open</span></span>
           </div>
           <p class="rux--type-body-02">Common · Procurement · Manufacturing · Warehousing</p>
-          <p data-notes-owner hidden><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="walk.html#create-basic-test-items-and-defaults">Walk this walkthrough</a></p>
         </div>
 
       <p class="notes-prose-measure"><strong>Objective:</strong> create a small, isolated item family that proves two supply patterns — purchased components and a Job Shop finished product — and carry it through the engineering, costing, and stock data a quantity-one production order needs, so the finished item can be produced and received into the finished-goods warehouse.</p>

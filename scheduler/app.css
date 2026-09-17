@@ -441,9 +441,20 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__row > :first-child { flex: 0 1 auto; min-inline-size: 0; }
 .scheduler-bar__dest { font-weight: 600; }
 .scheduler-bar__ref, .scheduler-bar__time, .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
+/* One of the two time forms shows; data.js picks the short one on a bar too
+   narrow for the long. */
+.scheduler-bar__time > .scheduler-bar__time-short,
+.scheduler-bar__time--short > .scheduler-bar__time-long { display: none; }
+/* Proportional digits, so the narrowest bar has room for the widest times. */
+.scheduler-bar__time--short > .scheduler-bar__time-short { display: inline; font-variant-numeric: normal; }
 .scheduler-bar__ref, .scheduler-bar__phone { flex: none; }
-/* The phone sits straight after the name rather than at the bar's far end. */
-.scheduler-bar__contact { justify-content: flex-start; }
+/* The phone sits straight after the name rather than at the bar's far end.
+   The row wraps, and only its first line shows, so a phone with no room beside
+   the name drops to the hidden second line; a name too long for the row alone
+   still gives way. */
+.scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
+/* The return-after-midnight mark, small and raised so the row keeps its height. */
+.scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 .scheduler-bar__ref { opacity: .75; }
 /* A bar of the trip in the editor that is not the selected one: its return
    leg, or the same leg on another bus. It is locked -- it does not drag, and

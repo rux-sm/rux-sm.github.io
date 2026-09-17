@@ -518,15 +518,27 @@
     for (const p of parts) if (p != null) r.appendChild(p);
     bar.appendChild(r);
   };
-  // Twelve-hour and compact, "7:50a", so two times and a dash fit a day column.
-  // `|| 12` turns hour 0 and hour 12 into 12.
-  const hhmm = t => {
+  // Twelve-hour, "7:50am", or "7:50a" with `short`. `|| 12` turns hour 0 and
+  // hour 12 into 12.
+  const hhmm = (t, short) => {
     if (!t) return '';
     const [h, m] = String(t).split(':');
     const hr = Number(h);
     if (!Number.isFinite(hr) || m === undefined) return String(t).slice(0, 5);
-    return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
+    return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}${short ? '' : 'm'}`;
   };
+
+  /* A bar's times row holds a long form, "2:10pm – 12:30am", and a short one,
+     "2:10p–12:30a", which fits the narrowest day column. The short one shows
+     only on a bar too narrow for the long, measured, because the width a time
+     needs depends on its digits. Rows are all reset, then all read, then all
+     set, so the board lays out twice rather than once per bar. */
+  function fitTimes() {
+    const rows = [...gridEl.querySelectorAll('.scheduler-bar__time')];
+    for (const r of rows) r.classList.remove('scheduler-bar__time--short');
+    const narrow = rows.filter(r => r.clientWidth && r.firstElementChild.scrollWidth > r.clientWidth);
+    for (const r of narrow) r.classList.add('scheduler-bar__time--short');
+  }
 
   // The trip's documents labelled Itinerary, newest first. The first is the one
   // rux-ui picks: a re-uploaded itinerary replaces the one before.
@@ -725,8 +737,8 @@
     addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null, warn('dest'));
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
-    // The booking contact as the trip records it. The phone keeps its width and
-    // the name gives way.
+    // The booking contact as the trip records it. When both do not fit, the
+    // phone drops out and the name stays; app.css does that.
     const contact = tripContact(trip, 0);
     const who = el('span', null, contact?.name || '');
     if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
@@ -734,13 +746,25 @@
 
     // Departure and return on one line, an en dash between them. The spot time
     // is not drawn, because two times already fill the row; the editor shows it.
-    const dep = hhmm(leg.depart), back = hhmm(leg.back);
+    // A one-day leg whose return is earlier than its departure comes back after
+    // midnight, so the return is marked +1.
     const legDays = daysBetween(parseISO(leg.from), parseISO(leg.to)) + 1;
-    const when = dep && back ? `${dep} \u2013 ${back}`
-      : dep ? `Dep ${dep}`
-      : back ? `Ret ${back}`
-      : (legDays > 1 ? `${legDays} days` : '');
-    addRow(bar, 'scheduler-bar__time', el('span', null, when));
+    const nextDay = leg.depart && leg.back && legDays === 1 && String(leg.back).slice(0, 5) < String(leg.depart).slice(0, 5);
+    const times = short => {
+      const dep = hhmm(leg.depart, short), back = hhmm(leg.back, short);
+      const span = el('span', `scheduler-bar__time-${short ? 'short' : 'long'}`, dep && back ? (short ? `${dep}\u2013${back}` : `${dep} \u2013 ${back}`)
+        : dep ? `Dep ${dep}`
+        : back ? `Ret ${back}`
+        : (legDays > 1 ? `${legDays} days` : ''));
+      if (nextDay) {
+        const mark = el('sup', 'scheduler-bar__next-day', '+1');
+        mark.title = 'Returns the next day';
+        span.appendChild(mark);
+      }
+      return span;
+    };
+    const when = times(false), whenShort = times(true);
+    addRow(bar, 'scheduler-bar__time', when, whenShort);
 
     // The trip's note on one line, cut with an ellipsis; the whole of it on hover.
     const note = el('span', null, trip.notes || '');
@@ -974,7 +998,7 @@
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
-    window.Rux?.schedule?.fit?.();
+    window.Rux?.schedule?.fit?.();    fitTimes();
   }
 
   /* ── Moving a trip to another bus ──
@@ -2348,8 +2372,9 @@
     const zone = el('div', 'rux--file');
     zone.append(drop, inputLabel, input);
     const container = el('div', 'rux--file-container rux--file-container--drop');
-    item.append(el('p', 'rux--file--label', 'File'),
-      el('p', 'rux--label-description', 'PDF only. It is added to the trip at once, without Save.'),
+    /* No visible title: the section heading says Add a file, and the input
+       keeps its hidden PDF file label. */
+    item.append(el('p', 'rux--label-description', 'PDF only. It is added to the trip at once, without Save.'),
       zone, container);
 
     const busy = on => {
@@ -5189,7 +5214,9 @@
 
   // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); })).observe(gridEl);
+  // A web font that arrives after the first render changes every time's width.
+  document.fonts?.ready.then(fitTimes);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. Close trip is a tab on its bar and needs nothing. */

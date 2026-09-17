@@ -1172,54 +1172,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-
-      <!-- ORDER IS `order` FROM THE DATA, NOT ALPHABETICAL. Contract 2 derives
-           it and it sorts as a curriculum would -- build the family, plan, buy,
-           make, move, ship, then the end-to-end run. Atlas got there by reading
-           Prerequisite callouts as dependency edges; on Downstream rows alone
-           the walkthrough that builds the test data came fourth. -->
       <li class="rux--side-nav__item">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Walkthroughs</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="check-item-inventory.html"><span class="rux--side-nav__link-text">Check an item&#39;s inventory</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="ship-from-stock.html"><span class="rux--side-nav__link-text">Ship from stock</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
-        </ul>
+        <a class="rux--side-nav__link" href="../"><span class="rux--side-nav__link-text">Path</span></a>
       </li>
-
-      <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
-           owner's log-in. The private preview has its own walk form instead. -->
-      <li class="rux--side-nav__item" data-notes-owner hidden>
-        <a class="rux--side-nav__link" href="walk.html"><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
-      </li>
-
-      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
-           get their own group because a learner opens one to predict, record
-           and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Experiments</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="enterprise-planning-foundations.html"><span class="rux--side-nav__link-text">Homework — learn Enterprise Planning as a consultant</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="production-and-planning.html"><span class="rux--side-nav__link-text">Homework — understand a production result</span></a></li>
-        </ul>
+        <a class="rux--side-nav__link" href="order-to-shipment-overview.html" aria-current="page"><span class="rux--side-nav__link-text">Map</span></a>
       </li>
-
-      <!-- THE MEETING CONTENT GROUP lists summaries rather than full reviews.
-           The agreement is walkthroughs and meeting summaries; the six full
-           reviews render and are reached from their summary rather than listed
-           beside it, because putting twelve documents under one heading
-           presents two categories as one. -->
       <li class="rux--side-nav__item">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <span class="rux--side-nav__submenu-title">Meeting summaries</span>
@@ -1236,24 +1194,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="sales-order-warehouse-allocation-training_2026-08-04_summary.html"><span class="rux--side-nav__link-text">Sales Order and Warehouse Allocation Training — Summary</span></a></li>
         </ul>
       </li>
-
-      <li class="rux--side-nav__item rux--side-nav__item--active">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="true">
-          <span class="rux--side-nav__submenu-title">Reference</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu">
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="order-to-shipment-overview.html" aria-current="page"><span class="rux--side-nav__link-text">Demand to shipment</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="demand-to-shipment-session-map.html"><span class="rux--side-nav__link-text">Demand to shipment — session map</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="tasks.html"><span class="rux--side-nav__link-text">Tasks</span></a></li>
-        </ul>
-      </li>
-
     </ul>
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="bb58ffcec2d282c3b456af73e05e4eb772a22b96">
+<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="0c59bcd1b47e285bce9ad30634562a40004e3f15">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1833,6 +1778,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — define what a made item is built from and how, both Approved</li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="create-basic-test-items-and-defaults.html">Create test items</a> phases 6, 7</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="production-and-planning.html">Production and planning</a> section 2</li>
         </ul>
           <p class="notes-prose-measure"><strong>cluster · Planning cluster row on the item</strong> · stage 1 · outcome</p>
           <ul class="rux--list--unordered">
@@ -1850,6 +1796,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>2 · Does on-hand cover it?</strong> · stage 2 · decision</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> section 7</li>
         </ul>
           <p class="notes-prose-measure"><strong>allocated · Stock promised to other orders</strong> · stage 2 · gate</p>
           <ul class="rux--list--unordered">
@@ -1867,6 +1814,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide silently whether planning can see the item and every component beneath it</li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phase 0</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> section 3</li>
         </ul>
           <p class="notes-prose-measure"><strong>4 · Inside the order horizon</strong> · stage 3 · gate</p>
           <ul class="rux--list--unordered">
@@ -1879,6 +1827,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — show what planning holds for one item: demand and forecast against scheduled receipts and planned supply. The two gates beside it are conditions LN evaluates and mostly never announces; this is the screen where a reader sees what they decided</li>
           <li class="rux--list__item"><strong>Do</strong> - read the item&#39;s plan before the run and again after it, and compare</li>
           <li class="rux--list__item"><strong>Leaves</strong> — nothing. It is a detour for information and the walk is the same whether or not you take it</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> sections 1, 2</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">5 · Generate Order Planning (Item)</span> <span class="notes-t-exact">cprrp1220m000</span> · stage 3 · step</p>
           <ul class="rux--list--unordered">
@@ -1886,6 +1835,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — net demand against stock and explode the bill of material</li>
           <li class="rux--list__item"><strong>Do</strong> - run it with <em>Include Child Items</em></li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phases 3, 4, 5</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> sections 4, 5</li>
         </ul>
           <p class="notes-prose-measure"><strong>planned-prod · Planned production order</strong> · stage 3 · planned</p>
           <ul class="rux--list--unordered">
@@ -1901,6 +1851,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Does</strong> — translate a proposal into a real order in its owning module. <strong>Planning ends here</strong></li>
           <li class="rux--list__item"><strong>Do</strong> - confirm the planned orders first, then run it once per supply source</li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 3</li>
+          <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> section 6; <a class="rux--link" href="production-and-planning.html">Production and planning</a> section 6</li>
         </ul>
           <h3>4.4 Procurement</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">7 · Purchase Order</span> <span class="notes-t-exact">tdpur4100m900</span> · stage 5 · real</p>
@@ -2064,7 +2015,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas bb58ffc · contract 11</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 0c59bcd · contract 12</p>
       </div>
     </div>
   </div>

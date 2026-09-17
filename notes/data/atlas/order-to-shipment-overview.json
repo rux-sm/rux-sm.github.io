@@ -1,5 +1,5 @@
 {
-  "contract": 11,
+  "contract": 12,
   "tier": "export",
   "kind": "reference",
   "id": "order-to-shipment-overview",
@@ -823,6 +823,28 @@
                 }
               ],
               "text": "Opens — Create test items phases 6, 7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Production and planning",
+                  "href": "production-and-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 2"
+                }
+              ],
+              "text": "Check — Production and planning section 2"
             }
           ]
         },
@@ -1004,6 +1026,28 @@
                 }
               ],
               "text": "Does — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Planning foundations",
+                  "href": "enterprise-planning-foundations.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 7"
+                }
+              ],
+              "text": "Check — Planning foundations section 7"
             }
           ]
         },
@@ -1235,6 +1279,28 @@
                 }
               ],
               "text": "Opens — Run order planning phase 0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Planning foundations",
+                  "href": "enterprise-planning-foundations.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 3"
+                }
+              ],
+              "text": "Check — Planning foundations section 3"
             }
           ]
         },
@@ -1367,6 +1433,28 @@
                 }
               ],
               "text": "Leaves — nothing. It is a detour for information and the walk is the same whether or not you take it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Planning foundations",
+                  "href": "enterprise-planning-foundations.md"
+                },
+                {
+                  "t": "text",
+                  "v": " sections 1, 2"
+                }
+              ],
+              "text": "Check — Planning foundations sections 1, 2"
             }
           ]
         },
@@ -1457,6 +1545,28 @@
                 }
               ],
               "text": "Opens — Run order planning phases 3, 4, 5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Planning foundations",
+                  "href": "enterprise-planning-foundations.md"
+                },
+                {
+                  "t": "text",
+                  "v": " sections 4, 5"
+                }
+              ],
+              "text": "Check — Planning foundations sections 4, 5"
             }
           ]
         },
@@ -1613,6 +1723,37 @@
                 }
               ],
               "text": "Opens — Plan to shipment phase 3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Planning foundations",
+                  "href": "enterprise-planning-foundations.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 6; "
+                },
+                {
+                  "t": "link",
+                  "v": "Production and planning",
+                  "href": "production-and-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 6"
+                }
+              ],
+              "text": "Check — Planning foundations section 6; Production and planning section 6"
             }
           ]
         },
@@ -3879,6 +4020,14 @@
               7
             ]
           }
+        ],
+        "checks": [
+          {
+            "experiment": "production-and-planning",
+            "sections": [
+              2
+            ]
+          }
         ]
       },
       {
@@ -3975,7 +4124,15 @@
             }
           ],
           "text": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
-        }
+        },
+        "checks": [
+          {
+            "experiment": "enterprise-planning-foundations",
+            "sections": [
+              7
+            ]
+          }
+        ]
       },
       {
         "id": "allocated",
@@ -4137,6 +4294,14 @@
               0
             ]
           }
+        ],
+        "checks": [
+          {
+            "experiment": "enterprise-planning-foundations",
+            "sections": [
+              3
+            ]
+          }
         ]
       },
       {
@@ -4209,6 +4374,15 @@
           ],
           "text": "nothing. It is a detour for information and the walk is the same whether or not you take it"
         },
+        "checks": [
+          {
+            "experiment": "enterprise-planning-foundations",
+            "sections": [
+              1,
+              2
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -4269,6 +4443,15 @@
             "walkthrough": "run-order-planning-for-one-item",
             "phases": [
               3,
+              4,
+              5
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "experiment": "enterprise-planning-foundations",
+            "sections": [
               4,
               5
             ]
@@ -4366,6 +4549,20 @@
             "walkthrough": "demand-to-shipment-via-planning",
             "phases": [
               3
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "experiment": "enterprise-planning-foundations",
+            "sections": [
+              6
+            ]
+          },
+          {
+            "experiment": "production-and-planning",
+            "sections": [
+              6
             ]
           }
         ],

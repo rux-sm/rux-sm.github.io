@@ -47,8 +47,9 @@ arriving, never knowledge verified.
   cutting across tiles arrives through search or the glossary instead, and opens
   the screen or concept that owns it.
 
-- **Two things in the side nav: Path and Concepts**, and one search box in the
-  header. The glossary is part of Concepts: its terms are generated from the
+- **The side nav is Path, Map and Concepts**, and one search box sits in the
+  header. Meeting summaries stay listed until their pages become the sources a
+  page cites. The glossary is part of Concepts: its terms are generated from the
   concepts' own frontmatter, each with exactly one owner.
 
 - **Walkthroughs are the steps a tile opens, and concepts are the detail.** A
@@ -96,9 +97,10 @@ arriving, never knowledge verified.
   And a **single way on**. Answering opens the next tile and greys what it
   skips.
 
-- **Homework is not a destination.** Its sittings attach to the tiles they
-  test, and the check arrives at the end of working through a tile; a sitting
-  that spans tiles sits on the tile where it starts.
+- **Homework is not a destination.** A tile names the sittings that test it
+  with atlas's Check field, and they close the open tile; a sitting that spans
+  tiles sits on the tile where it starts. Preparation and report-back sections
+  stay on the experiment page.
 
 - **Walking happens in the tile.** An open tile has Walk this, which records
   what happened at each step and its screenshots into the same walk tables, so
@@ -256,14 +258,11 @@ Neither holds up building; each gates only the one thing it names.
 - [ ] Tag every quest with its kind, starting with node 5's.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
-- [ ] Attach the homework sittings to the tiles they test, starting with
-      sitting 4 on node 5.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows
       their terms.
 - [ ] Simplify `run-order-planning-for-one-item` before it is walked: keep its
       essential warnings with the steps and move only optional detail out.
-- [ ] The side nav cut to Path and Concepts, search, and the owner's queue
-      page.
+- [ ] Search, and the owner's queue page.
 - [ ] Take one quest from a tile through a walk, the pull, the intake and a
       verified correction, and time it against what the same correction costs
       today.

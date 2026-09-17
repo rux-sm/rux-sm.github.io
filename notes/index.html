@@ -982,6 +982,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
 .notes-path-questbox { display: grid; gap: .5rem; }
+.notes-path-checks { display: grid; gap: .375rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-files { display: grid; gap: .75rem; }
 .notes-path-file-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-walk-form { display: grid; gap: 1rem; max-inline-size: 20rem; }
@@ -1221,54 +1222,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-
-      <!-- ORDER IS `order` FROM THE DATA, NOT ALPHABETICAL. Contract 2 derives
-           it and it sorts as a curriculum would -- build the family, plan, buy,
-           make, move, ship, then the end-to-end run. Atlas got there by reading
-           Prerequisite callouts as dependency edges; on Downstream rows alone
-           the walkthrough that builds the test data came fourth. -->
       <li class="rux--side-nav__item">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Walkthroughs</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/check-item-inventory.html"><span class="rux--side-nav__link-text">Check an item&#39;s inventory</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/ship-from-stock.html"><span class="rux--side-nav__link-text">Ship from stock</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
-        </ul>
+        <a class="rux--side-nav__link" href="./" aria-current="page"><span class="rux--side-nav__link-text">Path</span></a>
       </li>
-
-      <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
-           owner's log-in. The private preview has its own walk form instead. -->
-      <li class="rux--side-nav__item" data-notes-owner hidden>
-        <a class="rux--side-nav__link" href="pages/walk.html"><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
-      </li>
-
-      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
-           get their own group because a learner opens one to predict, record
-           and explain, not to perform an SOP-like runbook. -->
       <li class="rux--side-nav__item">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Experiments</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/enterprise-planning-foundations.html"><span class="rux--side-nav__link-text">Homework — learn Enterprise Planning as a consultant</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/production-and-planning.html"><span class="rux--side-nav__link-text">Homework — understand a production result</span></a></li>
-        </ul>
+        <a class="rux--side-nav__link" href="pages/order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Map</span></a>
       </li>
-
-      <!-- THE MEETING CONTENT GROUP lists summaries rather than full reviews.
-           The agreement is walkthroughs and meeting summaries; the six full
-           reviews render and are reached from their summary rather than listed
-           beside it, because putting twelve documents under one heading
-           presents two categories as one. -->
       <li class="rux--side-nav__item">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <span class="rux--side-nav__submenu-title">Meeting summaries</span>
@@ -1285,24 +1244,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/sales-order-warehouse-allocation-training_2026-08-04_summary.html"><span class="rux--side-nav__link-text">Sales Order and Warehouse Allocation Training — Summary</span></a></li>
         </ul>
       </li>
-
-      <li class="rux--side-nav__item">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
-          <span class="rux--side-nav__submenu-title">Reference</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu" hidden>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Demand to shipment</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/demand-to-shipment-session-map.html"><span class="rux--side-nav__link-text">Demand to shipment — session map</span></a></li>
-          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="pages/tasks.html"><span class="rux--side-nav__link-text">Tasks</span></a></li>
-        </ul>
-      </li>
-
     </ul>
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-commit="bb58ffcec2d282c3b456af73e05e4eb772a22b96">
+<main id="main-content" class="rux--content" data-notes-commit="0c59bcd1b47e285bce9ad30634562a40004e3f15">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1542,6 +1488,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">Needed by <a class="rux--link" href="#tile-5" data-notes-path-go="5">5 · Generate Order Planning (Item)</a>.</p>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/production-and-planning.html#a-2">Homework 1 — map the production foundation</a> <span class="notes-path-meta">Homework — understand a production result</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -1824,6 +1772,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02"><strong>Does on-hand cover it?</strong></p>
             <div class="notes-path-row"><a data-notes-path-skip="3 4 5 planned-prod 6 7 8 9 stock short-release planned-purch" class="rux--btn rux--btn--secondary rux--btn--sm" href="#tile-10" data-notes-path-go="10">YES, and no planned order is generated → 10 · Release Sales Order Lines to Warehousing</a><a data-notes-path-skip="" class="rux--btn rux--btn--secondary rux--btn--sm" href="#tile-3" data-notes-path-go="3">NO → 3 · Planning data exists</a></div>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-7">Sitting 7 — which branch an order takes</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -1995,6 +1945,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-4" data-notes-path-go="4">Next: 4 · Inside the order horizon</a></div>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-3">Sitting 3 — find the effective master-data value</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -2152,6 +2104,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-planned-prod" data-notes-path-go="planned-prod">Next: Planned production order</a><a class="rux--btn rux--btn--primary rux--btn--sm" href="#tile-planned-purch" data-notes-path-go="planned-purch">Next: Planned purchase order</a></div>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-4">Sitting 4 — horizons, time fences, and run scope</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-5">Sitting 5 — order quantity laboratory</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -2173,6 +2127,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <p class="rux--type-body-01">No procedure yet.</p>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-1">Sitting 1 — map the planning landscape</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-2">Sitting 2 — trace demand before generating anything</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -2348,6 +2304,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <div class="notes-path-row"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-7" data-notes-path-go="7">If supply source Purchase: 7 · Purchase Order</a><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#tile-9" data-notes-path-go="9">If supply source Job Shop: 9 · Production Orders</a></div>
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/enterprise-planning-foundations.html#a-6">Sitting 6 — transfer, execution, and exception handling</a> <span class="notes-path-meta">Homework — learn Enterprise Planning as a consultant</span></li><li><a class="rux--link" href="pages/production-and-planning.html#a-6">Homework 5 — connect planning to production</a> <span class="notes-path-meta">Homework — understand a production result</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -2887,6 +2845,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/production-and-planning.html#a-3">Homework 2 — run one clean production order</a> <span class="notes-path-meta">Homework — understand a production result</span></li><li><a class="rux--link" href="pages/production-and-planning.html#a-5">Homework 4 — change one condition</a> <span class="notes-path-meta">Homework — understand a production result</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -2972,6 +2932,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </section>
             </div>
             
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks"><li><a class="rux--link" href="pages/production-and-planning.html#a-4">Homework 3 — explain the result</a> <span class="notes-path-meta">Homework — understand a production result</span></li></ul>
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -4128,7 +4090,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </div>
 
 
-<p class="rux--type-caption-01 notes-revision">Built from atlas bb58ffc · contract 11</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 0c59bcd · contract 12</p>
       </div>
     </div>
   </div>

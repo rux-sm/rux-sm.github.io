@@ -1,9 +1,9 @@
-commit   bb58ffcec2d282c3b456af73e05e4eb772a22b96
-date     2026-09-17T03:22:25Z
-subject  docs(maps): Keep a task's gap out of its summary
-contract 11 
+commit   0c59bcd1b47e285bce9ad30634562a40004e3f15
+date     2026-09-17T04:29:09Z
+subject  feat(maps): Name the homework that tests each tile
+contract 12 
 tier     export
-sha256   85c720482afd8953dd2b8317ffdce79d4ada57f4d62027d9e0d1766cf8bf8b33
+sha256   2bfa9739fbf48a0a2b71823a068e59dc798425eb321dab16ea064be00ab84e82
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

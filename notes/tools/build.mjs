@@ -699,115 +699,40 @@ function phase(p) {
 // pages carry this markup; hand-authoring meant eight copies with nothing
 // keeping them in step, and walkthroughs are expected to be added and removed often.
 function nav(site, activeId) {
+  // THE PATH IS WHERE EVERYTHING STARTS (docs/plans/notes-learning-tool.md), so
+  // the nav is the path, the map, and the concepts where the build has them.
+  // Walkthroughs and experiments are reached from the tiles that open them.
+  // Meeting summaries stay listed until their pages become the sources a
+  // page cites.
+  const up = activeId === null ? '' : '../';
+  const item = (href, label, current) => `
+      <li class="rux--side-nav__item">
+        <a class="rux--side-nav__link" href="${href}"${current ? ' aria-current="page"' : ''}><span class="rux--side-nav__link-text">${esc(label)}</span></a>
+      </li>`;
   const link = (d) => {
     const current = d.id === activeId ? ' aria-current="page"' : '';
     return `          <li class="rux--side-nav__menu-item"><a class="rux--side-nav__link" href="${
       activeId === null ? 'pages/' : ''}${d.id}.html"${current}><span class="rux--side-nav__link-text">${esc(d.title)}</span></a></li>`;
   };
-  const items = site.walkthroughs.map(link).join('\n');
-  const practice = site.experiments.map(link).join('\n');
-  // SUMMARIES ARE THE LISTED CATEGORY, reviews are reached from them. The
-  // agreement was walkthroughs and meeting summaries; the full reviews are
-  // deferred rather than refused, and listing twelve documents under one
-  // heading would present them as one category when they are two.
-  const meetings = site.summaries.map(link).join('\n');
-
-  const guidesOpen = site.walkthroughs.some(g => g.id === activeId);
-  const practiceOpen = site.experiments.some(e => e.id === activeId);
-  const meetingsOpen = [...site.reviews, ...site.summaries].some(d => d.id === activeId);
-  // CONCEPTS ARE NOT A PUBLISHED CATEGORY. atlas's concept-rules.md section 5
-  // gives them no tier, its emitter refuses them at export, and this group
-  // renders only when the data carries them -- which is the private build.
-  const concepts = (site.concepts ?? []).map(link).join('\n');
-  const conceptsOpen = (site.concepts ?? []).some(d => d.id === activeId);
-  const references = (site.references ?? []).map(link).join('\n');
-  const referencesOpen = (site.references ?? []).some(d => d.id === activeId);
-  const referencesGroup = references ? `
-      <li class="rux--side-nav__item${referencesOpen ? ' rux--side-nav__item--active' : ''}">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="${referencesOpen}">
-          <span class="rux--side-nav__submenu-title">Reference</span>
+  const group = (title, docs) => {
+    if (!docs.length) return '';
+    const open = docs.some(d => d.id === activeId);
+    return `
+      <li class="rux--side-nav__item${open ? ' rux--side-nav__item--active' : ''}">
+        <button class="rux--side-nav__submenu" type="button" aria-expanded="${open}">
+          <span class="rux--side-nav__submenu-title">${esc(title)}</span>
           <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
         </button>
-        <ul class="rux--side-nav__menu"${referencesOpen ? '' : ' hidden'}>
-${references}
+        <ul class="rux--side-nav__menu"${open ? '' : ' hidden'}>
+${docs.map(link).join('\n')}
         </ul>
-      </li>
-` : '';
-  const conceptsGroup = concepts ? `
-      <li class="rux--side-nav__item${conceptsOpen ? ' rux--side-nav__item--active' : ''}">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="${conceptsOpen}">
-          <span class="rux--side-nav__submenu-title">Concepts</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu"${conceptsOpen ? '' : ' hidden'}>
-${concepts}
-        </ul>
-      </li>
-` : '';
-  const home = activeId === null ? './' : '../';
-
-  // NO LEADING ICONS, AND THAT IS WHAT SETS THE CHILD INDENT. Carbon binds
-  // `__link`'s padding-inline-start to the icon: 72px with
-  // `__item--icon`, 32px without. Both are real variants -- Design records
-  // both in data/carbon-react-spacing.json under `cds--side-nav__link` --
-  // so the indent is not independently adjustable without leaving Carbon.
-  // Measured 2026-09-01 on carbondesignsystem.com, which runs the component
-  // itself: 14 `__item`s, 0 carrying `__item--icon`, submenu buttons holding
-  // a title and a chevron and nothing else, `__link` computing 32px. The two
-  // icons that used to sit here (#i-document, #i-list) bought a wider indent
-  // than the labels needed and distinguished only two sections.
+      </li>`;
+  };
+  const map = (site.references ?? []).some(r => r.id === HOME_DIAGRAM);
   return `  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
-    <ul class="rux--side-nav__items">
-
-      <!-- ORDER IS \`order\` FROM THE DATA, NOT ALPHABETICAL. Contract 2 derives
-           it and it sorts as a curriculum would -- build the family, plan, buy,
-           make, move, ship, then the end-to-end run. Atlas got there by reading
-           Prerequisite callouts as dependency edges; on Downstream rows alone
-           the walkthrough that builds the test data came fourth. -->
-      <li class="rux--side-nav__item${guidesOpen ? ' rux--side-nav__item--active' : ''}">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="${guidesOpen}">
-          <span class="rux--side-nav__submenu-title">Walkthroughs</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu"${guidesOpen ? '' : ' hidden'}>
-${items}
-        </ul>
-      </li>
-
-${PRIVATE ? '' : `      <!-- THE WALK PAGE, the owner's alone: hidden until js/online.js finds the
-           owner's log-in. The private preview has its own walk form instead. -->
-      <li class="rux--side-nav__item" data-notes-owner hidden>
-        <a class="rux--side-nav__link" href="${activeId === null ? 'pages/' : ''}walk.html"${activeId === 'walk' ? ' aria-current="page"' : ''}><span class="rux--side-nav__link-text">Walk a walkthrough</span></a>
-      </li>
-
-`}      <!-- EXPERIMENTS COMPOSE WALKTHROUGHS; they do not repeat their procedures. They
-           get their own group because a learner opens one to predict, record
-           and explain, not to perform an SOP-like runbook. -->
-      <li class="rux--side-nav__item${practiceOpen ? ' rux--side-nav__item--active' : ''}">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="${practiceOpen}">
-          <span class="rux--side-nav__submenu-title">Experiments</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu"${practiceOpen ? '' : ' hidden'}>
-${practice}
-        </ul>
-      </li>
-
-      <!-- THE MEETING CONTENT GROUP lists summaries rather than full reviews.
-           The agreement is walkthroughs and meeting summaries; the six full
-           reviews render and are reached from their summary rather than listed
-           beside it, because putting twelve documents under one heading
-           presents two categories as one. -->
-      <li class="rux--side-nav__item${meetingsOpen ? ' rux--side-nav__item--active' : ''}">
-        <button class="rux--side-nav__submenu" type="button" aria-expanded="${meetingsOpen}">
-          <span class="rux--side-nav__submenu-title">Meeting summaries</span>
-          <div class="rux--side-nav__icon rux--side-nav__submenu-chevron"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
-        </button>
-        <ul class="rux--side-nav__menu"${meetingsOpen ? '' : ' hidden'}>
-${meetings}
-        </ul>
-      </li>
-${referencesGroup}${conceptsGroup}
+    <ul class="rux--side-nav__items">${item(up || './', 'Path', activeId === null)}${
+      map ? item(`${up ? '' : 'pages/'}${HOME_DIAGRAM}.html`, 'Map', activeId === HOME_DIAGRAM) : ''}${
+      group('Concepts', site.concepts ?? [])}${group('Meeting summaries', site.summaries)}
     </ul>
   </nav>`;
 }
@@ -2839,7 +2764,7 @@ function pathNext(dg, n) {
   return html;
 }
 
-function pathTile(dg, n, cat, docs, task = false) {
+function pathTile(dg, n, cat, docs, task = false, experiments = new Map()) {
   const opens = (n.opens ?? []).flatMap(o => {
     const w = docs.get(o.walkthrough);
     if (!w) throw new Error(`node ${n.id} opens ${o.walkthrough}, which is not in this build`);
@@ -2897,6 +2822,19 @@ function pathTile(dg, n, cat, docs, task = false) {
             ${(n.steps ?? []).length ? `<ol class="rux--list--ordered">${n.steps.map(x =>
               `<li class="rux--list__item">${tokens(x.tokens ?? [])}</li>`).join('')}</ol>` : ''}
             <p class="rux--type-body-01">No procedure yet.</p>`;
+  // The homework that tests this tile, at the end of working through it.
+  const checks = (n.checks ?? []).flatMap(c => {
+    const e = experiments.get(c.experiment);
+    if (!e) throw new Error(`node ${n.id} checks ${c.experiment}, which is not in this build`);
+    return c.sections.map(k => {
+      const a = (e.assignments ?? []).find(x => x.n === k);
+      if (!a) throw new Error(`node ${n.id} checks section ${k} of ${c.experiment}, which it does not have`);
+      return `<li><a class="rux--link" href="${PAGE_BASE}${esc(e.id)}.html#a-${k}">${esc(a.title)}</a> <span class="notes-path-meta">${esc(e.title)}</span></li>`;
+    });
+  });
+  const checkList = checks.length ? `
+            <h3 class="rux--type-productive-heading-02">Check your understanding</h3>
+            <ul class="notes-path-checks">${checks.join('')}</ul>` : '';
   const questList = `
             <div class="notes-path-questbox" data-notes-path-quests${quests.length ? '' : ' hidden'}>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
@@ -2914,7 +2852,7 @@ function pathTile(dg, n, cat, docs, task = false) {
             <p class="notes-path-meta">${[state, ...counts].map(esc).join(' · ')}${n.code ? ` · <span class="rux--type-code-01">${esc(n.code)}</span>` : ''}</p>
             ${procedure}${reference}
             ${task ? '' : `<h3 class="rux--type-productive-heading-02">Next</h3>
-            ${pathNext(dg, n)}`}${questList}
+            ${pathNext(dg, n)}`}${checkList}${questList}
           </div>
         </details>`;
 }
@@ -2959,6 +2897,7 @@ const PATH_CSS = `
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
 .notes-path-questbox { display: grid; gap: .5rem; }
+.notes-path-checks { display: grid; gap: .375rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-files { display: grid; gap: .75rem; }
 .notes-path-file-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-walk-form { display: grid; gap: 1rem; max-inline-size: 20rem; }
@@ -2975,14 +2914,15 @@ function pathPage(ref, site) {
   const dg = ref.diagram;
   const cat = categories(dg);
   const docs = new Map(site.walkthroughs.map(w => [w.id, w]));
+  const experiments = new Map(site.experiments.map(e => [e.id, e]));
   const { numbered, under, setup } = pathPlaces(dg, cat);
   const start = dg.nodes.find(n => n.id === PATH_START);
-  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs));
+  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs, false, experiments));
 
   // Tasks: a gate keeps the checkpoint look, everything else is a step.
   const tasks = (site.references ?? []).find(r => r.id === TASKS_DIAGRAM && r.diagram)?.diagram;
   const taskCat = new Map((tasks?.nodes ?? []).map(n => [n.id, n.kind === 'gate' ? 'check' : 'step']));
-  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true));
+  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true, experiments));
   const ids = new Set(dg.nodes.map(n => n.id));
   for (const n of tasks?.nodes ?? []) {
     if (ids.has(n.id)) throw new Error(`task ${n.id} has the id of an overview tile`);
@@ -3421,9 +3361,9 @@ const docs = readdirSync(DATA)
 // THE CONTRACT IS PINNED HERE, NOT ONLY REPORTED. sync-export.sh prints the
 // contract set and enforces nothing, so a renderer written for one shape could
 // silently consume the next. Bump this constant when this file is updated for
-// a new contract, and not before. Contract 11 only adds `opens` and a block's
-// `issues`, both optional here, so this reads 10 and 11 alike.
-const CONTRACTS = [10, 11];
+// a new contract, and not before. Contracts 11 and 12 only add optional node
+// and block fields, so this reads 10 to 12 alike.
+const CONTRACTS = [10, 11, 12];
 for (const d of docs) if (!CONTRACTS.includes(Number(d.contract)))
   throw new Error(`${d.id ?? '?'}: contract ${d.contract}, this renderer reads ${CONTRACTS.join(' and ')} -- update build.mjs for it, then this constant`);
 

@@ -1,5 +1,5 @@
 {
-  "contract": 11,
+  "contract": 12,
   "tier": "export",
   "kind": "reference",
   "id": "tasks",
@@ -2708,6 +2708,28 @@
                 }
               ],
               "text": "Under — Demand to shipment 9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Production and planning",
+                  "href": "production-and-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " sections 3, 5"
+                }
+              ],
+              "text": "Check — Production and planning sections 3, 5"
             }
           ]
         },
@@ -2816,6 +2838,28 @@
                 }
               ],
               "text": "Under — Demand to shipment 9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Check"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Production and planning",
+                  "href": "production-and-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " section 4"
+                }
+              ],
+              "text": "Check — Production and planning section 4"
             }
           ]
         },
@@ -5787,6 +5831,15 @@
           "map": "order-to-shipment-overview",
           "node": "9"
         },
+        "checks": [
+          {
+            "experiment": "production-and-planning",
+            "sections": [
+              3,
+              5
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -5855,6 +5908,14 @@
           "map": "order-to-shipment-overview",
           "node": "9"
         },
+        "checks": [
+          {
+            "experiment": "production-and-planning",
+            "sections": [
+              4
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {

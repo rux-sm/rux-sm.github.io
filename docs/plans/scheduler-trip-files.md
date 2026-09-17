@@ -6,9 +6,9 @@ type: plan
 
 ## Goal
 
-A trip's itinerary, contract and purchase order are uploaded, replaced and
-deleted from the scheduler, as rux-ui does them, so nobody has to leave the
-scheduler to attach a file.
+A trip's files, its itinerary, contract, purchase order and any other PDF, are
+uploaded, replaced and deleted from the scheduler, as rux-ui does them, so
+nobody has to leave the scheduler to attach a file.
 
 ## Decisions
 
@@ -23,8 +23,11 @@ scheduler to attach a file.
   each part is stripped of accents, lowercased and hyphenated, and the
   fallbacks are `unknown-date`, `unnamed`, `document`, and the trip id's first
   eight characters.
-- **The labels are rux-ui's three, Itinerary, Contract and PO,** and only PDFs
-  are accepted: a file passes on its type or a `.pdf` name, as in rux-ui, and
+- **The Type list is rux-ui's three, Itinerary, Contract and PO, then Invoice,
+  Hotel confirmation and Something else,** which asks for a name that is
+  stored as the label; rux-ui shows a label it does not know as written. A
+  name matching a listed type stores that type's label. Only PDFs are
+  accepted: a file passes on its type or a `.pdf` name, as in rux-ui, and
   must also start with `%PDF-`, so a renamed file is refused before upload.
 - **There is no size limit,** as the bucket and rux-ui set none, because the
   office files only small PDFs.

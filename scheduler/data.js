@@ -2272,7 +2272,25 @@
      Previous. A tile opens its file, the itinerary panel for an itinerary and
      a new tab otherwise, and its menu holds Replace and Delete. The list is drawn again
      on its own after a file changes, so the form's unsaved edits stay. */
-  const FILE_NAMES = { itinerary: 'Itinerary', contract: 'Contract', po: 'Purchase order' };
+  /* The Type list: each type's stored label and the name it shows, rux-ui's
+     three first. A label is free text in `trip_documents`, and rux-ui shows
+     one it does not know by the label itself, so Something else stores the
+     name typed. */
+  const DOC_TYPES = [
+    ['Itinerary', 'Itinerary'], ['Contract', 'Contract'], ['PO', 'Purchase order'],
+    ['Invoice', 'Invoice'], ['Hotel confirmation', 'Hotel confirmation'],
+  ];
+  const DOC_OTHER = 'other';
+  const DOC_LABEL_MAX = 60;
+  const FILE_NAMES = Object.fromEntries(DOC_TYPES.map(([label, name]) => [label.toLowerCase(), name]));
+  // The label a typed name stores: a known type's own label when it names one,
+  // so "itinerary" is still the trip's itinerary, and otherwise the name.
+  const docLabelFor = typed => {
+    const name = String(typed ?? '').trim().replace(/\s+/g, ' ');
+    const known = DOC_TYPES.find(([label, shown]) =>
+      [label.toLowerCase(), shown.toLowerCase()].includes(name.toLowerCase()));
+    return known ? known[0] : name;
+  };
   const PREVIOUS_TAG = { code: 'Previous', tone: 'rux--tag--gray', title: 'An earlier itinerary' };
 
   const fileSize = n => {
@@ -2360,7 +2378,16 @@
      time, and the zone is disabled while one goes up. */
   function fileUploader(tripId) {
     const type = selectField('scheduler-f-filetype', 'Type', 'Itinerary',
-      [['Itinerary', 'Itinerary'], ['Contract', 'Contract'], ['PO', 'Purchase order']]);
+      [...DOC_TYPES, [DOC_OTHER, 'Something else']]);
+    // Something else asks for the file's name, which becomes its label.
+    const other = full(textField('scheduler-f-filelabel', 'Name'));
+    other.hidden = true;
+    const otherInput = other.querySelector('input');
+    otherInput.maxLength = DOC_LABEL_MAX;
+    type.querySelector('select').addEventListener('change', e => {
+      other.hidden = e.target.value !== DOC_OTHER;
+      if (!other.hidden) otherInput.focus();
+    });
     const item = el('div', 'rux--form-item');
     const drop = el('button', 'rux--file__drop-container rux--file-browse-btn', 'Drag and drop a PDF here or click to upload');
     drop.type = 'button';
@@ -2385,7 +2412,13 @@
     };
     const start = async file => {
       if (!file || drop.disabled) return;
-      const label = document.getElementById('scheduler-f-filetype')?.value || 'Itinerary';
+      const picked = type.querySelector('select').value || 'Itinerary';
+      const label = picked === DOC_OTHER ? docLabelFor(otherInput.value) : picked;
+      if (!label) {
+        fileItem(container, file.name).fail('Name the file first', 'Type a name for it under Type, then add it again.');
+        otherInput.focus();
+        return;
+      }
       busy(true);
       try { await uploadFrom(tripId, label, file, fileItem(container, file.name)); }
       finally { busy(false); }
@@ -2406,7 +2439,7 @@
     });
 
     const wrap = el('div', 'scheduler-file-add');
-    wrap.append(full(type), item);
+    wrap.append(full(type), other, item);
     return wrap;
   }
 
@@ -4837,7 +4870,7 @@
     } else {
       const { list, body } = rowList();
       filesBody = body;
-      filesEmpty = el('p', 'rux--form__helper-text', 'No files yet. An itinerary, contract or purchase order added above is listed here.');
+      filesEmpty = el('p', 'rux--form__helper-text', 'No files yet. A file added above is listed here.');
       const listWrap = el('div');
       listWrap.append(list, filesEmpty);
       panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap));
@@ -6205,7 +6238,6 @@
      trigger on `trip_documents` does, so a file never turns the editor's next
      Save into a conflict. */
   const DOC_BUCKET = 'trip-documents';
-  const DOC_LABELS = ['Itinerary', 'Contract', 'PO'];
 
   // rux-ui's `documentFileSlug`: accents stripped, lowercased, hyphenated.
   const docSlug = (value, fallback) => String(value ?? '')

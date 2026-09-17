@@ -913,6 +913,9 @@ button.scheduler-row-head__num::after {
   flex-direction: column;
   gap: var(--rux-spacing-06);
 }
+/* The name field while another type is picked; a form item's flex display
+   would beat `[hidden]`. */
+.scheduler-file-add > [hidden] { display: none; }
 /* A list's records, hidden while its switch is off; its grid display would
    beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }

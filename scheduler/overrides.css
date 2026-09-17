@@ -414,3 +414,14 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* A switch's label in a section heading is a flex box, so the inline switch's
    baseline gap does not make the heading row 2px taller than the switch. */
 .scheduler-panel-section__head .rux--toggle__label { display: flex; }
+
+/* A record's clickable tile lays its two lines out as a grid, fills its list,
+   reads from the start, and keeps 48px at its end for the menu button laid
+   over it. Two classes, over Carbon's tile display and padding. */
+.scheduler-item .rux--tile--clickable {
+  display: grid;
+  inline-size: 100%;
+  gap: var(--rux-spacing-02);
+  padding-inline-end: var(--rux-spacing-09);
+  text-align: start;
+}

@@ -810,37 +810,50 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
 }
 
-/* One record on one line: a tag, a middle value and an amount. Carbon's row
-   content is inline-block, so this grid goes inside it. The amount is its own
-   right-aligned column so money reads down the list, and `auto 1fr auto` keeps
-   the columns aligned across the payment, PO and invoice lists. Named
-   `listrow` because `.scheduler-row` is the board's bus row. */
-.scheduler-listrow {
+/* A list of records: tiles 8px apart, then the add. */
+.scheduler-list-body {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  gap: var(--rux-spacing-03);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+/* One record's tile. The menu button sits over its end, 8px in and centred,
+   so the tile keeps room for it. */
+.scheduler-item { position: relative; }
+.scheduler-item__menu {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--rux-spacing-03);
+  transform: translateY(-50%);
+}
+/* The name, any tag and the amount on one line. A long name clips with an
+   ellipsis; the full text is in the tile's `title`. The amount is
+   right-aligned so money reads down the list. */
+.scheduler-item__line {
+  display: flex;
   align-items: center;
   gap: var(--rux-spacing-03);
-  inline-size: 100%;
-}
-/* Document rows omit the redundant type tag, giving the reference room. */
-.scheduler-listrow--document { grid-template-columns: minmax(0, 1fr) auto; }
-/* A long reference clips to one line with an ellipsis, so every row keeps one
-   height; the full text is in the row's `title`. */
-.scheduler-listrow--document .scheduler-listrow__when {
   min-inline-size: 0;
-  overflow-wrap: normal;
-  white-space: nowrap;
+}
+.scheduler-item__name {
+  flex: 1;
+  min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.scheduler-listrow__when {
-  color: var(--rux-text-secondary);
-  text-align: start;
-}
-.scheduler-listrow__much {
+  white-space: nowrap;
   color: var(--rux-text-primary);
-  text-align: end;
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+.scheduler-item__much {
+  color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
+}
+.scheduler-item__meta {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 /* The Files tab's uploader: the Type dropdown over the drop zone, spaced as
    the form's fields are. */
@@ -849,21 +862,19 @@ button.scheduler-row-head__num::after {
   flex-direction: column;
   gap: var(--rux-spacing-06);
 }
-/* A list's rows, hidden while its switch is off. Restated because an element
-   inside a Carbon component may be given a display that beats `[hidden]`. The
-   header is never hidden, because the switch is in it. */
+/* A list's records, hidden while its switch is off; its grid display would
+   beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }
 
-/* The add button is the list's last row, 2.5rem tall, the height of a
-   `size-md` contained-list row. Its words start at the rows' 16px, and its
-   icon ends 8px from the edge, centred where the rows' 32px action buttons
-   draw theirs. Two classes, over Carbon's ghost button padding. */
-.scheduler-list-additem { padding: 0; }
+/* The add button is the list's last item, 2.5rem tall. Its words start at
+   the tiles' 16px, and its icon ends 16px from the edge, centred where the
+   tiles' menu buttons draw theirs. Two classes, over Carbon's ghost button
+   padding. */
 .scheduler-list-additem .scheduler-list-add {
   align-items: center;
   inline-size: 100%;
   min-block-size: 2.5rem;
-  padding-inline: var(--rux-spacing-05) var(--rux-spacing-03);
+  padding-inline: var(--rux-spacing-05);
 }
 .scheduler-po-coverage { margin-block-start: var(--rux-spacing-03); }
 
@@ -905,13 +916,11 @@ button.scheduler-row-head__num::after {
 }
 
 /* A section pulled out to the panel's edges by the panel body's own padding,
-   so a contained list's band runs edge to edge while its text lines up with
-   the tab's fields. The margin is on this app's wrapper, never on
-   `.rux--contained-list`. */
+   so the Billing summary tile runs edge to edge while its text lines up with
+   the tab's fields. */
 .scheduler-panel-section--bleed {
   margin-inline: calc(-1 * var(--rux-spacing-05));
 }
-.scheduler-panel-section--bleed[hidden] { display: none; }
 
 /* A tab's first section opens at the tab's own 16px, not 32px below it. */
 #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {

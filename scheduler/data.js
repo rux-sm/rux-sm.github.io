@@ -1295,26 +1295,25 @@
     return wrap;
   };
 
-  /* ── A milestone that is a list ──
-     Payments, purchase orders and invoices share this list and `listRow`, so
-     they cannot drift in height, density or row grid. The label and switch sit
-     on the section's heading line, and the add is the list's last row. The
+  /* ── A list of records ──
+     Payments, purchase orders, invoices and files share this list and
+     `listRow`, so they cannot drift in height or layout. Each record is a tile
+     on the next layer, 8px apart, and the add is the list's last item. The
      list is built once and only its body is redrawn. */
   const rowList = () => {
-    const list = el('div', 'rux--contained-list rux--contained-list--inset-rulers rux--layout--size-md');
+    const list = el('div', 'scheduler-items');
     const body = el('ul', 'scheduler-list-body');
     body.setAttribute('role', 'list');
     list.appendChild(body);
     return { list, body };
   };
 
-  /* The add is a row of the list, so it takes the list's ruler and the rows'
-     left edge and reads as the place the next row appears. Its words line up
-     with the rows' text and its icon follows them, as in Carbon's buttons, so
-     app.css sets it in the rows' action column. It is also the empty state: an
-     empty list draws this row alone. */
+  /* The add is the list's last item, so it reads as the place the next record
+     appears. Its words line up with the tiles' text and its icon follows them,
+     as in Carbon's buttons, so app.css sets it under the tiles' menu buttons.
+     It is also the empty state: an empty list draws it alone. */
   const listAddRow = ({ label, id, onClick }) => {
-    const li = el('li', 'rux--contained-list-item scheduler-list-additem');
+    const li = el('li', 'scheduler-list-additem');
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
@@ -1410,49 +1409,42 @@
     rowMenuTrigger = trigger;
   };
 
-  /* One row: a tag, a date, an amount. `--with-action` puts the row's control
-     at its end and `--clickable` makes the row itself open its editor.
+  /* One record as Carbon's clickable tile: its name and amount on the first
+     line, its details under them, and a tag where a record needs one. The
+     tile opens the record, and its overflow menu is a sibling button laid
+     over the tile's end, since a clickable tile holds no other control.
 
-     Carbon's `__content` is an inline-block of its own, so the columns go in a
-     span this app owns and no rule here touches a `rux--*` class.
-
-     The code is never the only name: a code means nothing to a screen reader,
-     so the row button carries the whole row in `aria-label` and the tag its
-     long form in `title`. */
-  const listRow = ({ code, tone, codeTitle, when, much, title, edit, remove, removeLabel,
+     The tile carries the whole record in `aria-label`, so a screen reader
+     hears one sentence, and the full text in `title`. */
+  const listRow = ({ name, meta, much, tag, title, edit, remove, removeLabel,
                     open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText }) => {
-    const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action rux--contained-list-item--clickable');
-    const open = el('button', 'rux--contained-list-item__content');
+    const li = el('li', 'rux--layer-two scheduler-item');
+    const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
-    const line = el('span', code ? 'scheduler-listrow' : 'scheduler-listrow scheduler-listrow--document');
-    // A method distinguishes payments; the section already names PO/invoice.
-    if (code) {
-      // Carbon sizes a tag by its layout class; in a `size-md` list it would be 24px.
-      const tag = el('span', `rux--tag rux--layout--size-sm ${tone}`, code);
-      if (codeTitle) tag.title = codeTitle;
-      line.appendChild(tag);
+    const top = el('span', 'scheduler-item__line');
+    top.appendChild(el('span', 'scheduler-item__name', name));
+    if (tag) {
+      const t = el('span', `rux--tag rux--layout--size-sm ${tag.tone}`, tag.code);
+      if (tag.title) t.title = tag.title;
+      top.appendChild(t);
     }
-    line.append(el('span', 'scheduler-listrow__when', when),
-                el('span', 'scheduler-listrow__much', much ?? ''));
-    open.appendChild(line);
+    if (much) top.appendChild(el('span', 'scheduler-item__much', much));
+    open.append(top, el('span', 'scheduler-item__meta', meta || ''));
     open.title = title;
     open.setAttribute('aria-label', openLabel);
     open.addEventListener('click', openRow);
-    li.appendChild(open);
-    const act = el('div', 'rux--contained-list-item__action');
-    const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+    const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger scheduler-item__menu');
     more.type = 'button';
     more.setAttribute('aria-haspopup', 'true');
     more.setAttribute('aria-expanded', 'false');
-    // The trigger's name is the row's, so two rows' menus are told apart.
+    // The trigger's name is the record's, so two records' menus are told apart.
     more.setAttribute('aria-label', `Actions for ${title}`);
     more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
     more.addEventListener('click', () => openRowMenu(more, {
       edit, remove, removeLabel, editText, removeText,
     }));
-    act.appendChild(more);
-    li.appendChild(act);
+    li.append(open, more);
     return li;
   };
 
@@ -2241,17 +2233,13 @@
   });
 
   /* ── The Files tab ──
-     Its list is every file the trip holds, newest first, in the rows payments
-     use: the type as a tag, the upload day, the size, and the file name on
-     hover. An itinerary that is not the trip's newest is tagged Previous. A
-     row opens its file, the itinerary panel for an itinerary and a new tab
-     otherwise, and its menu holds Replace and Delete. The list is drawn again
+     Its list is every file the trip holds, newest first, in the tiles payments
+     use: the type as the name, the upload day and size under it, and the file
+     name on hover. An itinerary that is not the trip's newest is tagged
+     Previous. A tile opens its file, the itinerary panel for an itinerary and
+     a new tab otherwise, and its menu holds Replace and Delete. The list is drawn again
      on its own after a file changes, so the form's unsaved edits stay. */
-  const FILE_TAGS = {
-    itinerary: { code: 'Itinerary', tone: 'rux--tag--blue' },
-    contract: { code: 'Contract', tone: 'rux--tag--purple' },
-    po: { code: 'PO', tone: 'rux--tag--teal', title: 'Purchase order' },
-  };
+  const FILE_NAMES = { itinerary: 'Itinerary', contract: 'Contract', po: 'Purchase order' };
   const PREVIOUS_TAG = { code: 'Previous', tone: 'rux--tag--gray', title: 'An earlier itinerary' };
 
   const fileSize = n => {
@@ -2265,12 +2253,13 @@
 
   const fileRow = (trip, doc, previous) => {
     const kind = String(doc.label || '').toLowerCase();
-    const tag = previous ? PREVIOUS_TAG : (FILE_TAGS[kind] ?? { code: doc.label || 'File', tone: 'rux--tag--gray' });
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
     const li = listRow({
-      code: tag.code, tone: tag.tone, codeTitle: tag.title,
-      when, much: fileSize(doc.file_size), title: name,
+      name: FILE_NAMES[kind] ?? (doc.label || 'File'),
+      tag: previous ? PREVIOUS_TAG : null,
+      meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
+      title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
       open: e => {
         if (kind === 'itinerary') { openDocument(trip, doc, e.currentTarget); return; }
@@ -2279,8 +2268,8 @@
       editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
     });
-    // Closing the itinerary panel finds the row by it after the list is redrawn.
-    li.querySelector('.rux--contained-list-item__content').dataset.documentId = doc.id;
+    // Closing the itinerary panel finds the tile by it after the list is redrawn.
+    li.querySelector('.scheduler-item__open').dataset.documentId = doc.id;
     return li;
   };
 
@@ -3313,20 +3302,6 @@
      text both apps write, so a spelling rux-ui's menu lacks would not
      round-trip. */
   const PAYMENT_METHODS = ['Cash', 'Check', 'Card', 'ACH', 'Zelle', 'Other'];
-
-  /* Each method shows as a three-letter tag, standing in for icons the sprite
-     does not have. The hues only tell methods apart: none ranks them, and none
-     is red because none is an error.
-     The code is never the only name: the row button carries the full method in
-     its `aria-label` and the tag carries it in `title`. */
-  const PAYMENT_TAG = {
-    Cash:  { code: 'CSH', tone: 'rux--tag--green' },
-    Check: { code: 'CHK', tone: 'rux--tag--blue' },
-    Card:  { code: 'CRD', tone: 'rux--tag--purple' },
-    ACH:   { code: 'ACH', tone: 'rux--tag--teal' },
-    Zelle: { code: 'ZLE', tone: 'rux--tag--magenta' },
-    Other: { code: 'OTH', tone: 'rux--tag--cool-gray' },
-  };
 
   /* The panel's pending payments, and the handle that redraws them. Module
      scope because the dialog lives outside the panel's build closure and has
@@ -4565,7 +4540,7 @@
           const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
           const ref = p.ref || 'No reference';
           poList.body.appendChild(listRow({
-            when: p.date ? `${ref} · ${mdy(p.date)}` : ref, much,
+            name: p.ref ? `PO ${p.ref}` : ref, meta: p.date ? mdy(p.date) : 'No date', much,
             title: ['Purchase order', ref, p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openPoDialog(i),
             removeLabel: `Remove purchase order ${ref}`,
@@ -4587,7 +4562,7 @@
           const num = v.number || 'No number';
           const much = (v.amount ?? null) === null ? '' : usd(Number(v.amount) || 0);
           invList.body.appendChild(listRow({
-            when: v.date ? `${num} · ${mdy(v.date)}` : num, much,
+            name: v.number ? `Invoice ${v.number}` : num, meta: v.date ? mdy(v.date) : 'No date', much,
             title: ['Invoice', num, v.date ? mdy(v.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openInvoiceDialog(i),
             removeLabel: `Remove invoice ${num}`,
@@ -4712,20 +4687,18 @@
       price.append(moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price), derived);
       panelBilling.appendChild(section('Price', price));
 
-      /* Payments use the same `rowList` as PO and invoice, with a method tag on
-         each row and no switch: a receipt has no milestone to gate. */
+      /* Payments use the same `rowList` as PO and invoice, named by their
+         method, with no switch: a receipt has no milestone to gate. */
       const payList = rowList();
       const draw = () => {
         payList.body.replaceChildren();
         pending.forEach((p, i) => {
-          const mark = PAYMENT_TAG[p.method] || { code: '···', tone: 'rux--tag--gray' };
           const when = p.date ? mdy(p.date) : 'No date';
           const much = usd(Number(p.amount) || 0);
           payList.body.appendChild(listRow({
-            code: mark.code, tone: mark.tone, codeTitle: p.method || 'Method not set',
-            when, much,
-            /* The reference is on the tooltip and in the dialog, not the row: it
-               is looked up rather than scanned, and it would wrap the row. */
+            name: p.method || 'Payment', meta: when, much,
+            /* The reference is on the tooltip and in the dialog, not the tile: it
+               is looked up rather than scanned, and it would wrap the line. */
             title: [p.method || 'Payment', when, much,
                     p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
             edit: () => openPaymentDialog(i),
@@ -4742,23 +4715,15 @@
       };
       draw();
       redrawPayments = draw;
-      /* A list bleeds to the panel's edges so its rows, which a contained-list
-         pads inside, line up with the fields. Helper text such as the PO
-         coverage line does not bleed. */
-      const bleed = (node) => {
-        const box = el('div', 'scheduler-panel-section--bleed');
-        box.appendChild(node);
-        return box;
-      };
-      const listWrap = section('Payments', bleed(payList.list));
+      const listWrap = section('Payments', payList.list);
 
       /* The order is contract, PO and invoice, as the ladder climbs, then
          payments last because it is the only section that grows. Every section
          is a `section()`, so the three switches share one right edge. */
       const poBody = el('div');
-      poBody.append(bleed(poList.list), poCoverage);
+      poBody.append(poList.list, poCoverage);
 
-      const invBody = bleed(invList.list);
+      const invBody = invList.list;
       const poWrap = section('PO received', poBody, poSwitch);
       const invWrap = section('Invoice sent', invBody, invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
@@ -4795,7 +4760,7 @@
       /* A list is gated by what sits under its heading, not its section, whose
          heading holds the switch; hiding it also drops the space under the
          heading. The `<ul>` is hidden too, which `.scheduler-list-body[hidden]`
-         keeps hidden inside Carbon's list. Off empties the array, and `clear` is
+         keeps hidden. Off empties the array, and `clear` is
          false on the first pass, as with the fields. */
       const syncLists = (clear) => {
         for (const [toggleId, box, content, pending, redraw] of [

@@ -107,17 +107,15 @@
     // under the chevron that opens it, and anchoring to the trigger left the
     // menu starting at the chevron's left edge with the primary action beside
     // it. Every other menu anchors to its own trigger, which is unchanged.
-    const t = (comboContainer(trigger) ?? trigger).getBoundingClientRect();
-    const box = surface.getBoundingClientRect();
-    const below = window.innerHeight - t.bottom;
-    const top = below >= box.height || t.top < box.height ? t.bottom : t.top - box.height;
-    const left = Math.max(0, Math.min(t.left, window.innerWidth - box.width));
-    surface.style.insetBlockStart = `${Math.round(top)}px`;
-    surface.style.insetInlineStart = `${Math.round(left)}px`;
+    //
+    // THE BELOW-OR-ABOVE ARITHMETIC IS Rux.anchorTo, in js/overlay.js, because
+    // js/list-box.js needs the same answer and a second copy would be the one
+    // that missed the next fix. No option is passed, so a menu that fits
+    // neither way still overhangs below, which is what it has always done.
+    window.Rux?.anchorTo?.(surface, comboContainer(trigger) ?? trigger);
   }
   function unanchor(surface) {
-    surface.style.insetBlockStart = '';
-    surface.style.insetInlineStart = '';
+    window.Rux?.unanchor?.(surface);
   }
 
   const COMBO_OPEN = 'rux--combo-button__container--open';

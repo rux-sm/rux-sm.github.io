@@ -1309,16 +1309,18 @@
   };
 
   /* The add is a row of the list, so it takes the list's ruler and the rows'
-     left edge and reads as the place the next row appears. It is also the
-     empty state: an empty list draws this row alone. */
+     left edge and reads as the place the next row appears. Its words line up
+     with the rows' text and its icon follows them, as in Carbon's buttons, so
+     app.css sets it in the rows' action column. It is also the empty state: an
+     empty list draws this row alone. */
   const listAddRow = ({ label, id, onClick }) => {
     const li = el('li', 'rux--contained-list-item scheduler-list-additem');
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
+    btn.append(label);
     btn.appendChild(svgUse('#i-add', '16', '0 0 32 32'));
     btn.lastChild.setAttribute('class', 'rux--btn__icon');
-    btn.append(label);
     btn.addEventListener('click', onClick);
     li.appendChild(btn);
     return { li, btn };
@@ -1425,7 +1427,8 @@
     const line = el('span', code ? 'scheduler-listrow' : 'scheduler-listrow scheduler-listrow--document');
     // A method distinguishes payments; the section already names PO/invoice.
     if (code) {
-      const tag = el('span', `rux--tag rux--tag--sm ${tone}`, code);
+      // Carbon sizes a tag by its layout class; in a `size-md` list it would be 24px.
+      const tag = el('span', `rux--tag rux--layout--size-sm ${tone}`, code);
       if (codeTitle) tag.title = codeTitle;
       line.appendChild(tag);
     }
@@ -4684,7 +4687,7 @@
             : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))],
           ['Paid', quoted === null ? usd(paid) : `${usd(paid)} of ${usd(quoted)}`],
         ]));
-        const status = el('span', `rux--tag rux--tag--sm ${rungTone}`, rungLabel);
+        const status = el('span', `rux--tag rux--layout--size-sm ${rungTone}`, rungLabel);
         status.title = `Billing status: ${rungLabel}`;
         figures.replaceChildren(
           bigNumber('Trip', confirmed ? 'Confirmed' : 'Not confirmed'),
@@ -4755,8 +4758,9 @@
       const poBody = el('div');
       poBody.append(bleed(poList.list), poCoverage);
 
+      const invBody = bleed(invList.list);
       const poWrap = section('PO received', poBody, poSwitch);
-      const invWrap = section('Invoice sent', bleed(invList.list), invoiceSwitch);
+      const invWrap = section('Invoice sent', invBody, invoiceSwitch);
       const contractSection = section('Contract signed', contract, contractSwitch);
 
       // A milestone the workflow does not use is not shown, and counts as off.
@@ -4788,16 +4792,18 @@
           }
         }
       };
-      /* A list is gated by its `<ul>`, not its section, whose heading holds the
-         switch; `.scheduler-list-body[hidden]` has its own rule in app.css, like
-         the milestone fields. Off empties the array, and `clear` is false on the
-         first pass, as with the fields. */
+      /* A list is gated by what sits under its heading, not its section, whose
+         heading holds the switch; hiding it also drops the space under the
+         heading. The `<ul>` is hidden too, which `.scheduler-list-body[hidden]`
+         keeps hidden inside Carbon's list. Off empties the array, and `clear` is
+         false on the first pass, as with the fields. */
       const syncLists = (clear) => {
-        for (const [toggleId, box, pending, redraw] of [
-          ['scheduler-f-poreceived', poList, poPending, drawPos],
-          ['scheduler-f-invoice', invList, invPending, drawInvoices]]) {
+        for (const [toggleId, box, content, pending, redraw] of [
+          ['scheduler-f-poreceived', poList, poBody, poPending, drawPos],
+          ['scheduler-f-invoice', invList, invBody, invPending, drawInvoices]]) {
           const open = on(document.getElementById(toggleId));
           box.body.hidden = !open;
+          content.hidden = !open;
           if (!open && clear && pending.length) { pending.length = 0; redraw(); }
         }
         redrawLists();

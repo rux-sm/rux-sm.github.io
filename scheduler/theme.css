@@ -16,3 +16,25 @@
 [data-theme="linear"],
 [data-theme="ant-dark"],
 [data-theme="spotify"] { --scheduler-on-warning: var(--rux-text-inverse); }
+
+/* The amber trip bar. Most themes fill it with the warning colour under dark
+   text and ring what sits on it in that text colour. ant-dark outlines it the
+   way it outlines its tags, mixing the warning colour into layer-01 the way
+   Ant's dark palette mixes into its container, and rings in the warning
+   colour, which shows on that dark fill. */
+:root,
+[data-theme] {
+  --scheduler-amber-bg: var(--rux-support-warning);
+  --scheduler-amber-hover: var(--rux-support-warning);
+  --scheduler-amber-fg: var(--scheduler-on-warning);
+  --scheduler-amber-edge: var(--scheduler-on-warning);
+  --scheduler-amber-ring: var(--scheduler-on-warning);
+}
+[data-theme="ant-dark"] {
+  --scheduler-bar-edge: 1px;
+  --scheduler-amber-bg: color-mix(in srgb, var(--rux-support-warning) 15%, var(--rux-layer-01));
+  --scheduler-amber-hover: color-mix(in srgb, var(--rux-support-warning) 25%, var(--rux-layer-01));
+  --scheduler-amber-fg: var(--rux-support-warning);
+  --scheduler-amber-edge: color-mix(in srgb, var(--rux-support-warning) 35%, var(--rux-layer-01));
+  --scheduler-amber-ring: var(--rux-support-warning);
+}

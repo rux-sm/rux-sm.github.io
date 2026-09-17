@@ -154,8 +154,15 @@
   of the same palette stands in: links, focus and info stay #4096ff, since
   Ant's #1668dc is 3.2:1 on layer-02; text-error is #e86e6b; helper text
   is 0.5 alpha and placeholder 0.35. layer-03 and the toggle track have no
-  Ant counterpart, and the tag, notification and content-switcher sets stay
-  Carbon's dark set, as the header above says.
+  Ant counterpart, and the notification and content-switcher sets stay
+  Carbon's dark set.
+
+  ANT-DARK TAGS ARE ANT'S OUTLINED TAG: the first step of each dark palette
+  as the fill, the third as the edge that css/rux-overrides.css draws, and
+  the seventh as the text. Red, magenta, blue and purple take the eighth
+  step, because the seventh is under 4.5:1 on the hover step. Teal and cyan
+  are both Ant's cyan, which has no teal, and the three greys are Ant's
+  neutral tag.
 
   DERIVED BUTTON TOKENS, ANT-DARK. White text needs 4.5:1 on a filled
   button, which Ant's light-mode blue #1677ff (4.1:1) and red #ff4d4f
@@ -856,47 +863,47 @@
   --rux-button-separator: #000000;
   --rux-button-disabled: rgba(255, 255, 255, 0.25);
 
-  /* tag (component tokens — Carbon's own dark set, see header) */
-  --rux-tag-background-red: #a2191f;
-  --rux-tag-color-red: #ffd7d9;
-  --rux-tag-hover-red: #c21e25;
-  --rux-tag-background-magenta: #9f1853;
-  --rux-tag-color-magenta: #ffd6e8;
-  --rux-tag-hover-magenta: #bf1d63;
-  --rux-tag-background-purple: #6929c4;
-  --rux-tag-color-purple: #e8daff;
-  --rux-tag-hover-purple: #7c3dd6;
-  --rux-tag-background-blue: #0043ce;
-  --rux-tag-color-blue: #d0e2ff;
-  --rux-tag-hover-blue: #0053ff;
-  --rux-tag-background-cyan: #00539a;
-  --rux-tag-color-cyan: #bae6ff;
-  --rux-tag-hover-cyan: #0066bd;
-  --rux-tag-background-teal: #005d5d;
-  --rux-tag-color-teal: #9ef0f0;
-  --rux-tag-hover-teal: #007070;
-  --rux-tag-background-green: #0e6027;
-  --rux-tag-color-green: #a7f0ba;
-  --rux-tag-hover-green: #11742f;
-  --rux-tag-background-gray: #525252;
-  --rux-tag-color-gray: #f4f4f4;
-  --rux-tag-hover-gray: #636363;
-  --rux-tag-border-red: #fa4d56;
-  --rux-tag-border-blue: #4589ff;
-  --rux-tag-border-cyan: #1192e8;
-  --rux-tag-border-teal: #009d9a;
-  --rux-tag-border-green: #24a148;
-  --rux-tag-border-magenta: #ee5396;
-  --rux-tag-border-purple: #a56eff;
-  --rux-tag-border-gray: #8d8d8d;
-  --rux-tag-border-cool-gray: #878d96;
-  --rux-tag-border-warm-gray: #8f8b8b;
-  --rux-tag-background-cool-gray: #4d5358;
-  --rux-tag-color-cool-gray: #f2f4f8;
-  --rux-tag-hover-cool-gray: #5d646a;
-  --rux-tag-background-warm-gray: #565151;
-  --rux-tag-color-warm-gray: #f7f3f2;
-  --rux-tag-hover-warm-gray: #696363;
+  /* tag (component tokens — Ant's outlined dark tag, see header) */
+  --rux-tag-background-red: #2a1215;
+  --rux-tag-color-red: #f37370;
+  --rux-tag-hover-red: #431418;
+  --rux-tag-border-red: #58181c;
+  --rux-tag-background-magenta: #291321;
+  --rux-tag-color-magenta: #f37fb7;
+  --rux-tag-hover-magenta: #40162f;
+  --rux-tag-border-magenta: #541c3b;
+  --rux-tag-background-purple: #1a1325;
+  --rux-tag-color-purple: #ab7ae0;
+  --rux-tag-hover-purple: #24163a;
+  --rux-tag-border-purple: #301c4d;
+  --rux-tag-background-blue: #111a2c;
+  --rux-tag-color-blue: #65a9f3;
+  --rux-tag-hover-blue: #112545;
+  --rux-tag-border-blue: #15325a;
+  --rux-tag-background-cyan: #112123;
+  --rux-tag-color-cyan: #33bcb7;
+  --rux-tag-hover-cyan: #113536;
+  --rux-tag-border-cyan: #144848;
+  --rux-tag-background-teal: #112123;
+  --rux-tag-color-teal: #33bcb7;
+  --rux-tag-hover-teal: #113536;
+  --rux-tag-border-teal: #144848;
+  --rux-tag-background-green: #162312;
+  --rux-tag-color-green: #6abe39;
+  --rux-tag-hover-green: #1d3612;
+  --rux-tag-border-green: #274916;
+  --rux-tag-background-gray: #1f1f1f;
+  --rux-tag-color-gray: #d9d9d9;
+  --rux-tag-hover-gray: #262626;
+  --rux-tag-border-gray: #424242;
+  --rux-tag-background-cool-gray: #1f1f1f;
+  --rux-tag-color-cool-gray: #d9d9d9;
+  --rux-tag-hover-cool-gray: #262626;
+  --rux-tag-border-cool-gray: #424242;
+  --rux-tag-background-warm-gray: #1f1f1f;
+  --rux-tag-color-warm-gray: #d9d9d9;
+  --rux-tag-hover-warm-gray: #262626;
+  --rux-tag-border-warm-gray: #424242;
 
   /* notification (component tokens — Carbon's own dark set;
      the four surface backgrounds take THIS theme's layer-01) */

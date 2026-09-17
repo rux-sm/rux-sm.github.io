@@ -12,11 +12,11 @@
   !important is aimed at the wrong selector. No Carbon file is touched, and
   `git diff css/rux.css` after any edit here is empty.
 
-  FIVE RULES ARE LIVE. Nothing else has been decided about rux's look beyond
-  Carbon's, and a rule that moves a captured component away from its capture
-  does not belong here — every rule below repairs a box that renders wrong,
-  and none of them changes a decision Carbon made. The example below is the
-  shape of a rule that WOULD move the capture, commented out:
+  EVERY RULE BELOW REPAIRS A BOX THAT RENDERS WRONG, except one: ant-dark's
+  tag edge, which a theme needs because its reference outlines its tags and
+  Carbon's tag has no border. Nothing else has been decided about rux's look
+  beyond Carbon's. The example below is the shape of a rule that WOULD move
+  the capture for every theme, commented out:
 
   .rux--btn { border-radius: 0.25rem; }
 
@@ -120,3 +120,17 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/* ANT-DARK'S TAG EDGE. Ant's dark tag is outlined, and Carbon draws a tag's
+   border only on the operational variant, so this draws the edge from each
+   colour's own tag-border token. An inset shadow keeps the tag's size. */
+[data-theme="ant-dark"] .rux--tag--red { box-shadow: inset 0 0 0 1px var(--rux-tag-border-red); }
+[data-theme="ant-dark"] .rux--tag--magenta { box-shadow: inset 0 0 0 1px var(--rux-tag-border-magenta); }
+[data-theme="ant-dark"] .rux--tag--purple { box-shadow: inset 0 0 0 1px var(--rux-tag-border-purple); }
+[data-theme="ant-dark"] .rux--tag--blue { box-shadow: inset 0 0 0 1px var(--rux-tag-border-blue); }
+[data-theme="ant-dark"] .rux--tag--cyan { box-shadow: inset 0 0 0 1px var(--rux-tag-border-cyan); }
+[data-theme="ant-dark"] .rux--tag--teal { box-shadow: inset 0 0 0 1px var(--rux-tag-border-teal); }
+[data-theme="ant-dark"] .rux--tag--green { box-shadow: inset 0 0 0 1px var(--rux-tag-border-green); }
+[data-theme="ant-dark"] .rux--tag--gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-gray); }
+[data-theme="ant-dark"] .rux--tag--cool-gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-cool-gray); }
+[data-theme="ant-dark"] .rux--tag--warm-gray { box-shadow: inset 0 0 0 1px var(--rux-tag-border-warm-gray); }

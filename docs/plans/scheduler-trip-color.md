@@ -36,8 +36,8 @@ the same on both boards while both are in use.
   conflict.
 - **Submenus go into Design's menu first**, in `design/js/menu.js` and
   `design/sink/menu.html`, because Design had none.
-- **Trip history is out of scope.** The scheduler writes history for no field
-  yet, which is a later plan in `docs/plans/staff-sign-in.md`.
+- **A colour pick writes a trip history entry,** as
+  `docs/plans/scheduler-trip-history.md` sets out.
 
 ## Questions
 

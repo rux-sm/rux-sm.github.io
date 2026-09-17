@@ -1079,7 +1079,7 @@
      notice, so the next one drops the offer and only the last move is
      undoable. The offer has no timer, so it cannot vanish while being read, and
      the undo ends on a plain notice, so the pair cannot ping-pong. */
-  function offerUndo(assignmentId, backTo, label) {
+  function offerUndo(assignmentId, tripId, movedTo, backTo, label) {
     toast('success', 'Trip moved', `Undo puts it back on ${label}.`, {
       label: 'Undo',
       onClick: async () => {
@@ -1088,6 +1088,7 @@
           schEl.setAttribute('aria-busy', 'true');
           gridEl.classList.add('scheduler-grid--busy');
           await moveToBus(assignmentId, backTo);
+          recordBusChange(tripId, movedTo, backTo);
         } catch (e) {
           toast('error', 'Could not put that trip back', String(e && e.message ? e.message : e));
           return;
@@ -1180,6 +1181,7 @@
           gridEl.classList.add('scheduler-grid--busy');
           if (assignmentId) await moveToBus(assignmentId, toBus);
           else assignmentId = await fillSlot(tripId, leg || 'outbound', +slot || 0, toBus);
+          recordBusChange(tripId, fromBus, toBus);
         } catch (e) {
           failed = String(e && e.message ? e.message : e);
         } finally {
@@ -1192,7 +1194,7 @@
         await show();   // read it back, rather than trusting the move landed
         refreshEditor(assignmentId);
         if (failed) toast('error', 'Could not move that trip', failed);
-        else offerUndo(assignmentId, backTo, label);
+        else offerUndo(assignmentId, tripId, toBus, backTo, label);
       };
 
       const move = ev => {
@@ -5442,6 +5444,7 @@
     const patch = patchOf() || {};
     const id = editing.id;
     const creating = editing.creating;
+    const savedId = creating ? editing.newId : id;
     if (!creating && !force && editing.updatedAt) {
       let now = null;
       try {
@@ -5453,6 +5456,16 @@
         return false;
       }
     }
+    /* The trip as it stands, for the history entry to diff against. A read
+       that fails leaves `historyBefore` undefined, and the save unrecorded. */
+    let historyBefore;
+    if (creating) historyBefore = null;
+    else {
+      try { historyBefore = await readTripState(id); } catch { historyBefore = undefined; }
+    }
+    const recordThisSave = tripId => {
+      if (historyBefore !== undefined) recordSave(tripId, historyBefore);
+    };
     /* Every write goes through `write`, so a failure knows whether anything
        reached the database and which part was being written. Sending a write
        again that already landed is how a trip or a payment is saved twice. */
@@ -5564,6 +5577,7 @@
       }
 
       if (fleet?.work) await saveFleet(tripId, write, fleet);
+      recordThisSave(tripId);
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
@@ -5591,6 +5605,8 @@
         : part === 'the trip' ? 'Check the trip and make the change again if it is missing.'
         : `Check ${part} and add what is missing.`;
       const didNot = e.timedOut ? 'may not have saved' : 'did not save';
+      // What did land is recorded.
+      recordThisSave(savedId);
       await show();
       if (creating) {
         closePanel(false);
@@ -5763,6 +5779,7 @@
         const { error } = await withTimeout(
           client.from('trips').update({ trip_bar_color: value }).eq('id', bar.dataset.tripId).then(r => r));
         if (error) throw new Error(error.message);
+        recordFieldChange(bar.dataset.tripId, 'trip_bar_color', bar.dataset.tripColor || null, value);
         await show();
         toast('success', value ? `The trip is ${label.toLowerCase()} now.` : 'The trip has its standard color again.');
       } catch (err) {
@@ -5893,6 +5910,13 @@
       const { error } = await withTimeout(
         client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));
       if (error) throw new Error(error.message);
+      const was = DRIVER_STATUSES.find(x => x.value === target.status.value)?.label ?? null;
+      const who = `${histDriverName(target.driverId)}, ${target.leg === 'return' ? 'inbound' : 'outbound'}`
+        + ` ${(HISTORY_ROLES[target.role] || 'Driver').toLowerCase()}`;
+      recordHistory(trip.id, 'driver_status_changed', [{
+        field: 'driver_status', label: 'Driver status',
+        before: was ? `${who}: ${was}` : null, after: `${who}: ${label}`,
+      }]);
       await show();
       toast('success', `${crewName(target)} is ${label.toLowerCase()} now.`);
     } catch (err) {
@@ -5911,6 +5935,7 @@
         client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
           .eq('id', bar.dataset.tripId).then(r => r));
       if (error) throw new Error(error.message);
+      recordFieldChange(bar.dataset.tripId, `hotel_booked_${bar.dataset.leg}`, !booked, booked);
       await show();
       toast('success', booked ? 'The hotel is booked.' : 'The hotel is not booked.');
     } catch (err) {
@@ -5928,6 +5953,7 @@
       const { error } = await withTimeout(
         client.from('trip_assignments').update({ bus_id: null }).eq('id', assignmentId).then(r => r));
       if (error) throw new Error(error.message);
+      recordBusChange(bar.dataset.tripId, bar.dataset.busId || null, null);
       await show();
       refreshEditor(assignmentId);
       toast('success', 'Taken off its bus. It is in the Unassigned row.');
@@ -6206,6 +6232,210 @@
     try { return (await file.slice(0, 5).text()) === '%PDF-'; } catch { return false; }
   }
 
+  /* ── Trip history ──
+     Every change the scheduler makes to a trip writes a `record_trip_history`
+     entry as rux-ui writes it, so its History panel shows both apps' entries
+     alike: an action, the trip's snapshot, and changes of
+     `{ field, label, before, after }` holding display strings. The labels and
+     formats are rux-ui's `TRIP_FIELDS` and `buildTripHistoryChanges`, with the
+     columns this app edits and rux-ui's table leaves out added at the end. A
+     column not listed is not recorded. */
+  const HISTORY_FIELDS = [
+    ['trip_ref', 'Trip ID'],
+    ['customer', 'Client'],
+    ['destination', 'Destination'],
+    ['start_date', 'Start date'],
+    ['end_date', 'End date'],
+    ['return_start_date', 'Inbound start date'],
+    ['return_end_date', 'Inbound end date'],
+    ['trip_type', 'Trip type'],
+    ['is_self_organized', 'Billing type', 'billingType'],
+    ['trip_bar_color', 'Trip color'],
+    ['booking_contact_name', 'Booking contact'],
+    ['booking_contact_phone', 'Booking phone'],
+    ['booking_contact_email', 'Booking email'],
+    ['trip_contact_1_name', 'Trip contact'],
+    ['trip_contact_1_phone', 'Trip phone'],
+    ['trip_contact_2_name', 'Alternate trip contact'],
+    ['trip_contact_2_phone', 'Alternate trip phone'],
+    ['notes', 'Notes'],
+    ['contract_status', 'Contract status'],
+    ['contract_note', 'Contract note'],
+    ['quoted_price', 'Quoted price', 'money'],
+    ['deposit_amount', 'Payments received', 'money'],
+    ['est_miles', 'Estimated miles', 'number'],
+    ['actual_miles', 'Actual miles', 'number'],
+    ['driving_hours', 'Drive hours', 'number'],
+    ['on_duty_hours', 'On-duty hours', 'number'],
+    ['invoice_status', 'Invoice status'],
+    ['date_paid', 'Date paid'],
+    ['bus_count', 'Bus count', 'number'],
+    ['return_bus_count', 'Inbound bus count', 'number'],
+    ['confirmed', 'Confirmed', 'boolean'],
+    ['contact_not_needed', 'Contact required', 'inverseBoolean'],
+    ['itinerary_not_needed', 'Itinerary required', 'inverseBoolean'],
+    ['po_received', 'PO received', 'boolean'],
+    ['invoiced', 'Invoiced', 'boolean'],
+    ['balance_paid', 'Balance paid', 'boolean'],
+    // Edited here and not in rux-ui's table.
+    ['vehicle_type', 'Vehicle'],
+    ['req_sleeper', 'Sleeper', 'boolean'],
+    ['req_ada', 'Wheelchair lift', 'boolean'],
+    ['req_56pax', '56 passenger', 'boolean'],
+    ['need_hotel', 'Hotel needed', 'boolean'],
+    ['hotel_booked_outbound', 'Outbound hotel booked', 'boolean'],
+    ['hotel_booked_return', 'Inbound hotel booked', 'boolean'],
+    ['hotel_itinerary_number_outbound', 'Outbound hotel confirmation'],
+    ['hotel_itinerary_number_return', 'Inbound hotel confirmation'],
+    ['po_ref', 'PO number'],
+    ['po_amount', 'PO amount', 'money'],
+    ['invoice_number', 'Invoice number'],
+  ];
+  const HISTORY_TRIP_TYPES = { round_trip: 'Round trip', one_way: 'One-way', dropoff_pickup: 'Split trip' };
+  const HISTORY_REQUIREMENTS = {
+    pax56: '56 passenger', oneWay: 'One-way', sleeper: 'Sleeper', fuelCard: 'Fuel card',
+    adaLift: 'Wheelchair lift', hotel: 'Hotel', wifi: 'Wi-Fi',
+  };
+  const HISTORY_ROLES = {
+    driver: 'Driver', coDriver: 'Co-driver', 'co-driver': 'Co-driver', relief1: 'Relief driver',
+    relief2: 'Relief driver', 'relief-start': 'Relief driver', 'relief-end': 'Relief driver',
+  };
+
+  // Empty is null, and a comparison sorts object keys, as rux-ui compares.
+  const histNull = v => (v === undefined || v === '' ? null : v);
+  const histStable = v => Array.isArray(v) ? v.map(histStable)
+    : v && typeof v === 'object'
+      ? Object.fromEntries(Object.keys(v).sort().map(k => [k, histStable(v[k])]))
+      : histNull(v);
+  const histSame = (a, b) => JSON.stringify(histStable(a)) === JSON.stringify(histStable(b));
+  const histNumber = v => (v === null || v === undefined || v === '' ? null : Number(v));
+  const histUsd = n => n.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
+
+  function histFormat(value, kind, field) {
+    const v = histNull(value);
+    if (v === null) return null;
+    if (field === 'trip_type') return HISTORY_TRIP_TYPES[v] || String(v);
+    if (kind === 'boolean') return v ? 'Yes' : 'No';
+    if (kind === 'inverseBoolean') return v ? 'No' : 'Yes';
+    if (kind === 'billingType') return v ? 'Ticketed' : 'Charter';
+    if (kind === 'money' || kind === 'number') {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return String(v);
+      return kind === 'money' ? histUsd(n) : n.toLocaleString();
+    }
+    return String(v);
+  }
+
+  const histByPosition = rows => [...(rows || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+  // The parts of a fleet, a route or a list that a change is judged on.
+  const histAssignments = rows => histByPosition(rows).map(a => ({
+    bus_id: a.bus_id || null,
+    position: a.position ?? null,
+    leg: a.leg || 'outbound',
+    active_roles: a.active_roles || ['driver'],
+    drivers: (a.trip_drivers || []).map(d => ({
+      driver_id: d.driver_id || null,
+      role: d.role || 'driver',
+      pay: histNumber(d.pay),
+      report_time: histNull(d.report_time),
+      instructions: histNull(d.instructions),
+    })).sort((x, y) => `${x.role}:${x.driver_id}`.localeCompare(`${y.role}:${y.driver_id}`)),
+  }));
+  const histStops = rows => histByPosition(rows).map(s => ({
+    leg: s.leg || 'outbound', type: s.type || null, label: s.label || null, name: s.name || null,
+    address: s.address || null, depart_prev: s.depart_prev || null, arrive: s.arrive || null, spot: s.spot || null,
+  }));
+  const histPayments = rows => histByPosition(rows).map(p => ({
+    position: p.position ?? null, amount: histNumber(p.amount),
+    method: histNull(p.method), date: histNull(p.date), ref: histNull(p.ref),
+  }));
+  const histBilling = (rows, refField) => histByPosition(rows).map(r => ({
+    [refField]: histNull(r[refField]), amount: histNumber(r.amount), date: histNull(r.date),
+  }));
+
+  const histBusName = id => `Bus ${panelIndex.buses.get(id)?.number ?? id}`;
+  const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
+
+  // "Outbound · Bus 12 · Driver: Name ($300 · report 06:00) | …"
+  function histFleetSummary(rows) {
+    if (!rows.length) return null;
+    return rows.map(a => {
+      const crew = a.drivers.filter(d => d.driver_id).map(d => {
+        const details = [d.pay ? `$${Number(d.pay).toLocaleString()}` : null,
+          d.report_time ? `report ${d.report_time}` : null].filter(Boolean);
+        return `${HISTORY_ROLES[d.role] || d.role || 'Driver'}: ${histDriverName(d.driver_id)}`
+          + (details.length ? ` (${details.join(' · ')})` : '');
+      });
+      return [a.leg === 'return' ? 'Inbound' : 'Outbound', a.bus_id ? histBusName(a.bus_id) : 'No bus', ...crew].join(' · ');
+    }).join(' | ');
+  }
+  function histRouteSummary(rows) {
+    if (!rows.length) return null;
+    return rows.map(s => s.name || s.address || s.label).filter(Boolean).join(' → ')
+      || `${rows.length} stop${rows.length === 1 ? '' : 's'}`;
+  }
+  function histPaymentSummary(rows) {
+    if (!rows.length) return null;
+    const total = rows.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    return `${rows.length} payment${rows.length === 1 ? '' : 's'} · ${histUsd(total)}`;
+  }
+  function histBillingSummary(rows, refField, noun) {
+    if (!rows.length) return null;
+    return rows.map(r => {
+      const n = Number(r.amount);
+      const money = r.amount !== null && Number.isFinite(n) ? histUsd(n) : '';
+      return [r[refField] ? `${noun} ${r[refField]}` : noun, money].filter(Boolean).join(' ');
+    }).join(' · ');
+  }
+  const histRequirements = reqs => Object.keys(reqs || {}).filter(k => reqs[k]).sort()
+    .map(k => HISTORY_REQUIREMENTS[k] || k).join(', ') || null;
+
+  // A trip and every row a save can change, as the database holds them.
+  const HISTORY_READ = '*,'
+    + 'trip_assignments(bus_id,position,leg,active_roles,trip_drivers(driver_id,role,pay,report_time,instructions)),'
+    + 'trip_stops(position,leg,type,label,name,address,depart_prev,arrive,spot),'
+    + 'trip_payments(position,amount,method,date,ref),'
+    + 'trip_pos(position,ref,amount,date),'
+    + 'trip_invoices(position,number,amount,date)';
+  async function readTripState(tripId) {
+    const { data, error } = await withTimeout(client.from('trips').select(HISTORY_READ).eq('id', tripId).single().then(r => r));
+    if (error) throw new Error(error.message);
+    return data;
+  }
+  // The trip's own columns, without the rows read beside them.
+  const tripSnapshot = state => Object.fromEntries(Object.entries(state || {}).filter(([, v]) => !Array.isArray(v)));
+
+  // The changes between two reads of `readTripState`; null before is a new trip.
+  function tripChanges(before, after) {
+    if (!before) return [{ field: 'trip', label: 'Trip', before: null, after: 'Created' }];
+    const changes = [];
+    const push = (field, label, was, now) => {
+      if (histSame(was, now)) return;
+      changes.push({ field, label, before: histNull(was), after: histNull(now) });
+    };
+    for (const [field, label, kind] of HISTORY_FIELDS) {
+      if (histSame(before[field], after[field])) continue;
+      push(field, label, histFormat(before[field], kind, field), histFormat(after[field], kind, field));
+    }
+    if (!histSame(before.trip_reqs || {}, after.trip_reqs || {})) {
+      push('trip_reqs', 'Requirements', histRequirements(before.trip_reqs), histRequirements(after.trip_reqs));
+    }
+    const lists = [
+      ['assignments', 'Fleet assignments', 'trip_assignments', histAssignments, histFleetSummary],
+      ['itinerary', 'Itinerary', 'trip_stops', histStops, histRouteSummary],
+      ['payments', 'Payments', 'trip_payments', histPayments, histPaymentSummary],
+      ['purchase_orders', 'Purchase orders', 'trip_pos', r => histBilling(r, 'ref'), r => histBillingSummary(r, 'ref', 'PO')],
+      ['invoices', 'Invoices', 'trip_invoices', r => histBilling(r, 'number'), r => histBillingSummary(r, 'number', 'Invoice')],
+    ];
+    for (const [field, label, key, shape, summary] of lists) {
+      const was = shape(before[key]);
+      const now = shape(after[key]);
+      if (!histSame(was, now)) push(field, label, summary(was), summary(now));
+    }
+    return changes;
+  }
+
   /* The history's actor is the person's rux-ui profile name, the one rux-ui
      records, found by the account's id; the platform profile's name stands in
      for an account rux-ui never saw, and with neither the function's own
@@ -6224,17 +6454,20 @@
     return null;
   })());
 
-  /* One history entry as rux-ui writes it: the trip's snapshot, one `document`
-     change, and the file in the metadata. A failed entry is logged and does not
-     undo the file change, as in rux-ui. */
-  async function recordFileHistory(tripId, action, before, after, metadata) {
+  /* One history entry. With no snapshot given, the trip's own is read. An entry
+     with no changes is not sent, and a failed one is logged and never undoes
+     the change it records, as in rux-ui. */
+  async function recordHistory(tripId, action, changes, snapshot = null, metadata = {}) {
+    if (!tripId || !changes?.length) return;
     try {
-      const { data: snapshot } = await withTimeout(client.from('trips')
-        .select('id,trip_ref,start_date,end_date,customer,destination').eq('id', tripId).single().then(r => r));
+      if (!snapshot) {
+        const { data } = await withTimeout(client.from('trips')
+          .select('id,trip_ref,start_date,end_date,customer,destination').eq('id', tripId).single().then(r => r));
+        snapshot = data;
+      }
       const args = {
         p_trip_id: tripId, p_action: action, p_snapshot: snapshot || {},
-        p_changes: [{ field: 'document', label: 'Document', before, after }],
-        p_metadata: metadata,
+        p_changes: changes, p_metadata: metadata,
       };
       const actor = await actorName();
       if (actor) args.p_actor_name = actor;
@@ -6244,6 +6477,36 @@
       console.warn('The trip history entry was not written:', err);
     }
   }
+
+  /* A save's entry: the trip read after the writes against the read before
+     them, or `created` for a new trip. A read that fails leaves the save
+     unrecorded rather than recorded wrong. */
+  async function recordSave(tripId, before) {
+    try {
+      const after = await readTripState(tripId);
+      await recordHistory(tripId, before ? 'updated' : 'created', tripChanges(before, after), tripSnapshot(after));
+    } catch (err) {
+      console.warn('The trip history entry was not written:', err);
+    }
+  }
+
+  // A bus change from the board, as rux-ui records a reassignment.
+  const recordBusChange = (tripId, fromBus, toBus) => recordHistory(tripId, 'assignment_changed', [{
+    field: 'bus', label: 'Bus', before: fromBus ? histBusName(fromBus) : null, after: toBus ? histBusName(toBus) : null,
+  }]);
+
+  // One column changed from the board, labelled and formatted as a save's.
+  function recordFieldChange(tripId, field, was, now) {
+    const [, label, kind] = HISTORY_FIELDS.find(([f]) => f === field);
+    if (histSame(was, now)) return;
+    recordHistory(tripId, 'updated', [{
+      field, label, before: histFormat(was, kind, field), after: histFormat(now, kind, field),
+    }]);
+  }
+
+  // One document change, with the file in the metadata.
+  const recordFileHistory = (tripId, action, before, after, metadata) =>
+    recordHistory(tripId, action, [{ field: 'document', label: 'Document', before, after }], null, metadata);
 
   // Stores the file and adds its row. A row that fails takes the stored file
   // back out, so nothing is left behind.
@@ -6642,6 +6905,9 @@
       if (reason) patch.cancellation_reason = reason;
       const { error } = await withTimeout(client.from('trips').update(patch).eq('id', id).then(r => r));
       if (error) throw new Error(error.message);
+      recordHistory(id, 'cancelled', [{
+        field: 'trip', label: 'Trip', before: 'Active', after: reason ? `Cancelled — ${reason}` : 'Cancelled',
+      }]);
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);

@@ -75,10 +75,10 @@ function, including the ones that create share links.
   page behind a log-in and the account's ticked apps, `account.js` sends a
   log-in that ends to the log-in page, and `switcher.js` lists only the apps
   the account can open. The scheduler reads an empty fleet as an ended log-in.
-- **Later plans:** per-person chat rules, trip history naming the actor from
-  the session, private storage, private realtime channels, and reporting a
-  scheduler write the database refused as not saved, which only an ended
-  log-in could cause once the page lock guards the board.
+- **Later plans:** per-person chat rules, private storage, private realtime
+  channels, and reporting a scheduler write the database refused as not
+  saved, which only an ended log-in could cause once the page lock guards the
+  board.
 
 ## Questions
 

@@ -253,15 +253,6 @@
 }
 
 
-/* Carbon pins a contained list row's action to the top of the row
-   (`position: absolute`, `inset-block-start: 0`), so in a row taller than the
-   button it sits high; this centres it. It goes when Design centres the
-   action itself, which docs/status.md lists. */
-.rux--contained-list-item__action {
-  inset-block: 0;
-  align-items: center;
-}
-
 /* Fields in a modal take `field-02`, as rux.css does for fields in a side
    panel. A modal is `rux--layer-one`, where `field-01` barely differs from the
    modal's surface in several themes. Two classes, the side-panel rule's

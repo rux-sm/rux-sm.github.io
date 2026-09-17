@@ -22,17 +22,6 @@ done and how.
 - **ant-dark helper text** is 4.4:1 on `layer-02`, under the 4.5:1 body text
   needs. The editor's Billing tab shows it.
 
-### Asked for by the scheduler
-
-- A toggle whose tap target meets 44px at touch widths. The label is the hit
-  area, and it shrinks onto the switch when the label is empty.
-- `.rux--contained-list__action` ends 16px outside the text it lines up with.
-  It needs the header's inline padding.
-- `.rux--contained-list-item__action` sits at the top of its row. It needs
-  `inset-block: 0` and `align-items: center`.
-- `setToggle` words a product can choose. It always says On/Off, where the
-  scheduler means Pending/Signed and Pending/Invoiced.
-
 ### Asked for by Notes
 
 - A side-nav link that meets 44px at touch widths. It is 32px tall, and the

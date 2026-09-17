@@ -93,3 +93,30 @@
    restores exactly what Carbon's `<div>` computes and keeps the heading.
    Reported by Scheduler 2026-09-10, who measured 28px there too. */
 .rux--contained-list__label { font: inherit; }
+
+/* A CONTAINED LIST ROW'S ACTION SITS IN THE MIDDLE OF THE ROW. Carbon pins it
+   to the row's top, which is its middle only while the row is one button tall;
+   a row of two lines left it high. Asked for by Scheduler, whose bus and
+   driver rows are two lines. */
+.rux--contained-list-item__action {
+  inset-block: 0;
+  align-items: center;
+}
+
+/* A TOGGLE IS 44PX TO A FINGER. The label is the hit area, and with no label
+   text it is only the switch: 16px tall when small, 24px at default. On a
+   touch screen an invisible square, at least 44px and centred on the switch,
+   widens the label's hit area without moving anything. Asked for by
+   Scheduler, whose Billing switches carry no label text. */
+@media (pointer: coarse) {
+  .rux--toggle__appearance { position: relative; }
+  .rux--toggle__appearance::before {
+    position: absolute;
+    block-size: max(100%, 2.75rem);
+    content: "";
+    inline-size: max(100%, 2.75rem);
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

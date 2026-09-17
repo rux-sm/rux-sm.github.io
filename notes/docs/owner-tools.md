@@ -31,7 +31,9 @@ the owner, and one private bucket.
 | `notes-walk-shots` | The private bucket those screenshots are uploaded to |
 
 A walk pins the commit its pages came from, so a record can always be read back
-against the instructions it was made under.
+against the instructions it was made under. It can be continued only on that
+same build, because the site keeps no earlier build's steps; a walk from an
+earlier build keeps its answers for the pull, and a fresh walk carries on.
 
 ## Bringing it home
 

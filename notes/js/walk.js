@@ -12,6 +12,11 @@
 
    A WALK IS WRITTEN ON THE DAY IT IS WALKED (atlas standards/walk-rules.md
    §1), so only today's walks are offered to continue.
+
+   A WALK CONTINUES ONLY ON THE BUILD IT STARTED ON. The site keeps no earlier
+   build's steps, so a walk from one is not offered: its saved answers stay for
+   the pull, pinned to the commit they were made under, and a fresh walk starts
+   on this build's steps.
    ========================================================================== */
 (() => {
   'use strict';
@@ -73,14 +78,21 @@
     const today = must(await state.db.from('notes_walks')
       .select('id, walkthrough, atlas_commit, started, company, ln_user')
       .gte('created_at', midnight.toISOString()).order('created_at', { ascending: false }));
-    $('walk-resume').replaceChildren(...today.map(w =>
+    const current = today.filter(w => w.atlas_commit === commit);
+    const stale = today.length - current.length;
+    $('walk-resume').replaceChildren(...current.map(w =>
       option(w.id, `${titleOf(w.walkthrough)} · started ${w.started.slice(11, 16)}`)));
-    $('walk-resume-section').hidden = !today.length;
-    state.today = today;
+    $('walk-resume-section').hidden = !current.length;
+    $('walk-stale').textContent = stale === 1
+      ? 'One walk today started on an earlier build of Notes, so it cannot be continued here. Its answers are kept for the pull; start a fresh walk to carry on.'
+      : `${stale} walks today started on an earlier build of Notes, so they cannot be continued here. Their answers are kept for the pull; start a fresh walk to carry on.`;
+    $('walk-stale').hidden = !stale;
+    state.today = current;
     $('walk-start').hidden = false;
   }
 
   async function open(walk) {
+    if (walk.atlas_commit !== commit) throw new Error('it started on an earlier build of Notes, whose steps this page does not have');
     const phases = await phasesOf(walk.walkthrough);
     const [steps, shots] = await Promise.all([
       state.db.from('notes_walk_steps').select('step, actual, notes').eq('walk_id', walk.id),
@@ -103,9 +115,6 @@
     $('walk-run').hidden = false;
     clear();
     render();
-    if (walk.atlas_commit !== commit) {
-      status('This walk started on an earlier build of Notes. The steps shown are this build\'s.');
-    }
   }
 
   // ---- one step ------------------------------------------------------------

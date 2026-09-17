@@ -2921,6 +2921,7 @@ function walkPage(site) {
                 </div>
               </div>
             </form>
+            <p class="rux--type-body-02" id="walk-stale" hidden></p>
             <div id="walk-resume-section" hidden>
               <div class="rux--stack-vertical rux--stack-scale-7">
                 <h2 id="walk-resume-h">Continue a walk</h2>

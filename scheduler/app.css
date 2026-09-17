@@ -470,6 +470,9 @@ button.scheduler-row-head__num::after {
   display: flex;
   background: var(--rux-layer-selected-inverse);
   box-shadow: 0 2px 8px rgb(0 0 0 / .4);
+  /* Rounded like the theme's surfaces, and square where it has none. The
+     arrow stays at least 8px from either end, clear of the curve. */
+  border-radius: var(--scheduler-surface-radius, 0);
 }
 /* The row's display rule beats the browser's own `[hidden]`. */
 .scheduler-bar-shortcuts[hidden] { display: none; }
@@ -501,6 +504,9 @@ button.scheduler-row-head__num::after {
   background: transparent;
 }
 .scheduler-bar-shortcut:hover { background: var(--rux-background-inverse-hover); }
+/* The end slots fill the bar's rounded corners, so their hover follows the curve. */
+.scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-surface-radius, 0); border-end-start-radius: var(--scheduler-surface-radius, 0); }
+.scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); border-end-end-radius: var(--scheduler-surface-radius, 0); }
 .scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 /* An empty slot's dashed circle, and an action that cannot act on this trip,
    are drawn faint in the bar's own icon colour, so they read on every theme. */

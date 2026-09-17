@@ -151,6 +151,7 @@
   border-block-end-color: transparent;
 }
 [data-theme="ant-dark"] .rux--tile,
+[data-theme="ant-dark"] .rux--file__drop-container,
 [data-theme="ant-dark"] .rux--side-panel,
 [data-theme="ant-dark"] .rux--modal-container,
 [data-theme="ant-dark"] .rux--list-box__menu,

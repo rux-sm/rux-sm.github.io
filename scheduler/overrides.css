@@ -443,3 +443,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   line-height: var(--rux-heading-compact-02-line-height);
   color: var(--rux-text-primary);
 }
+
+/* Carbon's uploaded-file list keeps its 8px top margin while it holds no
+   file, which left the Files tab's drop zone 40px from the next section. */
+.rux--file-container:empty { display: none; }

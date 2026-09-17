@@ -906,6 +906,9 @@ button.scheduler-row-head__num::after {
 /* A note in a list, such as the PO coverage line, takes the list's 8px gap
    and none of Carbon's helper-text margin. */
 .scheduler-list-body .rux--form__helper-text { margin: 0; }
+/* An empty list's note, such as No files yet, sits where the list would,
+   16px under the heading, with none of Carbon's helper-text margin. */
+.scheduler-items + .rux--form__helper-text { margin-block-start: 0; }
 
 /* The add button is the list's last item, drawn as a dashed tile at the md
    button height, 40px: a place a new record goes, the way Ant's list forms
@@ -1894,9 +1897,9 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
 .scheduler-driver-trip { text-decoration: none; }
 .scheduler-off-error { color: var(--rux-text-error); }
 
-/* The Route tab's note under its timeline, spaced as Carbon spaces helper
-   text. */
-.scheduler-route-note { margin-block-start: var(--rux-spacing-05); }
+/* The Route tab's note under its timeline, 8px below it, as the PO coverage
+   line sits under the POs it speaks to; the timeline's rows are 8px apart. */
+.scheduler-route-note { margin-block-start: var(--rux-spacing-03); }
 .scheduler-route-note[hidden] { display: none; }
 /* The worked-out times: each time over what it was worked out from, in the
    label size, so the typed fields above stay the loudest thing on the tab. */

@@ -347,8 +347,9 @@
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
-      // `status`, so the Fleet tab offers active drivers.
-      client.from('drivers').select('id,name,short_name,status').then(unwrap),
+      // `status`, so the Fleet tab offers active drivers; `priority`, so the
+      // roster lists them in the order they are called on.
+      client.from('drivers').select('id,name,short_name,status,priority').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client').order('name').then(unwrap),
@@ -4943,8 +4944,15 @@
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
     const rows = (drivers || [])
-      .slice()
-      .sort((a, b) => (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
+      /* Active drivers only. The roster answers who can take a trip, and an
+         inactive driver cannot, so their week is noise. A driver with no
+         status counts as active, as the Fleet tab's picker reads it. */
+      .filter(d => !d.status || d.status === 'active')
+      /* Priority first, the order the office calls drivers in, so the top of
+         the roster is who to ask next. 1 to 5; a driver with none sorts below
+         5, and names settle a tie. */
+      .sort((a, b) => ((a.priority ?? 9) - (b.priority ?? 9))
+        || (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
       .map(d => ({ driver: d, days: Array.from({ length: 7 }, () => ({ off: null, trips: [] })) }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
@@ -5001,7 +5009,18 @@
     }
     availGrid.appendChild(head);
 
+    /* A heading wherever the priority changes, because the rows are in
+       priority order and only the breaks are missing. A driver with no
+       priority gets their own heading rather than sitting under the last
+       number, which would say something untrue about them. */
+    let band;
     for (const row of rows) {
+      const p = row.driver.priority ?? null;
+      if (p !== band) {
+        band = p;
+        availGrid.appendChild(el('div', 'scheduler-avail__band',
+          p == null ? 'No priority' : `Priority ${p}`));
+      }
       const r = el('div', 'scheduler-avail__row');
       /* The full name goes on the title, because the cell shows `short_name`
          when there is one and ellipses a long name. `title` is hover only, so

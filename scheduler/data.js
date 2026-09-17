@@ -4506,7 +4506,10 @@
          payments leave uncovered, counted as `billingStatus` counts it:
 
              shortfall = max(0, (quoted - paid) - po_amount) */
-      const poCoverage = el('p', 'rux--form__helper-text scheduler-po-coverage');
+      const poCoverage = el('p', 'rux--form__helper-text');
+      // It sits in the list, under the POs and over the add tile it speaks to.
+      const poCoverageItem = el('li');
+      poCoverageItem.appendChild(poCoverage);
       const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
         poReceivedOf(trip));
       const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
@@ -4546,6 +4549,7 @@
             remove: () => { poPending.splice(i, 1); drawPos(); refreshDirty(); },
           }));
         });
+        poList.body.appendChild(poCoverageItem);
         // The add row is also the empty state.
         poList.body.appendChild(listAddRow({
           label: 'Add purchase order', id: 'scheduler-f-poadd',
@@ -4630,6 +4634,7 @@
           : price <= 0 ? 'No quoted price to cover'
           : shortfall <= 0 ? 'Covers the balance'
           : `${usd(shortfall)} uncovered. Add a PO or payment.`;
+        poCoverageItem.hidden = !poCoverage.textContent;
 
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
 
@@ -4700,8 +4705,7 @@
       /* The order is contract, PO and invoice, as the ladder climbs, then
          payments last because it is the only section that grows. Every section
          is a `section()`, so the three switches share one right edge. */
-      const poBody = el('div');
-      poBody.append(poList.list, poCoverage);
+      const poBody = poList.list;
 
       const invBody = invList.list;
       const poWrap = section('PO received', poBody, poSwitch);

@@ -900,6 +900,9 @@ button.scheduler-row-head__num::after {
 /* A list's records, hidden while its switch is off; its grid display would
    beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }
+/* A note in a list, such as the PO coverage line, takes the list's 8px gap
+   and none of Carbon's helper-text margin. */
+.scheduler-list-body .rux--form__helper-text { margin: 0; }
 
 /* The add button is the list's last item, drawn as a dashed tile at the md
    button height, 40px: a place a new record goes, the way Ant's list forms
@@ -922,7 +925,6 @@ button.scheduler-row-head__num::after {
   color: var(--rux-link-primary);
 }
 .scheduler-list-add .rux--btn__icon { position: static; margin: 0; }
-.scheduler-po-coverage { margin-block-start: var(--rux-spacing-03); }
 
 /* The payment dialog's fields, two to a row, falling to one column when the
    modal is too narrow for two. */

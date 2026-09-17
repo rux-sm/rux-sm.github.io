@@ -2046,9 +2046,17 @@
     });
     busPick.dataset.fleetLeg = leg;
     busPick.dataset.fleetBus = bus.key;
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    stack.append(full(busPick));
-    for (const r of ROLES) if (bus.seats[r.role].on) stack.appendChild(seatBlock(leg, bus, r.role, n, dups));
+    /* The bus and its drivers are one group of fields 24px apart; each relief,
+       with its swap time and note, is a group of its own, 32px from the next,
+       as the Details tab spaces its contacts. ROLES lists the reliefs last. */
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-7');
+    const seats = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    seats.append(full(busPick));
+    stack.append(seats);
+    for (const r of ROLES) {
+      if (!bus.seats[r.role].on) continue;
+      (RELIEF.has(r.role) ? stack : seats).appendChild(seatBlock(leg, bus, r.role, n, dups));
+    }
     group.append(head, stack);
     const tile = el('div', 'rux--tile rux--layer-two');
     tile.appendChild(group);
@@ -4817,7 +4825,7 @@
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring
        round the whole tab. Decided per panel from its contents, which change. */
-    for (const tp of [panelDetails, panelBilling, panelFleet, panelRoute, panelFiles]) {
+    for (const tp of [panelDetails, panelBilling, panelRoute, panelFleet, panelFiles]) {
       const focusable = tp.querySelector('input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])');
       if (focusable) tp.removeAttribute('tabindex');
       else tp.setAttribute('tabindex', '0');

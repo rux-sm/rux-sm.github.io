@@ -94,6 +94,9 @@ const ICONS = [
   // and `channels`, two opposite arrows, is a relief driver's handover, so
   // relief is the one role that is not a person.
   'user', 'channels',
+  // A VEHICLE, for Scheduler's trip bar warning that a bus is the wrong type
+  // for the trip. Carbon's `bus` is a coach seen from the front.
+  'bus',
 ];
 
 const symbols = [], missing = [], from = {};

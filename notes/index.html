@@ -979,6 +979,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 .notes-path-quests { display: grid; gap: .5rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-tools { display: grid; gap: 1rem; padding-block-start: .5rem; }
 .notes-path-switch { max-inline-size: 20rem; }
+.notes-path-search { max-inline-size: 36rem; }
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
 .notes-path-questbox { display: grid; gap: .5rem; }
@@ -1228,6 +1229,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       <li class="rux--side-nav__item">
         <a class="rux--side-nav__link" href="pages/order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Map</span></a>
       </li>
+      <li class="rux--side-nav__item" data-notes-owner hidden>
+        <a class="rux--side-nav__link" href="pages/quests.html"><span class="rux--side-nav__link-text">Quests</span></a>
+      </li>
       <li class="rux--side-nav__item">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
           <span class="rux--side-nav__submenu-title">Meeting summaries</span>
@@ -1257,6 +1261,15 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <div class="notes-path-main">
           <h1>Demand to shipment</h1>
           <p class="rux--type-body-02">Start here: <a class="rux--link" href="#tile-1" data-notes-path-go="1">1 · Sales Order Intake Workbench</a> · <a class="rux--link" href="pages/order-to-shipment-overview.html">See the whole map</a></p>
+          <div class="rux--search rux--layout--size-lg notes-path-search" role="search" data-notes-path-search hidden>
+            <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+            <label class="rux--label" for="notes-path-q">Search the path</label>
+            <input id="notes-path-q" class="rux--search-input" type="text" role="searchbox" placeholder="Search tiles, steps, screens and quests" autocomplete="off" data-notes-path-q>
+            <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear" data-notes-path-clear>
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <p class="rux--type-body-01" data-notes-path-found aria-live="polite"></p>
           <div class="rux--content-switcher rux--layout--size-md notes-path-switch" role="tablist" aria-label="View" data-notes-path-switch hidden>
             <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-notes-path-view="path"><span class="rux--content-switcher__label">Path</span></button>
             <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-notes-path-view="tasks"><span class="rux--content-switcher__label">Other tasks</span></button>

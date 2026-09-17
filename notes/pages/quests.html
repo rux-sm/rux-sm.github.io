@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Planning Scenarios — Review — Notes</title>
+<title>Quests — Notes</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <!-- PLEX FIRST, THEN rux.css, WHICH IS THE ORDER Design USES IN ITS OWN
@@ -1179,7 +1179,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         <a class="rux--side-nav__link" href="order-to-shipment-overview.html"><span class="rux--side-nav__link-text">Map</span></a>
       </li>
       <li class="rux--side-nav__item" data-notes-owner hidden>
-        <a class="rux--side-nav__link" href="quests.html"><span class="rux--side-nav__link-text">Quests</span></a>
+        <a class="rux--side-nav__link" href="quests.html" aria-current="page"><span class="rux--side-nav__link-text">Quests</span></a>
       </li>
       <li class="rux--side-nav__item">
         <button class="rux--side-nav__submenu" type="button" aria-expanded="false">
@@ -1201,223 +1201,27 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="planning-scenarios_2026-09-03" data-notes-commit="0c59bcd1b47e285bce9ad30634562a40004e3f15">
+<main id="main-content" class="rux--content" data-notes-commit="0c59bcd1b47e285bce9ad30634562a40004e3f15">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
+
         <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Planning Scenarios — Review</h1>
-          <div class="notes-tag-row">
-            <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
-            <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Review</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-05</span></span>
-          </div>
-          <p class="rux--type-body-01"><a class="rux--link" href="planning-scenarios_2026-09-03_summary.html">Read the summary</a></p>
-        </div>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-objective">
-          <h2 id="s-objective">Objective</h2>
-          <p class="notes-prose-measure">Free-form training session on Enterprise Planning end to end: a sales order recognized as demand, MRP generating planned production and purchase orders, transferring planned orders to execution, receiving through to put-away, and two second-order demand sources (a project contract deliverable, and a safety-stock top-up) pegged the same way as ordinary sales demand. Unlike the guided walkthroughs this library has reviewed before, this session had no script — the trainee drove, hit real system behavior live, and the group worked several open questions out on screen as they went.</p>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-attendees">
-          <h2 id="s-attendees">Attendees</h2>
+          <h1>Quests</h1>
+          <p class="rux--type-body-02" data-notes-quests-summary>Sign in as the owner to see the quests.</p>
           <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">Role</div></th><th scope="col"><div class="rux--table-header-label">Count</div></th><th scope="col"><div class="rux--table-header-label">Organisation</div></th></tr></thead>
-            <tbody>
-          <tr><td>Consultant, running the session</td><td>1</td><td>Internal</td></tr>
-          <tr><td>Trainee, hands-on-keyboard throughout</td><td>1</td><td>Internal</td></tr>
-          <tr><td>Attendee, active in narration and in the later chat thread</td><td>1</td><td>Internal</td></tr>
-          <tr><td>Attendee, named in the video call panel</td><td>2</td><td>Internal</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-          <p class="notes-prose-measure">Roles beyond the consultant (coaching language, &quot;let&#39;s see the help&quot;, &quot;the answer is on the screen&quot;) and the trainee (status bar user, screen-share owner) are confirmed by the recording itself — the video-call participant panel is visible in every frame pulled. This is stronger attendee evidence than prior reviews in this library, which relied on narration alone.</p>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-7" aria-labelledby="h-topics">
-          <h2 id="h-topics">Key topics discussed</h2>
-          <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.1">
-            <h3 id="t-3.1">3.1 Demand is recognized the instant a sales order line is entered</h3>
-            <p class="notes-prose-measure">Creating a sales order line makes it visible on <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> immediately, before any planning run: <em>&quot;as soon as the order is entered, the demand is recognized.&quot;</em> MRP (&quot;Generate Orders...&quot;) still has to run to turn that demand into planned supply, but the demand itself needs no run to appear. Confirmed on screen for <span class="notes-t-exact">BAM-CHOP-PAIR</span>, order <span class="notes-t-exact">100000669</span>.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.2">
-            <h3 id="t-3.2">3.2 Generate Orders only traverses the BOM from where you run it</h3>
-            <p class="notes-prose-measure">Running <strong>Generate Orders...</strong> on a <strong>component</strong> item does not pick up its <strong>parent&#39;s</strong> demand — the trainee ran it on <span class="notes-t-exact">BAM-SLEEVE</span> directly and nothing propagated up. Running it on the <strong>top-level</strong> item (<span class="notes-t-exact">BAM-CHOP-PAIR</span>) with <strong>Include Child Items</strong> selected is what walks the BOM down and generates supply for the components. The consultant&#39;s diagnosis on screen: <em>&quot;I don&#39;t know why I didn&#39;t traverse your BOM or pick up the components because I didn&#39;t run the... I generated on the child item&quot;</em> — corrected by re-running from the parent. This is a procedural trap worth a walkthrough callout wherever generation is first taught.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.3">
-            <h3 id="t-3.3">3.3 Combine Orders, reproduced on a second item</h3>
-            <p class="notes-prose-measure"><span class="notes-t-exact">the source on file</span> — status bar <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-exact">BAM-SLEEVE</span>, shows the same <strong>Combine Orders</strong> outcome this library already documented for <span class="notes-t-exact">BAM-ROD</span> on 2026-08-25 (<span class="notes-t-exact">the source on file</span> §9.1): multiple <strong>Purchase Order Advice</strong> rows against one <strong>Purchase Order</strong> <span class="notes-t-exact">100000688</span>. This second, independent instance corroborates the earlier finding rather than opening a new question.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.4">
-            <h3 id="t-3.4">3.4 A PO can&#39;t be received until it&#39;s released — and Status Overview shows why</h3>
-            <p class="notes-prose-measure">Narrated and shown: a freshly created PO cannot be received. <em>&quot;If it&#39;s created, the warehousing is not going to see it.&quot;</em> The <strong>Status Overview</strong> command (right-click a PO line, or a toolbar command) shows the document&#39;s progression — Created → Printed → Released → Warehousing sees it. The group tested this live rather than taking it as given: attempted a receipt on a <span class="notes-t-exact">Created</span> PO, confirmed it failed, printed the PO (which auto-released it), and confirmed receiving then worked.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.5">
-            <h3 id="t-3.5">3.5 &quot;Why are there two POs with the same number?&quot; — resolved: one PO, two lines</h3>
-            <p class="notes-prose-measure">Live, unresolved on camera (<em>&quot;I don&#39;t know why there&#39;s two, but I know that they&#39;re the same number, I don&#39;t know what that means&quot;</em>). <strong>Settled by frame, not by narration</strong>: <span class="notes-t-exact">the source on file</span> — <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span>, Inbound Open grid, two rows both reading <span class="notes-t-exact">Purchase 100000688</span>, <strong>Line 1</strong> and <strong>Line 2</strong>, both <span class="notes-t-exact">PUI</span> &quot;Purchase Receipts&quot;, both received <span class="notes-t-exact">9/3/2026 1:22 PM</span>. <strong>It was never two purchase orders — one PO with two order lines shows as two rows in this dashboard view.</strong> This is the same &quot;how do I know what&#39;s in here&quot; pattern the consultant separately named for the Inbound Order Lines standalone session (§3.6 below) — a session built to be read at line granularity will always show more rows than there are orders.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.6">
-            <h3 id="t-3.6">3.6 Managing at order level vs. line level, and a session that isn&#39;t on the menu</h3>
-            <p class="notes-prose-measure">The consultant showed the same underlying data two ways: <strong>Warehouse Manager Dashboard</strong> / <strong>Warehousing Order</strong> header-level (one row per order, no line detail), versus a standalone <strong>Inbound Order Lines</strong> session reached only by drilling in — <em>&quot;this session is not in the menu... this is the standalone session of the inbound lines tab in your warehouse order.&quot;</em> Its <strong>second view</strong> shows every inbound line in the system regardless of which order or order-set it belongs to. <strong>This directly answers a question consultants get from clients</strong>, in the consultant&#39;s own words: <em>&quot;how do I know what&#39;s in here, or how do I get a list view — this is it.&quot;</em></p>
-            <p class="notes-prose-measure"><strong>Not documented for this release.</strong></p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.7">
-            <h3 id="t-3.7">3.7 Warehouse order sets: why one order can appear as several</h3>
-            <p class="notes-prose-measure"><strong>Named and explained, not just observed</strong>: LN groups a warehousing order&#39;s lines into separate <strong>warehouse order sets</strong> by whatever makes their receiving or shipping handling <em>unique</em> — plan receipt date, carrier, delivery terms, and similar fields. <em>&quot;It&#39;s not even the order of your lines, it&#39;s dependent by those unique receiving qualities.&quot;</em> Same customer, same item, same date collapses to one set; changing the date or the customer splits it into its own. This is a general LN mechanism, not specific to purchasing — the consultant confirmed it applies the same way to sales and production orders.</p>
-            <p class="notes-prose-measure">This section documents <em>within-order</em> line grouping, not a way to merge two independently pegged demand-driven orders into one — it rules out one plausible-sounding mechanism for whether the two sales-order-pegged supplies for <span class="notes-t-exact">BAM-CHOP-PAIR</span> could be combined, though the question is still open and was narrowed a different way, from the vendor help rather than from this section. </p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.8">
-            <h3 id="t-3.8">3.8 Receiving early: the exact tolerance warning, quoted from the dialog</h3>
-            <p class="notes-prose-measure"><span class="notes-t-exact">the source on file</span> — status bar <span class="notes-t-exact">whinh3512m000</span>, dialog <strong>&quot;Warehouse Receipt: whinh0056&quot;</strong>:</p>
-            <blockquote class="notes-quote">Link order line to receipt: You are about to receive order line Purchase <span class="notes-t-exact">100000688 / 30 - 1</span> on a date other than planned receipt date (09-16-2026).</blockquote>
-            <p class="notes-prose-measure">Narrated cause: <span class="notes-t-named">Items - Purchase</span> <span class="notes-t-exact">tdipu0101m000</span> carries a <strong>date tolerance</strong> and a <strong>quantity tolerance</strong> field per item; this message fires because the receipt (9/3) falls outside the planned receipt date&#39;s tolerance window (9/16). The dialog offers to proceed (<span class="notes-t-exact">OK</span>), cancel, or view the full log (<span class="notes-t-exact">LOG...</span>) — one further error/information message was noted but not opened.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.9">
-            <h3 id="t-3.9">3.9 Receiving vocabulary: Receipt Open, Confirmed, and put-away are three different states</h3>
-            <p class="notes-prose-measure">Directly narrated and worth keeping as vocabulary: putting order lines on a receipt gives them status <strong>Receipt Open</strong> — <em>&quot;these lines are sitting on a receipt but they haven&#39;t been confirmed yet.&quot;</em> <strong>Confirm</strong> is what &quot;puts them away&quot; logically (moves them toward inventory); it is a distinct step from receiving. The stated order of operations for a location-controlled warehouse: <strong>Receive → Confirm → Inbound Advice → Put Away.</strong> For a <strong>non</strong>-location-controlled warehouse, there is no inbound-advice step at all: <em>&quot;inbound advice only applies when locations are involved.&quot;</em></p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.10">
-            <h3 id="t-3.10">3.10 Inbound advice location selection: priority, then alphanumeric order</h3>
-            <p class="notes-prose-measure">With multiple candidate bulk locations at equal priority, LN falls back to <strong>alphanumeric order</strong> — demonstrated live by process of elimination (occupied/full checks ruled out, then the <strong>Inbound Priority</strong> field on the location, both <span class="notes-t-exact">9999</span>/tied, then <strong>Fixed Location</strong> ruled out by checking <strong>Fixed Locations</strong> (references) and finding the item wasn&#39;t in that list). The <strong>Fixed Location</strong> field&#39;s own help was read on screen: a location so flagged is <em>&quot;a fixed location for one or more items&quot;</em> set up through a fixed-location session, and <em>&quot;unbound[?] by fixed have a higher priority than those that are not fixed.&quot;</em> <strong>This transcript line is garbled by the auto-transcription</strong> (<span class="notes-t-exact">faster-whisper</span>, not a citation-grade source per principle 4) — the field help should be re-read from its own session for exact wording before this goes into a session file.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.11">
-            <h3 id="t-3.11">3.11 A location-controlled item, received into a non-location-controlled warehouse, is received as if it weren&#39;t</h3>
-            <p class="notes-prose-measure">Deliberately tested live, not just stated: the consultant added a PO line for a location-controlled item to a <strong>non</strong>-location-controlled warehouse (<span class="notes-t-exact">ADNA05</span>), received and confirmed it, and showed the item lands in inventory with <strong>no inbound advice step at all</strong> and no location assigned. <em>&quot;Even though the item&#39;s location controlled, if the warehouse isn&#39;t, it ignores that fact.&quot;</em> <strong>The warehouse&#39;s setting overrides the item&#39;s</strong>, not the reverse — worth a session-file note wherever <span class="notes-t-exact">whwmd2500m000</span>&#39;s location-control flag is documented, since a reader could reasonably assume the item&#39;s own flag always applies.</p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.12">
-            <h3 id="t-3.12">3.12 A second demand source: Contract Deliverable, and it does not auto-plan like a sales order</h3>
-            <p class="notes-prose-measure"><strong>The single most substantial new topic in this recording.</strong> A <strong>Project Contract</strong> (order <span class="notes-t-exact">100000011</span>) was added as demand for <span class="notes-t-exact">BAM-CHOP-PAIR</span>, alongside the item&#39;s ordinary sales orders. Two behaviors distinguish it from a sales order:</p>
-            <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>It is not automatically recognized by planning.</strong> <em>&quot;When you create it, it&#39;s immediately recognized by planning&quot; is true for a sales order — a contract deliverable in a &quot;Free&quot; status is not; the consultant had to</em><em>activate</em>* it before MRP would plan against it. Left in Free status, MRP ignores it entirely, silently — the same &quot;no message explains the absence&quot; pattern this library has already logged for planning-cluster rows (<span class="notes-t-exact">cprpd1100m000</span> §3) and time-fence gating.</li>
-          <li class="rux--list__item"><strong>It carries a _Specification_ / project-pegging field a sales order does not show the same way.</strong> <span class="notes-t-exact">the source on file</span> — status bar <span class="notes-t-exact">cprrp0520m000</span>, the full Overview grid for <span class="notes-t-exact">BAM-CHOP-PAIR</span>: the <span class="notes-t-exact">Project Contract</span> row (order <span class="notes-t-exact">100000011</span>, status <span class="notes-t-exact">Active</span>, demand <span class="notes-t-exact">50.0000</span>, warehouse <span class="notes-t-exact">ADNA07</span> — a <strong>different</strong> warehouse than the item&#39;s other rows, all <span class="notes-t-exact">ADNA01</span>) carries a green <strong>Specification</strong> check mark, as does its dedicated supply row, <strong>Production Order </strong><span class="notes-t-exact">020000034</span> (supply <span class="notes-t-exact">50.0000</span>, same date <span class="notes-t-exact">9/17/2026</span>). The consultant: <em>&quot;That specification is defined with distribution lines on your production order... that production order is project pegged... this 50 is reserved for this project or this deliverable.&quot;</em></li>
-        </ol>
-            <p class="notes-prose-measure">Release to warehousing works the same as a sales order once the deliverable is activated: <span class="notes-t-exact">the source on file</span> shows it as an outbound line, <span class="notes-t-exact">SO/SC Out (Documents=Yes)</span>, in <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span> once released.</p>
-            <p class="notes-prose-measure"><strong>This mechanism now has a home</strong>: the source on file, written from this session. <strong>Not documented for this release.</strong></p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.13">
-            <h3 id="t-3.13">3.13 The safety-stock/MRP-split puzzle from earlier in the chat thread</h3>
-            <p class="notes-prose-measure">This recording is the live origin of the <span class="notes-t-exact">BAM-CHOP-PAIR</span> safety-stock-50 question mined into <span class="notes-t-exact">the source on file</span> §5. Not repeated here — see that section for the full account, including the trainer&#39;s on-camera guess (warehouse-level ordering data, explicitly left unconfirmed: <em>&quot;I don&#39;t know, look later&quot;</em>) against an attendee&#39;s later, screen-verified pegging explanation from the chat thread. The follow-up combine-orders question ran further than this recording: <span class="notes-t-exact">Combine Orders</span> was ruled out from <span class="notes-t-exact">cppat1210m000</span>&#39;s &quot;Watch out&quot; section, then the same chat thread&#39;s next round pointed at <span class="notes-t-exact">tcibd2100m000</span>&#39;s <em>Order Interval</em> instead — a generation-time mechanism, deployed at <span class="notes-t-exact">0</span> Days at the time.</p>
-            <p class="notes-prose-measure"><strong>Settled in a controlled follow-up on 2026-09-05.</strong> The baseline still showed the three planned production orders for <span class="notes-t-exact">20</span>, <span class="notes-t-exact">20</span>, and <span class="notes-t-exact">10</span>. With the global interval changed to <span class="notes-t-exact">10</span> Days through the warehouse → site → global inheritance chain, regenerating the plan replaced them with one planned production order for <span class="notes-t-exact">50</span>; <strong>Automatic Order Grouping</strong> was cleared. The project-contract supply remained separate with its Specification indicator. Sources: <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, <span class="notes-t-exact">the source on file</span>, and <span class="notes-t-exact">the source on file</span>. </p>
-          </section>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.14">
-            <h3 id="t-3.14">3.14 Exception Messages, briefly</h3>
-            <p class="notes-prose-measure">Named but not explored in depth: <strong>Exception Messages</strong> surface planner-facing warnings, e.g. <em>&quot;reschedule into 9/3&quot;</em> on an order running late. The consultant flagged this as &quot;a whole bunch of stuff&quot; for a future session and deferred it explicitly rather than opening it here — recorded as a deferral, not a gap.</p>
-          </section>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-decisions">
-          <h2 id="s-decisions">Decisions made</h2>
-          <ol class="rux--list--ordered">
-          <li class="rux--list__item"><strong>Generate Orders must be run from the top-level (parent) item with Include Child Items selected</strong> to traverse the BOM and plan components — running it on a component alone does not propagate demand upward.</li>
-          <li class="rux--list__item"><strong>The &quot;two POs, same number&quot; reading was wrong</strong> — Warehouse Manager Dashboard shows order <em>lines</em>, not orders; one PO with multiple lines will always show as multiple rows there.</li>
-          <li class="rux--list__item"><strong>Contract Deliverable is confirmed as a second, distinct demand mechanism</strong> worth its own documentation pass, not folded into the existing sales-order-demand write-ups.</li>
-          <li class="rux--list__item"><strong>Order Interval, not Combine Orders or Automatic Order Grouping, is the generation-time control that netted the three ordinary requirements into one planned production order</strong> in the 2026-09-05 follow-up.</li>
-        </ol>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-actions">
-          <h2 id="s-actions">Action items</h2>
-          <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Action</div></th><th scope="col"><div class="rux--table-header-label">Owner</div></th><th scope="col"><div class="rux--table-header-label">Due</div></th><th scope="col"><div class="rux--table-header-label">Status</div></th></tr></thead>
-            <tbody>
-          <tr><td>1</td><td>~~Document Contract Deliverable / Project Contract as a planning demand source~~ — done, <span class="notes-t-exact">the source on file</span>; export Contract/Project module help to vendor-source the Free/Active gate</td><td>Library</td><td>—</td><td>Open </td></tr>
-          <tr><td>2</td><td>Re-read Fixed Location&#39;s field help directly from its session — the transcript&#39;s wording is garbled</td><td>Library</td><td>—</td><td>Open, low priority</td></tr>
-          <tr><td>3</td><td>Capture the standalone Inbound Order Lines session&#39;s own status bar on a future recording</td><td>Library</td><td>—</td><td>Open </td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-questions">
-          <h2 id="s-questions">Open questions</h2>
-          <ul class="rux--list--unordered">
-          <li class="rux--list__item">What vendor source documents Contract Deliverable&#39;s Free/Active planning gate and its project-pegging mechanism? <span class="notes-t-exact">the source on file</span> covers the mechanism from this recording, unsourced from the vendor — </li>
-          <li class="rux--list__item">What is the standalone Inbound Order Lines session&#39;s actual code? — </li>
-        </ul>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-methodology">
-          <h2 id="s-methodology">Methodology and process notes</h2>
-          <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>A live, unscripted session settles questions a scripted walkthrough can&#39;t raise.</strong> Every prior review in this library followed a planned procedure; this one caught the group actually being wrong on camera twice (the child-item generation trap, §3.2; the &quot;two POs&quot; misreading, §3.5) and correcting from the screen rather than from narration. <strong>This is a stronger evidentiary pattern than a rehearsed demo</strong> — the errors are real, not staged, and their corrections are traceable to a specific frame.</li>
-          <li class="rux--list__item"><strong>A spoken guess and a screen-verified finding can address the same question and disagree — record both, attributed, don&#39;t let the later one silently overwrite the earlier one.</strong> §3.13 and <span class="notes-t-exact">the source on file</span> §5 do this explicitly for the safety-stock question; it is the clearest instance yet of principle 4 in this library.</li>
-          <li class="rux--list__item"><strong>A chat thread that grows out of a recording is itself evidence, on the recording&#39;s own timeline</strong> — the two are not independent sources to reconcile, they are one incident split across two capture mechanisms. Filing both under one narrative (here, and in the session file) rather than two disconnected write-ups kept the account coherent.</li>
-          <li class="rux--list__item"><strong>Recording:</strong> <span class="notes-t-exact">the source on file</span> — the raw video stays local and never commits; the manifest carries its checksum and lists the transcript derivatives.</li>
-        </ul>
-        </section>
-
-      <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="s-sessions">
-          <h2 id="s-sessions">Sessions referenced</h2>
-          <div class="rux--data-table-container">
-        <div class="rux--data-table-content">
-          <table class="rux--data-table rux--data-table--md">
-            <thead><tr><th scope="col"><div class="rux--table-header-label">Session name</div></th><th scope="col"><div class="rux--table-header-label">Code</div></th><th scope="col"><div class="rux--table-header-label">Reference doc</div></th></tr></thead>
-            <tbody>
-          <tr><td>Item Order Plan</td><td><span class="notes-t-exact">cprrp0520m000</span></td><td>the source on file</td></tr>
-          <tr><td>Planned Orders</td><td><span class="notes-t-exact">cprrp1100m000</span></td><td>the source on file</td></tr>
-          <tr><td>Transfer Order Planning</td><td><span class="notes-t-exact">cppat1210m000</span></td><td>—</td></tr>
-          <tr><td>Warehousing Order</td><td><span class="notes-t-exact">whinh2100m000</span></td><td>the source on file</td></tr>
-          <tr><td>Warehouse Manager Dashboard</td><td><span class="notes-t-exact">whinh2300m000</span></td><td>—</td></tr>
-          <tr><td>Warehouse Receipt</td><td><span class="notes-t-exact">whinh3512m000</span></td><td>the source on file</td></tr>
-          <tr><td>Items - Purchase</td><td><span class="notes-t-exact">tdipu0101m000</span></td><td>—</td></tr>
-          <tr><td>Item Data by Warehouse</td><td><span class="notes-t-exact">whwmd2510m000</span> or <span class="notes-t-exact">whwmd2110s000</span></td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-          <p class="notes-prose-measure"></p>
-        </section>
-
-        <div data-notes-owner data-notes-review hidden>
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="h-review">
-          <h2 id="h-review" class="rux--type-productive-heading-03">Review</h2>
-          <p class="rux--type-body-compact-01" data-notes-review-last>Reading the last review</p>
-          <form id="notes-review-form">
-            <div class="rux--stack-vertical rux--stack-scale-5">
-              <div class="rux--form-item">
-                <fieldset class="rux--radio-button-group rux--radio-button-group--label-right">
-                  <legend class="rux--label">Decision</legend>
-                  <div class="rux--radio-button-wrapper">
-                    <input id="notes-review-approve" class="rux--radio-button" type="radio" name="notes-review-decision" value="approve">
-                    <label for="notes-review-approve" class="rux--radio-button__label">
-                      <span class="rux--radio-button__appearance"></span>
-                      <span class="rux--radio-button__label-text">Approve</span>
-                    </label>
-                  </div>
-                  <div class="rux--radio-button-wrapper">
-                    <input id="notes-review-changes" class="rux--radio-button" type="radio" name="notes-review-decision" value="changes">
-                    <label for="notes-review-changes" class="rux--radio-button__label">
-                      <span class="rux--radio-button__appearance"></span>
-                      <span class="rux--radio-button__label-text">Request changes</span>
-                    </label>
-                  </div>
-                </fieldset>
-              </div>
-              <div class="rux--form-item">
-                <div class="rux--text-area__label-wrapper">
-                  <label class="rux--label" for="notes-review-feedback">What should change</label>
-                </div>
-                <div class="rux--text-area__wrapper">
-                  <textarea id="notes-review-feedback" class="rux--text-area" rows="3"></textarea>
-                  <span class="rux--text-area__counter-alert" role="alert"></span>
-                </div>
-                <div class="rux--form__helper-text">Needed to request changes. The page changes only once a session applies it.</div>
-              </div>
-              <div>
-                <button type="submit" class="rux--btn rux--btn--primary" id="notes-review-send" disabled>Send review</button>
-              </div>
-              <p class="rux--form__helper-text" id="notes-review-status" role="status"></p>
+            <div class="rux--data-table-content">
+              <table class="rux--data-table rux--data-table--md">
+                <thead><tr><th scope="col"><div class="rux--table-header-label">Tile</div></th><th scope="col"><div class="rux--table-header-label">Issue</div></th><th scope="col"><div class="rux--table-header-label">What is missing</div></th><th scope="col"><div class="rux--table-header-label">Kind</div></th></tr></thead>
+                <tbody data-notes-quests-rows>
+                </tbody>
+              </table>
             </div>
-          </form>
-        </section>
+          </div>
+          <script type="application/json" id="notes-quest-tiles">[{"id":"items","label":"Items and groups"},{"id":"buyfrom","label":"Item - Purchase"},{"id":"bom","label":"Bill of material and routing"},{"id":"cluster","label":"Planning cluster row on the item"},{"id":"std-cost","label":"Calculate Standard Cost"},{"id":"revisions","label":"Item Engineering Revisions"},{"id":"alt-items","label":"Alternative Items"},{"id":"mass-change","label":"Mass Change Item Assignments"},{"id":"1","label":"1 · Sales Order Intake Workbench"},{"id":"price-books","label":"Price Books"},{"id":"change-order-line","label":"Change or cancel an order line"},{"id":"2","label":"2 · Does on-hand cover it?"},{"id":"allocated","label":"Stock promised to other orders"},{"id":"read-whwmd4300m000","label":"Inventory 360"},{"id":"3","label":"3 · Planning data exists"},{"id":"4","label":"4 · Inside the order horizon"},{"id":"5","label":"5 · Generate Order Planning (Item)"},{"id":"read-cprrp0520m000","label":"Item Order Plan"},{"id":"planned-prod","label":"Planned production order"},{"id":"planned-purch","label":"Planned purchase order"},{"id":"plan-all","label":"Generate Order Planning"},{"id":"master-planning","label":"Generate Master Planning"},{"id":"exception-messages","label":"Exception Messages by Planner"},{"id":"6","label":"6 · Transfer Order Planning"},{"id":"confirm-planned","label":"Confirm Order Planning"},{"id":"transfer-production","label":"Transfer planned production orders"},{"id":"7","label":"7 · Purchase Order"},{"id":"requisition","label":"Requisitions"},{"id":"rfq","label":"Request for Quotations"},{"id":"8","label":"8 · Warehouse Receipt"},{"id":"inspection","label":"Inspections Overview"},{"id":"putaway","label":"Generate Inbound Advice"},{"id":"9","label":"9 · Production Orders"},{"id":"short-release","label":"Components short at release"},{"id":"stock","label":"Finished item into stock"},{"id":"manual-production","label":"Manual production order"},{"id":"report-completed","label":"Report Operations"},{"id":"cancel-production","label":"Cancel Production Orders"},{"id":"close-production","label":"Close Production Orders"},{"id":"backflush","label":"Backflush Materials and Hours"},{"id":"subcontract","label":"Subcontract Operations"},{"id":"10","label":"10 · Release Sales Order Lines to Warehousing"},{"id":"release-block","label":"Blocked release"},{"id":"11","label":"11 · Warehousing Order"},{"id":"short-advice","label":"Stock short at advice"},{"id":"advice-variants","label":"Undo or standalone advice"},{"id":"12","label":"12 · Picking List"},{"id":"13","label":"13 · Shipment"},{"id":"ship-short","label":"Shipped less than picked"},{"id":"cancel-shipment","label":"Cancel Shipments"},{"id":"business-partner","label":"Business Partners"},{"id":"planning-clusters","label":"Planning Clusters"},{"id":"calendars","label":"Non-working Days"},{"id":"returns","label":"Sales returns"},{"id":"quotations","label":"Quotes"},{"id":"sales-contracts","label":"Sales contracts"},{"id":"project-pegging","label":"Contract deliverables"},{"id":"purchase-contracts","label":"Purchase contracts"},{"id":"approved-suppliers","label":"Approved Supplier List"},{"id":"supplier-returns","label":"Return to supplier"},{"id":"forecast","label":"Generate Demand and Inventory Plan"},{"id":"capacity","label":"Resource Capacity"},{"id":"repetitive","label":"Production Schedules"},{"id":"warehouse-transfer","label":"Warehouse transfer"},{"id":"cycle-count","label":"Cycle Counting Orders"},{"id":"adjustment","label":"Adjustment Orders"},{"id":"inventory-blocking","label":"Inventory Blocking by Zone/Location"},{"id":"quarantine","label":"Quarantine Inventory"},{"id":"handling-units","label":"Handling Units"},{"id":"lot-tracing","label":"Item - Lot"},{"id":"kanban","label":"Generate Orders (Kanban)"},{"id":"assembly-orders","label":"Assembly Orders"},{"id":"warehouse-setup","label":"Warehouses"},{"id":"order-inspection","label":"Order Inspections"},{"id":"non-conformance","label":"Non-Conformance Reports"}]</script>
         </div>
+
+
 <p class="rux--type-caption-01 notes-revision">Built from atlas 0c59bcd · contract 12</p>
       </div>
     </div>
@@ -1439,7 +1243,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
 <script src="/design/js/tile.js"></script>
 <script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
-
+<script src="../js/quests.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>

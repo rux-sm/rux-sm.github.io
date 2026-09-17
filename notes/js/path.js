@@ -13,6 +13,9 @@
    - Escape closes the open tile and returns focus to it.
    - The Path | Other tasks switch shows one list at a time. Without this
      file both lists show, one after the other.
+   - The search box keeps only the tiles whose words match, in both lists.
+     A tile's steps and quests are in the page even while it is closed, so
+     they are searched too.
    ========================================================================== */
 (() => {
   'use strict';
@@ -45,7 +48,9 @@
   // ---- the switch ----------------------------------------------------------
   const lists = [...document.querySelectorAll('[data-notes-path-list]')];
   const views = [...document.querySelectorAll('[data-notes-path-view]')];
+  let current = 'path';
   function view(name) {
+    current = name;
     for (const l of lists) l.hidden = l.dataset.notesPathList !== name;
     for (const b of views) {
       const on = b.dataset.notesPathView === name;
@@ -69,9 +74,53 @@
     view('path');
   }
 
+  // ---- search ----------------------------------------------------------------
+  const search = document.querySelector('[data-notes-path-search]');
+  const q = document.querySelector('[data-notes-path-q]');
+  const clear = document.querySelector('[data-notes-path-clear]');
+  const found = document.querySelector('[data-notes-path-found]');
+  const switcher = document.querySelector('[data-notes-path-switch]');
+  const text = new Map();
+  const words = t => {
+    // Read once per search, since the owner's quests arrive after load.
+    text.set(t, t.textContent.replace(/\s+/g, ' ').toLowerCase());
+    return text.get(t);
+  };
+  function filter() {
+    const terms = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    const on = terms.length > 0;
+    let count = 0;
+    for (const t of tiles) {
+      const hit = !on || terms.every(w => words(t).includes(w));
+      t.hidden = !hit;
+      if (on && hit) count++;
+    }
+    const shown = el => [...el.querySelectorAll('[data-notes-path-tile]')].some(t => !t.hidden);
+    for (const el of document.querySelectorAll('.notes-path-side, .notes-path-stage')) el.hidden = on && !shown(el);
+    if (on) {
+      for (const l of lists) l.hidden = !shown(l);
+      if (switcher) switcher.hidden = true;
+      found.textContent = count ? `${count} tile${count === 1 ? '' : 's'} match.` : 'No tile matches.';
+    } else {
+      if (switcher && views.length) switcher.hidden = false;
+      if (lists.length > 1) view(current); else for (const l of lists) l.hidden = false;
+      found.textContent = '';
+    }
+    clear.classList.toggle('rux--search-close--hidden', !q.value);
+  }
+  if (search && q) {
+    search.hidden = false;
+    q.addEventListener('input', filter);
+    q.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && q.value) { event.stopPropagation(); q.value = ''; filter(); }
+    });
+    clear.addEventListener('click', () => { q.value = ''; filter(); q.focus(); });
+  }
+
   function show(id, behavior = 'smooth') {
     const t = document.getElementById(`tile-${id}`);
     if (!t) return;
+    if (t.hidden && q) { q.value = ''; filter(); }
     const list = t.closest('[data-notes-path-list]');
     if (list?.hidden) view(list.dataset.notesPathList);
     t.open = true;

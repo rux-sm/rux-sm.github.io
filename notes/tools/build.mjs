@@ -705,8 +705,8 @@ function nav(site, activeId) {
   // Meeting summaries stay listed until their pages become the sources a
   // page cites.
   const up = activeId === null ? '' : '../';
-  const item = (href, label, current) => `
-      <li class="rux--side-nav__item">
+  const item = (href, label, current, owner = false) => `
+      <li class="rux--side-nav__item"${owner ? ' data-notes-owner hidden' : ''}>
         <a class="rux--side-nav__link" href="${href}"${current ? ' aria-current="page"' : ''}><span class="rux--side-nav__link-text">${esc(label)}</span></a>
       </li>`;
   const link = (d) => {
@@ -732,6 +732,7 @@ ${docs.map(link).join('\n')}
   return `  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">${item(up || './', 'Path', activeId === null)}${
       map ? item(`${up ? '' : 'pages/'}${HOME_DIAGRAM}.html`, 'Map', activeId === HOME_DIAGRAM) : ''}${
+      item(`${up ? '' : 'pages/'}quests.html`, 'Quests', activeId === 'quests', !PRIVATE)}${
       group('Concepts', site.concepts ?? [])}${group('Meeting summaries', site.summaries)}
     </ul>
   </nav>`;
@@ -1991,7 +1992,7 @@ const HOME_DIAGRAM = 'order-to-shipment-overview';
 function indexPage(site) {
   const { references } = site;
   const home = (references ?? []).find(r => r.id === HOME_DIAGRAM && r.diagram);
-  if (PATH_HOME && home) return pathPage(home, site);
+  if (PATH_HOME && home) return pathPage(site);
 
   // THE HOME PAGE IS THE MAP AND NOTHING ELSE, at rux's direction 2026-09-11.
   //
@@ -2894,6 +2895,7 @@ const PATH_CSS = `
 .notes-path-quests { display: grid; gap: .5rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-tools { display: grid; gap: 1rem; padding-block-start: .5rem; }
 .notes-path-switch { max-inline-size: 20rem; }
+.notes-path-search { max-inline-size: 36rem; }
 .notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
 .notes-path-walk { display: grid; gap: .5rem; }
 .notes-path-questbox { display: grid; gap: .5rem; }
@@ -2910,19 +2912,18 @@ const PATH_CSS = `
 }
 `;
 
-function pathPage(ref, site) {
+// WHERE EVERY TILE SITS, in the order the path shows them: setup first, each
+// numbered tile with the tiles beneath it, then the other tasks by lane. The
+// path page draws it and the quests page lists in it.
+function pathLayout(site) {
+  const ref = (site.references ?? []).find(r => r.id === HOME_DIAGRAM && r.diagram);
+  if (!ref) return null;
   const dg = ref.diagram;
   const cat = categories(dg);
-  const docs = new Map(site.walkthroughs.map(w => [w.id, w]));
-  const experiments = new Map(site.experiments.map(e => [e.id, e]));
   const { numbered, under, setup } = pathPlaces(dg, cat);
-  const start = dg.nodes.find(n => n.id === PATH_START);
-  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs, false, experiments));
-
   // Tasks: a gate keeps the checkpoint look, everything else is a step.
   const tasks = (site.references ?? []).find(r => r.id === TASKS_DIAGRAM && r.diagram)?.diagram;
   const taskCat = new Map((tasks?.nodes ?? []).map(n => [n.id, n.kind === 'gate' ? 'check' : 'step']));
-  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true, experiments));
   const ids = new Set(dg.nodes.map(n => n.id));
   for (const n of tasks?.nodes ?? []) {
     if (ids.has(n.id)) throw new Error(`task ${n.id} has the id of an overview tile`);
@@ -2938,8 +2939,21 @@ function pathPage(ref, site) {
     }
   }
   const others = (tasks?.nodes ?? []).filter(n => !n.under);
-  const isTask = n => taskCat.has(n.id);
-  const tile = n => isTask(n) ? taskTile(n) : one(n);
+  const byLane = (tasks?.lanes ?? []).map(l => [l, others.filter(n => n.lane === l.name)]).filter(([, ns]) => ns.length);
+  const order = [...setup, ...numbered.flatMap(n => [n, ...(under.get(n.id) ?? [])]), ...byLane.flatMap(([, ns]) => ns)];
+  return { ref, dg, cat, tasks, taskCat, setup, numbered, under, others, byLane, order };
+}
+
+const tileLabel = n => `${n.n != null ? `${n.n} · ` : ''}${n.session}`;
+
+function pathPage(site) {
+  const { ref, dg, cat, tasks, taskCat, setup, numbered, under, others, byLane } = pathLayout(site);
+  const docs = new Map(site.walkthroughs.map(w => [w.id, w]));
+  const experiments = new Map(site.experiments.map(e => [e.id, e]));
+  const start = dg.nodes.find(n => n.id === PATH_START);
+  const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs, false, experiments));
+  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true, experiments));
+  const tile = n => taskCat.has(n.id) ? taskTile(n) : one(n);
   const stages = [];
   for (const n of numbered) {
     if (stages.at(-1)?.stage !== n.stage) stages.push({ stage: n.stage, tiles: [] });
@@ -2959,6 +2973,15 @@ function pathPage(ref, site) {
         <div class="notes-path-main">
           <h1>Demand to shipment</h1>
           <p class="rux--type-body-02">${start ? `Start here: <a class="rux--link" href="#tile-${esc(start.id)}" data-notes-path-go="${esc(start.id)}">${esc(`${start.n} · ${start.session}`)}</a> · ` : ''}<a class="rux--link" href="pages/${esc(ref.id)}.html">See the whole map</a></p>
+          <div class="rux--search rux--layout--size-lg notes-path-search" role="search" data-notes-path-search hidden>
+            <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+            <label class="rux--label" for="notes-path-q">Search the path</label>
+            <input id="notes-path-q" class="rux--search-input" type="text" role="searchbox" placeholder="Search tiles, steps, screens and quests" autocomplete="off" data-notes-path-q>
+            <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear" data-notes-path-clear>
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <p class="rux--type-body-01" data-notes-path-found aria-live="polite"></p>
           ${others.length ? `<div class="rux--content-switcher rux--layout--size-md notes-path-switch" role="tablist" aria-label="View" data-notes-path-switch hidden>
             <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-notes-path-view="path"><span class="rux--content-switcher__label">Path</span></button>
             <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-notes-path-view="tasks"><span class="rux--content-switcher__label">Other tasks</span></button>
@@ -2968,8 +2991,7 @@ function pathPage(ref, site) {
           </div>
           ${others.length ? `<div class="notes-path" data-notes-path-list="tasks">
             <h2 class="rux--type-productive-heading-03 notes-path-tasks-title">Other tasks</h2>${
-            tasks.lanes.map(l => [l, others.filter(n => n.lane === l.name)]).filter(([, ns]) => ns.length)
-              .map(([l, ns]) => section(`h-tasks-${l.n}`, l.name, ns.map(taskTile))).join('')}
+            byLane.map(([l, ns]) => section(`h-tasks-${l.n}`, l.name, ns.map(taskTile))).join('')}
           </div>` : ''}
         </div>
         <aside class="notes-path-tools" aria-labelledby="h-tools">
@@ -2997,6 +3019,38 @@ function pathPage(ref, site) {
       </div>
 `;
   return page({ title: 'Notes', site, activeId: null, body, depth: 0, scripts: ['js/path.js', 'js/tile-walk.js', 'js/tile-owner.js'], css: PATH_CSS });
+}
+
+// ---------------------------------------------------------------- quests
+// EVERY QUEST ON ONE PAGE, the owner's. In the private build the rows are the
+// internal data's; on the live site js/quests.js fills them from the owner's
+// quest table, in the path's order, which the page carries as data.
+function questsPage(site) {
+  const layout = pathLayout(site);
+  const order = layout?.order ?? [];
+  const rows = order.flatMap(n => pathQuests(n).map(q => ({ n, ...q })));
+  const row = r => `
+              <tr><td><a class="rux--link" href="../#tile-${esc(r.n.id)}">${esc(tileLabel(r.n))}</a></td><td><span class="rux--type-code-01">${esc(r.issue)}</span></td><td>${esc(r.text)}</td><td>Untagged</td></tr>`;
+  const tiles = order.map(n => ({ id: n.id, label: tileLabel(n) }));
+  const body = `
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <h1>Quests</h1>
+          <p class="rux--type-body-02" data-notes-quests-summary>${PRIVATE
+            ? `${rows.length} quests on ${new Set(rows.map(r => r.n.id)).size} tiles, in the order the path shows them.`
+            : 'Sign in as the owner to see the quests.'}</p>
+          <div class="rux--data-table-container">
+            <div class="rux--data-table-content">
+              <table class="rux--data-table rux--data-table--md">
+                <thead><tr><th scope="col"><div class="rux--table-header-label">Tile</div></th><th scope="col"><div class="rux--table-header-label">Issue</div></th><th scope="col"><div class="rux--table-header-label">What is missing</div></th><th scope="col"><div class="rux--table-header-label">Kind</div></th></tr></thead>
+                <tbody data-notes-quests-rows>${PRIVATE ? rows.map(row).join('') : ''}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <script type="application/json" id="notes-quest-tiles">${JSON.stringify(tiles).replace(/</g, '\\u003c')}</script>
+        </div>
+`;
+  return page({ title: 'Quests — Notes', site, activeId: 'quests', body, depth: 1, scripts: ['js/quests.js'], doc: null });
 }
 
 function referencePage(r, site) {
@@ -3450,6 +3504,11 @@ for (const c of concepts) {
 for (const r of references) {
   const file = join(OUT_DIR, `${r.id}.html`);
   writeFileSync(file, referencePage(r, site));
+  written.push(file);
+}
+{
+  const file = join(OUT_DIR, 'quests.html');
+  writeFileSync(file, questsPage(site));
   written.push(file);
 }
 if (!PRIVATE) {

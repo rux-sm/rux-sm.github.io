@@ -8,7 +8,7 @@ type: reference
 collects is kept.** Anyone else with Notes ticked sees the published pages and
 nothing else. Logging in is the site's own login page.
 
-## The five scripts
+## The six scripts
 
 | File | What it does |
 | :--- | :--- |
@@ -16,6 +16,7 @@ nothing else. Logging in is the site's own login page.
 | `notes/js/experiment.js` | The worksheet: answers typed into the spaces the data marks, boxes ticked, a notepad, a revealable answer key, and an export |
 | `notes/js/walk.js` | One run of a procedure, a step at a time, from any device signed in as the owner |
 | `notes/js/tile-owner.js` | On the path: each tile's quests, the notepad kept per tile in the account, a tile's screenshots and documents, and Send for review |
+| `notes/js/quests.js` | The Quests page: every quest in the owner's quest table, in the path's order, each linking to its tile |
 | `notes/js/tile-walk.js` | Walk this, inside an open tile on the path: what happened and screenshots beside each of that tile's steps, saved as a walk of its walkthrough |
 
 ## Where what they collect is kept

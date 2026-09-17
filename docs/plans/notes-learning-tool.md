@@ -47,8 +47,9 @@ arriving, never knowledge verified.
   cutting across tiles arrives through search or the glossary instead, and opens
   the screen or concept that owns it.
 
-- **The side nav is Path, Map and Concepts**, and one search box sits in the
-  header. Meeting summaries stay listed until their pages become the sources a
+- **The side nav is Path, Map and Concepts**, with Quests for the owner, and
+  a search box above the path keeps the tiles whose steps, screens or quests
+  match. Meeting summaries stay listed until their pages become the sources a
   page cites. The glossary is part of Concepts: its terms are generated from the
   concepts' own frontmatter, each with exactly one owner.
 
@@ -150,8 +151,8 @@ arriving, never knowledge verified.
 - **A quest closes on evidence, never on effort.** Finishing one sends a record
   into the intake; atlas decides whether it settles anything.
 
-- **One queue page for the owner**, every quest in one list, marked by the kind
-  of work that closes it.
+- **One quests page for the owner**, every quest in the order the path shows
+  its tile, marked by the kind of work that closes it.
 
 ### The tools column
 
@@ -262,7 +263,6 @@ Neither holds up building; each gates only the one thing it names.
       their terms.
 - [ ] Simplify `run-order-planning-for-one-item` before it is walked: keep its
       essential warnings with the steps and move only optional detail out.
-- [ ] Search, and the owner's queue page.
 - [ ] Take one quest from a tile through a walk, the pull, the intake and a
       verified correction, and time it against what the same correction costs
       today.

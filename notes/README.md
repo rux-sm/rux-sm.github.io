@@ -25,6 +25,8 @@ Other tasks switch when they stand alone. The private preview shows each tile's
 gaps as quests from its data; the export tier carries no gaps. `js/path.js` is its
 behaviour; for the owner, `js/tile-walk.js` is Walk this and `js/tile-owner.js`
 shows the quests from the database and keeps the notepad and files in the account.
+A search box above the path filters the tiles, and `pages/quests.html` lists
+every quest for the owner, filled by `js/quests.js`.
 
 **For the owner, signed in,** `js/online.js` shows what every page carries
 hidden: a review box at its foot, which records Approve or Request changes,

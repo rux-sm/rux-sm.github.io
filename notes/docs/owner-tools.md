@@ -8,13 +8,14 @@ type: reference
 collects is kept.** Anyone else with Notes ticked sees the published pages and
 nothing else. Logging in is the site's own login page.
 
-## The three scripts
+## The four scripts
 
 | File | What it does |
 | :--- | :--- |
 | `notes/js/online.js` | Loaded on every page after the site's `account.js`. For the owner it reveals what `build.mjs` wrote hidden — the review box, and the link to walk a procedure |
 | `notes/js/experiment.js` | The worksheet: answers typed into the spaces the data marks, boxes ticked, a notepad, a revealable answer key, and an export |
 | `notes/js/walk.js` | One run of a procedure, a step at a time, from any device signed in as the owner |
+| `notes/js/tile-walk.js` | Walk this, inside an open tile on the path: what happened and screenshots beside each of that tile's steps, saved as a walk of its walkthrough |
 
 ## Where what they collect is kept
 

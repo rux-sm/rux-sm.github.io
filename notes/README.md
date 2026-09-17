@@ -18,12 +18,12 @@ question with a key can reveal it once something has been written. What a
 learner types stays in their own browser, and the rail exports it as Markdown.
 `js/experiment.js` is the whole of that.
 
-**In the private preview the front is the path** instead of the map: the
-overview's tiles in one column, each opening in place into the steps of the
-phases atlas says it opens, its way on, and its gaps as quests, with a notepad
-beside it. Atlas's tasks sit beneath the tile they vary, or behind an Other
-tasks switch when they stand alone. `js/path.js` is its behaviour. The public front stays the map until
-the path is published.
+**The front is the path**: the overview's tiles in one column, each opening
+in place into the steps of the phases atlas says it opens and its way on, with
+a notepad beside it. Atlas's tasks sit beneath the tile they vary, or behind an
+Other tasks switch when they stand alone. The private preview also shows each
+tile's gaps as quests; the export tier carries no gaps. `js/path.js` is its
+behaviour, and `js/tile-walk.js` is the owner's Walk this.
 
 **For the owner, signed in,** `js/online.js` shows what every page carries
 hidden: a review box at its foot, which records Approve or Request changes,

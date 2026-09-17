@@ -1,5 +1,5 @@
 {
-  "contract": 10,
+  "contract": 11,
   "tier": "export",
   "kind": "reference",
   "id": "order-to-shipment-overview",
@@ -657,6 +657,28 @@
                 }
               ],
               "text": "Do - confirm the item exists with its group, defaults and unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Create test items",
+                  "href": "create-basic-test-items-and-defaults.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 5"
+                }
+              ],
+              "text": "Opens — Create test items phase 5"
             }
           ]
         },
@@ -779,6 +801,28 @@
                 }
               ],
               "text": "Does — define what a made item is built from and how, both Approved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Create test items",
+                  "href": "create-basic-test-items-and-defaults.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 6, 7"
+                }
+              ],
+              "text": "Opens — Create test items phases 6, 7"
             }
           ]
         },
@@ -812,6 +856,28 @@
                 }
               ],
               "text": "Does — make the item visible to order planning. Without it the item is absent from the plan rather than refused"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 0"
+                }
+              ],
+              "text": "Opens — Run order planning phase 0"
             }
           ]
         },
@@ -883,6 +949,28 @@
                 }
               ],
               "text": "Do - enter the order and approve it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 1"
+                }
+              ],
+              "text": "Opens — Ship from stock phase 1"
             }
           ]
         },
@@ -1063,6 +1151,28 @@
                 }
               ],
               "text": "Do - Actions ➔ Release ➔ Release to Warehousing…, set Upto Release Date on or after the line's release date, then RELEASE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 2"
+                }
+              ],
+              "text": "Opens — Ship from stock phase 2"
             }
           ]
         },
@@ -1103,6 +1213,28 @@
                 }
               ],
               "text": "Does — decide silently whether planning can see the item and every component beneath it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 0"
+                }
+              ],
+              "text": "Opens — Run order planning phase 0"
             }
           ]
         },
@@ -1136,6 +1268,28 @@
                 }
               ],
               "text": "Does — decide silently whether the delivery date is near enough to plan. Counted in workdays"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 2"
+                }
+              ],
+              "text": "Opens — Run order planning phase 2"
             }
           ]
         },
@@ -1281,6 +1435,28 @@
                 }
               ],
               "text": "Do - run it with Include Child Items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 3, 4, 5"
+                }
+              ],
+              "text": "Opens — Run order planning phases 3, 4, 5"
             }
           ]
         },
@@ -1415,6 +1591,28 @@
                 }
               ],
               "text": "Do - confirm the planned orders first, then run it once per supply source"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 3"
+                }
+              ],
+              "text": "Opens — Plan to shipment phase 3"
             }
           ]
         },
@@ -1482,6 +1680,28 @@
                 }
               ],
               "text": "Do - read the order the transfer named in its process report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 1, 2"
+                }
+              ],
+              "text": "Opens — Purchase to receipt phases 1, 2"
             }
           ]
         },
@@ -1553,6 +1773,28 @@
                 }
               ],
               "text": "Do - open the order the transfer created and release it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 5"
+                }
+              ],
+              "text": "Opens — Plan to shipment phase 5"
             }
           ]
         },
@@ -1665,6 +1907,28 @@
                 }
               ],
               "text": "Do - enter the packing-slip reference per line and confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 3, 4"
+                }
+              ],
+              "text": "Opens — Purchase to receipt phases 3, 4"
             }
           ]
         },
@@ -1760,6 +2024,28 @@
                 }
               ],
               "text": "Leaves — nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Check an item's inventory",
+                  "href": "check-item-inventory.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 0, 1"
+                }
+              ],
+              "text": "Opens — Check an item's inventory phases 0, 1"
             }
           ]
         },
@@ -1898,6 +2184,28 @@
                 }
               ],
               "text": "Do - on the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. Advised and Released both fill"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 3"
+                }
+              ],
+              "text": "Opens — Ship from stock phase 3"
             }
           ]
         },
@@ -2011,6 +2319,28 @@
                 }
               ],
               "text": "Do - tick the line, then Actions ➔ Pick Run"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 4"
+                }
+              ],
+              "text": "Opens — Ship from stock phase 4"
             }
           ]
         },
@@ -2100,6 +2430,28 @@
                 }
               ],
               "text": "Do - Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 5"
+                }
+              ],
+              "text": "Opens — Ship from stock phase 5"
             }
           ]
         },
@@ -3403,6 +3755,14 @@
             "text": "confirm the item exists with its group, defaults and unit"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "create-basic-test-items-and-defaults",
+            "phases": [
+              5
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -3510,7 +3870,16 @@
             }
           ],
           "text": "define what a made item is built from and how, both Approved"
-        }
+        },
+        "opens": [
+          {
+            "walkthrough": "create-basic-test-items-and-defaults",
+            "phases": [
+              6,
+              7
+            ]
+          }
+        ]
       },
       {
         "id": "cluster",
@@ -3526,7 +3895,15 @@
             }
           ],
           "text": "make the item visible to order planning. Without it the item is absent from the plan rather than refused"
-        }
+        },
+        "opens": [
+          {
+            "walkthrough": "run-order-planning-for-one-item",
+            "phases": [
+              0
+            ]
+          }
+        ]
       },
       {
         "id": "1",
@@ -3563,6 +3940,14 @@
               }
             ],
             "text": "enter the order and approve it"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              1
+            ]
           }
         ],
         "do": {
@@ -3695,6 +4080,14 @@
             "text": "Actions ➔ Release ➔ Release to Warehousing…, set Upto Release Date on or after the line's release date, then RELEASE"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              2
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -3736,7 +4129,15 @@
             }
           ],
           "text": "decide silently whether planning can see the item and every component beneath it"
-        }
+        },
+        "opens": [
+          {
+            "walkthrough": "run-order-planning-for-one-item",
+            "phases": [
+              0
+            ]
+          }
+        ]
       },
       {
         "id": "4",
@@ -3753,7 +4154,15 @@
             }
           ],
           "text": "decide silently whether the delivery date is near enough to plan. Counted in workdays"
-        }
+        },
+        "opens": [
+          {
+            "walkthrough": "run-order-planning-for-one-item",
+            "phases": [
+              2
+            ]
+          }
+        ]
       },
       {
         "id": "read-cprrp0520m000",
@@ -3855,6 +4264,16 @@
             "text": "run it with Include Child Items"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "run-order-planning-for-one-item",
+            "phases": [
+              3,
+              4,
+              5
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -3942,6 +4361,14 @@
             "text": "confirm the planned orders first, then run it once per supply source"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              3
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -3989,6 +4416,15 @@
             "text": "read the order the transfer named in its process report"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "purchase-order-to-warehouse-receipt",
+            "phases": [
+              1,
+              2
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -4034,6 +4470,14 @@
               }
             ],
             "text": "open the order the transfer created and release it"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              5
+            ]
           }
         ],
         "do": {
@@ -4111,6 +4555,15 @@
             "text": "enter the packing-slip reference per line and confirm"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "purchase-order-to-warehouse-receipt",
+            "phases": [
+              3,
+              4
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -4176,6 +4629,15 @@
           ],
           "text": "nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it"
         },
+        "opens": [
+          {
+            "walkthrough": "check-item-inventory",
+            "phases": [
+              0,
+              1
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -4282,6 +4744,14 @@
               }
             ],
             "text": "on the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. Advised and Released both fill"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              3
+            ]
           }
         ],
         "do": {
@@ -4395,6 +4865,14 @@
             "text": "tick the line, then Actions ➔ Pick Run"
           }
         ],
+        "opens": [
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              4
+            ]
+          }
+        ],
         "do": {
           "tokens": [
             {
@@ -4469,6 +4947,14 @@
               }
             ],
             "text": "Actions ➔ Freeze, then Actions ➔ Confirm. Confirming cannot be undone; a correction needs a return shipment"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              5
+            ]
           }
         ],
         "do": {

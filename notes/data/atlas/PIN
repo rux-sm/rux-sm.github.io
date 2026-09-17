@@ -1,9 +1,9 @@
-commit   9892f04fe60d5c5fbaf458bc7b90f3706bb1c7a3
-date     2026-09-15T05:49:01Z
-subject  fix(emit): Send named pages as links
-contract 10 
+commit   bb58ffcec2d282c3b456af73e05e4eb772a22b96
+date     2026-09-17T03:22:25Z
+subject  docs(maps): Keep a task's gap out of its summary
+contract 11 
 tier     export
-sha256   bc1bffcca5addf21ca30c9a0399cfa3fe763d45bed51b7582437c89dc0e76a7f
+sha256   85c720482afd8953dd2b8317ffdce79d4ada57f4d62027d9e0d1766cf8bf8b33
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

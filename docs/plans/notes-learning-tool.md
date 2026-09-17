@@ -251,9 +251,8 @@ Neither holds up building; each gates only the one thing it names.
 
 - [ ] rux reads the path in the private preview and checks the tile links:
       which phases each linked tile opens, and where each task sits.
-- [ ] Walk this inside an open tile, saving to the walk tables.
-- [ ] Publish the path as the Notes front page, after `npm run export` brings
-      the linked tiles to the public data.
+- [ ] Show the quests to the owner on the live site, through the database, with
+      the change shown to rux before it is applied.
 - [ ] Add "Before starting" to an open tile, and open a screen under the step
       that names it.
 - [ ] Tag every quest with its kind, starting with node 5's.

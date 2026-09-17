@@ -430,7 +430,7 @@ function callout({ label, level, body }) {
 // two shapes. `kind` cannot tell them apart and the keys can.
 const isRows = b => Array.isArray(b.rows);
 
-function table(block, { numbered = false, write = true } = {}) {
+function table(block, { numbered = false, write = true, stepIds = false } = {}) {
   const cols = block.columns ?? [];
   const head = cols.map(c =>
     `<th scope="col"><div class="rux--table-header-label">${esc(c)}</div></th>`).join('');
@@ -469,6 +469,7 @@ function table(block, { numbered = false, write = true } = {}) {
     // fact the `pencil` token carries inline; the attribute lets the row be
     // styled without a class the stylesheet has never heard of.
     const flags = [
+      stepIds && row.id ? ` data-notes-step="${esc(row.id)}"` : '',
       row.produces ? ' data-produces="true"' : '',
       row.optional ? ' data-optional="true"' : '',
     ].join('');
@@ -2731,9 +2732,9 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
 // ---------------------------------------------------------------- the path
 // THE PATH IS HOME IN THE PRIVATE PREVIEW. The overview's tiles run in one
 // column, each opening in place into the steps of the phases it opens, its way
-// on and its quests (docs/plans/notes-learning-tool.md). The public home stays
-// the map until publishing the path is decided.
-const PATH_HOME = PRIVATE;
+// on and its quests (docs/plans/notes-learning-tool.md). The export tier
+// carries no gaps, so the live path has no quests yet.
+const PATH_HOME = true;
 const PATH_START = '1';
 // The map of tasks beside the overview: a task with `under` sits beneath that
 // overview tile, and one without is an Other task.
@@ -2808,7 +2809,7 @@ function pathPhase(node, w, p) {
   return `<section class="notes-path-phase" aria-labelledby="${esc(id)}">
               <h3 id="${esc(id)}" class="rux--type-productive-heading-02">Phase ${esc(p.n)} — ${esc(p.title)}</h3>
               ${route}
-              ${open.map(b => block(b, { numbered: true, write: false })).join('\n              ')}
+              ${open.map(b => block(b, { numbered: true, write: false, stepIds: true })).join('\n              ')}
               ${notes.length ? `<details class="notes-notes"><summary>Notes on phase ${esc(p.n)}</summary>
                 ${notes.map(b => block(b)).join('\n                ')}
               </details>` : ''}
@@ -2878,9 +2879,31 @@ function pathTile(dg, n, cat, docs, task = false) {
     const last = byWalkthrough.at(-1);
     if (last?.w === o.w) last.ps.push(o.p); else byWalkthrough.push({ w: o.w, ps: [o.p] });
   }
+  const walkBlock = w => PRIVATE ? '' : `
+            <div class="notes-path-walk" data-notes-owner hidden data-notes-tile-walk="${esc(w.id)}">
+              <div><button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-tile-walk-start>Walk this</button></div>
+              <form class="notes-path-walk-form" data-notes-tile-walk-form hidden>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-company-${esc(n.id)}">Company</label></div>
+                  <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+                    <input id="tw-company-${esc(n.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" inputmode="numeric" data-notes-tile-walk-company>
+                  </div></div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-user-${esc(n.id)}">User</label></div>
+                  <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+                    <input id="tw-user-${esc(n.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" data-notes-tile-walk-user>
+                  </div></div>
+                </div>
+                <div><button type="submit" class="rux--btn rux--btn--primary rux--btn--sm">Start the walk</button></div>
+              </form>
+              <p class="rux--type-body-01" data-notes-tile-walk-status aria-live="polite"></p>
+            </div>`;
   const procedure = byWalkthrough.map(({ w, ps }) => `
-            <p class="rux--type-body-01"><a class="rux--link" href="${PAGE_BASE}${esc(w.id)}.html#p-${ps[0].n}">${esc(w.title)}</a></p>
-            ${ps.map(p => pathPhase(n, w, p)).join('\n            ')}`).join('');
+            <div class="notes-path-procedure" data-notes-tile-procedure="${esc(w.id)}">
+            <p class="rux--type-body-01"><a class="rux--link" href="${PAGE_BASE}${esc(w.id)}.html#p-${ps[0].n}">${esc(w.title)}</a></p>${walkBlock(w)}
+            ${ps.map(p => pathPhase(n, w, p)).join('\n            ')}
+            </div>`).join('');
   const reference = opens.length ? '' : `
             ${n.route ? `<p class="rux--type-body-01"><strong>Route</strong> ${tokens(n.route.tokens ?? [])}</p>` : ''}
             ${(n.steps ?? []).length ? `<ol class="rux--list--ordered">${n.steps.map(x =>
@@ -2945,6 +2968,10 @@ const PATH_CSS = `
 .notes-path-quests { display: grid; gap: .5rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-tools { display: grid; gap: 1rem; padding-block-start: .5rem; }
 .notes-path-switch { max-inline-size: 20rem; }
+.notes-path-procedure { display: grid; gap: 1rem; min-inline-size: 0; }
+.notes-path-walk { display: grid; gap: .5rem; }
+.notes-path-walk-form { display: grid; gap: 1rem; max-inline-size: 20rem; }
+.notes-path-walk-step { display: grid; gap: .25rem; margin-block-start: .5rem; }
 .notes-path-tasks-title { margin-block-end: .5rem; }
 @media (max-width: 42rem) {
   .notes-path-stage { padding-inline-start: .5rem; }
@@ -3027,7 +3054,7 @@ function pathPage(ref, site) {
         </aside>
       </div>
 `;
-  return page({ title: 'Notes', site, activeId: null, body, depth: 0, scripts: ['js/path.js'], css: PATH_CSS });
+  return page({ title: 'Notes', site, activeId: null, body, depth: 0, scripts: ['js/path.js', 'js/tile-walk.js'], css: PATH_CSS });
 }
 
 function referencePage(r, site) {

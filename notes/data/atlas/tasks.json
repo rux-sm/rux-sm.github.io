@@ -1,0 +1,6895 @@
+{
+  "contract": 11,
+  "tier": "export",
+  "kind": "reference",
+  "id": "tasks",
+  "title": "Tasks",
+  "updated": "2026-09-16",
+  "status": "draft",
+  "sources": [
+    "cpdsp1210m000",
+    "cprao1120m000",
+    "cprmp1202m000",
+    "cprpd2602m000",
+    "cprrp1200m000",
+    "cprrp1210m000",
+    "qmncm1600m000",
+    "qmptc1620m100",
+    "tcccp0119m000",
+    "tccom4500m000",
+    "tcemm1135m000",
+    "tcibd0150m000",
+    "tcibd0204m000",
+    "tcibd0505m000",
+    "tdipu0110m200",
+    "tdpcg0111m000",
+    "tdpur2501m000",
+    "tdpur8310m000",
+    "tdpur8330m000",
+    "tdsls8310m000",
+    "tdsls8330m000",
+    "ticpr2210m000",
+    "ticst0201m000",
+    "tirpt4101m000",
+    "tisfc0130m000",
+    "tisfc0202m000",
+    "tisfc0220m000",
+    "tisfc0501m000",
+    "tisfc2210m000",
+    "whinh2100m000",
+    "whinh2101m000",
+    "whinh2200m000",
+    "whinh3122m000",
+    "whinh3201m000",
+    "whinh4230m500",
+    "whinh5100m000",
+    "whinh5120m000",
+    "whltc1100m000",
+    "whwmd2500m000",
+    "whwmd2672m100",
+    "whwmd5130m000",
+    "whwmd6110m000"
+  ],
+  "intro": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Everything a learner does that is not a numbered step on the "
+        },
+        {
+          "t": "link",
+          "v": "overview",
+          "href": "order-to-shipment-overview.md"
+        },
+        {
+          "t": "strong",
+          "v": "."
+        },
+        {
+          "t": "text",
+          "v": " A task that changes what happens at a step names that step under "
+        },
+        {
+          "t": "strong",
+          "v": "Under"
+        },
+        {
+          "t": "text",
+          "v": ", and Notes shows it beneath it on the path. A task with no Under stands on its own. A task whose steps are not written carries a gap, and the gap is the quest that fills it in."
+        }
+      ],
+      "text": "Everything a learner does that is not a numbered step on the overview. A task that changes what happens at a step names that step under Under, and Notes shows it beneath it on the path. A task with no Under stands on its own. A task whose steps are not written carries a gap, and the gap is the quest that fills it in."
+    }
+  ],
+  "topics": [
+    {
+      "n": 1,
+      "title": "How to read it",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "A task is a tile like any on the overview"
+            },
+            {
+              "t": "text",
+              "v": ", with the same fields. "
+            },
+            {
+              "t": "strong",
+              "v": "Opens"
+            },
+            {
+              "t": "text",
+              "v": " names the walkthrough phases that perform it. A task in the Quality lane is kept or dropped on what its quests find."
+            }
+          ],
+          "text": "A task is a tile like any on the overview, with the same fields. Opens names the walkthrough phases that perform it. A task in the Quality lane is kept or dropped on what its quests find."
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "Lanes",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Lane",
+            "Carries"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Master Data"
+                    }
+                  ],
+                  "text": "Master Data"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Master Data"
+                    }
+                  ],
+                  "text": "Tasks in Master Data"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Sales"
+                    }
+                  ],
+                  "text": "Sales"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Sales"
+                    }
+                  ],
+                  "text": "Tasks in Sales"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Procurement"
+                    }
+                  ],
+                  "text": "Procurement"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Procurement"
+                    }
+                  ],
+                  "text": "Tasks in Procurement"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Enterprise Planning"
+                    }
+                  ],
+                  "text": "Enterprise Planning"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Enterprise Planning"
+                    }
+                  ],
+                  "text": "Tasks in Enterprise Planning"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Manufacturing"
+                    }
+                  ],
+                  "text": "Manufacturing"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Manufacturing"
+                    }
+                  ],
+                  "text": "Tasks in Manufacturing"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Warehousing"
+                    }
+                  ],
+                  "text": "Warehousing"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Warehousing"
+                    }
+                  ],
+                  "text": "Tasks in Warehousing"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "7"
+                    }
+                  ],
+                  "text": "7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Quality"
+                    }
+                  ],
+                  "text": "Quality"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tasks in Quality"
+                    }
+                  ],
+                  "text": "Tasks in Quality"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Stages",
+      "blocks": [
+        {
+          "kind": "table",
+          "columns": [
+            "",
+            "Stage",
+            "When"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1"
+                    }
+                  ],
+                  "text": "1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Prepare"
+                    }
+                  ],
+                  "text": "Prepare"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2"
+                    }
+                  ],
+                  "text": "2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Demand"
+                    }
+                  ],
+                  "text": "Demand"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "3"
+                    }
+                  ],
+                  "text": "3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Plan"
+                    }
+                  ],
+                  "text": "Plan"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "4"
+                    }
+                  ],
+                  "text": "4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Transfer"
+                    }
+                  ],
+                  "text": "Transfer"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5"
+                    }
+                  ],
+                  "text": "5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Execute"
+                    }
+                  ],
+                  "text": "Execute"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6"
+                    }
+                  ],
+                  "text": "6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Deliver"
+                    }
+                  ],
+                  "text": "Deliver"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Beside the overview stage of the same name"
+                    }
+                  ],
+                  "text": "Beside the overview stage of the same name"
+                }
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "7"
+                    }
+                  ],
+                  "text": "7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Any time"
+                    }
+                  ],
+                  "text": "Any time"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Whenever it is needed"
+                    }
+                  ],
+                  "text": "Whenever it is needed"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "title": "Nodes",
+      "blocks": [
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.1",
+          "title": "Master Data",
+          "text": "Master Data"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "ticpr2210m000",
+              "name": "std-cost · Calculate Standard Cost"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "std-cost · Calculate Standard Cost (ticpr2210m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Standard Costs ➔ Calculation ➔ Calculate Standard Cost"
+                }
+              ],
+              "text": "Route — Common ➔ Standard Costs ➔ Calculation ➔ Calculate Standard Cost"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — calculate an item's standard cost"
+                }
+              ],
+              "text": "Does — calculate an item's standard cost"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " bom"
+                }
+              ],
+              "text": "Under — Demand to shipment bom"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcibd0150m000",
+              "name": "revisions · Item Engineering Revisions"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "revisions · Item Engineering Revisions (tcibd0150m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Item Engineering Revisions"
+                }
+              ],
+              "text": "Route — Master Data ➔ Items ➔ Miscellaneous ➔ Item Engineering Revisions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — keep engineering revisions of an item"
+                }
+              ],
+              "text": "Does — keep engineering revisions of an item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " bom"
+                }
+              ],
+              "text": "Under — Demand to shipment bom"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcibd0505m000",
+              "name": "alt-items · Alternative Items"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "alt-items · Alternative Items (tcibd0505m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Alternative Items"
+                }
+              ],
+              "text": "Route — Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Alternative Items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — name an alternative for an item"
+                }
+              ],
+              "text": "Does — name an alternative for an item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " items"
+                }
+              ],
+              "text": "Under — Demand to shipment items"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcibd0204m000",
+              "name": "mass-change · Mass Change Item Assignments"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "mass-change · Mass Change Item Assignments (tcibd0204m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Mass Change Item Assignments"
+                }
+              ],
+              "text": "Route — Master Data ➔ Items ➔ Miscellaneous ➔ Mass Change Item Assignments"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — change item assignments on many items at once"
+                }
+              ],
+              "text": "Does — change item assignments on many items at once"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " items"
+                }
+              ],
+              "text": "Under — Demand to shipment items"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tccom4500m000",
+              "name": "business-partner · Business Partners"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "business-partner · Business Partners (tccom4500m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Business Partners ➔ Business Partners"
+                }
+              ],
+              "text": "Route — Master Data ➔ Business Partners ➔ Business Partners"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold a business partner and its roles"
+                }
+              ],
+              "text": "Does — hold a business partner and its roles"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcemm1135m000",
+              "name": "planning-clusters · Planning Clusters"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "planning-clusters · Planning Clusters (tcemm1135m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Planning Clusters"
+                }
+              ],
+              "text": "Route — Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Planning Clusters"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — define planning clusters"
+                }
+              ],
+              "text": "Does — define planning clusters"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tcccp0119m000",
+              "name": "calendars · Non-working Days"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "calendars · Non-working Days (tcccp0119m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Calendars ➔ Definition ➔ Non-working Days"
+                }
+              ],
+              "text": "Route — Common ➔ Calendars ➔ Definition ➔ Non-working Days"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — set non-working days on a calendar"
+                }
+              ],
+              "text": "Does — set non-working days on a calendar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.2",
+          "title": "Sales",
+          "text": "Sales"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdpcg0111m000",
+              "name": "price-books · Price Books"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "price-books · Price Books (tdpcg0111m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Pricing ➔ Prices ➔ Price Books"
+                }
+              ],
+              "text": "Route — Common ➔ Pricing ➔ Prices ➔ Price Books"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold the prices an order line can take"
+                }
+              ],
+              "text": "Does — hold the prices an order line can take"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 1"
+                }
+              ],
+              "text": "Under — Demand to shipment 1"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "change-order-line · Change or cancel an order line"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "change-order-line · Change or cancel an order line · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — change or cancel a sales order line after it is entered"
+                }
+              ],
+              "text": "Does — change or cancel a sales order line after it is entered"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 1"
+                }
+              ],
+              "text": "Under — Demand to shipment 1"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "release-block · Blocked release"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · gate"
+            }
+          ],
+          "text": "release-block · Blocked release · stage 6 · gate"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — stop a sales order line from releasing"
+                }
+              ],
+              "text": "Does — stop a sales order line from releasing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 10"
+                }
+              ],
+              "text": "Under — Demand to shipment 10"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "returns · Sales returns"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "returns · Sales returns · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — take goods back from a customer"
+                }
+              ],
+              "text": "Does — take goods back from a customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdsls8310m000",
+              "name": "quotations · Quotes"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "quotations · Quotes (tdsls8310m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Quotes"
+                }
+              ],
+              "text": "Route — Sales ➔ Quotes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — offer a quote before an order"
+                }
+              ],
+              "text": "Does — offer a quote before an order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdsls8330m000",
+              "name": "sales-contracts · Sales contracts"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "sales-contracts · Sales contracts (tdsls8330m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Contracts"
+                }
+              ],
+              "text": "Route — Sales ➔ Contracts"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold a sales contract"
+                }
+              ],
+              "text": "Does — hold a sales contract"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "project-pegging · Contract deliverables"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "project-pegging · Contract deliverables · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — demand pegged to a project, recognised by planning only once active"
+                }
+              ],
+              "text": "Does — demand pegged to a project, recognised by planning only once active"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.3",
+          "title": "Procurement",
+          "text": "Procurement"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdpur2501m000",
+              "name": "requisition · Requisitions"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "requisition · Requisitions (tdpur2501m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Requisitions ➔ Requisitions"
+                }
+              ],
+              "text": "Route — Procurement ➔ Requisitions ➔ Requisitions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — request a purchase before an order exists"
+                }
+              ],
+              "text": "Does — request a purchase before an order exists"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 7"
+                }
+              ],
+              "text": "Under — Demand to shipment 7"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdpur8310m000",
+              "name": "rfq · Request for Quotations"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "rfq · Request for Quotations (tdpur8310m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Request for Quotations"
+                }
+              ],
+              "text": "Route — Procurement ➔ Request for Quotations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — ask suppliers to quote before ordering"
+                }
+              ],
+              "text": "Does — ask suppliers to quote before ordering"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 7"
+                }
+              ],
+              "text": "Under — Demand to shipment 7"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdpur8330m000",
+              "name": "purchase-contracts · Purchase contracts"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "purchase-contracts · Purchase contracts (tdpur8330m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Contracts"
+                }
+              ],
+              "text": "Route — Procurement ➔ Contracts"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold a purchase contract"
+                }
+              ],
+              "text": "Does — hold a purchase contract"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tdipu0110m200",
+              "name": "approved-suppliers · Approved Supplier List"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "approved-suppliers · Approved Supplier List (tdipu0110m200) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+                }
+              ],
+              "text": "Route — Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — list the approved suppliers of an item"
+                }
+              ],
+              "text": "Does — list the approved suppliers of an item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "supplier-returns · Return to supplier"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "supplier-returns · Return to supplier · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — send received goods back to a supplier"
+                }
+              ],
+              "text": "Does — send received goods back to a supplier"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.4",
+          "title": "Enterprise Planning",
+          "text": "Enterprise Planning"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1210m000",
+              "name": "plan-all · Generate Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · step"
+            }
+          ],
+          "text": "plan-all · Generate Order Planning (cprrp1210m000) · stage 3 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
+                }
+              ],
+              "text": "Route — Planning ➔ Order Planning ➔ Generate Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — run order planning for a range of items"
+                }
+              ],
+              "text": "Does — run order planning for a range of items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 5"
+                }
+              ],
+              "text": "Under — Demand to shipment 5"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprmp1202m000",
+              "name": "master-planning · Generate Master Planning"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · step"
+            }
+          ],
+          "text": "master-planning · Generate Master Planning (cprmp1202m000) · stage 3 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Planning ➔ Generate Master Planning"
+                }
+              ],
+              "text": "Route — Planning ➔ Master Planning ➔ Generate Master Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — generate master planning"
+                }
+              ],
+              "text": "Does — generate master planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 5"
+                }
+              ],
+              "text": "Under — Demand to shipment 5"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprao1120m000",
+              "name": "exception-messages · Exception Messages by Planner"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · step"
+            }
+          ],
+          "text": "exception-messages · Exception Messages by Planner (cprao1120m000) · stage 3 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner"
+                }
+              ],
+              "text": "Route — Planning ➔ Plan Analysis ➔ Exception Messages by Planner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — list the exception messages planning raised"
+                }
+              ],
+              "text": "Does — list the exception messages planning raised"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 5"
+                }
+              ],
+              "text": "Under — Demand to shipment 5"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp1200m000",
+              "name": "confirm-planned · Confirm Order Planning"
+            },
+            {
+              "t": "text",
+              "v": " · stage 4 · step"
+            }
+          ],
+          "text": "confirm-planned · Confirm Order Planning (cprrp1200m000) · stage 4 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
+                }
+              ],
+              "text": "Route — Planning ➔ Order Planning ➔ Confirm Order Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — confirm planned orders before they are transferred"
+                }
+              ],
+              "text": "Does — confirm planned orders before they are transferred"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - confirm the planned orders, then transfer them"
+                }
+              ],
+              "text": "Do - confirm the planned orders, then transfer them"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 3"
+                }
+              ],
+              "text": "Opens — Plan to shipment phase 3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 6"
+                }
+              ],
+              "text": "Under — Demand to shipment 6"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "transfer-production · Transfer planned production orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 4 · step"
+            }
+          ],
+          "text": "transfer-production · Transfer planned production orders · stage 4 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — turn planned production orders into production orders"
+                }
+              ],
+              "text": "Does — turn planned production orders into production orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 6"
+                }
+              ],
+              "text": "Under — Demand to shipment 6"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cpdsp1210m000",
+              "name": "forecast · Generate Demand and Inventory Plan"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "forecast · Generate Demand and Inventory Plan (cpdsp1210m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Planning ➔ Generate Demand and Inventory Plan"
+                }
+              ],
+              "text": "Route — Planning ➔ Master Planning ➔ Generate Demand and Inventory Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — generate a demand and inventory plan"
+                }
+              ],
+              "text": "Does — generate a demand and inventory plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprpd2602m000",
+              "name": "capacity · Resource Capacity"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "capacity · Resource Capacity (cprpd2602m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Resource Planning ➔ Resource Capacity"
+                }
+              ],
+              "text": "Route — Planning ➔ Resource Planning ➔ Resource Capacity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — set the capacity of a resource"
+                }
+              ],
+              "text": "Does — set the capacity of a resource"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.5",
+          "title": "Manufacturing",
+          "text": "Manufacturing"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc0501m000",
+              "name": "manual-production · Manual production order"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "manual-production · Manual production order (tisfc0501m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — make an item on a production order entered by hand"
+                }
+              ],
+              "text": "Does — make an item on a production order entered by hand"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - create the production order - release it"
+                }
+              ],
+              "text": "Do - create the production order - release it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 1, 2, 3"
+                }
+              ],
+              "text": "Opens — Production order phases 1, 2, 3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc0130m000",
+              "name": "report-completed · Report Operations"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "report-completed · Report Operations (tisfc0130m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — issue the material and report the work done"
+                }
+              ],
+              "text": "Does — issue the material and report the work done"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - issue the material - report the operations and the order completed"
+                }
+              ],
+              "text": "Do - issue the material - report the operations and the order completed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 4, 5"
+                }
+              ],
+              "text": "Opens — Production order phases 4, 5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc0202m000",
+              "name": "cancel-production · Cancel Production Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "cancel-production · Cancel Production Orders (tisfc0202m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Miscellaneous ➔ Cancel Production Orders"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Control ➔ Miscellaneous ➔ Cancel Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — cancel production orders"
+                }
+              ],
+              "text": "Does — cancel production orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "ticst0201m000",
+              "name": "close-production · Close Production Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "close-production · Close Production Orders (ticst0201m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Costing ➔ Close Production Orders"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Costing ➔ Close Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — close a finished production order"
+                }
+              ],
+              "text": "Does — close a finished production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc0220m000",
+              "name": "backflush · Backflush Materials and Hours"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "backflush · Backflush Materials and Hours (tisfc0220m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — backflush materials and hours"
+                }
+              ],
+              "text": "Does — backflush materials and hours"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tisfc2210m000",
+              "name": "subcontract · Subcontract Operations"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "subcontract · Subcontract Operations (tisfc2210m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Subcontract Operations"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Subcontract Operations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — subcontract an operation"
+                }
+              ],
+              "text": "Does — subcontract an operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "tirpt4101m000",
+              "name": "repetitive · Production Schedules"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "repetitive · Production Schedules (tirpt4101m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Repetitive ➔ Planning ➔ Production Schedules"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Repetitive ➔ Planning ➔ Production Schedules"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — make items on repetitive production schedules"
+                }
+              ],
+              "text": "Does — make items on repetitive production schedules"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.6",
+          "title": "Warehousing",
+          "text": "Warehousing"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh3122m000",
+              "name": "inspection · Inspections Overview"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "inspection · Inspections Overview (whinh3122m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Receipts/Inspections ➔ Inspections Overview"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Receipts/Inspections ➔ Inspections Overview"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — inspect received goods before they are put away"
+                }
+              ],
+              "text": "Does — inspect received goods before they are put away"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 8"
+                }
+              ],
+              "text": "Under — Demand to shipment 8"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh3201m000",
+              "name": "putaway · Generate Inbound Advice"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "putaway · Generate Inbound Advice (whinh3201m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inbound ➔ Generate Inbound Advice"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inbound ➔ Generate Inbound Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — generate inbound advice for put-away"
+                }
+              ],
+              "text": "Does — generate inbound advice for put-away"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 8"
+                }
+              ],
+              "text": "Under — Demand to shipment 8"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "advice-variants · Undo or standalone advice"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · step"
+            }
+          ],
+          "text": "advice-variants · Undo or standalone advice · stage 6 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — undo generated advice, or advise one outbound line on its own"
+                }
+              ],
+              "text": "Does — undo generated advice, or advise one outbound line on its own"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 11"
+                }
+              ],
+              "text": "Under — Demand to shipment 11"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh4230m500",
+              "name": "cancel-shipment · Cancel Shipments"
+            },
+            {
+              "t": "text",
+              "v": " · stage 6 · step"
+            }
+          ],
+          "text": "cancel-shipment · Cancel Shipments (whinh4230m500) · stage 6 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Shipments ➔ Cancel Shipments"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Shipments ➔ Cancel Shipments"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — cancel shipments"
+                }
+              ],
+              "text": "Does — cancel shipments"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 13"
+                }
+              ],
+              "text": "Under — Demand to shipment 13"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh2100m000",
+              "name": "warehouse-transfer · Warehouse transfer"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "warehouse-transfer · Warehouse transfer (whinh2100m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Orders ➔ Orders"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Orders ➔ Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — move stock from one warehouse to another"
+                }
+              ],
+              "text": "Does — move stock from one warehouse to another"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - create the transfer order - advise, pick and ship it - receive it at the destination"
+                }
+              ],
+              "text": "Do - create the transfer order - advise, pick and ship it - receive it at the destination"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Opens"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 0, 1, 2, 3, 4, 5, 6"
+                }
+              ],
+              "text": "Opens — Warehouse transfer phases 0, 1, 2, 3, 4, 5, 6"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh5100m000",
+              "name": "cycle-count · Cycle Counting Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "cycle-count · Cycle Counting Orders (whinh5100m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — count stock and settle the difference"
+                }
+              ],
+              "text": "Does — count stock and settle the difference"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh5120m000",
+              "name": "adjustment · Adjustment Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "adjustment · Adjustment Orders (whinh5120m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — adjust stock with an adjustment order"
+                }
+              ],
+              "text": "Does — adjust stock with an adjustment order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd6110m000",
+              "name": "inventory-blocking · Inventory Blocking by Zone/Location"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "inventory-blocking · Inventory Blocking by Zone/Location (whwmd6110m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — block inventory by zone or location"
+                }
+              ],
+              "text": "Does — block inventory by zone or location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd2672m100",
+              "name": "quarantine · Quarantine Inventory"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "quarantine · Quarantine Inventory (whwmd2672m100) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — hold inventory in quarantine"
+                }
+              ],
+              "text": "Does — hold inventory in quarantine"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd5130m000",
+              "name": "handling-units · Handling Units"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "handling-units · Handling Units (whwmd5130m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Handling Units ➔ Handling Units"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Handling Units ➔ Handling Units"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — keep stock in handling units"
+                }
+              ],
+              "text": "Does — keep stock in handling units"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whltc1100m000",
+              "name": "lot-tracing · Item - Lot"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "lot-tracing · Item - Lot (whltc1100m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory Reporting ➔ Lot Control ➔ Item - Lot"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inventory Reporting ➔ Lot Control ➔ Item - Lot"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — look up the lots of an item"
+                }
+              ],
+              "text": "Does — look up the lots of an item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh2200m000",
+              "name": "kanban · Generate Orders (Kanban)"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "kanban · Generate Orders (Kanban) (whinh2200m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (Kanban)"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (Kanban)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — generate replenishment orders from kanban"
+                }
+              ],
+              "text": "Does — generate replenishment orders from kanban"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh2101m000",
+              "name": "assembly-orders · Assembly Orders"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "assembly-orders · Assembly Orders (whinh2101m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Orders ➔ Assembly Orders"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Orders ➔ Assembly Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — assemble items on an assembly order"
+                }
+              ],
+              "text": "Does — assemble items on an assembly order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd2500m000",
+              "name": "warehouse-setup · Warehouses"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "warehouse-setup · Warehouses (whwmd2500m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — define a warehouse"
+                }
+              ],
+              "text": "Does — define a warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "heading",
+          "level": 3,
+          "n": "4.7",
+          "title": "Quality",
+          "text": "Quality"
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "qmptc1620m100",
+              "name": "order-inspection · Order Inspections"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "order-inspection · Order Inspections (qmptc1620m100) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Quality ➔ Inspection ➔ Order Inspections"
+                }
+              ],
+              "text": "Route — Quality ➔ Inspection ➔ Order Inspections"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — inspect goods against an order"
+                }
+              ],
+              "text": "Does — inspect goods against an order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "qmncm1600m000",
+              "name": "non-conformance · Non-Conformance Reports"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "non-conformance · Non-Conformance Reports (qmncm1600m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Quality ➔ Non-Conformance Reports"
+                }
+              ],
+              "text": "Route — Quality ➔ Non-Conformance Reports"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — report a non-conformance"
+                }
+              ],
+              "text": "Does — report a non-conformance"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - Not documented for this release."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "title": "Edges",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "text",
+              "v": "A task is reached from its tile or from the task list, never from another task, so there are no edges."
+            }
+          ],
+          "text": "A task is reached from its tile or from the task list, never from another task, so there are no edges."
+        },
+        {
+          "kind": "table",
+          "columns": [
+            "From",
+            "To",
+            "Kind",
+            "Label"
+          ],
+          "rows": []
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "lanes": [
+      {
+        "n": 1,
+        "name": "Master Data"
+      },
+      {
+        "n": 2,
+        "name": "Sales"
+      },
+      {
+        "n": 3,
+        "name": "Procurement"
+      },
+      {
+        "n": 4,
+        "name": "Enterprise Planning"
+      },
+      {
+        "n": 5,
+        "name": "Manufacturing"
+      },
+      {
+        "n": 6,
+        "name": "Warehousing"
+      },
+      {
+        "n": 7,
+        "name": "Quality"
+      }
+    ],
+    "stages": [
+      {
+        "n": 1,
+        "name": "Prepare"
+      },
+      {
+        "n": 2,
+        "name": "Demand"
+      },
+      {
+        "n": 3,
+        "name": "Plan"
+      },
+      {
+        "n": 4,
+        "name": "Transfer"
+      },
+      {
+        "n": 5,
+        "name": "Execute"
+      },
+      {
+        "n": 6,
+        "name": "Deliver"
+      },
+      {
+        "n": 7,
+        "name": "Any time"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "std-cost",
+        "session": "Calculate Standard Cost",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "ticpr2210m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Common ➔ Standard Costs ➔ Calculation ➔ Calculate Standard Cost"
+            }
+          ],
+          "text": "Common ➔ Standard Costs ➔ Calculation ➔ Calculate Standard Cost"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "calculate an item's standard cost"
+            }
+          ],
+          "text": "calculate an item's standard cost"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "bom"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "revisions",
+        "session": "Item Engineering Revisions",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcibd0150m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Item Engineering Revisions"
+            }
+          ],
+          "text": "Master Data ➔ Items ➔ Miscellaneous ➔ Item Engineering Revisions"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "keep engineering revisions of an item"
+            }
+          ],
+          "text": "keep engineering revisions of an item"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "bom"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "alt-items",
+        "session": "Alternative Items",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcibd0505m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Alternative Items"
+            }
+          ],
+          "text": "Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Alternative Items"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "name an alternative for an item"
+            }
+          ],
+          "text": "name an alternative for an item"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "items"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "mass-change",
+        "session": "Mass Change Item Assignments",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcibd0204m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Mass Change Item Assignments"
+            }
+          ],
+          "text": "Master Data ➔ Items ➔ Miscellaneous ➔ Mass Change Item Assignments"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "change item assignments on many items at once"
+            }
+          ],
+          "text": "change item assignments on many items at once"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "items"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "business-partner",
+        "session": "Business Partners",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tccom4500m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Business Partners ➔ Business Partners"
+            }
+          ],
+          "text": "Master Data ➔ Business Partners ➔ Business Partners"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold a business partner and its roles"
+            }
+          ],
+          "text": "hold a business partner and its roles"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "planning-clusters",
+        "session": "Planning Clusters",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcemm1135m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Planning Clusters"
+            }
+          ],
+          "text": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Planning Clusters"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "define planning clusters"
+            }
+          ],
+          "text": "define planning clusters"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "calendars",
+        "session": "Non-working Days",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcccp0119m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Common ➔ Calendars ➔ Definition ➔ Non-working Days"
+            }
+          ],
+          "text": "Common ➔ Calendars ➔ Definition ➔ Non-working Days"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "set non-working days on a calendar"
+            }
+          ],
+          "text": "set non-working days on a calendar"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "price-books",
+        "session": "Price Books",
+        "lane": "Sales",
+        "stage": 1,
+        "kind": "step",
+        "code": "tdpcg0111m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Common ➔ Pricing ➔ Prices ➔ Price Books"
+            }
+          ],
+          "text": "Common ➔ Pricing ➔ Prices ➔ Price Books"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold the prices an order line can take"
+            }
+          ],
+          "text": "hold the prices an order line can take"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "1"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "change-order-line",
+        "session": "Change or cancel an order line",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "change or cancel a sales order line after it is entered"
+            }
+          ],
+          "text": "change or cancel a sales order line after it is entered"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "1"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "release-block",
+        "session": "Blocked release",
+        "lane": "Sales",
+        "stage": 6,
+        "kind": "gate",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "stop a sales order line from releasing"
+            }
+          ],
+          "text": "stop a sales order line from releasing"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "10"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "returns",
+        "session": "Sales returns",
+        "lane": "Sales",
+        "stage": 7,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "take goods back from a customer"
+            }
+          ],
+          "text": "take goods back from a customer"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "quotations",
+        "session": "Quotes",
+        "lane": "Sales",
+        "stage": 7,
+        "kind": "step",
+        "code": "tdsls8310m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Sales ➔ Quotes"
+            }
+          ],
+          "text": "Sales ➔ Quotes"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "offer a quote before an order"
+            }
+          ],
+          "text": "offer a quote before an order"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "sales-contracts",
+        "session": "Sales contracts",
+        "lane": "Sales",
+        "stage": 7,
+        "kind": "step",
+        "code": "tdsls8330m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Sales ➔ Contracts"
+            }
+          ],
+          "text": "Sales ➔ Contracts"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold a sales contract"
+            }
+          ],
+          "text": "hold a sales contract"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "project-pegging",
+        "session": "Contract deliverables",
+        "lane": "Sales",
+        "stage": 7,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "demand pegged to a project, recognised by planning only once active"
+            }
+          ],
+          "text": "demand pegged to a project, recognised by planning only once active"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "requisition",
+        "session": "Requisitions",
+        "lane": "Procurement",
+        "stage": 5,
+        "kind": "step",
+        "code": "tdpur2501m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Procurement ➔ Requisitions ➔ Requisitions"
+            }
+          ],
+          "text": "Procurement ➔ Requisitions ➔ Requisitions"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "request a purchase before an order exists"
+            }
+          ],
+          "text": "request a purchase before an order exists"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "7"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "rfq",
+        "session": "Request for Quotations",
+        "lane": "Procurement",
+        "stage": 5,
+        "kind": "step",
+        "code": "tdpur8310m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Procurement ➔ Request for Quotations"
+            }
+          ],
+          "text": "Procurement ➔ Request for Quotations"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "ask suppliers to quote before ordering"
+            }
+          ],
+          "text": "ask suppliers to quote before ordering"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "7"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "purchase-contracts",
+        "session": "Purchase contracts",
+        "lane": "Procurement",
+        "stage": 7,
+        "kind": "step",
+        "code": "tdpur8330m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Procurement ➔ Contracts"
+            }
+          ],
+          "text": "Procurement ➔ Contracts"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold a purchase contract"
+            }
+          ],
+          "text": "hold a purchase contract"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "approved-suppliers",
+        "session": "Approved Supplier List",
+        "lane": "Procurement",
+        "stage": 1,
+        "kind": "step",
+        "code": "tdipu0110m200",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+            }
+          ],
+          "text": "Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "list the approved suppliers of an item"
+            }
+          ],
+          "text": "list the approved suppliers of an item"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "supplier-returns",
+        "session": "Return to supplier",
+        "lane": "Procurement",
+        "stage": 7,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "send received goods back to a supplier"
+            }
+          ],
+          "text": "send received goods back to a supplier"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "plan-all",
+        "session": "Generate Order Planning",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "step",
+        "code": "cprrp1210m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
+            }
+          ],
+          "text": "Planning ➔ Order Planning ➔ Generate Order Planning"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "run order planning for a range of items"
+            }
+          ],
+          "text": "run order planning for a range of items"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "5"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "master-planning",
+        "session": "Generate Master Planning",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "step",
+        "code": "cprmp1202m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Planning ➔ Generate Master Planning"
+            }
+          ],
+          "text": "Planning ➔ Master Planning ➔ Generate Master Planning"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "generate master planning"
+            }
+          ],
+          "text": "generate master planning"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "5"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "exception-messages",
+        "session": "Exception Messages by Planner",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "step",
+        "code": "cprao1120m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner"
+            }
+          ],
+          "text": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "list the exception messages planning raised"
+            }
+          ],
+          "text": "list the exception messages planning raised"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "5"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "confirm-planned",
+        "session": "Confirm Order Planning",
+        "lane": "Enterprise Planning",
+        "stage": 4,
+        "kind": "step",
+        "code": "cprrp1200m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
+            }
+          ],
+          "text": "Planning ➔ Order Planning ➔ Confirm Order Planning"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "confirm planned orders before they are transferred"
+            }
+          ],
+          "text": "confirm planned orders before they are transferred"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "confirm the planned orders, then transfer them"
+              }
+            ],
+            "text": "confirm the planned orders, then transfer them"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              3
+            ]
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "6"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "confirm the planned orders, then transfer them"
+            }
+          ],
+          "text": "confirm the planned orders, then transfer them"
+        }
+      },
+      {
+        "id": "transfer-production",
+        "session": "Transfer planned production orders",
+        "lane": "Enterprise Planning",
+        "stage": 4,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "turn planned production orders into production orders"
+            }
+          ],
+          "text": "turn planned production orders into production orders"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "6"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "forecast",
+        "session": "Generate Demand and Inventory Plan",
+        "lane": "Enterprise Planning",
+        "stage": 7,
+        "kind": "step",
+        "code": "cpdsp1210m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Planning ➔ Generate Demand and Inventory Plan"
+            }
+          ],
+          "text": "Planning ➔ Master Planning ➔ Generate Demand and Inventory Plan"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "generate a demand and inventory plan"
+            }
+          ],
+          "text": "generate a demand and inventory plan"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "capacity",
+        "session": "Resource Capacity",
+        "lane": "Enterprise Planning",
+        "stage": 7,
+        "kind": "step",
+        "code": "cprpd2602m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Resource Planning ➔ Resource Capacity"
+            }
+          ],
+          "text": "Planning ➔ Resource Planning ➔ Resource Capacity"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "set the capacity of a resource"
+            }
+          ],
+          "text": "set the capacity of a resource"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "manual-production",
+        "session": "Manual production order",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc0501m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Orders"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "make an item on a production order entered by hand"
+            }
+          ],
+          "text": "make an item on a production order entered by hand"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "create the production order"
+              }
+            ],
+            "text": "create the production order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "release it"
+              }
+            ],
+            "text": "release it"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "manual-production-order-existing-master-data",
+            "phases": [
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "create the production order. release it"
+            }
+          ],
+          "text": "create the production order. release it"
+        }
+      },
+      {
+        "id": "report-completed",
+        "session": "Report Operations",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc0130m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "issue the material and report the work done"
+            }
+          ],
+          "text": "issue the material and report the work done"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "issue the material"
+              }
+            ],
+            "text": "issue the material"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "report the operations and the order completed"
+              }
+            ],
+            "text": "report the operations and the order completed"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "manual-production-order-existing-master-data",
+            "phases": [
+              4,
+              5
+            ]
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "issue the material. report the operations and the order completed"
+            }
+          ],
+          "text": "issue the material. report the operations and the order completed"
+        }
+      },
+      {
+        "id": "cancel-production",
+        "session": "Cancel Production Orders",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc0202m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Miscellaneous ➔ Cancel Production Orders"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Miscellaneous ➔ Cancel Production Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "cancel production orders"
+            }
+          ],
+          "text": "cancel production orders"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "close-production",
+        "session": "Close Production Orders",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "ticst0201m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Costing ➔ Close Production Orders"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Costing ➔ Close Production Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "close a finished production order"
+            }
+          ],
+          "text": "close a finished production order"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "backflush",
+        "session": "Backflush Materials and Hours",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc0220m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "backflush materials and hours"
+            }
+          ],
+          "text": "backflush materials and hours"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "subcontract",
+        "session": "Subcontract Operations",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc2210m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Subcontract Operations"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Subcontract Operations"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "subcontract an operation"
+            }
+          ],
+          "text": "subcontract an operation"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "repetitive",
+        "session": "Production Schedules",
+        "lane": "Manufacturing",
+        "stage": 7,
+        "kind": "step",
+        "code": "tirpt4101m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Repetitive ➔ Planning ➔ Production Schedules"
+            }
+          ],
+          "text": "Manufacturing ➔ Repetitive ➔ Planning ➔ Production Schedules"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "make items on repetitive production schedules"
+            }
+          ],
+          "text": "make items on repetitive production schedules"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "inspection",
+        "session": "Inspections Overview",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "step",
+        "code": "whinh3122m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Receipts/Inspections ➔ Inspections Overview"
+            }
+          ],
+          "text": "Warehousing ➔ Receipts/Inspections ➔ Inspections Overview"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "inspect received goods before they are put away"
+            }
+          ],
+          "text": "inspect received goods before they are put away"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "8"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "putaway",
+        "session": "Generate Inbound Advice",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "step",
+        "code": "whinh3201m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inbound ➔ Generate Inbound Advice"
+            }
+          ],
+          "text": "Warehousing ➔ Inbound ➔ Generate Inbound Advice"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "generate inbound advice for put-away"
+            }
+          ],
+          "text": "generate inbound advice for put-away"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "8"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "advice-variants",
+        "session": "Undo or standalone advice",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "undo generated advice, or advise one outbound line on its own"
+            }
+          ],
+          "text": "undo generated advice, or advise one outbound line on its own"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "11"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "cancel-shipment",
+        "session": "Cancel Shipments",
+        "lane": "Warehousing",
+        "stage": 6,
+        "kind": "step",
+        "code": "whinh4230m500",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Shipments ➔ Cancel Shipments"
+            }
+          ],
+          "text": "Warehousing ➔ Shipments ➔ Cancel Shipments"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "cancel shipments"
+            }
+          ],
+          "text": "cancel shipments"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "13"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "warehouse-transfer",
+        "session": "Warehouse transfer",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whinh2100m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Orders ➔ Orders"
+            }
+          ],
+          "text": "Warehousing ➔ Orders ➔ Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "move stock from one warehouse to another"
+            }
+          ],
+          "text": "move stock from one warehouse to another"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "create the transfer order"
+              }
+            ],
+            "text": "create the transfer order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "advise, pick and ship it"
+              }
+            ],
+            "text": "advise, pick and ship it"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "receive it at the destination"
+              }
+            ],
+            "text": "receive it at the destination"
+          }
+        ],
+        "opens": [
+          {
+            "walkthrough": "transfer-item-between-warehouses",
+            "phases": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "create the transfer order. advise, pick and ship it. receive it at the destination"
+            }
+          ],
+          "text": "create the transfer order. advise, pick and ship it. receive it at the destination"
+        }
+      },
+      {
+        "id": "cycle-count",
+        "session": "Cycle Counting Orders",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whinh5100m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders"
+            }
+          ],
+          "text": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "count stock and settle the difference"
+            }
+          ],
+          "text": "count stock and settle the difference"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "adjustment",
+        "session": "Adjustment Orders",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whinh5120m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders"
+            }
+          ],
+          "text": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "adjust stock with an adjustment order"
+            }
+          ],
+          "text": "adjust stock with an adjustment order"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "inventory-blocking",
+        "session": "Inventory Blocking by Zone/Location",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whwmd6110m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location"
+            }
+          ],
+          "text": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "block inventory by zone or location"
+            }
+          ],
+          "text": "block inventory by zone or location"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "quarantine",
+        "session": "Quarantine Inventory",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whwmd2672m100",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory"
+            }
+          ],
+          "text": "Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "hold inventory in quarantine"
+            }
+          ],
+          "text": "hold inventory in quarantine"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "handling-units",
+        "session": "Handling Units",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whwmd5130m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Handling Units ➔ Handling Units"
+            }
+          ],
+          "text": "Warehousing ➔ Handling Units ➔ Handling Units"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "keep stock in handling units"
+            }
+          ],
+          "text": "keep stock in handling units"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "lot-tracing",
+        "session": "Item - Lot",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whltc1100m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory Reporting ➔ Lot Control ➔ Item - Lot"
+            }
+          ],
+          "text": "Warehousing ➔ Inventory Reporting ➔ Lot Control ➔ Item - Lot"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "look up the lots of an item"
+            }
+          ],
+          "text": "look up the lots of an item"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "kanban",
+        "session": "Generate Orders (Kanban)",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whinh2200m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (Kanban)"
+            }
+          ],
+          "text": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (Kanban)"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "generate replenishment orders from kanban"
+            }
+          ],
+          "text": "generate replenishment orders from kanban"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "assembly-orders",
+        "session": "Assembly Orders",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whinh2101m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Orders ➔ Assembly Orders"
+            }
+          ],
+          "text": "Warehousing ➔ Orders ➔ Assembly Orders"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "assemble items on an assembly order"
+            }
+          ],
+          "text": "assemble items on an assembly order"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "warehouse-setup",
+        "session": "Warehouses",
+        "lane": "Warehousing",
+        "stage": 1,
+        "kind": "step",
+        "code": "whwmd2500m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses"
+            }
+          ],
+          "text": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "define a warehouse"
+            }
+          ],
+          "text": "define a warehouse"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "order-inspection",
+        "session": "Order Inspections",
+        "lane": "Quality",
+        "stage": 7,
+        "kind": "step",
+        "code": "qmptc1620m100",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Quality ➔ Inspection ➔ Order Inspections"
+            }
+          ],
+          "text": "Quality ➔ Inspection ➔ Order Inspections"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "inspect goods against an order"
+            }
+          ],
+          "text": "inspect goods against an order"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "non-conformance",
+        "session": "Non-Conformance Reports",
+        "lane": "Quality",
+        "stage": 7,
+        "kind": "step",
+        "code": "qmncm1600m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Quality ➔ Non-Conformance Reports"
+            }
+          ],
+          "text": "Quality ➔ Non-Conformance Reports"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "report a non-conformance"
+            }
+          ],
+          "text": "report a non-conformance"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "Not documented for this release."
+        }
+      }
+    ],
+    "edges": [],
+    "budget": {
+      "session": 44
+    }
+  },
+  "openIssues": 44
+}

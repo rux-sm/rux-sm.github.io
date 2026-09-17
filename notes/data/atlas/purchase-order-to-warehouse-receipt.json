@@ -1,5 +1,5 @@
 {
-  "contract": 10,
+  "contract": 11,
   "tier": "export",
   "id": "purchase-order-to-warehouse-receipt",
   "title": "Purchase to receipt",

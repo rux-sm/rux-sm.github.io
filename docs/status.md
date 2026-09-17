@@ -19,6 +19,9 @@ done and how.
   problems are open, and three controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
 
+- **ant-dark helper text** is 4.4:1 on `layer-02`, under the 4.5:1 body text
+  needs. The editor's Billing tab shows it.
+
 ### Asked for by the scheduler
 
 - A toggle whose tap target meets 44px at touch widths. The label is the hit
@@ -46,8 +49,8 @@ done and how.
   list is in `scheduler/docs/quote-calculator.md`.
 - Below the md width the board shows about two of seven days. The phone view
   is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
-- Weak highlights in geist: the roster tint and the keyboard highlight are
-  barely visible, and no one has looked at all eight themes on screen.
+- Weak highlights in geist: the roster tint, the keyboard highlight and the
+  editor's bus tiles on the Fleet tab are barely visible.
 
 ## The database
 

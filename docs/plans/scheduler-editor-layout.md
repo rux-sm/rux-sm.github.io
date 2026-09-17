@@ -28,18 +28,16 @@ and reads right on real trips in every theme.
 - **Line tabs, not contained.** Carbon asks for line tabs inside a component,
   with the first label on the content's edge. They take 8px padding so all five
   fit the 20rem panel.
-- **The tabs stay,** though Carbon's pattern discourages tabs in a side-panel
-  form: a trip holds five tabs of fields, and the alternative is a full page.
+- **The editor stays a column beside the board on every tab,** with its tabs,
+  though Carbon's pattern discourages tabs in a side-panel form: the week stays
+  in sight while a trip is edited.
 - **The destructive action says what it does.** The action bar's first button
   is "Cancel trip", a danger ghost button; the close button leaves the editor.
 
 ## Questions
 
-- **Should the editor become a full page** for the tabs Carbon would not put in
-  a side panel, or stay a column beside the board?
+None.
 
 ## Tasks
 
-- [ ] Check the editor in all eight themes on a real trip.
-- [ ] Answer the questions above.
 - [ ] rux reads every tab on real trips, in Chrome, Safari and on the phone.

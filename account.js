@@ -119,8 +119,118 @@
     return null;
   };
 
+  /* THE PERSON'S AVATAR is Carbon's user-avatar: their photo when the profile
+     has one, otherwise their initials on a colour. A staff account's name,
+     photo and colour are its public.profiles row, as rux-ui draws them; any
+     other account's name is the one the account panel keeps. */
+  const PHOTO_BUCKET = 'profile-photos';
+  const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  const PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+  // Full class names, never built from parts, so the check can see each one.
+  const ORDER_CLASSES = [
+    'rux--user-avatar--order-1-cyan', 'rux--user-avatar--order-2-gray', 'rux--user-avatar--order-3-green',
+    'rux--user-avatar--order-4-magenta', 'rux--user-avatar--order-5-purple', 'rux--user-avatar--order-6-teal',
+    'rux--user-avatar--order-7-cyan', 'rux--user-avatar--order-8-gray', 'rux--user-avatar--order-9-green',
+    'rux--user-avatar--order-10-magenta', 'rux--user-avatar--order-11-purple', 'rux--user-avatar--order-12-teal',
+  ];
+  // rux-ui's colour names as its avatar paints them, cyan as teal. Amber, and
+  // orange and yellow, which rux-ui paints amber, have no Carbon order.
+  const COLOUR_ORDERS = {
+    teal: 'rux--user-avatar--order-6-teal', cyan: 'rux--user-avatar--order-6-teal',
+    green: 'rux--user-avatar--order-3-green', purple: 'rux--user-avatar--order-5-purple',
+    pink: 'rux--user-avatar--order-4-magenta',
+  };
+  const PHOTO_SIZES = {
+    sm: 'rux--user-avatar__photo--sm', md: 'rux--user-avatar__photo--md',
+    lg: 'rux--user-avatar__photo--lg', xl: 'rux--user-avatar__photo--xl',
+  };
+  // The first letters of the first two words, or the first two of one word.
+  const initials = name => {
+    const words = String(name ?? '').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return '?';
+    return (words.length === 1 ? words[0].slice(0, 2) : words[0][0] + words[1][0]).toUpperCase();
+  };
+  // A colour no profile names is one of the twelve, stable for the id.
+  const hashedOrder = seed => {
+    let h = 0;
+    for (const ch of String(seed ?? '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return ORDER_CLASSES[h % ORDER_CLASSES.length];
+  };
+  const photoUrl = path => (path ? sb.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl : null);
+
+  // Who is logged in: { id, name, photoPath, colour, staff }, or null. Read once.
+  let personPromise = null;
+  const person = () => (personPromise ??= (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session || session.user.is_anonymous) return null;
+    let staff = null;
+    try { staff = await staffProfile(); } catch { /* drawn from the account instead */ }
+    if (staff) {
+      return { id: staff.id, name: staff.display_name, photoPath: staff.photo_path, colour: staff.avatar_color, staff: true };
+    }
+    return { id: session.user.id, name: profile?.get().name ?? null, photoPath: null, colour: null, staff: false };
+  })());
+
+  // Every avatar on the page, redrawn when the person changes.
+  const avatars = new Map();
+  const draw = (host, who) => {
+    host.classList.remove(...ORDER_CLASSES);
+    host.classList.add(COLOUR_ORDERS[who.colour] || hashedOrder(who.id));
+    host.textContent = initials(who.name);
+    const url = photoUrl(who.photoPath);
+    if (!url) return;
+    const img = document.createElement('img');
+    img.className = `rux--user-avatar__photo ${PHOTO_SIZES[avatars.get(host)] ?? PHOTO_SIZES.md}`;
+    img.alt = '';
+    // A photo that will not load leaves the initials showing.
+    img.addEventListener('load', () => host.replaceChildren(img), { once: true });
+    img.src = url;
+  };
+  const redraw = who => { for (const host of avatars.keys()) draw(host, who); };
+
+  // Draws `host`, a `rux--user-avatar` element, for the logged-in person at
+  // `size`. False when nobody is logged in.
+  const showAvatar = async (host, size) => {
+    const who = await person();
+    if (!who) return false;
+    avatars.set(host, size);
+    draw(host, who);
+    return true;
+  };
+
+  // A staff member's own photo, stored and removed as rux-ui does:
+  // `<profile id>/photo-<milliseconds>.<extension>`, the old file first. Resolves
+  // null, or a sentence to show.
+  const setPhoto = async file => {
+    const who = await person();
+    if (!who?.staff) return 'Only a staff account has a photo.';
+    if (file && !PHOTO_TYPES.includes(file.type)) return 'Choose a JPEG, PNG, WebP or GIF picture.';
+    if (file && file.size > PHOTO_MAX_BYTES) return 'Choose a picture under 5 MB.';
+    const bucket = sb.storage.from(PHOTO_BUCKET);
+    let path = null;
+    if (file) {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      path = `${who.id}/photo-${Date.now()}.${ext}`;
+      const { error } = await bucket.upload(path, file, { contentType: file.type, upsert: false });
+      if (error) return "The picture didn't upload. Try again.";
+    }
+    const { error } = await sb.from('profiles').update({ photo_path: path }).eq('id', who.id);
+    if (error) {
+      if (path) bucket.remove([path]).catch(() => {});
+      return "The picture wasn't saved. Try again.";
+    }
+    // The old file is unused now; one that stays is only left behind.
+    if (who.photoPath) bucket.remove([who.photoPath]).catch(() => {});
+    who.photoPath = path;
+    redraw(who);
+    return null;
+  };
+
   window.Rux.account = {
     client: sb,
+    person,
+    showAvatar,
+    setPhoto,
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),
     signIn,
@@ -166,6 +276,22 @@
         await profiles().upsert({ id: uid, display_name: localProfile.name ?? null, theme: localProfile.theme ?? null });
       }
     } catch { /* platform unreachable: the local profile stands */ }
+
+    /* The header's Account action shows the person in place of its glyph,
+       and says who it is. Another account's name follows the panel's. */
+    const action = document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]');
+    if (action) {
+      const avatar = document.createElement('div');
+      avatar.className = 'rux--user-avatar rux--user-avatar--sm';
+      avatar.setAttribute('aria-hidden', 'true');
+      if (await showAvatar(avatar, 'sm')) {
+        action.replaceChildren(avatar);
+        const who = await person();
+        const label = () => action.setAttribute('aria-label', who.name ? `Account, ${who.name}` : 'Account');
+        label();
+        if (!who.staff) profile.onChange(p => { who.name = p.name ?? null; label(); redraw(who); });
+      }
+    }
 
     let timer;
     profile.onChange(p => {

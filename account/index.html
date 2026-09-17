@@ -38,9 +38,9 @@
      about when a change is saved.
 
      NOT VERIFIED: a real (non-managed) Turnstile challenge, same as
-     ../index.html. The avatar's colour-by-id hash has no attested reference
-     since Carbon's own capture uses a fixed order class; it is this page's
-     own choice, recorded in account.js. -->
+     ../index.html. The avatar's colour for a profile that names none is
+     hashed from its id, which no Carbon capture does; account.js draws it,
+     for this page and the header alike. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run icons` rewrites this
      block in every template from assets/icons.svg. -->
@@ -252,8 +252,22 @@
                    absorb free width in a container wider than their content,
                    which a fixed-size avatar next to a full-width text input
                    has no attested composition for. Vertical avoids gambling on
-                   that. account.js sets the initials and the colour order. -->
+                   that. account.js draws the photo, or the initials and the
+                   colour order. -->
               <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--lg" id="acct-avatar" aria-hidden="true">?</div>
+
+              <!-- A staff member's own photo: the button set from
+                   design/templates/detail-page.html, and a hidden file input
+                   the first button opens. Shown once account.js says the
+                   account is staff. -->
+              <div class="rux--form-item" id="acct-photo" hidden>
+                <input type="file" id="acct-photo-file" class="rux--visually-hidden" accept="image/jpeg,image/png,image/webp,image/gif" tabindex="-1">
+                <div class="rux--btn-set">
+                  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" id="acct-photo-upload">Upload photo</button>
+                  <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" id="acct-photo-remove" hidden>Remove photo</button>
+                </div>
+                <div class="rux--form__helper-text" id="acct-photo-help">A JPEG, PNG, WebP or GIF under 5 MB, shown in every app.</div>
+              </div>
 
               <div class="rux--form-item rux--text-input-wrapper">
                 <div class="rux--text-input__label-wrapper">
@@ -474,41 +488,10 @@
   const themeRadios = [...document.querySelectorAll('input[name="acct-theme"]')];
   const avatar = document.getElementById('acct-avatar');
 
-  const initials = name => {
-    const words = (name ?? '').trim().split(/\s+/).filter(Boolean);
-    if (!words.length) return '?';
-    return words.length === 1 ? words[0].slice(0, 2).toUpperCase() : (words[0][0] + words[1][0]).toUpperCase();
-  };
-  // No captured reference hashes a name to one of the twelve order classes;
-  // this is this page's own choice, stable per id, not a Carbon behaviour.
-  // Full class names, not built from a suffix: tools/check.mjs matches
-  // rux--* substrings statically and cannot see through concatenation.
-  const ORDER_CLASSES = [
-    'rux--user-avatar--order-1-cyan', 'rux--user-avatar--order-2-gray', 'rux--user-avatar--order-3-green',
-    'rux--user-avatar--order-4-magenta', 'rux--user-avatar--order-5-purple', 'rux--user-avatar--order-6-teal',
-    'rux--user-avatar--order-7-cyan', 'rux--user-avatar--order-8-gray', 'rux--user-avatar--order-9-green',
-    'rux--user-avatar--order-10-magenta', 'rux--user-avatar--order-11-purple', 'rux--user-avatar--order-12-teal',
-  ];
-  const colourFor = seed => {
-    let h = 0;
-    for (const ch of seed ?? '') h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-    return ORDER_CLASSES[h % ORDER_CLASSES.length];
-  };
-
-  let currentOrderClass = null;
-  const renderProfile = (p, seed) => {
+  const renderProfile = p => {
     if (nameInput && document.activeElement !== nameInput) nameInput.value = p.name ?? '';
     const current = document.documentElement.dataset.theme ?? '';
     for (const r of themeRadios) r.checked = r.value === current;
-    if (avatar) {
-      avatar.textContent = initials(p.name);
-      const next = colourFor(seed ?? p.name ?? '');
-      if (next !== currentOrderClass) {
-        if (currentOrderClass) avatar.classList.remove(currentOrderClass);
-        avatar.classList.add(next);
-        currentOrderClass = next;
-      }
-    }
   };
 
   nameInput?.addEventListener('input', () => profile.set({ name: nameInput.value }));
@@ -517,7 +500,7 @@
     document.documentElement.dataset.theme = r.value;
     profile.set({ theme: r.value });
   });
-  profile.onChange(p => renderProfile(p));
+  profile.onChange(renderProfile);
   renderProfile(profile.get());
 
   // The session: window.Rux.account is account.js's, loaded just before this
@@ -528,8 +511,37 @@
   const signOutBtn = document.getElementById('acct-signout');
   if (!account || !status) return;
 
+  // The avatar, and a staff member's photo buttons, once the person is known.
+  const photo = document.getElementById('acct-photo');
+  const photoFile = document.getElementById('acct-photo-file');
+  const photoUpload = document.getElementById('acct-photo-upload');
+  const photoRemove = document.getElementById('acct-photo-remove');
+  const photoHelp = document.getElementById('acct-photo-help');
+  const photoHint = photoHelp?.textContent;
+  const showPhotoButtons = who => { if (photoRemove) photoRemove.hidden = !who.photoPath; };
+  if (avatar) account.showAvatar(avatar, 'lg').then(async shown => {
+    const who = shown && await account.person();
+    if (!who?.staff || !photo) return;
+    photo.hidden = false;
+    showPhotoButtons(who);
+  }, () => {});
+  const savePhoto = async file => {
+    photoUpload.disabled = photoRemove.disabled = true;
+    photoHelp.textContent = file ? 'Uploading…' : 'Removing…';
+    const problem = await account.setPhoto(file).catch(() => "The picture wasn't saved. Try again.");
+    photoHelp.textContent = problem ?? photoHint;
+    photoUpload.disabled = photoRemove.disabled = false;
+    showPhotoButtons(await account.person());
+  };
+  photoUpload?.addEventListener('click', () => photoFile.click());
+  photoFile?.addEventListener('change', () => {
+    const file = photoFile.files?.[0];
+    photoFile.value = '';
+    if (file) savePhoto(file);
+  });
+  photoRemove?.addEventListener('click', () => savePhoto(null));
+
   account.getSession().then(session => {
-    if (avatar && session) renderProfile(profile.get(), session.user.id);
     if (!session || session.user.is_anonymous) {
       status.textContent = 'Not logged in.';
       return;

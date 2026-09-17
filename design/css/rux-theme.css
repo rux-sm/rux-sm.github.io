@@ -153,7 +153,9 @@
   misses 4.5:1 for text or 3:1 for a shape here, the nearest readable step
   of the same palette stands in: links, focus and info stay #4096ff, since
   Ant's #1668dc is 3.2:1 on layer-02; text-error is #e86e6b; helper text
-  is 0.5 alpha and placeholder 0.35. layer-03 and the toggle track have no
+  is 0.5 alpha and placeholder 0.35. Each field sits one step above its
+  layer, because ant-dark's fields have no underline and Carbon's own fields
+  match their layer. layer-03 and the toggle track have no
   Ant counterpart, and the notification and content-switcher sets stay
   Carbon's dark set.
 
@@ -741,12 +743,12 @@
   --rux-layer-selected-inverse: #f5f5f5;
 
   /* field */
-  --rux-field-01: #141414;
-  --rux-field-02: #1f1f1f;
-  --rux-field-03: #262626;
-  --rux-field-hover-01: #1f1f1f;
-  --rux-field-hover-02: #292929;
-  --rux-field-hover-03: #303030;
+  --rux-field-01: #1f1f1f;
+  --rux-field-02: #262626;
+  --rux-field-03: #303030;
+  --rux-field-hover-01: #262626;
+  --rux-field-hover-02: #303030;
+  --rux-field-hover-03: #3a3a3a;
 
   /* border */
   --rux-border-disabled: rgba(255, 255, 255, 0.2);

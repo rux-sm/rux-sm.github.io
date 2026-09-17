@@ -26,9 +26,14 @@ arriving, never knowledge verified.
 
 ### The map is the way in
 
-- **Home is the map.** It is the overview diagram, which already draws 26 tiles
-  across six lanes. There is no route page and no syllabus: a hand-made order
-  would only be a worse copy of the dependency the map already holds.
+- **Home is the path: the overview's 26 tiles as one column, top to bottom.**
+  The numbered tiles run in walk order under their stage, the four setup tiles
+  come first under "Before you start", and each unnumbered tile sits indented
+  under the numbered tile it belongs to. It reads the same on a phone, which a
+  lane-by-stage board and the wide diagram do not. The order is the overview's
+  own numbering, so there is still no hand-made syllabus.
+
+- **The diagram stays one link away**, for seeing how the modules connect.
 
 - **A line above the map says where to start**, changed whenever rux wants. A
   map with no starting point is one a beginner cannot use, and this is a line
@@ -58,16 +63,18 @@ arriving, never knowledge verified.
   procedure is not empty, and saying so would misdescribe the best-documented
   parts of the library.
 
-- **A tile opens on one target, with its question inside.** Design ships
-  `rux--popover` with a caret. The scheduler's bar has zones, but a tile already
-  carries a name, a count and a quest badge, and zones are where minimal slips.
+- **A closed tile is its number, its name, one line of what it does, and a quest
+  count when it has quests.** The whole tile is one target.
+
+- **An open tile is the same tile grown into one card, in place:** the steps of
+  the phase it opens, what LN is doing, how to move on, and its quests.
 
 - **Three ways a tile moves on.** A **question** the learner answers — node 2
   already asks *"Does on-hand cover it?"* A **fork decided elsewhere**, like
   supply source purchase or job shop, which the item chooses and the learner
   looks up. And a **single way on**. Rendering a fork as a choice would teach
   something false, so one asks what you found and the other what the item says.
-  Answering draws the line and greys what it skips.
+  Answering opens the next tile and greys what it skips.
 
 - **An association is authored, and a session code only suggests.** Which
   phases a node opens is recorded in atlas; matching a code finds candidates and
@@ -114,12 +121,9 @@ arriving, never knowledge verified.
 
 ### What a reader meets
 
-- **A screen is a panel, not a destination**, which is atlas's own publishing
-  test applied. It opens beside the step that names it and closes again, so a
-  reader mid-task in LN never loses their place.
-
-- **A screen still has an address**, so search and a link from atlas reach it.
-  Arrived at directly it is a page; opened from a step it is the panel.
+- **A screen is not a destination**, which is atlas's own publishing test: it
+  opens from the step that names it, so a reader mid-task never loses their
+  place. It still has an address, so search and a link from atlas reach it.
 
 - **A concept publishes once rux has attested to it**, which is what OI-274
   asks. The first glossary carries only terms whose owner publishes.
@@ -186,8 +190,11 @@ arriving, never knowledge verified.
 
 ### The site layout
 
-- **A tile expands in place** into what its stage does, its procedures, its
-  screens, its quests and its progress. No stage page and no new address.
+- **A tile expands in place**, and there is no stage page and no new address.
+
+- **A tools column sits on the right of the path**, following the open tile:
+  a notepad, screenshot upload and document upload first, with room for more
+  tools later. On a phone it drops below the path.
 
 - **A tile entered mid-procedure opens with what must already be true.** A short
   "Before starting" view is composed from the prerequisites the procedure itself
@@ -223,6 +230,12 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
   is loaded, or resuming is refused and a fresh run offered.
 
 ## Questions
+
+- **Where does a screen open, now that the right column holds the tools?** In
+  the tools column, inside the card under its step, or as a sheet over the page.
+
+- **Where do notes and uploads go?** Kept in the account like the walk's
+  screenshots, sent into the intake, or both.
 
 - **What does a source establish, and how far does its reach extend?** Help can
   make a configuration claim; a recording holds both observed screen and
@@ -263,8 +276,10 @@ are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
       detail, and move only the detail out.
 - [ ] Decide the source scope rule, then label that tile at the levels its own
       documents support.
-- [ ] Render the tile in the private preview: the procedure, its two concepts,
-      the glossary of their terms, and `cprrp0520m000` as the screen panel.
+- [ ] Build the path home in the private preview, with every tile closed and
+      the tools column empty but in place.
+- [ ] Render the tile open in place on that path: the procedure, its two
+      concepts, the glossary of their terms, and `cprrp0520m000` as the screen.
 - [ ] Attach one homework sitting as the tile's understanding check.
 - [ ] Tag that tile's open gaps with their kind, and show them as its quests.
 - [ ] Show what the tile has and what is open, with no percentage.

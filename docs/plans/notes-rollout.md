@@ -26,9 +26,8 @@ has been used and what it got wrong is written down.
 
 - **One search box in the header**, over the library's own pages.
 
-- **On a phone the map becomes tiles by lane**, each carrying what must come
-  before it, where it branches and what follows. The panel's own phone
-  behaviour is in the first-slice plan, which tests it.
+- **The path is the same on a phone**, one column, with the tools below it. The
+  wide diagram stays for the computer.
 
 ### What retires, and how addresses survive
 

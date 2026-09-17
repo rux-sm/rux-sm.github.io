@@ -41,7 +41,9 @@
    NOT DONE HERE: the avatar. This module keeps no photo and knows no
    account, so the site's account.js draws `user-avatar`
    (sink/user-avatar.html) in the header's Account action and on /account/,
-   from the logged-in profile.
+   from the logged-in profile. A page that shows the person elsewhere calls
+   window.Rux.account.showAvatar(element, size) rather than drawing its own,
+   and a staff member's photo changes through window.Rux.account.setPhoto(file).
    ========================================================================== */
 
 /* BEHAVIOUR: derived · rux's own behaviour on Carbon's captured controls — the

@@ -2735,6 +2735,9 @@ function diagramFigure(dg, { notes: withNotes = true, link = '' } = {}) {
 // the map until publishing the path is decided.
 const PATH_HOME = PRIVATE;
 const PATH_START = '1';
+// The map of tasks beside the overview: a task with `under` sits beneath that
+// overview tile, and one without is an Other task.
+const TASKS_DIAGRAM = 'tasks';
 
 // Where an unnumbered tile sits: under the numbered tile it shares an edge
 // with, or, with no edge, under the last numbered tile of its stage. A setup
@@ -2843,7 +2846,7 @@ function pathNext(dg, n) {
   return html;
 }
 
-function pathTile(dg, n, cat, docs) {
+function pathTile(dg, n, cat, docs, task = false) {
   const opens = (n.opens ?? []).flatMap(o => {
     const w = docs.get(o.walkthrough);
     if (!w) throw new Error(`node ${n.id} opens ${o.walkthrough}, which is not in this build`);
@@ -2899,8 +2902,8 @@ function pathTile(dg, n, cat, docs) {
           <div class="notes-path-card">
             <p class="notes-path-meta">${[state, ...counts].map(esc).join(' · ')}${n.code ? ` · <span class="rux--type-code-01">${esc(n.code)}</span>` : ''}</p>
             ${procedure}${reference}
-            <h3 class="rux--type-productive-heading-02">Next</h3>
-            ${pathNext(dg, n)}${questList}
+            ${task ? '' : `<h3 class="rux--type-productive-heading-02">Next</h3>
+            ${pathNext(dg, n)}`}${questList}
           </div>
         </details>`;
 }
@@ -2941,6 +2944,8 @@ const PATH_CSS = `
 .notes-path-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 .notes-path-quests { display: grid; gap: .5rem; padding: 0; margin: 0; list-style: none; font-size: .875rem; }
 .notes-path-tools { display: grid; gap: 1rem; padding-block-start: .5rem; }
+.notes-path-switch { max-inline-size: 20rem; }
+.notes-path-tasks-title { margin-block-end: .5rem; }
 @media (max-width: 42rem) {
   .notes-path-stage { padding-inline-start: .5rem; }
   .notes-path-side { margin-inline-start: .75rem; }
@@ -2955,12 +2960,34 @@ function pathPage(ref, site) {
   const { numbered, under, setup } = pathPlaces(dg, cat);
   const start = dg.nodes.find(n => n.id === PATH_START);
   const one = n => withPageBase('pages/', () => pathTile(dg, n, cat, docs));
+
+  // Tasks: a gate keeps the checkpoint look, everything else is a step.
+  const tasks = (site.references ?? []).find(r => r.id === TASKS_DIAGRAM && r.diagram)?.diagram;
+  const taskCat = new Map((tasks?.nodes ?? []).map(n => [n.id, n.kind === 'gate' ? 'check' : 'step']));
+  const taskTile = n => withPageBase('pages/', () => pathTile(tasks, n, taskCat, docs, true));
+  const ids = new Set(dg.nodes.map(n => n.id));
+  for (const n of tasks?.nodes ?? []) {
+    if (ids.has(n.id)) throw new Error(`task ${n.id} has the id of an overview tile`);
+    if (n.under && n.under.map === ref.id) {
+      if (!ids.has(n.under.node)) throw new Error(`task ${n.id} sits under ${n.under.node}, which is not an overview tile`);
+      const host = dg.nodes.find(m => m.id === n.under.node);
+      // A setup host has no side list, so its tasks join the setup section.
+      if (cat.get(host.id) === 'config') setup.push(n);
+      else {
+        if (!under.has(host.id)) under.set(host.id, []);
+        under.get(host.id).push(n);
+      }
+    }
+  }
+  const others = (tasks?.nodes ?? []).filter(n => !n.under);
+  const isTask = n => taskCat.has(n.id);
+  const tile = n => isTask(n) ? taskTile(n) : one(n);
   const stages = [];
   for (const n of numbered) {
     if (stages.at(-1)?.stage !== n.stage) stages.push({ stage: n.stage, tiles: [] });
     stages.at(-1).tiles.push(one(n));
     const side = under.get(n.id) ?? [];
-    if (side.length) stages.at(-1).tiles.push(`<div class="notes-path-side">${side.map(one).join('\n        ')}</div>`);
+    if (side.length) stages.at(-1).tiles.push(`<div class="notes-path-side">${side.map(tile).join('\n        ')}</div>`);
   }
   const stageName = k => { const s = dg.stages.find(x => x.n === k); return `${s.n} · ${s.name}`; };
   const section = (id, heading, tiles) => `
@@ -2974,9 +3001,18 @@ function pathPage(ref, site) {
         <div class="notes-path-main">
           <h1>Demand to shipment</h1>
           <p class="rux--type-body-02">${start ? `Start here: <a class="rux--link" href="#tile-${esc(start.id)}" data-notes-path-go="${esc(start.id)}">${esc(`${start.n} · ${start.session}`)}</a> · ` : ''}<a class="rux--link" href="pages/${esc(ref.id)}.html">See the whole map</a></p>
-          <div class="notes-path">${section('h-setup', 'Before you start', setup.map(one))}${
+          ${others.length ? `<div class="rux--content-switcher rux--layout--size-md notes-path-switch" role="tablist" aria-label="View" data-notes-path-switch hidden>
+            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-notes-path-view="path"><span class="rux--content-switcher__label">Path</span></button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-notes-path-view="tasks"><span class="rux--content-switcher__label">Other tasks</span></button>
+          </div>` : ''}
+          <div class="notes-path" data-notes-path-list="path">${section('h-setup', 'Before you start', setup.map(tile))}${
             stages.map(s => section(`h-stage-${s.stage}`, stageName(s.stage), s.tiles)).join('')}
           </div>
+          ${others.length ? `<div class="notes-path" data-notes-path-list="tasks">
+            <h2 class="rux--type-productive-heading-03 notes-path-tasks-title">Other tasks</h2>${
+            tasks.lanes.map(l => [l, others.filter(n => n.lane === l.name)]).filter(([, ns]) => ns.length)
+              .map(([l, ns]) => section(`h-tasks-${l.n}`, l.name, ns.map(taskTile))).join('')}
+          </div>` : ''}
         </div>
         <aside class="notes-path-tools" aria-labelledby="h-tools">
           <h2 id="h-tools" class="rux--type-productive-heading-02">Tools</h2>

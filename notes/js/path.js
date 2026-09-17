@@ -11,6 +11,8 @@
    - The notepad follows the open tile, one note per tile, kept in this
      browser under one key.
    - Escape closes the open tile and returns focus to it.
+   - The Path | Other tasks switch shows one list at a time. Without this
+     file both lists show, one after the other.
    ========================================================================== */
 (() => {
   'use strict';
@@ -36,9 +38,38 @@
     if (forLine) forLine.textContent = t ? `Notes on ${nameOf(t)}` : 'Open a tile to take notes on it.';
   }
 
+  // ---- the switch ----------------------------------------------------------
+  const lists = [...document.querySelectorAll('[data-notes-path-list]')];
+  const views = [...document.querySelectorAll('[data-notes-path-view]')];
+  function view(name) {
+    for (const l of lists) l.hidden = l.dataset.notesPathList !== name;
+    for (const b of views) {
+      const on = b.dataset.notesPathView === name;
+      b.classList.toggle('rux--content-switcher--selected', on);
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+    }
+  }
+  if (views.length) {
+    document.querySelector('[data-notes-path-switch]').hidden = false;
+    for (const b of views) b.addEventListener('click', () => view(b.dataset.notesPathView));
+    // Arrow keys move between the two, as a tab list expects.
+    document.querySelector('[data-notes-path-switch]').addEventListener('keydown', event => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const at = views.indexOf(document.activeElement);
+      if (at < 0) return;
+      const next = views[(at + (event.key === 'ArrowRight' ? 1 : views.length - 1)) % views.length];
+      view(next.dataset.notesPathView);
+      next.focus();
+    });
+    view('path');
+  }
+
   function show(id, behavior = 'smooth') {
     const t = document.getElementById(`tile-${id}`);
     if (!t) return;
+    const list = t.closest('[data-notes-path-list]');
+    if (list?.hidden) view(list.dataset.notesPathList);
     t.open = true;
     t.scrollIntoView({ block: 'start', behavior });
     t.querySelector(':scope > summary')?.focus({ preventScroll: true });

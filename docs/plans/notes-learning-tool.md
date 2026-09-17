@@ -12,9 +12,10 @@ One tool rux uses to learn Infor LN, from any device.
 applied at the end.** Where a decision trades simplicity against completeness,
 simplicity wins and this plan says what was left out.
 
-**The path is the way in, and a tile is a level.** Every tile can be opened and
-attempted, however well the library knows it. There is one verb — open a tile
-and work through it.
+**The path is the way in, and a tile is a level.** Everything a learner does
+starts from a tile: reading the steps, walking them in LN, the homework check,
+and the quests. Every tile can be opened and attempted, however well the
+library knows it. There is one verb — open a tile and work through it.
 
 **Build everything the library can show now, and let the gaps be quests.** A
 missing step, screen or answer never holds a tile back; it shows as a quest in
@@ -46,9 +47,31 @@ arriving, never knowledge verified.
   cutting across tiles arrives through search or the glossary instead, and opens
   the screen or concept that owns it.
 
-- **Three things in the side nav: Map, Procedures, Concepts.** The glossary is
-  part of Concepts: its 51 terms are generated from the concepts' own
-  frontmatter, each with exactly one owner. One search box sits in the header.
+- **Two things in the side nav: Path and Concepts**, and one search box in the
+  header. The glossary is part of Concepts: its terms are generated from the
+  concepts' own frontmatter, each with exactly one owner.
+
+- **Walkthroughs are the steps a tile opens, and concepts are the detail.** A
+  walkthrough stays atlas's source for the steps; its page leaves the nav. A
+  concept answers "what does this mean" from a word in a step, and a screen
+  answers "what is on this screen" from the step that names it.
+
+### Tasks beside the path
+
+- **A task that changes what happens at a step sits beneath that step**, such
+  as cancelling a production order under Production Orders. **A task that
+  stands on its own is an Other task**, such as a cycle count, shown behind a
+  Path | Other tasks switch and grouped by module.
+
+- **Tasks live in atlas's `maps/tasks.md`**, tiles like the overview's; a task
+  names the tile it varies with Under. A task with no written steps carries a
+  gap, which is its quest.
+
+- **Quality is in, and its quests decide whether it stays.** Invoicing and
+  finance are out.
+
+- **rux names a new task and it is added as an empty tile** with its menu
+  route from the navigation extract.
 
 ### A tile, closed and open
 
@@ -74,7 +97,12 @@ arriving, never knowledge verified.
   skips.
 
 - **Homework is not a destination.** Its sittings attach to the tiles they
-  test, and the check arrives at the end of working through a tile.
+  test, and the check arrives at the end of working through a tile; a sitting
+  that spans tiles sits on the tile where it starts.
+
+- **Walking happens in the tile.** An open tile has Walk this, which records
+  what happened at each step and its screenshots into the same walk tables, so
+  the pull is unchanged. The walk page retires once it does.
 
 ### What a tile knows
 
@@ -184,7 +212,9 @@ arriving, never knowledge verified.
 
 - **The session map retires** once its four silent-failure notes are confirmed.
 
-- **The private-preview walk form retires** when the online walk replaces it.
+- **The walk page and the private-preview walk form retire** when Walk this
+  replaces them. **Walkthrough and experiment pages leave the nav** and become
+  landings that point at their tiles.
 
 ### Signing in, reviewing, walking
 
@@ -220,7 +250,8 @@ Neither holds up building; each gates only the one thing it names.
 ## Tasks
 
 - [ ] rux reads the path in the private preview and checks the tile links:
-      which phases each of the sixteen linked tiles opens.
+      which phases each linked tile opens, and where each task sits.
+- [ ] Walk this inside an open tile, saving to the walk tables.
 - [ ] Publish the path as the Notes front page, after `npm run export` brings
       the linked tiles to the public data.
 - [ ] Add "Before starting" to an open tile, and open a screen under the step
@@ -236,12 +267,14 @@ Neither holds up building; each gates only the one thing it names.
       their terms.
 - [ ] Simplify `run-order-planning-for-one-item` before it is walked: keep its
       essential warnings with the steps and move only optional detail out.
-- [ ] The side nav, search and the owner's queue page.
+- [ ] The side nav cut to Path and Concepts, search, and the owner's queue
+      page.
 - [ ] Take one quest from a tile through a walk, the pull, the intake and a
       verified correction, and time it against what the same correction costs
       today.
 - [ ] Read the path on desktop and the phone, with the keyboard and back-button
       checks above, and write down what rux could not find unprompted.
-- [ ] Turn meeting pages into landings, and retire the session map and the walk
-      form when their conditions above are met.
+- [ ] Turn walkthrough, experiment and meeting pages into landings, and retire
+      the session map, the walk page and the walk form when their conditions
+      above are met.
 - [ ] Decide publication separately from rendering, and publish deliberately.

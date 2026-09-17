@@ -21,7 +21,8 @@ learner types stays in their own browser, and the rail exports it as Markdown.
 **In the private preview the front is the path** instead of the map: the
 overview's tiles in one column, each opening in place into the steps of the
 phases atlas says it opens, its way on, and its gaps as quests, with a notepad
-beside it. `js/path.js` is its behaviour. The public front stays the map until
+beside it. Atlas's tasks sit beneath the tile they vary, or behind an Other
+tasks switch when they stand alone. `js/path.js` is its behaviour. The public front stays the map until
 the path is published.
 
 **For the owner, signed in,** `js/online.js` shows what every page carries

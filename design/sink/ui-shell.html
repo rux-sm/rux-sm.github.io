@@ -403,4 +403,23 @@
       </div>
     </header>
   </div>
+
+  <!-- HEADER ACTION · A PERSON'S AVATAR · the Account action above, holding
+       user-avatar (sink/user-avatar.html) at --sm in place of the glyph, for
+       an app that knows who is logged in: initials on a colour order, or
+       __photo when the person has a picture. No Carbon story composes the
+       two; the action already centres its one child, so no rule is added. The avatar
+       is a div inside the button, as Carbon's own capture nests it in the
+       tooltip trigger.
+       The picture is invented, drawn inline. -->
+  <div class="ks-label" style="margin-block-start:1.5rem">header action · a person's avatar, initials and photo</div>
+  <div data-theme="g100" style="position:relative;height:3rem;border:1px solid var(--rux-border-subtle);overflow:hidden;background:var(--rux-background)">
+    <header class="rux--header" style="position:absolute" aria-label="Rux DS avatar">
+      <a class="rux--header__name" href="#ui-shell"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
+      <div class="rux--header__global">
+        <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account, Alex Kim" aria-expanded="false"><div class="rux--user-avatar rux--user-avatar--order-6-teal rux--user-avatar--sm" aria-hidden="true">AK</div></button>
+        <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account, Sam Lee" aria-expanded="false"><div class="rux--user-avatar rux--user-avatar--order-5-purple rux--user-avatar--sm" aria-hidden="true"><img class="rux--user-avatar__photo rux--user-avatar__photo--sm" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div></button>
+      </div>
+    </header>
+  </div>
 </section>

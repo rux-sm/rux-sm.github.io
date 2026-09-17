@@ -20,11 +20,9 @@
     capture wraps it in a tooltip trigger button, which is the story showing a
     name on hover, not the component.
 
-    THE PHOTO VARIANTS ARE NOT EXERCISED, and the reason is the one card
-    records: `__photo`, `__photo--sm/md/lg/xl` all require an `<img>`, and this
-    sink has never carried a raster image — 59 sprite symbols and nothing else.
-    Five classes go unexercised for that reason rather than for want of a
-    reference, which the `--with-image` story supplies.
+    THE PHOTO VARIANTS follow the `--with-image` story: an `<img>` with
+    `__photo` and its size class inside the avatar, one per size. The picture
+    is invented and drawn inline, so the sink still loads no image file.
 
     THE COLOUR IS THE CONSUMER'S CHOICE, not a state. Carbon ships twelve
     `--order-N-*` classes and its own story renders only `--order-1-cyan`;
@@ -54,5 +52,13 @@
     <div class="rux--user-avatar rux--user-avatar--order-10-magenta rux--user-avatar--md">J10</div>
     <div class="rux--user-avatar rux--user-avatar--order-11-purple rux--user-avatar--md">K11</div>
     <div class="rux--user-avatar rux--user-avatar--order-12-teal rux--user-avatar--md">L12</div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">photo</div>
+  <div class="ks-row" style="align-items:center;gap:1rem">
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--xl"><img class="rux--user-avatar__photo rux--user-avatar__photo--xl" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--lg"><img class="rux--user-avatar__photo rux--user-avatar__photo--lg" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--md"><img class="rux--user-avatar__photo rux--user-avatar__photo--md" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--sm"><img class="rux--user-avatar__photo rux--user-avatar__photo--sm" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
   </div>
 </section>

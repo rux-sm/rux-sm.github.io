@@ -38,13 +38,10 @@
    resolves that attribute to its base (e.g. g100), not its own id, so the
    dataset never matches the radio that chose it.
 
-   NOT DONE HERE: an avatar in the panel itself — the header action's glyph
-   stays a <use> target, so there is nothing captured to put an initial in
-   there. `user-avatar` (sink/user-avatar.html) WAS admitted 2026-08-31,
-   stale against this file's own 2026-09-02: it compiles, initials and a
-   colour hashed from an id, and a page is free to render one from the name
-   this module stores — the hub's /account/ page does exactly that
-   (rux-sm.github.io, 2026-09-04). Corrected here rather than left wrong.
+   NOT DONE HERE: the avatar. This module keeps no photo and knows no
+   account, so the site's account.js draws `user-avatar`
+   (sink/user-avatar.html) in the header's Account action and on /account/,
+   from the logged-in profile.
    ========================================================================== */
 
 /* BEHAVIOUR: derived · rux's own behaviour on Carbon's captured controls — the

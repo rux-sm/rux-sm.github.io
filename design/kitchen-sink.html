@@ -5752,11 +5752,9 @@
     capture wraps it in a tooltip trigger button, which is the story showing a
     name on hover, not the component.
 
-    THE PHOTO VARIANTS ARE NOT EXERCISED, and the reason is the one card
-    records: `__photo`, `__photo--sm/md/lg/xl` all require an `<img>`, and this
-    sink has never carried a raster image — 59 sprite symbols and nothing else.
-    Five classes go unexercised for that reason rather than for want of a
-    reference, which the `--with-image` story supplies.
+    THE PHOTO VARIANTS follow the `--with-image` story: an `<img>` with
+    `__photo` and its size class inside the avatar, one per size. The picture
+    is invented and drawn inline, so the sink still loads no image file.
 
     THE COLOUR IS THE CONSUMER'S CHOICE, not a state. Carbon ships twelve
     `--order-N-*` classes and its own story renders only `--order-1-cyan`;
@@ -5786,6 +5784,14 @@
     <div class="rux--user-avatar rux--user-avatar--order-10-magenta rux--user-avatar--md">J10</div>
     <div class="rux--user-avatar rux--user-avatar--order-11-purple rux--user-avatar--md">K11</div>
     <div class="rux--user-avatar rux--user-avatar--order-12-teal rux--user-avatar--md">L12</div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">photo</div>
+  <div class="ks-row" style="align-items:center;gap:1rem">
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--xl"><img class="rux--user-avatar__photo rux--user-avatar__photo--xl" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--lg"><img class="rux--user-avatar__photo rux--user-avatar__photo--lg" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--md"><img class="rux--user-avatar__photo rux--user-avatar__photo--md" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
+    <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--sm"><img class="rux--user-avatar__photo rux--user-avatar__photo--sm" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
   </div>
 </section>
 
@@ -6191,6 +6197,25 @@
           </div>
           <button type="button" class="rux--btn rux--btn--tertiary" id="rux-profile-sign-in-demo">Sign in</button>
         </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- HEADER ACTION · A PERSON'S AVATAR · the Account action above, holding
+       user-avatar (sink/user-avatar.html) at --sm in place of the glyph, for
+       an app that knows who is logged in: initials on a colour order, or
+       __photo when the person has a picture. No Carbon story composes the
+       two; the action already centres its one child, so no rule is added. The avatar
+       is a div inside the button, as Carbon's own capture nests it in the
+       tooltip trigger.
+       The picture is invented, drawn inline. -->
+  <div class="ks-label" style="margin-block-start:1.5rem">header action · a person's avatar, initials and photo</div>
+  <div data-theme="g100" style="position:relative;height:3rem;border:1px solid var(--rux-border-subtle);overflow:hidden;background:var(--rux-background)">
+    <header class="rux--header" style="position:absolute" aria-label="Rux DS avatar">
+      <a class="rux--header__name" href="#ui-shell"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
+      <div class="rux--header__global">
+        <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account, Alex Kim" aria-expanded="false"><div class="rux--user-avatar rux--user-avatar--order-6-teal rux--user-avatar--sm" aria-hidden="true">AK</div></button>
+        <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account, Sam Lee" aria-expanded="false"><div class="rux--user-avatar rux--user-avatar--order-5-purple rux--user-avatar--sm" aria-hidden="true"><img class="rux--user-avatar__photo rux--user-avatar__photo--sm" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div></button>
       </div>
     </header>
   </div>

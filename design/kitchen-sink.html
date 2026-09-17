@@ -1167,10 +1167,10 @@
     <!-- SIMPLE. Input only. No __icon, no calendar-container, no module. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-simple">Date of birth (yyyy-mm-dd)</label>
+        <label class="rux--label" for="dp-simple">Date of birth (mm/dd/yyyy)</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-simple" class="rux--date-picker__input" type="text" value="1994-03-02">
+            <input id="dp-simple" class="rux--date-picker__input" type="text" value="03/02/1994">
           </span>
         </div>
       </div>
@@ -1200,10 +1200,10 @@
          inventing the combination. Four classes left unexercised on purpose. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-invalid">Expiry (yyyy-mm-dd)</label>
+        <label class="rux--label" for="dp-invalid">Expiry (mm/dd/yyyy)</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
           <span>
-            <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="2026-31-31" aria-invalid="true" aria-describedby="dp-invalid-msg">
+            <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="31/31/2026" aria-invalid="true" aria-describedby="dp-invalid-msg">
           </span>
         </div>
         <div id="dp-invalid-msg" class="rux--form-requirement">Not a valid date</div>
@@ -1212,10 +1212,10 @@
 
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-warn">Renewal (yyyy-mm-dd)</label>
+        <label class="rux--label" for="dp-warn">Renewal (mm/dd/yyyy)</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
           <span>
-            <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="2020-01-01" aria-describedby="dp-warn-msg">
+            <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="01/01/2020" aria-describedby="dp-warn-msg">
           </span>
         </div>
         <div id="dp-warn-msg" class="rux--form-requirement">That date is in the past</div>
@@ -1233,7 +1233,7 @@
         <label class="rux--label" for="dp-sm">Small</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-sm" class="rux--date-picker__input rux--date-picker__input--sm" type="text" value="2026-09-01">
+            <input id="dp-sm" class="rux--date-picker__input rux--date-picker__input--sm" type="text" value="09/01/2026">
           </span>
         </div>
       </div>
@@ -1244,7 +1244,7 @@
         <label class="rux--label" for="dp-lg">Large</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-lg" class="rux--date-picker__input rux--date-picker__input--lg" type="text" value="2026-09-01">
+            <input id="dp-lg" class="rux--date-picker__input rux--date-picker__input--lg" type="text" value="09/01/2026">
           </span>
         </div>
       </div>
@@ -1269,7 +1269,7 @@
         <label class="rux--label" for="dp-single">Departure date</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-single" class="rux--date-picker__input" type="text" value="2026-09-14">
+            <input id="dp-single" class="rux--date-picker__input" type="text" value="09/14/2026">
             <button class="rux--date-picker__icon" type="button" aria-label="Open calendar" tabindex="-1">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>
             </button>
@@ -1342,7 +1342,7 @@
         <div class="rux--date-picker-container rux--date-picker-container--single">
           <div class="rux--date-picker-input__wrapper">
             <span>
-              <input id="dp-owned-input" class="rux--date-picker__input" type="text" value="2026-09-21" aria-label="Selected date" hidden>
+              <input id="dp-owned-input" class="rux--date-picker__input" type="text" value="09/21/2026" aria-label="Selected date" hidden>
             </span>
           </div>
         </div>
@@ -1380,7 +1380,7 @@
         <label class="rux--label" for="dp-from">From</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-from" class="rux--date-picker__input" type="text" value="2026-09-14">
+            <input id="dp-from" class="rux--date-picker__input" type="text" value="09/14/2026">
             <button class="rux--date-picker__icon" type="button" aria-label="Open calendar" tabindex="-1">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>
             </button>
@@ -1391,7 +1391,7 @@
         <label class="rux--label" for="dp-to">To</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
-            <input id="dp-to" class="rux--date-picker__input" type="text" value="2026-09-21">
+            <input id="dp-to" class="rux--date-picker__input" type="text" value="09/21/2026">
             <button class="rux--date-picker__icon" type="button" aria-label="Open calendar" tabindex="-1">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>
             </button>

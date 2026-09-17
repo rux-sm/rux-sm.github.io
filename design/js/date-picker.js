@@ -137,10 +137,16 @@
    there is something to diff and something to attach; the module owns whether
    it is in the document.
 
-   NOT DONE, and deliberately: no locale, no date parsing beyond ISO
-   yyyy-mm-dd, no min/max, no disabled-date predicate. Carbon takes those as
-   props on a React component; this layer makes the markup work, and a
-   consumer that needs them owns the input's value. See the header note in
+   THE INPUT SHOWS mm/dd/yyyy, Carbon's default `dateFormat` ('m/d/Y').
+   Typing is loose: 9/4/26, 09/04/2026 and 2026-09-04 all read as the same
+   day, and a change tidies the text to 09/04/2026. A page reads and writes
+   the day as ISO through `Rux.datePicker.toISO(text)` and
+   `Rux.datePicker.format(iso)`, so storage never sees the display.
+
+   NOT DONE, and deliberately: no locale, no other display format, no
+   min/max, no disabled-date predicate. Carbon takes those as props on a
+   React component; this layer makes the markup work, and a consumer that
+   needs them owns the input's value. See the header note in
    js/form-controls.js for the same boundary.
    ========================================================================== */
 
@@ -198,12 +204,30 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0')
       + '-' + String(d.getDate()).padStart(2, '0');
   };
+  // A day from ISO yyyy-mm-dd or loose m/d/yy[yy], or null. A two-digit year
+  // is 20yy. A day the month lacks, such as 02/30, is null rather than rolled
+  // into the next month.
   var parse = function (s) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || '').trim());
-    if (!m) return null;
-    var d = new Date(+m[1], +m[2] - 1, +m[3]);
-    return isNaN(d) ? null : d;
+    var t = String(s == null ? '' : s).trim();
+    var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
+    var y, mo, day;
+    if (m) { y = +m[1]; mo = +m[2]; day = +m[3]; }
+    else {
+      m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2}|\d{4})$/.exec(t);
+      if (!m) return null;
+      mo = +m[1]; day = +m[2]; y = m[3].length === 2 ? 2000 + +m[3] : +m[3];
+    }
+    var d = new Date(y, mo - 1, day);
+    return d.getFullYear() === y && d.getMonth() === mo - 1 && d.getDate() === day ? d : null;
   };
+  // The day as the input shows it.
+  var text = function (d) {
+    return String(d.getMonth() + 1).padStart(2, '0') + '/'
+      + String(d.getDate()).padStart(2, '0') + '/' + d.getFullYear();
+  };
+  // Text a person typed, tidied when it reads as a day and left as typed
+  // otherwise, so a page can say what is wrong with it.
+  var tidy = function (s) { var d = parse(s); return d ? text(d) : s; };
   var same = function (a, b) { return a && b && iso(a) === iso(b); };
   var label = function (d) { return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); };
 
@@ -343,8 +367,9 @@
     function pick(dateStr) {
       var d = parse(dateStr);
       if (!d) return;
+      var shown = text(d);
       if (!isRange) {
-        inputs[0].value = dateStr;
+        inputs[0].value = shown;
         inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
         hide();
         return;
@@ -353,13 +378,13 @@
       // --to, swapping if the user picked backwards.
       var from = parse(inputs[0].value);
       if (active === 0 || !from || parse(inputs[1].value)) {
-        inputs[0].value = dateStr; inputs[1].value = '';
+        inputs[0].value = shown; inputs[1].value = '';
         active = 1; cursor = d; render();
         inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
         return;
       }
-      if (d < from) { inputs[1].value = inputs[0].value; inputs[0].value = dateStr; }
-      else inputs[1].value = dateStr;
+      if (d < from) { inputs[1].value = inputs[0].value; inputs[0].value = shown; }
+      else inputs[1].value = shown;
       inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
       inputs[1].dispatchEvent(new Event('change', { bubbles: true }));
       hide();
@@ -411,8 +436,13 @@
       e.preventDefault();
     });
 
+    // Markup may carry ISO; the input shows every day one way.
     inputs.forEach(function (input) {
-      input.addEventListener('change', function () { if (open) render(); });
+      input.value = tidy(input.value);
+      input.addEventListener('change', function () {
+        input.value = tidy(input.value);
+        if (open) render();
+      });
     });
 
     // A page may ship the calendar open, the way sink/date-picker.html does.
@@ -451,5 +481,11 @@
   else init();
 
   window.Rux = window.Rux || {};
-  window.Rux.datePicker = { init: init };
+  window.Rux.datePicker = {
+    init: init,
+    // ISO yyyy-mm-dd for what an input holds, or null when it names no day.
+    toISO: function (s) { var d = parse(s); return d ? iso(d) : null; },
+    // An ISO day as the input shows it; anything else comes back unchanged.
+    format: function (s) { var d = parse(String(s == null ? '' : s).slice(0, 10)); return d ? text(d) : (s == null ? '' : s); }
+  };
 })();

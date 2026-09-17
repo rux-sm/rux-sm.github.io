@@ -2876,9 +2876,11 @@
      and `--to` containers and one shared calendar container. Only the shell is
      written here; `Rux.datePicker.init(scope)` claims it and fills the calendar.
 
-     It writes ISO and dispatches `change`, so the dirty check sees it. The
-     first pick of a range clears the `to` input, so the save treats a blank
-     end as the start day. */
+     It shows mm/dd/yyyy and dispatches `change`, so the dirty check sees it;
+     `isoOrNull` reads the day back as ISO. The first pick of a range clears
+     the `to` input, so the save treats a blank end as the start day. */
+  // A stored day as the picker shows it, and the picker's text as a stored day.
+  const pickerText = v => window.Rux?.datePicker?.format?.(v ?? '') ?? (v || '');
   const dpIcon = () => {
     const b = el('button', 'rux--date-picker__icon');
     b.type = 'button';
@@ -2915,7 +2917,8 @@
     const input = el('input', DP_INPUT[size] ?? 'rux--date-picker__input');
     input.type = 'text';
     input.id = id;
-    input.value = value || '';
+    input.placeholder = 'mm/dd/yyyy';
+    input.value = pickerText(value);
     span.append(input, dpIcon());
     wrap.appendChild(span);
     c.append(lab, wrap);
@@ -2978,7 +2981,8 @@
   // The `trips` columns Save writes, each with how to read it off the form. A
   // blank field reads as null; undefined means the control is not on screen.
   const SPLIT = 'dropoff_pickup';
-  const isoOrNull = v => (/^\d{4}-\d{2}-\d{2}$/.test((v || '').trim()) ? v.trim() : null);
+  const isoOrNull = v => window.Rux?.datePicker?.toISO?.(v)
+    ?? (/^\d{4}-\d{2}-\d{2}$/.test((v || '').trim()) ? v.trim() : null);
 
   const EDITS = [
     { key: 'destination', get: f => f['scheduler-f-destination'].value.trim() || null },
@@ -3296,10 +3300,10 @@
   // cut to HH:MM before anything is compared or sent.
   const hhmmOrNull = t => (t ? String(t).slice(0, 5) : null);
 
-  /* mm/dd/yyyy for the dates this app renders itself; the picker's inputs stay
-     ISO, the only shape `date-picker.js` parses. The string is split rather
-     than passed to `new Date()`, which reads a bare date as UTC midnight and
-     prints the day before anywhere west of Greenwich. */
+  /* mm/dd/yyyy for the dates this app renders itself, the shape the picker's
+     inputs show too. The string is split rather than passed to `new Date()`,
+     which reads a bare date as UTC midnight and prints the day before
+     anywhere west of Greenwich. */
   const mdy = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     return m ? `${m[2]}/${m[3]}/${m[1]}` : (d || '');
@@ -7123,8 +7127,9 @@
     // finds with the Sunday-start preference applied.
     weekInput.addEventListener('change', () => {
       if (valueSetBySelf) return;
-      const picked = parseISO(weekInput.value);
-      if (!picked || Number.isNaN(picked.getTime())) return;
+      const day = isoOrNull(weekInput.value);
+      if (!day) return;
+      const picked = parseISO(day);
       const next = mondayOf(picked);
       if (shown && iso(next) === iso(shown)) return;   // same week, nothing to redraw
       toast(null);

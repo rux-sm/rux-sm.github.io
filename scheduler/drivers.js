@@ -62,6 +62,10 @@
   const ISO = /^\d{4}-\d{2}-\d{2}$/;
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  // A date field's day as ISO, or null; the picker shows mm/dd/yyyy.
+  const fieldDay = v => window.Rux?.datePicker?.toISO?.(v)
+    ?? (ISO.test(String(v ?? '').trim()) ? String(v).trim() : null);
+  const shownDay = v => window.Rux?.datePicker?.format?.(v ?? '') ?? (v || '');
   const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
   // Rounded, because a span across a daylight-saving change is 23 or 25 hours.
   const daysUntil = s => Math.round((parseISO(s) - today()) / DAY);
@@ -319,7 +323,7 @@
   const form = $('scheduler-driver-form');
   const field = id => $(`scheduler-d-${id}`);
   const text = id => field(id).value.trim() || null;
-  const dateOf = id => (ISO.test(field(id).value.trim()) ? field(id).value.trim() : null);
+  const dateOf = id => fieldDay(field(id).value);
   const upper = id => text(id)?.toUpperCase() ?? null;
 
   // Cancel and Save stack on a phone, as Carbon's stacked button set does.
@@ -392,7 +396,7 @@
     set('short', d.short_name);
     set('phone', d.phone);
     set('email', d.email);
-    set('dob', d.date_of_birth ? String(d.date_of_birth).slice(0, 10) : '');
+    set('dob', shownDay(d.date_of_birth ? String(d.date_of_birth).slice(0, 10) : ''));
     set('texting', d.texting_url);
     set('address', d.address);
     set('city', d.city);
@@ -403,15 +407,15 @@
     set('cdl', d.cdl_class || '');
     set('lstate', d.license_state);
     set('lnumber', d.license_number);
-    set('lexp', d.license_exp ? String(d.license_exp).slice(0, 10) : '');
-    set('medexp', d.med_card_expiry ? String(d.med_card_expiry).slice(0, 10) : '');
+    set('lexp', shownDay(d.license_exp ? String(d.license_exp).slice(0, 10) : ''));
+    set('medexp', shownDay(d.med_card_expiry ? String(d.med_card_expiry).slice(0, 10) : ''));
     const ends = new Set(d.endorsements || []);
     for (const box of document.querySelectorAll('#scheduler-d-endorsements input')) box.checked = ends.has(box.value);
     const status = d.status === 'inactive' ? 'inactive' : 'active';
     $(`scheduler-d-status-${status}`).checked = true;
     set('type', EMPLOYMENT[d.employment_type] ? d.employment_type : 'full-time');
     set('priority', String(d.priority ?? 3));
-    set('hire', d.hire_date ? String(d.hire_date).slice(0, 10) : '');
+    set('hire', shownDay(d.hire_date ? String(d.hire_date).slice(0, 10) : ''));
     set('notes', d.notes);
     drawExpiry();
     clearErrors();
@@ -443,8 +447,8 @@
     for (const help of document.querySelectorAll('.scheduler-driver-expiry')) {
       const input = $(help.dataset.expiryFor);
       const wrap = input.closest('.rux--date-picker-input__wrapper');
-      const v = input.value.trim();
-      const n = ISO.test(v) ? daysUntil(v) : Infinity;
+      const v = fieldDay(input.value);
+      const n = v ? daysUntil(v) : Infinity;
       const on = n <= WARN_DAYS;
       wrap.classList.toggle('rux--date-picker-input__wrapper--warn', on);
       if (on) input.setAttribute('aria-describedby', help.id); else input.removeAttribute('aria-describedby');
@@ -556,7 +560,8 @@
     input.type = 'text';
     input.id = id;
     input.autocomplete = 'off';
-    input.value = value || '';
+    input.placeholder = 'mm/dd/yyyy';
+    input.value = shownDay(value);
     span.append(input, dpIcon());
     wrap.appendChild(span);
     c.append(lab, wrap);
@@ -644,11 +649,12 @@
 
   $('scheduler-driver-off-add')?.addEventListener('click', () => openOff(null));
   $('scheduler-off-done')?.addEventListener('click', () => {
-    const start = $('scheduler-off-start').value.trim();
+    const start = fieldDay($('scheduler-off-start').value);
     // A blank last day is the first day: the picker clears it on a first pick.
-    const end = $('scheduler-off-end').value.trim() || start;
+    const endText = $('scheduler-off-end').value.trim();
+    const end = endText ? fieldDay(endText) : start;
     const error = $('scheduler-off-error');
-    if (!ISO.test(start) || !ISO.test(end)) {
+    if (!start || !end) {
       error.textContent = 'Pick the first and last day.';
       error.hidden = false;
       return;

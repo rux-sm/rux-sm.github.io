@@ -300,13 +300,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    later in the cascade. */
 .scheduler-copy-on .rux--text-input { padding-inline-end: 2.5rem; }
 
-/* The copy button takes the field's surface. `.rux--copy-btn` paints
+/* The copy and open buttons take the field's surface. `.rux--copy-btn` paints
    `--rux-layer`, a darker square inside a `field-02` field in the side panel;
    inside a field it is transparent, like Carbon's own buttons in a field, and
    hovers with the field's own hover token. */
-.scheduler-copy .rux--copy-btn { background-color: transparent; }
+.scheduler-copy .rux--btn { background-color: transparent; }
 @media (any-hover: hover) {
-  .scheduler-copy .rux--copy-btn:hover { background-color: var(--rux-field-hover-02); }
+  .scheduler-copy .rux--btn:hover { background-color: var(--rux-field-hover-02); }
 }
 
 /* A dialog with a date picker does not scroll, so the calendar can open past

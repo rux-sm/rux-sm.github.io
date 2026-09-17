@@ -277,6 +277,8 @@
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
+    // The vehicle the trip needs, `Coach` or `Van`; null is any.
+    'vehicle_type',
     // Each leg's hotel: the bar's hotel mark, its menu item and the Details tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
@@ -292,6 +294,8 @@
     'contacts:booking_contact_id(id,name,phone,email,client)',
     // The trip's own copy of the booking contact, which rux-ui reads and writes.
     'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
+    // The booking's email thread, a link rux-ui stores beside the contact.
+    'booking_contact_missive_url',
     // The day-of contacts: five, because the schema has five.
     'trip_contact_1_id', 'trip_contact_2_id', 'trip_contact_3_id',
     'trip_contact_4_id', 'trip_contact_5_id',
@@ -500,6 +504,14 @@
     return out;
   }
 
+  /* The warning for a bus of another type than the trip needs, or null. A trip
+     with no type takes any bus, and a bus with no type is not a mismatch. */
+  function wrongType(type, bus) {
+    if (!type || !bus?.type || bus.type === type) return null;
+    const a = t => (/^[aeiou]/i.test(t) ? `an ${t}` : `a ${t}`);
+    return `Needs ${a(type)}, bus ${bus.number} is ${a(bus.type)}`;
+  }
+
   // -- drawing --------------------------------------------------------------
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
@@ -679,6 +691,7 @@
        shortfall. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
     const lacks = bus ? [
+      wrongType(trip.vehicle_type, bus) ? { href: '#i-bus', label: wrongType(trip.vehicle_type, bus) } : null,
       trip.req_sleeper && !bus.sleeper ? { href: '#i-hotel', label: `Needs a sleeper, bus ${bus.number} has none` } : null,
       trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
       trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
@@ -1790,6 +1803,7 @@
     if (!bus) return [];
     const need = id => pressed(document.getElementById(id));
     return [
+      wrongType(document.getElementById('scheduler-f-vehicle')?.value, bus),
       need('scheduler-f-sleeper') && !bus.sleeper ? `Needs a sleeper, bus ${bus.number} has none` : null,
       need('scheduler-f-ada') && !bus.ada_lift ? `Needs an ADA lift, bus ${bus.number} has none` : null,
       need('scheduler-f-56pax') && bus.capacity != null && bus.capacity < 56 ? `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` : null,
@@ -2082,6 +2096,7 @@
     const dups = fleetDuplicates();
     panelFleet.replaceChildren();
     const reqs = [
+      document.getElementById('scheduler-f-vehicle')?.value || null,
       pressed(document.getElementById('scheduler-f-sleeper')) ? 'Sleeper' : null,
       pressed(document.getElementById('scheduler-f-ada')) ? 'ADA lift' : null,
       pressed(document.getElementById('scheduler-f-56pax')) ? '56 pax' : null,
@@ -2632,11 +2647,12 @@
      `js/copy-button.js` copies the button's `data-rux-copy`, which `syncCopy`
      keeps equal to the field, so what is copied is what is on screen. It shows
      only while the field has a value and stays out of the tab order, since the
-     field itself copies from the keyboard.
+     field itself copies from the keyboard. With `open`, the button is a link
+     that opens the field's web address instead, and shows only for one.
 
      On a combo box it goes in the root, not the field, because
      `js/list-box.js` opens the menu on any click inside `__field`. */
-  function withCopy(item, id, label) {
+  function withCopy(item, id, label, open) {
     const input = item.querySelector(`#${id}`);
     const combo = input?.closest('.rux--combo-box');
     const host = combo || input?.closest('.rux--text-input__field-wrapper');
@@ -2646,14 +2662,23 @@
       + 'rux--popover--caret rux--popover--high-contrast scheduler-copy');
     tip.dataset.copyFor = id;
     const trigger = el('div', 'rux--tooltip-trigger__wrapper');
-    const btn = el('button', 'rux--copy-btn rux--copy rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
-    btn.type = 'button';
+    const word = open ? 'Open' : 'Copy';
+    const btn = open
+      ? el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm')
+      : el('button', 'rux--copy-btn rux--copy rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+    if (open) {
+      // One named window, as rux-ui opens it, so each thread reuses the tab.
+      btn.target = 'missive';
+      btn.rel = 'noopener';
+    } else {
+      btn.type = 'button';
+    }
     btn.tabIndex = -1;
-    btn.setAttribute('aria-label', `Copy ${label.charAt(0).toLowerCase()}${label.slice(1)}`);
-    btn.appendChild(svgUse('#i-copy', '16', '0 0 32 32'));
+    btn.setAttribute('aria-label', `${word} ${label.charAt(0).toLowerCase()}${label.slice(1)}`);
+    btn.appendChild(svgUse(open ? '#i-launch' : '#i-copy', '16', '0 0 32 32'));
     trigger.appendChild(btn);
     const pop = el('span', 'rux--popover');
-    pop.append(el('span', 'rux--popover-content rux--tooltip-content', 'Copy'), el('span', 'rux--popover-caret'));
+    pop.append(el('span', 'rux--popover-content rux--tooltip-content', word), el('span', 'rux--popover-caret'));
     tip.append(trigger, pop);
     host.appendChild(tip);
     syncCopyTip(tip, input);
@@ -2663,9 +2688,16 @@
   // Shows or hides one copy button for its field's value, and gives the field
   // room for it while it shows (overrides.css).
   function syncCopyTip(tip, input) {
-    const value = input?.value.trim() || '';
+    let value = input?.value.trim() || '';
+    const btn = tip.querySelector('.rux--btn');
+    if (btn.tagName === 'A') {
+      // Only a web address opens; anything else leaves the button hidden.
+      if (!/^https?:\/\//i.test(value)) value = '';
+      if (value) btn.href = value; else btn.removeAttribute('href');
+    } else {
+      btn.dataset.ruxCopy = value;
+    }
     tip.hidden = !value;
-    tip.querySelector('.rux--copy-btn').dataset.ruxCopy = value;
     tip.parentElement?.classList.toggle('scheduler-copy-on', !!value);
   }
   const syncCopy = () => {
@@ -2961,6 +2993,8 @@
         : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
     { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
+    // Any is the empty value and stores null.
+    { key: 'vehicle_type', get: f => f['scheduler-f-vehicle'].value || null },
     // Standard is the empty value and stores null.
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     // `confirmed`, `balance_paid` and `date_paid` are derived, not edited:
@@ -3020,6 +3054,7 @@
     { key: 'booking_contact_name', get: () => fieldVal('scheduler-f-cfind') },
     { key: 'booking_contact_phone', get: () => fieldVal('scheduler-f-cphone') },
     { key: 'booking_contact_email', get: () => fieldVal('scheduler-f-cemail') },
+    { key: 'booking_contact_missive_url', get: () => fieldVal('scheduler-f-cthread') },
     ...[1, 2, 3, 4, 5].flatMap(n => [
       { key: `trip_contact_${n}_name`, get: () => dayVal(`scheduler-f-d${n}`) },
       { key: `trip_contact_${n}_phone`, get: () => dayVal(`scheduler-f-dphone${n}`) },
@@ -3241,7 +3276,7 @@
 
   function readForm() {
     const f = {};
-    for (const id of ['destination', 'customer', 'type', 'sleeper', 'ada', '56pax', 'hotel', 'notes',
+    for (const id of ['destination', 'customer', 'type', 'vehicle', 'sleeper', 'ada', '56pax', 'hotel', 'notes',
                       // Every id `EDITS` reads through `f` is listed, and only
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
@@ -3812,7 +3847,7 @@
       // Null, not '': every getter reads a blank field as null and `same` does
       // not treat '' as null, so '' would count an untouched field as changed.
       destination: null, customer: null,
-      trip_type: 'round_trip', confirmed: false,
+      trip_type: 'round_trip', vehicle_type: null, confirmed: false,
       start_date: start, end_date: start,
       return_start_date: null, return_end_date: null,
       req_sleeper: false, req_ada: false, req_56pax: false, need_hotel: false,
@@ -3854,6 +3889,7 @@
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       trip_type: trip.trip_type ?? null,
+      vehicle_type: trip.vehicle_type ?? null,
       // The name it paints as, so a trip still storing `cyan` opens on Teal
       // with nothing changed, and saves nothing until another colour is picked.
       trip_bar_color: tripColorOf(trip),
@@ -3892,6 +3928,7 @@
       trip_contact_4_id: trip.trip_contact_4_id ?? null,
       trip_contact_5_id: trip.trip_contact_5_id ?? null,
       ...contactColumnsOf(trip),
+      booking_contact_missive_url: trip.booking_contact_missive_url ?? null,
     } };
 
     // A new trip's id comes with its draft, so Reset keeps it too.
@@ -3955,8 +3992,7 @@
 
     /* The ranges name their own legs. The outbound range shows for every type,
        so it reads Drop-off only while a split is selected; the return pair
-       shows only for a split and keeps its Pick-up labels. The words match the
-       type's option text. */
+       shows only for a split and keeps its Pick-up labels. */
     const outLabels = split =>
       split ? ['Drop-off start', 'Drop-off end'] : ['Start date', 'End date'];
     const setOutLabels = split => {
@@ -3985,6 +4021,33 @@
     );
     flags.append(needsLabel, needsRow);
 
+    /* The vehicle types are the fleet's own, so a new type needs no code, and
+       a trip keeps a type no active bus has any more. A tag shows for a type
+       when an active bus of that type has the equipment; Any shows every tag,
+       and Hotel always shows, since it is not the bus's. */
+    const fleet = [...(panelIndex.buses?.values() ?? [])].filter(b => b.status === 'active');
+    const vehicleTypes = [...new Set([...fleet.map(b => b.type), trip.vehicle_type].filter(Boolean))].sort();
+    const EQUIPMENT = [
+      ['scheduler-f-sleeper', b => b.sleeper],
+      ['scheduler-f-ada', b => b.ada_lift],
+      ['scheduler-f-56pax', b => b.capacity != null && b.capacity >= 56],
+    ];
+    /* A tag the type does not offer hides. On a change of type it also turns
+       off; on opening, a tag already on stays shown, so no saved need is
+       hidden. */
+    const syncNeeds = (type, clear) => {
+      for (const [id, has] of EQUIPMENT) {
+        const tag = flags.querySelector(`#${id}`);
+        const offered = !type || fleet.some(b => b.type === type && has(b));
+        if (!offered && clear && pressed(tag)) {
+          tag.setAttribute('aria-pressed', 'false');
+          tag.classList.remove('rux--tag--selectable-selected');
+        }
+        tag.hidden = !offered && !pressed(tag);
+      }
+    };
+    syncNeeds(trip.vehicle_type, false);
+
     /* While Hotel is ticked, each leg the trip has shows its hotel's
        confirmation number beside a Booked box, the leg's
        `hotel_itinerary_number_` and `hotel_booked_` columns rux-ui writes too;
@@ -4011,10 +4074,11 @@
     hotelBox.hidden = !trip.need_hotel;
     flags.querySelector('#scheduler-f-hotel').addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
-    /* The trip's own fields are one stack, 24px apart. Type and Trip bar color
-       each take a row, because half the panel cuts off "Drop-off and pick-up"
-       and "Standard"; the bar color is a property of the trip, not a section
-       of its own. */
+    /* The trip's own fields are one stack, 24px apart. Type and Vehicle share a
+       row, so the split type is named "Split" there, which half the panel
+       fits; the date labels still say Drop-off and Pick-up. Trip bar color
+       takes a row, because half the panel cuts off "Standard"; it is a
+       property of the trip, not a section of its own. */
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-6');
     topFields.append(
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
@@ -4022,12 +4086,16 @@
       textField('scheduler-f-destination', 'Destination', trip.destination),
       // The organization is `trips.customer`; the contact's own `client` is not shown.
       textField('scheduler-f-customer', 'Organization', trip.customer),
-      full(selectField('scheduler-f-type', 'Type', trip.trip_type, [
-        ['', '—'],
-        ['round_trip', 'Round trip'],
-        ['one_way', 'One way'],
-        [SPLIT, 'Drop-off and pick-up'],
-      ])),
+      pair(
+        selectField('scheduler-f-type', 'Type', trip.trip_type, [
+          ['', '—'],
+          ['round_trip', 'Round trip'],
+          ['one_way', 'One way'],
+          [SPLIT, 'Split'],
+        ]),
+        selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
+          [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
+      ),
       full(colorField('scheduler-f-color', trip)),
       notesField('scheduler-f-notes', 'Notes', trip.notes),
       flags,
@@ -4055,6 +4123,9 @@
           'scheduler-f-cphone', 'Booking contact phone'),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
+        // The booking's conversation, a link; its button opens it.
+        withCopy(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url),
+          'scheduler-f-cthread', 'Email thread', true),
       ));
       // Phone and email are this trip's copy; editing them never changes the
       // shared contact record. `linkContacts` keeps the link.
@@ -4766,18 +4837,18 @@
        trip not yet saved has no id to file under. */
     panelFiles.replaceChildren();
     const notNeeded = section('Itinerary not needed',
-      el('p', 'scheduler-panel-hint', 'On for a trip that runs without one, so its bars stop showing No itinerary yet.'),
+      el('p', 'rux--form__helper-text', 'On for a trip that runs without one, so its bars stop showing No itinerary yet.'),
       toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
     if (creating || !client) {
       filesBody = null;
       filesEmpty = null;
-      panelFiles.append(notNeeded, section('Files', el('p', 'scheduler-panel-hint', creating
+      panelFiles.append(notNeeded, section('Files', el('p', 'rux--form__helper-text', creating
         ? 'Save the trip first, then add its itinerary, contract and purchase order here.'
         : 'This preview has no connection, so files cannot be listed or added.')));
     } else {
       const { list, body } = rowList();
       filesBody = body;
-      filesEmpty = el('p', 'scheduler-panel-hint', 'No files yet. An itinerary, contract or purchase order added above is listed here.');
+      filesEmpty = el('p', 'rux--form__helper-text', 'No files yet. An itinerary, contract or purchase order added above is listed here.');
       const listWrap = el('div');
       listWrap.append(list, filesEmpty);
       panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap));
@@ -4803,6 +4874,11 @@
       returnDates.hidden = !split;
       setOutLabels(split);
       setHotelLegs(split);
+      drawFleet();
+      refreshDirty();
+    });
+    document.getElementById('scheduler-f-vehicle')?.addEventListener('change', e => {
+      syncNeeds(e.target.value, true);
       drawFleet();
       refreshDirty();
     });

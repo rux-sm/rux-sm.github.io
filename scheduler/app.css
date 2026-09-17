@@ -908,6 +908,8 @@ button.scheduler-row-head__num::after {
   flex-wrap: wrap;
   gap: var(--rux-spacing-03);
 }
+/* A tag the trip's vehicle does not offer; the tag's own display would keep it. */
+.scheduler-needs__tags > [hidden] { display: none; }
 
 /* A section of an editor tab sits 32px below what comes before it, a step
    above the 24px between fields, which is the spacing Carbon's form pattern

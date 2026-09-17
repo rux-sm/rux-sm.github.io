@@ -48,9 +48,5 @@ and opens the booking's email thread, as rux-ui does.
 
 ## Tasks
 
-- [ ] Add the Email thread field and its open button to Booking contact.
-- [ ] Add Vehicle beside Type, shorten the split type's name, and make the
-      Needs tags follow the vehicle.
-- [ ] Add the wrong-type chip on the bar and the type to the Fleet tab.
 - [ ] rux sets a vehicle and opens a thread on a real trip, and checks rux-ui
       still saves both the trip and a bus.

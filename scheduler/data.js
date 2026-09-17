@@ -4590,17 +4590,6 @@
       /* The summary is a render, not a stored value: `drawSummary` reads the
          pending rows and the quoted-price input rather than `trip`, so its
          figures and the lists below always agree. */
-      const bigNumber = (label, value, total) => {
-        const fig = el('figure', 'rux--big-number');
-        const top = el('span', 'rux--big-number__row');
-        top.appendChild(el('figcaption', 'rux--big-number__label', label));
-        const bottom = el('span', 'rux--big-number__row');
-        bottom.setAttribute('role', 'math');
-        bottom.appendChild(el('span', 'rux--big-number__value', value));
-        if (total) bottom.appendChild(el('span', 'rux--big-number__total', total));
-        fig.append(top, bottom);
-        return fig;
-      };
       /* The tone shows how far along, not which rung: the three rungs that mean
          someone has committed share blue, purple wants a second look, green is
          done, magenta is overpaid and cool gray is nothing yet. A partial PO
@@ -4628,8 +4617,8 @@
         : 'Payment in full confirms it.';
       const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
 
-      const figures = el('div', 'scheduler-billing-figures');
-      const derived = el('div');
+      const statusLine = el('div', 'scheduler-billing-status');
+      const figures = el('dl', 'scheduler-billing-figures');
       const confirmWhy = el('p', 'rux--form__helper-text');
       const drawSummary = () => {
         // The PO amount is the sum of the PO rows, so coverage counts every PO.
@@ -4646,37 +4635,39 @@
 
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
 
-        // The headline is the trip's confirmation, which is never empty; Balance
-        // and Paid sit below it.
-        derived.replaceChildren(def([
-          ['Balance', quoted === null ? 'No quote'
-            : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))],
-          ['Paid', quoted === null ? usd(paid) : `${usd(paid)} of ${usd(quoted)}`],
-        ]));
+        /* The status line: Carbon's icon indicator for whether the trip is
+           confirmed, and the billing status as a tag at the end. */
+        const state = el('div', 'rux--icon-indicator');
+        const mark = svgUse(confirmed ? '#i-checkmark--filled' : '#i-circle-dash', '20', '0 0 32 32');
+        mark.setAttribute('class', confirmed ? 'rux--icon-indicator--succeeded' : 'rux--icon-indicator--not-started');
+        state.append(mark, confirmed ? 'Confirmed' : 'Not confirmed');
         const status = el('span', `rux--tag rux--layout--size-sm ${rungTone}`, rungLabel);
         status.title = `Billing status: ${rungLabel}`;
+        statusLine.replaceChildren(state, status);
+        // Paid and Balance side by side; the quoted price is the field below.
+        const figure = (label, value) => {
+          const box = el('div');
+          box.append(el('dt', null, label), el('dd', null, value));
+          return box;
+        };
         figures.replaceChildren(
-          bigNumber('Trip', confirmed ? 'Confirmed' : 'Not confirmed'),
-          status,
+          figure('Paid', usd(paid)),
+          figure('Balance', quoted === null ? 'No quote'
+            : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))),
         );
         /* Unconfirmed, the line states what would confirm the trip. Confirmed,
            the status tag already names what did, so the line is hidden. */
         confirmWhy.textContent = confirmed ? '' : cap(wouldConfirm);
         confirmWhy.hidden = confirmed;
       };
-      /* The summary tile: the confirmation and its status tag, then the reason
-         line. It is the tab's header, edge to edge and flush under the tab
-         strip, and the section after it opens with no rule (app.css). */
-      const tile = el('div', 'rux--tile rux--layer-two scheduler-panel-section--bleed scheduler-billing-summary');
-      const tileStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      tileStack.append(figures, confirmWhy);
-      tile.appendChild(tileStack);
-      panelBilling.appendChild(tile);
+      /* The summary opens the tab as its first section, with no box: the status
+         line, the reason line while unconfirmed, then the money. */
+      const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      summary.append(statusLine, confirmWhy, figures);
+      panelBilling.appendChild(section(null, summary));
 
-      // The price, then what is left of it and what is in.
-      const price = el('div', 'rux--stack-vertical rux--stack-scale-6');
-      price.append(moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price), derived);
-      panelBilling.appendChild(section('Price', price));
+      panelBilling.appendChild(section('Price',
+        moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price)));
 
       /* Payments use the same `rowList` as PO and invoice, named by their
          method, with no switch: a receipt has no milestone to gate. */

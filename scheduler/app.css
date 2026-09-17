@@ -808,15 +808,35 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-body-compact-01-line-height);
   color: var(--rux-text-primary);
 }
-/* The billing summary: one headline figure beside its status. Carbon owns the
-   number and tag styles; wrapping keeps a long amount readable rather than
-   clipped against the status. */
-.scheduler-billing-figures {
+/* The Billing summary's status line: whether the trip is confirmed on the
+   left, its billing status tag on the right. */
+.scheduler-billing-status {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
+}
+/* Paid and Balance side by side, each a small label over its amount. */
+.scheduler-billing-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--rux-spacing-05);
+  margin: 0;
+}
+.scheduler-billing-figures dt {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+.scheduler-billing-figures dd {
+  margin: 0;
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  color: var(--rux-text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 /* A list of records: tiles 8px apart, then the add. */
@@ -924,12 +944,6 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 
-/* A section pulled out to the panel's edges by the panel body's own padding,
-   so the Billing summary tile runs edge to edge while its text lines up with
-   the tab's fields. */
-.scheduler-panel-section--bleed {
-  margin-inline: calc(-1 * var(--rux-spacing-05));
-}
 
 /* A tab's first section opens at the tab's own 16px, not 32px below it. */
 #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {
@@ -976,15 +990,6 @@ button.scheduler-row-head__num::after {
   margin-inline: calc(-1 * var(--rux-spacing-05));
   margin-block-end: var(--rux-spacing-06);
   border-block-start: 1px solid var(--rux-border-subtle-01);
-}
-/* The Billing summary is the tab's header: flush under the tab strip, taking
-   back the tab's 16px, and its own edge divides it from the section after,
-   which opens 32px below with no rule. */
-#scheduler-panel-body .rux--tab-content > .scheduler-billing-summary:first-child {
-  margin-block-start: calc(-1 * var(--rux-spacing-05));
-}
-#scheduler-panel-body .rux--tab-content > .scheduler-billing-summary + .scheduler-panel-section::before {
-  content: none;
 }
 /* A group's heading line with an overflow menu trigger at its end. The line
    keeps the title's own height, so the title sits 16px over the first label as

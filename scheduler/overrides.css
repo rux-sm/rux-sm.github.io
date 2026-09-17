@@ -433,3 +433,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-aside__head .rux--btn { border-radius: 0; }
 .scheduler-toolbar > .rux--btn:last-child,
 .scheduler-aside__head > .rux--btn:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); }
+
+/* The Billing summary's confirmation reads as the tab's lead line: the
+   primary text colour at `heading-compact-02`, over Carbon's secondary body
+   text for an icon indicator. Two classes. */
+.scheduler-billing-status .rux--icon-indicator {
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  color: var(--rux-text-primary);
+}

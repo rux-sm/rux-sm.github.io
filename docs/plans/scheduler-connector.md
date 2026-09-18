@@ -20,7 +20,10 @@ without rux saving it.
   own app and only calls the connector for data. There is no Anthropic API
   account, key or bill, and no chat panel inside the scheduler.
 - **The connector is a Supabase Edge Function, `scheduler-connector`,**
-  serving MCP, the protocol the Claude app's custom connectors speak.
+  serving MCP, the protocol the Claude app's custom connectors speak. Its
+  source is committed here, under `scheduler/connector/`, so it changes in the
+  same commit as the documents that describe it; the site serves the file,
+  which holds no key and no trip detail.
 - **It signs in through Supabase's OAuth server as rux's own account,** and
   queries with that session, so the database's access rules apply. It serves
   only an account the site lock plan (`docs/plans/site-lock.md`) lets open
@@ -47,14 +50,10 @@ without rux saving it.
 
 ## Questions
 
-- **Where does the function's source live?** Committing it here publishes it
-  on the site, which is harmless but not what this tree is for; keeping it
-  only in Supabase leaves no history.
+None open.
 
 ## Tasks
 
-- [ ] Write the `trip_drafts` table, its access rules and the 14-day cleanup;
-      show the SQL to rux and apply it on a yes.
 - [ ] Write the `scheduler-connector` Edge Function: MCP, Supabase OAuth
       sign-in, the read tools and the two draft tools; show it to rux and
       deploy it on a yes.
@@ -63,7 +62,7 @@ without rux saving it.
 - [ ] Open `?draft=<id>` in the scheduler's trip editor, new or existing,
       with the filled fields marked and Claude's notes shown; delete the draft
       on save or discard.
-- [ ] Describe the function, its tools and `trip_drafts` in
+- [ ] Describe the function and its tools in
       `scheduler/docs/database-inventory.md`, and the everyday use in a
       how-to in `scheduler/docs/`.
 - [ ] rux tries lookups, a trip from a real itinerary and a change to an

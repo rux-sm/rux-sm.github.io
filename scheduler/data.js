@@ -6069,6 +6069,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-envelope') {
+      openEnvelope(bar);
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-upload') {
       const tripId = bar.dataset.tripId;
       pickFile(file => uploadFrom(tripId, 'Itinerary', file));
@@ -6145,6 +6150,9 @@
     }
     fillCrewItems(bar);
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
+    // Hidden where it cannot act: a slot with no bus, or a bus with no driver.
+    document.getElementById('scheduler-bar-menu-envelope').hidden =
+      !bar.dataset.assignmentId || !barHasCrew(bar);
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
@@ -6314,7 +6322,8 @@
      zoom an address asks for and draws its own zoom controls over the page, so
      there the panel's zoom buttons are hidden rather than left doing nothing.
      No feature tells which PDF viewer a frame gets; the vendor string does. */
-  if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of viewerZooms) btn.hidden = true;
+  const noZoom = navigator.vendor === 'Apple Computer, Inc.';
+  if (noZoom) for (const btn of viewerZooms) btn.hidden = true;
   // The 30rem panel beside the 20rem editor, with the board still in view.
   const viewerWide = matchMedia('(min-width: 82rem)');
   // The zooms Zoom in and Zoom out step through, in percent.
@@ -6406,8 +6415,45 @@
     swapFrame(null);
   }
 
+  /* A stored file and a form this app draws are both documents, and the panel
+     frames either; what differs is the toolbar. The zooms send `#zoom=` to a
+     PDF viewer, which an HTML page ignores, and there is no file to download
+     -- the print dialog saves a PDF. Print and Open in new tab stand for both. */
+  function setViewerMode(mode) {
+    const form = mode === 'form';
+    for (const btn of viewerZooms) btn.hidden = form || noZoom;
+    viewerDownload.hidden = form;
+  }
+
+  /* A form from print.html. It needs no fetch and no blob address: a page of
+     this site is already this origin, which is the whole reason a PDF is
+     fetched into one -- so the panel may print what it frames. */
+  function openGenerated({ url, kind, note, opener }) {
+    if (!viewerEl || !viewerWide.matches) {
+      window.open(url, '_blank', 'noopener');
+      return;
+    }
+    dropShown();
+    setViewerMode('form');
+    for (const h of [viewerTitle, viewerTitleCollapsed]) h.textContent = kind;
+    viewerUploaded.textContent = note || '';
+    viewerNewTab.href = url;
+    // No document row stands behind it, so a replace or a delete in the Files
+    // tab has nothing here to follow.
+    viewerDocId = null;
+    if (viewerEl.hidden) {
+      viewerOpener = opener ?? null;
+      viewerEl.hidden = false;
+      window.Rux?.schedule?.fit?.();
+    }
+    viewerClose?.focus();
+    viewerPrint.disabled = false;
+    swapFrame(url);
+  }
+
   async function openDocument(doc, opener) {
     if (!doc) return;
+    setViewerMode('file');
     const url = client && doc.file_path
       ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
     if (!viewerEl || !viewerWide.matches || !url) {
@@ -6511,6 +6557,23 @@
   });
 
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
+  /* THE BAR'S ENVELOPE. A bar is one bus on one leg, which is exactly what the
+     envelope binds to, so its assignment id is the whole address. The form
+     names the leg only where it is the return, because that is the only pair
+     a trip can show at once. */
+  const barHasCrew = bar => (barCrew(bar)?.crew ?? []).some(c => !c.needed);
+
+  function openEnvelope(bar) {
+    const id = bar.dataset.assignmentId;
+    if (!id) return;
+    openGenerated({
+      url: `print.html?form=envelope&assignment=${encodeURIComponent(id)}`,
+      kind: 'Driver envelope',
+      note: bar.dataset.leg === 'return' ? 'Return' : '',
+      opener: bar,
+    });
+  }
+
   function openItinerary(bar) {
     const id = bar.dataset.itineraryId;
     if (!id) return;
@@ -7049,6 +7112,10 @@
       run: bar => markHotel(bar) },
     { id: 'color', label: 'Color', icon: '#i-color-palette',
       blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
+    { id: 'envelope', label: 'Print envelope', icon: '#i-printer',
+      blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
+        : !barHasCrew(bar) ? 'No driver on this bus' : null),
+      run: bar => openEnvelope(bar) },
     { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract',
       blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
       run: bar => takeOffBus(bar) },

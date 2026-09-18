@@ -139,11 +139,17 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   and a right-click item from the one table. It shows faint with "No driver on
   this bus" where the bar has no seat filled. A second item, Documents, opens
   the hub on that trip.
-- **Four columns join `TRIP_COLUMNS`:** `need_fuel_card`, `trip_reqs`,
-  `spot_time`, and `envelope_printed` inside `trip_drivers`. The envelope's spot
-  time is the pickup stop's, and the trip's own only where the Route tab has not
-  set one. No database change; everything else the envelope needs the board
-  already reads.
+- **The board reads nothing new.** A form reads its own subject by id, so
+  `need_fuel_card`, `trip_reqs`, `spot_time` and `envelope_printed` sit in the
+  form's own query rather than in `TRIP_COLUMNS`, which already serves a week of
+  trips, the panel and every tab. No database change either.
+- **Printed is ticked by hand, never by printing.** `afterprint` fires whether
+  the dialog printed or was cancelled and nothing tells the two apart, so a tick
+  from it would mark envelopes that never came out. rux-ui does not guess
+  either: its task list offers Open, or Open and mark as complete, and the
+  person chooses. The form's toolbar carries that same choice, a box beside the
+  copy it belongs to, and it unticks. The flag then means what it means in
+  rux-ui -- a person said this one is done -- so the two apps agree.
 
 ## Questions
 
@@ -151,10 +157,6 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   called Trip Envelope and chose it over the Letter the spike's frame asked
   for, so the form's page size, its proportions and where its fields sit all
   depend on the answer.
-- **What does `envelope_printed` mean once two apps set it?** rux-ui ties it to
-  a task being ticked off in the tasks panel, which this app has not built.
-  Setting it when the envelope prints is the nearest thing, but then the flag
-  reads as "printed" here and "task done" there.
 - **Which forms follow the envelope, and in what order?** The driver sheet, the
   printed schedule, a quote, an hours-of-service form and a roster are all
   named; only the first three have a rux-ui form to match.
@@ -166,16 +168,9 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 ## Tasks
 
-- [ ] Print a form from a framed page and check on paper that the frame's
-      `@page` applies and the board around it does not print.
-- [ ] Build `print.html`, `print.js` and `print.css`: the hub, the registry and
-      the paper page.
-- [ ] Build the envelope: both layouts, the recipient control and Print all.
-- [ ] Teach the document panel a generated form: frame by address, the new
-      head, Zoom and Download hidden, and the ids renamed.
-- [ ] Add Print envelope and Documents to `SHORTCUT_ACTIONS`, the four columns
-      to `TRIP_COLUMNS`, and the `envelope_printed` write.
+- [ ] Add Documents to the bar's menu, opening the hub on that trip.
 - [ ] Rewrite the screen inventory's print lines, in §2 and §7, to name this
       page.
-- [ ] rux prints a real trip's envelopes and checks them against the form the
-      office uses today, and checks rux-ui sees the same drivers ticked.
+- [ ] rux opens a real trip's envelope from the board, prints the crew's copies
+      on the office printer, and checks them against the form in use today.
+- [ ] rux ticks Printed on a real copy and checks rux-ui's task list agrees.

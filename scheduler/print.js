@@ -381,7 +381,7 @@
   const ASSIGNMENT_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number)',
-    'trip_drivers(id,role,report_time,instructions,drivers:driver_id(name))',
+    'trip_drivers(id,role,report_time,instructions,envelope_printed,drivers:driver_id(name))',
     'trips:trip_id(' + [
       'id', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',
@@ -413,6 +413,7 @@
   const title = document.getElementById('scheduler-print-title');
   const controls = document.getElementById('scheduler-print-controls');
   const sheet = document.getElementById('scheduler-print-sheet');
+  const note = document.getElementById('scheduler-print-note');
   const hub = document.getElementById('scheduler-print-hub');
 
   const NOTE_KIND = {
@@ -473,6 +474,39 @@
     draw();
   });
 
+  /* A line in the toolbar. `say` replaces what the sheet is holding, which is
+     right for "this form cannot be drawn" and wrong for anything said while a
+     form is on it. */
+  let noteTimer = null;
+  function flash(text, bad) {
+    note.textContent = text;
+    note.toggleAttribute('data-bad', Boolean(bad));
+    clearTimeout(noteTimer);
+    if (text) noteTimer = setTimeout(() => flash(''), 6000);
+  }
+
+  /* The tick, written where rux-ui keeps it so its task list agrees. The box
+     goes back to what the row says if the write fails, rather than showing a
+     trip as done that the database never heard about. */
+  async function markPrinted(seat, input) {
+    const client = window.Rux?.account?.client;
+    const want = input.checked;
+    if (!client) {
+      input.checked = !want;
+      return flash('Not connected, so the tick was not saved.', true);
+    }
+    input.disabled = true;
+    const { error } = await client
+      .from('trip_drivers').update({ envelope_printed: want }).eq('id', seat.id);
+    input.disabled = false;
+    if (error) {
+      input.checked = !want;
+      return flash(`The tick did not save. ${error.message}`, true);
+    }
+    seat.envelope_printed = want;
+    flash(want ? 'Marked printed.' : 'No longer marked printed.');
+  }
+
   function buildControls() {
     const { form, copies, layout } = current;
     const nodes = [];
@@ -525,6 +559,26 @@
       wrapper.appendChild(arrow());
       field.appendChild(wrapper);
       nodes.push(field);
+    }
+
+    /* Printed is ticked by hand, never by printing. `afterprint` fires whether
+       the dialog printed or was cancelled and nothing tells the two apart, so
+       a tick from it would mark envelopes that never came out. rux-ui does not
+       guess either: its task list offers Open, or Open and mark as complete,
+       and the person chooses. This is that choice, and it unticks. */
+    if (form.marks && copies[current.chosen]?.seat) {
+      const seat = copies[current.chosen].seat;
+      const box = el('div', 'rux--form-item rux--checkbox-wrapper');
+      const input = el('input', 'rux--checkbox');
+      input.type = 'checkbox';
+      input.id = 'scheduler-print-marked';
+      input.checked = Boolean(seat.envelope_printed);
+      const label = el('label', 'rux--checkbox-label');
+      label.htmlFor = input.id;
+      label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
+      input.addEventListener('change', () => void markPrinted(seat, input));
+      box.append(input, label);
+      nodes.push(box);
     }
 
     const print = el('button', 'rux--btn rux--btn--primary rux--btn--sm', 'Print');

@@ -53,6 +53,14 @@
   margin-inline-end: auto;
 }
 
+.scheduler-print__bar-note {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-print__bar-note[data-bad] { color: var(--rux-text-error); }
+
 .scheduler-print__sheet {
   flex: 1;
   background: var(--rux-layer-01);

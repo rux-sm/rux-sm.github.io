@@ -689,6 +689,14 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-attachment"/></svg></div>
       <div class="rux--menu-item__label">Open itinerary</div>
     </li>
+    <!-- The driver's envelope for this bus, drawn by print.html and framed in
+         the document panel beside the board. Hidden by data.js on a slot with
+         no bus and on a bus with nobody driving it. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-envelope">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-printer"/></svg></div>
+      <div class="rux--menu-item__label">Print envelope</div>
+    </li>
     <!-- Shown by data.js in place of Open itinerary, on a trip without one:
          it opens the file dialog and files the PDF as the trip's itinerary. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-upload" hidden>

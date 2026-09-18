@@ -6,7 +6,7 @@
 // tools/new-project.sh byte for byte, and tools/check-parity.mjs held it to
 // that. The script and the gate left with the consolidation; this is the one
 // page-writer now, and the sed-shaped semantics below are kept as they were
-// because ten templates were verified against them: an
+// because the templates were verified against them: an
 // expression without /g replaces the FIRST match on each line, one with /g
 // replaces every match, and `^` anchors a line. The awk step prints the two
 // project stylesheet links after EVERY line matching Design's own overrides

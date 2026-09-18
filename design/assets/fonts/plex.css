@@ -42,19 +42,23 @@
  * twice. Every template preloads the two Sans faces, which each one renders.
  * Mono is preloaded by the sink and the portal, which set <code>, and by
  * templates/schedule-page.html, whose date and time inputs Carbon sets in
- * code-02; the other nine templates render no Mono -- measured 2026-09-02 by
- * FontFace status in the pane -- and preload none. A consumer page does the
- * same for the faces it reaches, and nothing else: a preload the page never
- * uses is a wasted fetch the browser warns about.
+ * code-02; the other eleven templates render no Mono -- measured by computed
+ * font-family on every element of each one -- and preload none. A consumer
+ * page does the same for the faces it reaches, and nothing else: a preload
+ * it never uses is a wasted fetch the browser warns about.
  *
  * FOR THE BROWSER GATES, which require Plex serving (sink-check, step 2): under
  * optional a cold-cache load can miss and stay in the fallback. Reload before
  * measuring; the second load has the cache.
  *
- * WHAT IS COVERED. Latin1 only. Sans at 400 and 600, because that is everything
- * the sink and the ten templates reach: type-heading-04 (400) and
- * type-heading-compact-01 (600) are the sole type utilities in use, and weight
- * 300 appears only in token definitions no page hits. Mono at 400, added
+ * WHAT IS COVERED. Latin1 only. Sans at 400 and 600, which is every weight a
+ * type utility asks for: the twelve templates use eight between them and each
+ * resolves to 400 or 600, and the sink uses no type utility at all.
+ * WEIGHT 300 IS REACHED WITHOUT A UTILITY. Carbon's reset draws a bare <h1>
+ * at heading-06, weight 300, and eleven of the twelve templates and five of
+ * Design's own pages leave their page title unclassed, so that heading falls
+ * to the browser's nearest served face. Classing those h1s or shipping Sans
+ * Light would close it; neither is done here. Mono at 400, added
  * 2026-09-02: Carbon's reset sets every <code> in IBM Plex Mono, the sink's
  * code-snippet and copy-button and the portal all set one, and the date-picker
  * and time-picker inputs are code-02, so until then all of those rendered in

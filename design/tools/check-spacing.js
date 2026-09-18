@@ -348,7 +348,7 @@ const CONTENT = 'derived from the width of the text beside it, so it can only ag
 // three rules match -- each template sets breakpoint-scoped fixed padding in its
 // own <head> instead, which README and templates/app-shell.html both record. The
 // 288px reported is that padding; Carbon's 32px is the un-offset story. This is
-// the single most common row in the set: it appears on all ten templates and on
+// the single most common row in the set: it appears on all twelve templates and on
 // portal.html, and it is deliberate on our side.
 const SELF_INDENT = 'the template indents itself: a nav INSIDE the header matches none of '
   + "Carbon's three .rux--content rules, so each template sets its own breakpoint-scoped "

@@ -92,14 +92,17 @@ that make share links.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] Reload the one Mac still running rux-ui from before sign-in shipped. It
-      is a Safari that never asks `/auth/v1` or `my_staff_profile` at all, so
-      it has no sign-in screen to show: it reads trips, passengers, ticket
-      options, documents, payments and drivers, writes notifications and holds
-      a realtime channel, all with the key alone, through a working day. Its
-      cached `supabase-js` is 2.112.4 where every signed-in client is 2.116.0.
-      rux-ui's Worker hides the browser's address, so the Worker's own logs,
-      not the database's, name the machine.
+- [ ] Press "Force refresh all users" in rux-ui, in working hours while the
+      stale tab is open. One Mac still runs rux-ui from before sign-in
+      shipped: a Safari that never asks `/auth/v1` or `my_staff_profile` at
+      all, so it has no sign-in screen to show. It reads trips, passengers,
+      ticket options, documents, payments and drivers, writes notifications
+      and holds a realtime channel with the key alone, right through a working
+      day, and its cached `supabase-js` is 2.112.4 where every signed-in
+      client is 2.116.0. The reload broadcast has shipped since July, so that
+      build carries it, but it reaches only a tab that is open and anyone with
+      unsaved work loses it. rux-ui's Worker hides the browser's address, so
+      only the Worker's own logs could name the machine.
 - [ ] Pin rux-ui's `supabase-js` to one version instead of the floating `@2`,
       so a cached copy cannot leave a browser on an old client for months.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the

@@ -706,43 +706,43 @@
        bus means nothing to compare, and an unrecorded capacity is not a
        shortfall. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    const lacks = bus ? [
+    const marks = bus ? [
       wrongType(trip.vehicle_type, bus) ? { href: '#i-bus', label: wrongType(trip.vehicle_type, bus) } : null,
       trip.req_sleeper && !bus.sleeper ? { href: '#i-hotel', label: `Needs a sleeper, bus ${bus.number} has none` } : null,
       trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
       trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
     ].filter(Boolean) : [];
-    // What the trip is owed, bus or no bus: the one mark on this bar that is
-    // about the booking rather than the vehicle.
+    // Where the trip's money stands, bus or no bus: the one mark on this bar
+    // that is about the booking rather than the vehicle.
     const owed = paymentMark(trip);
-    if (owed) lacks.push(owed);
+    if (owed) marks.push(owed);
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
-    if (!itinerary && !trip.itinerary_not_needed) lacks.push({ href: '#i-attachment', label: 'No itinerary yet' });
+    if (!itinerary && !trip.itinerary_not_needed) marks.push({ href: '#i-attachment', label: 'No itinerary yet' });
     /* And the day-of contact the same way: nobody to call on the day, and the
        trip not marked as needing no one. Any of the five counts, since the
        warning is that the list is empty, not that the first slot is. */
     const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
-    if (!dayOf && !trip.contact_not_needed) lacks.push({ href: '#i-phone', label: 'No day-of contact' });
+    if (!dayOf && !trip.contact_not_needed) marks.push({ href: '#i-phone', label: 'No day-of contact' });
     /* A trip that needs a hotel shows a building for this leg's: amber while it
        is not booked, like the warnings, and in the bar's own text colour once it
        is, so the bar still says the trip has a hotel. */
     if (trip.need_hotel) {
       const booked = !!trip[`hotel_booked_${leg.leg}`];
-      lacks.push({ href: '#i-building', label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked });
+      marks.push({ href: '#i-building', label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked });
     }
     // Drawn on the drivers row and again on the destination row; app.css shows
     // the second only while the drivers row is turned off, so hiding a row
     // never hides the warning. The bar's label carries it for a screen reader.
+    const TONES = ['error', 'success'];
     const warn = where => {
-      if (!lacks.length) return null;
+      if (!marks.length) return null;
       const box = el('span', `scheduler-bar__warn scheduler-bar__warn--${where}`);
-      for (const w of lacks) {
+      for (const w of marks) {
         // A chip is the warning colour unless it says otherwise: `done` drops
-        // the fill, `error` is the red one rux-ui's own bar uses for money
-        // nothing has authorised yet.
-        const tone = w.done ? 'done' : w.tone === 'error' ? 'error' : null;
+        // the fill, and the payment mark asks for red or green by its rung.
+        const tone = w.done ? 'done' : TONES.includes(w.tone) ? w.tone : null;
         const chip = el('span', `scheduler-bar__warn-chip${tone ? ` scheduler-bar__warn-chip--${tone}` : ''}`);
         chip.title = w.label;
         chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
@@ -800,7 +800,7 @@
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
-      ...lacks.map(w => w.label),
+      ...marks.map(w => w.label),
     ].filter(Boolean).join(', '));
     return bar;
   }
@@ -3355,15 +3355,21 @@
     const poAmount = trip.trip_pos?.length ? sum(trip.trip_pos) : Number(trip.po_amount) || 0;
     const poReceived = poReceivedOf(trip);
     const rung = billingStatus({ contractSigned: contractSignedOf(trip), poReceived, poAmount, price, paid });
-    return { price, paid, poAmount, poReceived, rung, remaining: Math.max(0, price - paid) };
+    // The day the last payment landed. `date_paid` is the column both apps
+    // derive on save; the rows are what a trip saved before it carries.
+    const dates = (trip.trip_payments || []).filter(p => Number(p.amount) > 0 && p.date).map(p => p.date).sort();
+    return { price, paid, poAmount, poReceived, rung,
+             remaining: Math.max(0, price - paid), datePaid: trip.date_paid || dates.pop() || null };
   }
 
-  /* The bar's payment mark, rux-ui's billing marks in one glyph: red while
-     nothing authorises the trip, amber while a PO or a payment covers only part
-     of the quote, and nothing once a PO covers the balance or the trip is paid.
-     A trip with no quoted price has no coverage to judge and shows no mark. */
+  /* The bar's payment mark, rux-ui's billing marks in one glyph the colour
+     carries: red while nothing stands against the quote, amber while what does
+     is the wrong amount, short or over, and green once the money is in. A PO
+     that covers the balance shows nothing, because the trip is authorised and
+     the payment is simply still to come. A trip with no quoted price has no
+     coverage to judge and shows no mark either. */
   function paymentMark(trip) {
-    const { price, poAmount, remaining, rung } = billingOf(trip);
+    const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
     if (price <= 0) return null;
     const mark = (label, tone) => ({ href: '#i-currency--dollar', label, tone });
     if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
@@ -3372,6 +3378,8 @@
     if (rung === 'deposit_received' && remaining > 0) {
       return mark(`${usd(remaining)} not covered by a payment or purchase order`, 'warning');
     }
+    if (rung === 'overpaid') return mark(`Paid ${usd(paid - price)} over the quote`, 'warning');
+    if (rung === 'paid_full') return mark(datePaid ? `Paid in full ${mdy(datePaid)}` : 'Paid in full', 'success');
     return null;
   }
 

@@ -542,16 +542,20 @@ button.scheduler-row-head__num::after {
   color: var(--scheduler-on-warning);
 }
 .scheduler-bar__warn-chip svg { display: block; }
-/* Money nothing has authorised yet is the error colour, not the warning one,
-   as it is on rux-ui's own bar: a trip with no purchase order and no payment
-   is a different thing from one that is short of its quote. */
+/* The payment mark carries its rung in its fill, in the same support colours
+   the crew marks use: red while nothing stands against the quote, the warning
+   colour while what does is the wrong amount, green once the money is in. */
 .scheduler-bar__warn-chip--error {
   background: var(--rux-support-error);
   color: var(--rux-text-inverse);
 }
-/* On an amber bar the chip would vanish into its own fill. The error chip does
-   not, so it keeps its own edge. */
-.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+.scheduler-bar__warn-chip--success {
+  background: var(--rux-support-success);
+  color: var(--rux-text-inverse);
+}
+/* On an amber bar a warning chip would vanish into its own fill. The red and
+   green ones do not, so they keep their own edge. */
+.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error, .scheduler-bar__warn-chip--success) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {

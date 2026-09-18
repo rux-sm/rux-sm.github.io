@@ -757,8 +757,8 @@
        paperwork. A narrow bar drops them from the end, so the order is which
        one rux would want left standing. */
     const marks = [];
-    // Where the trip's money stands, bus or no bus: the one mark on this bar
-    // that is about the booking rather than the vehicle.
+    // Where a confirmed trip's money stands, bus or no bus: the one mark on
+    // this bar that is about the booking rather than the vehicle.
     const owed = paymentMark(trip);
     if (owed) marks.push(owed);
     /* A requirement is drawn only when the bus fails it. A trip that needs a
@@ -3435,8 +3435,14 @@
      is the wrong amount, short or over, and green once the money is in. A PO
      that covers the balance shows nothing, because the trip is authorised and
      the payment is simply still to come. A trip with no quoted price has no
-     coverage to judge and shows no mark either. */
+     coverage to judge and shows no mark either.
+
+     An unconfirmed trip shows none at all. There is no contract behind it yet,
+     so no purchase order and no payment is the state it is supposed to be in,
+     and a mark saying so on every such bar marks nothing. The bar's own colour
+     already says unconfirmed, and the Billing tab says the rest. */
   function paymentMark(trip) {
+    if (trip.confirmed === false) return null;
     const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
     if (price <= 0) return null;
     const mark = (label, tone) => ({ href: '#i-currency--dollar', label, tone });

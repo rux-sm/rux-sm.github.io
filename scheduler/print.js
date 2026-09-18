@@ -270,11 +270,10 @@
       if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
       list.appendChild(item);
     }
-    if (instruction) {
-      const item = el('div', 'scheduler-envelope__need', instruction);
-      list.appendChild(item);
-    }
-    notes.appendChild(list);
+    if (needs.length) notes.appendChild(list);
+    // Under the requirements, not among them: the note is written to this one
+    // driver, and a line without a box reads as a requirement beside them.
+    if (instruction) notes.appendChild(el('p', 'scheduler-envelope__note', instruction));
     return notes;
   }
 
@@ -348,8 +347,13 @@
       marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat' },
       /* The one form here that names its paper, because it is printed on a
          particular stock rather than on whatever is in the tray. A form that
-         leaves this out fits the paper the dialog is set to. */
-      page: 'Letter portrait',
+         leaves this out fits the paper the dialog is set to.
+
+         6 by 9 inches is the envelope itself, the size the office printer
+         offers as Trip Envelope. The ink margin is the form's own, because
+         the stock's own margins are zero and a laser printer still cannot
+         reach its edges. */
+      page: { size: '6in 9in', width: '6in', height: '9in', margin: '0.3in' },
       layouts: [
         { id: 'standard', name: 'Standard' },
         { id: 'multi-stop', name: 'Multi-stop' },
@@ -441,8 +445,11 @@
      form then lays out to that sheet's width and flows onto as many of them as
      it needs.
 
-     The margin is always zero, because it goes in the box model instead: a
-     print driver does not reliably honour an @page margin. */
+     The @page margin is always zero, because the margin goes in the box model
+     instead: a print driver does not reliably honour an @page margin. A form
+     that names a paper names that ink margin with it, and the width the sheet
+     draws at on screen, so the page shows the shape that comes out of the
+     printer. A form that names no paper keeps the page's own defaults. */
   function setPaper(form) {
     let style = document.getElementById('scheduler-print-page');
     if (!style) {
@@ -450,7 +457,17 @@
       style.id = 'scheduler-print-page';
       document.head.appendChild(style);
     }
-    style.textContent = `@page { ${form?.page ? `size: ${form.page}; ` : ''}margin: 0; }`;
+    const paper = form?.page;
+    style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: 0; }`;
+    const root = document.documentElement.style;
+    for (const [prop, value] of [
+      ['--scheduler-paper-width', paper?.width],
+      ['--scheduler-paper-height', paper?.height],
+      ['--scheduler-paper-margin', paper?.margin],
+    ]) {
+      if (value) root.setProperty(prop, value);
+      else root.removeProperty(prop);
+    }
   }
 
   let current = null; // { form, subject, copies, chosen, layout }

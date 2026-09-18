@@ -127,6 +127,15 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   destination line gives way to an eight-row Location, Time in, Time out and
   Odometer log. rux-ui names that layout for the customer who asked for it,
   which is not a name this repository can carry.
+- **It is printed on the Trip Envelope, 6 by 9 inches,** the custom size the
+  office printer already carries and the envelope itself. Its own margins are
+  zero, so the form's 0.3in ink margin is the box model's and keeps the form
+  clear of the edges a laser printer cannot reach.
+- **A printed form is exactly one sheet, and the multi-stop log absorbs the
+  slack.** A fixed eight rows spills onto a second envelope as soon as a seat's
+  note runs to a second line, and a quarter inch of overflow costs a whole
+  envelope; the rows share whatever the rest of the form leaves and stop
+  shrinking at a line someone can still write on.
 - **The company line is the page's own,** since there is no Settings page yet
   to hold the yard.
 - **rux-ui's Yellow and White tint is dropped.** It tints the preview to match
@@ -154,10 +163,6 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 ## Questions
 
-- **What paper is the envelope printed on?** The office printer offers a size
-  called Trip Envelope and chose it over the Letter the spike's frame asked
-  for, so the form's page size, its proportions and where its fields sit all
-  depend on the answer.
 - **Which forms follow the envelope, and in what order?** The driver sheet, the
   printed schedule, a quote, an hours-of-service form and a roster are all
   named; only the first three have a rux-ui form to match.

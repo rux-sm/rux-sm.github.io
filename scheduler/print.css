@@ -78,14 +78,19 @@
    that simply lays out to its container needs none of that.
 
    On paper it takes its page size from @page and its margins from the box
-   model, because a print driver does not reliably honour an @page margin. */
+   model, because a print driver does not reliably honour an @page margin.
+
+   The width and the margin are the form's own, written onto the root by
+   print.js from the paper that form names, so a form printed on one
+   particular stock draws at that stock's width on screen too. The fallbacks
+   are Letter, for a form that names no paper. */
 
 .scheduler-form {
-  max-width: 8.5in;
+  max-width: var(--scheduler-paper-width, 8.5in);
   margin-inline: auto;
   background: var(--rux-background);
   color: var(--rux-text-primary);
-  padding: var(--rux-spacing-06);
+  padding: var(--scheduler-paper-margin, var(--rux-spacing-06));
   box-sizing: border-box;
 }
 
@@ -100,8 +105,28 @@
   .scheduler-form {
     max-width: none;
     margin: 0;
-    padding: 0.4in;
+    padding: var(--scheduler-paper-margin, 0.4in);
   }
+
+  /* A form on a named paper is exactly one sheet, and the log takes whatever
+     room the rest of the form leaves. A fixed eight rows spills onto a second
+     envelope as soon as a seat's note runs to a second line, and a quarter
+     inch of overflow costs a whole envelope. The hairline off the height keeps
+     an exact fit from rounding into a blank second page; with no paper named
+     the calc is invalid, which leaves the height auto and the form free to
+     flow onto as many sheets as it needs. */
+  .scheduler-form {
+    height: calc(var(--scheduler-paper-height) - 1pt);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scheduler-envelope__log { flex: 1 1 auto; }
+  .scheduler-envelope__log tbody { height: 100%; }
+
+  /* The rows share the slack, but never shrink below a line a driver can
+     still write a location and an odometer reading on. */
+  .scheduler-envelope__log td { height: 0.19in; }
 }
 
 /* ── The envelope ─────────────────────────────────────────────────────────
@@ -240,6 +265,17 @@
   display: inline-flex;
   align-items: center;
   gap: var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+
+/* The seat's own instruction, under the requirements and set apart from them
+   by weight rather than a fill. */
+.scheduler-envelope__note {
+  margin: 0;
+  padding-block-start: var(--rux-spacing-02);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);

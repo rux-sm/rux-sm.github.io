@@ -346,6 +346,14 @@
 [data-theme="geist"] .rux--side-panel {
   border: 1px solid var(--rux-border-subtle-01);
 }
+/* And a rule under its title. Carbon separates a panel's header from what
+   follows with spacing alone -- the header is the panel's own surface in every
+   theme, with no line -- which is right where nothing else is ruled. In geist
+   every other band carries one, so the absence reads as the one thing someone
+   forgot. */
+[data-theme="geist"] .rux--side-panel__header {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
 /* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own

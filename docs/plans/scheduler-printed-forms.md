@@ -161,6 +161,11 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **Which forms follow the envelope, and in what order?** The driver sheet, the
   printed schedule, a quote, an hours-of-service form and a roster are all
   named; only the first three have a rux-ui form to match.
+- **How much does Print all cover, and does it tick?** It prints one bus's
+  crew. A three-bus trip with two drivers on each is six envelopes and six
+  visits to the hub, which the trip's own list could gather into one press.
+  Either way Printed is ticked per copy, which is either the point -- a tick
+  means a person looked -- or five ticks too many.
 - **Does the driver's own page show its envelope later?** rux-ui's
   `driver.html` opens the same form read-only on a phone; the screen inventory
   builds that page from tiles with Accept and Decline and says nothing about

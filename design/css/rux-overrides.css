@@ -230,6 +230,14 @@
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
+/* The picked day's number is the ink for a vivid fill, not the inverse of the
+   page. Carbon pairs the interactive colour with text-inverse, which is the
+   right ink in every theme whose interactive colour is light; ant-dark's is a
+   mid blue, and black on it reads 4.05 where 14px text needs 4.5. White reads
+   5.19. Only this rule pairs those two tokens, so only it moves. */
+[data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
+  color: var(--rux-text-on-color);
+}
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's
    curve: the header's actions, the side panel's close and action row, and a

@@ -1183,14 +1183,15 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is 16rem, Carbon's `rux--side-panel--xs` width, fixed so it does
+   The roster is 20rem, Carbon's `rux--side-panel--sm` width and the trip
+   editor's, so the two columns beside the board match. It is fixed so it does
    not move when the driver list changes; the schedule gives way instead.
    `order` puts it left of the board while the markup keeps the schedule
    first. */
-.scheduler-aside { flex: 0 0 16rem; inline-size: 16rem; order: -1; }
+.scheduler-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
 
-/* The roster's rows are Carbon's xs height, 24px, under a 32px header band. */
-.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-xs); max-block-size: 15rem; }
+/* The roster's rows are Carbon's sm height, 32px, level with the header band. */
+.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-sm); max-block-size: 15rem; }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
@@ -1198,7 +1199,7 @@ button.scheduler-row-head__num::after {
   --scheduler-head-w: minmax(0, 1fr);
   /* Each day column is as wide as the row is tall, so a day reads as a square
      mark; the two-letter day heads fit inside it. */
-  --scheduler-day-track: var(--rux-layout-size-height-xs);
+  --scheduler-day-track: var(--rux-layout-size-height-sm);
   /* Fills what the head leaves of the height app.js gives the aside.
      `max-block-size: none` lifts the base `.scheduler-week` viewport cap. */
   flex: 1 1 auto;
@@ -1264,8 +1265,16 @@ button.scheduler-row-head__num::after {
 }
 
 /* The rule between the names and the days, as on the board. It stops at the
-   header row, where `.scheduler-avail__day--head` draws none. */
-.scheduler-avail__name { padding-inline: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
+   header row, where `.scheduler-avail__day--head` draws none. A driver's name
+   is read rather than scanned like the board's labels, so it takes Carbon's
+   `body-compact-01`, 14px, over the 12px the grid sets; the 32px `line-height`
+   above still centres it in its row. */
+.scheduler-avail__name {
+  padding-inline: var(--rux-spacing-03);
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
+  font-size: var(--rux-body-compact-01-font-size);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
 
 /* The corner stays above the day letters when the roster scrolls sideways.
    It needs the header row's two-class specificity to beat their z-index 3. */
@@ -1622,12 +1631,6 @@ button.scheduler-row-head__num::after {
     inset-block-start: var(--rux-layout-size-height-lg);
   }
   .scheduler-aside .scheduler-week--avail { max-block-size: none; overflow: visible; }
-  /* The overlay's rows and day squares go up one step, to sm. Full width, it has
-     room for that; md would leave the name column too narrow on a phone. */
-  .scheduler-aside .scheduler-week--avail {
-    --scheduler-avail-h: var(--rux-layout-size-height-sm);
-    --scheduler-day-track: var(--rux-layout-size-height-sm);
-  }
   /* The names start 16px inside the card, level with the Driver heading and
      the panel title, the way Carbon's table cells pad their text. */
   .scheduler-aside .scheduler-avail__name {

@@ -382,10 +382,22 @@
      and a different crew. Reading trip_assignments by id answers all of it in
      one request. */
 
-  const ASSIGNMENT_QUERY = [
+  /* One bus on one leg with its seats, named once: Print all reads the trip's
+     other buses with this same list, and a column left out of one copy of it
+     is a seat the form drops without saying so. */
+  const BUS_SEATS_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number)',
     'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name))',
+  ].join(',');
+
+  /* Outbound before return, then along the trip: the order the hub lists a
+     trip's buses in, and the order Print all stacks their envelopes. */
+  const byLegThenPosition = (a, b) => (a.leg === b.leg
+    ? (a.position ?? 0) - (b.position ?? 0)
+    : a.leg === 'return' ? 1 : -1);
+
+  const ASSIGNMENT_QUERY = BUS_SEATS_QUERY + ',' + [
     'trips:trip_id(' + [
       'id', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',
@@ -478,11 +490,12 @@
     sheet.replaceChildren(current.form.render(current.copies[current.chosen], current.layout));
   };
 
-  // Print all lays every copy on the sheet, prints, and puts the one copy back
-  // once the dialog closes. print.css starts each copy on a new page.
+  // Print all lays every envelope on the trip on the sheet, prints, and puts
+  // the one copy back once the dialog closes. print.css starts each on a new
+  // page, and each is exactly one envelope tall.
   const drawAll = () => {
     if (!current) return;
-    sheet.replaceChildren(...current.copies.map(c => current.form.render(c, current.layout)));
+    sheet.replaceChildren(...current.every.map(c => current.form.render(c, current.layout)));
   };
 
   window.addEventListener('afterprint', () => {
@@ -603,9 +616,17 @@
     print.addEventListener('click', () => window.print());
     nodes.push(print);
 
-    if (copies.length > 1) {
-      const all = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm', `Print all ${copies.length}`);
+    /* Print all is the trip's, not this bus's, so it is offered whenever the
+       trip has more than one envelope on it -- including a bus with a single
+       driver on a trip that has three more buses. */
+    const every = current.every || copies;
+    if (every.length > 1) {
+      const all = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm', `Print all ${every.length}`);
       all.type = 'button';
+      all.title = every.length > copies.length
+        ? 'Every envelope on this trip, all buses'
+        : 'Every envelope on this trip';
+      all.setAttribute('aria-label', `Print every envelope on this trip, ${every.length} in all`);
       all.addEventListener('click', () => {
         printingAll = true;
         drawAll();
@@ -638,8 +659,7 @@
     if (!data) return { why: 'That trip is not on the schedule any more.' };
     const buses = (data.trip_assignments || [])
       .filter(a => (a.trip_drivers || []).some(d => d.driver_id))
-      .sort((a, b) => (a.leg === b.leg ? (a.position ?? 0) - (b.position ?? 0)
-        : a.leg === 'return' ? 1 : -1));
+      .sort(byLegThenPosition);
     return { destination: data.destination, buses };
   }
 
@@ -684,6 +704,25 @@
       list.appendChild(tile);
     }
     hub.replaceChildren(list);
+  }
+
+  /* Every envelope on the trip, for Print all: each bus on it, outbound then
+     return, and each filled seat on each bus. rux asked for the whole trip,
+     because a three-bus trip with two drivers on each is six envelopes and
+     otherwise six visits to the hub.
+
+     It is a second request, made when the form opens rather than when the
+     button is pressed, so the button can say how many it covers. The trip on
+     screen is already read, so this one asks only for the buses and their
+     seats. A trip that will not answer falls back to the bus this page is
+     bound to, which is what Print all covered before. */
+  async function everyCopyOnTrip(client, tripId, form, subject, fallback) {
+    const { data, error } = await client
+      .from('trip_assignments').select(BUS_SEATS_QUERY).eq('trip_id', tripId);
+    if (error || !data?.length) return fallback;
+    const copies = [...data].sort(byLegThenPosition)
+      .flatMap(a => form.copies({ ...subject, assignment: a, leg: a.leg || 'outbound' }));
+    return copies.length ? copies : fallback;
   }
 
   async function showForm(form) {
@@ -733,11 +772,17 @@
       subject,
       copies,
       chosen,
+      every: copies,
       layout: form.layouts?.some(l => l.id === params.get('layout'))
         ? params.get('layout') : form.layouts?.[0]?.id,
     };
     buildControls();
     draw();
+
+    // The trip's other buses arrive after the form is on screen, so nothing
+    // waits on them; only Print all's count changes when they land.
+    current.every = await everyCopyOnTrip(client, data.trips.id, form, subject, copies);
+    buildControls();
   }
 
   const form = formOf(params.get('form'));

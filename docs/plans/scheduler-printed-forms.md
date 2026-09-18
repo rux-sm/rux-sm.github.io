@@ -109,9 +109,16 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 ### The envelope, the first form
 
 - **Its subject is one bus on one leg,** and one copy per seat on it. Driver,
-  co-driver and each relief get their own, and Print all prints that bus's set. A relief copy shows
+  co-driver and each relief get their own. A relief copy shows
   Swap time from that seat's `report_time` in place of Spot time, and names the
   primary driver beside it.
+- **Print all covers the whole trip, every bus on it,** outbound then return
+  and one sheet per filled seat, because a three-bus trip with two drivers on
+  each was six envelopes and six visits to the hub. The form on screen stays
+  the one bus it was opened on, and only the button widens; the trip's other
+  buses are a second request, made when the form opens so the button can say
+  how many, and a trip that will not answer leaves Print all covering that one
+  bus.
 - **The contact is the trip's day-of contact,** first filled of the five, and
   the booking contact only when none is set, because the envelope travels with
   the driver and the booking contact is the office's.
@@ -166,11 +173,10 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **Which forms follow the envelope, and in what order?** The driver sheet, the
   printed schedule, a quote, an hours-of-service form and a roster are all
   named; only the first three have a rux-ui form to match.
-- **How much does Print all cover, and does it tick?** It prints one bus's
-  crew. A three-bus trip with two drivers on each is six envelopes and six
-  visits to the hub, which the trip's own list could gather into one press.
-  Either way Printed is ticked per copy, which is either the point -- a tick
-  means a person looked -- or five ticks too many.
+- **Does Printed still tick per copy, now Print all covers the trip?** One
+  press can lay eleven envelopes on the stack, and each is ticked by hand on
+  its own copy: either the point, a tick meaning a person looked at that one,
+  or ten ticks too many.
 - **Does the driver's own page show its envelope later?** rux-ui's
   `driver.html` opens the same form read-only on a phone; the screen inventory
   builds that page from tiles with Accept and Decline and says nothing about

@@ -5072,6 +5072,10 @@
      is kept apart from `availOn`, the wanted state, so closing the editor
      brings the roster back. */
   let availYielded = false;
+  /* The second reason the roster steps aside: the board is too narrow for the
+     schedule to keep its floor beside the panels open. Its own flag, because
+     the reason is a width rather than an overlap, and `placeRoom` owns it. */
+  let availCramped = false;
   let availRows = [];
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
@@ -5425,10 +5429,94 @@
   // Every selection change, from a click, a key or a script, lands here.
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
+  /* ── How much room the schedule has ─────────────────────────────────────────
+     The board's width is what this reads, never the schedule's: the board is
+     the whole content column whichever panels are open, so it holds still when
+     one of them closes, while the schedule's width is this decision's own
+     outcome and reading it back would flip-flop. Each panel's width and the gap
+     between them are read from the stylesheet, which is where they are set, and
+     a panel the stylesheet floats over the board rather than laying out beside
+     it, as it does below md, costs the schedule nothing.
+
+     The floor is 26rem, which app.css states and gives the reason for, and a
+     toolbar under 21rem is one `Today` will not fit in beside its week. */
+  const SCHEDULE_FLOOR = 26;
+  const TOOLBAR_TIGHT = 21;
+  const boardEl = document.querySelector('.scheduler-board');
+  const frameEl = document.querySelector('.scheduler-frame');
+  /* The board and panel widths the yield was last decided at. A press on the
+     toggle is not undone until one of them changes, so asking for the roster in
+     a board too narrow for it keeps it until the next resize. */
+  let roomKey = null;
+
+  function placeRoom() {
+    if (!boardEl || !frameEl || !pageEl) return false;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
+    const board = boardEl.getBoundingClientRect().width;
+    // Nothing to measure while the board is hidden, as it is behind a notice.
+    if (!board) return false;
+    // What a panel takes from the schedule: its own width and the gap.
+    const cost = el => {
+      if (!el) return 0;
+      const style = getComputedStyle(el);
+      if (style.position === 'fixed') return 0;
+      const width = parseFloat(style.flexBasis) || 0;
+      return width ? width + gap : 0;
+    };
+    const editor = tripEl?.hidden ? 0 : cost(tripEl);
+    const itinerary = itinEl?.hidden ? 0 : cost(itinEl);
+    /* The roster's cost whether or not it is on screen, since that is what is
+       being decided; asking `hidden` would answer nothing every time. */
+    const roster = cost(asideSlot);
+
+    /* The roster is the panel worth least of the three, so it is what steps
+       aside where the schedule cannot keep its floor. `availOn` still holds
+       what was asked for, so widening the board brings it back on its own. */
+    const key = `${Math.round(board)} ${editor} ${itinerary}`;
+    let changed = false;
+    if (key !== roomKey) {
+      roomKey = key;
+      /* A roster that costs nothing cannot be what is given up, which is the
+         case below md, where it floats over the board and the board itself may
+         be narrower than the floor. */
+      const cramped = roster > 0 && board - editor - itinerary - roster < SCHEDULE_FLOOR * rem;
+      changed = cramped !== availCramped;
+      availCramped = cramped;
+    }
+
+    /* What the schedule is actually left, which app.css caps its floor by, so
+       the floor is never asked for where it would push the board off the page. */
+    const room = board - editor - itinerary - (asideSlot?.hidden ? 0 : roster);
+    frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
+    // Under the tight width `Today` gives way to its menu row, in app.css.
+
+    if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
+    else pageEl.removeAttribute('data-room');
+    return changed;
+  }
+
+  /* The three inputs are watched, never the schedule: the board, whose width
+     the window sets, and the two panels, whose widths go to nothing when they
+     close. The schedule is this rule's own output — its width is held at the
+     floor the rule writes, so it reports no change once the floor binds and
+     watching it would leave the floor stale. */
+  if (boardEl && 'ResizeObserver' in window) {
+    const watch = new ResizeObserver(() => { if (placeRoom()) placeAvailability(); });
+    watch.observe(boardEl);
+    /* The panels by id, as app.js takes them, because the itinerary's own
+       handle is declared further down and this runs while the page is still
+       being set up. */
+    for (const id of ['scheduler-trip', 'scheduler-itinerary']) {
+      const el = document.getElementById(id);
+      if (el) watch.observe(el);
+    }
+  }
+
   function placeAvailability() {
     /* The toggle reports what is on screen, not `availOn`, so a yielded roster
        does not leave a pressed button with nothing behind it. */
-    const shown = availOn && !availYielded;
+    const shown = availOn && !availYielded && !availCramped;
     if (asideSlot) {
       asideSlot.hidden = !shown;
       if (shown) asideSlot.appendChild(availEl);
@@ -5442,11 +5530,14 @@
   }
 
   /* A press acts on what is on screen: off screen for either reason, it shows
-     the roster and clears the yield; on screen, it hides it. The yield is only
-     taken as the editor opens, so this holds. */
+     the roster and clears both reasons it stepped aside; on screen, it hides
+     it. */
   availToggle?.addEventListener('click', () => {
-    if (availOn && !availYielded) { availOn = false; }
-    else { availOn = true; availYielded = false; }
+    if (availOn && !availYielded && !availCramped) { availOn = false; }
+    /* A press wins over both reasons the roster stepped aside, including a
+       board too narrow for it: the schedule then goes under its floor until the
+       next resize, which is what `roomKey` holds the decision for. */
+    else { availOn = true; availYielded = false; availCramped = false; }
     placeAvailability();
   });
 
@@ -7116,10 +7207,10 @@
   });
   cellMenu?.addEventListener('rux:menu-closed', () => { cellMenu.hidden = true; });
 
-  /* The overflow menu's actions. Today and Drivers show only below md, where
-     their toolbar buttons are hidden, and do what those buttons do. New trip
-     lives only in this menu and opens a blank trip; the cell menu's New trip
-     here prefills the bus and the day. */
+  /* The overflow menu's actions. Today shows where its toolbar button is
+     hidden -- below md, and where the schedule is too narrow for five controls
+     -- and does what that button does. New trip lives only in this menu and
+     opens a blank trip; the cell menu's New trip prefills the bus and the day. */
   document.getElementById('scheduler-menu-today')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
@@ -7624,7 +7715,6 @@
      log-in page. The board and its search wait for the staff profile. An
      account without one, a profile that would not load, or a local preview
      other than the cloud preview gets a notice in their place, and nothing is read. */
-  const boardEl = document.querySelector('.scheduler-board');
   const stop = (kind, title, subtitle) => {
     if (boardEl) boardEl.hidden = true;
     if (searchWrap) searchWrap.hidden = true;

@@ -642,7 +642,18 @@ button.scheduler-row-head__num::after {
   border: var(--scheduler-region-edge, 0 solid transparent);
   border-radius: var(--scheduler-surface-radius, 0);
 }
-.scheduler-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
+/* The schedule gives way to the panels beside it, but only to a floor: three
+   whole days beside the 33px bus column, since a day will not go under the
+   127px `--scheduler-day-min`, and less than that is not a week worth showing.
+   `--scheduler-room` is what data.js measured as actually free, so the floor is
+   kept wherever it fits and never pushes the board off the page where it does
+   not. Without script the frame shrinks as it always did. */
+.scheduler-frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-inline-size: min(26rem, var(--scheduler-room, 0px));
+}
 /* The roster: its head, then the grid filling the height app.js gives it. */
 .scheduler-aside { display: flex; flex-direction: column; }
 /* `display: flex` beats the browser's own `[hidden]` rule, so hidden is
@@ -750,7 +761,13 @@ button.scheduler-row-head__num::after {
   align-items: center;
   /* No gap: Carbon's table toolbar sets its buttons edge to edge. */
   gap: 0;
-  flex-wrap: wrap;
+  /* Never two rows. A flex container breaks its lines at each item's own width
+     before it shrinks anything, so a toolbar allowed to wrap drops its buttons
+     to a second row instead of ever letting the week ellipse. */
+  flex-wrap: nowrap;
+  /* What the week's two labels are chosen by: the panels beside the schedule
+     are what take the toolbar's room, and a window's width cannot see them. */
+  container: scheduler-toolbar / inline-size;
   background: var(--rux-layer);
   /* The top corners of the week below it, which rounds only its bottom ones. */
   border-start-start-radius: var(--scheduler-surface-radius, 0);
@@ -816,7 +833,7 @@ button.scheduler-row-head__num::after {
    here. */
 .scheduler-weekbtn__caret { flex: 0 0 auto; }
 /* The week's two labels: the full week, and its months and year. Either ends
-   in an ellipsis rather than pushing the controls onto a second row. Below md
+   in an ellipsis rather than being cut off. Where the toolbar is too narrow
    the months show, and the week stays for a screen reader, which the months
    are hidden from. */
 .scheduler-weekbtn__week,
@@ -826,8 +843,11 @@ button.scheduler-row-head__num::after {
   text-overflow: ellipsis;
 }
 .scheduler-weekbtn__months { display: none; }
-@media (max-width: 41.98rem) {
-  .scheduler-toolbar { flex-wrap: nowrap; }
+/* 25rem is where the room runs out: the five controls take 200px and the full
+   week takes 194px, so it fits above 400px and not below. The toolbar is asked,
+   not the window, because the roster and the editor beside the schedule are
+   what take the room and a window's width cannot see them. */
+@container scheduler-toolbar (max-width: 25rem) {
   .scheduler-weekbtn__months { display: block; }
   .scheduler-weekbtn__week {
     position: absolute;
@@ -1361,12 +1381,24 @@ button.scheduler-row-head__num::after {
    42rem is Carbon's md, where `.rux--side-panel` turns on its 75vw limit. Below
    it the companions leave the board's row, and the week stays a week that
    scrolls sideways under its sticky bus column. */
-/* `Today` is a toolbar button at md and up and a menu row below it; each hides
-   where the other is used. `display: none`, so the hidden one leaves the
+/* `Today` is a toolbar button where the toolbar has room for it and a menu row
+   where it has not: below md, and where the schedule is too narrow for five
+   controls beside its week, which data.js marks with `data-room="tight"`. Each
+   hides where the other is used. `display: none`, so the hidden one leaves the
    accessibility tree too, and Carbon's own display is untouched where each is
    shown. */
 @media (min-width: 42rem) {
-  .scheduler-menu-item--sm-only { display: none; }
+  .scheduler-page:not([data-room="tight"]) .scheduler-menu-item--sm-only { display: none; }
+}
+.scheduler-page[data-room="tight"] .scheduler-toolbar__lg-only { display: none; }
+/* In the same state the week's own button gives up two steps of inset, which
+   is the last 24px "Sep 2026" needs to read whole rather than as "Sep …": at a
+   272px schedule the four controls take 160px, and the 112px left holds the
+   70px label only once the insets come down from 16px to 8px and the caret's
+   gap from 12px to 4px. */
+.scheduler-page[data-room="tight"] .scheduler-weekbtn {
+  padding-inline: var(--rux-spacing-03);
+  gap: var(--rux-spacing-02);
 }
 
 @media (max-width: 41.98rem) {

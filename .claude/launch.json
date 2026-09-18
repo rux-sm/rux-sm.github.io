@@ -1,8 +1,11 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "serve", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs"], "port": 8640 },
-    { "name": "serve-cloud", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs", "--cloud"], "port": 8641 },
-    { "name": "serve-private", "runtimeExecutable": "node", "runtimeArgs": ["tools/serve.mjs", "--private"], "port": 8644 }
+    {
+      "name": "serve-cloud",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "HOST=0.0.0.0 node tools/serve.mjs --cloud"],
+      "port": 8641
+    }
   ]
 }

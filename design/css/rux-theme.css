@@ -122,7 +122,7 @@
   DERIVED BUTTON TOKENS, LINEAR. Unlike Geist, Linear's given palette
   already carries a genuine three-step brand ladder — background-brand
   #5e6ad2 (the darkest, most saturated indigo; interactive #7c85e6
-  (lighter); icon-interactive/focus/link-primary/chat-button #8b92ff
+  (lighter); icon-interactive/link-primary/chat-button #8b92ff
   (lightest) — so button-primary/-tertiary walk that ladder rather than
   inventing steps:
     - button-primary / button-tertiary: background-brand (#5e6ad2) as
@@ -153,7 +153,7 @@
   the default seed): its neutrals, text alphas, fills, and its dark blue,
   red, gold, green, orange and purple palettes. Where Ant's own dark value
   misses 4.5:1 for text or 3:1 for a shape here, the nearest readable step
-  of the same palette stands in: links, focus and info stay #4096ff, since
+  of the same palette stands in: links and info stay #4096ff, since
   Ant's #1668dc is 3.2:1 on layer-02; text-error is #e86e6b; helper text
   is 0.5 alpha and placeholder 0.35. Each field sits one step above its
   layer, because ant-dark's fields have no underline and Carbon's own fields
@@ -340,8 +340,17 @@
   --rux-support-warning: #f5a623;
   --rux-support-warning-inverse: #d97706;
 
-  /* focus */
-  --rux-focus: #52a8ff;
+  /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
+     Four reasons it is not #52a8ff here: the shell's header is pinned to
+     g100 and focuses white whatever the page is, so a brand ring on the page
+     and a white one in the header was the same control answering twice; white
+     is the higher contrast on every dark theme (measured 2026-09-17: 21.00
+     against this background, against 8.40 for the brand colour); one
+     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     brand's tone for the light surfaces where white would vanish. The two
+     light themes keep their blue, because a white ring on a white page is
+     1.00 -- no ring at all. */
+  --rux-focus: #ffffff;
   --rux-focus-inset: #000000;
   --rux-focus-inverse: #0070f3;
 
@@ -580,8 +589,17 @@
   --rux-support-warning: #f2c94c;
   --rux-support-warning-inverse: #c99d27;
 
-  /* focus */
-  --rux-focus: #8b92ff;
+  /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
+     Four reasons it is not #8b92ff here: the shell's header is pinned to
+     g100 and focuses white whatever the page is, so a brand ring on the page
+     and a white one in the header was the same control answering twice; white
+     is the higher contrast on every dark theme (measured 2026-09-17: 19.14
+     against this background, against 6.97 for the brand colour); one
+     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     brand's tone for the light surfaces where white would vanish. The two
+     light themes keep their blue, because a white ring on a white page is
+     1.00 -- no ring at all. */
+  --rux-focus: #ffffff;
   --rux-focus-inset: #0f0f12;
   --rux-focus-inverse: #5e6ad2;
 
@@ -820,8 +838,17 @@
   --rux-support-warning: #d89614;
   --rux-support-warning-inverse: #d48806;
 
-  /* focus */
-  --rux-focus: #4096ff;
+  /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
+     Four reasons it is not #4096ff here: the shell's header is pinned to
+     g100 and focuses white whatever the page is, so a brand ring on the page
+     and a white one in the header was the same control answering twice; white
+     is the higher contrast on every dark theme (measured 2026-09-17: 21.00
+     against this background, against 7.02 for the brand colour); one
+     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     brand's tone for the light surfaces where white would vanish. The two
+     light themes keep their blue, because a white ring on a white page is
+     1.00 -- no ring at all. */
+  --rux-focus: #ffffff;
   --rux-focus-inset: #000000;
   --rux-focus-inverse: #1677ff;
 
@@ -1060,8 +1087,17 @@
   --rux-support-warning: #f5c344;
   --rux-support-warning-inverse: #c99416;
 
-  /* focus */
-  --rux-focus: #1ed760;
+  /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
+     Four reasons it is not #1ed760 here: the shell's header is pinned to
+     g100 and focuses white whatever the page is, so a brand ring on the page
+     and a white one in the header was the same control answering twice; white
+     is the higher contrast on every dark theme (measured 2026-09-17: 18.73
+     against this background, against 9.76 for the brand colour); one
+     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     brand's tone for the light surfaces where white would vanish. The two
+     light themes keep their blue, because a white ring on a white page is
+     1.00 -- no ring at all. */
+  --rux-focus: #ffffff;
   --rux-focus-inset: #121212;
   --rux-focus-inverse: #169c46;
 

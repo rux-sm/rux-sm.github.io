@@ -29,21 +29,20 @@ which needs signing in, and one surface that was deliberately not changed.
 - **The contract lives in `js/overlay.js`'s header, not in `design/docs/`,**
   because that is where the kernel's other placement rules are written and one
   fact wants one home.
+- **The row overflow menu stays absolute.** It sits in
+  `.rux--data-table-content`, which scrolls, so the same clip is available to
+  it, but no row menu has been reported cut off and one was measured 209px
+  clear; `js/overlay.js` records that this is a decision, not an omission.
 - **No sink specimen is added.** A sink specimen is pinned open and this module
   claims a list box by its field, so a specimen would never be placed and would
   demonstrate nothing; the scheduler's own trip panel is the real case.
 
 ## Questions
 
-- **The same clip is still available to the row overflow menu.** It is absolute
-  inside `.rux--data-table-content`, which scrolls, and was measured 209px clear
-  on the table template. Making it fixed too is a small change on top of this
-  one; leaving it keeps a surface that can fail the same way.
+None.
 
 ## Tasks
 
 - [ ] rux opens the scheduler's trip panel signed in and checks the contact
       search, the driver picker and the bus picker near the bottom of a long
       panel, on the desktop and on a phone.
-- [ ] Decide the row overflow menu above, and either make it fixed in the same
-      way or record in `js/overlay.js` that it stays as it is on purpose.

@@ -98,8 +98,11 @@
    NOT fixed: it is absolutely positioned inside `.rux--data-table-content`,
    which computes `overflow: auto`, so the same cut is still available to it.
    Checked on templates/table-page.html: a two-item list built into the last row
-   ends 209px clear of the content edge, so nothing is clipped there today. For
-   that surface it remains a condition to watch.
+   ends 209px clear of the content edge, so nothing is clipped there today.
+   LEAVING IT ABSOLUTE IS THE DECISION, not an omission: no row menu has been
+   reported cut off, and the narrower change is the one that can be judged. It
+   is a condition to watch, and making it fixed is the same one-line change made
+   here if a row menu is ever reported clipped.
    ========================================================================== */
 
 /* BEHAVIOUR: verified-live · read 2026-08-29 from three running stories —

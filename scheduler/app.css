@@ -614,6 +614,16 @@ button.scheduler-row-head__num::after {
    grid, on the same `--rux-layer` surface, as Carbon's table toolbar sits on
    its table. It is the region that shrinks; the roster and the editor beside
    it hold their width. */
+/* The schedule and the roster are each a head above a body, both of which
+   carry the surface's own corners; the column around them draws nothing. A
+   theme that tells its regions apart by a line rather than a gap puts that
+   line here, on the outside of the pair, so no rule is doubled where the two
+   meet. Every box is sized from its border, so the line costs no width. */
+.scheduler-frame,
+.scheduler-aside {
+  border: var(--scheduler-region-edge, 0 solid transparent);
+  border-radius: var(--scheduler-surface-radius, 0);
+}
 .scheduler-frame { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
 /* The roster: its head, then the grid filling the height app.js gives it. */
 .scheduler-aside { display: flex; flex-direction: column; }

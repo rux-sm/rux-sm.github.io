@@ -39,6 +39,9 @@
 [data-theme="geist"] {
   --scheduler-band-surface: var(--rux-layer);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  /* The same line around each region, so the schedule and the roster are told
+     apart the way the trip panel beside them already is. */
+  --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
 }
 
 /* The rounded themes round this app's own shapes to match Design's: 6px on a

@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "serve-cloud",
-      "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "HOST=0.0.0.0 node tools/serve.mjs --cloud"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/serve.mjs", "--cloud"],
       "port": 8641
     }
   ]

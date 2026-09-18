@@ -101,15 +101,19 @@
    than going blank. */
 .scheduler-grid--busy { opacity: .55; }
 
-/* The header band is `layer-accent-01` and the rules `border-subtle-01`: the
-   pane is `--rux-layer`, layer 01, and Carbon's tokens step with the layer they
-   sit on. */
+/* The day band is the band the roster's header is, and takes the same pair: a
+   surface, in a theme that separates a header by filling it, or the pane's own
+   surface between two rules, in one that separates by a line. Both edges are
+   drawn, because this band has the toolbar above it and the grid below. It
+   stays opaque either way: bars scroll under it. */
 .scheduler-corner,
 .scheduler-day {
   position: sticky;
   inset-block-start: 0;
   z-index: 3;
-  background: var(--rux-layer-accent-01);
+  background: var(--scheduler-band-surface);
+  border-block-start: var(--scheduler-band-rule);
+  border-block-end: var(--scheduler-band-rule);
   /* 2rem, Carbon's sm row height; the corner's 2rem floor makes it square. */
   block-size: 2rem;
   display: flex;
@@ -1222,8 +1226,10 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   /* Secondary text, the same as the board's day band beside it. */
   color: var(--rux-text-secondary);
-  /* No rule under the header, as in Carbon's table header: the surface change
-     separates it from the first row. */
+  /* No rule around the header, as in Carbon's table header: the surface change
+     separates it from the first row. A theme that draws rules instead takes
+     both edges, because the panel's own title sits directly above this row. */
+  border-block-start: var(--scheduler-band-rule);
   border-block-end: var(--scheduler-band-rule);
 }
 

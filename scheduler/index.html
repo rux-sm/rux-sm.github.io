@@ -535,15 +535,15 @@
                frames the file, with its type in Carbon's label line above the
                destination; narrower, it opens the file in a new tab instead. order: -2
                in app.css draws it left of the driver availability pane. -->
-          <div class="scheduler-itinerary" id="scheduler-itinerary" hidden>
-    <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-itinerary-panel" aria-label="Document">
+          <div class="scheduler-viewer" id="scheduler-viewer" hidden>
+    <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-viewer-panel" aria-label="Document">
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
         <div class="rux--side-panel__title rux--side-panel__title--no-label">
-          <h2 class="rux--side-panel__title-text" id="scheduler-itinerary-title">Itinerary</h2>
-          <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-itinerary-title-collapsed">Itinerary</h2>
+          <h2 class="rux--side-panel__title-text" id="scheduler-viewer-title">Document</h2>
+          <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
-          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-itinerary-close" aria-label="Close document">
+          <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-viewer-close" aria-label="Close document">
             <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -554,33 +554,33 @@
            stands in for the browser's PDF toolbar, which data.js hides because
            Chrome's scrolls sideways at 30rem. The file's actions start disabled
            and data.js enables them once the file has loaded. -->
-      <div class="scheduler-itinerary__body">
-        <div class="rux--side-panel__action-toolbar scheduler-itinerary__toolbar" role="group" aria-label="Document actions">
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
+      <div class="scheduler-viewer__body">
+        <div class="rux--side-panel__action-toolbar scheduler-viewer__toolbar" role="group" aria-label="Document actions">
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--out"/></svg>
           </button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="fit" aria-label="Fit to width" title="Fit to width" disabled>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-viewer-zoom="fit" aria-label="Fit to width" title="Fit to width" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-fit-to-width"/></svg>
           </button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-itinerary-zoom="in" aria-label="Zoom in" title="Zoom in" disabled>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-viewer-zoom="in" aria-label="Zoom in" title="Zoom in" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--in"/></svg>
           </button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-itinerary-print" aria-label="Print" title="Print" disabled>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-viewer-print" aria-label="Print" title="Print" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-printer"/></svg>
           </button>
-          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--btn--disabled" id="scheduler-itinerary-download" aria-disabled="true" aria-label="Download" title="Download">
+          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--btn--disabled" id="scheduler-viewer-download" aria-disabled="true" aria-label="Download" title="Download">
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-download"/></svg>
           </a>
-          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-itinerary-new-tab" target="_blank" rel="noopener" aria-label="Open in new tab" title="Open in new tab">
+          <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-viewer-new-tab" target="_blank" rel="noopener" aria-label="Open in new tab" title="Open in new tab">
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-launch"/></svg>
           </a>
-          <span class="scheduler-itinerary__uploaded" id="scheduler-itinerary-uploaded"></span>
+          <span class="scheduler-viewer__uploaded" id="scheduler-viewer-uploaded"></span>
         </div>
         <!-- The file's wait or its failure, which data.js fills: Carbon's inline
              loading while the file downloads, an inline notification if it
              does not. -->
-        <div class="scheduler-itinerary__status" id="scheduler-itinerary-status" role="status" hidden></div>
-        <iframe class="scheduler-itinerary__frame" id="scheduler-itinerary-frame" title="Document"></iframe>
+        <div class="scheduler-viewer__status" id="scheduler-viewer-status" role="status" hidden></div>
+        <iframe class="scheduler-viewer__frame" id="scheduler-viewer-frame" title="Document"></iframe>
       </div>
     </aside>
           </div>

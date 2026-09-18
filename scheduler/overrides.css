@@ -182,19 +182,19 @@
    stacked over the destination as slide-in draws it; the two lines fit the
    same 40px band, and both end where Carbon's close button, in its corner,
    begins. */
-#scheduler-itinerary-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+#scheduler-viewer-panel .rux--side-panel__header.rux--side-panel__header--has-title {
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
   padding-inline-end: var(--rux-layout-size-height-md);
 }
-#scheduler-itinerary-panel .rux--side-panel__label-text {
+#scheduler-viewer-panel .rux--side-panel__label-text {
   overflow: hidden;
   color: var(--rux-text-secondary);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#scheduler-itinerary-panel .rux--side-panel__title { flex: none; }
+#scheduler-viewer-panel .rux--side-panel__title { flex: none; }
 
 /* The title is `heading-compact-02` in place of Carbon's `heading-03`: the
    style of the toolbar's week name and the roster's title, so the three

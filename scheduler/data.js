@@ -5494,7 +5494,7 @@
       return width ? width + gap : 0;
     };
     const editor = tripEl?.hidden ? 0 : cost(tripEl);
-    const itinerary = itinEl?.hidden ? 0 : cost(itinEl);
+    const itinerary = viewerEl?.hidden ? 0 : cost(viewerEl);
     /* The roster's cost whether or not it is on screen, since that is what is
        being decided; asking `hidden` would answer nothing every time. */
     const roster = cost(asideSlot);
@@ -5547,7 +5547,7 @@
     /* The panels by id, as app.js takes them, because the itinerary's own
        handle is declared further down and this runs while the page is still
        being set up. */
-    for (const id of ['scheduler-trip', 'scheduler-itinerary']) {
+    for (const id of ['scheduler-trip', 'scheduler-viewer']) {
       const el = document.getElementById(id);
       if (el) watch.observe(el);
     }
@@ -6285,7 +6285,7 @@
     }
   }
 
-  /* ── The document panel ──
+  /* ── The document viewer ──
      From Carbon's xlg breakpoint up, a trip's file, an itinerary or any other,
      opens in a side panel left of
      the board, beside the trip editor. Narrower, the two panels do not fit and
@@ -6295,57 +6295,56 @@
      print. The browser's PDF toolbar is hidden, since Chrome's scrolls sideways
      at 30rem, and the panel's action toolbar stands in for it. The panel stays
      open through week changes and selections, like the editor, and another
-     file replaces the one shown. The ids keep the itinerary name the panel
-     was built for. */
-  const itinEl = document.getElementById('scheduler-itinerary');
-  let itinFrame = document.getElementById('scheduler-itinerary-frame');
-  const itinTitle = document.getElementById('scheduler-itinerary-title');
-  const itinTitleCollapsed = document.getElementById('scheduler-itinerary-title-collapsed');
-  const itinUploaded = document.getElementById('scheduler-itinerary-uploaded');
-  const itinStatus = document.getElementById('scheduler-itinerary-status');
-  const itinPrint = document.getElementById('scheduler-itinerary-print');
-  const itinDownload = document.getElementById('scheduler-itinerary-download');
-  const itinNewTab = document.getElementById('scheduler-itinerary-new-tab');
-  const itinClose = document.getElementById('scheduler-itinerary-close');
-  const itinZooms = [...document.querySelectorAll('[data-itinerary-zoom]')];
+     file replaces the one shown. */
+  const viewerEl = document.getElementById('scheduler-viewer');
+  let viewerFrame = document.getElementById('scheduler-viewer-frame');
+  const viewerTitle = document.getElementById('scheduler-viewer-title');
+  const viewerTitleCollapsed = document.getElementById('scheduler-viewer-title-collapsed');
+  const viewerUploaded = document.getElementById('scheduler-viewer-uploaded');
+  const viewerStatus = document.getElementById('scheduler-viewer-status');
+  const viewerPrint = document.getElementById('scheduler-viewer-print');
+  const viewerDownload = document.getElementById('scheduler-viewer-download');
+  const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
+  const viewerClose = document.getElementById('scheduler-viewer-close');
+  const viewerZooms = [...document.querySelectorAll('[data-viewer-zoom]')];
   /* Safari's PDF view, which every browser on an iPad uses too, ignores the
      zoom an address asks for and draws its own zoom controls over the page, so
      there the panel's zoom buttons are hidden rather than left doing nothing.
      No feature tells which PDF viewer a frame gets; the vendor string does. */
-  if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of itinZooms) btn.hidden = true;
+  if (navigator.vendor === 'Apple Computer, Inc.') for (const btn of viewerZooms) btn.hidden = true;
   // The 30rem panel beside the 20rem editor, with the board still in view.
-  const itinWide = matchMedia('(min-width: 82rem)');
+  const viewerWide = matchMedia('(min-width: 82rem)');
   // The zooms Zoom in and Zoom out step through, in percent.
   const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
-  let itinOpener = null;
+  let viewerOpener = null;
   // The file showing: its document id, its blob address, and its zoom, where
   // null is fit to width.
-  let itinShown = null;
+  let viewerShown = null;
   // Counts opens, so a slow fetch that a later open overtook is dropped.
-  let itinSeq = 0;
+  let viewerSeq = 0;
   // The document the panel is on, loaded or not, so a replace or a delete
   // elsewhere can follow it.
-  let itinDocId = null;
+  let viewerDocId = null;
   // The download running: its document id, and the controller that stops it.
-  let itinLoading = null;
+  let viewerLoading = null;
   const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
 
   /* Each load gets a new frame: a PDF viewer does not read a changed fragment
      again, and navigating a frame that has loaded adds to the tab's history,
      so Back would step through zooms. */
   function swapFrame(src) {
-    const frame = itinFrame.cloneNode(false);
+    const frame = viewerFrame.cloneNode(false);
     if (src) frame.src = src; else frame.removeAttribute('src');
-    itinFrame.replaceWith(frame);
-    itinFrame = frame;
+    viewerFrame.replaceWith(frame);
+    viewerFrame = frame;
   }
 
   // Frames the file at its zoom, and disables the zoom that has nowhere to go.
-  function frameItinerary() {
-    const { blob, zoom } = itinShown;
+  function frameShown() {
+    const { blob, zoom } = viewerShown;
     swapFrame(`${blob}#toolbar=0&navpanes=0&${zoom == null ? 'view=FitH' : `zoom=${zoom}`}`);
-    for (const btn of itinZooms) {
-      const step = btn.dataset.itineraryZoom;
+    for (const btn of viewerZooms) {
+      const step = btn.dataset.viewerZoom;
       btn.disabled = step === 'fit' ? zoom == null
         : step === 'in' ? zoom === ZOOM_STEPS.at(-1)
         : zoom === ZOOM_STEPS[0];
@@ -6354,53 +6353,53 @@
 
   // A fit-to-width page reads as about 90%, so the first step from it is 100%
   // in or 75% out.
-  function zoomItinerary(step) {
-    if (!itinShown) return;
-    const now = itinShown.zoom;
-    if (step === 'fit') itinShown.zoom = null;
-    else if (step === 'in') itinShown.zoom = ZOOM_STEPS.find(z => z > (now ?? 90)) ?? ZOOM_STEPS.at(-1);
-    else itinShown.zoom = ZOOM_STEPS.findLast(z => z < (now ?? 90)) ?? ZOOM_STEPS[0];
-    if (itinShown.zoom !== now) frameItinerary();
+  function zoomViewer(step) {
+    if (!viewerShown) return;
+    const now = viewerShown.zoom;
+    if (step === 'fit') viewerShown.zoom = null;
+    else if (step === 'in') viewerShown.zoom = ZOOM_STEPS.find(z => z > (now ?? 90)) ?? ZOOM_STEPS.at(-1);
+    else viewerShown.zoom = ZOOM_STEPS.findLast(z => z < (now ?? 90)) ?? ZOOM_STEPS[0];
+    if (viewerShown.zoom !== now) frameShown();
   }
 
   /* The actions that need the fetched file wait for it; Open in new tab does
      not. Download is a link, which has no `disabled`, so it takes Carbon's
      disabled class and leaves the tab order with its address. */
-  function setItineraryReady(ready) {
-    for (const btn of [...itinZooms, itinPrint]) btn.disabled = !ready;
-    itinDownload.classList.toggle('rux--btn--disabled', !ready);
-    if (ready) itinDownload.removeAttribute('aria-disabled');
+  function setViewerReady(ready) {
+    for (const btn of [...viewerZooms, viewerPrint]) btn.disabled = !ready;
+    viewerDownload.classList.toggle('rux--btn--disabled', !ready);
+    if (ready) viewerDownload.removeAttribute('aria-disabled');
     else {
-      itinDownload.removeAttribute('href');
-      itinDownload.setAttribute('aria-disabled', 'true');
+      viewerDownload.removeAttribute('href');
+      viewerDownload.setAttribute('aria-disabled', 'true');
     }
   }
 
   // The line over the frame: Carbon's inline loading for the wait, an inline
   // notification for a failure, and nothing once the file shows.
-  function itineraryStatus(kind, why) {
-    if (!itinStatus) return;
-    itinStatus.hidden = !kind;
+  function setViewerStatus(kind, why) {
+    if (!viewerStatus) return;
+    viewerStatus.hidden = !kind;
     if (kind === 'loading') {
       const box = el('div', 'rux--inline-loading');
       const anim = el('div', 'rux--inline-loading__animation');
       anim.appendChild(loadingSpinner());
-      box.append(anim, el('div', 'rux--inline-loading__text', 'Loading the itinerary…'));
-      itinStatus.replaceChildren(box);
+      box.append(anim, el('div', 'rux--inline-loading__text', 'Loading the document…'));
+      viewerStatus.replaceChildren(box);
     } else if (kind === 'error') {
-      itinStatus.replaceChildren(note('error', 'The itinerary did not load.', `${why} Open in new tab still opens it.`));
-    } else itinStatus.replaceChildren();
+      viewerStatus.replaceChildren(note('error', 'The document did not load.', `${why} Open in new tab still opens it.`));
+    } else viewerStatus.replaceChildren();
   }
 
   // Lets go of the file showing: a download running stops, the frame empties
   // and its blob is freed.
-  function dropItinerary() {
-    itinLoading?.ctrl.abort();
-    itinLoading = null;
-    if (itinShown) URL.revokeObjectURL(itinShown.blob);
-    itinShown = null;
-    setItineraryReady(false);
-    itineraryStatus(null);
+  function dropShown() {
+    viewerLoading?.ctrl.abort();
+    viewerLoading = null;
+    if (viewerShown) URL.revokeObjectURL(viewerShown.blob);
+    viewerShown = null;
+    setViewerReady(false);
+    setViewerStatus(null);
     swapFrame(null);
   }
 
@@ -6408,7 +6407,7 @@
     if (!doc) return;
     const url = client && doc.file_path
       ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
-    if (!itinEl || !itinWide.matches || !url) {
+    if (!viewerEl || !viewerWide.matches || !url) {
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
@@ -6416,96 +6415,96 @@
        to is the editor's own heading, open behind this panel, so naming the
        destination here said it twice. */
     const kind = docTypeName(doc);
-    for (const h of [itinTitle, itinTitleCollapsed]) h.textContent = kind;
+    for (const h of [viewerTitle, viewerTitleCollapsed]) h.textContent = kind;
     const when = uploadedOn(doc.created_at);
-    itinUploaded.textContent = when ? `Uploaded ${when}` : '';
-    itinNewTab.href = url;
-    itinDocId = String(doc.id);
-    if (itinEl.hidden) {
-      itinOpener = opener ?? null;
-      itinEl.hidden = false;
+    viewerUploaded.textContent = when ? `Uploaded ${when}` : '';
+    viewerNewTab.href = url;
+    viewerDocId = String(doc.id);
+    if (viewerEl.hidden) {
+      viewerOpener = opener ?? null;
+      viewerEl.hidden = false;
       window.Rux?.schedule?.fit?.();
     }
-    itinClose?.focus();
+    viewerClose?.focus();
     // The file showing, or downloading, is not fetched again, so its zoom stays.
-    if (itinShown?.id === doc.id || itinLoading?.id === doc.id) return;
-    const seq = ++itinSeq;
-    dropItinerary();
+    if (viewerShown?.id === doc.id || viewerLoading?.id === doc.id) return;
+    const seq = ++viewerSeq;
+    dropShown();
     /* The time limit covers the whole download, not only the storage's first
        answer, and running out of it stops the download, as a close does. */
     const ctrl = new AbortController();
-    itinLoading = { id: doc.id, ctrl };
+    viewerLoading = { id: doc.id, ctrl };
     let timedOut = false;
     const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, READ_TIMEOUT);
-    itineraryStatus('loading');
+    setViewerStatus('loading');
     try {
       const res = await fetch(url, { signal: ctrl.signal });
       if (!res.ok) throw new Error(`The storage answered ${res.status}.`);
       // Typed as a PDF whatever the storage says, so the frame shows it.
       const file = new Blob([await res.blob()], { type: 'application/pdf' });
-      if (seq !== itinSeq) return;
-      itinLoading = null;
-      itineraryStatus(null);
+      if (seq !== viewerSeq) return;
+      viewerLoading = null;
+      setViewerStatus(null);
       const blob = URL.createObjectURL(file);
-      itinShown = { id: doc.id, blob, zoom: null };
-      itinFrame.title = kind;
-      itinDownload.href = blob;
-      itinDownload.download = doc.file_name || `${docSlug(kind, 'document')}.pdf`;
-      setItineraryReady(true);
-      frameItinerary();
+      viewerShown = { id: doc.id, blob, zoom: null };
+      viewerFrame.title = kind;
+      viewerDownload.href = blob;
+      viewerDownload.download = doc.file_name || `${docSlug(kind, 'document')}.pdf`;
+      setViewerReady(true);
+      frameShown();
     } catch (err) {
-      if (seq !== itinSeq) return;
-      itinLoading = null;
+      if (seq !== viewerSeq) return;
+      viewerLoading = null;
       const why = timedOut ? `The storage did not send it within ${READ_TIMEOUT / 1000} seconds.`
         : err instanceof TypeError ? 'The storage could not be reached.' : err.message;
-      itineraryStatus('error', why);
+      setViewerStatus('error', why);
     } finally {
       clearTimeout(timer);
     }
   }
 
-  for (const btn of itinZooms) {
+  for (const btn of viewerZooms) {
     btn.addEventListener('click', () => {
-      zoomItinerary(btn.dataset.itineraryZoom);
+      zoomViewer(btn.dataset.viewerZoom);
       // A zoom that has nowhere further to go is disabled, and would drop focus.
-      if (btn.disabled) itinZooms.find(b => !b.disabled)?.focus();
+      if (btn.disabled) viewerZooms.find(b => !b.disabled)?.focus();
     });
   }
   // The frame is a blob of this page's origin, so the page may print it. A
   // browser that refuses gets the file in a new tab, where its viewer prints.
-  itinPrint?.addEventListener('click', () => {
+  viewerPrint?.addEventListener('click', () => {
     try {
-      itinFrame.contentWindow.focus();
-      itinFrame.contentWindow.print();
+      viewerFrame.contentWindow.focus();
+      viewerFrame.contentWindow.print();
     } catch {
-      window.open(itinNewTab.href, '_blank', 'noopener');
+      window.open(viewerNewTab.href, '_blank', 'noopener');
     }
   });
 
-  function closeItinerary(returnFocus = true) {
-    if (!itinEl || itinEl.hidden) return;
-    itinEl.hidden = true;
-    itinDocId = null;
+  function closeViewer(returnFocus = true) {
+    if (!viewerEl || viewerEl.hidden) return;
+    viewerEl.hidden = true;
+    viewerDocId = null;
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
-    itinSeq++;
-    dropItinerary();
+    viewerSeq++;
+    dropShown();
     window.Rux?.schedule?.fit?.();
     /* Focus goes back to what opened the panel. A Files tab row is rebuilt
        whenever the editor redraws, so its row is found again by document id;
        failing that, the selected bar takes it. */
-    const opener = itinOpener;
-    itinOpener = null;
+    const opener = viewerOpener;
+    viewerOpener = null;
     if (!returnFocus) return;
     const id = opener?.dataset.documentId;
     const target = opener?.isConnected ? opener
       : (id && panelFiles.querySelector(`[data-document-id="${CSS.escape(id)}"]`)) || selectedBar();
     target?.focus();
   }
-  itinClose?.addEventListener('click', () => closeItinerary());
+  viewerClose?.addEventListener('click', () => closeViewer());
   // A window narrowed below xlg has no room for the panel. Focus inside it
   // goes back to the opener rather than to the page.
-  itinWide.addEventListener('change', e => {
-    if (!e.matches) closeItinerary(!!itinEl?.contains(document.activeElement));
+  viewerWide.addEventListener('change', e => {
+    if (!e.matches) closeViewer(!!viewerEl?.contains(document.activeElement));
   });
 
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
@@ -6969,7 +6968,7 @@
       }
       await refreshDocuments(tripId);
       // The panel on the old itinerary moves to the new one.
-      if (itinDocId === String(old.id)) {
+      if (viewerDocId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
         openDocument(fresh || doc, null);
@@ -6997,7 +6996,7 @@
       return;
     }
     // The panel on the deleted file has nothing left to show.
-    if (itinDocId === String(target.doc.id)) closeItinerary(false);
+    if (viewerDocId === String(target.doc.id)) closeViewer(false);
     await refreshDocuments(target.tripId);
     toast('success', 'The file was deleted.');
   });
@@ -7293,9 +7292,9 @@
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
-    if (itinEl && !itinEl.hidden && itinEl.contains(document.activeElement)) {
+    if (viewerEl && !viewerEl.hidden && viewerEl.contains(document.activeElement)) {
       e.preventDefault();
-      closeItinerary();
+      closeViewer();
       return;
     }
     const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);

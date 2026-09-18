@@ -83,7 +83,7 @@
        a cap: the side panel inside each resolves `block-size: 100%` against
        this box, and a percentage against a parent with only a maximum resolves
        to auto, which leaves the form unscrollable and the Save bar unpinned. */
-    for (const id of ['scheduler-trip', 'scheduler-itinerary']) {
+    for (const id of ['scheduler-trip', 'scheduler-viewer']) {
       const column = document.getElementById(id);
       if (column && !column.hidden) {
         if (column.style.blockSize !== panelNext) column.style.blockSize = panelNext;

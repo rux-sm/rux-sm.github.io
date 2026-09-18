@@ -600,27 +600,73 @@
     controls.replaceChildren(...nodes);
   }
 
-  function showHub() {
+  /* The buses a trip has, so the hub can offer a form that binds one. A trip
+     is not an assignment: this is the step between "the forms for this trip"
+     and "the envelope for bus 12 on the way out". */
+  const TRIP_BUSES_QUERY =
+    'id,destination,trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id))';
+
+  const busLabel = a => {
+    const number = a.buses?.number;
+    return [number != null ? `Bus ${number}` : 'No bus yet',
+      a.leg === 'return' ? 'Return' : ''].filter(Boolean).join(' · ');
+  };
+
+  async function tripBuses(tripId) {
+    const client = window.Rux?.account?.client;
+    if (!client) return { why: 'Not connected, so this trip could not be read.' };
+    const { data, error } = await client
+      .from('trips').select(TRIP_BUSES_QUERY).eq('id', tripId).maybeSingle();
+    if (error) return { why: `The schedule did not answer. ${error.message}` };
+    if (!data) return { why: 'That trip is not on the schedule any more.' };
+    const buses = (data.trip_assignments || [])
+      .filter(a => (a.trip_drivers || []).some(d => d.driver_id))
+      .sort((a, b) => (a.leg === b.leg ? (a.position ?? 0) - (b.position ?? 0)
+        : a.leg === 'return' ? 1 : -1));
+    return { destination: data.destination, buses };
+  }
+
+  const tileLink = (href, text) => {
+    const link = el('a', 'rux--link scheduler-print__tile-link', text);
+    link.href = href;
+    return link;
+  };
+
+  async function showHub() {
     const trip = params.get('trip');
     title.textContent = 'Forms';
+    bar.hidden = false;
+    hub.hidden = false;
+    sheet.replaceChildren();
+
+    const found = trip ? await tripBuses(trip) : null;
+    if (found?.destination) title.textContent = `Forms — ${found.destination}`;
+
     const list = document.createDocumentFragment();
     for (const form of FORMS) {
-      // A form binds a subject this hub was not opened on, so the tile says
-      // what it still needs rather than opening on nothing.
-      const usable = form.binds === null || (trip && form.binds !== 'week');
-      const tile = el('a', 'rux--tile rux--tile--clickable');
-      tile.href = `print.html?form=${form.id}${trip ? `&trip=${encodeURIComponent(trip)}` : ''}`;
+      const tile = el('div', 'rux--tile');
       tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
       tile.appendChild(el('p', 'scheduler-print__tile-blurb', form.blurb));
-      if (!usable) {
+
+      const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
+
+      if (form.binds === null) {
+        tile.appendChild(tileLink(`print.html?form=${form.id}`, 'Open a blank one'));
+      } else if (!trip) {
+        // The tile says what it still wants rather than opening on nothing.
         tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
+      } else if (found.why) {
+        tile.appendChild(el('p', 'scheduler-print__tile-need', found.why));
+      } else if (!found.buses.length) {
+        tile.appendChild(el('p', 'scheduler-print__tile-need', 'No bus on this trip has a driver yet.'));
+      } else {
+        const links = el('div', 'scheduler-print__tile-links');
+        for (const a of found.buses) links.appendChild(tileLink(query(a.id), busLabel(a)));
+        tile.appendChild(links);
       }
       list.appendChild(tile);
     }
     hub.replaceChildren(list);
-    hub.hidden = false;
-    bar.hidden = false;
-    sheet.replaceChildren();
   }
 
   async function showForm(form) {
@@ -678,6 +724,6 @@
   }
 
   const form = formOf(params.get('form'));
-  if (!form) showHub();
+  if (!form) void showHub();
   else void showForm(form);
 })();

@@ -6074,6 +6074,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-forms') {
+      openForms(bar);
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-upload') {
       const tripId = bar.dataset.tripId;
       pickFile(file => uploadFrom(tripId, 'Itinerary', file));
@@ -6570,6 +6575,20 @@
       url: `print.html?form=envelope&assignment=${encodeURIComponent(id)}`,
       kind: 'Driver envelope',
       note: bar.dataset.leg === 'return' ? 'Return' : '',
+      opener: bar,
+    });
+  }
+
+  /* The forms this trip can fill in, on print.html's own list. It takes the
+     trip rather than the bar's assignment, because the list is the trip's and
+     a form that wants one bus asks for it once it is chosen. */
+  function openForms(bar) {
+    const id = bar.dataset.tripId;
+    if (!id) return;
+    openGenerated({
+      url: `print.html?trip=${encodeURIComponent(id)}`,
+      kind: 'Forms',
+      note: '',
       opener: bar,
     });
   }

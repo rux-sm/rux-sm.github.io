@@ -22,9 +22,10 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   because ending on paper is what every one of them has in common and what
   separates them from a file someone uploaded.
 - **With no `?form=` it is the hub,** a tile per form. `print.html?trip=<id>`
-  is the same hub naming that trip and showing only the forms a trip can fill,
-  so a person who arrives from the board picks the document rather than the
-  data. It sits in the side nav below Settings, beside History: consulted, not
+  is the same hub naming that trip, and a form that binds one bus lists that
+  trip's buses to choose from, because a trip is not an assignment and a tile
+  that opened on nothing would be a dead end. So a person arriving from the
+  board picks the document, then the bus, and never types an address. It sits in the side nav below Settings, beside History: consulted, not
   worked in.
 - **The two kinds of document keep their own page.** `share/document.html`
   opens a *stored* file by id for someone without a log-in; this page renders a
@@ -137,8 +138,9 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 - **Print envelope joins `SHORTCUT_ACTIONS`,** so it is both a shortcut slot
   and a right-click item from the one table. It shows faint with "No driver on
-  this bus" where the bar has no seat filled. A second item, Documents, opens
-  the hub on that trip.
+  this bus" where the bar has no seat filled. A second item, Forms, opens the
+  hub on that trip -- named Forms and not Documents, because that is what the
+  side nav and the page itself call it.
 - **The board reads nothing new.** A form reads its own subject by id, so
   `need_fuel_card`, `trip_reqs`, `spot_time` and `envelope_printed` sit in the
   form's own query rather than in `TRIP_COLUMNS`, which already serves a week of
@@ -168,7 +170,6 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 ## Tasks
 
-- [ ] Add Documents to the bar's menu, opening the hub on that trip.
 - [ ] Rewrite the screen inventory's print lines, in §2 and §7, to name this
       page.
 - [ ] rux opens a real trip's envelope from the board, prints the crew's copies

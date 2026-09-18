@@ -334,3 +334,17 @@
 }
 
 .scheduler-print__hub .rux--tile { text-decoration: none; }
+
+/* One link per bus the trip has, inside the form's tile. A tile that offers a
+   choice cannot itself be the link. */
+.scheduler-print__tile-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-02);
+  margin-block-start: var(--rux-spacing-03);
+}
+
+.scheduler-print__tile-link {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+}

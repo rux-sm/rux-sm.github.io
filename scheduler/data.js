@@ -571,9 +571,11 @@
     { role: 'relief-start', label: 'Relief start', icon: '#i-channels', box: '0 0 32 32' },
     { role: 'relief-end', label: 'Relief end', icon: '#i-channels', box: '0 0 32 32' },
   ];
-  // The five states `trip_driver_statuses` holds, and the tone each paints.
+  /* The five states `trip_driver_statuses` holds, and the tone each paints.
+     Off is grey rather than no disc at all: it is the first step of the run,
+     the trip still to send, not the absence of one. */
   const DRIVER_STATUSES = [
-    { value: 'off', label: 'Off' },
+    { value: 'off', label: 'Off', tone: 'off' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'error' },
     { value: 'pending-response', label: 'Pending response', tone: 'warning' },
     { value: 'confirmed', label: 'Confirmed', tone: 'success' },
@@ -639,7 +641,12 @@
     if (c.needed) return `${c.label} needed`;
     const parts = [c.label, c.who ? (c.who.name || c.who.short_name) : 'Unknown driver'];
     const { value, label } = c.status;
-    if (value !== 'off') {
+    // Off names itself and stops there: nobody set it, so there is no who or
+    // when to give. It still says its name, because it now has a disc of its
+    // own and a reader hovering grey is asking what grey means.
+    if (value === 'off') {
+      parts.push(label);
+    } else {
       parts.push(c.row?.source === 'driver' ? `${label} by the driver` : `${label}, set by dispatch`);
       const at = setAt((value === 'confirmed' && c.row?.acceptedAt)
         || (value === 'declined' && c.row?.declinedAt) || c.row?.updatedAt);

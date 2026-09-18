@@ -1242,10 +1242,12 @@ button.scheduler-row-head__num::after {
 /* The three states. Free is the one being looked for, so it is empty; busy
    and off are Carbon's tag tints, the palette the trip bar uses. */
 .scheduler-avail__cell { padding-inline: 0; overflow: hidden; }
-/* The day rules in the roster: each body cell but the first rules its start
-   edge, since the first edge is the name column's own rule. Only body rows use
-   `__cell`, so no rule enters the header row. */
-.scheduler-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+/* No rules between the days. The roster is read by looking for the marks, and
+   a free cell is the mark being looked for, so ruling all seven columns draws
+   the answer as loudly as the question. The row rules and the name column's own
+   rule are enough to place a square on a driver and a day. The board keeps the
+   day rules it paints in `--scheduler-day-rules`, where a bar spans days and
+   its edges have to be read against them. */
 /* The selected trip's days tint the free cells with `--rux-layer-selected`,
    Carbon's selected-surface token. `--busy` and `--off` come after it and set
    the `background` shorthand, so a booked or day-off cell keeps its tag
@@ -1278,22 +1280,22 @@ button.scheduler-row-head__num::after {
    rows, so it is the app's own. It spans every column, since a band covers the
    name and the whole week, and it sits on the grid's own `--rux-layer`, so the
    roster has one surface and the column header above is the only band that
-   changes it. It rules only its lower edge, in `border-strong-01` against the
-   `subtle-01` between rows, so the heading underlines the drivers it names.
-   Nothing rules its top: between bands the last row above already draws its
-   own rule, and the first heading meets the column header, which draws none
-   under itself, as Carbon's table header does not. */
+   changes it. It draws no rule at all: five of them down a narrow column read
+   as five tables rather than one list, and the space above each heading
+   separates the bands on its own. `label-01` at the heading weight, in helper
+   text, keeps it quieter than a driver's name, which is what the roster is
+   read for. */
 .scheduler-avail__band {
   grid-column: 1 / -1;
-  border-block-end: 1px solid var(--rux-border-strong-01);
-  /* More space above the label than below, so it sits with the band it names
-     and keeps the heading inside a driver row's height. */
-  padding: var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-01);
+  /* The space above is what separates one band from the next, so it is the
+     room a rule used to take; below, only enough to hold the label off its
+     first driver. */
+  padding: var(--rux-spacing-04) var(--rux-spacing-03) var(--rux-spacing-01);
   background: var(--rux-layer);
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-heading-compact-01-font-size);
+  color: var(--rux-text-helper);
+  font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  letter-spacing: var(--rux-label-01-letter-spacing);
   line-height: 1.2;
 }
 

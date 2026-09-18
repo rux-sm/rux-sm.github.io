@@ -540,6 +540,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
 .scheduler-week--no-notes .scheduler-bar__warn--dest { display: flex; }
+/* The reference and the marks travel together at the destination row's end:
+   the first of the two takes the row's free space, so the other sits beside it
+   rather than at the far side of the row. */
+.scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
+.scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__warn { margin-inline-start: 0; }
 /* Every mark on a bar is drawn the same way: a fill in its own colour and
    nothing around it. A mark whose colour is the bar's own colour loses its
    edges and reads as a loose glyph, which rux chose over an outline on every
@@ -618,13 +623,15 @@ button.scheduler-row-head__num::after {
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 
-/* A double booking: a strip over the last row, in the error tokens. */
+/* A double booking: a strip over the last row, in the error tokens, with the
+   ink the marks already take on this same fill -- white in a light theme and
+   dark in a dark theme, where white does not read on it. */
 .scheduler-bar__conflict {
   position: absolute; inset-inline: 0; inset-block-end: 0;
   block-size: var(--scheduler-row-h);
   padding-inline: var(--rux-spacing-03);
   background: var(--rux-support-error);
-  color: var(--rux-text-on-color);
+  color: var(--rux-text-inverse);
   display: flex; align-items: center; gap: var(--rux-spacing-02);
   white-space: nowrap; overflow: hidden;
 }

@@ -570,9 +570,12 @@
     const plans = boxes.map(box => {
       const row = box.parentElement;
       if (!box.getBoundingClientRect().width) return null;
-      // What the row leaves once everything before the marks has given way to
-      // nothing: its width, less the gap each of those still takes.
-      const room = row.clientWidth - [...row.children].indexOf(box) * rowGap;
+      /* What the row leaves once everything before the marks has given way to
+         nothing: its width, less the gap each of those still takes, less the
+         leg reference, which is `flex: none` and so gives way to nothing. */
+      const ref = row.querySelector('.scheduler-bar__ref');
+      const room = row.clientWidth - [...row.children].indexOf(box) * rowGap
+        - (ref ? ref.getBoundingClientRect().width : 0);
       const total = box.children.length - 1;
       const fits = Math.floor((room + gap) / (chipW + gap));
       return fits < total ? { box, total, show: Math.max(1, fits) } : null;

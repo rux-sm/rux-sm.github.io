@@ -572,10 +572,11 @@
     { role: 'relief-end', label: 'Relief end', icon: '#i-channels', box: '0 0 32 32' },
   ];
   /* The five states `trip_driver_statuses` holds, and the tone each paints.
-     Off is grey rather than no disc at all: it is the first step of the run,
-     the trip still to send, not the absence of one. */
+     Not sent is grey rather than no disc at all: it is the first step of the
+     run, not the absence of one. Its stored value stays `off`, which is what
+     rux-ui writes. */
   const DRIVER_STATUSES = [
-    { value: 'off', label: 'Off', tone: 'off' },
+    { value: 'off', label: 'Not sent', tone: 'off' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'error' },
     { value: 'pending-response', label: 'Pending response', tone: 'warning' },
     { value: 'confirmed', label: 'Confirmed', tone: 'success' },
@@ -636,14 +637,14 @@
   };
 
   /* A crew member in words, for the tooltip and the bar's label: the role, the
-     name, and a status other than Off with who set it and when. */
+     name, and a status other than Not sent with who set it and when. */
   function crewText(c) {
     if (c.needed) return `${c.label} needed`;
     const parts = [c.label, c.who ? (c.who.name || c.who.short_name) : 'Unknown driver'];
     const { value, label } = c.status;
-    // Off names itself and stops there: nobody set it, so there is no who or
-    // when to give. It still says its name, because it now has a disc of its
-    // own and a reader hovering grey is asking what grey means.
+    // Not sent names itself and stops there: nobody set it, so there is no
+    // who or when to give. It still says its name, because it has a disc of
+    // its own and a reader hovering grey is asking what grey means.
     if (value === 'off') {
       parts.push(label);
     } else {
@@ -1639,7 +1640,7 @@
     && !seatFilled(b.seats.driver);
 
   // `active_roles` as rux-ui writes it: the driver first, then each seat that
-  // is on, with its status after a colon unless it is Off.
+  // is on, with its status after a colon unless it is Not sent.
   const activeRolesValue = bus => ROLES
     .filter(r => r.role === 'driver' || bus.seats[r.role].on)
     .map(r => (bus.seats[r.role].status !== 'off' ? `${r.role}:${bus.seats[r.role].status}` : r.role));
@@ -2244,7 +2245,7 @@
       t.dataset.fleetField === 'reportTime' ? (t.value || null) : (t.value.trim() || null);
     refreshDirty();
   });
-  // A pick sets the bus or the driver; a new driver starts at Off.
+  // A pick sets the bus or the driver; a new driver starts at Not sent.
   panelFleet?.addEventListener('rux:listbox-selected', e => {
     const wrap = e.target.closest?.('.rux--list-box__wrapper');
     const { bus } = fleetBus(wrap);

@@ -591,7 +591,7 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--success { background: var(--rux-support-success); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--error { background: var(--rux-support-error); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--warning { background: var(--rux-support-warning); color: var(--scheduler-on-warning); }
-/* Off takes the neutral tag pair, not a support colour: nothing has happened
+/* Not sent takes the neutral tag pair, not a support colour: nothing has happened
    to this driver yet, so the disc has to be the quietest of the four and say
    nothing about how the trip is going. */
 .scheduler-crew__mark--off { background: var(--rux-tag-background-gray); color: var(--rux-tag-color-gray); }

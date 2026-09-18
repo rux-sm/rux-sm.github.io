@@ -238,6 +238,25 @@
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
 }
+/* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
+   draws it in the support yellow, which is a light colour: on the inverse slab
+   the dark themes give a notification it reads 1.5 to 2.7 against its own
+   background, and on the pale tint the light themes give the low-contrast
+   variant, 1.5. A mark needs 3. Mixing the theme's own yellow 60% into its own
+   dark ink keeps the hue and clears it everywhere, 3.46 at worst, and invents
+   no colour. The ink differs by theme only because it is whichever of
+   text-inverse and text-primary is the dark one there. The variants left out
+   already pass: their ground is dark, and the light yellow is right on it. */
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist"], [data-theme="linear"], [data-theme="spotify"])
+  :is(.rux--inline-notification, .rux--toast-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
+  :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
+  fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-inverse));
+}
+:is([data-theme="white"], [data-theme="g10"])
+  :is(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
+  :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
+  fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-primary));
+}
 /* ANT-DARK'S NOTIFICATIONS. Ant draws an alert as a tint of its own hue inside
    a 1px border of it, with the text in the page's own ink. Carbon draws one as
    an inverse slab with a 3px bar down one side, which on a dark page is the

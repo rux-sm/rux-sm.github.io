@@ -92,12 +92,16 @@ that make share links.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] Stop the last client reading with the key alone. One browser, through a
-      single proxy address, still reads `trips`, `trip_passengers`,
-      `trip_documents`, `trip_payments`, `trip_ticket_options` and `drivers`
-      and writes `notifications` with no session, while the staff-only driver
-      status function already refuses it; the edge logs carry its hours and
-      paths, and the close cannot start until it stops.
+- [ ] Reload the one Mac still running rux-ui from before sign-in shipped. It
+      is a Safari that never asks `/auth/v1` or `my_staff_profile` at all, so
+      it has no sign-in screen to show: it reads trips, passengers, ticket
+      options, documents, payments and drivers, writes notifications and holds
+      a realtime channel, all with the key alone, through a working day. Its
+      cached `supabase-js` is 2.112.4 where every signed-in client is 2.116.0.
+      rux-ui's Worker hides the browser's address, so the Worker's own logs,
+      not the database's, name the machine.
+- [ ] Pin rux-ui's `supabase-js` to one version instead of the floating `@2`,
+      so a cached copy cannot leave a browser on an old client for months.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
       dashboard. No page calls `signInAnonymously` any more, and a migration
       then deletes the twelve anonymous users, whose theme rows go with them.

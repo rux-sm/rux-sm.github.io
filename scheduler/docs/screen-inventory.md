@@ -70,7 +70,7 @@ Design account panel replaces it).
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |
 | Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
-| Compact board | keep | Where the schedule cannot show three readable days -- a phone, or a narrow window with panels open -- it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying its marks and no writing, however long it is; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on, after the roster has stepped aside. |
+| Compact board | keep | Where the schedule cannot show three readable days -- a phone, or a narrow window with panels open -- it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying two lines and no icons, the destination and the departure, the same on every block however long; a double booking is a band across its foot; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on, after the roster has stepped aside. |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
 the database. Dropped: the day column width slider, the second bar size, the

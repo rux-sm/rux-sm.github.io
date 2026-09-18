@@ -446,6 +446,7 @@ button.scheduler-row-head__num::after {
 /* One of the two time forms shows; data.js picks the short one on a bar too
    narrow for the long. */
 .scheduler-bar__time > .scheduler-bar__time-short,
+.scheduler-bar__time > .scheduler-bar__time-dep,
 .scheduler-bar__time--short > .scheduler-bar__time-long { display: none; }
 /* Proportional digits, so the narrowest bar has room for the widest times. */
 .scheduler-bar__time--short > .scheduler-bar__time-short { display: inline; font-variant-numeric: normal; }
@@ -1411,42 +1412,39 @@ button.scheduler-row-head__num::after {
   font-size: var(--rux-heading-compact-01-font-size);
 }
 
-/* A block carries its colour and its marks and no writing, however long it is:
-   a five-day block has room for a destination and draws none, because every
-   block reading the same way is what makes the week legible at a glance. */
-.scheduler-page[data-board="compact"] .scheduler-bar {
-  padding: 0;
-  display: flex;
-  align-items: center;
+/* A block says which trip it is, in two lines and no icons: the destination,
+   and the time the bus leaves. The same two on every block at every span and
+   every width, because a block that reads differently from its neighbour is
+   what makes a week hard to scan. Beside a destination this short an icon
+   would take the destination, and the marks are what the trip is opened for;
+   the colour is still the trip's own, and a double booking still shows.
+
+   A bar's own children only: the docked bar below clones these rows onto its
+   head, where the rest of them are the whole point. */
+.scheduler-page[data-board="compact"] .scheduler-bar { padding: var(--rux-spacing-02); }
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__client,
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__contact,
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__notes,
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__drivers { display: none; }
+/* The marks and the leg reference go with them, so the destination has the
+   whole line to ellipse into. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__ref,
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__warn { display: none; }
+/* The departure alone, in place of whichever form `fitTimes` chose: a block
+   this narrow has room for one time. */
+.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-long,
+.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-short { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-dep {
+  display: inline;
+  /* Proportional digits, so the narrowest block has room for the widest time. */
+  font-variant-numeric: normal;
 }
-/* A bar's own children only: the docked bar below clones these rows onto its
-   head, where they are the whole point and have the width for it. */
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__row { display: none; }
-/* The marks ride the destination row's copy of them, which every bar carries
-   and which app.css otherwise shows only when the notes row is off. The row
-   itself stays so the box has a line to sit on; its writing goes. */
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest {
-  display: flex;
-  /* No gap: `fitMarks()` prices one in for each child before the marks, and a
-     hidden child draws none, so leaving it set would cost the block two chips
-     of room it has. */
-  column-gap: 0;
-  inline-size: 100%;
-}
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > span:not(.scheduler-bar__warn) { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__warn--dest {
-  display: flex;
-  /* Centred rather than pushed right: with no writing beside them the marks
-     are the whole block. */
-  margin-inline: auto;
-}
-/* The double-booked strip keeps its colour and its glyph and gives up its
-   words, which do not fit in 40px; the strip itself is what carries the
-   warning. `font-size: 0` because the words are a bare text node with no
-   element of their own to hide, and the glyph is sized in its own attributes. */
+/* A double booking becomes a band across the block's foot rather than a strip
+   with words in it: 44px holds the two lines and no third, and the error
+   colour is what carries the warning. The bar's own label still says it. */
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__conflict {
-  justify-content: center;
-  padding-inline: 0;
+  block-size: var(--rux-spacing-02);
+  padding: 0;
   font-size: 0;
 }
 

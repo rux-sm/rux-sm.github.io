@@ -847,8 +847,14 @@
       }
       return span;
     };
+    /* A third form, for the compact board: one line has room for one time, and
+       the one worth reading at a glance is when the bus leaves. A leg with only
+       a return says so, and a leg with neither counts its days. */
+    const depAlone = hhmm(leg.depart, true), backAlone = hhmm(leg.back, true);
+    const whenDep = el('span', 'scheduler-bar__time-dep',
+      depAlone || (backAlone ? `Ret ${backAlone}` : legDays > 1 ? `${legDays} days` : ''));
     const when = times(false), whenShort = times(true);
-    addRow(bar, 'scheduler-bar__time', when, whenShort);
+    addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
 
     // The trip's note on one line, cut with an ellipsis; the whole of it on
     // hover. The marks sit at its end, and the note gives way to them.

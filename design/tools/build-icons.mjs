@@ -102,6 +102,13 @@ const ICONS = [
   // other marks on that bar; the filled and directional variants say a call is
   // happening, which is not what a missing number means.
   'phone',
+  // MONEY, asked for by Scheduler for its trip bar's payment mark. Every
+  // candidate was drawn at the 12px the bar's chips use and looked at:
+  // `receipt`, `purchase` and `money` collapse into a lined rectangle at that
+  // size, next to chips that are already rectangles, and `order-details` and
+  // `document--tasks` read as a person and as a tick. `currency--dollar` is a
+  // single dollar sign, which stays a dollar sign at 12 and means one thing.
+  'currency--dollar',
 ];
 
 const symbols = [], missing = [], from = {};

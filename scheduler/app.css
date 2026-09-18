@@ -1430,7 +1430,22 @@ button.scheduler-row-head__num::after {
 
    A bar's own children only: the docked bar below clones these rows onto its
    head, where the rest of them are the whole point. */
-.scheduler-page[data-board="compact"] .scheduler-bar { padding: var(--rux-spacing-02); }
+/* A block is 34px of writing at the day's floor, and "12:30p" needs 41px of it
+   at label-01, so every ten, eleven and twelve o'clock was cut to "12:…" —
+   worse than no time at all. Three things buy the 7px back and none is enough
+   alone: 2px of inline padding instead of 4px, label-01's tracking, and a
+   step down to 11px. The type is set here rather than on the pane because the
+   docked sheet's head sits inside the pane too and has the room for label-01;
+   only a block is short of width. The row keeps label-01's 16px line, so the
+   block is still 44px and still a tap. 11px is under Carbon's smallest step,
+   which is worth leaving for a departure that can be read at all. */
+.scheduler-page[data-board="compact"] .scheduler-bar {
+  padding: var(--rux-spacing-02) var(--rux-spacing-01);
+  /* 0px, not 0: a bare zero is not a length once it has been through a custom
+     property, and the declaration would be dropped for `normal`. */
+  --scheduler-fs: 0.6875rem;
+  --scheduler-ls: 0px;
+}
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__client,
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__contact,
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__notes,

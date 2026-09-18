@@ -738,9 +738,9 @@
                       </div>
                     </div>
                         </div>
-            </div>
-          </div>
-          <!-- The docked shortcut bar, as the compact board draws it. In the app it
+                      <!-- The docked shortcut bar, as the compact board draws it. It sits inside
+               the pane because that is where data.js puts it, and where the type and
+               row-height tokens it reads are defined. In the app it
                          is fixed to the window's bottom edge; here it is in the flow, so the
                          page can show it beside the board it belongs to. Its head is a copy
                          of the selected trip's own rows, which is how data.js builds it. -->
@@ -753,6 +753,8 @@
                         <div class="scheduler-bar__row scheduler-bar__notes"><span>Overnight drive, two drivers</span></div>
                         <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Baker · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Baker</span></span><span class="scheduler-crew scheduler-crew--declined" title="Relief start · Silva · Declined by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span><span class="scheduler-crew__name">Silva</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
                       </div>
+            </div>
+          </div>
                       <button type="button" class="scheduler-bar-shortcut" aria-label="Open trip" title="Open trip"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-launch"/></svg></button>
                       <button type="button" class="scheduler-bar-shortcut" aria-label="Open itinerary" title="Open itinerary"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></button>
                       <button type="button" class="scheduler-bar-shortcut scheduler-bar-shortcut--empty" aria-label="Add a shortcut" title="Add a shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg></button>

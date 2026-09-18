@@ -63,10 +63,12 @@
   `notification-background-error`, `-success`, `-info` and `-warning` are
   the four of 62 where g90 and g100 differ, and in each theme the value
   is that theme's OWN `layer-01` — g90's #393939 and g100's #262626 are
-  exactly their own layer-01 — so each block here takes its own instead:
-  geist #0a0a0a, linear #141419, ant-dark #141414, spotify #181818. An
-  inline notification sits on the page's own raised surface, which is
-  what these four themes each redefine.
+  exactly their own layer-01 — so geist #0a0a0a, linear #141419 and
+  spotify #181818 each take their own. An inline notification sits on the
+  page's own raised surface, which is what those themes redefine.
+  ANT-DARK IS THE EXCEPTION: it draws a notification as Ant draws an alert,
+  a tint of the kind's own hue inside a border of it, so its four are Ant's
+  own alert fills rather than one neutral surface.
 
   ONE VALUE IS CARRIED THROUGH AS A REFERENCE, not flattened:
   `notification-action-hover` is `var(--rux-layer-hover)` in Carbon's
@@ -907,12 +909,12 @@
   --rux-tag-hover-warm-gray: #303030;
   --rux-tag-border-warm-gray: #424242;
 
-  /* notification (component tokens — Carbon's own dark set;
-     the four surface backgrounds take THIS theme's layer-01) */
-  --rux-notification-background-error: #141414;
-  --rux-notification-background-success: #141414;
-  --rux-notification-background-info: #141414;
-  --rux-notification-background-warning: #141414;
+  /* notification (component tokens — Carbon's own dark set; the four surface
+     backgrounds are Ant Design's own dark alert fills, one per kind) */
+  --rux-notification-background-error: #2a1215;
+  --rux-notification-background-success: #162312;
+  --rux-notification-background-info: #111a2c;
+  --rux-notification-background-warning: #2b2111;
   --rux-notification-action-hover: var(--rux-layer-hover);
   --rux-notification-action-tertiary-inverse: #0f62fe;
   --rux-notification-action-tertiary-inverse-active: #002d9c;

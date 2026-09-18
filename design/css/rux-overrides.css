@@ -238,6 +238,65 @@
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
 }
+/* ANT-DARK'S NOTIFICATIONS. Ant draws an alert as a tint of its own hue inside
+   a 1px border of it, with the text in the page's own ink. Carbon draws one as
+   an inverse slab with a 3px bar down one side, which on a dark page is the
+   brightest thing on screen. The four tints are the notification-background
+   tokens, set to Ant's own alert fills in rux-theme.css; the borders and the
+   glyphs are the support colours this theme already carries. */
+[data-theme="ant-dark"] .rux--inline-notification,
+[data-theme="ant-dark"] .rux--toast-notification {
+  border: 1px solid transparent;
+  color: var(--rux-text-primary);
+}
+[data-theme="ant-dark"] .rux--inline-notification .rux--inline-notification__close-icon,
+[data-theme="ant-dark"] .rux--toast-notification .rux--inline-notification__close-icon {
+  fill: var(--rux-icon-primary);
+}
+[data-theme="ant-dark"] .rux--inline-notification--error,
+[data-theme="ant-dark"] .rux--toast-notification--error {
+  background: var(--rux-notification-background-error);
+  border-color: var(--rux-support-error);
+}
+[data-theme="ant-dark"] .rux--inline-notification--error .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--error .rux--toast-notification__icon {
+  fill: var(--rux-support-error);
+}
+[data-theme="ant-dark"] .rux--inline-notification--success,
+[data-theme="ant-dark"] .rux--toast-notification--success {
+  background: var(--rux-notification-background-success);
+  border-color: var(--rux-support-success);
+}
+[data-theme="ant-dark"] .rux--inline-notification--success .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--success .rux--toast-notification__icon {
+  fill: var(--rux-support-success);
+}
+[data-theme="ant-dark"] .rux--inline-notification--info,
+[data-theme="ant-dark"] .rux--inline-notification--info-square,
+[data-theme="ant-dark"] .rux--toast-notification--info,
+[data-theme="ant-dark"] .rux--toast-notification--info-square {
+  background: var(--rux-notification-background-info);
+  border-color: var(--rux-support-info);
+}
+[data-theme="ant-dark"] .rux--inline-notification--info .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--inline-notification--info-square .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--info .rux--toast-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--info-square .rux--toast-notification__icon {
+  fill: var(--rux-support-info);
+}
+[data-theme="ant-dark"] .rux--inline-notification--warning,
+[data-theme="ant-dark"] .rux--inline-notification--warning-alt,
+[data-theme="ant-dark"] .rux--toast-notification--warning,
+[data-theme="ant-dark"] .rux--toast-notification--warning-alt {
+  background: var(--rux-notification-background-warning);
+  border-color: var(--rux-support-warning);
+}
+[data-theme="ant-dark"] .rux--inline-notification--warning .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--inline-notification--warning-alt .rux--inline-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--warning .rux--toast-notification__icon,
+[data-theme="ant-dark"] .rux--toast-notification--warning-alt .rux--toast-notification__icon {
+  fill: var(--rux-support-warning);
+}
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's
    curve: the header's actions, the side panel's close and action row, and a

@@ -222,7 +222,7 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 63 blocks · 2
 | `search` | search | 1 | 3 | 1 | 0 | form-controls | yes |
 | `select` | form, select | — | 5 | — | — | form-controls | no |
 | `shape-indicator` | shape-indicator | — | 13 | — | — | — | no |
-| `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | copy-button, popover | no |
+| `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | copy-button, overlay, popover | no |
 | `skeleton` | breadcrumb, button, link, skeleton-styles | — | 13 | — | — | — | no |
 | `slider` | form, slider, text-input | — | 5 | — | — | list-box | no |
 | `spacing` | — | — | 0 | — | — | — | no |

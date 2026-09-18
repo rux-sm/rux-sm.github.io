@@ -289,6 +289,43 @@
                       to the roomier side and let it scroll inside itself.
                       Without it the surface overhangs below, which is what the
                       overflow menu has always done. */
+  /* WHERE A `fixed` BOX IS ACTUALLY MEASURED FROM. It is the viewport only
+     while nothing above it establishes a containing block, and a transform, a
+     filter, a backdrop filter, a perspective, `will-change: transform`, paint
+     or layout containment, or a container type all do. Carbon's side panel is
+     one of them: `.rux--side-panel` carries `transform: translateX(...)` and
+     keeps it at `translateX(0)` while open, so viewport coordinates written
+     inside it land low and right by the panel's own offset. Measured
+     2026-09-17 on a panel at 70,40: the menu opened 42px low and 41px right,
+     which in the scheduler's full-height trip panel put it off the screen
+     entirely and read as a list that would not open.
+
+     The clip is still escaped, which is the whole point of being fixed: the
+     element that scrolls is not the one that carries the transform.
+     `.rux--side-panel--scrolls` is an inner element, so a box laid out against
+     the panel clears the scroller inside it.
+
+     The containing block is that ancestor's PADDING box, so its border is
+     inside it and comes off the origin too. */
+  const fixedOrigin = surface => {
+    for (let p = surface.parentElement; p; p = p.parentElement) {
+      const cs = getComputedStyle(p);
+      const contain = (cs.contain || '').split(/[\s,]+/);
+      if (cs.transform !== 'none' || cs.perspective !== 'none' || cs.filter !== 'none'
+        || (cs.backdropFilter && cs.backdropFilter !== 'none')
+        || (cs.willChange || '').includes('transform')
+        || (cs.containerType && cs.containerType !== 'normal')
+        || contain.some(v => v === 'paint' || v === 'layout' || v === 'strict' || v === 'content')) {
+        const r = p.getBoundingClientRect();
+        return {
+          top: r.top + (parseFloat(cs.borderBlockStartWidth) || 0),
+          left: r.left + (parseFloat(cs.borderInlineStartWidth) || 0),
+        };
+      }
+    }
+    return { top: 0, left: 0 };
+  };
+
   const anchorTo = (surface, to, opts = {}) => {
     if (!surface || !to) return;
     if (getComputedStyle(surface).position !== 'fixed') return;
@@ -312,8 +349,11 @@
       ? (below >= above ? t.bottom : Math.max(0, t.top - box.height))
       : (fitsBelow || !fitsAbove ? t.bottom : t.top - box.height);
     const left = Math.max(0, Math.min(t.left, window.innerWidth - box.width));
-    surface.style.insetBlockStart = `${Math.round(top)}px`;
-    surface.style.insetInlineStart = `${Math.round(left)}px`;
+    /* Written in the containing block's coordinates, which are the viewport's
+       only when nothing above the surface establishes one. See fixedOrigin. */
+    const o = fixedOrigin(surface);
+    surface.style.insetBlockStart = `${Math.round(top - o.top)}px`;
+    surface.style.insetInlineStart = `${Math.round(left - o.left)}px`;
   };
   const unanchor = surface => {
     surface.style.insetBlockStart = '';

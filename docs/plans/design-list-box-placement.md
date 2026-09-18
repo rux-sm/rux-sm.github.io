@@ -11,8 +11,8 @@ list. The menu was `position: absolute` inside its field, so the scheduler's
 trip panel cut it off at the panel's edge — measured 80px past it — and the
 options beyond the cut could be neither seen nor reached.
 
-The placement is built. What is left is rux seeing it in the running app,
-which needs signing in, and one surface that was deliberately not changed.
+The placement is built and the contact search is confirmed working in the
+signed-in app. What is left is the other two pickers and a phone.
 
 ## Decisions
 
@@ -43,6 +43,6 @@ None.
 
 ## Tasks
 
-- [ ] rux opens the scheduler's trip panel signed in and checks the contact
-      search, the driver picker and the bus picker near the bottom of a long
-      panel, on the desktop and on a phone.
+- [ ] rux checks the driver picker and the bus picker near the bottom of a long
+      trip panel, and the contact search again on a phone. The contact search on
+      the desktop is confirmed working.

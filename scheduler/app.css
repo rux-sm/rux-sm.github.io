@@ -573,11 +573,11 @@ button.scheduler-row-head__num::after {
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
-/* The role icon. Off is the bar's own text colour on no fill; a status is a
-   disc in its support colour. On green and red the icon is the inverse text
-   colour: white in a light theme, where white clears 3:1 on both, and dark in
-   a dark theme, where white does not. On amber it is dark in every theme, as
-   the warning chips are. */
+/* The role icon on a disc, one per status: grey still to send, amber sent and
+   waiting, green confirmed, red declined or nobody assigned. On green and red
+   the icon is the inverse text colour: white in a light theme, where white
+   clears 3:1 on both, and dark in a dark theme, where white does not. On amber
+   it is dark in every theme, as the warning chips are. */
 .scheduler-crew__mark {
   display: flex;
   flex: none;
@@ -591,8 +591,12 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--success { background: var(--rux-support-success); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--error { background: var(--rux-support-error); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--warning { background: var(--rux-support-warning); color: var(--scheduler-on-warning); }
-/* The same hairline the chips carry, on the discs that have a fill to keep.
-   Off has none, so it stays a bare glyph and is left out. */
+/* Off takes the neutral tag pair, not a support colour: nothing has happened
+   to this driver yet, so the disc has to be the quietest of the four and say
+   nothing about how the trip is going. */
+.scheduler-crew__mark--off { background: var(--rux-tag-background-gray); color: var(--rux-tag-color-gray); }
+/* The same hairline the chips carry, on every disc. */
+.scheduler-crew__mark--off,
 .scheduler-crew__mark--success,
 .scheduler-crew__mark--error,
 .scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px currentColor; }
@@ -1274,14 +1278,14 @@ button.scheduler-row-head__num::after {
    rows, so it is the app's own. It spans every column, since a band covers the
    name and the whole week, and it sits on the grid's own `--rux-layer`, so the
    roster has one surface and the column header above is the only band that
-   changes it. Its rules do the separating instead: `border-strong-01` on top,
-   where one band ends and the next begins and, on the first, where the column
-   header ends; `border-subtle-01` underneath, the same rule the rows draw, so
-   the heading closes against the first driver it names. */
+   changes it. It rules only its lower edge, in `border-strong-01` against the
+   `subtle-01` between rows, so the heading underlines the drivers it names.
+   Nothing rules its top: between bands the last row above already draws its
+   own rule, and the first heading meets the column header, which draws none
+   under itself, as Carbon's table header does not. */
 .scheduler-avail__band {
   grid-column: 1 / -1;
-  border-block-start: 1px solid var(--rux-border-strong-01);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  border-block-end: 1px solid var(--rux-border-strong-01);
   /* More space above the label than below, so it sits with the band it names
      and keeps the heading inside a driver row's height. */
   padding: var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-01);

@@ -1272,22 +1272,20 @@ button.scheduler-row-head__num::after {
 
 /* The heading over each priority band. Carbon has no heading for a run of grid
    rows, so it is the app's own. It spans every column, since a band covers the
-   name and the whole week, and it carries the header band's surface, type and
-   colour, so the roster has one kind of heading rather than two. As on that
-   header, the surface change is what separates it from the row below, so it
-   draws no rule there; a rule under a heading would tie it to the band above
-   and read as that band's footer. Every band rules its own top edge in
-   `border-strong-01`, against the `subtle-01` rules between rows. The first
-   band needs that rule as much as the rest: it meets the header band, which
-   draws no rule under itself and now shares this surface, so without one the
-   two run together as a single block. */
+   name and the whole week, and it sits on the grid's own `--rux-layer`, so the
+   roster has one surface and the column header above is the only band that
+   changes it. Its rules do the separating instead: `border-strong-01` on top,
+   where one band ends and the next begins and, on the first, where the column
+   header ends; `border-subtle-01` underneath, the same rule the rows draw, so
+   the heading closes against the first driver it names. */
 .scheduler-avail__band {
   grid-column: 1 / -1;
   border-block-start: 1px solid var(--rux-border-strong-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
   /* More space above the label than below, so it sits with the band it names
      and keeps the heading inside a driver row's height. */
   padding: var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-01);
-  background: var(--rux-layer-accent-01);
+  background: var(--rux-layer);
   color: var(--rux-text-secondary);
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);

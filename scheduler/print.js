@@ -10,6 +10,7 @@
      name     what the hub and the viewer's head call it
      binds    'assignment' | 'assignment+seat' | 'trip' | 'week' | null
      marks    the column a print sets, or null
+     page     the one paper it is printed on, or left out to fit any paper
      copies   the subjects one Print all covers, given what it is bound to
      render   (subject) -> an element
 
@@ -345,9 +346,9 @@
       blurb: 'What dispatch knows, printed; the day-of fields blank for the driver.',
       binds: 'assignment+seat',
       marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat' },
-      // @page is a property of the document, not of an element, so a form's
-      // paper cannot be a rule in print.css beside its layout: the page writes
-      // this in when it draws the form, and only one form draws at a time.
+      /* The one form here that names its paper, because it is printed on a
+         particular stock rather than on whatever is in the tray. A form that
+         leaves this out fits the paper the dialog is set to. */
       page: 'Letter portrait',
       layouts: [
         { id: 'standard', name: 'Standard' },
@@ -422,9 +423,16 @@
     sheet.replaceChildren(box);
   };
 
-  /* The paper the form asks for. It only asks: a destination's own paper size
-     stands where the two disagree, so every form has to be right on the paper
-     it is sent to rather than depend on winning that argument. */
+  /* The paper. A form that names one is asking, not deciding: the paper chosen
+     in the print dialog stands where the two disagree, and nothing in CSS or
+     JavaScript can read which one that is. So a form names a size only when it
+     is printed on one particular stock; leaving it out is `size: auto`, which
+     is the browser's own default and means "whatever paper this is", and the
+     form then lays out to that sheet's width and flows onto as many of them as
+     it needs.
+
+     The margin is always zero, because it goes in the box model instead: a
+     print driver does not reliably honour an @page margin. */
   function setPaper(form) {
     let style = document.getElementById('scheduler-print-page');
     if (!style) {
@@ -432,7 +440,7 @@
       style.id = 'scheduler-print-page';
       document.head.appendChild(style);
     }
-    style.textContent = form?.page ? `@page { size: ${form.page}; margin: 0; }` : '';
+    style.textContent = `@page { ${form?.page ? `size: ${form.page}; ` : ''}margin: 0; }`;
   }
 
   let current = null; // { form, subject, copies, chosen, layout }

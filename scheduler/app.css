@@ -553,9 +553,14 @@ button.scheduler-row-head__num::after {
   background: var(--rux-support-success);
   color: var(--rux-text-inverse);
 }
-/* On an amber bar a warning chip would vanish into its own fill. The red and
-   green ones do not, so they keep their own edge. */
-.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error, .scheduler-bar__warn-chip--success) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+/* A chip standing on a bar of its own colour loses its edges and reads as a
+   loose glyph, so on those three hues it takes a ring inside its edge, in its
+   own glyph colour. Only the three matching pairs: every other hue differs
+   enough in hue alone, at every theme, which was checked by looking. A booked
+   hotel is excluded because it has no fill for the bar to swallow. */
+.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error, .scheduler-bar__warn-chip--success, .scheduler-bar__warn-chip--done),
+.scheduler-bar--red .scheduler-bar__warn-chip--error,
+.scheduler-bar--green .scheduler-bar__warn-chip--success { box-shadow: inset 0 0 0 1px currentColor; }
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {

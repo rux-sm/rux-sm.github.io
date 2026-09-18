@@ -28,6 +28,12 @@ the `quote_rates` and `quote_mileage_rates` tables, which only a staff session
 can read or change. `docs/quote-calculator.md` lists where it copies the
 spreadsheet's quirks.
 
+`print.html` is the forms this app fills in and prints. On its own it lists
+them; with a form named in the query it reads that form's subject and draws it,
+filled in. The driver envelope is the first, one copy per seat on a bus, in a
+standard and a multi-stop layout. `print.js` holds the registry every form is
+an entry in, and the page is served light because paper is.
+
 The pages in `share/` are for people without a log-in, who arrive by a link:
 `share/document.html` opens a trip document, and `share/maintenance.html`
 shows the maintenance crew two weeks of buses and the recent changes. Staff

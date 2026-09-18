@@ -1,0 +1,312 @@
+/* The forms this app fills in and prints: the hub that lists them, and the
+   paper each one is drawn on.
+
+   THE PAGE IS SERVED LIGHT. print.html carries data-theme="white", so every
+   --rux-* token already resolves to ink on paper and no second palette is
+   needed. rux-ui keeps a parallel --print-* set only because it prints out of
+   a g100 page; nothing here has a dark theme to escape.
+
+   NO BACKGROUND FILLS. Chrome's print dialog leaves Background graphics off
+   and nobody ticks it, so a header band or a tinted row prints as nothing.
+   Every division on a form is a rule, a border or weight. */
+
+/* ── The page itself ──────────────────────────────────────────────────── */
+
+/* The desk the paper lies on, a step darker than the sheet so the page's
+   edges show. On the white theme that is Carbon's own layer over background;
+   in print both go plain white and the distinction has done its job. */
+.scheduler-print {
+  min-height: 100vh;
+  background: var(--rux-layer-01);
+}
+
+/* The toolbar above the paper: the form's own controls, which travel with it
+   into a new tab where the viewer's toolbar cannot follow. Screen only. */
+.scheduler-print__bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+.scheduler-print__bar-title {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  margin-inline-end: auto;
+}
+
+.scheduler-print__sheet {
+  padding: var(--rux-spacing-05);
+}
+
+/* ── The paper ────────────────────────────────────────────────────────────
+   Fluid on screen: a form fills whatever box it is in, whether that is the
+   30rem viewer beside the board or a whole tab. rux-ui instead draws a
+   fixed-width card and scales it with a transform, a ResizeObserver and a
+   fit pass whose own comments record several rounds of clipping bugs. A form
+   that simply lays out to its container needs none of that.
+
+   On paper it takes its page size from @page and its margins from the box
+   model, because a print driver does not reliably honour an @page margin. */
+
+.scheduler-form {
+  max-width: 8.5in;
+  margin-inline: auto;
+  background: var(--rux-background);
+  color: var(--rux-text-primary);
+  padding: var(--rux-spacing-06);
+  box-sizing: border-box;
+}
+
+@media print {
+  /* Nothing on this page is chrome except the toolbar, so the blanket hide
+     rux-ui needs over the board is one rule here. */
+  .scheduler-print__bar { display: none; }
+  .scheduler-print__sheet { padding: 0; }
+  .scheduler-print,
+  .scheduler-form { background: #fff; }
+  .scheduler-form {
+    max-width: none;
+    margin: 0;
+    padding: 0.4in;
+  }
+}
+
+/* ── The envelope ─────────────────────────────────────────────────────────
+   The driver's paperwork: what dispatch knows printed, and the day-of fields
+   blank for the driver's pen. */
+
+.scheduler-envelope__head {
+  text-align: center;
+  border-block-end: 2px solid var(--rux-border-strong-01);
+  padding-block-end: var(--rux-spacing-03);
+}
+
+.scheduler-envelope__day {
+  font-size: var(--rux-heading-04-font-size);
+  font-weight: var(--rux-heading-04-font-weight);
+  line-height: var(--rux-heading-04-line-height);
+  margin: 0;
+}
+
+.scheduler-envelope__logo {
+  height: 2rem;
+  width: auto;
+  margin-block: var(--rux-spacing-02);
+}
+
+.scheduler-envelope__line {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  margin: 0;
+}
+
+.scheduler-envelope__section {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  text-align: center;
+  margin: var(--rux-spacing-03) 0 0;
+}
+
+/* One row of cells, each cell a label over its value or over the rule the
+   driver writes on. */
+.scheduler-envelope__row {
+  display: grid;
+  gap: var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  padding-block: var(--rux-spacing-03);
+}
+
+.scheduler-envelope__row[data-cells="1"] { grid-template-columns: 1fr; }
+.scheduler-envelope__row[data-cells="2"] { grid-template-columns: 1fr 1fr; }
+.scheduler-envelope__row[data-cells="3"] { grid-template-columns: 1fr 1fr 1fr; }
+
+.scheduler-envelope__label {
+  display: block;
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.scheduler-envelope__value {
+  display: block;
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  min-height: 1.25rem;
+}
+
+/* A field the driver fills in: the rule is the whole point, so it keeps its
+   height when it is empty. */
+.scheduler-envelope__blank {
+  display: block;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  height: 1.25rem;
+}
+
+/* The ELD, card and cost lines. Two columns of label-and-answer, because the
+   office reads down one side and the driver writes down the other. */
+.scheduler-envelope__tally {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--rux-spacing-06);
+  padding-block: var(--rux-spacing-03);
+}
+
+.scheduler-envelope__tally-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+  padding-block: var(--rux-spacing-02);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+
+.scheduler-envelope__tally-label { white-space: nowrap; }
+.scheduler-envelope__tally-fill { flex: 1; }
+
+/* A box the driver ticks. Drawn as a border, never a fill, so it survives
+   Background graphics being off. */
+.scheduler-envelope__box {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid var(--rux-border-strong-01);
+  margin-inline-end: var(--rux-spacing-02);
+  vertical-align: -1px;
+}
+
+.scheduler-envelope__choice {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: var(--rux-spacing-04);
+}
+
+.scheduler-envelope__notes { padding-block-start: var(--rux-spacing-03); }
+
+.scheduler-envelope__needs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-02) var(--rux-spacing-05);
+  padding-block-start: var(--rux-spacing-02);
+}
+
+.scheduler-envelope__need {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+
+/* A need whose number the office writes in, the fuel card's. */
+.scheduler-envelope__need-fill {
+  display: inline-block;
+  min-width: 6rem;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+}
+
+/* The multi-stop layout's log, in place of the single destination. */
+.scheduler-envelope__log {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  margin-block-start: var(--rux-spacing-03);
+}
+
+.scheduler-envelope__log th,
+.scheduler-envelope__log td {
+  border: 1px solid var(--rux-border-subtle-01);
+  padding: var(--rux-spacing-03) var(--rux-spacing-03);
+  text-align: start;
+}
+
+.scheduler-envelope__log th {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  text-transform: uppercase;
+}
+
+.scheduler-envelope__log td { height: 1.5rem; }
+
+/* Every copy after the first starts a new sheet: Print all is one press and
+   one stack of paper, one envelope per driver. */
+.scheduler-form + .scheduler-form { margin-block-start: var(--rux-spacing-06); }
+
+@media print {
+  .scheduler-form + .scheduler-form {
+    break-before: page;
+    margin-block-start: 0;
+  }
+}
+
+/* ── The hub ──────────────────────────────────────────────────────────────
+   Design compiles no type classes -- a Carbon page sets its type from the
+   tokens in its own stylesheet -- so the tiles' type is this page's own. */
+
+.scheduler-print__tile-name {
+  font-size: var(--rux-productive-heading-01-font-size);
+  font-weight: var(--rux-productive-heading-01-font-weight);
+  line-height: var(--rux-productive-heading-01-line-height);
+  margin: 0;
+}
+
+.scheduler-print__tile-blurb {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  color: var(--rux-text-secondary);
+  margin: var(--rux-spacing-02) 0 0;
+}
+
+.scheduler-print__tile-need {
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  color: var(--rux-text-helper);
+  margin: var(--rux-spacing-02) 0 0;
+}
+
+/* As many tiles as fit, each wide enough for a form's name and its line of
+   explanation. The list is short and grows one entry at a time, so it wants
+   the room rather than a fixed column count. */
+/* [hidden] is a UA rule of the lowest weight, so any display here outranks it
+   and the hub would stay on screen behind a form. */
+.scheduler-print__hub[hidden] { display: none; }
+
+.scheduler-print__hub {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--rux-spacing-05);
+  padding: var(--rux-spacing-05);
+  align-items: start;
+}
+
+.scheduler-print__hub .rux--tile { text-decoration: none; }

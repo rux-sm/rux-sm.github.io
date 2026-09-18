@@ -39,13 +39,20 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **It is served at `data-theme="white"`,** so `--rux-*` tokens already resolve
   to ink on paper. rux-ui needed its parallel `--print-*` palette only because
   it printed out of a `g100` page.
-- **On screen a form is fluid; on paper it is Letter.** rux-ui draws a
+- **On screen a form is fluid; on paper it is its own page size.** rux-ui draws a
   fixed-width card and scales it with a transform, a `ResizeObserver` and a
   `fitToHeight` whose own comments record several rounds of clipping bugs. A
   form that fills its viewport on screen and takes `@page` size under
   `@media print` needs none of that machinery.
 - **Margins go in the box model, not in `@page`,** because print drivers do not
   reliably honour an `@page` margin, which rux-ui measured and recorded.
+- **A form prints with no background fills.** Chrome leaves Background graphics
+  off and nobody ticks it, so a header band or a tinted row simply vanishes on
+  paper; every division is a rule, a border or weight instead. This is where
+  rux-ui's `--print-fill` would have gone quietly missing.
+- **`@page` asks, it does not decide.** The destination's own paper size stands
+  where it disagrees, so a form has to be right on the paper it is sent to
+  rather than depend on winning that argument.
 - **Its files are the app's usual names,** `print.html`, `print.js` and
   `print.css`, and each form's classes are the app's own, `scheduler-envelope-`
   and so on, since Carbon has none of these and no `rux--*` rule is touched.
@@ -140,6 +147,10 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 ## Questions
 
+- **What paper is the envelope printed on?** The office printer offers a size
+  called Trip Envelope and chose it over the Letter the spike's frame asked
+  for, so the form's page size, its proportions and where its fields sit all
+  depend on the answer.
 - **What does `envelope_printed` mean once two apps set it?** rux-ui ties it to
   a task being ticked off in the tasks panel, which this app has not built.
   Setting it when the envelope prints is the nearest thing, but then the flag

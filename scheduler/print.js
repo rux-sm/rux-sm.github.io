@@ -381,7 +381,7 @@
   const ASSIGNMENT_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number)',
-    'trip_drivers(id,role,report_time,instructions,envelope_printed,drivers:driver_id(name))',
+    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name))',
     'trips:trip_id(' + [
       'id', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',

@@ -168,8 +168,6 @@
 }
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tile,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--file__drop-container,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-container,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--menu,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__calendar,
@@ -181,6 +179,17 @@
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tag {
   border-radius: 4px;
 }
+/* THE TWO BIGGEST SURFACES TAKE A BIGGER CURVE. Both themes scale a radius
+   with the size of the thing: Geist's button was measured at 4px, 6px and 8px
+   as it grew from 32 to 40 tall. A side panel and a modal are the largest
+   boxes on the page -- the panel is the full height of the window -- so 8px
+   reads tighter on them than on a tile. 12px is the next step up. The
+   scheduler's week takes it too, through its own `--scheduler-surface-radius`. */
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-container {
+  border-radius: 12px;
+}
+
 /* The option at each end of a list takes the menu's curve. A selected or
    highlighted row paints its own background across the full width, and a
    square one shows in the rounded menu's corners -- most visible on a search
@@ -346,7 +355,9 @@
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button {
+  border-start-end-radius: 12px;
+}
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
@@ -354,18 +365,18 @@
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__header {
-  border-start-start-radius: 8px;
-  border-start-end-radius: 8px;
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__actions-container {
-  border-end-start-radius: 8px;
-  border-end-end-radius: 8px;
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:first-child,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:first-child {
-  border-end-start-radius: 8px;
+  border-end-start-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:last-child,
 :is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:last-child {
-  border-end-end-radius: 8px;
+  border-end-end-radius: 12px;
 }

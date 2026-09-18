@@ -27,13 +27,13 @@
 }
 
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
-   trip bar, like a button, 8px on the week, like a card, and 4px on a bar's
+   trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those
    three, which is why one block serves both. Every other theme leaves them
    square, as Carbon draws them. */
 [data-theme="ant-dark"],
 [data-theme="geist"] {
   --scheduler-bar-radius: 6px;
-  --scheduler-surface-radius: 8px;
+  --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;
 }

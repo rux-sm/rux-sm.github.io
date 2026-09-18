@@ -302,6 +302,14 @@
 [data-theme="geist"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
+/* The side panel takes a real border rather than that ring, because its own
+   header and action row paint opaque fills over its top and bottom edges and
+   would cover one. Carbon sizes every box from its border, so the 1px comes
+   out of the panel's width and nothing moves. The modal already carries the
+   same border in this theme. */
+[data-theme="geist"] .rux--side-panel {
+  border: 1px solid var(--rux-border-subtle-01);
+}
 /* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own

@@ -1189,7 +1189,7 @@ button.scheduler-row-head__num::after {
   position: sticky;
   inset-block-start: 0;
   z-index: 3;
-  background: var(--rux-layer-accent-01);
+  background: var(--scheduler-band-surface);
   /* Carbon's table header type, set on the row so "Driver" and the day letters
      share it. `line-height` stays at the 2rem above, which centres a label in
      the 32px cell. */
@@ -1200,7 +1200,7 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-secondary);
   /* No rule under the header, as in Carbon's table header: the surface change
      separates it from the first row. */
-  border-block-end: 0;
+  border-block-end: var(--scheduler-band-rule);
 }
 
 /* The rule between the names and the days, as on the board. It stops at the
@@ -1301,7 +1301,8 @@ button.scheduler-row-head__num::after {
   block-size: 2rem;
   line-height: 2rem;
   padding-inline: var(--rux-spacing-03);
-  background: var(--rux-layer-accent-01);
+  background: var(--scheduler-band-surface);
+  border-block-end: var(--scheduler-band-rule);
   color: var(--rux-text-secondary);
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);

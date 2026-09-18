@@ -26,6 +26,21 @@
   --scheduler-mark-blank: var(--rux-text-primary);
 }
 
+/* The roster's column header and its priority headings are one band drawn
+   twice. Carbon separates a header from its rows with a change of surface, so
+   the band is filled and carries no rule. Geist separates with a line instead
+   -- every region on its own pages is told apart by a hairline, not a slab --
+   so there the band takes the pane's own surface and the rule under it. It
+   stays opaque either way, because the band is sticky and rows scroll beneath. */
+:root {
+  --scheduler-band-surface: var(--rux-layer-accent-01);
+  --scheduler-band-rule: 0;
+}
+[data-theme="geist"] {
+  --scheduler-band-surface: var(--rux-layer);
+  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+}
+
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those

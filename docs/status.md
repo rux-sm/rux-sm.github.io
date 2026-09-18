@@ -32,8 +32,6 @@ done and how.
   list is in `scheduler/docs/quote-calculator.md`.
 - Below the md width the board shows about two of seven days. The phone view
   is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
-- Weak highlights in geist: the roster tint, the keyboard highlight and the
-  editor's bus tiles on the Fleet tab are barely visible.
 
 ## The database
 

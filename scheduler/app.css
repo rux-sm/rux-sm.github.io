@@ -532,10 +532,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
 .scheduler-week--no-drivers .scheduler-bar__warn--dest { display: flex; }
-/* One rule for every mark on a bar: a filled badge carries a hairline inside
-   its edge, in its own glyph colour, so it keeps its shape whatever colour the
-   bar is under it and every mark in the row is drawn the same way. A mark with
-   no fill is a bare glyph and takes no line. */
+/* Every mark on a bar is drawn the same way: a fill in its own colour and
+   nothing around it. A mark whose colour is the bar's own colour loses its
+   edges and reads as a loose glyph, which rux chose over an outline on every
+   mark. */
 .scheduler-bar__warn-chip {
   display: flex;
   align-items: center;
@@ -545,7 +545,6 @@ button.scheduler-row-head__num::after {
   border-radius: var(--scheduler-mark-radius, 0);
   background: var(--rux-support-warning);
   color: var(--scheduler-on-warning);
-  box-shadow: inset 0 0 0 1px currentColor;
 }
 .scheduler-bar__warn-chip svg { display: block; }
 /* The payment mark carries its rung in its fill, in the same support colours
@@ -595,11 +594,6 @@ button.scheduler-row-head__num::after {
    to this driver yet, so the disc has to be the quietest of the four and say
    nothing about how the trip is going. */
 .scheduler-crew__mark--off { background: var(--rux-tag-background-gray); color: var(--rux-tag-color-gray); }
-/* The same hairline the chips carry, on every disc. */
-.scheduler-crew__mark--off,
-.scheduler-crew__mark--success,
-.scheduler-crew__mark--error,
-.scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px currentColor; }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 

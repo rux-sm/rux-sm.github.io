@@ -249,7 +249,18 @@
    5.19. Only this rule pairs those two tokens, so only it moves. */
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
-}/* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
+}/* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own
+   Table page in its dark mode: the table takes the raised layer as a fill and
+   NO border, rounds only its top two corners, and keeps both the filled header
+   and the rule under every row. Ours already keeps those two, so only the fill
+   and the top corners are missing. Geist's box below is the opposite choice;
+   neither was guessed. */
+[data-theme="ant-dark"] .rux--data-table-content {
+  background: var(--rux-layer-01);
+  border-start-start-radius: 8px;
+  border-start-end-radius: 8px;
+}
+/* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
    carries no border and no corners, and a wrapper around it does — 1px at 14%
    white, 8px, over the raised layer. `data-table-content` is our equivalent
    wrapper and already scrolls, so the corners clip what is inside them.

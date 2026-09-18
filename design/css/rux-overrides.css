@@ -122,6 +122,19 @@
   }
 }
 
+/* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates
+   options with a line on each one's top edge and takes it off
+   `:first-of-type`, but js/list-box.js filters by marking an option `hidden`
+   and leaving it in the list, so `:first-of-type` is usually a row nobody can
+   see and the first row shown keeps a line across the top of the menu. The
+   repair names the first row shown -- a shown option with no shown option
+   before it -- which needs more specificity than Carbon's rule, because it is
+   the narrower case of it. Only the line is taken off; every other row keeps
+   whatever colour its layer gives it, so nothing here restates a colour. */
+.rux--list-box__menu-item:not([hidden]):not(.rux--list-box__menu-item:not([hidden]) ~ *) > .rux--list-box__menu-item__option {
+  border-block-start-color: transparent;
+}
+
 /* ANT-DARK'S SHAPES. Ant Design Pro rounds controls to 6px and surfaces to
    8px, and its fields are filled boxes with no underline. These rules apply
    under ant-dark only; every other theme keeps Carbon's square, underlined

@@ -261,6 +261,36 @@
   border-start-end-radius: 8px;
   overflow: hidden;
 }
+/* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
+   own surface and a 1px ring, measured on Geist's Input page at rgba(255 255
+   255 / 0.14) -- which is what border-subtle-01 already resolves to here. The
+   fill comes from the field tokens in rux-theme.css; this draws the ring. It
+   is inset, so nothing moves. Ant fills its fields instead, and keeps them. */
+[data-theme="geist"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--search-input, .rux--list-box, .rux--dropdown),
+[data-theme="geist"] .rux--number :is(input[type=number], input[type=text]) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
+}
+/* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
+   with its brand colour and gets a blue, purple or green band; geist's brand
+   is near-white, so on a black page inside an outlined box it was the loudest
+   thing on screen. It takes the selected surface instead -- still a state, and
+   the same step the roster's day tint uses -- with a rule under it. */
+[data-theme="geist"] .rux--batch-actions {
+  background-color: var(--rux-layer-selected-01);
+  color: var(--rux-text-primary);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+/* The count and the actions are brand-coloured too, so that they disappear
+   into a brand bar. On the quiet bar they have to stop being boxes of their
+   own, or the strip reads as three patches rather than one band. */
+[data-theme="geist"] .rux--batch-actions .rux--batch-summary,
+[data-theme="geist"] .rux--batch-actions .rux--btn--primary {
+  background-color: transparent;
+  color: var(--rux-text-primary);
+}
+[data-theme="geist"] .rux--batch-actions .rux--btn--primary:hover {
+  background-color: var(--rux-layer-selected-hover-01);
+}
 /* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
    carries no border and no corners, and a wrapper around it does — 1px at 14%
    white, 8px, over the raised layer. `data-table-content` is our equivalent

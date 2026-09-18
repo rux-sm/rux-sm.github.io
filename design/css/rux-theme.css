@@ -275,9 +275,13 @@
   --rux-layer-selected-inverse: #ededed;
 
   /* field */
-  --rux-field-01: #111111;
-  --rux-field-02: #1a1a1a;
-  --rux-field-03: #242424;
+  /* A field is the surface it sits on, not a box cut out of it: measured on
+     Geist's own Input page, where the control's fill is the container's
+     #0a0a0a and a 1px ring is the only thing marking its edge. Each step is
+     its own layer rather than the one above it. */
+  --rux-field-01: #0a0a0a;
+  --rux-field-02: #111111;
+  --rux-field-03: #1a1a1a;
   --rux-field-hover-01: #1a1a1a;
   --rux-field-hover-02: #242424;
   --rux-field-hover-03: #2e2e2e;

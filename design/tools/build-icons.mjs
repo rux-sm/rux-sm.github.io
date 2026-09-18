@@ -9,7 +9,10 @@
 //
 // Carbon ships only 68 icons at 16px and 18 unsized; the full set is at 32px. SVG
 // scales, so each icon is taken from the smallest available source and the viewBox
-// normalises it. Add an icon by adding its name below and re-running.
+// normalises it. Add an icon by adding its name below and re-running, then run
+// `npm run glyphs`: check-glyphs compares the sprite against a committed snapshot
+// of Carbon's own drawings, and a new symbol has no entry until that is rebuilt.
+// Only `npm run check -- --full` runs that gate, so the fast check passes without it.
 //
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { spritePages } from './lib/sources.mjs';

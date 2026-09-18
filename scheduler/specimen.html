@@ -256,160 +256,507 @@
   from last week and into next week with a partial-PO border, two bars
   overlapping into a second lane, an unconfirmed trip in red, a double
   booking, an out-of-service stripe with its row icon, and the Unassigned row.
-  app.js selects a bar on click and sizes the day columns. -->
+  Then the toolbar in each of its three widths, and the compact board with the
+  shortcut bar docked under it. app.js selects a bar on click and sizes the day
+  columns of the first board; the other boards fall back to the stylesheet's
+  own `minmax`, which is what a page without script gets. -->
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="rux--stack-vertical rux--stack-scale-5">
+      <div class="rux--stack-vertical rux--stack-scale-6">
         <!-- The page's name is in the outline, not on the screen: the tab
              title, the header and the side nav already say it. -->
         <h1 class="rux--visually-hidden">Trip bar specimen</h1>
         <p>Every state the grid can draw, on invented trips and no network. This page is the design reference for <code>app.css</code>: the live <a class="rux--link" href="./">Schedule</a> shows only the states this week happens to contain. Not linked from the side nav on purpose.</p>
-        <!-- The toolbar and the board share .scheduler-frame, as on index.html. -->
+
+        <!-- The toolbar and the board share .scheduler-frame, as on index.html:
+             one column, the toolbar sitting directly on the grid's surface, the
+             pair rounding as one box. -->
         <div class="scheduler-frame">
-        <div class="scheduler-toolbar">
-          <!-- The two arrows are neighbours because paging back and forth is the
-               most repeated gesture here. The week label follows the controls
-               that change it, so a wider week does not move them. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prev" aria-label="Previous week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-next" aria-label="Next week"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="scheduler-today">Today</button>
-          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02" id="scheduler-range">&nbsp;</h2>
+          <div class="scheduler-toolbar">
+                      <!-- The week reads first and every control sits right.
+                           .scheduler-toolbar__spacer takes the free width, so a wider
+                           week does not move the buttons, and DOM order is reading
+                           order. The row never wraps: a flex container breaks its lines
+                           at each item's own width before it shrinks anything, so a
+                           toolbar allowed to wrap drops its buttons to a second row
+                           instead of ever letting the week ellipse. -->
+                      <div class="scheduler-toolbar__weekrow" id="scheduler-weekrow">
+                        <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
+                          <!-- A heading that is also a trigger, which Carbon has no
+                               component for, so it is this app's own with only --rux-*
+                               tokens. On the live page it opens the week picker; here it
+                               only carries the two labels. Under 25rem of toolbar the
+                               months show and the week stays the button's name. -->
+                          <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week" id="scheduler-range-text">Sep 7 – 13, 2026</span><span class="scheduler-weekbtn__months" id="scheduler-range-months" aria-hidden="true">Sep 2026</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                        </h2>
+                      </div>
+                      <div class="scheduler-toolbar__spacer"></div>
+                      <!-- The two arrows are neighbours because paging back and forth is
+                           the most repeated gesture here. -->
+                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+                      <!-- Today leaves the row where it will not fit: below md, and
+                           wherever data.js marks the schedule data-room="tight". The
+                           overflow menu carries it in both. -->
+                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+                      <!-- Named "Driver availability", like the pane's own head, so one
+                           control has one name. It stays in the toolbar on a phone. -->
+                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+                      <!-- The overflow menu: New trip at every width, Today where the
+                           row has no room for it, then how the board draws. -->
+                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+                    </div>
+          <div class="scheduler-week" id="scheduler-week" role="region" aria-label="Week of 7 September 2026">
+            <div class="scheduler-grid">
+                  <div class="scheduler-corner" title="Bus number">#</div>
+                  <div class="scheduler-day">Mon<span class="scheduler-day__num">7</span></div>
+                  <div class="scheduler-day">Tue<span class="scheduler-day__num">8</span></div>
+                  <div class="scheduler-day scheduler-day--today" aria-current="date">Wed<span class="scheduler-day__num">9</span></div>
+                  <div class="scheduler-day">Thu<span class="scheduler-day__num">10</span></div>
+                  <div class="scheduler-day">Fri<span class="scheduler-day__num">11</span></div>
+                  <div class="scheduler-day scheduler-day--weekend">Sat<span class="scheduler-day__num">12</span></div>
+                  <div class="scheduler-day scheduler-day--weekend">Sun<span class="scheduler-day__num">13</span></div>
+                  <div class="scheduler-row">
+                    <div class="scheduler-row-head" title="Bus 101 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">101</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:2">
+                    <article class="scheduler-bar scheduler-bar--blue" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:2;--scheduler-lane:0" aria-label="Boston, MA, Lincoln HS band, 1 of 2">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Boston, MA</span><span class="scheduler-bar__ref">1 of 2</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">6:30a – 9:00p</span><span class="scheduler-bar__time-short">6:30a–9:00p</span><span class="scheduler-bar__time-dep">6:30a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Band trailer, load at the side door">Band trailer, load at the side door</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver · Sep 3, 4:10 PM"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew" title="Co-driver · Nguyen · Pending response, set by dispatch"><span class="scheduler-crew__mark scheduler-crew__mark--warning"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span></span></div>
+                    </article>
+                    <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Paid in full 09/12/2026">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="M. Chen · 555-0187">M. Chen</span><span class="scheduler-bar__phone">555-0187</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:00a – 6:30p</span><span class="scheduler-bar__time-short">8:00a–6:30p</span><span class="scheduler-bar__time-dep">8:00a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                    </article>
+                    <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary, unconfirmed">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Newport, RI</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Harbor Rotary</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="D. Reyes">D. Reyes</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:00a – 10:00p</span><span class="scheduler-bar__time-short">7:00a–10:00p</span><span class="scheduler-bar__time-dep">7:00a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Two stops on the way back">Two stops on the way back</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span></span></span></div>
+                    </article>
+                    </div>
+                  </div>
+                  <div class="scheduler-row">
+                    <div class="scheduler-row-head" title="Bus 102 · 56 pax · Coach"><div class="scheduler-row-head__num">102</div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:1">
+                    <article class="scheduler-bar scheduler-bar--magenta scheduler-bar--from-prev" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:6;--scheduler-lane:0" aria-label="Washington, DC, Lincoln HS band, 2 of 2, continues from the previous week, Needs a sleeper, bus 102 has none">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Washington, DC</span><span class="scheduler-bar__ref">2 of 2</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">Ret 11:30p</span><span class="scheduler-bar__time-short">Ret 11:30p</span><span class="scheduler-bar__time-dep">Ret 11:30p</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Overnight drive, two drivers">Overnight drive, two drivers</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Baker · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Baker</span></span><span class="scheduler-crew scheduler-crew--declined" title="Relief start · Silva · Declined by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span><span class="scheduler-crew__name">Silva</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
+                    </article>
+                    </div>
+                  </div>
+                  <div class="scheduler-row">
+                    <div class="scheduler-row-head" title="Bus 103 · 47 pax · Coach · ADA lift"><div class="scheduler-row-head__num">103</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span></div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:1">
+                    <article class="scheduler-bar scheduler-bar--green" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Six Flags, Camp Wildwood">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Six Flags</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Camp Wildwood</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="T. Okafor · 555-0163">T. Okafor</span><span class="scheduler-bar__phone">555-0163</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:15a – 8:00p</span><span class="scheduler-bar__time-short">7:15a–8:00p</span><span class="scheduler-bar__time-dep">7:15a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Lunch stop at noon">Lunch stop at noon</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Nguyen"><span class="scheduler-crew__mark scheduler-crew__mark--off"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span><span class="scheduler-crew" title="Relief end needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span></span></span></div>
+                    </article>
+                    <article class="scheduler-bar scheduler-bar--cyan scheduler-bar--to-next" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:5;--scheduler-span:2;--scheduler-lane:0" aria-label="Cape Cod, Sunrise Tours, continues into the next week, Needs 56 seats, bus 103 has 47, Purchase order covers $2,400 of $4,800">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Cape Cod</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Sunrise Tours</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="P. Walsh · 555-0119">P. Walsh</span><span class="scheduler-bar__phone">555-0119</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">Dep 9:00a</span><span class="scheduler-bar__time-short">Dep 9:00a</span><span class="scheduler-bar__time-dep">9:00a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="PO covers the first day only">PO covers the first day only</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                    </article>
+                    </div>
+                  </div>
+                  <div class="scheduler-row">
+                    <div class="scheduler-row-head" title="Bus 104 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">104</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:2">
+                    <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:1;--scheduler-span:1;--scheduler-lane:0" aria-label="New York, NY, Metro Choir, unconfirmed, Needs an ADA lift, bus 104 has none, No purchase order yet">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>New York, NY</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Metro Choir</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="A. Patel · 555-0175">A. Patel</span><span class="scheduler-bar__phone">555-0175</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">5:30a – 11:00p</span><span class="scheduler-bar__time-short">5:30a–11:00p</span><span class="scheduler-bar__time-dep">5:30a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Baker</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                    </article>
+                    <article class="scheduler-bar scheduler-bar--amber scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:0" aria-label="Providence, RI, St. Anne Parish">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Providence, RI</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>St. Anne Parish</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="L. Moore · 555-0131">L. Moore</span><span class="scheduler-bar__phone">555-0131</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:30a – 5:00p</span><span class="scheduler-bar__time-short">8:30a–5:00p</span><span class="scheduler-bar__time-dep">8:30a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz</span></div>
+                      <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+                    </article>
+                    <article class="scheduler-bar scheduler-bar--cool-gray scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:1" aria-label="Hartford, CT, Elm Street School">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Hartford, CT</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Elm Street School</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="R. Diaz · 555-0128">R. Diaz</span><span class="scheduler-bar__phone">555-0128</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:45a – 4:30p</span><span class="scheduler-bar__time-short">7:45a–4:30p</span><span class="scheduler-bar__time-dep">7:45a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Nguyen</span></div>
+                      <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+                    </article>
+                    </div>
+                  </div>
+                  <div class="scheduler-row">
+                    <div class="scheduler-row-head" title="Bus 105 · 56 pax · Coach · ADA lift · Sleeper"><div class="scheduler-row-head__num">105</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span><span class="scheduler-row-head__oos" role="img" aria-label="Out of service Thursday to Sunday" title="Out of service Thursday to Sunday"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg></span></div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:1">
+                      <div class="scheduler-oos" style="--scheduler-start:3;--scheduler-span:4" role="img" aria-label="Out of service Thursday to Sunday"></div>
+                    <article class="scheduler-bar scheduler-bar--gray" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:1;--scheduler-lane:0" aria-label="Albany, NY, County Office">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Albany, NY</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>County Office</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="S. Kim · 555-0150">S. Kim</span><span class="scheduler-bar__phone">555-0150</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">6:00a – 7:00p</span><span class="scheduler-bar__time-short">6:00a–7:00p</span><span class="scheduler-bar__time-dep">6:00a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Pick up at the rear lot">Pick up at the rear lot</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span></div>
+                    </article>
+                    </div>
+                  </div>
+                  <div class="scheduler-row scheduler-row--unassigned scheduler-row--last">
+                    <div class="scheduler-row-head" title="Trips with no bus yet"><div class="scheduler-row-head__num">No
+            bus</div></div>
+                    <div class="scheduler-track" style="--scheduler-lanes:1">
+                    <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Mystic Aquarium, Bayview Elementary, unconfirmed">
+                      <div class="scheduler-bar__row scheduler-bar__dest"><span>Mystic Aquarium</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__client"><span>Bayview Elementary</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__contact"><span title="K. Lee · 555-0194">K. Lee</span><span class="scheduler-bar__phone">555-0194</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:00a – 3:30p</span><span class="scheduler-bar__time-short">8:00a–3:30p</span><span class="scheduler-bar__time-dep">8:00a</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__notes"><span title="Needs a 56-seat bus">Needs a 56-seat bus</span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span>Needs a bus</span></div>
+                    </article>
+                    </div>
+                  </div>
+                      </div>
           </div>
         </div>
-        <div class="scheduler-week" id="scheduler-week" role="region" aria-label="Week of 7 September 2026">
-          <div class="scheduler-grid">
-      <div class="scheduler-corner" title="Bus number">#</div>
-      <div class="scheduler-day">Mon<span class="scheduler-day__num">7</span></div>
-      <div class="scheduler-day">Tue<span class="scheduler-day__num">8</span></div>
-      <div class="scheduler-day scheduler-day--today" aria-current="date">Wed<span class="scheduler-day__num">9</span></div>
-      <div class="scheduler-day">Thu<span class="scheduler-day__num">10</span></div>
-      <div class="scheduler-day">Fri<span class="scheduler-day__num">11</span></div>
-      <div class="scheduler-day scheduler-day--weekend">Sat<span class="scheduler-day__num">12</span></div>
-      <div class="scheduler-day scheduler-day--weekend">Sun<span class="scheduler-day__num">13</span></div>
-      <div class="scheduler-row">
-        <div class="scheduler-row-head" title="Bus 101 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">101</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:2">
-        <article class="scheduler-bar scheduler-bar--blue" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:2;--scheduler-lane:0" aria-label="Boston, MA, Lincoln HS band, 1 of 2">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Boston, MA</span><span class="scheduler-bar__ref">1 of 2</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>6:30a – 9:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Band trailer, load at the side door">Band trailer, load at the side door</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver · Sep 3, 4:10 PM"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew" title="Co-driver · Nguyen · Pending response, set by dispatch"><span class="scheduler-crew__mark scheduler-crew__mark--warning"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span></span></div>
-        </article>
-        <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Paid in full 09/12/2026">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="M. Chen · 555-0187">M. Chen</span><span class="scheduler-bar__phone">555-0187</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>8:00a – 6:30p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-        </article>
-        <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary, unconfirmed">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Newport, RI</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Harbor Rotary</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="D. Reyes">D. Reyes</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>7:00a – 10:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Two stops on the way back">Two stops on the way back</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span></span></span></div>
-        </article>
-        </div>
-      </div>
-      <div class="scheduler-row">
-        <div class="scheduler-row-head" title="Bus 102 · 56 pax · Coach"><div class="scheduler-row-head__num">102</div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:1">
-        <article class="scheduler-bar scheduler-bar--magenta scheduler-bar--from-prev" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:6;--scheduler-lane:0" aria-label="Washington, DC, Lincoln HS band, 2 of 2, continues from the previous week, Needs a sleeper, bus 102 has none">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Washington, DC</span><span class="scheduler-bar__ref">2 of 2</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>Ret 11:30p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Overnight drive, two drivers">Overnight drive, two drivers</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Baker · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Baker</span></span><span class="scheduler-crew scheduler-crew--declined" title="Relief start · Silva · Declined by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span><span class="scheduler-crew__name">Silva</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
-        </article>
-        </div>
-      </div>
-      <div class="scheduler-row">
-        <div class="scheduler-row-head" title="Bus 103 · 47 pax · Coach · ADA lift"><div class="scheduler-row-head__num">103</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span></div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:1">
-        <article class="scheduler-bar scheduler-bar--green" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Six Flags, Camp Wildwood">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Six Flags</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Camp Wildwood</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="T. Okafor · 555-0163">T. Okafor</span><span class="scheduler-bar__phone">555-0163</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>7:15a – 8:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Lunch stop at noon">Lunch stop at noon</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Nguyen"><span class="scheduler-crew__mark scheduler-crew__mark--off"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span><span class="scheduler-crew" title="Relief end needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span></span></span></div>
-        </article>
-        <article class="scheduler-bar scheduler-bar--cyan scheduler-bar--to-next" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:5;--scheduler-span:2;--scheduler-lane:0" aria-label="Cape Cod, Sunrise Tours, continues into the next week, Needs 56 seats, bus 103 has 47, Purchase order covers $2,400 of $4,800">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Cape Cod</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Sunrise Tours</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="P. Walsh · 555-0119">P. Walsh</span><span class="scheduler-bar__phone">555-0119</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>Dep 9:00a</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="PO covers the first day only">PO covers the first day only</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-        </article>
-        </div>
-      </div>
-      <div class="scheduler-row">
-        <div class="scheduler-row-head" title="Bus 104 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">104</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:2">
-        <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:1;--scheduler-span:1;--scheduler-lane:0" aria-label="New York, NY, Metro Choir, unconfirmed, Needs an ADA lift, bus 104 has none, No purchase order yet">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>New York, NY</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Metro Choir</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="A. Patel · 555-0175">A. Patel</span><span class="scheduler-bar__phone">555-0175</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>5:30a – 11:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Baker</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
-        </article>
-        <article class="scheduler-bar scheduler-bar--amber scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:0" aria-label="Providence, RI, St. Anne Parish">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Providence, RI</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>St. Anne Parish</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="L. Moore · 555-0131">L. Moore</span><span class="scheduler-bar__phone">555-0131</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>8:30a – 5:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz</span></div>
-          <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
-        </article>
-        <article class="scheduler-bar scheduler-bar--cool-gray scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:1" aria-label="Hartford, CT, Elm Street School">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Hartford, CT</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Elm Street School</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="R. Diaz · 555-0128">R. Diaz</span><span class="scheduler-bar__phone">555-0128</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>7:45a – 4:30p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Nguyen</span></div>
-          <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
-        </article>
-        </div>
-      </div>
-      <div class="scheduler-row">
-        <div class="scheduler-row-head" title="Bus 105 · 56 pax · Coach · ADA lift · Sleeper"><div class="scheduler-row-head__num">105</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span><span class="scheduler-row-head__oos" role="img" aria-label="Out of service Thursday to Sunday" title="Out of service Thursday to Sunday"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg></span></div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:1">
-          <div class="scheduler-oos" style="--scheduler-start:3;--scheduler-span:4" role="img" aria-label="Out of service Thursday to Sunday"></div>
-        <article class="scheduler-bar scheduler-bar--gray" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:1;--scheduler-lane:0" aria-label="Albany, NY, County Office">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Albany, NY</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>County Office</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="S. Kim · 555-0150">S. Kim</span><span class="scheduler-bar__phone">555-0150</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>6:00a – 7:00p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Pick up at the rear lot">Pick up at the rear lot</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span></div>
-        </article>
-        </div>
-      </div>
-      <div class="scheduler-row scheduler-row--unassigned scheduler-row--last">
-        <div class="scheduler-row-head" title="Trips with no bus yet"><div class="scheduler-row-head__num">No
-bus</div></div>
-        <div class="scheduler-track" style="--scheduler-lanes:1">
-        <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Mystic Aquarium, Bayview Elementary, unconfirmed">
-          <div class="scheduler-bar__row scheduler-bar__dest"><span>Mystic Aquarium</span></div>
-          <div class="scheduler-bar__row scheduler-bar__client"><span>Bayview Elementary</span></div>
-          <div class="scheduler-bar__row scheduler-bar__contact"><span title="K. Lee · 555-0194">K. Lee</span><span class="scheduler-bar__phone">555-0194</span></div>
-          <div class="scheduler-bar__row scheduler-bar__time"><span>8:00a – 3:30p</span></div>
-          <div class="scheduler-bar__row scheduler-bar__notes"><span title="Needs a 56-seat bus">Needs a 56-seat bus</span></div>
-          <div class="scheduler-bar__row scheduler-bar__drivers"><span>Needs a bus</span></div>
-        </article>
-        </div>
-      </div>
+
+        <h2 class="rux--type-heading-03">The toolbar, at each of its widths</h2>
+        <p>The row never wraps. What gives way instead is the week's label, then <code>Today</code>. Each box below is the width its state begins at; on the live page the width is the schedule's own, which <code>placeRoom</code> measures, because the panels beside it take the room and a window cannot see them. <code>Today</code> answers the window as well: it leaves below Carbon&rsquo;s md whatever the schedule&rsquo;s own width, so the boxes below show it only on a window wider than that.</p>
+
+        <h3 class="rux--type-heading-compact-02">Wide: the whole week, every control</h3>
+        <div class="scheduler-page" style="max-inline-size:34rem">
+          <div class="scheduler-frame">
+            <div class="scheduler-toolbar">
+                        <!-- The week reads first and every control sits right.
+                             .scheduler-toolbar__spacer takes the free width, so a wider
+                             week does not move the buttons, and DOM order is reading
+                             order. The row never wraps: a flex container breaks its lines
+                             at each item's own width before it shrinks anything, so a
+                             toolbar allowed to wrap drops its buttons to a second row
+                             instead of ever letting the week ellipse. -->
+                        <div class="scheduler-toolbar__weekrow">
+                          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
+                            <!-- A heading that is also a trigger, which Carbon has no
+                                 component for, so it is this app's own with only --rux-*
+                                 tokens. On the live page it opens the week picker; here it
+                                 only carries the two labels. Under 25rem of toolbar the
+                                 months show and the week stays the button's name. -->
+                            <button type="button" class="scheduler-weekbtn" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week">Sep 7 – 13, 2026</span><span class="scheduler-weekbtn__months" aria-hidden="true">Sep 2026</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                          </h2>
+                        </div>
+                        <div class="scheduler-toolbar__spacer"></div>
+                        <!-- The two arrows are neighbours because paging back and forth is
+                             the most repeated gesture here. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+                        <!-- Today leaves the row where it will not fit: below md, and
+                             wherever data.js marks the schedule data-room="tight". The
+                             overflow menu carries it in both. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+                        <!-- Named "Driver availability", like the pane's own head, so one
+                             control has one name. It stays in the toolbar on a phone. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+                        <!-- The overflow menu: New trip at every width, Today where the
+                             row has no room for it, then how the board draws. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+                      </div>
           </div>
         </div>
+
+        <h3 class="rux--type-heading-compact-02">Under 25rem of toolbar: the week's months</h3>
+        <p>The container query's own width. The full week stays as the button's accessible name, and the months take its place on screen.</p>
+        <div class="scheduler-page" style="max-inline-size:24rem">
+          <div class="scheduler-frame">
+            <div class="scheduler-toolbar">
+                        <!-- The week reads first and every control sits right.
+                             .scheduler-toolbar__spacer takes the free width, so a wider
+                             week does not move the buttons, and DOM order is reading
+                             order. The row never wraps: a flex container breaks its lines
+                             at each item's own width before it shrinks anything, so a
+                             toolbar allowed to wrap drops its buttons to a second row
+                             instead of ever letting the week ellipse. -->
+                        <div class="scheduler-toolbar__weekrow">
+                          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
+                            <!-- A heading that is also a trigger, which Carbon has no
+                                 component for, so it is this app's own with only --rux-*
+                                 tokens. On the live page it opens the week picker; here it
+                                 only carries the two labels. Under 25rem of toolbar the
+                                 months show and the week stays the button's name. -->
+                            <button type="button" class="scheduler-weekbtn" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week">Sep 7 – 13, 2026</span><span class="scheduler-weekbtn__months" aria-hidden="true">Sep 2026</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                          </h2>
+                        </div>
+                        <div class="scheduler-toolbar__spacer"></div>
+                        <!-- The two arrows are neighbours because paging back and forth is
+                             the most repeated gesture here. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+                        <!-- Today leaves the row where it will not fit: below md, and
+                             wherever data.js marks the schedule data-room="tight". The
+                             overflow menu carries it in both. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+                        <!-- Named "Driver availability", like the pane's own head, so one
+                             control has one name. It stays in the toolbar on a phone. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+                        <!-- The overflow menu: New trip at every width, Today where the
+                             row has no room for it, then how the board draws. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+                      </div>
+          </div>
+        </div>
+
+        <h3 class="rux--type-heading-compact-02">Tight: <code>Today</code> moves to the menu</h3>
+        <p>What <code>data-room="tight"</code> draws, at the 17rem schedule it is set for. <code>Today</code> leaves the row for the overflow menu, and the week's button gives up two steps of inset so its months read whole.</p>
+        <div class="scheduler-page" data-room="tight" style="max-inline-size:17rem">
+          <div class="scheduler-frame">
+            <div class="scheduler-toolbar">
+                        <!-- The week reads first and every control sits right.
+                             .scheduler-toolbar__spacer takes the free width, so a wider
+                             week does not move the buttons, and DOM order is reading
+                             order. The row never wraps: a flex container breaks its lines
+                             at each item's own width before it shrinks anything, so a
+                             toolbar allowed to wrap drops its buttons to a second row
+                             instead of ever letting the week ellipse. -->
+                        <div class="scheduler-toolbar__weekrow">
+                          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
+                            <!-- A heading that is also a trigger, which Carbon has no
+                                 component for, so it is this app's own with only --rux-*
+                                 tokens. On the live page it opens the week picker; here it
+                                 only carries the two labels. Under 25rem of toolbar the
+                                 months show and the week stays the button's name. -->
+                            <button type="button" class="scheduler-weekbtn" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week">Sep 7 – 13, 2026</span><span class="scheduler-weekbtn__months" aria-hidden="true">Sep 2026</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                          </h2>
+                        </div>
+                        <div class="scheduler-toolbar__spacer"></div>
+                        <!-- The two arrows are neighbours because paging back and forth is
+                             the most repeated gesture here. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+                        <!-- Today leaves the row where it will not fit: below md, and
+                             wherever data.js marks the schedule data-room="tight". The
+                             overflow menu carries it in both. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+                        <!-- Named "Driver availability", like the pane's own head, so one
+                             control has one name. It stays in the toolbar on a phone. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+                        <!-- The overflow menu: New trip at every width, Today where the
+                             row has no room for it, then how the board draws. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+                      </div>
+          </div>
+        </div>
+
+        <h2 class="rux--type-heading-03">The compact board</h2>
+        <p>Where the schedule cannot show three readable days it shows all seven, at the 375px of a phone. A trip is a 44px block in its colour carrying two lines and no icons — the destination and the departure — the same on every block however long it is. The day band numbers the days, a double booking is the band across a block's foot, and the selected trip's shortcut bar docks below with the rows the block gave up.</p>
+        <div class="scheduler-page" data-board="compact" style="max-inline-size:23.5rem">
+          <div class="scheduler-frame">
+            <div class="scheduler-toolbar">
+                        <!-- The week reads first and every control sits right.
+                             .scheduler-toolbar__spacer takes the free width, so a wider
+                             week does not move the buttons, and DOM order is reading
+                             order. The row never wraps: a flex container breaks its lines
+                             at each item's own width before it shrinks anything, so a
+                             toolbar allowed to wrap drops its buttons to a second row
+                             instead of ever letting the week ellipse. -->
+                        <div class="scheduler-toolbar__weekrow">
+                          <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
+                            <!-- A heading that is also a trigger, which Carbon has no
+                                 component for, so it is this app's own with only --rux-*
+                                 tokens. On the live page it opens the week picker; here it
+                                 only carries the two labels. Under 25rem of toolbar the
+                                 months show and the week stays the button's name. -->
+                            <button type="button" class="scheduler-weekbtn" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week">Sep 7 – 13, 2026</span><span class="scheduler-weekbtn__months" aria-hidden="true">Sep 2026</span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--down"/></svg></button>
+                          </h2>
+                        </div>
+                        <div class="scheduler-toolbar__spacer"></div>
+                        <!-- The two arrows are neighbours because paging back and forth is
+                             the most repeated gesture here. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+                        <!-- Today leaves the row where it will not fit: below md, and
+                             wherever data.js marks the schedule data-room="tight". The
+                             overflow menu carries it in both. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__lg-only" aria-label="Today"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg></button>
+                        <!-- Named "Driver availability", like the pane's own head, so one
+                             control has one name. It stays in the toolbar on a phone. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-pressed="false" aria-label="Driver availability"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></button>
+                        <!-- The overflow menu: New trip at every width, Today where the
+                             row has no room for it, then how the board draws. -->
+                        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
+                      </div>
+            <div class="scheduler-week" role="region" aria-label="Week of 7 September 2026, compact">
+              <div class="scheduler-grid">
+                    <div class="scheduler-corner" title="Bus number">#</div>
+                    <div class="scheduler-day">Mon<span class="scheduler-day__num">7</span></div>
+                    <div class="scheduler-day">Tue<span class="scheduler-day__num">8</span></div>
+                    <div class="scheduler-day scheduler-day--today" aria-current="date">Wed<span class="scheduler-day__num">9</span></div>
+                    <div class="scheduler-day">Thu<span class="scheduler-day__num">10</span></div>
+                    <div class="scheduler-day">Fri<span class="scheduler-day__num">11</span></div>
+                    <div class="scheduler-day scheduler-day--weekend">Sat<span class="scheduler-day__num">12</span></div>
+                    <div class="scheduler-day scheduler-day--weekend">Sun<span class="scheduler-day__num">13</span></div>
+                    <div class="scheduler-row">
+                      <div class="scheduler-row-head" title="Bus 101 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">101</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:2">
+                      <article class="scheduler-bar scheduler-bar--blue" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:2;--scheduler-lane:0" aria-label="Boston, MA, Lincoln HS band, 1 of 2">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Boston, MA</span><span class="scheduler-bar__ref">1 of 2</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">6:30a – 9:00p</span><span class="scheduler-bar__time-short">6:30a–9:00p</span><span class="scheduler-bar__time-dep">6:30a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Band trailer, load at the side door">Band trailer, load at the side door</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver · Sep 3, 4:10 PM"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew" title="Co-driver · Nguyen · Pending response, set by dispatch"><span class="scheduler-crew__mark scheduler-crew__mark--warning"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span></span></div>
+                      </article>
+                      <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Paid in full 09/12/2026">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="M. Chen · 555-0187">M. Chen</span><span class="scheduler-bar__phone">555-0187</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:00a – 6:30p</span><span class="scheduler-bar__time-short">8:00a–6:30p</span><span class="scheduler-bar__time-dep">8:00a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Ortiz</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--success" title="Paid in full 09/12/2026"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      </article>
+                      <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary, unconfirmed">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Newport, RI</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Harbor Rotary</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="D. Reyes">D. Reyes</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:00a – 10:00p</span><span class="scheduler-bar__time-short">7:00a–10:00p</span><span class="scheduler-bar__time-dep">7:00a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Two stops on the way back">Two stops on the way back</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span></span></span></div>
+                      </article>
+                      </div>
+                    </div>
+                    <div class="scheduler-row">
+                      <div class="scheduler-row-head" title="Bus 102 · 56 pax · Coach"><div class="scheduler-row-head__num">102</div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:1">
+                      <article class="scheduler-bar scheduler-bar--magenta scheduler-bar--from-prev" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:6;--scheduler-lane:0" aria-label="Washington, DC, Lincoln HS band, 2 of 2, continues from the previous week, Needs a sleeper, bus 102 has none">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Washington, DC</span><span class="scheduler-bar__ref">2 of 2</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="J. Alvarez · 555-0142">J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">Ret 11:30p</span><span class="scheduler-bar__time-short">Ret 11:30p</span><span class="scheduler-bar__time-dep">Ret 11:30p</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Overnight drive, two drivers">Overnight drive, two drivers</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Baker · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Baker</span></span><span class="scheduler-crew scheduler-crew--declined" title="Relief start · Silva · Declined by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span><span class="scheduler-crew__name">Silva</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
+                      </article>
+                      </div>
+                    </div>
+                    <div class="scheduler-row">
+                      <div class="scheduler-row-head" title="Bus 103 · 47 pax · Coach · ADA lift"><div class="scheduler-row-head__num">103</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span></div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:1">
+                      <article class="scheduler-bar scheduler-bar--green" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Six Flags, Camp Wildwood">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Six Flags</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Camp Wildwood</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="T. Okafor · 555-0163">T. Okafor</span><span class="scheduler-bar__phone">555-0163</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:15a – 8:00p</span><span class="scheduler-bar__time-short">7:15a–8:00p</span><span class="scheduler-bar__time-dep">7:15a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Lunch stop at noon">Lunch stop at noon</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Nguyen"><span class="scheduler-crew__mark scheduler-crew__mark--off"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Nguyen</span></span><span class="scheduler-crew" title="Relief end needed"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span></span></span></div>
+                      </article>
+                      <article class="scheduler-bar scheduler-bar--cyan scheduler-bar--to-next" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:5;--scheduler-span:2;--scheduler-lane:0" aria-label="Cape Cod, Sunrise Tours, continues into the next week, Needs 56 seats, bus 103 has 47, Purchase order covers $2,400 of $4,800">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Cape Cod</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Sunrise Tours</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="P. Walsh · 555-0119">P. Walsh</span><span class="scheduler-bar__phone">555-0119</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">Dep 9:00a</span><span class="scheduler-bar__time-short">Dep 9:00a</span><span class="scheduler-bar__time-dep">9:00a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="PO covers the first day only">PO covers the first day only</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs 56 seats, bus 103 has 47"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg></span><span class="scheduler-bar__warn-chip" title="Purchase order covers $2,400 of $4,800"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      </article>
+                      </div>
+                    </div>
+                    <div class="scheduler-row">
+                      <div class="scheduler-row-head" title="Bus 104 · 56 pax · Coach · Sleeper"><div class="scheduler-row-head__num">104</div><div class="scheduler-row-head__kit"><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:2">
+                      <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:1;--scheduler-span:1;--scheduler-lane:0" aria-label="New York, NY, Metro Choir, unconfirmed, Needs an ADA lift, bus 104 has none, No purchase order yet">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>New York, NY</span><span class="scheduler-bar__warn scheduler-bar__warn--dest"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Metro Choir</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="A. Patel · 555-0175">A. Patel</span><span class="scheduler-bar__phone">555-0175</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">5:30a – 11:00p</span><span class="scheduler-bar__time-short">5:30a–11:00p</span><span class="scheduler-bar__time-dep">5:30a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Baker</span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs an ADA lift, bus 104 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span class="scheduler-bar__warn-chip scheduler-bar__warn-chip--error" title="No purchase order yet"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-currency--dollar"/></svg></span></span></div>
+                      </article>
+                      <article class="scheduler-bar scheduler-bar--amber scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:0" aria-label="Providence, RI, St. Anne Parish">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Providence, RI</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>St. Anne Parish</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="L. Moore · 555-0131">L. Moore</span><span class="scheduler-bar__phone">555-0131</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:30a – 5:00p</span><span class="scheduler-bar__time-short">8:30a–5:00p</span><span class="scheduler-bar__time-dep">8:30a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Ortiz</span></div>
+                        <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+                      </article>
+                      <article class="scheduler-bar scheduler-bar--cool-gray scheduler-bar--has-conflict" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:4;--scheduler-span:1;--scheduler-lane:1" aria-label="Hartford, CT, Elm Street School">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Hartford, CT</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Elm Street School</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="R. Diaz · 555-0128">R. Diaz</span><span class="scheduler-bar__phone">555-0128</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">7:45a – 4:30p</span><span class="scheduler-bar__time-short">7:45a–4:30p</span><span class="scheduler-bar__time-dep">7:45a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Nguyen</span></div>
+                        <div class="scheduler-bar__conflict"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>Double booked</div>
+                      </article>
+                      </div>
+                    </div>
+                    <div class="scheduler-row">
+                      <div class="scheduler-row-head" title="Bus 105 · 56 pax · Coach · ADA lift · Sleeper"><div class="scheduler-row-head__num">105</div><div class="scheduler-row-head__kit"><span role="img" aria-label="ADA lift" title="ADA lift"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-accessibility"/></svg></span><span role="img" aria-label="Sleeper" title="Sleeper"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span><span class="scheduler-row-head__oos" role="img" aria-label="Out of service Thursday to Sunday" title="Out of service Thursday to Sunday"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg></span></div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:1">
+                        <div class="scheduler-oos" style="--scheduler-start:3;--scheduler-span:4" role="img" aria-label="Out of service Thursday to Sunday"></div>
+                      <article class="scheduler-bar scheduler-bar--gray" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:0;--scheduler-span:1;--scheduler-lane:0" aria-label="Albany, NY, County Office">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Albany, NY</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>County Office</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="S. Kim · 555-0150">S. Kim</span><span class="scheduler-bar__phone">555-0150</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">6:00a – 7:00p</span><span class="scheduler-bar__time-short">6:00a–7:00p</span><span class="scheduler-bar__time-dep">6:00a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Pick up at the rear lot">Pick up at the rear lot</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Silva</span></div>
+                      </article>
+                      </div>
+                    </div>
+                    <div class="scheduler-row scheduler-row--unassigned scheduler-row--last">
+                      <div class="scheduler-row-head" title="Trips with no bus yet"><div class="scheduler-row-head__num">No
+              bus</div></div>
+                      <div class="scheduler-track" style="--scheduler-lanes:1">
+                      <article class="scheduler-bar scheduler-bar--red" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:2;--scheduler-span:1;--scheduler-lane:0" aria-label="Mystic Aquarium, Bayview Elementary, unconfirmed">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Mystic Aquarium</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Bayview Elementary</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span title="K. Lee · 555-0194">K. Lee</span><span class="scheduler-bar__phone">555-0194</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">8:00a – 3:30p</span><span class="scheduler-bar__time-short">8:00a–3:30p</span><span class="scheduler-bar__time-dep">8:00a</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span title="Needs a 56-seat bus">Needs a 56-seat bus</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span>Needs a bus</span></div>
+                      </article>
+                      </div>
+                    </div>
+                        </div>
+            </div>
+          </div>
+          <!-- The docked shortcut bar, as the compact board draws it. In the app it
+                         is fixed to the window's bottom edge; here it is in the flow, so the
+                         page can show it beside the board it belongs to. Its head is a copy
+                         of the selected trip's own rows, which is how data.js builds it. -->
+                    <div class="scheduler-bar-shortcuts" data-docked role="group" aria-label="Trip shortcuts" style="position:static">
+                      <div class="scheduler-bar-shortcuts__trip scheduler-bar--magenta">
+                        <div class="scheduler-bar__row scheduler-bar__dest"><span>Washington, DC</span><span class="scheduler-bar__ref">2 of 2</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__client"><span>Lincoln HS band</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__contact"><span>J. Alvarez</span><span class="scheduler-bar__phone">555-0142</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__time"><span class="scheduler-bar__time-long">Ret 11:30p</span><span class="scheduler-bar__time-short">Ret 11:30p</span><span class="scheduler-bar__time-dep">Ret 11:30p</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__notes"><span>Overnight drive, two drivers</span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Baker · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user"/></svg></span><span class="scheduler-crew__name">Baker</span></span><span class="scheduler-crew scheduler-crew--declined" title="Relief start · Silva · Declined by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--error"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-channels"/></svg></span><span class="scheduler-crew__name">Silva</span></span></span><span class="scheduler-bar__warn scheduler-bar__warn--drivers"><span class="scheduler-bar__warn-chip" title="Needs a sleeper, bus 102 has none"><svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-hotel"/></svg></span></span></div>
+                      </div>
+                      <button type="button" class="scheduler-bar-shortcut" aria-label="Open trip" title="Open trip"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-launch"/></svg></button>
+                      <button type="button" class="scheduler-bar-shortcut" aria-label="Open itinerary" title="Open itinerary"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-document"/></svg></button>
+                      <button type="button" class="scheduler-bar-shortcut scheduler-bar-shortcut--empty" aria-label="Add a shortcut" title="Add a shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg></button>
+                    </div>
         </div>
       </div>
     </div>

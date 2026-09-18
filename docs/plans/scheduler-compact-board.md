@@ -122,9 +122,5 @@ and a desktop squeezed by two open panels reach this the same way.
 
 ## Tasks
 
-- [ ] `specimen.html`: the compact board and the docked bar as their own
-      section, beside the full one, once the toolbar there is rebuilt.
-- [ ] `docs/screen-inventory.md`: the compact board in §3, and the note under
-      "The trip bar does not expand" that says what a block does instead.
 - [ ] rux reads a real week compact on the phone, and on 8641 with the roster
       and the editor open.

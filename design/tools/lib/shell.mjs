@@ -59,7 +59,7 @@
 // which is what listens to those radios, and the PORTAL loaded none of the
 // three scripts at all. Measured 2026-09-12 on the served pages: clicking
 // Gray 100 on the portal checked the radio and moved nothing, and a stored
-// theme of "spotify" rendered white because nothing applied it.
+// theme of "spotify-dark" rendered white because nothing applied it.
 //
 // TWO PLACES, AND THE SPLIT IS NOT COSMETIC. The first pair goes in <head>,
 // BEFORE the stylesheets paint, because js/theme.js puts the stored theme on
@@ -97,7 +97,7 @@ export const PAGES = [
 // js/theme.js re-checks whichever one storage holds on load.
 const THEME_NAMES = [
   ['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'],
-  ['geist', 'Geist'], ['ant-dark', 'Ant Dark'], ['spotify', 'Spotify'],
+  ['geist-dark', 'Geist dark'], ['ant-dark', 'Ant dark'], ['spotify-dark', 'Spotify dark'],
 ];
 
 const themeRadios = () => THEME_NAMES.map(([value, label]) =>

@@ -18,9 +18,9 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
-[data-theme="geist"],
+[data-theme="geist-dark"],
 [data-theme="ant-dark"],
-[data-theme="spotify"] {
+[data-theme="spotify-dark"] {
   --scheduler-on-warning: var(--rux-text-inverse);
   --scheduler-mark-blank: var(--rux-text-primary);
 }
@@ -35,7 +35,7 @@
   --scheduler-band-surface: var(--rux-layer-accent-01);
   --scheduler-band-rule: 0;
 }
-[data-theme="geist"] {
+[data-theme="geist-dark"] {
   --scheduler-band-surface: var(--rux-layer);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   /* The same line around each region, so the schedule and the roster are told
@@ -49,7 +49,7 @@
    three, which is why one block serves both. Every other theme leaves them
    square, as Carbon draws them. */
 [data-theme="ant-dark"],
-[data-theme="geist"] {
+[data-theme="geist-dark"] {
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;

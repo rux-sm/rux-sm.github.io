@@ -2,8 +2,8 @@
   rux-theme.css — themes above the compiled four.
 
   TOKEN OVERRIDES, LAYERED ON A COMPILED THEME. Link it after css/rux.css.
-  Three theme blocks live here, `[data-theme="geist"]`,
-  `[data-theme="ant-dark"]` and `[data-theme="spotify"]`, each the whole story for its own theme: every
+  Three theme blocks live here, `[data-theme="geist-dark"]`,
+  `[data-theme="ant-dark"]` and `[data-theme="spotify-dark"]`, each the whole story for its own theme: every
   core token its palette redefines, plus derived values for Carbon's
   button component tokens and transcribed values for its tag,
   notification, status and content-switcher ones (both below), which are
@@ -24,7 +24,7 @@
   a theme this size as a compiled Sass map was killed in
   review on exactly that finding before any file was touched. So every
   block stays what the original twenty-token rux accent already proved:
-  Carbon's Sass never sees `geist`, `ant-dark` or `spotify` —
+  Carbon's Sass never sees `geist-dark`, `ant-dark` or `spotify-dark` —
   every value below is a CSS custom property read at runtime by
   components that already say `var(--rux-<token>, <white's value>)`,
   which is also why `git diff css/rux.css` stays empty no matter how
@@ -33,10 +33,10 @@
   WHAT REPLACED THE OLD `rux` THEME. The twenty-token purple accent this
   file used to ship under `[data-theme="rux"]` — "chosen so the mechanism
   can be seen and measured," per its own comment — is retired as a file
-  default, not recreated: rux does not want it back. `geist` took the
+  default, not recreated: rux does not want it back. `geist-dark` took the
   fifth, built-in slot instead.
 
-  `geist`, `ant-dark` AND `spotify` ARE ADDITIVE, NOT REPLACEMENTS. Each
+  `geist-dark`, `ant-dark` AND `spotify-dark` ARE ADDITIVE, NOT REPLACEMENTS. Each
   takes its own slot beside white, g10, g90, g100 and whatever came
   before it — nothing about an earlier block, or any compiled theme,
   changes because a later one exists. `js/theme.js`'s `KNOWN` set,
@@ -62,7 +62,7 @@
   `notification-background-error`, `-success`, `-info` and `-warning` are
   the four of 62 where g90 and g100 differ, and in each theme the value
   is that theme's OWN `layer-01` — g90's #393939 and g100's #262626 are
-  exactly their own layer-01 — so spotify #181818 takes its own. An inline notification sits on the page's own raised surface,
+  exactly their own layer-01 — so spotify-dark #181818 takes its own. An inline notification sits on the page's own raised surface,
   which is what those themes redefine.
   ANT-DARK AND GEIST ARE THE EXCEPTION: both draw a notification as an alert,
   a tint of the kind's own hue inside a border of it, so their four are tints
@@ -181,7 +181,7 @@
       fills with link-primary-hover #69b1ff and active with #1677ff, both
       under Carbon's black text-inverse.
     - button-secondary: the layer-active ladder (#303030 → #424242
-      hover → #595959 active) — the same move as geist's secondary, reusing already-given values.
+      hover → #595959 active) — the same move as geist-dark's secondary, reusing already-given values.
     - button-danger-primary: Ant's dark red #d32029 (5.2:1), then
       #a61d24 and #791a1f for hover and active; its dark error red
       #dc4446 is 4.2:1. button-danger-secondary is text on the page, so it
@@ -219,7 +219,7 @@
   those go in css/rux-overrides.css. No Carbon file is touched, and
   css/rux.css is the same bytes whether this file is linked or not.
 */
-[data-theme="geist"] {
+[data-theme="geist-dark"] {
   /* color-scheme / brand */
   --rux-color-scheme: dark;
 
@@ -729,7 +729,7 @@
   --rux-content-switcher-selected: rgba(141, 141, 141, 0.24);
 }
 
-[data-theme="spotify"] {
+[data-theme="spotify-dark"] {
   /* color-scheme / brand */
   --rux-color-scheme: dark;
 

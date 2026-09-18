@@ -143,40 +143,40 @@
    this. Every other theme keeps Carbon's square, underlined controls. Focus
    and invalid states are outlines in Carbon, so they still show without the
    underline. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--btn,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-area,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--select-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=number],
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=text],
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--search-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--dropdown {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--btn,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--text-area,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--select-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--number input[type=number],
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--number input[type=text],
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--search-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dropdown {
   border-radius: 6px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-area,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--select-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=number],
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=text],
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--search-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--dropdown {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--text-area,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--select-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--number input[type=number],
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--number input[type=text],
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--search-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dropdown {
   border-block-end-color: transparent;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tile,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--file__drop-container,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--menu,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__calendar,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--popover-content,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--tile,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--file__drop-container,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--menu,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__calendar,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--popover-content,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification {
   border-radius: 8px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tag {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--tag {
   border-radius: 4px;
 }
 /* THE TWO BIGGEST SURFACES TAKE A BIGGER CURVE. Both themes scale a radius
@@ -185,8 +185,8 @@
    boxes on the page -- the panel is the full height of the window -- so 8px
    reads tighter on them than on a tile. 12px is the next step up. The
    scheduler's week takes it too, through its own `--scheduler-surface-radius`. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-container {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-container {
   border-radius: 12px;
 }
 
@@ -198,14 +198,14 @@
    leaves it in the list, so `:first-child` is often a row nobody can see.
    Every shown option is curved, and the curve is taken back from any that has
    a shown option before it, above, or after it, below. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]) {
   border-radius: 8px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
   border-start-start-radius: 0;
   border-start-end-radius: 0;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
   border-end-start-radius: 0;
   border-end-end-radius: 0;
 }
@@ -213,32 +213,32 @@
    with a 1px top, so the ring joins the menu to the field above it. Ant-dark's
    menu is a detached rounded box, so that option wears the outline every other
    option wears, which follows the corner it sits in. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before {
   content: none;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted {
   outline-color: var(--rux-focus, #0f62fe);
 }
 /* The field keeps its 2px focus ring while an option is active. Carbon thins
    it to 1px so the field and the menu read as one box; ant-dark's are two
    rounded boxes, and a thin ring only reads as the field losing focus. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) .rux--combo-box--input--focus.rux--text-input,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--list-box--expanded .rux--list-box__field--wrapper:has(button[aria-activedescendant]:not([aria-activedescendant=""])),
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--combo-box.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) .rux--combo-box--input--focus.rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select.rux--list-box--expanded .rux--list-box__field--wrapper:has(button[aria-activedescendant]:not([aria-activedescendant=""])),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--multi-select--filterable.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) {
   outline-offset: -2px;
   outline-width: 2px;
 }
 /* A date range reads as one box, the way Ant's range picker does: its two
    inputs keep Carbon's 1px seam and square the corners that meet there. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker--range .rux--date-picker-container--to .rux--date-picker__input {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--range .rux--date-picker-container--to .rux--date-picker__input {
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
@@ -266,16 +266,16 @@
    255 / 0.14) -- which is what border-subtle-01 already resolves to here. The
    fill comes from the field tokens in rux-theme.css; this draws the ring. It
    is inset, so nothing moves. Ant fills its fields instead, and keeps them. */
-[data-theme="geist"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--search-input, .rux--list-box, .rux--dropdown),
-[data-theme="geist"] .rux--number :is(input[type=number], input[type=text]) {
+[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--search-input, .rux--list-box, .rux--dropdown),
+[data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
 /* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
-   with its brand colour and gets a blue, purple or green band; geist's brand
+   with its brand colour and gets a blue, purple or green band; geist-dark's brand
    is near-white, so on a black page inside an outlined box it was the loudest
    thing on screen. It takes the selected surface instead -- still a state, and
    the same step the roster's day tint uses -- with a rule under it. */
-[data-theme="geist"] .rux--batch-actions {
+[data-theme="geist-dark"] .rux--batch-actions {
   background-color: var(--rux-layer-selected-01);
   color: var(--rux-text-primary);
   border-block-end: 1px solid var(--rux-border-subtle-01);
@@ -283,25 +283,25 @@
 /* The count and the actions are brand-coloured too, so that they disappear
    into a brand bar. On the quiet bar they have to stop being boxes of their
    own, or the strip reads as three patches rather than one band. */
-[data-theme="geist"] .rux--batch-actions .rux--batch-summary,
-[data-theme="geist"] .rux--batch-actions .rux--btn--primary {
+[data-theme="geist-dark"] .rux--batch-actions .rux--batch-summary,
+[data-theme="geist-dark"] .rux--batch-actions .rux--btn--primary {
   background-color: transparent;
   color: var(--rux-text-primary);
 }
-[data-theme="geist"] .rux--batch-actions .rux--btn--primary:hover {
+[data-theme="geist-dark"] .rux--batch-actions .rux--btn--primary:hover {
   background-color: var(--rux-layer-selected-hover-01);
 }
 /* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
    carries no border and no corners, and a wrapper around it does — 1px at 14%
    white, 8px, over the raised layer. `data-table-content` is our equivalent
    wrapper and already scrolls, so the corners clip what is inside them.
-   Scoped to geist because geist is what was measured; Ant's tables were not,
+   Scoped to geist-dark because Geist is what was measured; Ant's tables were not,
    and a guess would only look like a rule.
    IT GOES ON THE CONTAINER, NOT THE SCROLLING CONTENT, because a table's title
    and its toolbar are the container's other children: on the content the box
    started below them and they floated loose above the line. The container
    clips, so a filled toolbar takes the corners with it. */
-[data-theme="geist"] .rux--data-table-container {
+[data-theme="geist-dark"] .rux--data-table-container {
   background: var(--rux-layer-01);
   border: 1px solid var(--rux-border-subtle-01);
   border-radius: 8px;
@@ -316,15 +316,15 @@
    row. Both were drawn and looked at. It steps down to the faintest border
    instead -- present enough to track a row, quiet enough to leave the box the
    only edge anyone reads. */
-[data-theme="geist"] .rux--data-table thead,
-[data-theme="geist"] .rux--data-table th {
+[data-theme="geist-dark"] .rux--data-table thead,
+[data-theme="geist-dark"] .rux--data-table th {
   background-color: transparent;
 }
-[data-theme="geist"] .rux--data-table thead tr {
+[data-theme="geist-dark"] .rux--data-table thead tr {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-[data-theme="geist"] .rux--data-table td,
-[data-theme="geist"] .rux--data-table tbody th {
+[data-theme="geist-dark"] .rux--data-table td,
+[data-theme="geist-dark"] .rux--data-table tbody th {
   border-block-end-color: var(--rux-border-subtle-00);
 }
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
@@ -335,7 +335,7 @@
    editor's bus tile was reported invisible. They take the modal's own
    treatment, at the border level that matches the layer they sit on, as an
    inset ring so nothing moves. */
-[data-theme="geist"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
+[data-theme="geist-dark"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
 /* The side panel takes a real border rather than that ring, because its own
@@ -343,28 +343,28 @@
    would cover one. Carbon sizes every box from its border, so the 1px comes
    out of the panel's width and nothing moves. The modal already carries the
    same border in this theme. */
-[data-theme="geist"] .rux--side-panel {
+[data-theme="geist-dark"] .rux--side-panel {
   border: 1px solid var(--rux-border-subtle-01);
 }
 /* And a rule under its title. Carbon separates a panel's header from what
    follows with spacing alone -- the header is the panel's own surface in every
-   theme, with no line -- which is right where nothing else is ruled. In geist
+   theme, with no line -- which is right where nothing else is ruled. In geist-dark
    every other band carries one, so the absence reads as the one thing someone
    forgot. */
-[data-theme="geist"] .rux--side-panel__header {
+[data-theme="geist-dark"] .rux--side-panel__header {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 /* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own
    background, and on the pale tint the light themes give the low-contrast
-   variant, 1.5. A mark needs 3. Ant-dark and geist are not here: their
+   variant, 1.5. A mark needs 3. Ant-dark and geist-dark are not here: their
    notification is a dark tint, where the light yellow is already right. Mixing the theme's own yellow 60% into its own
    dark ink keeps the hue and clears it everywhere, 3.46 at worst, and invents
    no colour. The ink differs by theme only because it is whichever of
    text-inverse and text-primary is the dark one there. The variants left out
    already pass: their ground is dark, and the light yellow is right on it. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify"])
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"])
   :is(.rux--inline-notification, .rux--toast-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
   :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-inverse));
@@ -380,97 +380,97 @@
    page is the brightest thing on screen. The four tints are the
    notification-background tokens, set per theme in rux-theme.css; the borders
    and the glyphs are the support colours each theme already carries. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification {
   border: 1px solid transparent;
   color: var(--rux-text-primary);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification .rux--inline-notification__close-icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification .rux--inline-notification__close-icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification .rux--inline-notification__close-icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--inline-notification__close-icon {
   fill: var(--rux-icon-primary);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--error,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--error {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--error,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error {
   background: var(--rux-notification-background-error);
   border-color: var(--rux-support-error);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--error .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--error .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--error .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error .rux--toast-notification__icon {
   fill: var(--rux-support-error);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--success,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--success {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--success,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success {
   background: var(--rux-notification-background-success);
   border-color: var(--rux-support-success);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--success .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--success .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--success .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success .rux--toast-notification__icon {
   fill: var(--rux-support-success);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info-square,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info-square {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info-square,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square {
   background: var(--rux-notification-background-info);
   border-color: var(--rux-support-info);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info-square .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info .rux--toast-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info-square .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info-square .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square .rux--toast-notification__icon {
   fill: var(--rux-support-info);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning-alt,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning-alt {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning-alt,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt {
   background: var(--rux-notification-background-warning);
   border-color: var(--rux-support-warning);
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning-alt .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning .rux--toast-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning-alt .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning-alt .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt .rux--toast-notification__icon {
   fill: var(--rux-support-warning);
 }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's
    curve: the header's actions, the side panel's close and action row, and a
    modal's close and footer. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--header__action,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--header__action,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn {
   border-radius: 0;
 }
 /* A close button in a rounded corner takes that corner's curve, so neither its
    hover fill nor its inset focus ring draws a square inside the curve. A
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-close-button {
   border-start-end-radius: 12px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification__close-button {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__header {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__header {
   border-start-start-radius: 12px;
   border-start-end-radius: 12px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__actions-container {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__actions-container {
   border-end-start-radius: 12px;
   border-end-end-radius: 12px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:first-child,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:first-child {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set__action-button:first-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:first-child {
   border-end-start-radius: 12px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:last-child,
-:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:last-child {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set__action-button:last-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:last-child {
   border-end-end-radius: 12px;
 }

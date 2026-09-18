@@ -115,11 +115,11 @@
   const get = id => readRaw().find(t => t.id === id) ?? null;
 
   // Reserved: the four compiled themes, and
-  // `geist`/`ant-dark`/`spotify` — widened from Phase 14's
+  // `geist-dark`/`ant-dark`/`spotify-dark` — widened from Phase 14's
   // export-only RESERVED set, since a saved, persistent, cross-app
   // theme shadowing a shipped theme is worth closing now that saving
   // means more than exporting a snippet.
-  const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist', 'ant-dark', 'spotify']);
+  const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark']);
 
   // Same id + same kind: update in place. Same id + different kind, or a
   // reserved name: refused. Nothing here is "ownership" — this is one local

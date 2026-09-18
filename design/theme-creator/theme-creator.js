@@ -40,7 +40,7 @@ import { runKey, sameRun, copy, CAP } from '../builder/session.mjs';
 import { contrastRatio, meetsThreshold, normaliseHex } from './contrast.mjs';
 
 const NAME_RE = /^[a-z][a-z0-9-]*$/;
-const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist', 'ant-dark', 'spotify']);
+const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark']);
 
 // A value the fields accept and the swatch can paint: hex, or one of the
 // twenty-five rgba() values Carbon's own themes carry (every ai-aura-*,
@@ -457,7 +457,7 @@ function renderExport() {
   const problem = nameProblem(state.name);
   $('thc-name-helper').textContent = problem
     ? `Not usable as a theme name yet: ${problem}.`
-    : 'Lowercase letters, digits and hyphens; not white, g10, g90, g100, geist, ant-dark or spotify — those are the shipped themes, not a name you can save over.';
+    : 'Lowercase letters, digits and hyphens; not white, g10, g90, g100, geist-dark, ant-dark or spotify-dark — those are the shipped themes, not a name you can save over.';
 }
 
 // ── draft ───────────────────────────────────────────────────────────────

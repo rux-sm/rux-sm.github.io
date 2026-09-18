@@ -101,7 +101,7 @@ const guide = JSON.parse(readFileSync('builder/guide.json', 'utf8'));
 // A glyph the page shows only after builder.js writes it. See the header.
 const RUNTIME_GLYPHS = ['i-checkmark--outline'];
 
-const THEMES = [['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'], ['geist', 'Geist'], ['ant-dark', 'Ant Dark'], ['spotify', 'Spotify']];
+const THEMES = [['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'], ['geist-dark', 'Geist dark'], ['ant-dark', 'Ant dark'], ['spotify-dark', 'Spotify dark']];
 const GRIDS = [['capped', 'Capped at 99rem'], ['full', 'Full width']];
 const STEPS = [['Purpose', 'What the page is for'], ['Sections and content', 'Each part, its words and its size'], ['Add sections', 'What else the page could carry'], ['Review', 'How it looks and whether it holds together'], ['Take it away', 'The file, or the command that makes a project']];
 const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

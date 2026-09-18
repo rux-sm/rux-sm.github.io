@@ -165,7 +165,8 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   from it would mark envelopes that never came out. rux-ui does not guess
   either: its task list offers Open, or Open and mark as complete, and the
   person chooses. The form's toolbar carries that same choice, a box beside the
-  copy it belongs to, and it unticks. The flag then means what it means in
+  copy it belongs to, and it unticks. It stays one box per copy however many
+  Print all lays on the stack, because the flag then means what it means in
   rux-ui -- a person said this one is done -- so the two apps agree.
 
 ## Questions
@@ -173,10 +174,6 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **Which forms follow the envelope, and in what order?** The driver sheet, the
   printed schedule, a quote, an hours-of-service form and a roster are all
   named; only the first three have a rux-ui form to match.
-- **Does Printed still tick per copy, now Print all covers the trip?** One
-  press can lay eleven envelopes on the stack, and each is ticked by hand on
-  its own copy: either the point, a tick meaning a person looked at that one,
-  or ten ticks too many.
 - **Does the driver's own page show its envelope later?** rux-ui's
   `driver.html` opens the same form read-only on a phone; the screen inventory
   builds that page from tiles with Accept and Decline and says nothing about

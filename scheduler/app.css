@@ -527,11 +527,12 @@ button.scheduler-row-head__num::after {
 
 /* A requirement the bus fails, or a missing itinerary: the missing item's icon
    on the warning colour, in the text colour that reads on it, so it shows on
-   every bar tint. The copy
-   on the destination row shows only while the drivers row is turned off. */
+   every bar tint. They sit at the end of the notes row, because a note gives
+   way by the letter and a crew gives way a whole name at a time. The copy
+   on the destination row shows only while the notes row is turned off. */
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
-.scheduler-week--no-drivers .scheduler-bar__warn--dest { display: flex; }
+.scheduler-week--no-notes .scheduler-bar__warn--dest { display: flex; }
 /* Every mark on a bar is drawn the same way: a fill in its own colour and
    nothing around it. A mark whose colour is the bar's own colour loses its
    edges and reads as a loose glyph, which rux chose over an outline on every
@@ -558,6 +559,19 @@ button.scheduler-row-head__num::after {
   background: var(--rux-support-success);
   color: var(--rux-text-inverse);
 }
+/* The count standing in for the marks a narrow bar has no room for, in the
+   place of the last that fits. It is a chip like the others and the same
+   square, so `fitMarks` can count what fits from one measurement. `hidden`
+   is restated because the chip sets a display. */
+.scheduler-bar__warn-more {
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.scheduler-bar__warn-chip[hidden] { display: none; }
+
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {

@@ -544,6 +544,51 @@
     for (const r of narrow) r.classList.add('scheduler-bar__time--short');
   }
 
+  /* How many marks a bar draws. A mark is a square the height of a row, and
+     the row it sits in is as wide as the day column, so the narrowest bar
+     holds five and a trip can raise seven. The ones past what fits would be
+     cut off by the row's own overflow, saying nothing; instead the last that
+     fits becomes a "+N" chip carrying the rest, so the bar still counts what
+     is pending. Rows are all reset, then all read, then all set, as
+     `fitTimes` does. */
+  function fitMarks() {
+    const boxes = [...gridEl.querySelectorAll('.scheduler-bar__warn')];
+    // Reset: every mark back, every count away.
+    for (const box of boxes) {
+      for (const chip of box.children) chip.hidden = chip.classList.contains('scheduler-bar__warn-more');
+    }
+    /* Read. A chip and the gaps around it are the same on every bar, so one
+       drawn chip is measured and every other bar counted from it. Drawn is
+       what the probe insists on: the copy on the destination row is there in
+       every bar and shown in none of them until the notes row is turned off,
+       and a box nobody draws measures nothing. */
+    const probe = boxes.find(b => b.getBoundingClientRect().width);
+    if (!probe) return;
+    const chipW = probe.firstElementChild.getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(probe).columnGap) || 0;
+    const rowGap = parseFloat(getComputedStyle(probe.parentElement).columnGap) || 0;
+    const plans = boxes.map(box => {
+      const row = box.parentElement;
+      if (!box.getBoundingClientRect().width) return null;
+      // What the row leaves once everything before the marks has given way to
+      // nothing: its width, less the gap each of those still takes.
+      const room = row.clientWidth - [...row.children].indexOf(box) * rowGap;
+      const total = box.children.length - 1;
+      const fits = Math.floor((room + gap) / (chipW + gap));
+      return fits < total ? { box, total, show: Math.max(1, fits) } : null;
+    });
+    // Set.
+    for (const p of plans) {
+      if (!p) continue;
+      const chips = [...p.box.children];
+      for (let i = p.show - 1; i < p.total; i++) chips[i].hidden = true;
+      const more = chips[p.total];
+      more.hidden = false;
+      more.textContent = `+${p.total - p.show + 1}`;
+      more.title = chips.slice(p.show - 1, p.total).map(c => c.title).join(', ');
+    }
+  }
+
   // The trip's documents labelled Itinerary, newest first. The first is the one
   // rux-ui picks: a re-uploaded itinerary replaces the one before.
   const itinerariesOf = trip => (trip.trip_documents || [])
@@ -708,22 +753,26 @@
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
+    /* The marks, most urgent first: the money, then the bus, then the
+       paperwork. A narrow bar drops them from the end, so the order is which
+       one rux would want left standing. */
+    const marks = [];
+    // Where the trip's money stands, bus or no bus: the one mark on this bar
+    // that is about the booking rather than the vehicle.
+    const owed = paymentMark(trip);
+    if (owed) marks.push(owed);
     /* A requirement is drawn only when the bus fails it. A trip that needs a
        sleeper on a sleeper bus has nothing to say, so the flags cost no row; a
        trip on a bus without one shows the missing item as a warning icon. No
        bus means nothing to compare, and an unrecorded capacity is not a
        shortfall. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    const marks = bus ? [
+    if (bus) marks.push(...[
       wrongType(trip.vehicle_type, bus) ? { href: '#i-bus', label: wrongType(trip.vehicle_type, bus) } : null,
       trip.req_sleeper && !bus.sleeper ? { href: '#i-hotel', label: `Needs a sleeper, bus ${bus.number} has none` } : null,
       trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
       trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
-    ].filter(Boolean) : [];
-    // Where the trip's money stands, bus or no bus: the one mark on this bar
-    // that is about the booking rather than the vehicle.
-    const owed = paymentMark(trip);
-    if (owed) marks.push(owed);
+    ].filter(Boolean));
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
@@ -740,9 +789,13 @@
       const booked = !!trip[`hotel_booked_${leg.leg}`];
       marks.push({ href: '#i-building', label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked });
     }
-    // Drawn on the drivers row and again on the destination row; app.css shows
-    // the second only while the drivers row is turned off, so hiding a row
-    // never hides the warning. The bar's label carries it for a screen reader.
+    /* Drawn on the notes row and again on the destination row; app.css shows
+       the second only while the notes row is turned off, so hiding a row never
+       hides the warning. The notes row rather than the drivers row because a
+       note gives way with an ellipsis and a crew gives way a whole name at a
+       time: on the narrowest bar the marks cost the end of a sentence instead
+       of every driver's name. The bar's label carries them for a screen
+       reader, whole and in every width. */
     const TONES = ['error', 'success'];
     const warn = where => {
       if (!marks.length) return null;
@@ -756,6 +809,12 @@
         chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
         box.appendChild(chip);
       }
+      /* The count that stands for the marks a narrow bar has no room for.
+         `fitMarks` fills it in, and leaves it hidden on a bar that holds them
+         all. It is last, so the marks before it keep their own places. */
+      const more = el('span', 'scheduler-bar__warn-chip scheduler-bar__warn-more');
+      more.hidden = true;
+      box.appendChild(more);
       return box;
     };
 
@@ -791,16 +850,17 @@
     const when = times(false), whenShort = times(true);
     addRow(bar, 'scheduler-bar__time', when, whenShort);
 
-    // The trip's note on one line, cut with an ellipsis; the whole of it on hover.
+    // The trip's note on one line, cut with an ellipsis; the whole of it on
+    // hover. The marks sit at its end, and the note gives way to them.
     const note = el('span', null, trip.notes || '');
     if (trip.notes) note.title = trip.notes;
-    addRow(bar, 'scheduler-bar__notes', note);
+    addRow(bar, 'scheduler-bar__notes', note, warn('notes'));
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
-    addRow(bar, 'scheduler-bar__drivers', crewBox, warn('drivers'));
+    addRow(bar, 'scheduler-bar__drivers', crewBox);
 
     bar.setAttribute('aria-label', [
       trip.destination || 'No destination', trip.customer, ref,
@@ -1023,7 +1083,7 @@
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
-    window.Rux?.schedule?.fit?.();    fitTimes();
+    window.Rux?.schedule?.fit?.();    fitTimes();    fitMarks();
   }
 
   /* ── Moving a trip to another bus ──
@@ -5340,9 +5400,9 @@
 
   // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); fitMarks(); })).observe(gridEl);
   // A web font that arrives after the first render changes every time's width.
-  document.fonts?.ready.then(fitTimes);
+  document.fonts?.ready.then(() => { fitTimes(); fitMarks(); });
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. Close trip is a tab on its bar and needs nothing. */
@@ -5418,9 +5478,11 @@
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     // The bars change height and lane, which the scroll pane may not report as
-    // a resize, so the trip tabs follow here.
+    // a resize, so the trip tabs follow here. Turning the notes row off moves
+    // the marks to the destination row, which has its own room for them.
     placeBarOpen();
     markEditorBars();
+    fitMarks();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = !!view[key];

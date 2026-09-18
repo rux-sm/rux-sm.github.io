@@ -400,6 +400,15 @@
   const params = new URLSearchParams(location.search);
   const formOf = id => FORMS.find(f => f.id === id) || null;
 
+  /* Framed in the board's viewer, or standing on its own. The sheet is the
+     same either way; only the shell around it differs, so the page says which
+     it is once and the stylesheet answers. */
+  const framed = window.self !== window.top;
+  if (!framed) {
+    document.documentElement.setAttribute('data-rux-standalone', '');
+    document.getElementById('scheduler-print-shell').hidden = false;
+  }
+
   const bar = document.getElementById('scheduler-print-bar');
   const title = document.getElementById('scheduler-print-title');
   const controls = document.getElementById('scheduler-print-controls');
@@ -467,6 +476,15 @@
   function buildControls() {
     const { form, copies, layout } = current;
     const nodes = [];
+
+    /* The way back to the other forms. It is in the page's own toolbar rather
+       than the header, so it is there in a tab and gone in the viewer, where
+       the board behind it is the way back. */
+    if (!framed) {
+      const back = el('a', 'rux--btn rux--btn--ghost rux--btn--sm', 'All forms');
+      back.href = 'print.html';
+      nodes.push(back);
+    }
 
     if (form.layouts?.length > 1) {
       const group = el('div', 'rux--content-switcher rux--content-switcher--sm');

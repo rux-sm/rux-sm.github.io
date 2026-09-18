@@ -12,13 +12,23 @@
 
 /* ── The page itself ──────────────────────────────────────────────────── */
 
-/* The desk the paper lies on, a step darker than the sheet so the page's
-   edges show. On the white theme that is Carbon's own layer over background;
-   in print both go plain white and the distinction has done its job. */
+/* The page is the page. The desk -- a step darker, so a sheet's edges show --
+   is only where a sheet lies, because a bare rux--tile is layer's own colour
+   and the hub's tiles would disappear into a desk that ran the whole way. */
 .scheduler-print {
   min-height: 100vh;
-  background: var(--rux-layer-01);
+  background: var(--rux-background);
+  display: flex;
+  flex-direction: column;
 }
+
+/* Carbon's header is fixed, so the page clears it, and the toolbar sticks
+   below it rather than under it. Neither applies while the page is framed,
+   where there is no header. */
+[data-rux-standalone] .scheduler-print { padding-block-start: 3rem; }
+[data-rux-standalone] .scheduler-print__bar { top: 3rem; }
+
+@media print { .scheduler-print__shell { display: none; } }
 
 /* The toolbar above the paper: the form's own controls, which travel with it
    into a new tab where the viewer's toolbar cannot follow. Screen only. */
@@ -44,8 +54,13 @@
 }
 
 .scheduler-print__sheet {
+  flex: 1;
+  background: var(--rux-layer-01);
   padding: var(--rux-spacing-05);
 }
+
+/* No form drawn, so no desk: the hub is a page, not a sheet. */
+.scheduler-print__sheet:empty { display: none; }
 
 /* ── The paper ────────────────────────────────────────────────────────────
    Fluid on screen: a form fills whatever box it is in, whether that is the
@@ -72,6 +87,7 @@
   .scheduler-print__bar { display: none; }
   .scheduler-print__sheet { padding: 0; }
   .scheduler-print,
+  .scheduler-print__sheet,
   .scheduler-form { background: #fff; }
   .scheduler-form {
     max-width: none;

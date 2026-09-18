@@ -118,11 +118,18 @@ that make share links.
       until it is identified. A dry run inside a rolled-back transaction shows
       staff see rows and the key alone does not.
 - [ ] Migration `staff_cutover_tables`: drop the open and `transition_open`
-      policies, revoke table and sequence grants from `anon`, and limit
-      profile updates to the display name, photo, colour and settings.
+      policies, revoke table and sequence grants from `anon`, and grant a
+      profile update on the display name, photo, colour and settings only.
+      A grant, not a limit: `authenticated` holds no update on `profiles` at
+      all today, so `staff_update_own` has never been able to fire and nobody
+      can edit their own profile.
 - [ ] Migration `staff_cutover_rpcs`: keep the driver link, maintenance
       schedule, trip request submission and the two new link functions open to
-      `anon`; revoke the rest from `anon` and start each with `assert_staff()`;
-      then issue a new maintenance link.
+      `anon`; revoke the rest from `anon` and start each with `assert_staff()`.
+      Two hand a link to anyone holding the key and close here:
+      `get_maintenance_schedule_share()`, which takes no argument at all, and
+      `get_driver_schedule_share_for_driver()`, which takes a driver's id. The
+      maintenance link is reissued after, because the old one cannot be
+      assumed private.
 - [ ] Migration `staff_default_privileges`: new tables and functions no longer
       grant `anon` by default.

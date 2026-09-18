@@ -23,6 +23,14 @@
    with no `data-theme` of its own — the kitchen sink's specimens, inside a
    themed sandbox — is left to its sandbox.
 
+   THE MARK IS TWO DRAWINGS, and the bar picks one. brand/logo.svg is gray 10
+   and brand/logo-dark.svg the same geometry in gray 100; dressMark() reads
+   the bar's own computed background and takes whichever has the higher
+   contrast against it. Measuring rather than listing is what makes a theme
+   nobody has built yet work: a saved theme's bar colour is not knowable from
+   its name. A client's own logo is one file and is never rewritten — only a
+   src ending in the mark's own name is.
+
    apply() RESOLVES THE STORED NAME THROUGH THREE CASES, always in the same
    order and always starting from a clean slate — every --rux-* property
    currently set inline is removed from each element first, so switching AWAY
@@ -75,6 +83,35 @@
 
   const zones = () => [document.documentElement, ...document.querySelectorAll(SHELL)];
 
+  // WCAG's own two formulas, on the two fills the mark ships in. They are
+  // here rather than imported because this file runs in the head of every
+  // page and takes no dependency; it is eight lines of arithmetic.
+  const MARK = /(^|\/)logo(-dark)?\.svg$/;
+  const channel = v => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+  const luminance = ([r, g, b]) => 0.2126 * channel(r / 255) + 0.7152 * channel(g / 255) + 0.0722 * channel(b / 255);
+  const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  const LIGHT_MARK = luminance([244, 244, 244]);   // brand/logo.svg, gray 10
+  const DARK_MARK = luminance([22, 22, 22]);       // brand/logo-dark.svg, gray 100
+
+  // Reads the bar AFTER wear() has dressed it, so getComputedStyle answers
+  // with the theme's own colour rather than the one the markup opened on.
+  const dressMark = el => {
+    const img = el.querySelector('.rux--header__name img');
+    const src = img?.getAttribute('src');
+    if (!src || !MARK.test(src)) return;
+    const rgb = getComputedStyle(el).backgroundColor.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+    if (!rgb || rgb.length < 3) return;
+    const bar = luminance(rgb);
+    const dark = contrast(DARK_MARK, bar) > contrast(LIGHT_MARK, bar);
+    const next = src.replace(MARK, dark ? '$1logo-dark.svg' : '$1logo.svg');
+    if (next === src) return;
+    // An app that ships only the one drawing gets the one it has, not a
+    // broken image: the alternate is picked by name, and nothing in the
+    // markup names it, so no gate can tell anyone it is missing.
+    img.addEventListener('error', () => img.setAttribute('src', src), { once: true });
+    img.setAttribute('src', next);
+  };
+
   // CLEARS WHAT IS ACTUALLY SET, not a list of what could be. Until
   // 2026-09-10 this walked js/custom-themes.js's ALL_OVERRIDE_PROPS — the
   // forty-nine properties either kind of custom theme could name — which
@@ -125,6 +162,7 @@
   const dressShell = (el, name, custom) => {
     wear(el, name, custom);
     if (custom || !CARBON.has(name)) el.style.setProperty('--rux-background', 'var(--rux-layer-01)');
+    dressMark(el);
   };
 
   const apply = () => {
@@ -135,6 +173,7 @@
       // No preference: clear anything inline and leave both elements on the
       // themes their markup names.
       for (const el of zones()) clearOverrides(el);
+      for (const el of shells) dressMark(el);
       return null;
     }
 

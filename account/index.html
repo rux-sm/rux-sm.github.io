@@ -132,12 +132,14 @@
 <header class="rux--header" data-theme="g100" aria-label="Rux Home">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
 
-  <!-- The logo is brand/logo.svg, one file. Swap it and every page here
-       picks it up on reload: no build step, no markup edit.
-       It is an img, not inline SVG, which is what makes that swap free and
-       costs nothing: the shell header is #161616 with #f4f4f4 text in all
-       four themes, so one colourway serves every theme and currentColor had
-       one value to carry. Sized by HEIGHT so the file's own aspect governs. -->
+  <!-- The logo is brand/logo.svg and brand/logo-dark.svg, the same drawing in
+       gray 10 and gray 100. Swap them and every page here picks them up on
+       reload: no build step, no markup edit.
+       It is an img, not inline SVG: currentColor cannot reach inside one, so
+       the file carries its own colour, and js/theme.js rewrites the src to
+       whichever of the two reads on the bar -- #161616 under Carbon's four
+       themes, and the theme's own colour above them.
+       Sized by HEIGHT so the file's own aspect governs. -->
   <a class="rux--header__name" href="/"><img src="../brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Home</a>
 

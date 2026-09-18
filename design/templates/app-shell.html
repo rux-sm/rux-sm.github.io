@@ -246,13 +246,16 @@
 
   <!-- REPLACE: product name. The mark is brand/logo.svg -- SWAP THE FILE,
        not this markup: every shell here and every page the script exports
-       reads that one path, so a new drawing lands everywhere on reload.
+       reads those paths, so a new drawing lands everywhere on reload.
        What ships today is a dashed placeholder, not a mark. No invented
        class; the img is inline style only. Sized by HEIGHT with the width
        following, so the file's own aspect governs -- do not pin a width.
        currentColor does not reach into an img, so the file carries its own
-       colours; the header ground is #161616 in every theme, so one
-       colourway serves. -->
+       colours. The mark is TWO drawings -- brand/logo.svg in gray 10 and
+       brand/logo-dark.svg in gray 100 -- and js/theme.js rewrites the src to
+       whichever reads on the bar, which is #161616 under Carbon's four themes
+       and the theme's own colour above them. An app shipping only one of the
+       two keeps the one it has. -->
   <a class="rux--header__name" href="./"><img src="../brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
 
   <!-- REPLACE: top-level product navigation. The current one carries

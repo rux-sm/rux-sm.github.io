@@ -106,8 +106,6 @@ that make share links.
       build carries it, but it reaches only a tab that is open and anyone with
       unsaved work loses it. rux-ui's Worker hides the browser's address, so
       only the Worker's own logs could name the machine.
-- [ ] Pin rux-ui's `supabase-js` to one version instead of the floating `@2`,
-      so a cached copy cannot leave a browser on an old client for months.
 - [ ] Watch for at least seven days, until three business days in a row show
       every account signed in and every remaining key-only request in the edge
       logs named: the driver, maintenance, document and request links, and any

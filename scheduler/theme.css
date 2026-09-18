@@ -19,7 +19,6 @@
 [data-theme="g90"],
 [data-theme="g100"],
 [data-theme="geist"],
-[data-theme="linear"],
 [data-theme="ant-dark"],
 [data-theme="spotify"] {
   --scheduler-on-warning: var(--rux-text-inverse);

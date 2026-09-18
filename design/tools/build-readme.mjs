@@ -41,7 +41,7 @@ const rows = [
   ['Components',
    `**${s.components.compiled} / ${s.components.total} compiled** in ${s.components.useLines} \`@use\` lines — \`data-table\` is four of them — and \`docs/inventory.md\` decides all ${s.components.total}, which \`check-inventory\` fails if it stops`],
   ['Themes',
-   `${s.themes.count} — ${s.themes.names.join(', ')} — plus \`geist\`, \`linear\`, \`ant-dark\` and \`spotify\`, token override blocks in \`css/rux-theme.css\`, not a compile`],
+   `${s.themes.count} — ${s.themes.names.join(', ')} — plus \`geist\`, \`ant-dark\` and \`spotify\`, token override blocks in \`css/rux-theme.css\`, not a compile`],
   ['Tokens · classes',
    `**${n(s.tokensDefined)}** \`--rux-*\` defined, ${s.tokensFallbackOnly} more read through a fallback · **${n(s.classes)}** \`.rux--*\``],
   ['Kitchen sink',

@@ -97,7 +97,7 @@ export const PAGES = [
 // js/theme.js re-checks whichever one storage holds on load.
 const THEME_NAMES = [
   ['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'],
-  ['geist', 'Geist'], ['linear', 'Linear'], ['ant-dark', 'Ant Dark'], ['spotify', 'Spotify'],
+  ['geist', 'Geist'], ['ant-dark', 'Ant Dark'], ['spotify', 'Spotify'],
 ];
 
 const themeRadios = () => THEME_NAMES.map(([value, label]) =>

@@ -74,7 +74,7 @@
     emptySvgs: [...document.querySelectorAll(`${MAIN} svg`)].filter(s => !s.children.length).length,
     uaStyled,
     // Eight since 2026-09-10: the four Carbon themes plus the four in
-    // css/rux-theme.css (geist, linear, ant-dark, spotify — rux held this
+    // css/rux-theme.css (geist, ant-dark, spotify — rux held this
     // set's fifth slot from Phase 10 until geist replaced it), which only
     // the sink and the templates link.
     white: sweep('white'),
@@ -82,7 +82,6 @@
     g90: sweep('g90'),
     g100: sweep('g100'),
     geist: sweep('geist'),
-    linear: sweep('linear'),
     antDark: sweep('ant-dark'),
     spotify: sweep('spotify'),
   };

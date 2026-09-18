@@ -364,7 +364,7 @@
    no colour. The ink differs by theme only because it is whichever of
    text-inverse and text-primary is the dark one there. The variants left out
    already pass: their ground is dark, and the light yellow is right on it. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="linear"], [data-theme="spotify"])
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify"])
   :is(.rux--inline-notification, .rux--toast-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
   :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-inverse));

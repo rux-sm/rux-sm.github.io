@@ -184,7 +184,7 @@ export function fromDraft(raw, manifest) {
   for (const key of ['theme', 'prefix', 'name', 'title', 'page']) {
     if (typeof d.answers[key] !== 'string') return no(`its ${key} answer is not readable`);
   }
-  if (!['white', 'g10', 'g90', 'g100', 'geist', 'linear', 'ant-dark', 'spotify'].includes(d.answers.theme)) {
+  if (!['white', 'g10', 'g90', 'g100', 'geist', 'ant-dark', 'spotify'].includes(d.answers.theme)) {
     return no(`it names a theme this version does not have (${d.answers.theme})`);
   }
   // THE GRID ANSWER ARRIVED 2026-09-06, so a draft saved before then has none

@@ -222,7 +222,7 @@ const page = `<!doctype html>
      ADDING THEM CHANGES NOTHING ON THIS PAGE TODAY, and that is measured, not
      assumed: css/rux-overrides.css carries no live rule at all, and
      css/rux-theme.css carries four blocks, [data-theme="geist"],
-     [data-theme="linear"], [data-theme="ant-dark"] and
+     [data-theme="ant-dark"] and
      [data-theme="spotify"], none of which this page matches -- it is
      data-theme="white" above. The point is
      that the portal stops being the exception. The moment a rule lands in

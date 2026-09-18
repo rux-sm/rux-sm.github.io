@@ -1288,6 +1288,14 @@ button.scheduler-row-head__num::after {
   /* Across every column, since a band covers the name and the whole week, and
      a label held inside the name column has no room for "No priority". */
   grid-column: 1 / -1;
+  /* Pinned under the column header, so the band being read is always named.
+     Above the sticky name column at 2 and clear of the header's own 3, which
+     it stops below and never reaches. A heading that has been passed stays
+     pinned under the next one, which is opaque and later in the markup, so the
+     name on show is always the band on screen. */
+  position: sticky;
+  inset-block-start: 2rem;
+  z-index: 3;
   /* The column header's own 2rem and inset, so a band heading and the header
      it repeats are the same band at the same size. */
   block-size: 2rem;

@@ -5070,11 +5070,14 @@
       rows.length ? bandName(firstBand) : 'Driver'));
     for (let i = 0; i < 7; i++) {
       const d = new Date(weekStart.getTime() + i * DAY);
-      /* Two letters, taken from the locale's own `short` weekday: one letter
-         cannot tell Tuesday from Thursday, and two fit the roster's narrow day
-         column. Spread rather than `slice`, so the unit is a code point. */
+      /* One letter, taken from the locale's own `short` weekday, for the
+         quietest header the seven columns can carry. It repeats -- T and T, S
+         and S -- so the day's full name goes on `title`, as a driver's does on
+         the name beside it. Spread rather than `slice`, so the unit is a code
+         point. */
       const short = d.toLocaleDateString(undefined, { weekday: 'short' });
-      const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 2).join(''));
+      const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 1).join(''));
+      cell.title = d.toLocaleDateString(undefined, { weekday: 'long' });
       // Weekend letters dim, as the board's day header does; the day rules are
       // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');

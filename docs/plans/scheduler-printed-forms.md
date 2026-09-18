@@ -30,8 +30,7 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **The two kinds of document keep their own page.** `share/document.html`
   opens a *stored* file by id for someone without a log-in; this page renders a
   *generated* form from live data for staff. Both frame into the same panel.
-- **It replaces the screen inventory's two lines** that said print stylesheets
-  over the same page with the options in a modal. Printing out of the board
+- **A page, not a print stylesheet over the board.** Printing out of the board
   means hiding the board: rux-ui does it with `body > *:not(…)` plus roughly 45
   lines of `!important` unwinding a floating window's position, transform,
   size and border, and its exemption list has grown to two entries that each
@@ -170,8 +169,6 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 ## Tasks
 
-- [ ] Rewrite the screen inventory's print lines, in §2 and §7, to name this
-      page.
 - [ ] rux opens a real trip's envelope from the board, prints the crew's copies
       on the office printer, and checks them against the form in use today.
 - [ ] rux ticks Printed on a real copy and checks rux-ui's task list agrees.

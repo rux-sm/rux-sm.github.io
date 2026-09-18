@@ -46,7 +46,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
 | Trip finder results page | keep | Results in a data table on a page. The header search and Cmd-K exist. |
 | Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
-| Print schedule, trip envelope, driver sheet | later, in that order | Print stylesheets over the same page, options in a modal. |
+| Print schedule, driver sheet | later, in that order | Entries in `print.html`'s registry beside the driver envelope's, each naming what it binds to and the paper it takes. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
 | Notifications | later | Shell header panel, the one the switcher uses. |
 | Driver card | later | Popover from a cell of the availability grid (§7). |
@@ -61,7 +61,6 @@ Design account panel replaces it).
 | Time-aligned mode | later | The grid places by day. |
 | Two-week view | decide | The grid fetches one week. |
 | Tasks, History | later | Pages (§7). |
-| Print envelope on the bar menu | later | With printing. |
 | Pending itinerary mark | keep | A warning chip on a bar whose trip has no itinerary and is not marked as not needing one. |
 | Payment marks | keep | One chip, a dollar sign, whose fill is the rung: red while no purchase order and no payment stand against the quote, amber while what does is the wrong amount — short of it, or over — and green once the trip is paid in full, with the date in the tooltip. A purchase order covering the balance shows no mark, because the trip is authorised and the payment is still to come. rux-ui draws a rung per icon and a Paid badge beside them; one mark says the same thing in the space a bar has. |
 | Pending contract and pending invoice marks | drop | Both are steps towards the payment mark, which already says whether the money is covered; a second and third chip for the same trip would crowd the row without changing what anyone does next. |
@@ -128,8 +127,10 @@ Three homes, and one rule for choosing.
   it; the day header numbers the days.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any file opens there,
-  with its type above the destination.
-- **Print is a modal over the same page.**
+  with its type above the destination, and so does a form `print.html` draws.
+- **A generated form is a page, not a modal.** `print.html` draws it and the
+  document viewer frames it, so nothing has to hide the board in order to
+  print, and two forms on different paper never argue over one `@page`.
 
 ### The driver availability grid
 

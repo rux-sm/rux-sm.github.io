@@ -46,7 +46,10 @@ that make share links.
   Scheduler ticked**, so anonymous site visitors, self-made accounts and
   accounts given only other apps are never staff.
 - **Every step adds beside what exists, and the open rules come down last**,
-  after a watch of at least seven days shows nothing still uses the key alone.
+  after a watch of at least seven days accounts for every request still made
+  with the key alone. Accounted for is not the same as gone: a stale browser
+  cannot update itself while it still works, so waiting for one to stop would
+  hold the database open for as long as it runs.
   Each database step is a named migration, applied on rux's yes, with its
   rollback written beside it. `staff_identity_add` is applied: the profile
   columns `user_id` and `sees_all_apps`, closed to the publishable key; the
@@ -108,12 +111,12 @@ that make share links.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
       dashboard. No page calls `signInAnonymously` any more, and a migration
       then deletes the twelve anonymous users, whose theme rows go with them.
-- [ ] Watch for at least seven days from the day the last key-alone client
-      stops, until three business days in a row show every account signed in,
-      no `anon` realtime subscription, and no anon table request in the edge
-      logs beyond the driver, maintenance, document and request links; a dry
-      run inside a rolled-back transaction shows staff see rows and the key
-      alone does not.
+- [ ] Watch for at least seven days, until three business days in a row show
+      every account signed in and every remaining key-only request in the edge
+      logs named: the driver, maintenance, document and request links, and any
+      stale browser already known and chased. Anything unnamed stops the close
+      until it is identified. A dry run inside a rolled-back transaction shows
+      staff see rows and the key alone does not.
 - [ ] Migration `staff_cutover_tables`: drop the open and `transition_open`
       policies, revoke table and sequence grants from `anon`, and limit
       profile updates to the display name, photo, colour and settings.

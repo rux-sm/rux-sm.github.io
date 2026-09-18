@@ -458,7 +458,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
-.scheduler-bar__ref { opacity: .75; }
+/* Two levels of brightness, and the split is what the row is for: bright is
+   what the trip does -- where it goes, when, what to know on the day and who
+   drives it -- and dim is who it is for. */
+.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__ref { opacity: .85; }
 /* A bar of the trip in the editor that is not the selected one: its return
    leg, or the same leg on another bus. It is locked -- it does not drag, and
    its bus, colour and hotel are the editor's to change -- so it is marked as
@@ -528,7 +531,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcut[aria-disabled="true"] svg { opacity: .4; }
 .scheduler-bar-shortcut[aria-disabled="true"] { cursor: default; }
 .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
-.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__notes { opacity: .85; }
 
 /* A requirement the bus fails, or a missing itinerary: the missing item's icon
    on the warning colour, in the text colour that reads on it, so it shows on

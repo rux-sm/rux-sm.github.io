@@ -532,14 +532,20 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
 .scheduler-week--no-drivers .scheduler-bar__warn--dest { display: flex; }
+/* One rule for every mark on a bar: a filled badge carries a hairline inside
+   its edge, in its own glyph colour, so it keeps its shape whatever colour the
+   bar is under it and every mark in the row is drawn the same way. A mark with
+   no fill is a bare glyph and takes no line. */
 .scheduler-bar__warn-chip {
   display: flex;
   align-items: center;
   justify-content: center;
   inline-size: var(--scheduler-row-h);
   block-size: var(--scheduler-row-h);
+  border-radius: var(--scheduler-mark-radius, 0);
   background: var(--rux-support-warning);
   color: var(--scheduler-on-warning);
+  box-shadow: inset 0 0 0 1px currentColor;
 }
 .scheduler-bar__warn-chip svg { display: block; }
 /* The payment mark carries its rung in its fill, in the same support colours
@@ -553,14 +559,6 @@ button.scheduler-row-head__num::after {
   background: var(--rux-support-success);
   color: var(--rux-text-inverse);
 }
-/* A chip standing on a bar of its own colour loses its edges and reads as a
-   loose glyph, so on those three hues it takes a ring inside its edge, in its
-   own glyph colour. Only the three matching pairs: every other hue differs
-   enough in hue alone, at every theme, which was checked by looking. A booked
-   hotel is excluded because it has no fill for the bar to swallow. */
-.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error, .scheduler-bar__warn-chip--success, .scheduler-bar__warn-chip--done),
-.scheduler-bar--red .scheduler-bar__warn-chip--error,
-.scheduler-bar--green .scheduler-bar__warn-chip--success { box-shadow: inset 0 0 0 1px currentColor; }
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
@@ -593,11 +591,13 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--success { background: var(--rux-support-success); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--error { background: var(--rux-support-error); color: var(--rux-text-inverse); }
 .scheduler-crew__mark--warning { background: var(--rux-support-warning); color: var(--scheduler-on-warning); }
+/* The same hairline the chips carry, on the discs that have a fill to keep.
+   Off has none, so it stays a bare glyph and is left out. */
+.scheduler-crew__mark--success,
+.scheduler-crew__mark--error,
+.scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px currentColor; }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
-/* On an amber bar the amber disc would vanish into its own fill, so it takes
-   a ring inside its edge, where the row does not clip it. */
-.scheduler-bar--amber .scheduler-crew__mark--warning { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 
 /* A double booking: a strip over the last row, in the error tokens. */
 .scheduler-bar__conflict {

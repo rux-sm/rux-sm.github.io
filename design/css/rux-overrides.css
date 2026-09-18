@@ -260,6 +260,26 @@
   border: 1px solid var(--rux-border-subtle-01);
   border-radius: 8px;
 }
+/* Inside the box, the header takes no fill and carries one rule under it, as
+   Geist's does on the same page; Carbon's filled header inside a bordered box
+   reads as two boxes fighting.
+   THE ROW RULE STAYS, WHERE GEIST DROPS IT. Geist's own tables are one line a
+   row, and ours are not: the Notes walkthroughs wrap two lines in two columns
+   at once, and with no rule at all the eye loses which cell belongs to which
+   row. Both were drawn and looked at. It steps down to the faintest border
+   instead -- present enough to track a row, quiet enough to leave the box the
+   only edge anyone reads. */
+[data-theme="geist"] .rux--data-table thead,
+[data-theme="geist"] .rux--data-table th {
+  background-color: transparent;
+}
+[data-theme="geist"] .rux--data-table thead tr {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+[data-theme="geist"] .rux--data-table td,
+[data-theme="geist"] .rux--data-table tbody th {
+  border-block-end-color: var(--rux-border-subtle-00);
+}
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart
    by its border, not its fill. The theme already does this for the modal, which

@@ -233,6 +233,13 @@
   --rux-background-selected: rgba(255, 255, 255, 0.1);
   --rux-background-selected-hover: rgba(255, 255, 255, 0.14);
 
+  /* HOVER AND SELECTED SIT ONE RUNG HIGHER THAN Geist's own ladder first put
+     them. On a #000 page a 7-shade step is not a state anyone sees: the trip
+     roster's day tint, the trip search's keyboard highlight and the editor's
+     bus tiles were all reported invisible. Each state moves one place along
+     the same ladder, so no colour is invented and the theme stays flat; the
+     measured gap between a layer and its selected state goes from the smallest
+     of the eight themes to the same range as the rest. */
   /* layer */
   --rux-layer-01: #0a0a0a;
   --rux-layer-02: #111111;
@@ -252,16 +259,16 @@
   --rux-layer-background-01: #000000;
   --rux-layer-background-02: #0a0a0a;
   --rux-layer-background-03: #111111;
-  --rux-layer-hover-01: #111111;
-  --rux-layer-hover-02: #1a1a1a;
-  --rux-layer-hover-03: #242424;
-  --rux-layer-selected-01: #1a1a1a;
-  --rux-layer-selected-02: #242424;
-  --rux-layer-selected-03: #2e2e2e;
+  --rux-layer-hover-01: #1a1a1a;
+  --rux-layer-hover-02: #242424;
+  --rux-layer-hover-03: #2e2e2e;
+  --rux-layer-selected-01: #242424;
+  --rux-layer-selected-02: #2e2e2e;
+  --rux-layer-selected-03: #333333;
   --rux-layer-selected-disabled: #525252;
-  --rux-layer-selected-hover-01: #242424;
-  --rux-layer-selected-hover-02: #2e2e2e;
-  --rux-layer-selected-hover-03: #333333;
+  --rux-layer-selected-hover-01: #2e2e2e;
+  --rux-layer-selected-hover-02: #333333;
+  --rux-layer-selected-hover-03: #3f3f3f;
   --rux-layer-selected-inverse: #ededed;
 
   /* field */

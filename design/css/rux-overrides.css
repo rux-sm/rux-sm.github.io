@@ -238,6 +238,17 @@
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
 }
+/* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
+   above the page is within 1.05 of what it sits on, so a surface is told apart
+   by its border, not its fill. The theme already does this for the modal, which
+   carries a 1px subtle border; the tile, the popover, the menus and the date
+   picker's calendar carried none and so had no visible shape at all — the
+   editor's bus tile was reported invisible. They take the modal's own
+   treatment, at the border level that matches the layer they sit on, as an
+   inset ring so nothing moves. */
+[data-theme="geist"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+}
 /* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own

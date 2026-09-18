@@ -1226,10 +1226,12 @@ button.scheduler-row-head__num::after {
 .scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
-  /* 1rem and start-aligned, as Carbon's table header cells are. Declared here,
-     after `.scheduler-avail__day`, whose zero padding and centring also match
-     this cell at the same specificity. */
-  padding-inline: var(--rux-spacing-05);
+  /* Start-aligned on the driver names' own inset, not Carbon's 1rem: the label
+     is a band's name, and "Priority 1" has no room inside 1rem of a column the
+     week has already taken its width from. Declared here, after
+     `.scheduler-avail__day`, whose zero padding and centring also match this
+     cell at the same specificity. */
+  padding-inline: var(--rux-spacing-03);
   text-align: start;
 }
 
@@ -1261,13 +1263,6 @@ button.scheduler-row-head__num::after {
   background-color: var(--rux-tag-background-red);
   color: var(--rux-tag-color-red);
 }
-/* A heading's row keeps the day rules, so the grid runs unbroken from the
-   column header to the last driver, but draws no row rule and no mark: the
-   heading is a label in the name column, not a day of anyone's week. */
-.scheduler-avail__cell--band {
-  block-size: auto;
-  border-block-end: 0;
-}
 .scheduler-avail__cell > span {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1283,31 +1278,26 @@ button.scheduler-row-head__num::after {
    `.scheduler-avail__days > .scheduler-avail__day`. */
 .scheduler-avail__days > .scheduler-avail__day--weekend { color: var(--rux-text-placeholder); }
 
-/* The heading over each priority band. Carbon has no heading for a run of grid
-   rows, so it is the app's own. It spans every column, since a band covers the
-   name and the whole week, and it sits on the grid's own `--rux-layer`, so the
-   roster has one surface and the column header above is the only band that
-   changes it. It sits in the name column, beside its own band of empty day
-   cells, so the grid's day rules run past it and the roster reads as one table
-   rather than five. It draws no rule of its own: five of them down a narrow
-   column read as five tables too, and the space above each heading separates
-   the bands on its own. `label-01` at the heading weight, in helper text,
-   keeps it quieter than a driver's name, which is what the roster is read
-   for. */
+/* The heading over each priority band, which is the column header band again,
+   lower down: the same surface, type and colour, across the same eight
+   columns. That makes the two the same thing, so the roster draws only one of
+   them at the top -- drawAvailability puts the first band's name in the column
+   header itself, where "Driver" used to be, rather than heading a band that
+   starts on the header's own edge. */
 .scheduler-avail__band {
-  /* The name column's own rule, carried on, so the divide between the names
-     and the days is one line from the header to the last driver. */
-  border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* The space above is what separates one band from the next, so it is the
-     room a rule used to take; below, only enough to hold the label off its
-     first driver. */
-  padding: var(--rux-spacing-04) var(--rux-spacing-03) var(--rux-spacing-01);
-  background: var(--rux-layer);
-  color: var(--rux-text-helper);
-  font-size: var(--rux-label-01-font-size);
+  /* Across every column, since a band covers the name and the whole week, and
+     a label held inside the name column has no room for "No priority". */
+  grid-column: 1 / -1;
+  /* The column header's own 2rem and inset, so a band heading and the header
+     it repeats are the same band at the same size. */
+  block-size: 2rem;
+  line-height: 2rem;
+  padding-inline: var(--rux-spacing-03);
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-  line-height: 1.2;
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
 
 /* ── The schedule's times ───────────────────────────────────────────────────

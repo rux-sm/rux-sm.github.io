@@ -5058,8 +5058,16 @@
     availRows = rows;
     availGrid.textContent = '';
 
+    /* The first band's name heads the whole roster, in the column header where
+       "Driver" used to sit: a band heading is the header band again, so one
+       drawn against the header's own edge would be that header twice. An empty
+       roster has no band to name and keeps "Driver". */
+    const bandName = p => p == null ? 'No priority' : `Priority ${p}`;
+    const firstBand = rows.length ? (rows[0].driver.priority ?? null) : null;
+
     const head = el('div', 'scheduler-avail__days');
-    head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head', 'Driver'));
+    head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head',
+      rows.length ? bandName(firstBand) : 'Driver'));
     for (let i = 0; i < 7; i++) {
       const d = new Date(weekStart.getTime() + i * DAY);
       /* Two letters, taken from the locale's own `short` weekday: one letter
@@ -5079,25 +5087,13 @@
        priority order and only the breaks are missing. A driver with no
        priority gets their own heading rather than sitting under the last
        number, which would say something untrue about them. */
-    let band;
+    // Seeded with the band the column header already names, so it draws none.
+    let band = firstBand;
     for (const row of rows) {
       const p = row.driver.priority ?? null;
       if (p !== band) {
         band = p;
-        /* A row like any other, so the grid's day rules run past the heading:
-           the label in the name column, then seven empty day cells. They are
-           `aria-hidden` because they hold no day of anyone's week; they are
-           there for the rules they draw. */
-        const bandRow = el('div', 'scheduler-avail__row');
-        bandRow.appendChild(el('div', 'scheduler-avail__band',
-          p == null ? 'No priority' : `Priority ${p}`));
-        for (let d = 0; d < 7; d++) {
-          const spacer = el('div', 'scheduler-avail__cell scheduler-avail__cell--band');
-          spacer.dataset.day = String(d);
-          spacer.setAttribute('aria-hidden', 'true');
-          bandRow.appendChild(spacer);
-        }
-        availGrid.appendChild(bandRow);
+        availGrid.appendChild(el('div', 'scheduler-avail__band', bandName(p)));
       }
       const r = el('div', 'scheduler-avail__row');
       /* The full name goes on the title, because the cell shows `short_name`

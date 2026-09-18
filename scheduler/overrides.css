@@ -470,3 +470,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    rises 2px and the rest hang 6px margins. In the Drivers page's
    three-column endorsements every box sits on the grid's rows instead. */
 .scheduler-driver-endorsements > .rux--form-item.rux--checkbox-wrapper { margin: 0; }
+
+/* The colour field and its options hold a 16px swatch beside their text.
+   Carbon lays those rows out as inline text, where `vertical-align: middle`
+   puts the swatch on the text's own middle rather than the row's, leaving it
+   1px low. A flex row centres it on the row. `:has()` keeps this to the rows
+   that carry a swatch, so every other list box keeps the block layout its
+   labels ellipse in. */
+.rux--list-box__label:has(> .scheduler-swatch),
+.rux--list-box__menu-item__option:has(> .scheduler-swatch) {
+  display: flex;
+  align-items: center;
+}

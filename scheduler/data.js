@@ -2395,7 +2395,7 @@
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
-      open: e => openDocument(trip, doc, e.currentTarget),
+      open: e => openDocument(doc, e.currentTarget),
       editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
     });
@@ -6164,7 +6164,6 @@
   let itinFrame = document.getElementById('scheduler-itinerary-frame');
   const itinTitle = document.getElementById('scheduler-itinerary-title');
   const itinTitleCollapsed = document.getElementById('scheduler-itinerary-title-collapsed');
-  const itinLabel = document.getElementById('scheduler-itinerary-label');
   const itinUploaded = document.getElementById('scheduler-itinerary-uploaded');
   const itinStatus = document.getElementById('scheduler-itinerary-status');
   const itinPrint = document.getElementById('scheduler-itinerary-print');
@@ -6268,7 +6267,7 @@
     swapFrame(null);
   }
 
-  async function openDocument(trip, doc, opener) {
+  async function openDocument(doc, opener) {
     if (!doc) return;
     const url = client && doc.file_path
       ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
@@ -6276,16 +6275,11 @@
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
-    /* The head names the file's type in the label line, and the trip as the
-       editor's does, by its destination, with the type before it for a screen
-       reader, which skips the label line's paragraph as it reads the heading. */
+    /* The head names the file's type and nothing else. Which trip it belongs
+       to is the editor's own heading, open behind this panel, so naming the
+       destination here said it twice. */
     const kind = docTypeName(doc);
-    const dest = trip?.destination || 'No destination';
-    itinLabel.textContent = kind;
-    for (const h of [itinTitle, itinTitleCollapsed]) {
-      h.replaceChildren(el('span', 'rux--visually-hidden', `${kind}: `), document.createTextNode(dest));
-      h.title = dest;
-    }
+    for (const h of [itinTitle, itinTitleCollapsed]) h.textContent = kind;
     const when = uploadedOn(doc.created_at);
     itinUploaded.textContent = when ? `Uploaded ${when}` : '';
     itinNewTab.href = url;
@@ -6383,7 +6377,7 @@
     if (!id) return;
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const doc = trip ? itinerariesOf(trip).find(d => String(d.id) === id) : null;
-    if (doc) openDocument(trip, doc, bar);
+    if (doc) openDocument(doc, bar);
     else window.open(documentLink(id), '_blank', 'noopener');
   }
 
@@ -6841,7 +6835,7 @@
       if (itinDocId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
-        openDocument(trip, fresh || doc, null);
+        openDocument(fresh || doc, null);
       }
       toast('success', 'The file was replaced.');
     });

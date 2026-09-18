@@ -249,7 +249,18 @@
    5.19. Only this rule pairs those two tokens, so only it moves. */
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
-}/* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
+}/* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
+   carries no border and no corners, and a wrapper around it does — 1px at 14%
+   white, 8px, over the raised layer. `data-table-content` is our equivalent
+   wrapper and already scrolls, so the corners clip what is inside them.
+   Scoped to geist because geist is what was measured; Ant's tables were not,
+   and a guess would only look like a rule. */
+[data-theme="geist"] .rux--data-table-content {
+  background: var(--rux-layer-01);
+  border: 1px solid var(--rux-border-subtle-01);
+  border-radius: 8px;
+}
+/* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart
    by its border, not its fill. The theme already does this for the modal, which
    carries a 1px subtle border; the tile, the popover, the menus and the date

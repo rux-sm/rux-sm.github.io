@@ -30,8 +30,8 @@ done and how.
 - Trip search shows the 50 newest matches, with no ranking by relevance.
 - The quote calculator's eight spreadsheet quirks are kept until decided. The
   list is in `scheduler/docs/quote-calculator.md`.
-- Below the md width the board shows about two of seven days. The phone view
-  is the driver page in `scheduler/docs/screen-inventory.md`, not built yet.
+- The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
+  yet.
 
 ## The database
 

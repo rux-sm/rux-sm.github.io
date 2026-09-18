@@ -39,8 +39,10 @@ None.
 
 ## Tasks
 
-- [ ] `specimen.html`: draw the toolbar at its narrowest and in its tight
-      state, so the one-row rule is something the check can see. Held back
-      because another session is rewriting that file's theme names.
+- [ ] `specimen.html`: rebuild the toolbar, still the one that predates this
+      change, and close `.scheduler-frame` around the board rather than before
+      it, as its own comment already claims. Then draw the toolbar at its
+      narrowest and in its tight state: both are staged in the markup, since
+      the page runs no script, and what the check reads is the classes.
 - [ ] rux resizes the real board on 8641 with the roster and the editor open,
       and reads the week on the phone.

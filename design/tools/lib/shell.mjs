@@ -91,8 +91,8 @@ export const PAGES = [
   { id: 'theme-creator', file: 'theme-creator.html', label: 'Theme creator' },
 ];
 
-// The eight themes as the profile panel's radio group, generated rather than
-// pasted: eight near-identical blocks copied into four files is four copies to
+// The seven themes as the profile panel's radio group, generated rather than
+// pasted: seven near-identical blocks copied into four files is four copies to
 // forget. White is checked because every page ships `data-theme="white"`;
 // js/theme.js re-checks whichever one storage holds on load.
 const THEME_NAMES = [

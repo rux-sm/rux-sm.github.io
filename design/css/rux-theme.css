@@ -7,14 +7,14 @@
   core token its palette redefines, plus derived values for Carbon's
   button component tokens and transcribed values for its tag,
   notification, status and content-switcher ones (both below), which are
-  separate maps none of the four supplied palettes name. Custom properties inherit, so anything a
+  separate maps none of the three supplied palettes name. Custom properties inherit, so anything a
   block does NOT name keeps white's compiled value from :root — in
-  practice that is almost nothing for any of the four, since each
+  practice that is almost nothing for any of the three, since each
   redefines the surface end to end, but it is why a handful of tokens
   (e.g. the syntax-* and ai-* families) still read white's values under
-  all four — see "WHAT NONE OF THEM TOUCH" below.
+  all three — see "WHAT NONE OF THEM TOUCH" below.
 
-  THE MECHANISM IS UNCHANGED FROM BEFORE, AND FROM ONE THEME TO FOUR: a
+  THE MECHANISM IS UNCHANGED FROM BEFORE, AND FROM ONE THEME TO THREE: a
   plain CSS custom-property override block, never a compiled Sass theme.
   `node_modules/@carbon/themes/scss/_theme.scss`'s `matches()` selects a
   theme's component-token values (buttons, tags, notifications) only
@@ -42,15 +42,15 @@
   changes because a later one exists. `js/theme.js`'s `KNOWN` set,
   `js/custom-themes.js`'s and `theme-creator/theme-creator.js`'s own
   `RESERVED` sets, `builder/session.mjs`'s draft-theme validation, and
-  every account-panel theme radio (ten templates, `index.html`, the sink,
-  `builder.html`'s default-theme picker) all carry eight names now, not
+  every account-panel theme radio (twelve templates, `index.html`, the sink,
+  `builder.html`'s default-theme picker) all carry seven names now, not
   five.
 
   TAG, NOTIFICATION, STATUS AND CONTENT-SWITCHER, ADDED 2026-09-10,
   TRANSCRIBED RATHER THAN DESIGNED. 62 values per block: `tag-*` 40,
   `notification-*` 10, `status-*` 9, `content-switcher-*` 3. Until today
-  none of the four blocks named one of them, so all 62 fell through to
-  white's compiled `:root` and every one of these four dark themes drew
+  none of the three blocks named one of them, so all 62 fell through to
+  white's compiled `:root` and every one of these three dark themes drew
   Carbon's tags, inline notifications and status dots light-on-black. The
   values are Carbon's own `[data-theme=g100]` set, copied: Carbon ships
   only TWO sets for these families — white and g10 are identical to each
@@ -64,7 +64,7 @@
   is that theme's OWN `layer-01` — g90's #393939 and g100's #262626 are
   exactly their own layer-01 — so spotify-dark #181818 takes its own. An inline notification sits on the page's own raised surface,
   which is what those themes redefine.
-  ANT-DARK AND GEIST ARE THE EXCEPTION: both draw a notification as an alert,
+  ANT-DARK AND GEIST-DARK ARE THE EXCEPTION: both draw a notification as an alert,
   a tint of the kind's own hue inside a border of it, so their four are tints
   rather than one neutral surface. Ant-dark takes Ant Design's own alert
   fills; Geist publishes none, so each of its four is that theme's own support
@@ -80,13 +80,13 @@
 
   WHY THIS WAS ASKED FOR RATHER THAN NOTICED HERE. Scheduler files
   requests against this system, and reported on 2026-09-10 that every
-  trip bar on its board takes its fill from the tag palette, so all four
+  trip bar on its board takes its fill from the tag palette, so all three
   of these themes drew the board pale-blue-on-black. Its count of
   `status-*` was 7; it is 9. Nothing else in the report was off.
 
   WHAT NONE OF THEM TOUCH. `ai-*` (Carbon's AI-feature identity) and
-  `syntax-*` (code-block colours) are not part of any of the four
-  supplied palettes, so all four are left alone and keep reading white's
+  `syntax-*` (code-block colours) are not part of any of the three
+  supplied palettes, so all three are left alone and keep reading white's
   values — a page in any of them with a syntax-highlighted code block or
   an AI-labelled component will look inconsistent there until someone
   decides those values on purpose. Not an oversight: recorded here so it
@@ -119,36 +119,6 @@
     - button-disabled: the same rgba(237, 237, 237, 0.25) already used
       for text-disabled/icon-disabled — a neutral "dimmed foreground",
       not a new value.
-
-  DERIVED BUTTON TOKENS, LINEAR. Unlike Geist, Linear's given palette
-  already carries a genuine three-step brand ladder — background-brand
-  #5e6ad2 (the darkest, most saturated indigo; interactive #7c85e6
-  (lighter); icon-interactive/link-primary/chat-button #8b92ff
-  (lightest) — so button-primary/-tertiary walk that ladder rather than
-  inventing steps:
-    - button-primary / button-tertiary: background-brand (#5e6ad2) as
-      the base — text-on-color is WHITE here, unlike Geist, so the
-      brand's own saturated indigo is the button colour, not a
-      monochrome chip. hover steps to interactive (#7c85e6, already
-      given); active steps to icon-interactive's #8b92ff (already
-      given) as a second, lighter rung — the given ladder gets lighter
-      moving away from the brand tone, so hover/active follow it rather
-      than darkening as Geist's monochrome buttons do. Tertiary mirrors
-      primary rather than turning white the way Carbon's own dark themes
-      do, because Linear's real product keeps its outline buttons in the
-      same indigo as its filled ones — a deliberate divergence from
-      Carbon's own g90/g100 convention, worth a second look on the page.
-    - button-secondary: the layer-active ladder (#30303b → #393946
-      hover → #434353 active) — the same move as Geist's secondary,
-      reusing already-given values rather than inventing a fourth grey.
-    - button-danger-primary / -secondary: support-error (#ef5f5f,
-      already given); hover steps to support-error-inverse (#d44444,
-      already given); active is computed at the same ~0.49 darkening
-      ratio as Geist's own danger-active derivation — #752f2f.
-    - button-separator: background (#0f0f12) — the darkest surface,
-      same move as Geist and as Carbon's own g90/g100.
-    - button-disabled: the same rgba(241, 241, 243, 0.25) already used
-      for text-disabled/icon-disabled.
 
   ANT-DARK FOLLOWS ANT DESIGN'S DARK ALGORITHM (`theme.darkAlgorithm` on
   the default seed): its neutrals, text alphas, fills, and its dark blue,
@@ -191,7 +161,7 @@
     - button-disabled: the same rgba(255, 255, 255, 0.25) already used
       for text-disabled/icon-disabled.
 
-  DERIVED BUTTON TOKENS, SPOTIFY. The cleanest of the four: every value
+  DERIVED BUTTON TOKENS, SPOTIFY. The cleanest of the three: every value
   below is an already-given token, nothing computed or extrapolated.
     - button-primary / button-tertiary: background-brand (#1ed760) as
       the base — text-on-color is BLACK, so the vivid green itself is
@@ -239,7 +209,7 @@
      bus tiles were all reported invisible. Each state moves one place along
      the same ladder, so no colour is invented and the theme stays flat; the
      measured gap between a layer and its selected state goes from the smallest
-     of the eight themes to the same range as the rest. */
+     of the seven themes to the same range as the rest. */
   /* layer */
   --rux-layer-01: #0a0a0a;
   --rux-layer-02: #111111;

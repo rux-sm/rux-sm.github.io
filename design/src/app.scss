@@ -189,7 +189,7 @@
 // revision of 2026-09-01 reversed it: the goal is a complete Carbon foundation,
 // and a consumer picks a theme by setting `data-theme`, never by rebuilding.
 // The cost accepted is the one the old comment named: check-rendered now
-// sweeps five themes, not two.
+// sweeps seven themes, not two.
 //
 // Order is Carbon's, light to dark. `:root` is white so a page with no
 // attribute renders; the other three answer `data-theme`. The custom theme is

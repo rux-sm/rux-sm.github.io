@@ -79,7 +79,7 @@
 //     served app this way before a tag goes live).
 //   * an id built at runtime, a class an app-specific check knows better,
 //     spacing, contrast, behaviour, or how the page LOOKS. It prints which
-//     pages to open and names the five themes; the looking is the owner's.
+//     pages to open and names the seven themes; the looking is the owner's.
 //
 // The hub keeps its registry rules and Notes its privacy, data, order,
 // ancestry and generator gates beside this; nothing app-specific lives here.

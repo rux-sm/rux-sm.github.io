@@ -6317,7 +6317,7 @@
       itineraryStatus(null);
       const blob = URL.createObjectURL(file);
       itinShown = { id: doc.id, blob, zoom: null };
-      itinFrame.title = `${kind} for ${dest}`;
+      itinFrame.title = kind;
       itinDownload.href = blob;
       itinDownload.download = doc.file_name || `${docSlug(kind, 'document')}.pdf`;
       setItineraryReady(true);

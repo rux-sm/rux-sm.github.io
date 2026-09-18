@@ -63,7 +63,8 @@ call", take the default and say which one you took.
 
 - **The side nav.** Only the expanded, fixed variant is captured. No rail, no
   collapsed-by-default; ask before offering one.
-- **The header's theme.** `g100` by Carbon's own guidance, whatever the page is.
+- **The header's theme.** `g100` by Carbon's own guidance under Carbon's four.
+  `design/js/theme.js` moves it with the page under a theme above those four.
 - **The mark.** It is the brand.
 - **Button states**: disabled, loading, selected. The page sets them; they are
   not decided at creation.

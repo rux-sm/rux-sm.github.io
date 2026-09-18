@@ -289,8 +289,9 @@ because the stylesheet gives the mechanism and not the intent.
 - **No content or writing guidance.** `carbon-website/src/pages/guidelines/content`
   exists and has not been read for this.
 - **Theming is one attribute.** `data-theme` on `<html>` is `white`, `g10`,
-  `g90`, `g100` or `rux`, and the shell zone keeps its own; the head comment in
-  `templates/app-shell.html` says why it is g100. Every template links
+  `g90`, `g100`, one of the three blocks `css/rux-theme.css` adds, or a theme
+  saved in the Theme Creator. The shell zone keeps g100 under Carbon's four and
+  follows the page above them; `templates/app-shell.html`'s head says why. Every template links
   `css/rux-theme.css` and `css/rux-overrides.css` after `rux.css`, in that order;
   which change goes in which is the repository's `AGENTS.md`, "What must not be
   invented".

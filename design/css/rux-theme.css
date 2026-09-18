@@ -315,12 +315,11 @@
   --rux-support-warning-inverse: #d97706;
 
   /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
-     Four reasons it is not #52a8ff here: the shell's header is pinned to
-     g100 and focuses white whatever the page is, so a brand ring on the page
-     and a white one in the header was the same control answering twice; white
+     Three reasons it is not #52a8ff here: white
      is the higher contrast on every dark theme (measured 2026-09-17: 21.00
      against this background, against 8.40 for the brand colour); one
-     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     ring colour is one thing to learn, and the shell wears this theme now, so
+     the header's ring is this one; and `focus-inverse` below keeps the
      brand's tone for the light surfaces where white would vanish. The two
      light themes keep their blue, because a white ring on a white page is
      1.00 -- no ring at all. */
@@ -565,12 +564,11 @@
   --rux-support-warning-inverse: #d48806;
 
   /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
-     Four reasons it is not #4096ff here: the shell's header is pinned to
-     g100 and focuses white whatever the page is, so a brand ring on the page
-     and a white one in the header was the same control answering twice; white
+     Three reasons it is not #4096ff here: white
      is the higher contrast on every dark theme (measured 2026-09-17: 21.00
      against this background, against 7.02 for the brand colour); one
-     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     ring colour is one thing to learn, and the shell wears this theme now, so
+     the header's ring is this one; and `focus-inverse` below keeps the
      brand's tone for the light surfaces where white would vanish. The two
      light themes keep their blue, because a white ring on a white page is
      1.00 -- no ring at all. */
@@ -814,12 +812,11 @@
   --rux-support-warning-inverse: #c99416;
 
   /* focus. WHITE, NOT THE BRAND'S OWN, the same as Carbon's g90 and g100.
-     Four reasons it is not #1ed760 here: the shell's header is pinned to
-     g100 and focuses white whatever the page is, so a brand ring on the page
-     and a white one in the header was the same control answering twice; white
+     Three reasons it is not #1ed760 here: white
      is the higher contrast on every dark theme (measured 2026-09-17: 18.73
      against this background, against 9.76 for the brand colour); one
-     ring colour is one thing to learn; and `focus-inverse` below keeps the
+     ring colour is one thing to learn, and the shell wears this theme now, so
+     the header's ring is this one; and `focus-inverse` below keeps the
      brand's tone for the light surfaces where white would vanish. The two
      light themes keep their blue, because a white ring on a white page is
      1.00 -- no ring at all. */

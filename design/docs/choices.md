@@ -54,8 +54,9 @@ left side nav, expanded, fixed. Two things are choices and four are not:
   (a display name and the theme), saved in the browser under one key every
   app on the origin shares, so a choice made in one app is the choice in all.
   `js/theme.js` applies it before first paint, `js/profile.js` keeps it.
-- The shell's theme: the header is `g100` by Carbon's own guidance and stays
-  so whatever the page is.
+- The shell's theme: the header is `g100` by Carbon's own guidance under
+  Carbon's four. A theme above those four is the page's own, so the shell
+  takes it too, on that theme's `layer-01`.
 - The mark: it is the brand, not a choice.
 
 ## Theme — five, all offered, one the default

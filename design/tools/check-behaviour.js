@@ -468,8 +468,10 @@
   // ── profile and theme: the local profile round trip ──────────────────────
   // js/profile.js: a theme radio moves data-theme on <html> and stores it; a
   // name stores as typed. js/theme.js: apply() puts a stored theme on <html>
-  // and refuses a value that does not look like a theme name. Everything
-  // touched — storage, the theme, the name — is restored.
+  // and refuses a value that does not look like a theme name, and it dresses
+  // the shell's own zone — g100 under Carbon's four, the page's theme above
+  // them, on that theme's layer-01. Everything touched — storage, the theme,
+  // the name, the shell — is restored.
   (() => {
     const P = window.Rux?.profile, T = window.Rux?.theme;
     const panel = document.getElementById('rux-account-panel');
@@ -479,7 +481,11 @@
     if (!radio || !name) return record('profile', 'local profile', false,
       `inside the account panel: g90 radio=${!!radio}, #rux-profile-name=${!!name}`);
     const html = document.documentElement;
-    const before = { theme: html.dataset.theme, stored: localStorage.getItem(T.KEY), name: name.value };
+    const shell = document.querySelector('.rux--header[data-theme]');
+    const before = {
+      theme: html.dataset.theme, stored: localStorage.getItem(T.KEY), name: name.value,
+      shell: shell?.getAttribute('data-theme'), shellBg: shell?.style.getPropertyValue('--rux-background'),
+    };
 
     radio.checked = true;
     radio.dispatchEvent(new Event('change', { bubbles: true }));
@@ -496,6 +502,19 @@
     record('theme', 'apply() puts the stored theme on <html>',
       T.apply() === 'g10' && html.dataset.theme === 'g10', `data-theme=${html.dataset.theme}`);
 
+    if (shell) {
+      record('theme', "one of Carbon's four leaves the shell on g100",
+        shell.getAttribute('data-theme') === 'g100' && !shell.style.getPropertyValue('--rux-background'),
+        `shell data-theme=${shell.getAttribute('data-theme')}, --rux-background=${shell.style.getPropertyValue('--rux-background') || 'unset'}`);
+
+      localStorage.setItem(T.KEY, JSON.stringify({ theme: 'geist-dark' }));
+      T.apply();
+      record('theme', 'a theme above those four takes the shell too, on its layer-01',
+        shell.getAttribute('data-theme') === 'geist-dark'
+          && shell.style.getPropertyValue('--rux-background') === 'var(--rux-layer-01)',
+        `shell data-theme=${shell.getAttribute('data-theme')}, --rux-background=${shell.style.getPropertyValue('--rux-background') || 'unset'}`);
+    }
+
     localStorage.setItem(T.KEY, JSON.stringify({ theme: 'not a theme!' }));
     html.dataset.theme = 'white';
     record('theme', 'and refuses a value that is not a theme name',
@@ -503,6 +522,11 @@
 
     if (before.stored === null) localStorage.removeItem(T.KEY); else localStorage.setItem(T.KEY, before.stored);
     if (before.theme === undefined) delete html.dataset.theme; else html.dataset.theme = before.theme;
+    if (shell) {
+      if (before.shell == null) shell.removeAttribute('data-theme'); else shell.setAttribute('data-theme', before.shell);
+      if (before.shellBg) shell.style.setProperty('--rux-background', before.shellBg);
+      else shell.style.removeProperty('--rux-background');
+    }
     name.value = before.name;
     window.dispatchEvent(new StorageEvent('storage', { key: T.KEY }));  // re-render the radios to the restored theme
   })();

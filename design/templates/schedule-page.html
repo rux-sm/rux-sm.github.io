@@ -139,6 +139,10 @@
   left on the page's theme is white on a white page, with the nav, the page and
   the header separated by one 1px border and nothing else. The shell zone is
   the header, and the side nav sits inside it, so one attribute themes both.
+  `js/theme.js` OWNS THIS ATTRIBUTE ONCE THE PAGE RUNS, and the value here is
+  what a browser with no stored preference keeps: Carbon's four leave the
+  shell on g100, and a theme above those four takes the shell with the page,
+  drawn on that theme's own `layer-01` so the bar still stands off it.
   Change it to `white` only if you mean the shell to disappear into the page.
 
   THE SPRITE IS INLINED, and has to be. Referencing it as

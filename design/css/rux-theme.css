@@ -63,12 +63,15 @@
   `notification-background-error`, `-success`, `-info` and `-warning` are
   the four of 62 where g90 and g100 differ, and in each theme the value
   is that theme's OWN `layer-01` — g90's #393939 and g100's #262626 are
-  exactly their own layer-01 — so geist #0a0a0a, linear #141419 and
-  spotify #181818 each take their own. An inline notification sits on the
-  page's own raised surface, which is what those themes redefine.
-  ANT-DARK IS THE EXCEPTION: it draws a notification as Ant draws an alert,
-  a tint of the kind's own hue inside a border of it, so its four are Ant's
-  own alert fills rather than one neutral surface.
+  exactly their own layer-01 — so linear #141419 and spotify #181818 take
+  their own. An inline notification sits on the page's own raised surface,
+  which is what those themes redefine.
+  ANT-DARK AND GEIST ARE THE EXCEPTION: both draw a notification as an alert,
+  a tint of the kind's own hue inside a border of it, so their four are tints
+  rather than one neutral surface. Ant-dark takes Ant Design's own alert
+  fills; Geist publishes none, so each of its four is that theme's own support
+  colour mixed 15% into its #000 page — measured at 14.7:1 or better for the
+  text and 4.8:1 or better for the glyph.
 
   ONE VALUE IS CARRIED THROUGH AS A REFERENCE, not flattened:
   `notification-action-hover` is `var(--rux-layer-hover)` in Carbon's
@@ -447,10 +450,10 @@
 
   /* notification (component tokens — Carbon's own dark set;
      the four surface backgrounds take THIS theme's layer-01) */
-  --rux-notification-background-error: #0a0a0a;
-  --rux-notification-background-success: #0a0a0a;
-  --rux-notification-background-info: #0a0a0a;
-  --rux-notification-background-warning: #0a0a0a;
+  --rux-notification-background-error: #220b0c;
+  --rux-notification-background-success: #0b190d;
+  --rux-notification-background-info: #0c1926;
+  --rux-notification-background-warning: #251905;
   --rux-notification-action-hover: var(--rux-layer-hover);
   --rux-notification-action-tertiary-inverse: #0f62fe;
   --rux-notification-action-tertiary-inverse-active: #002d9c;

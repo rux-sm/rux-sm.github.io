@@ -255,12 +255,13 @@
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own
    background, and on the pale tint the light themes give the low-contrast
-   variant, 1.5. A mark needs 3. Mixing the theme's own yellow 60% into its own
+   variant, 1.5. A mark needs 3. Ant-dark and geist are not here: their
+   notification is a dark tint, where the light yellow is already right. Mixing the theme's own yellow 60% into its own
    dark ink keeps the hue and clears it everywhere, 3.46 at worst, and invents
    no colour. The ink differs by theme only because it is whichever of
    text-inverse and text-primary is the dark one there. The variants left out
    already pass: their ground is dark, and the light yellow is right on it. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist"], [data-theme="linear"], [data-theme="spotify"])
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="linear"], [data-theme="spotify"])
   :is(.rux--inline-notification, .rux--toast-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
   :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-inverse));
@@ -270,63 +271,63 @@
   :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-primary));
 }
-/* ANT-DARK'S NOTIFICATIONS. Ant draws an alert as a tint of its own hue inside
-   a 1px border of it, with the text in the page's own ink. Carbon draws one as
-   an inverse slab with a 3px bar down one side, which on a dark page is the
-   brightest thing on screen. The four tints are the notification-background
-   tokens, set to Ant's own alert fills in rux-theme.css; the borders and the
-   glyphs are the support colours this theme already carries. */
-[data-theme="ant-dark"] .rux--inline-notification,
-[data-theme="ant-dark"] .rux--toast-notification {
+/* THE ROUNDED THEMES' NOTIFICATIONS. Both draw an alert as a tint of its own
+   hue inside a 1px border of it, with the text in the page's own ink. Carbon
+   draws one as an inverse slab with a 3px bar down one side, which on a dark
+   page is the brightest thing on screen. The four tints are the
+   notification-background tokens, set per theme in rux-theme.css; the borders
+   and the glyphs are the support colours each theme already carries. */
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification {
   border: 1px solid transparent;
   color: var(--rux-text-primary);
 }
-[data-theme="ant-dark"] .rux--inline-notification .rux--inline-notification__close-icon,
-[data-theme="ant-dark"] .rux--toast-notification .rux--inline-notification__close-icon {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification .rux--inline-notification__close-icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification .rux--inline-notification__close-icon {
   fill: var(--rux-icon-primary);
 }
-[data-theme="ant-dark"] .rux--inline-notification--error,
-[data-theme="ant-dark"] .rux--toast-notification--error {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--error,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--error {
   background: var(--rux-notification-background-error);
   border-color: var(--rux-support-error);
 }
-[data-theme="ant-dark"] .rux--inline-notification--error .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--error .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--error .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--error .rux--toast-notification__icon {
   fill: var(--rux-support-error);
 }
-[data-theme="ant-dark"] .rux--inline-notification--success,
-[data-theme="ant-dark"] .rux--toast-notification--success {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--success,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--success {
   background: var(--rux-notification-background-success);
   border-color: var(--rux-support-success);
 }
-[data-theme="ant-dark"] .rux--inline-notification--success .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--success .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--success .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--success .rux--toast-notification__icon {
   fill: var(--rux-support-success);
 }
-[data-theme="ant-dark"] .rux--inline-notification--info,
-[data-theme="ant-dark"] .rux--inline-notification--info-square,
-[data-theme="ant-dark"] .rux--toast-notification--info,
-[data-theme="ant-dark"] .rux--toast-notification--info-square {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info-square,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info-square {
   background: var(--rux-notification-background-info);
   border-color: var(--rux-support-info);
 }
-[data-theme="ant-dark"] .rux--inline-notification--info .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--inline-notification--info-square .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--info .rux--toast-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--info-square .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--info-square .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--info-square .rux--toast-notification__icon {
   fill: var(--rux-support-info);
 }
-[data-theme="ant-dark"] .rux--inline-notification--warning,
-[data-theme="ant-dark"] .rux--inline-notification--warning-alt,
-[data-theme="ant-dark"] .rux--toast-notification--warning,
-[data-theme="ant-dark"] .rux--toast-notification--warning-alt {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning-alt,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning-alt {
   background: var(--rux-notification-background-warning);
   border-color: var(--rux-support-warning);
 }
-[data-theme="ant-dark"] .rux--inline-notification--warning .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--inline-notification--warning-alt .rux--inline-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--warning .rux--toast-notification__icon,
-[data-theme="ant-dark"] .rux--toast-notification--warning-alt .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification--warning-alt .rux--inline-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification--warning-alt .rux--toast-notification__icon {
   fill: var(--rux-support-warning);
 }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays

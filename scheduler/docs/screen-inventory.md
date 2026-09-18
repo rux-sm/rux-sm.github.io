@@ -70,6 +70,7 @@ Design account panel replaces it).
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |
 | Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
+| Compact board | keep | Where the schedule cannot show three readable days -- a phone, or a narrow window with panels open -- it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying its marks and no writing, however long it is; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on, after the roster has stepped aside. |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
 the database. Dropped: the day column width slider, the second bar size, the
@@ -148,7 +149,9 @@ The grid and the panel can both be open. Only the panel is one at a time.
 
 A bar growing on click re-stacks the lanes beside it. Its information is the
 panel's job; its actions go in the panel header and on the bar's right-click
-menu.
+menu. On the compact board a block has no writing to grow into either: the
+docked shortcut bar carries it at the bottom edge, and the block itself is the
+same size selected or not.
 
 ### Selecting is not opening
 

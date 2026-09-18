@@ -1377,6 +1377,135 @@ button.scheduler-row-head__num::after {
 .scheduler-times .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
 .scheduler-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
 
+/* ══ The compact board ═════════════════════════════════════════════════════
+   Where the schedule cannot show three readable days -- on a phone, or beside
+   two open panels on a narrow window -- it shows all seven compact instead of
+   scrolling sideways to about two. `placeRoom` in data.js turns it on from the
+   same width it measures everything else by, and only after the roster has
+   already stepped aside, so a readable board is kept wherever one fits. */
+.scheduler-page[data-board="compact"] .scheduler-week {
+  /* A day falls from three shortcut slots to one. The floor is three because a
+     one-day bar has to be as wide as the shortcut bar pointing at it; that bar
+     is docked here and points at nothing, so what is left is the single slot a
+     tap needs. `fitColumns` in app.js reads this figure and stops scrolling the
+     week as soon as seven days fit, so nothing else has to be told. */
+  --scheduler-day-min: var(--scheduler-slot-w);
+  /* 44px, what a phone asks of a target. Width is the scarce dimension here and
+     height is not, so a block is taller than it is wide rather than square.
+     Set on the bar's height and never on `--scheduler-bar-rows`, which holds
+     the row choices in `scheduler.view` and has to come back untouched. */
+  --scheduler-bar-h: 2.75rem;
+}
+
+/* The day band numbers the days and drops their names, which do not fit in a
+   column this narrow and ran into each other before. `font-size: 0` because
+   the name is a bare text node with no element of its own to hide, and the
+   number has a span to give the size back to. The weekend and today keep their
+   colours, which is what the band still says besides the date. */
+.scheduler-page[data-board="compact"] .scheduler-day {
+  padding-inline: var(--rux-spacing-02);
+  gap: 0;
+  font-size: 0;
+}
+.scheduler-page[data-board="compact"] .scheduler-day__num {
+  font-size: var(--rux-heading-compact-01-font-size);
+}
+
+/* A block carries its colour and its marks and no writing, however long it is:
+   a five-day block has room for a destination and draws none, because every
+   block reading the same way is what makes the week legible at a glance. */
+.scheduler-page[data-board="compact"] .scheduler-bar {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+/* A bar's own children only: the docked bar below clones these rows onto its
+   head, where they are the whole point and have the width for it. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__row { display: none; }
+/* The marks ride the destination row's copy of them, which every bar carries
+   and which app.css otherwise shows only when the notes row is off. The row
+   itself stays so the box has a line to sit on; its writing goes. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest {
+  display: flex;
+  /* No gap: `fitMarks()` prices one in for each child before the marks, and a
+     hidden child draws none, so leaving it set would cost the block two chips
+     of room it has. */
+  column-gap: 0;
+  inline-size: 100%;
+}
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > span:not(.scheduler-bar__warn) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__warn--dest {
+  display: flex;
+  /* Centred rather than pushed right: with no writing beside them the marks
+     are the whole block. */
+  margin-inline: auto;
+}
+/* The double-booked strip keeps its colour and its glyph and gives up its
+   words, which do not fit in 40px; the strip itself is what carries the
+   warning. `font-size: 0` because the words are a bare text node with no
+   element of their own to hide, and the glyph is sized in its own attributes. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__conflict {
+  justify-content: center;
+  padding-inline: 0;
+  font-size: 0;
+}
+
+/* The foot of the board clears the docked sheet, which stands over it. The
+   spacer is the pane's own scroll height, so the last bus scrolls out from
+   under the sheet rather than being stuck behind it. data.js measures the
+   sheet, because how tall it is depends on the rows the view is drawing. */
+.scheduler-page[data-board="compact"] .scheduler-week:not(.scheduler-week--avail)::after {
+  content: "";
+  display: block;
+  block-size: calc(var(--scheduler-docked-h, 0px) + var(--scheduler-safe-bottom));
+}
+
+/* ── The docked shortcut bar ────────────────────────────────────────────────
+   A block one slot wide has nothing for the shortcut bar to float beside, so
+   the bar docks to the bottom edge instead and, having the width down there,
+   carries the rows the block gave up. It is the same bar with the same slots,
+   not a second surface: selecting a trip still is not opening it.
+
+   Fixed, and left where data.js already put it in the track: no ancestor of
+   the track makes a containing block, so this positions against the window,
+   and staying put is what keeps the board's own tokens inherited. 997 is under
+   the roster overlay's 998 and the trip panel's 999, so an open trip and an
+   open roster are both in front of it. */
+.scheduler-bar-shortcuts[data-docked] {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 997;
+  /* The head takes a whole line and the slots flow beneath it, which spares
+     the slots a wrapper and `drawShortcuts` any knowledge of this. */
+  flex-wrap: wrap;
+  border-radius: 0;
+  box-shadow: 0 -2px 8px rgb(0 0 0 / .4);
+  padding-block-end: var(--scheduler-safe-bottom);
+}
+/* No arrow: from the bottom edge it points at nothing. */
+.scheduler-bar-shortcuts[data-docked]::after { content: none; }
+/* The slots share the width rather than sitting in a clump at one end. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { flex: 1 1 auto; }
+/* The trip, above its slots: the bar's own rows, cloned, so they keep one
+   builder and one set of rules. The trip's colour comes with them as the
+   bar's colour class, which this stripe reads. */
+.scheduler-bar-shortcuts__trip {
+  flex: 1 0 100%;
+  min-inline-size: 0;
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  border-inline-start: var(--rux-spacing-02) solid var(--scheduler-bg, transparent);
+  color: var(--rux-text-inverse);
+  font-size: var(--scheduler-fs);
+  letter-spacing: var(--scheduler-ls);
+  line-height: var(--scheduler-row-h);
+}
+/* Up here the double-booked strip is a row like the others, not a band pinned
+   to the bottom of a block. */
+.scheduler-bar-shortcuts__trip .scheduler-bar__conflict {
+  position: static;
+  margin-block-start: var(--rux-spacing-02);
+}
+
 /* ══ Below Carbon's md, 41.98rem ═══════════════════════════════════════════
    42rem is Carbon's md, where `.rux--side-panel` turns on its 75vw limit. Below
    it the companions leave the board's row, and the week stays a week that

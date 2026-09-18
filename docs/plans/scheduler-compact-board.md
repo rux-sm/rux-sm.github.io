@@ -46,15 +46,19 @@ and a desktop squeezed by two open panels reach this the same way.
   to about 313px, which fits every phone but the smallest, where it still
   scrolls.
 
-- **A compact trip is a square slot,** one slot tall as well as wide, which is
-  Carbon's md control height and the size of every toolbar button on this page.
+- **A compact trip is one slot wide and 44px tall.** Width is the scarce
+  dimension here and height is not, so the row takes the 44px a phone asks of a
+  target rather than the 40px that would make the cell square.
 
-- **It carries its colour and its marks, and no writing.** The colour is already
-  the trip's own and the marks are the four things that change what you do next:
-  the conflict strip, a driver needed, the payment chip and the requirement the
-  bus lacks. `fitMarks()` already caps marks to the room a row has and counts
-  the rest into `.scheduler-bar__warn-more`, so a 40px block gets its cap for
-  free.
+- **It carries its colour and its marks, and no writing, however long it is.**
+  The colour is already the trip's own, and the marks are the box the bar
+  already builds: the requirement the bus lacks, the payment rung, the hotel and
+  the missing itinerary, over the conflict strip that keeps its own colour and
+  gives up its words. `fitMarks()` already caps marks to the room
+  a row has and counts the rest into `.scheduler-bar__warn-more`, so a 40px
+  block gets its cap for free. A five-day block has room for a destination and
+  does not draw one, because every block reading the same way is what makes the
+  week readable at a glance.
 
 - **Lanes stay.** A bus with two overlapping trips draws two rows of blocks and
   the row grows, because a double booking is the thing a week at a glance is for.
@@ -78,8 +82,12 @@ and a desktop squeezed by two open panels reach this the same way.
   trip, in the first slot, loads the trip into the panel as it does everywhere
   else, and Escape clears the selection and takes the bar with it.
 
-- **It sits over the board and under the trip panel,** between the roster
-  overlay's 998 and the panel's 999, so an open trip is never behind it.
+- **It sits over the board at 997,** under the roster overlay's 998 and the trip
+  panel's 999, so an open trip and an open roster are both in front of it.
+
+- **The board's foot clears it.** The pane's spacer grows by the sheet's
+  measured height, so the last bus scrolls out from under it rather than being
+  stuck behind it.
 
 ### What is not touched
 
@@ -91,29 +99,21 @@ and a desktop squeezed by two open panels reach this the same way.
 
 ## Questions
 
-- **Does a block that spans more than one day get its destination back?** A
-  two-day block is 80px and a five-day block 200px, which is room for a
-  truncated word; leaving every block bare keeps the grid quieter and one rule.
+- **Does a block say when a trip has no driver?** The crew and their statuses
+  live on the drivers row, not in the marks box, so the block loses them: a trip
+  with nobody on it looks like a finished one until it is tapped. Putting it in
+  the box would add a mark to the full bar as well, which is why it is not
+  assumed here.
 
 - **Does `share/maintenance.html` go compact too?** Its grid is
   `.scheduler-week--static`: nothing opens from a bar, so a block there would
   be untappable and the docked bar would never come. The choice is a
   read-only compact week, or leaving that page scrolling as it is.
 
-- **Is the square slot tall enough to tap?** 40px is Carbon's md height and
-  what every button here uses, against the 44px a phone asks for; the row can
-  be taller than the day is wide if it is not.
-
 ## Tasks
 
-- [ ] `placeRoom` in `data.js`: write `data-board="compact"` from the room it
-      already measures, after the roster has yielded, and re-measure.
-- [ ] `app.css`: the compact grid — a one-slot day track and square blocks with
-      their marks, the rows hidden without touching `--scheduler-bar-rows`.
-- [ ] `data.js`: the docked state of `.scheduler-bar-shortcuts`, carrying the
-      bar's six rows above its slots, and its placement skipped while docked.
-- [ ] `specimen.html`: the compact board as its own section, beside the full
-      one, once the toolbar there is rebuilt.
+- [ ] `specimen.html`: the compact board and the docked bar as their own
+      section, beside the full one, once the toolbar there is rebuilt.
 - [ ] `docs/screen-inventory.md`: the compact board in §3, and the note under
       "The trip bar does not expand" that says what a block does instead.
 - [ ] rux reads a real week compact on the phone, and on 8641 with the roster

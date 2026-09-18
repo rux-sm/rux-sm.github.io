@@ -5268,9 +5268,32 @@
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
-    if (none) return;
+    if (none) { schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     drawShortcuts(bar);
+
+    /* Compact: a block one slot wide has nothing to float beside, so the bar
+       docks to the bottom edge and takes the trip's rows with it. It stays
+       where it was put in the track, because app.css fixes it to the window
+       from there and that is what keeps the board's tokens inherited. None of
+       the placing below applies to a bar that is not pointing at anything. */
+    const docked = pageEl?.getAttribute('data-board') === 'compact';
+    barShortcuts.toggleAttribute('data-docked', docked);
+    if (docked) {
+      drawDockedTrip(bar);
+      barShortcuts.removeAttribute('data-out');
+      barShortcuts.removeAttribute('data-side');
+      /* The sheet stands over the foot of the board, so the pane is given that
+         much more to scroll and the last bus can still be brought out from
+         under it. The height is measured because the rows a bar draws are the
+         view's to choose. */
+      schEl.style.setProperty('--scheduler-docked-h',
+        `${Math.round(barShortcuts.getBoundingClientRect().height)}px`);
+      return;
+    }
+    schEl.style.removeProperty('--scheduler-docked-h');
+    dockedDrawn = '';
+    barShortcuts.querySelector('.scheduler-bar-shortcuts__trip')?.remove();
     /* The room is measured on screen, against the pane and the two bands that
        stick to its edges, and then written in the track's own coordinates,
        which is where the bar is laid out. */
@@ -5486,13 +5509,24 @@
     }
 
     /* What the schedule is actually left, which app.css caps its floor by, so
-       the floor is never asked for where it would push the board off the page. */
-    const room = board - editor - itinerary - (asideSlot?.hidden ? 0 : roster);
+       the floor is never asked for where it would push the board off the page.
+       The roster is priced by the decision just made rather than by what is on
+       screen, which `placeAvailability` has not applied yet: the stale `hidden`
+       would charge the schedule for a roster that is already leaving. */
+    const rosterShown = availOn && !availYielded && !availCramped;
+    const room = board - editor - itinerary - (rosterShown ? roster : 0);
     frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
     // Under the tight width `Today` gives way to its menu row, in app.css.
 
     if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
     else pageEl.removeAttribute('data-room');
+
+    /* The last step of the cascade. The roster has stepped aside above, and a
+       schedule still under the floor cannot show three readable days however
+       little else is beside it, so it shows all seven compact rather than
+       scrolling sideways to about two. */
+    if (room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
+    else pageEl.removeAttribute('data-board');
     return changed;
   }
 
@@ -7036,6 +7070,24 @@
       (_, i) => (known.has(value[i]) ? value[i] : null));
   };
 
+  /* The docked bar's head: the rows the compact block gave up, cloned from the
+     bar itself rather than built again, so a row has one builder and one set of
+     rules. The bar's colour class comes with them, which the head's stripe
+     reads. `aria-label` is in the key because it is the whole trip written out,
+     so any change to what a row says redraws this. */
+  let dockedDrawn = '';
+  function drawDockedTrip(bar) {
+    const key = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.getAttribute('aria-label') || ''}`;
+    let head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
+    if (head && key === dockedDrawn) return;
+    dockedDrawn = key;
+    if (!head) head = el('div', 'scheduler-bar-shortcuts__trip');
+    head.className = ['scheduler-bar-shortcuts__trip',
+      ...[...bar.classList].filter(c => c.startsWith('scheduler-bar--'))].join(' ');
+    head.replaceChildren(...[...bar.children].map(node => node.cloneNode(true)));
+    barShortcuts.prepend(head);
+  }
+
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
     /* Open trip, then the chosen actions with the empty choices left out. An
@@ -7048,9 +7100,12 @@
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
       bar.dataset.hotelBooked, isEditorBar(bar), slots.join()].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
-    if (key === shortcutsDrawn && barShortcuts.childElementCount === slots.length) return;
+    // The slots are counted rather than every child, because the docked bar
+    // carries the trip's rows ahead of them.
+    if (key === shortcutsDrawn && barShortcuts.querySelectorAll('.scheduler-bar-shortcut').length === slots.length) return;
     shortcutsDrawn = key;
-    barShortcuts.replaceChildren(...slots.map((id, i) => {
+    const head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
+    barShortcuts.replaceChildren(...(head ? [head] : []), ...slots.map((id, i) => {
       const btn = el('button', 'scheduler-bar-shortcut');
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);

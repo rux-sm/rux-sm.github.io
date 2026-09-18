@@ -45,6 +45,12 @@ without rux saving it.
   only the details it found; the PDF itself never reaches the connector, so
   rux attaches it as the trip's Itinerary in the editor, as
   `docs/plans/scheduler-trip-files.md` builds.
+- **The site shows the consent screen,** because Supabase's OAuth server
+  sends the person to the site's own address to approve the Claude app. It is
+  a page at `/oauth/consent/`, built from Design like the log-in page, which
+  reads the authorization id from the address, names the app and what it is
+  asking for, and approves or denies. `funnel.js` guards it like any other
+  page, so a signed-out person logs in first and lands back on it.
 - **Staff can use the same connector** from their own Claude plans, and
   nothing else is needed for them.
 
@@ -57,8 +63,11 @@ None open.
 - [ ] Write the `scheduler-connector` Edge Function: MCP, Supabase OAuth
       sign-in, the read tools and the two draft tools; show it to rux and
       deploy it on a yes.
-- [ ] rux turns on Supabase's OAuth server in the dashboard, adds the
-      connector in the Claude app's settings, and signs in.
+- [ ] Build the consent page at `/oauth/consent/`, from Design, and add it to
+      the pages `funnel.js` guards.
+- [ ] rux turns on Supabase's OAuth server in the dashboard, with the site as
+      the site address and `/oauth/consent` as the authorization path, adds
+      the connector in the Claude app's settings, and signs in.
 - [ ] Open `?draft=<id>` in the scheduler's trip editor, new or existing,
       with the filled fields marked and Claude's notes shown; delete the draft
       on save or discard.

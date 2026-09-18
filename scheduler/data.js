@@ -5084,8 +5084,20 @@
       const p = row.driver.priority ?? null;
       if (p !== band) {
         band = p;
-        availGrid.appendChild(el('div', 'scheduler-avail__band',
+        /* A row like any other, so the grid's day rules run past the heading:
+           the label in the name column, then seven empty day cells. They are
+           `aria-hidden` because they hold no day of anyone's week; they are
+           there for the rules they draw. */
+        const bandRow = el('div', 'scheduler-avail__row');
+        bandRow.appendChild(el('div', 'scheduler-avail__band',
           p == null ? 'No priority' : `Priority ${p}`));
+        for (let d = 0; d < 7; d++) {
+          const spacer = el('div', 'scheduler-avail__cell scheduler-avail__cell--band');
+          spacer.dataset.day = String(d);
+          spacer.setAttribute('aria-hidden', 'true');
+          bandRow.appendChild(spacer);
+        }
+        availGrid.appendChild(bandRow);
       }
       const r = el('div', 'scheduler-avail__row');
       /* The full name goes on the title, because the cell shows `short_name`

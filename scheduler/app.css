@@ -1234,26 +1234,39 @@ button.scheduler-row-head__num::after {
 }
 
 /* The three states. Free is the one being looked for, so it is empty; busy
-   and off are Carbon's tag tints, the palette the trip bar uses. */
-.scheduler-avail__cell { padding-inline: 0; overflow: hidden; }
-/* No rules between the days. The roster is read by looking for the marks, and
-   a free cell is the mark being looked for, so ruling all seven columns draws
-   the answer as loudly as the question. The row rules and the name column's own
-   rule are enough to place a square on a driver and a day. The board keeps the
-   day rules it paints in `--scheduler-day-rules`, where a bar spans days and
-   its edges have to be read against them. */
+   and off are Carbon's tag tints, the palette the trip bar uses. A mark is
+   painted on the content box inside 1px of padding, so it sits within its cell
+   rather than filling it: a run of busy days still reads as a run, and the day
+   it starts and ends on can still be counted against the rules. */
+.scheduler-avail__cell {
+  padding: 1px;
+  overflow: hidden;
+  background-clip: content-box;
+}
+/* The day rules in the roster: each body cell but the first rules its start
+   edge, since the first edge is the name column's own rule. Only body rows use
+   `__cell`, so no rule enters the header row. */
+.scheduler-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* The selected trip's days tint the free cells with `--rux-layer-selected`,
-   Carbon's selected-surface token. `--busy` and `--off` come after it and set
-   the `background` shorthand, so a booked or day-off cell keeps its tag
+   Carbon's selected-surface token. All three set `background-color`, not the
+   `background` shorthand, which would reset the clip above; `--busy` and
+   `--off` come after `--on-day`, so a booked or day-off cell keeps its tag
    colour. */
 .scheduler-avail__cell--on-day { background-color: var(--rux-layer-selected); }
 .scheduler-avail__cell--busy {
-  background: var(--rux-tag-background-blue);
+  background-color: var(--rux-tag-background-blue);
   color: var(--rux-tag-color-blue);
 }
 .scheduler-avail__cell--off {
-  background: var(--rux-tag-background-red);
+  background-color: var(--rux-tag-background-red);
   color: var(--rux-tag-color-red);
+}
+/* A heading's row keeps the day rules, so the grid runs unbroken from the
+   column header to the last driver, but draws no row rule and no mark: the
+   heading is a label in the name column, not a day of anyone's week. */
+.scheduler-avail__cell--band {
+  block-size: auto;
+  border-block-end: 0;
 }
 .scheduler-avail__cell > span {
   overflow: hidden;
@@ -1274,13 +1287,17 @@ button.scheduler-row-head__num::after {
    rows, so it is the app's own. It spans every column, since a band covers the
    name and the whole week, and it sits on the grid's own `--rux-layer`, so the
    roster has one surface and the column header above is the only band that
-   changes it. It draws no rule at all: five of them down a narrow column read
-   as five tables rather than one list, and the space above each heading
-   separates the bands on its own. `label-01` at the heading weight, in helper
-   text, keeps it quieter than a driver's name, which is what the roster is
-   read for. */
+   changes it. It sits in the name column, beside its own band of empty day
+   cells, so the grid's day rules run past it and the roster reads as one table
+   rather than five. It draws no rule of its own: five of them down a narrow
+   column read as five tables too, and the space above each heading separates
+   the bands on its own. `label-01` at the heading weight, in helper text,
+   keeps it quieter than a driver's name, which is what the roster is read
+   for. */
 .scheduler-avail__band {
-  grid-column: 1 / -1;
+  /* The name column's own rule, carried on, so the divide between the names
+     and the days is one line from the header to the last driver. */
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
   /* The space above is what separates one band from the next, so it is the
      room a rule used to take; below, only enough to hold the label off its
      first driver. */

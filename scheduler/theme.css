@@ -5,17 +5,26 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
-/* Text on the warning colour: the dark one of text-primary and text-inverse.
-   Light themes use text-primary; dark themes use text-inverse. */
+/* The pair a trip bar's marks are drawn from, both of them text-primary and
+   text-inverse the way round the theme puts them: `on-warning` is the dark one,
+   the ink on a warning fill, and `mark-blank` is the light one, the fill of a
+   mark that stands for nothing having happened yet. Light themes take them one
+   way and dark themes the other, so both are the same colour in every theme. */
 :root,
 [data-theme="white"],
-[data-theme="g10"] { --scheduler-on-warning: var(--rux-text-primary); }
+[data-theme="g10"] {
+  --scheduler-on-warning: var(--rux-text-primary);
+  --scheduler-mark-blank: var(--rux-text-inverse);
+}
 [data-theme="g90"],
 [data-theme="g100"],
 [data-theme="geist"],
 [data-theme="linear"],
 [data-theme="ant-dark"],
-[data-theme="spotify"] { --scheduler-on-warning: var(--rux-text-inverse); }
+[data-theme="spotify"] {
+  --scheduler-on-warning: var(--rux-text-inverse);
+  --scheduler-mark-blank: var(--rux-text-primary);
+}
 
 /* ant-dark rounds what Ant Design Pro rounds: 6px on a trip bar, like its
    buttons, 8px on the week, like its cards, and 4px on a bar's marks, like its

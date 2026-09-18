@@ -712,6 +712,10 @@
       trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
       trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
     ].filter(Boolean) : [];
+    // What the trip is owed, bus or no bus: the one mark on this bar that is
+    // about the booking rather than the vehicle.
+    const owed = paymentMark(trip);
+    if (owed) lacks.push(owed);
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
@@ -735,7 +739,11 @@
       if (!lacks.length) return null;
       const box = el('span', `scheduler-bar__warn scheduler-bar__warn--${where}`);
       for (const w of lacks) {
-        const chip = el('span', w.done ? 'scheduler-bar__warn-chip scheduler-bar__warn-chip--done' : 'scheduler-bar__warn-chip');
+        // A chip is the warning colour unless it says otherwise: `done` drops
+        // the fill, `error` is the red one rux-ui's own bar uses for money
+        // nothing has authorised yet.
+        const tone = w.done ? 'done' : w.tone === 'error' ? 'error' : null;
+        const chip = el('span', `scheduler-bar__warn-chip${tone ? ` scheduler-bar__warn-chip--${tone}` : ''}`);
         chip.title = w.label;
         chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
         box.appendChild(chip);
@@ -3332,6 +3340,40 @@
     && (trip.contract_status === 'Signed' || (trip.contract_status == null && !!trip.confirmed));
   const poReceivedOf = trip => stepOn('poReceived') && !!(trip.po_received || trip.po_ref);
   const invoicedOf = trip => !!(trip.invoiced || trip.invoice_number || trip.invoice_status === 'Invoiced');
+
+  /* A saved trip's money, read from its rows the way `billingNow` reads the
+     open editor's, so the bar and the Billing tab put the trip on the same
+     rung. The row lists are the live ones; the `deposit_amount` and `po_amount`
+     aggregates are what rux-ui filled before those lists existed. A trip rux-ui
+     marked paid with no payment rows carries the whole quote as paid, as
+     rux-ui's own `normalizeRecord` does, so it is not read as owing it. */
+  function billingOf(trip) {
+    const sum = rows => (rows || []).reduce((n, r) => n + (Number(r.amount) || 0), 0);
+    const price = Number(trip.quoted_price) || 0;
+    const rows = trip.trip_payments?.length ? sum(trip.trip_payments) : Number(trip.deposit_amount) || 0;
+    const paid = rows <= 0 && (trip.date_paid || trip.balance_paid) ? price : rows;
+    const poAmount = trip.trip_pos?.length ? sum(trip.trip_pos) : Number(trip.po_amount) || 0;
+    const poReceived = poReceivedOf(trip);
+    const rung = billingStatus({ contractSigned: contractSignedOf(trip), poReceived, poAmount, price, paid });
+    return { price, paid, poAmount, poReceived, rung, remaining: Math.max(0, price - paid) };
+  }
+
+  /* The bar's payment mark, rux-ui's billing marks in one glyph: red while
+     nothing authorises the trip, amber while a PO or a payment covers only part
+     of the quote, and nothing once a PO covers the balance or the trip is paid.
+     A trip with no quoted price has no coverage to judge and shows no mark. */
+  function paymentMark(trip) {
+    const { price, poAmount, remaining, rung } = billingOf(trip);
+    if (price <= 0) return null;
+    const mark = (label, tone) => ({ href: '#i-currency--dollar', label, tone });
+    if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
+    if (rung === 'contract_signed') return mark('No purchase order yet', 'error');
+    if (rung === 'po_partial') return mark(`Purchase order covers ${usd(poAmount)} of ${usd(remaining)}`, 'warning');
+    if (rung === 'deposit_received' && remaining > 0) {
+      return mark(`${usd(remaining)} not covered by a payment or purchase order`, 'warning');
+    }
+    return null;
+  }
 
   let editing = null;   // { id, before: {...} }
 

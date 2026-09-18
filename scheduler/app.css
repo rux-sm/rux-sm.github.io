@@ -405,13 +405,11 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 
-/* States. A partial PO has the warning border; a leg that continues past the
-   week has no edge on that side and runs to it. Confirmation is not a state
-   here: it is the bar's colour, chosen by `hueFor` in data.js, so a trip with a
-   picked colour does not show whether it is confirmed. */
-.scheduler-bar--partial-po { border: 1px solid var(--rux-support-warning); padding-block: calc(var(--rux-spacing-02) - 1px); }
-/* On an amber bar the warning border would vanish into its own fill. */
-.scheduler-bar--amber.scheduler-bar--partial-po { border-color: var(--scheduler-on-warning); }
+/* States. A leg that continues past the week has no edge on that side and runs
+   to it. Confirmation is not a state here: it is the bar's colour, chosen by
+   `hueFor` in data.js, so a trip with a picked colour does not show whether it
+   is confirmed. Billing is not one either: it is the payment chip, which names
+   the amount a border could not. */
 /* A continuing edge takes no gap, since the trip runs off the week there. Only
    the gap at its other end is subtracted, so the bar ends where every other
    bar in that day ends. */
@@ -544,8 +542,16 @@ button.scheduler-row-head__num::after {
   color: var(--scheduler-on-warning);
 }
 .scheduler-bar__warn-chip svg { display: block; }
-/* On an amber bar the chip would vanish into its own fill. */
-.scheduler-bar--amber .scheduler-bar__warn-chip { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+/* Money nothing has authorised yet is the error colour, not the warning one,
+   as it is on rux-ui's own bar: a trip with no purchase order and no payment
+   is a different thing from one that is short of its quote. */
+.scheduler-bar__warn-chip--error {
+  background: var(--rux-support-error);
+  color: var(--rux-text-inverse);
+}
+/* On an amber bar the chip would vanish into its own fill. The error chip does
+   not, so it keeps its own edge. */
+.scheduler-bar--amber .scheduler-bar__warn-chip:not(.scheduler-bar__warn-chip--error) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
 /* A booked hotel keeps its icon, in the bar's own text colour with no warning
    fill: the trip has a hotel, and nothing is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {

@@ -63,6 +63,8 @@ Design account panel replaces it).
 | Tasks, History | later | Pages (§7). |
 | Print envelope on the bar menu | later | With printing. |
 | Pending itinerary mark | keep | A warning chip on a bar whose trip has no itinerary and is not marked as not needing one. |
+| Payment marks | keep | One chip, a dollar sign: red while no purchase order and no payment stand against the quote, amber while they cover only part of it, and gone once a purchase order covers the balance or the trip is paid. rux-ui draws a rung per icon; one mark says the same thing in the space a bar has. |
+| Pending contract and pending invoice marks | drop | Both are steps towards the payment mark, which already says whether the money is covered; a second and third chip for the same trip would crowd the row without changing what anyone does next. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
 | Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour: green confirmed, amber pending response, red pending assignment or declined, none for Off. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. The tooltip names the role, the status, who set it and when. |
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |

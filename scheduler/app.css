@@ -1439,6 +1439,13 @@ button.scheduler-row-head__num::after {
    whole line to ellipse into. */
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__ref,
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__warn { display: none; }
+/* The block keeps its departure whatever the view menu says. Turning the time
+   row off is a choice about how tall a bar is on the full board, where five
+   other rows still name the trip; here it is one of the two lines there are,
+   and without it a block is a truncated destination and nothing else. Same
+   reason `--scheduler-bar-rows` is left alone: compact is the board's state and
+   must not be overridden by, or write over, what was chosen in `scheduler.view`. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__time { display: flex; }
 /* The departure alone, in place of whichever form `fitTimes` chose: a block
    this narrow has room for one time. */
 .scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-long,
@@ -1506,6 +1513,10 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--scheduler-ls);
   line-height: var(--scheduler-row-h);
 }
+/* The sheet carries every row, whatever the view menu has turned off on the
+   board. Those toggles buy height among the bars; this is where the writing a
+   block gave up is read, so hiding a row here would leave it nowhere. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
 /* Up here the double-booked strip is a row like the others, not a band pinned
    to the bottom of a block. */
 .scheduler-bar-shortcuts__trip .scheduler-bar__conflict {

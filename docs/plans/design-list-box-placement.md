@@ -6,63 +6,44 @@ type: plan
 
 ## Goal
 
-A combo box or dropdown opened inside anything that scrolls — the scheduler's
-trip panel above all — shows its whole list. Today the menu is
-`position: absolute` inside the field, so the panel's `overflow: auto` cuts it
-off flat at the panel's edge and the options below the cut cannot be seen or
-reached without scrolling the panel behind the open list. The contact search
-near the bottom of a long panel is where this bites hardest: measured in the
-trip panel, the menu overflowed it by 80px.
+A combo box or dropdown opened inside anything that scrolls shows its whole
+list. The menu was `position: absolute` inside its field, so the scheduler's
+trip panel cut it off at the panel's edge — measured 80px past it — and the
+options beyond the cut could be neither seen nor reached.
 
-This is not a theme's problem. The clipping happens in every theme; Carbon's
-square corners hide it and ant-dark's rounded ones make it visible.
+The placement is built. What is left is rux seeing it in the running app,
+which needs signing in, and one surface that was deliberately not changed.
 
 ## Decisions
 
-- **The menu is portaled and `position: fixed`, like the overflow menu,**
-  because fixed coordinates are viewport coordinates and escape the clip of
-  every scrolling ancestor at once.
-- **It flips above the field when there is not enough room below it,** which is
-  what a person expects of a dropdown near the bottom of a screen.
-- **The arithmetic moves out of `design/js/menu.js` into a helper both call,**
-  because two copies of anchor-and-flip drift apart and only one of them would
-  get the next fix.
-- **The helper is registered through the overlay's `reposition()`,** which
-  `design/js/overlay.js` already calls on resize and on scroll in the capture
-  phase, so nothing new listens for scrolling.
-- **Only a surface computing to `position: fixed` is placed,** the guard
-  `menu.js` already applies, so the sink's deliberately-open specimens and any
-  pinned example keep rendering where their markup puts them.
-- **Carbon's 5.5-row cap stays,** and the menu shrinks below it only when
-  neither side of the field has room for it.
-- **No `rux--*` class gains a rule for this,** since the change is placement in
-  script; ant-dark's radius rules are untouched.
+- **The menu is `position: fixed` while open and nothing is portaled,** because
+  a fixed box is laid out against the viewport and so escapes every scrolling
+  ancestor's clip on its own. `js/overlay.js` records that Design portals
+  nothing, and this keeps that true.
+- **The below-or-above arithmetic is `Rux.anchorTo` in `js/overlay.js`,** shared
+  with `js/menu.js`, because a second copy would be the one that missed the next
+  fix.
+- **The overflow menu passes no options, so its behaviour is unchanged.** The
+  lifted expression was checked against the one it replaced over 2016 input
+  combinations with no difference.
+- **The contract lives in `js/overlay.js`'s header, not in `design/docs/`,**
+  because that is where the kernel's other placement rules are written and one
+  fact wants one home.
+- **No sink specimen is added.** A sink specimen is pinned open and this module
+  claims a list box by its field, so a specimen would never be placed and would
+  demonstrate nothing; the scheduler's own trip panel is the real case.
 
 ## Questions
 
-- **Does this extend to the date picker's calendar and the popover?** Both sit
-  in the same panels and are placed by their own modules, so they may be clipped
-  the same way; fixing all three together costs less than three passes, but only
-  the list box has a reported failure.
-- **Below md the trip panel is a full-width overlay.** Should the menu still
-  flip above the field there, or is a list that runs to the bottom of the screen
-  the better answer on a phone?
-- **When neither side has room, does the menu shrink and scroll inside itself,
-  or keep its height and overhang the panel?** Shrinking never covers the
-  field; overhanging keeps more options visible at once.
+- **The same clip is still available to the row overflow menu.** It is absolute
+  inside `.rux--data-table-content`, which scrolls, and was measured 209px clear
+  on the table template. Making it fixed too is a small change on top of this
+  one; leaving it keeps a surface that can fail the same way.
 
 ## Tasks
 
-- [ ] Lift the anchor-and-flip arithmetic out of `design/js/menu.js` into a
-      shared helper in `design/js/`, with `menu.js` calling it and the overflow
-      menu behaving exactly as it does now.
-- [ ] Portal the list box's menu on open and place it with that helper, register
-      its `reposition()` with the overlay, and put it back on close.
-- [ ] Keep the closed state and the in-place specimens working: place only a
-      surface that computes to `position: fixed`.
-- [ ] Add a sink specimen of a combo box inside a scrolling container, so the
-      case the gates run against includes the one that fails today.
-- [ ] Check the scheduler's contact search, driver and bus pickers, and every
-      other app's combo boxes and dropdowns, in each theme and at phone width.
-- [ ] Record the placement contract in `design/docs/choices.md`, so the next
-      floating surface is written against one rule rather than a second copy.
+- [ ] rux opens the scheduler's trip panel signed in and checks the contact
+      search, the driver picker and the bus picker near the bottom of a long
+      panel, on the desktop and on a phone.
+- [ ] Decide the row overflow menu above, and either make it fixed in the same
+      way or record in `js/overlay.js` that it stays as it is on purpose.

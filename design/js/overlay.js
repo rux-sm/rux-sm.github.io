@@ -54,6 +54,13 @@
    measurement. Until a template asks for `popover--auto-align`, the record's
    optional reposition() is the whole of the contract.
 
+   ONE ANCHOR IS NOT THAT ENGINE. `Rux.anchorTo` lives at the foot of this file
+   because two components — js/menu.js and js/list-box.js — need the same
+   below-or-above answer for a `fixed` surface, and the second copy would have
+   been the one that missed the next fix. It measures one element and writes
+   two insets; collision against arbitrary ancestors and auto-align are still
+   the engine this kernel declines.
+
    NO PORTALING HERE — AND CARBON DOES PORTAL, FOR ONE SURFACE. This paragraph
    used to say Carbon "keeps every surface inline next to its trigger". Measured
    on 2026-08-29 that is true for two families and false for the third:
@@ -71,20 +78,28 @@
    the two arrive at the same place by different arithmetic (that module's
    header carries the measurement).
 
-   WHAT PORTALING BUYS THAT WE THEREFORE DO NOT HAVE, stated so the next reader
-   does not have to rediscover it: a portaled surface escapes both an ancestor's
-   stacking context and its `overflow`. Ours escapes neither.
+   WHAT PORTALING BUYS, stated so the next reader does not have to rediscover
+   it: a portaled surface escapes both an ancestor's stacking context and its
+   `overflow`. We still portal nothing, and a surface left `absolute` escapes
+   neither — but `position: fixed` buys the second half on its own, because a
+   fixed box is laid out against the viewport. A menu's own surface is fixed in
+   Carbon's compiled CSS, and js/list-box.js now makes an open list fixed for
+   the same reason. The stacking context is the half still unbought.
 
    The first cost is already paid and recorded — sink/harness.css isolates every
    section because our in-place surfaces painted over an open modal, which a
    portaled surface would not have done.
 
-   The second is LATENT, not present. `.rux--data-table-content` computes
-   `overflow: auto`, and our row overflow menus live inside it, so a row menu
-   near the bottom of a tight or scrolled table would be clipped where Carbon's
-   would not. Checked on templates/table-page.html: a two-item list built into
-   the last row ends 209px clear of the content edge and is fully hit-testable,
-   so nothing is clipped today. It is a condition to watch, not a defect to fix.
+   The second STOPPED BEING LATENT, and the surface it caught was the list box's
+   menu, not a table's. A combo box inside the scheduler's trip panel — which
+   scrolls — had its menu cut off at the panel's edge, measured 80px past it,
+   with the options beyond the cut neither visible nor reachable. That is why
+   the menu is now fixed. The row overflow menu is a different surface and is
+   NOT fixed: it is absolutely positioned inside `.rux--data-table-content`,
+   which computes `overflow: auto`, so the same cut is still available to it.
+   Checked on templates/table-page.html: a two-item list built into the last row
+   ends 209px clear of the content edge, so nothing is clipped there today. For
+   that surface it remains a condition to watch.
    ========================================================================== */
 
 /* BEHAVIOUR: verified-live · read 2026-08-29 from three running stories —
@@ -248,6 +263,64 @@
   window.addEventListener('resize', replace);
   window.addEventListener('scroll', replace, { capture: true, passive: true });
 
+  /* ONE ANCHOR, BESIDE THE KERNEL RATHER THAN INSIDE IT. js/menu.js wrote this
+     arithmetic for a `fixed` menu and js/list-box.js needs the same answer, so
+     it sits here -- the one file both already require -- instead of being
+     copied into the second caller, where only one copy would get the next fix.
+     It is deliberately NOT part of Rux.overlay: the kernel ships no positioning
+     engine (see the header) and this does not make it one. It reads an
+     element's viewport rect and writes it to a `fixed` surface, which needs no
+     scroll maths because fixed coordinates ARE viewport coordinates.
+
+     A `fixed` SURFACE IS ALSO WHY THIS EXISTS AT ALL: a fixed box is laid out
+     against the viewport, so it escapes the `overflow` of every scrolling
+     ancestor. An absolutely-positioned menu inside a scrolling panel is cut off
+     at the panel's edge, and the options past the cut cannot be reached.
+
+     ONLY A `fixed` SURFACE IS TOUCHED, so a specimen pinned in flow with
+     `position:relative` is left exactly where its markup puts it.
+
+     opts.matchWidth  give the surface the anchor's width, which a fixed box no
+                      longer inherits.
+     opts.fit         when neither side of the anchor has room, cap the surface
+                      to the roomier side and let it scroll inside itself.
+                      Without it the surface overhangs below, which is what the
+                      overflow menu has always done. */
+  const anchorTo = (surface, to, opts = {}) => {
+    if (!surface || !to) return;
+    if (getComputedStyle(surface).position !== 'fixed') return;
+    const t = to.getBoundingClientRect();
+    if (opts.matchWidth) surface.style.inlineSize = `${Math.round(t.width)}px`;
+    if (opts.fit) surface.style.maxBlockSize = '';
+    let box = surface.getBoundingClientRect();
+    const below = window.innerHeight - t.bottom;
+    const above = t.top;
+    const fitsBelow = below >= box.height;
+    const fitsAbove = above >= box.height;
+    /* NEITHER SIDE HOLDS IT: cap to the roomier side and go to THAT side. The
+       cap and the side are one decision -- capping to the space above and then
+       opening downwards puts the surface right back off the screen. */
+    const squeezed = opts.fit && !fitsBelow && !fitsAbove;
+    if (squeezed) {
+      surface.style.maxBlockSize = `${Math.round(Math.max(below, above))}px`;
+      box = surface.getBoundingClientRect();
+    }
+    const top = squeezed
+      ? (below >= above ? t.bottom : Math.max(0, t.top - box.height))
+      : (fitsBelow || !fitsAbove ? t.bottom : t.top - box.height);
+    const left = Math.max(0, Math.min(t.left, window.innerWidth - box.width));
+    surface.style.insetBlockStart = `${Math.round(top)}px`;
+    surface.style.insetInlineStart = `${Math.round(left)}px`;
+  };
+  const unanchor = surface => {
+    surface.style.insetBlockStart = '';
+    surface.style.insetInlineStart = '';
+    surface.style.inlineSize = '';
+    surface.style.maxBlockSize = '';
+  };
+
   window.Rux = window.Rux || {};
   window.Rux.overlay = { register, autoId, focusables, trapFocus };
+  window.Rux.anchorTo = anchorTo;
+  window.Rux.unanchor = unanchor;
 })();

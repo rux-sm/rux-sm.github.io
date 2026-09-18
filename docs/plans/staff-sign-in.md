@@ -9,9 +9,11 @@ type: plan
 Only signed-in staff can read or write staff data in the shared database,
 while the scheduler and rux-ui stay in daily use at every step, and driver,
 maintenance, customer request and document links keep working. Today the
-publishable key alone can read and change trip data, most tables allow every
-action to everyone, four have row level security off, and anon can run every
-function, including the ones that create share links.
+publishable key alone still reads and changes trip data: row level security is
+on everywhere and every staff table has its staff rule, but an everyone rule
+sits beside it on the trip, reference, chat and notification tables, the key
+holds every table grant, and it can run most functions, including the ones
+that make share links.
 
 ## Decisions
 
@@ -51,9 +53,11 @@ function, including the ones that create share links.
   staff check functions; `get_driver_share_trips` and `get_trip_document`,
   open to the key; and the maintenance signal triggers. `staff_identity_link`
   is applied: the seven accounts exist on the `staff.invalid` domain, a
-  reserved name nobody can own, and each is linked to its profile, with
-  `sees_all_apps` on rux's. rux-ui's driver, maintenance and document link
-  pages read those functions and the signal, not the tables.
+  reserved name nobody can own, and each is linked to its profile. Which apps
+  an account opens now sits in `app_metadata`, the site lock plan's decision,
+  and rux's account carries the owner switch there. rux-ui's driver,
+  maintenance and document link pages read those functions and the signal,
+  not the tables.
   `staff_policies_add` is applied: a `staff_all` rule on every trip, reference,
   settings, chat, notification and dev-note table, staff read and own-row
   update on `profiles`, staff game rules, and row level security on
@@ -82,21 +86,27 @@ function, including the ones that create share links.
 
 ## Questions
 
-None open.
+- The Escamilla account has never signed in. Is it still someone's, or does it
+  go with its profile?
 
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] rux presses "Force refresh all users" in rux-ui, logs in there, and
-      someone logs in on the Display; the old profile picker code stays in
-      rux-ui unused.
+- [ ] Stop the last client reading with the key alone. One browser, through a
+      single proxy address, still reads `trips`, `trip_passengers`,
+      `trip_documents`, `trip_payments`, `trip_ticket_options` and `drivers`
+      and writes `notifications` with no session, while the staff-only driver
+      status function already refuses it; the edge logs carry its hours and
+      paths, and the close cannot start until it stops.
 - [ ] rux turns off anonymous sign-ins, sign-ups, GitHub and Google in the
-      dashboard once both login screens are live; a migration deletes the
-      anonymous users, whose theme rows go with them.
-- [ ] Watch for at least seven days, until three business days in a row show
-      every account signed in, no `anon` realtime subscription, and no anon or
-      non-staff table request in the edge logs; a dry run inside a rolled-back
-      transaction shows staff see rows and the key alone does not.
+      dashboard. No page calls `signInAnonymously` any more, and a migration
+      then deletes the twelve anonymous users, whose theme rows go with them.
+- [ ] Watch for at least seven days from the day the last key-alone client
+      stops, until three business days in a row show every account signed in,
+      no `anon` realtime subscription, and no anon table request in the edge
+      logs beyond the driver, maintenance, document and request links; a dry
+      run inside a rolled-back transaction shows staff see rows and the key
+      alone does not.
 - [ ] Migration `staff_cutover_tables`: drop the open and `transition_open`
       policies, revoke table and sequence grants from `anon`, and limit
       profile updates to the display name, photo, colour and settings.

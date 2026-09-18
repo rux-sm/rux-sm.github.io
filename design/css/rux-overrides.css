@@ -135,47 +135,50 @@
   border-block-start-color: transparent;
 }
 
-/* ANT-DARK'S SHAPES. Ant Design Pro rounds controls to 6px and surfaces to
-   8px, and its fields are filled boxes with no underline. These rules apply
-   under ant-dark only; every other theme keeps Carbon's square, underlined
-   controls. Focus and invalid states are outlines in Carbon, so they still
-   show without the underline. */
-[data-theme="ant-dark"] .rux--btn,
-[data-theme="ant-dark"] .rux--text-input,
-[data-theme="ant-dark"] .rux--text-area,
-[data-theme="ant-dark"] .rux--select-input,
-[data-theme="ant-dark"] .rux--date-picker__input,
-[data-theme="ant-dark"] .rux--number input[type=number],
-[data-theme="ant-dark"] .rux--number input[type=text],
-[data-theme="ant-dark"] .rux--search-input,
-[data-theme="ant-dark"] .rux--list-box,
-[data-theme="ant-dark"] .rux--dropdown {
+/* ROUNDED THEMES. Ant Design Pro and Geist were both measured at the same
+   three radii -- a tag 4px, a control 6px, a surface 8px -- and both draw a
+   field as a filled box with no underline, so one set of rules serves both and
+   the numbers are written once. A theme joins by being added to the list; one
+   wanting different numbers gets its own block rather than a second copy of
+   this. Every other theme keeps Carbon's square, underlined controls. Focus
+   and invalid states are outlines in Carbon, so they still show without the
+   underline. */
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--btn,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-area,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--select-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=number],
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=text],
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--search-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--dropdown {
   border-radius: 6px;
 }
-[data-theme="ant-dark"] .rux--text-input,
-[data-theme="ant-dark"] .rux--text-area,
-[data-theme="ant-dark"] .rux--select-input,
-[data-theme="ant-dark"] .rux--date-picker__input,
-[data-theme="ant-dark"] .rux--number input[type=number],
-[data-theme="ant-dark"] .rux--number input[type=text],
-[data-theme="ant-dark"] .rux--search-input,
-[data-theme="ant-dark"] .rux--list-box,
-[data-theme="ant-dark"] .rux--dropdown {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--text-area,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--select-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=number],
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--number input[type=text],
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--search-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--dropdown {
   border-block-end-color: transparent;
 }
-[data-theme="ant-dark"] .rux--tile,
-[data-theme="ant-dark"] .rux--file__drop-container,
-[data-theme="ant-dark"] .rux--side-panel,
-[data-theme="ant-dark"] .rux--modal-container,
-[data-theme="ant-dark"] .rux--list-box__menu,
-[data-theme="ant-dark"] .rux--menu,
-[data-theme="ant-dark"] .rux--date-picker__calendar,
-[data-theme="ant-dark"] .rux--popover-content,
-[data-theme="ant-dark"] .rux--inline-notification,
-[data-theme="ant-dark"] .rux--toast-notification {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tile,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--file__drop-container,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-container,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--menu,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker__calendar,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--popover-content,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification {
   border-radius: 8px;
 }
-[data-theme="ant-dark"] .rux--tag {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--tag {
   border-radius: 4px;
 }
 /* The option at each end of a list takes the menu's curve. A selected or
@@ -186,14 +189,14 @@
    leaves it in the list, so `:first-child` is often a row nobody can see.
    Every shown option is curved, and the curve is taken back from any that has
    a shown option before it, above, or after it, below. */
-[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]) {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]) {
   border-radius: 8px;
 }
-[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
   border-start-start-radius: 0;
   border-start-end-radius: 0;
 }
-[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
   border-end-start-radius: 0;
   border-end-end-radius: 0;
 }
@@ -201,32 +204,32 @@
    with a 1px top, so the ring joins the menu to the field above it. Ant-dark's
    menu is a detached rounded box, so that option wears the outline every other
    option wears, which follows the corner it sits in. */
-[data-theme="ant-dark"] .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
-[data-theme="ant-dark"] .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
-[data-theme="ant-dark"] .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted::before {
   content: none;
 }
-[data-theme="ant-dark"] .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
-[data-theme="ant-dark"] .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
-[data-theme="ant-dark"] .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--multi-select--selected .rux--list-box__menu-item:first-child.rux--list-box__menu-item--highlighted {
   outline-color: var(--rux-focus, #0f62fe);
 }
 /* The field keeps its 2px focus ring while an option is active. Carbon thins
    it to 1px so the field and the menu read as one box; ant-dark's are two
    rounded boxes, and a thin ring only reads as the field losing focus. */
-[data-theme="ant-dark"] .rux--combo-box.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) .rux--combo-box--input--focus.rux--text-input,
-[data-theme="ant-dark"] .rux--multi-select.rux--list-box--expanded .rux--list-box__field--wrapper:has(button[aria-activedescendant]:not([aria-activedescendant=""])),
-[data-theme="ant-dark"] .rux--multi-select--filterable.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--combo-box.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) .rux--combo-box--input--focus.rux--text-input,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select.rux--list-box--expanded .rux--list-box__field--wrapper:has(button[aria-activedescendant]:not([aria-activedescendant=""])),
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--multi-select--filterable.rux--list-box--expanded:has(input[aria-activedescendant]:not([aria-activedescendant=""])) {
   outline-offset: -2px;
   outline-width: 2px;
 }
 /* A date range reads as one box, the way Ant's range picker does: its two
    inputs keep Carbon's 1px seam and square the corners that meet there. */
-[data-theme="ant-dark"] .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker--range .rux--date-picker-container--from .rux--date-picker__input {
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
-[data-theme="ant-dark"] .rux--date-picker--range .rux--date-picker-container--to .rux--date-picker__input {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--date-picker--range .rux--date-picker-container--to .rux--date-picker__input {
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
@@ -237,8 +240,7 @@
    5.19. Only this rule pairs those two tokens, so only it moves. */
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
-}
-/* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
+}/* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart
    by its border, not its fill. The theme already does this for the modal, which
    carries a 1px subtle border; the tile, the popover, the menus and the date
@@ -331,38 +333,38 @@
    square, and where it sits in a rounded corner it takes that corner's
    curve: the header's actions, the side panel's close and action row, and a
    modal's close and footer. */
-[data-theme="ant-dark"] .rux--header__action,
-[data-theme="ant-dark"] .rux--side-panel__close-button,
-[data-theme="ant-dark"] .rux--action-set__action-button,
-[data-theme="ant-dark"] .rux--modal-close-button,
-[data-theme="ant-dark"] .rux--modal-footer .rux--btn {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--header__action,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn {
   border-radius: 0;
 }
 /* A close button in a rounded corner takes that corner's curve, so neither its
    hover fill nor its inset focus ring draws a square inside the curve. A
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
-[data-theme="ant-dark"] .rux--side-panel__close-button,
-[data-theme="ant-dark"] .rux--modal-close-button,
-[data-theme="ant-dark"] .rux--inline-notification__close-button,
-[data-theme="ant-dark"] .rux--toast-notification__close-button {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--inline-notification__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */
-[data-theme="ant-dark"] .rux--side-panel__header {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__header {
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
 }
-[data-theme="ant-dark"] .rux--side-panel__actions-container {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--side-panel__actions-container {
   border-end-start-radius: 8px;
   border-end-end-radius: 8px;
 }
-[data-theme="ant-dark"] .rux--action-set__action-button:first-child,
-[data-theme="ant-dark"] .rux--modal-footer .rux--btn:first-child {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:first-child,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:first-child {
   border-end-start-radius: 8px;
 }
-[data-theme="ant-dark"] .rux--action-set__action-button:last-child,
-[data-theme="ant-dark"] .rux--modal-footer .rux--btn:last-child {
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--action-set__action-button:last-child,
+:is([data-theme="ant-dark"], [data-theme="geist"]) .rux--modal-footer .rux--btn:last-child {
   border-end-end-radius: 8px;
 }

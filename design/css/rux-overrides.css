@@ -255,21 +255,27 @@
    and the rule under every row. Ours already keeps those two, so only the fill
    and the top corners are missing. Geist's box below is the opposite choice;
    neither was guessed. */
-[data-theme="ant-dark"] .rux--data-table-content {
+[data-theme="ant-dark"] .rux--data-table-container {
   background: var(--rux-layer-01);
   border-start-start-radius: 8px;
   border-start-end-radius: 8px;
+  overflow: hidden;
 }
 /* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
    carries no border and no corners, and a wrapper around it does — 1px at 14%
    white, 8px, over the raised layer. `data-table-content` is our equivalent
    wrapper and already scrolls, so the corners clip what is inside them.
    Scoped to geist because geist is what was measured; Ant's tables were not,
-   and a guess would only look like a rule. */
-[data-theme="geist"] .rux--data-table-content {
+   and a guess would only look like a rule.
+   IT GOES ON THE CONTAINER, NOT THE SCROLLING CONTENT, because a table's title
+   and its toolbar are the container's other children: on the content the box
+   started below them and they floated loose above the line. The container
+   clips, so a filled toolbar takes the corners with it. */
+[data-theme="geist"] .rux--data-table-container {
   background: var(--rux-layer-01);
   border: 1px solid var(--rux-border-subtle-01);
   border-radius: 8px;
+  overflow: hidden;
 }
 /* Inside the box, the header takes no fill and carries one rule under it, as
    Geist's does on the same page; Carbon's filled header inside a bordered box

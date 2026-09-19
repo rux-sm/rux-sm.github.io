@@ -129,6 +129,24 @@
   inset-inline-start: 0;
   inline-size: var(--scheduler-viewer-w);
   border-inline-start: 0;
+  /* The frame takes the panel's corners through this token, and there are
+     none to take here. */
+  --scheduler-surface-radius: 0;
+}
+/* The header, the close button and the action row take the panel's corners in
+   a rounded theme, so that a fill or a focus ring does not draw a square
+   inside the curve. This panel has no curve to follow. */
+.scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel :is(
+  .rux--side-panel__header,
+  .rux--side-panel__close-button,
+  .rux--side-panel__actions-container,
+  .rux--action-set__action-button),
+.scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel :is(
+  .rux--side-panel__header,
+  .rux--side-panel__close-button,
+  .rux--side-panel__actions-container,
+  .rux--action-set__action-button) {
+  border-radius: 0;
 }
 }
 

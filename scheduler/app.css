@@ -1543,8 +1543,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
-/* The slots share the width rather than sitting in a clump at one end. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { flex: 1 1 auto; }
+/* The slots share the width rather than sitting in a clump at one end, and
+   take the 48px token, which is what a phone asks of a target and what the
+   block above them already is. The height is set on the slot and never on
+   `--scheduler-slot-w`: in compact that token is also the day column's floor,
+   and widening the week to suit a button would be the tail wagging the dog. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut {
+  flex: 1 1 auto;
+  block-size: var(--rux-layout-size-height-lg);
+}
 /* The trip, above its slots: the bar's own rows, cloned, so they keep one
    builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, which this stripe reads. */
@@ -1552,6 +1559,13 @@ button.scheduler-row-head__num::after {
   flex: 1 0 100%;
   min-inline-size: 0;
   padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  /* A rule between what is read and what is tapped, as Carbon parts a panel's
+     content from its actions and as every other band in geist is parted. It is
+     `border-subtle-02` because the sheet is layer two, and the divider takes
+     the level of the surface it is drawn on; `-01` is the edge against the
+     board, which is layer one. The 16px above it gives the last row room. */
+  border-block-end: 1px solid var(--rux-border-subtle-02);
+  padding-block-end: var(--rux-spacing-05);
   border-inline-start: var(--rux-spacing-02) solid var(--scheduler-bg, transparent);
   color: var(--rux-text-inverse);
   font-size: var(--scheduler-fs);

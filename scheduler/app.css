@@ -1506,6 +1506,56 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-docked-h, 0px);
 }
 
+/* ── The week sliding in ────────────────────────────────────────────────────
+   A drag on the compact board carries the week with it and brings the next one
+   in beside it. The week either side is already in hand, so what slides in is
+   the real one; `render` draws it into a spare grid and touches nothing else.
+
+   The spare is laid over the pane's own box rather than beside the grid in
+   flow, so the grid's width and the pane's height are untouched and there is
+   no wrapper between the two. An absolutely placed child of a scroll pane
+   scrolls with its content, so the two weeks stay level as the board scrolls.
+
+   Both are moved by one number, which the pointer writes on the pane. */
+.scheduler-week--sliding { overflow-x: hidden; }
+.scheduler-week--sliding > .scheduler-grid {
+  transform: translateX(var(--scheduler-slide, 0px));
+}
+.scheduler-grid--spare {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--scheduler-pane-w, 100%);
+}
+/* The arriving week brings no bus numbers. It is laid out with its own head
+   column, as every grid is, but drawing it would send a second column of the
+   same numbers travelling across the middle of the screen. The column keeps
+   its width so the days behind it stay on the same grid. */
+.scheduler-grid--spare .scheduler-corner,
+.scheduler-grid--spare .scheduler-row-head { visibility: hidden; }
+/* So the days are what moves, and they move by the width of the days alone:
+   the arriving week's first day lands exactly where the leaving week's last one
+   was, with no gap between the two and no second head column in the way. */
+.scheduler-week--sliding > .scheduler-grid--next {
+  transform: translateX(calc(var(--scheduler-slide, 0px) + var(--scheduler-slide-w, 100%)));
+}
+.scheduler-week--sliding > .scheduler-grid--prev {
+  transform: translateX(calc(var(--scheduler-slide, 0px) - var(--scheduler-slide-w, 100%)));
+}
+/* Settling, and springing back, take the same short ease. */
+.scheduler-week--settling > .scheduler-grid {
+  transition: transform 200ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+/* A week travelling away takes its own bus numbers and its own dates with it,
+   as a sheet of paper would, so the two grids' sticky cells stand down for the
+   length of the move. They pin to the pane, and two grids side by side would
+   otherwise pin both columns to the same left edge. */
+.scheduler-week--sliding .scheduler-corner,
+.scheduler-week--sliding .scheduler-day,
+.scheduler-week--sliding .scheduler-row-head {
+  position: static;
+}
+
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so
    the bar docks to the bottom edge instead and, having the width down there,

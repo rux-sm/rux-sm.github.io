@@ -298,14 +298,6 @@
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-05);
 }
-/* On a phone the bar sits on the screen's bottom edge, so its buttons keep
-   above the home bar and the bar's surface fills the space under them. */
-@media (max-width: 41.98rem) {
-  .rux--side-panel .rux--side-panel__actions-container {
-    padding-block-end: var(--scheduler-safe-bottom);
-  }
-}
-
 
 /* Fields in a modal take `field-02`, as rux.css does for fields in a side
    panel. A modal is `rux--layer-one`, where `field-01` barely differs from the

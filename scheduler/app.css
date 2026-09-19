@@ -1739,7 +1739,8 @@ button.scheduler-row-head__num::after {
    and does not resolve here. `:has()` reads the panel's `[hidden]`, so no
    class has to be kept in sync. */
 body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
-  /* Plus the home bar, which the action bar grows by on a phone. */
+  /* Plus the home bar, which the toast keeps above whether the panel is beside
+     the week or in front of the board. */
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 

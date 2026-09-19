@@ -5529,10 +5529,11 @@
     if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
     else pageEl.removeAttribute('data-room');
 
-    /* The first step of the cascade, before any panel gives way: a schedule
-       under the floor cannot show three readable days, so it shows all seven
-       compact rather than scrolling sideways to about two. */
-    if (room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
+    /* Compact is the phone's answer, where the board itself is narrower than
+       a readable week and there is nothing else to give. On a desktop the
+       week keeps its readable days and scrolls to fewer of them, which is
+       what a narrowed window asks for rather than a different week. */
+    if (overlay && room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
   }
 

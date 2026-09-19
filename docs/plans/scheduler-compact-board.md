@@ -6,31 +6,25 @@ type: plan
 
 ## Goal
 
-Wherever the schedule is too narrow for three readable days, it draws all seven
-instead: a trip becomes a square block in its colour carrying only its marks,
-and tapping one opens its writing on a bar docked to the bottom edge. The phone
-and a desktop squeezed by two open panels reach this the same way.
+On a phone, where the board itself is too narrow for three readable days, the
+schedule draws all seven instead: a trip becomes a square block in its colour
+carrying only its marks, and tapping one opens its writing on a bar docked to
+the bottom edge.
 
 ## Decisions
 
 ### When it turns on
 
-- **Compact is what happens below the floor, in place of scrolling sideways.**
-  `SCHEDULE_FLOOR` already names the width under which the schedule cannot show
-  three whole days; today the board scrolls there and shows about two. No second
-  threshold is invented, because the figure that says "a readable week does not
-  fit" is the one that should choose the other week.
+- **Compact is the phone's answer, below the floor and below md.**
+  `SCHEDULE_FLOOR` names the width under which the schedule cannot show three
+  whole days. On a desktop the week keeps its readable days and scrolls to
+  fewer of them, and the panels float rather than squeeze it, which
+  `scheduler-desktop-cascade.md` decides; compact is what a board with nothing
+  left to give does.
 
 - **`placeRoom` decides it, as it decides everything else.** It already measures
   the board and the panels and writes `--scheduler-room` and `data-room`; it
-  writes `data-board="compact"` on `.scheduler-page` from the same figure. The
-  panels beside the schedule are what take the room and a window cannot see
-  them, which is why the toolbar's own switch is a container query.
-
-- **The cascade is three steps, most valuable last to give way.** Above the
-  floor, the full board. Below it the roster steps aside, as it does now, and
-  the room is measured again. Only where that still leaves less than the floor
-  does the schedule go compact. A readable board is preferred wherever one fits.
+  writes `data-board="compact"` on `.scheduler-page` from the same figure.
 
 - **Nothing is stored and nothing is toggled.** Compact is the board's state,
   never a preference, so it must not write over the row choices in

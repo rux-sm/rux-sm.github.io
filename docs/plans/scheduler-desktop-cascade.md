@@ -50,9 +50,10 @@ rather than from the panels themselves, because a floating panel gives its
 width up and pricing it by what it takes would unmake the decision that
 floated it.
 
-So with one panel beside it the week stays readable to 47rem of board, and
-under that the panel floats or, for the roster, the week goes compact. Below
-md the phone's own cascade takes over, where every panel is an overlay.
+So with one panel beside it the week stays readable to 47rem of board; under
+that a destination floats, and the week the roster leaves keeps its readable
+days and scrolls to fewer of them. The compact week belongs to the phone,
+where the board itself is under the floor and nothing is left to give.
 
 ## Questions
 

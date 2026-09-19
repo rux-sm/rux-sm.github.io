@@ -50,9 +50,12 @@ something rux asked for.
 3. **A left panel closes,** under about 80rem, where three 20rem panels and a
    compact week no longer fit. The trip editor is never the one: it holds
    unsaved work and it is what the board is being read beside.
-4. **The other left panel closes** under about 60rem. That lands on md, 42rem,
-   where the layout becomes overlays anyway, so in practice the ladder ends
-   with the editor and a compact week.
+4. **The other left panel closes** under about 60rem, leaving the editor and a
+   compact week.
+5. **The overlays take over** where a compact week and one 20rem panel no
+   longer fit side by side, which is 40rem. Carbon's md is 42rem and the
+   layout already turns there, within 32px of the same answer, so md stays the
+   switch and the arithmetic is its reason rather than a second figure.
 
 The roster does not step aside to keep the days wide, as it does now. It
 closes only at step 3 or 4, with the viewer. Below md it still steps aside,
@@ -67,7 +70,7 @@ where it is a full-width overlay and would cover the editor.
 | 80–86rem | compact week | all three at 20rem |
 | 60–80rem | compact week | one left panel closed |
 | 42–60rem | compact week | the editor alone |
-| under 42rem | the phone's own cascade | overlays |
+| under 42rem | the phone's own cascade | overlays, because a week and one panel no longer sit side by side |
 
 ### Opening is gated where closing is
 

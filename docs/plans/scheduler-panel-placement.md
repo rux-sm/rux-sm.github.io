@@ -62,8 +62,9 @@ None open.
 
 ## Tasks
 
-- [ ] Read a week with each of the three panels in front, in geist and g100,
-      and see that the dim and the panel's square corners sit right in both.
+- [ ] Read a week with each of the three panels in front in g100, where the
+      card has no edge and no corner of its own and the dim is all that parts
+      it from the board. Geist reads right already.
 - [ ] Open a trip, then a document, on a window around 1000px: the document
       takes the front and the editor waits beside the week. Close it and the
       board comes back whole.

@@ -1593,10 +1593,19 @@ button.scheduler-row-head__num::after {
    hides where the other is used. `display: none`, so the hidden one leaves the
    accessibility tree too, and Carbon's own display is untouched where each is
    shown. */
+/* The view menu is laid out beside the board rather than inside it, so a rule
+   that reads the board's state reaches it through `:has` on the body. */
 @media (min-width: 42rem) {
-  .scheduler-page:not([data-room="tight"]) .scheduler-menu-item--sm-only { display: none; }
+  body:has(.scheduler-page:not([data-room="tight"])) .scheduler-menu-item--sm-only { display: none; }
 }
 .scheduler-page[data-room="tight"] .scheduler-toolbar__lg-only { display: none; }
+/* On the compact board a swipe changes the week, so the two chevrons come off
+   and `Today` takes their place: a gesture replaces a step, and nothing
+   replaces a jump home. All three are icon-only at the same 40px, so the swap
+   costs the toolbar nothing. `Today` then sits in one place rather than two,
+   and the menu row that stood in for it goes. */
+.scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
+body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { display: none; }
 /* In the same state the week's own button gives up two steps of inset, which
    is the last 24px "Sep 2026" needs to read whole rather than as "Sep …": at a
    272px schedule the four controls take 160px, and the 112px left holds the
@@ -1695,8 +1704,9 @@ button.scheduler-row-head__num::after {
     block-size: auto;
   }
 
-  /* The toolbar's `Today` button gives way to its menu row. */
-  .scheduler-toolbar__lg-only { display: none; }
+  /* The toolbar's `Today` button gives way to its menu row, except on the
+     compact board, where the chevrons have left it the room. */
+  .scheduler-page:not([data-board="compact"]) .scheduler-toolbar__lg-only { display: none; }
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────────

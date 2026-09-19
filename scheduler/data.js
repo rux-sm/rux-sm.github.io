@@ -357,11 +357,17 @@
 
   async function read(weekStart) {
     const weekEnd = addDays(weekStart, 6);
-    // A trip that started before this week can still run through it, so the
-    // window reaches back; 90 days is far longer than any trip in the data and
-    // the exact overlap is decided per leg below, not by this filter.
-    const lo = iso(addDays(weekStart, -90));
-    const hi = iso(weekEnd);
+    /* The week either side comes with it, so a swipe draws from what is in hand
+       rather than waiting on the network. It costs one widened window and no
+       second query: a trip that started before the week can still run through
+       it, so this already reached 90 days back, and 7 days at each end of 97 is
+       14% more of the one read. The exact overlap is decided per leg in
+       `render`, not by this filter, which is what lets one payload draw three
+       weeks. */
+    const from = addDays(weekStart, -7);
+    const to = addDays(weekEnd, 7);
+    const lo = iso(addDays(from, -90));
+    const hi = iso(to);
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
     const [buses, trips, drivers, contacts, oos, timeOff] = await withTimeout(Promise.all([
@@ -375,7 +381,7 @@
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client').order('name').then(unwrap),
-      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(weekStart)).then(unwrap),
+      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(from)).then(unwrap),
       // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
@@ -1067,7 +1073,10 @@
       track.style.setProperty('--scheduler-day-rules', dayRuleStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       for (const w of windows) {
+        /* The read covers the week either side, so a window can miss the week
+           being drawn; `clip` says so by answering nothing. */
         const place = clip(w.start_date, w.end_date, weekStart, weekEnd);
+        if (!place) continue;
         const span = el('div', 'scheduler-oos');
         span.style.setProperty('--scheduler-start', place.start);
         span.style.setProperty('--scheduler-span', place.span);
@@ -7764,6 +7773,28 @@
   // The read in flight, and whether anything asked for another while it ran.
   let reading = null;
   let readAgain = false;
+  /* The payload last read, and the week it was centred on. It covers that week
+     and the one either side, so a swipe draws from it instead of waiting on the
+     network -- `render` decides the overlap per leg, so one payload draws three
+     weeks at three different starts. */
+  let cached = null;
+  /* What one week would have to change for a redraw to be worth it: which trips
+     it draws and when each was last written, which is what an edit moves, and
+     the windows that stripe a row or a day in it. It is taken for one week and
+     never for the payload, because two reads centred a week apart cover
+     different 111-day windows and their trip lists differ even where the week
+     drawn is the same one. Sorted, since the order a read returns is its own. */
+  const weekPrint = (data, weekStart) => {
+    const weekEnd = addDays(weekStart, 6);
+    const span = { from: iso(weekStart), to: iso(weekEnd) };
+    const drawn = (data.trips || [])
+      .filter(tr => legsOf(tr).some(l => clip(l.from, l.to, weekStart, weekEnd)))
+      .map(tr => `${tr.id}@${tr.updated_at}`).sort();
+    const windows = rows => (rows || [])
+      .filter(r => datesOverlap(span, { from: r.start_date, to: r.end_date || r.start_date }))
+      .length;
+    return [drawn.join(','), windows(data.oos), windows(data.timeOff), (data.buses || []).length].join('|');
+  };
 
   /* One read at a time, and the last ask always gets its own. A week change or
      a save that asks while a week is loading is queued, not dropped, so the
@@ -7794,15 +7825,34 @@
     // readable.
     const asked = cursor;
     setRange(asked, addDays(asked, 6));
+
+    /* A week the last read already covers is drawn at once, with no dim and no
+       network. The read still follows, because every change re-read before this
+       and so always showed current data; caching without the check would let
+       someone else's save go quietly missing while two people dispatch. */
+    const held = cached && iso(addDays(cached.centre, -7)) <= iso(asked)
+      && iso(asked) <= iso(addDays(cached.centre, 7));
+    if (held) {
+      render({ ...cached.data, weekStart: asked, weekEnd: addDays(asked, 6) });
+      shown = asked;
+    }
+
     schEl.setAttribute('aria-busy', 'true');
-    // Only a week already on screen dims; before the first one, the grid is
-    // the skeleton and stays at full strength.
-    if (shown) gridEl.classList.add('scheduler-grid--busy');
+    // Only a week already on screen dims, and only where it was not just drawn
+    // from what was held; before the first one the grid is the skeleton and
+    // stays at full strength.
+    if (shown && !held) gridEl.classList.add('scheduler-grid--busy');
 
     try {
       const data = await read(asked);
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;
+      /* A week drawn from what was held is redrawn only if the read came back
+         different, so the common case costs no second render and nothing on
+         screen moves. */
+      const same = held && cached && weekPrint(data, asked) === weekPrint(cached.data, asked);
+      cached = { data, centre: asked };
+      if (same) return;
       render(data);
       shown = asked;
     } catch (e) {
@@ -8069,6 +8119,45 @@
   document.getElementById('scheduler-prev')?.addEventListener('click', () => go(-7));
   document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
+
+  /* ── A swipe changes the week ──────────────────────────────────────────────
+     On the compact board the horizontal axis is free: all seven days fit, where
+     the full board spends that axis scrolling to its other days. So the gesture
+     lives here alone, and the chevrons it replaces come off in app.css.
+
+     It stands down for the three things it would otherwise fight. A pane that
+     still scrolls sideways, which is every phone under about 346px, where the
+     finger is scrolling. A trip being carried, which starts as the same finger
+     held still. And the system's own edge-back, which is this gesture begun at
+     the screen's edge; the page's 16px margin is where that strip is measured
+     from. It reads the gesture on release rather than following it, because the
+     week is redrawn whole and not slid across.
+
+     No `touch-action` is set: with nothing to scroll sideways there is nothing
+     for the browser to take, and a pane that does scroll is let alone above. */
+  const SWIPE_MIN = 48;
+  const SWIPE_EDGE = 24;
+  if (schEl) {
+    let from = null;
+    schEl.addEventListener('pointerdown', e => {
+      from = e.pointerType === 'touch' && e.isPrimary ? { x: e.clientX, y: e.clientY } : null;
+    });
+    schEl.addEventListener('pointercancel', () => { from = null; });
+    schEl.addEventListener('pointerup', e => {
+      const start = from;
+      from = null;
+      if (!start || touchDragging) return;
+      if (pageEl?.getAttribute('data-board') !== 'compact') return;
+      if (schEl.scrollWidth > schEl.clientWidth) return;
+      if (start.x < SWIPE_EDGE) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      // Far enough not to be a tap that slid, and more across than down.
+      if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      // The week moves the way the finger went: left brings the next one in.
+      go(dx < 0 ? 7 : -7);
+    });
+  }
 
   /* The schedule needs a staff account. /funnel.js opens this page only for an
      account with Scheduler, and /account.js sends a log-in that ends to the

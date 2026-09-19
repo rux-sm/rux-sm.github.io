@@ -2,70 +2,74 @@
 type: plan
 ---
 
-# Plan: the schedule's box is the same box at every desktop width
+# Plan: the schedule loses its edge where the page loses its margin
 
 ## Goal
 
-In geist the schedule carries four sides and its corners at every width a
-desktop has, whether the week fits or scrolls and whatever else is open. No
-width takes the outline away. The phone's compact board still drops the edge
-whole, for its own reason.
+In geist the schedule carries four sides and its corners wherever the page has
+a margin around it, at every width and whatever else is open. It drops them at
+one width and one only: Carbon's md, where `.rux--content` gives up its padding
+and the board runs to the screen's own edges.
 
 ## Decisions
 
-### The exception comes out, rather than moving
+### The edge belongs to the page's margin, not to the week's width
 
-`theme.css` takes the schedule's sides and corners off while the week scrolls
-and nothing sits beside it. That is the state a desktop is in below about
-920px, so the region changes shape as the window crosses a number, which reads
-as a fault rather than a decision.
+A side line and a rounded corner want a page behind them. Above md there are
+32px of it and the schedule is a card; below md there are none, the board meets
+the screen, and the shell header above and the grid's last rule below already
+draw the lines the edge would.
 
-What it was avoiding is a real thing — a line down a pane that scrolls is a
-stop where the week does not end, and the corner curves over the column under
-it — but it is also what every rounded scroll pane does, and it costs less
-than a box that appears and disappears.
+So `@media (max-width: 41.98rem)` is where the edge, the corners and the
+last-rule trade all happen, in the same query that takes the padding.
 
-### `data-week` goes with it
+### The crowded rule comes out
 
-One rule reads the attribute and nothing reads the flag behind it, so the
-attribute, the `crowded` value `fit` keeps and the `crowded` entry on
-`Rux.schedule` all come out. `fitColumns` keeps its own internal answer,
-which is what decides whether the day columns take the remainder.
+`theme.css` takes the sides and corners off while the week scrolls and nothing
+sits beside it, which starts at about 986px and holds all the way down. That
+puts the change 314px above the md breakpoint, so a schedule with a 32px margin
+on either side of it sits there with no sides — the one place the edge is
+certainly right.
 
-### The compact board keeps dropping the edge
+`data-week` has one reader and the `crowded` value behind it has none, so the
+attribute, the value `fit` keeps and the `crowded` entry on `Rux.schedule` come
+out with it. `fitColumns` keeps its own internal answer, which is what decides
+whether the day columns take the remainder.
 
-There the board is the screen: the shell header above and the grid's last rule
-below already draw the line the edge would, and the corners have no page to sit
-on. That reason is untouched, and so is the last-rule token it trades against.
+### `data-board="compact"` is not the hook either
 
-### Nothing else zeroes the radius token
+Compact asks whether the board can draw three readable days, and answers at
+26rem of board — 256px below the width the padding goes. It is about how the
+week draws, not about what the board sits on, so it keeps the day columns, the
+block size, the day band and the docked sheet, and gives the edge up.
 
-The selected trip's shortcut bar sits inside the schedule's column and inherits
-`--scheduler-surface-radius` from it, so zeroing the token for the column
-squares the bar too. The compact board wants exactly that, for the docked
-sheet. No other state does, and with the exception gone no other state sets it.
+### The radius token stays inheritable
 
-### A panel in front changes nothing
-
-No rule then asks whether a region is beside the week, so the schedule behind a
-panel in front draws what it draws everywhere else.
+The frame hands `--scheduler-surface-radius` down, which is how the toolbar and
+the week take the same corners and how the docked sheet squares itself. The md
+query sets it to 0, so everything inside the board squares together.
 
 ## Questions
 
-- **Does the corner cutting the top of a day column read right when the week
-  scrolls under it?** It is the one thing this gives up, and only looking
-  answers it. If it does not, the answer is a square top-right corner on a
-  scrolling pane, not the whole outline.
+- **Should the selected trip's shortcut bar keep its corners below md?** It
+  floats over the board rather than filling it, so it has a page behind it
+  either way, but it sits inside the frame and inherits the square. Docked, on
+  the compact board, it must stay square. Between md and compact it is still
+  floating, and only looking says which reads right.
 
 ## Tasks
 
 - [ ] Take the crowded rule out of `scheduler/theme.css`, and the `data-week`
       write, the `crowded` value and its `Rux.schedule` entry out of
       `scheduler/app.js`.
-- [ ] Read the schedule in geist at 1440, 1000, 920 and 700 with nothing else
-      open, then with the roster, the trip editor and the document viewer, and
-      confirm the box never changes.
-- [ ] Select a trip at each of those widths and confirm the shortcut bar keeps
-      its corners, then check the phone still squares both it and the board.
+- [ ] Move the edge, the corners and the last-rule trade from the compact rule
+      in `scheduler/app.css` into the same media query that drops the page
+      padding, leaving compact its own decisions.
+- [ ] Read the schedule in geist at 1440, 1000, 900, 700, 680, 660 and 402,
+      alone and with the roster, the trip editor and the document viewer, and
+      confirm the box changes at 672 and nowhere else.
+- [ ] Select a trip at 1000, 900 and 600 and confirm the shortcut bar reads
+      right at each, then check the phone still squares the docked sheet and
+      the board together.
 - [ ] Read the same widths in ant-dark, g100, g10 and spotify-dark, which draw
       no edge and must stay unchanged.

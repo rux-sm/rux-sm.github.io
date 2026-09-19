@@ -63,6 +63,13 @@ because every change re-reads today and so always shows current data; caching
 without the check would let someone else's edit go quietly missing while two
 people dispatch at once.
 
+### The week label is left alone
+
+It keeps its months-only form on a phone. The day band beneath it already
+numbers the days, so spending the 40px the swap frees on a fuller label would
+buy a second telling of something already said, and the container query's 25rem
+stays as it is.
+
 ### It does not track the finger
 
 Three grids side by side, each with its own sticky bus column, is a different
@@ -70,11 +77,7 @@ piece of work. This stops at instant.
 
 ## Questions
 
-- **Does the week label name its days again, now there is room?** On a phone it
-  reads "Sep – Oct 2026", decided when five controls took 200px of a 370px
-  toolbar. Three take 120px, so the full "Sep 14 – 20, 2026" fits at about
-  20rem where the container query still says 25. The day band numbers the days
-  either way, so this is a choice rather than a fix.
+None open.
 
 ## Tasks
 
@@ -87,8 +90,6 @@ piece of work. This stops at instant.
       inside the left margin.
 - [ ] Hide the chevrons in compact, show `Today` beside the week, and hide the
       overflow menu's own `Today` with them.
-- [ ] Re-measure the toolbar's container query against three controls in place
-      of five.
 - [ ] Read it on a phone: swipe both ways, swipe with a trip selected, swipe at
       320px where the pane still scrolls, and hold a trip to carry it without
       the week moving.

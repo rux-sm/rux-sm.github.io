@@ -8135,25 +8135,42 @@
 
      No `touch-action` is set: with nothing to scroll sideways there is nothing
      for the browser to take, and a pane that does scroll is let alone above. */
-  const SWIPE_MIN = 48;
+  /* A gesture picks its axis in its first 10px and keeps it, the way a
+     carousel does, rather than being judged on where it ended: a thumb arcs,
+     and a swipe 90px across with 70px of drift in it is still plainly sideways.
+     A deliberate push travels 40px; a quick one counts at 24px, because speed
+     is what says it was meant. Anything that never moved 10px is a tap and
+     leaves the week alone. */
+  const SWIPE_LOCK = 10;
+  const SWIPE_MIN = 40;
+  const SWIPE_FLICK = 24;
+  const SWIPE_FLICK_MS = 300;
   const SWIPE_EDGE = 24;
   if (schEl) {
-    let from = null;
+    let g = null;
     schEl.addEventListener('pointerdown', e => {
-      from = e.pointerType === 'touch' && e.isPrimary ? { x: e.clientX, y: e.clientY } : null;
+      g = e.pointerType === 'touch' && e.isPrimary
+        ? { x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null }
+        : null;
     });
-    schEl.addEventListener('pointercancel', () => { from = null; });
+    schEl.addEventListener('pointermove', e => {
+      if (!g || g.axis) return;
+      const dx = Math.abs(e.clientX - g.x);
+      const dy = Math.abs(e.clientY - g.y);
+      if (dx < SWIPE_LOCK && dy < SWIPE_LOCK) return;
+      g.axis = dx > dy ? 'x' : 'y';
+    });
+    schEl.addEventListener('pointercancel', () => { g = null; });
     schEl.addEventListener('pointerup', e => {
-      const start = from;
-      from = null;
-      if (!start || touchDragging) return;
+      const start = g;
+      g = null;
+      if (!start || start.axis !== 'x' || touchDragging) return;
       if (pageEl?.getAttribute('data-board') !== 'compact') return;
       if (schEl.scrollWidth > schEl.clientWidth) return;
       if (start.x < SWIPE_EDGE) return;
       const dx = e.clientX - start.x;
-      const dy = e.clientY - start.y;
-      // Far enough not to be a tap that slid, and more across than down.
-      if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      const quick = e.timeStamp - start.at < SWIPE_FLICK_MS;
+      if (Math.abs(dx) < (quick ? SWIPE_FLICK : SWIPE_MIN)) return;
       // The week moves the way the finger went: left brings the next one in.
       go(dx < 0 ? 7 : -7);
     });

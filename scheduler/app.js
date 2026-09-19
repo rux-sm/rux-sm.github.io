@@ -136,6 +136,17 @@
     // The head is pinned to a whole width that carries the remainder, so the
     // columns sum to the pane exactly.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
+
+    /* Where the seven days fit there is no sideways scrolling to do, so the
+       horizontal axis is handed to the week swipe in data.js and the browser
+       keeps only the vertical one. Without this the browser decides which axis
+       owns a touch from its first pixels, claims anything that looks like a
+       pan, and cancels the pointer -- which is every swipe with a little drift
+       in it. `touch-action` is read when a gesture begins, so it has to be
+       standing before the finger lands, which is why it is set here and not
+       when the swipe is read. Where the grid does scroll, the finger scrolls
+       it and nothing is claimed from the browser. */
+    sch.style.touchAction = crowded ? '' : 'pan-y';
   }
 
   const sch = document.getElementById('scheduler-week');

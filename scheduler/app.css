@@ -1222,6 +1222,12 @@ button.scheduler-row-head__num::after {
   font-size: var(--scheduler-fs);
   letter-spacing: var(--scheduler-ls);
 }
+/* The list's last rule and the card's own edge draw two lines on top of each
+   other in a theme whose regions carry an edge, so there the row gives way to
+   it. A theme without one keeps the rule, which is all that closes its list. */
+.scheduler-avail__row:last-child > * {
+  border-block-end: var(--scheduler-avail-last-rule, 1px solid var(--rux-border-subtle-01));
+}
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
 .scheduler-avail__day,
@@ -1356,14 +1362,11 @@ button.scheduler-row-head__num::after {
   /* Across every column, since a band covers the name and the whole week, and
      a label held inside the name column has no room for "No priority". */
   grid-column: 1 / -1;
-  /* Pinned under the column header, so the band being read is always named.
-     Above the sticky name column at 2 and clear of the header's own 3, which
-     it stops below and never reaches. A heading that has been passed stays
-     pinned under the next one, which is opaque and later in the markup, so the
-     name on show is always the band on screen. */
-  position: sticky;
-  inset-block-start: 2rem;
-  z-index: 3;
+  /* In flow rather than pinned. The column header's corner names the band
+     being read and data.js hands it over as each one reaches the header, so a
+     band pinned under that header would be the header twice -- which is what
+     naming the first band in the corner set out to avoid. A band passes as the
+     separator it is, under the header's own opaque cells. */
   /* The column header's own 2rem and inset, so a band heading and the header
      it repeats are the same band at the same size. */
   block-size: 2rem;
@@ -1413,6 +1416,21 @@ button.scheduler-row-head__num::after {
      Set on the bar's height and never on `--scheduler-bar-rows`, which holds
      the row choices in `scheduler.view` and has to come back untouched. */
   --scheduler-bar-h: 2.75rem;
+}
+
+/* The schedule is the screen here, so the card's edges go. A rounded corner
+   and a side line want a page behind them, and at this width one pixel of it
+   shows; dropping them also gives the grid back the two pixels the lines took,
+   in the dimension that is short. The token squares the frame, the toolbar and
+   the week together. The edge goes whole rather than at the sides alone: the
+   region it told apart from the roster is the screen here, and the header
+   above and the grid's last rule below already draw a line where its own top
+   and bottom fell, which is the doubled border. The roster and the docked bar
+   sit outside the frame and float over the board rather than filling it, so
+   they keep their corners. */
+.scheduler-page[data-board="compact"] .scheduler-frame {
+  --scheduler-surface-radius: 0;
+  border: 0;
 }
 
 /* The day band numbers the days and drops their names, which do not fit in a
@@ -1588,27 +1606,27 @@ button.scheduler-row-head__num::after {
      the shell's header panels. */
   .scheduler-aside {
     position: fixed;
-    inset: 3rem 0 0 0;
+    /* A card on the page's background, 16px in from every edge, so the row
+       lines end at the card's edges. The gap is the inset rather than padding
+       inside, so a theme that outlines its regions draws that outline around
+       the card instead of around the screen. Both sizes are auto for the
+       insets to shape the box, and the shadow fills the rest of the screen
+       with the page's own colour, so the board does not show around the card.
+       The overlay scrolls rather than the grid, so the phone draws its scroll
+       bar inside the card, clear of the squares. Block, because the pane is
+       as tall as its rows. */
+    inset: calc(3rem + var(--rux-spacing-05)) var(--rux-spacing-05)
+           calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+    inline-size: auto;
+    block-size: auto;
     z-index: 998;
     flex: 0 0 0;
-    inline-size: 100%;
     order: 0;
-    /* A card on the page's background, 16px in from every edge, so the row
-       lines end at the card's edges. The overlay scrolls rather than the grid,
-       so the phone draws its scroll bar in the gutter, clear of the squares.
-       Block, because the pane is as tall as its rows. */
     display: block;
-    padding: 0 var(--rux-spacing-05);
     overflow-y: auto;
     overscroll-behavior: contain;
     background: var(--rux-background);
-  }
-  /* The gap under the card, above the home bar. A spacer rather than padding,
-     so the gap is part of the list's scroll height in every browser. */
-  .scheduler-aside::after {
-    content: "";
-    display: block;
-    block-size: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+    box-shadow: 0 0 0 100vmax var(--rux-background);
   }
   /* The board's last row scrolls up past the home bar the same way. */
   .scheduler-week:not(.scheduler-week--avail)::after {
@@ -1616,15 +1634,12 @@ button.scheduler-row-head__num::after {
     display: block;
     block-size: var(--scheduler-safe-bottom);
   }
-  /* The head sticks at the top, above the grid's highest layer, the corner
-     cell at 4, and the day row sticks 48px under it. The gap above the card
-     is the head's margin, because a sticky head stops below its scroller's
-     padding and rows would show above it. */
+  /* The head sticks at the top of the card, above the grid's highest layer,
+     the corner cell at 4, and the day row sticks 48px under it. */
   .scheduler-aside__head {
     position: sticky;
     inset-block-start: 0;
     z-index: 5;
-    margin-block-start: var(--rux-spacing-05);
   }
   .scheduler-aside .scheduler-avail__days > .scheduler-avail__day {
     inset-block-start: var(--rux-layout-size-height-lg);

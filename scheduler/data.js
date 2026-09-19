@@ -5038,6 +5038,13 @@
   const asideSlot = document.getElementById('scheduler-aside');
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
+  /* Set by `drawAvailability` and called by the scroll below. The region is
+     taken by id, because the grid is moved into it only when the roster is
+     shown. Capture, because a scroll does not bubble: the card scrolls below
+     md and the pane inside it above, and one listener hears both. */
+  let nameAvailBand = () => {};
+  document.getElementById('scheduler-aside')
+    ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
   /* The roster steps aside for the editor only below md, where both are
@@ -5163,6 +5170,28 @@
       });
       availGrid.appendChild(r);
     }
+
+    /* The corner names the band being read. The first band is drawn there
+       instead of as a heading of its own, so every later band hands its name
+       over as it reaches the header and the roster never shows two headings
+       in a row. */
+    const corner = head.firstElementChild;
+    const bands = [...availGrid.querySelectorAll('.scheduler-avail__band')];
+    nameAvailBand = () => {
+      if (!rows.length) return;
+      const edge = corner.getBoundingClientRect().bottom;
+      // A hidden roster measures zero, where every band would pass and the
+      // last would win; it is named again when it is shown.
+      if (!edge) return;
+      let name = bandName(firstBand);
+      for (const b of bands) {
+        if (b.getBoundingClientRect().top > edge) break;
+        name = b.textContent;
+      }
+      if (corner.textContent !== name) corner.textContent = name;
+    };
+    nameAvailBand();
+
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
   }
@@ -5534,6 +5563,8 @@
     // Carbon's pressed look.
     availToggle.classList.toggle('rux--btn--selected', shown);
     window.Rux?.schedule?.fit?.();
+    // The corner can only be named from a roster that has a size.
+    if (shown) nameAvailBand();
   }
 
   /* A press acts on what is on screen: off screen for either reason, it shows

@@ -72,7 +72,12 @@
        `.scheduler-aside .scheduler-week--avail`. */
     const aside = document.getElementById('scheduler-aside');
     const avail = document.getElementById('scheduler-avail');
-    if (aside && avail && !aside.hidden && aside.contains(avail)) {
+    /* Below md the roster is a card fixed over the board, and its height is
+       the gap its own insets leave; the board's height would run it past the
+       bottom edge. The computed position is the test, so the width that
+       decides it stays in app.css. */
+    const floats = aside && getComputedStyle(aside).position === 'fixed';
+    if (aside && avail && !aside.hidden && aside.contains(avail) && !floats) {
       if (aside.style.blockSize !== panelNext) aside.style.blockSize = panelNext;
     } else if (aside && aside.style.blockSize) {
       aside.style.removeProperty('block-size');

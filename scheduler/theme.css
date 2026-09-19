@@ -41,6 +41,9 @@
   /* The same line around each region, so the schedule and the roster are told
      apart the way the trip panel beside them already is. */
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
+  /* That edge closes the roster's list, so its last row draws no rule of its
+     own and the two lines do not stack. */
+  --scheduler-avail-last-rule: 0;
 }
 
 /* The rounded themes round this app's own shapes to match Design's: 6px on a

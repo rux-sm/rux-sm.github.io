@@ -60,11 +60,9 @@ None open.
 
 ## Tasks
 
-- [ ] Write the `scheduler-connector` Edge Function: MCP, Supabase OAuth
-      sign-in, the read tools and the two draft tools; show it to rux and
-      deploy it on a yes.
-- [ ] Build the consent page at `/oauth/consent/`, from Design, and add it to
-      the pages `funnel.js` guards.
+- [ ] rux deploys the `scheduler-connector` Edge Function, written and
+      committed here, with Verify JWT off, because the function carries its
+      own OAuth check and the discovery request arrives unauthenticated.
 - [ ] rux turns on Supabase's OAuth server in the dashboard, with the site as
       the site address and `/oauth/consent` as the authorization path, adds
       the connector in the Claude app's settings, and signs in.

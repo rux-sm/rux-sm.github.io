@@ -15,15 +15,16 @@
 
    ACCESS, SHARED. window.Rux.access holds these rules for the log-in page too.
    Access is the owner switch and the ticked apps in the account's
-   app_metadata. An app is a page's first path segment; the root, account/ and
-   login/ are Home, which every account with access opens.
+   app_metadata. An app is a page's first path segment; the root, account/,
+   login/ and oauth/ are Home, which every account with access opens, so a
+   staff account with one app ticked can still allow an app of its own.
 
    A CURTAIN, NOT A LOCK. Anyone with a file's address can still fetch it; the
    database rules decide what data anyone can reach. */
 (() => {
   'use strict';
   const STORAGE_KEY = 'sb-udnmqhayzhrbltxzzhjw-auth-token';
-  const HOME = new Set(['', 'account', 'login']);
+  const HOME = new Set(['', 'account', 'login', 'oauth']);
   const accessOf = user => ({
     owner: user?.app_metadata?.owner === true,
     apps: Array.isArray(user?.app_metadata?.apps) ? user.app_metadata.apps.filter(a => typeof a === 'string') : [],

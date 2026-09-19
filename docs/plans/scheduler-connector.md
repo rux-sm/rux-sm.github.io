@@ -60,18 +60,12 @@ None open.
 
 ## Tasks
 
-- [ ] rux deploys the `scheduler-connector` Edge Function, written and
-      committed here, with Verify JWT off, because the function carries its
-      own OAuth check and the discovery request arrives unauthenticated.
-- [ ] rux turns on Supabase's OAuth server in the dashboard, with the site as
-      the site address and `/oauth/consent` as the authorization path, adds
-      the connector in the Claude app's settings, and signs in.
 - [ ] Open `?draft=<id>` in the scheduler's trip editor, new or existing,
       with the filled fields marked and Claude's notes shown; delete the draft
       on save or discard.
 - [ ] Describe the function and its tools in
       `scheduler/docs/database-inventory.md`, and the everyday use in a
       how-to in `scheduler/docs/`.
-- [ ] rux tries lookups, a trip from a real itinerary and a change to an
-      existing trip, from the desktop and the phone, and checks that a
-      signed-out request is refused.
+- [ ] rux tries a trip from a real itinerary and a change to an existing
+      trip, from the desktop and the phone. Lookups, a draft and a
+      signed-out request are checked.

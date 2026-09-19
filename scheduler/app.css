@@ -1634,6 +1634,10 @@ button.scheduler-row-head__num::after {
     block-size: auto;
     z-index: 999;
     box-shadow: 0 2px 8px rgb(0 0 0 / .4);
+    /* Square, in the rounded themes too: every corner here meets the header
+       or an edge of the window, and a corner wants a page behind it. The
+       shadow is what parts the panel from the board it covers. */
+    border-radius: 0;
   }
   .scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel {
     inset-inline-end: 0;

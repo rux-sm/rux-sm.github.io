@@ -2,74 +2,92 @@
 type: plan
 ---
 
-# Plan: the schedule loses its edge where the page loses its margin
+# Plan: one margin and one outline, at every width
 
 ## Goal
 
-In geist the schedule carries four sides and its corners wherever the page has
-a margin around it, at every width and whatever else is open. It drops them at
-one width and one only: Carbon's md, where `.rux--content` gives up its padding
-and the board runs to the screen's own edges.
+The scheduler's board stands on 16px of page at every width, and the schedule
+carries its four sides and its 12px corners at every width. Neither changes at
+any breakpoint. The compact board still draws seven blocks on a phone, which is
+a decision about the week and not about the box around it.
 
 ## Decisions
 
-### The edge belongs to the page's margin, not to the week's width
+### 16px of page, at every width, in this app only
 
-A side line and a rounded corner want a page behind them. Above md there are
-32px of it and the schedule is a card; below md there are none, the board meets
-the screen, and the shell header above and the grid's last rule below already
-draw the lines the edge would.
+The scheduler is the densest workspace on the site, so its margin is the
+smallest one that still reads as a margin: `spacing-05` rather than Carbon's
+`spacing-07`, which buys the board 32px of width.
 
-So `@media (max-width: 41.98rem)` is where the edge, the corners and the
-last-rule trade all happen, in the same query that takes the padding.
+It is already this app's alone. The rule sits in the scheduler's own
+`overrides.css`, which only its pages link, so Home, Notes and Design keep
+Carbon's own padding untouched.
 
-### The crowded rule comes out
+16px is also what a panel in front of the board and the toast already inset
+themselves by, so the page's margin and the cards standing on it become one
+number.
 
-`theme.css` takes the sides and corners off while the week scrolls and nothing
-sits beside it, which starts at about 986px and holds all the way down. That
-puts the change 314px above the md breakpoint, so a schedule with a 32px margin
-on either side of it sits there with no sides — the one place the edge is
-certainly right.
+16px rather than more, because the compact board has to fit seven days: at
+16px a 402px phone leaves the week 368px and it draws without scrolling
+sideways, at 375px it leaves 343px and still does, and at 48px it leaves 306px
+against the 312px seven days need and the week starts scrolling.
+
+### The schedule's outline never changes
+
+A side line and a rounded corner want a page behind them, and with 16px at
+every width there is always one. So nothing takes the edge away: not a week
+that scrolls, not a panel in front, not the phone.
+
+### Two rules come out
+
+`theme.css` drops the sides and corners while the week scrolls with nothing
+beside it, which starts around 986px. `app.css` drops the whole edge on the
+compact board. Both go.
 
 `data-week` has one reader and the `crowded` value behind it has none, so the
 attribute, the value `fit` keeps and the `crowded` entry on `Rux.schedule` come
-out with it. `fitColumns` keeps its own internal answer, which is what decides
-whether the day columns take the remainder.
+out with the first of them. `fitColumns` keeps its own internal answer, which is
+what decides whether the day columns take the remainder.
 
-### `data-board="compact"` is not the hook either
+### The compact board keeps only what it is about
 
-Compact asks whether the board can draw three readable days, and answers at
-26rem of board — 256px below the width the padding goes. It is about how the
-week draws, not about what the board sits on, so it keeps the day columns, the
-block size, the day band and the docked sheet, and gives the edge up.
+The day columns, the block's height, the day band's numbers and the docked
+sheet. It stops touching the frame's border, its radius token and the
+last-rule trade, because the board it draws now sits on a page like any other.
 
-### The radius token stays inheritable
+### The last row keeps its own rule nowhere
 
-The frame hands `--scheduler-surface-radius` down, which is how the toolbar and
-the week take the same corners and how the docked sheet squares itself. The md
-query sets it to 0, so everything inside the board squares together.
+With the edge never coming off, the frame's bottom border closes both lists at
+every width, so `--scheduler-last-rule` stays at the 0 the geist block already
+gives it and no width hands the rule back.
 
 ## Questions
 
-- **Should the selected trip's shortcut bar keep its corners below md?** It
-  floats over the board rather than filling it, so it has a page behind it
-  either way, but it sits inside the frame and inherits the square. Docked, on
-  the compact board, it must stay square. Between md and compact it is still
-  floating, and only looking says which reads right.
+- **Does the 16px apply above and below the board as well as beside it?** The
+  sides are what this plan measures. Carbon's own 32px still stands top and
+  bottom, and matching them to the sides changes how far the toolbar sits under
+  the shell header on every page in the app.
 
 ## Tasks
 
+- [ ] Give `.rux--content` 16px of inline padding at every width in
+      `scheduler/overrides.css`, keeping the landscape safe areas and the home
+      bar the foot already clears, and confirm `fitHeight` still stops the grid
+      above the bar.
 - [ ] Take the crowded rule out of `scheduler/theme.css`, and the `data-week`
       write, the `crowded` value and its `Rux.schedule` entry out of
       `scheduler/app.js`.
-- [ ] Move the edge, the corners and the last-rule trade from the compact rule
-      in `scheduler/app.css` into the same media query that drops the page
-      padding, leaving compact its own decisions.
-- [ ] Read the schedule in geist at 1440, 1000, 900, 700, 680, 660 and 402,
-      alone and with the roster, the trip editor and the document viewer, and
-      confirm the box changes at 672 and nowhere else.
-- [ ] Select a trip at 1000, 900 and 600 and confirm the shortcut bar reads
-      right at each, then check the phone still squares the docked sheet and
-      the board together.
-- [ ] Read the same widths in ant-dark, g100, g10 and spotify-dark, which draw
-      no edge and must stay unchanged.
+- [ ] Take the border, the radius token and the last-rule trade out of the
+      compact rule in `scheduler/app.css`, leaving it the day columns, the
+      block, the day band and the docked sheet.
+- [ ] Check the docked sheet is still square with the radius token back at
+      12px: it sets its own `border-radius: 0`, but `.scheduler-bar-shortcut`'s
+      `:last-child` rule reads the token and the sheet's last child is a slot.
+- [ ] Read the schedule in geist at 1440, 1000, 900, 700, 660 and 402, alone
+      and with the roster, the trip editor and the document viewer, and confirm
+      the box is the same box at every one.
+- [ ] Read a phone at 402 and 375 and confirm the week still draws seven days
+      without scrolling sideways, and that the board reads as a card rather
+      than as the screen.
+- [ ] Read the same widths in ant-dark, g100, g10 and spotify-dark, and the
+      other scheduler pages, which take the same new margin.

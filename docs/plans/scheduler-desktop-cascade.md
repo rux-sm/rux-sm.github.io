@@ -82,6 +82,12 @@ closes.
 Three readable days need 76rem with the viewer open and 66rem with the roster,
 rather than today's 96rem for all three.
 
+### A panel the window closed
+
+The roster comes back when the window widens, because `availOn` holds what was
+asked for. The viewer does not: the document may no longer be the one in hand,
+so it stays shut until it is asked for again.
+
 ### Opening is gated where closing is
 
 A panel is refused at the width that would close it, so a press never draws
@@ -100,19 +106,12 @@ from 82rem to that width.
 
 ## Questions
 
-- **Does a panel the window closed come back when the window widens?** The
-  roster does today: `availOn` holds what was asked for and widening brings it
-  back on its own. A viewer that reopens itself is stranger, because the
-  document may no longer be the one being worked on.
+None open.
 
 ## Tasks
 
-- [ ] Close the other left panel when one opens, both ways round.
-- [ ] Name the panels' widths once, as tokens, rather than three times in
-      rules that have to agree with `placeRoom`'s arithmetic.
-- [ ] Reorder `placeRoom`: compact the board, then close the left panel, and
-      stop pricing the roster as the thing that gives way above md.
-- [ ] Move the viewer's gate to the width that closes it, and gate the roster
-      the same way.
 - [ ] Read a week at each step, with the viewer open and with the roster open,
       in geist and g100.
+- [ ] Press Drivers with a document open and see the viewer give up the side;
+      the browser this was built through could not be driven far enough to
+      show it.

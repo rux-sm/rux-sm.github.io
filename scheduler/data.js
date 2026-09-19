@@ -5466,6 +5466,9 @@
      The floor is 26rem, which app.css states and gives the reason for, and a
      toolbar under 21rem is one `Today` will not fit in beside its week. */
   const SCHEDULE_FLOOR = 26;
+  /* The compact week's own width: seven single slots and the bus column. Under
+     it the left panel closes, because not even seven blocks fit beside it. */
+  const COMPACT_FLOOR = 20;
   const TOOLBAR_TIGHT = 21;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
@@ -5474,30 +5477,39 @@
      a board too narrow for it keeps it until the next resize. */
   let roomKey = null;
 
+  /* What a panel takes from the schedule: its own width and the gap. A panel
+     the stylesheet floats over the board rather than laying it out beside the
+     schedule, as it does below md, costs nothing. A closed panel still answers
+     with the width it would take, which is what the viewer's gate asks. */
+  const panelCost = el => {
+    if (!el || !boardEl) return 0;
+    const style = getComputedStyle(el);
+    if (style.position === 'fixed') return 0;
+    const width = parseFloat(style.flexBasis) || 0;
+    return width ? width + (parseFloat(getComputedStyle(boardEl).columnGap) || 0) : 0;
+  };
+
   function placeRoom() {
     if (!boardEl || !frameEl || !pageEl) return false;
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
     const board = boardEl.getBoundingClientRect().width;
     // Nothing to measure while the board is hidden, as it is behind a notice.
     if (!board) return false;
-    // What a panel takes from the schedule: its own width and the gap.
-    const cost = el => {
-      if (!el) return 0;
-      const style = getComputedStyle(el);
-      if (style.position === 'fixed') return 0;
-      const width = parseFloat(style.flexBasis) || 0;
-      return width ? width + gap : 0;
-    };
+    const cost = panelCost;
     const editor = tripEl?.hidden ? 0 : cost(tripEl);
     const itinerary = viewerEl?.hidden ? 0 : cost(viewerEl);
     /* The roster's cost whether or not it is on screen, since that is what is
        being decided; asking `hidden` would answer nothing every time. */
     const roster = cost(asideSlot);
 
-    /* The roster is the panel worth least of the three, so it is what steps
-       aside where the schedule cannot keep its floor. `availOn` still holds
-       what was asked for, so widening the board brings it back on its own. */
+    /* A panel is what rux asked for and the days are what the schedule can
+       spend, so the schedule gives way first: the week goes compact below,
+       and only under the compact floor does the left panel close. One left
+       panel is open at a time, so this decides for whichever it is.
+
+       The roster comes back when the window widens, because `availOn` still
+       holds what was asked for. The viewer does not: the document may no
+       longer be the one in hand, so it closes for good. */
     const key = `${Math.round(board)} ${editor} ${itinerary}`;
     let changed = false;
     if (key !== roomKey) {
@@ -5505,9 +5517,10 @@
       /* A roster that costs nothing cannot be what is given up, which is the
          case below md, where it floats over the board and the board itself may
          be narrower than the floor. */
-      const cramped = roster > 0 && board - editor - itinerary - roster < SCHEDULE_FLOOR * rem;
+      const cramped = roster > 0 && board - editor - roster < COMPACT_FLOOR * rem;
       changed = cramped !== availCramped;
       availCramped = cramped;
+      if (itinerary > 0 && board - editor - itinerary < COMPACT_FLOOR * rem) closeViewer(false);
     }
 
     /* What the schedule is actually left, which app.css caps its floor by, so
@@ -5523,10 +5536,9 @@
     if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
     else pageEl.removeAttribute('data-room');
 
-    /* The last step of the cascade. The roster has stepped aside above, and a
-       schedule still under the floor cannot show three readable days however
-       little else is beside it, so it shows all seven compact rather than
-       scrolling sideways to about two. */
+    /* The first step of the cascade, before any panel gives way: a schedule
+       under the floor cannot show three readable days, so it shows all seven
+       compact rather than scrolling sideways to about two. */
     if (room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
     return changed;
@@ -5575,7 +5587,11 @@
     /* A press wins over both reasons the roster stepped aside, including a
        board too narrow for it: the schedule then goes under its floor until the
        next resize, which is what `roomKey` holds the decision for. */
-    else { availOn = true; availYielded = false; availCramped = false; }
+    else {
+      // The other left panel gives up the side, as the viewer does to it.
+      if (viewerEl && !viewerEl.hidden) closeViewer(false);
+      availOn = true; availYielded = false; availCramped = false;
+    }
     placeAvailability();
   });
 
@@ -6324,8 +6340,24 @@
      No feature tells which PDF viewer a frame gets; the vendor string does. */
   const noZoom = navigator.vendor === 'Apple Computer, Inc.';
   if (noZoom) for (const btn of viewerZooms) btn.hidden = true;
-  // The 30rem panel beside the 20rem editor, with the board still in view.
-  const viewerWide = matchMedia('(min-width: 82rem)');
+
+  /* The panel opens where it would not immediately close: the board, less the
+     editor and the panel itself, still holding a compact week. A press with
+     no room opens the document in a tab instead, which is the whole reason
+     this is asked before the panel is drawn rather than after. */
+  const viewerFits = () => {
+    if (!boardEl || !viewerEl) return false;
+    const board = boardEl.getBoundingClientRect().width;
+    if (!board) return false;
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const editor = tripEl?.hidden ? 0 : panelCost(tripEl);
+    return board - editor - panelCost(viewerEl) >= COMPACT_FLOOR * rem;
+  };
+
+  /* One left panel at a time. The roster and the viewer sit on the same side
+     of the board and squeeze the week from it together, and the last one
+     opened is the one rux asked for. */
+  const closeRosterForViewer = () => { if (availOn) { availOn = false; placeAvailability(); } };
   // The zooms Zoom in and Zoom out step through, in percent.
   const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
   let viewerOpener = null;
@@ -6429,7 +6461,7 @@
      this site is already this origin, which is the whole reason a PDF is
      fetched into one -- so the panel may print what it frames. */
   function openGenerated({ url, kind, note, opener }) {
-    if (!viewerEl || !viewerWide.matches) {
+    if (!viewerEl || (viewerEl.hidden && !viewerFits())) {
       window.open(url, '_blank', 'noopener');
       return;
     }
@@ -6442,6 +6474,7 @@
     // tab has nothing here to follow.
     viewerDocId = null;
     if (viewerEl.hidden) {
+      closeRosterForViewer();
       viewerOpener = opener ?? null;
       viewerEl.hidden = false;
       window.Rux?.schedule?.fit?.();
@@ -6456,7 +6489,7 @@
     setViewerMode('file');
     const url = client && doc.file_path
       ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
-    if (!viewerEl || !viewerWide.matches || !url) {
+    if (!viewerEl || !url || (viewerEl.hidden && !viewerFits())) {
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
@@ -6470,6 +6503,7 @@
     viewerNewTab.href = url;
     viewerDocId = String(doc.id);
     if (viewerEl.hidden) {
+      closeRosterForViewer();
       viewerOpener = opener ?? null;
       viewerEl.hidden = false;
       window.Rux?.schedule?.fit?.();
@@ -6550,11 +6584,6 @@
     target?.focus();
   }
   viewerClose?.addEventListener('click', () => closeViewer());
-  // A window narrowed below xlg has no room for the panel. Focus inside it
-  // goes back to the opener rather than to the page.
-  viewerWide.addEventListener('change', e => {
-    if (!e.matches) closeViewer(!!viewerEl?.contains(document.activeElement));
-  });
 
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
   /* THE BAR'S ENVELOPE. A bar is one bus on one leg, which is exactly what the

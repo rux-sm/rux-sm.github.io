@@ -15,6 +15,16 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
+/* The panels beside the board. A side panel is Carbon's `sm`, and the document
+   viewer is wider because its width is the document's zoom: a letter page in
+   20rem renders 11pt text at under 6px. `placeRoom` in data.js prices the
+   panels by reading these back off them, so the arithmetic and the layout
+   cannot drift. */
+:root {
+  --scheduler-panel-w: 20rem;
+  --scheduler-viewer-w: 30rem;
+}
+
 .scheduler-week {
   --scheduler-days: 7;
   /* The bus column is as wide as its content, on a 2rem floor set on its cells
@@ -703,8 +713,8 @@ button.scheduler-row-head__num::after {
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 20rem;
-  min-inline-size: 20rem;
+  flex: 0 0 var(--scheduler-panel-w);
+  min-inline-size: var(--scheduler-panel-w);
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -719,8 +729,8 @@ button.scheduler-row-head__num::after {
    data.js opens it only from 82rem up, where both columns fit. */
 .scheduler-viewer {
   order: -2;
-  flex: 0 0 30rem;
-  min-inline-size: 30rem;
+  flex: 0 0 var(--scheduler-viewer-w);
+  min-inline-size: var(--scheduler-viewer-w);
   max-inline-size: 100%;
   block-size: max(24rem, calc(100dvh - 15rem));
 }
@@ -1187,7 +1197,11 @@ button.scheduler-row-head__num::after {
    not move when the driver list changes; the schedule gives way instead.
    `order` puts it left of the board while the markup keeps the schedule
    first. */
-.scheduler-aside { flex: 0 0 20rem; inline-size: 20rem; order: -1; }
+.scheduler-aside {
+  flex: 0 0 var(--scheduler-panel-w);
+  inline-size: var(--scheduler-panel-w);
+  order: -1;
+}
 
 /* The roster's rows are Carbon's sm height, 32px, level with the header band. */
 .scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-sm); max-block-size: 15rem; }

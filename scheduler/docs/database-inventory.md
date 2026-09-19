@@ -192,6 +192,11 @@ reads the trips running across a range and subtracts their buses and drivers,
 then `bus_out_of_service` and `driver_time_off`; `find_contacts`,
 `list_buses` and `list_drivers`.
 
+The fields a draft may fill are mostly `trips` columns, but the route's four
+are the Route tab's own names, because the tab writes `trip_stops` rather than
+columns: `pickup_location`, `pickup_address`, `dropoff_location` and
+`dropoff_address`.
+
 **Two tools write, and neither writes a trip.** `draft_trip` and
 `draft_trip_change` put a row in `trip_drafts` and return
 `/scheduler/?draft=<id>`. A draft may fill only the trip fields the function

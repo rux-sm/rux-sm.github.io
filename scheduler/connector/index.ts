@@ -39,9 +39,13 @@ const TRIP_DETAIL = [
 const DRAFT_FIELDS = new Set([
   'destination', 'customer', 'notes',
   'start_date', 'end_date', 'return_start_date', 'return_end_date',
-  'departure_time', 'spot_time', 'return_time',
+  // The route, as the scheduler's tab asks for it: two places, each a name
+  // and an address, and the two times the group moves. The bus's own times
+  // are worked out from these and cannot be set.
+  'pickup_location', 'pickup_address', 'dropoff_location', 'dropoff_address',
+  'departure_time', 'return_time',
   'trip_type', 'vehicle_type', 'bus_count', 'return_bus_count',
-  'pickup_address', 'est_miles',
+  'est_miles',
   'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
   'trip_contact_1_name', 'trip_contact_1_phone',
   'trip_contact_2_name', 'trip_contact_2_phone',

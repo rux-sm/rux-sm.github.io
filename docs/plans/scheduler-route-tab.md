@@ -80,14 +80,8 @@ None open.
 
 ## Tasks
 
-- [ ] Replace the Route tab's fields with the six, the drop-off defaulting to
-      the pickup, and drop the padding, spot and drive controls.
-- [ ] Work out the bus's three times from them, and show the Times section in
-      order with what each came from, including a failed lookup.
-- [ ] Write the same `trip_stops` rows as now, leaving every other stop alone,
-      and check a trip rux-ui built keeps its itinerary.
-- [ ] Add the pickup and drop-off names and the drop-off address to the
-      connector's fields and the editor's map, so the route arrives filled
-      rather than in the notice.
+- [ ] rux redeploys the connector, so Claude may send the route's four names.
 - [ ] rux enters a pickup, a drop-off and both times on a real trip, saves,
-      and checks both boards show the same yard times.
+      and checks both boards show the same yard times, that a round trip
+      gained no drop-off stop, and that a trip rux-ui built kept its
+      itinerary. Nothing here has been opened with a log-in.

@@ -52,8 +52,9 @@ What comes back is a link. Open it and the trip editor opens filled in:
 - A notice above them says what Claude could not work out.
 - The same notice names anything it filled that the editor has no field for,
   with the value, so it can be typed in rather than lost.
-- A pickup address must be chosen from its list on the Route tab. Typing
-  alone only searches, and an address left unpicked is not saved.
+- The pickup and drop-off addresses must be chosen from their lists on the
+  Route tab. Typing alone only searches, and an address left unpicked is not
+  saved. The notice says which ones are waiting.
 
 Press **Save** and the trip is written. Press **Close** and nothing is. Either
 way the draft is spent and the link does not open twice.

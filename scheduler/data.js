@@ -2727,7 +2727,8 @@
      options are Mapbox's answers to what is typed, drawn when they arrive, as
      two lines like a contact's: the place's name over its address. `onPick`
      gets the place picked, or null and the text when the field is typed in. */
-  function placeSearch(id, label, place, onPick) {
+  // `show` picks which of the place's two strings the box holds.
+  function placeSearch(id, label, place, onPick, show = 'name') {
     const lab = el('label', 'rux--label', label);
     lab.setAttribute('for', id);
     const root = el('div', 'rux--combo-box rux--list-box');
@@ -2741,7 +2742,7 @@
     input.setAttribute('aria-expanded', 'false');
     input.autocomplete = NO_AUTOFILL;
     input.placeholder = mapboxToken ? 'Search places' : 'Address';
-    input.value = place?.name ?? '';
+    input.value = place?.[show] ?? '';
     input.title = place?.address ?? '';
     field.append(input);
     const menu = el('ul', 'rux--list-box__menu');
@@ -3810,11 +3811,15 @@
     return drives.get(key);
   }
 
-  // A round trip ends where it began; every other type ends somewhere else.
-  const routeRound = () => {
-    const type = document.getElementById('scheduler-f-type')?.value || editing?.route?.type || '';
-    return !type || type === 'round_trip';
+  /* Two places are the same when Mapbox gave them the same id, or when
+     their name and address both read the same. A drop-off the same as the
+     pickup is what a round trip means, and writes no drop-off row. */
+  const samePlace = (a, b) => {
+    if (!a || !b) return !a && !b;
+    if (a.mapbox_id && b.mapbox_id) return a.mapbox_id === b.mapbox_id;
+    return same(a.name ?? null, b.name ?? null) && same(a.address ?? null, b.address ?? null);
   };
+  const routeRound = () => samePlace(editing?.route?.dropPlace, editing?.route?.pickupPlace);
   // The leg's dates as the Details tab has them now.
   const routeDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
@@ -3839,8 +3844,8 @@
     const leave = v('scheduler-f-leave'), spot = v('scheduler-f-spot'), yardOut = v('scheduler-f-depart');
     const end = v('scheduler-f-endtrip'), yardBack = v('scheduler-f-return');
     const round = routeRound();
-    const drive = driveMin(v('scheduler-f-drive'));
-    const driveBack = round ? r.backDrive : driveMin(v('scheduler-f-driveback'));
+    const drive = r.driveOut;
+    const driveBack = r.backDrive;
     const driveCols = (row, min, miles, source) => (same(driveText(min), row?.drive ?? null) ? {} : {
       drive: driveText(min), miles: min == null ? null : miles,
       drive_source: min == null ? null : source, miles_source: min == null ? null : source,
@@ -4155,9 +4160,10 @@
         ? { from: trip.return_start_date ?? null, to: trip.return_end_date ?? trip.return_start_date ?? null }
         : { from: trip.start_date ?? null, to: trip.end_date ?? trip.start_date ?? null };
       return {
-        leg, type: trip.trip_type ?? '', pickup, first, drop, back, ...dates,
+        leg, pickup, first, drop, back, ...dates,
         between: inner.length,
         all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: x.leg || 'outbound', type: x.type, position: x.position ?? 0 })),
+        driveOut: driveMin(pickup?.drive),
         driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
         backDrive: driveMin(back?.drive), backMiles: numOrNull(back?.miles), backSource: back?.drive_source ?? 'estimated',
       };
@@ -4416,35 +4422,32 @@
     panelCancel.hidden = creating || !trip.id;
 
     /* ── Route ──
-       The leg's pickup, its spot time and when its trip ends, from which the
-       tab works out when the bus leaves the yard and gets back. The panel
-       opens from one bar, so the fields are that leg's; a drop-off and pick-up
-       trip shows its other leg from the other bar. `editing.route` holds the
-       rows and what has been picked since. */
+       Six fields: where the group is picked up and where it is dropped off,
+       each a name and an address, and the two times the group moves. The
+       bus's three times -- leaving the yard, reaching the pickup, getting
+       back -- are worked out from those and shown, never typed. The panel
+       opens from one bar, so the fields are that leg's; a drop-off and
+       pick-up trip shows its other leg from the other bar. `editing.route`
+       holds the rows and what has been picked since. */
     panelRoute.replaceChildren();
     {
       const r = editing.route;
+      /* The drop-off defaults to the pickup, which is what a round trip
+         means. `routeWanted` writes a drop-off row only when the two places
+         differ, so a round trip's rows stay exactly as rux-ui left them. */
+      if (!r.dropPlace && r.pickupPlace) r.dropPlace = { ...r.pickupPlace };
       // A line under a field, hidden while it has nothing to say.
       const note = text => {
         const line = el('p', 'rux--form__helper-text scheduler-route-note', text);
         line.hidden = !text;
         return line;
       };
-      const numberField = (id, label, value) => {
-        const item = textField(id, label, value);
-        item.querySelector('input').inputMode = 'numeric';
-        return item;
-      };
       const val = id => document.getElementById(id)?.value.trim() || '';
       const setVal = (id, value) => { const input = document.getElementById(id); if (input) input.value = value ?? ''; };
 
-      /* Padding is how long before departure the bus is spotted, and is not
-         stored: it opens as what the saved departure and spot time leave
-         between them, and 15 minutes on a trip that has neither. */
-      const leaveMin = toMin(r.first?.depart_prev), spotMin = toMin(r.pickup?.spot);
-      const driveOpen = driveMin(r.pickup?.drive);
-      const gap = leaveMin != null && spotMin != null ? ((leaveMin - spotMin) % 1440 + 1440) % 1440 : null;
-      const padding = gap != null && gap <= 180 ? gap : 15;
+      // The bus is spotted a fixed fifteen minutes before the group leaves.
+      const PADDING = 15;
+
       /* The worked-out times are not fields: they are kept in hidden inputs,
          which `routeWanted` reads, and drawn as a timeline under the fields. */
       const kept = (id, value) => {
@@ -4455,40 +4458,27 @@
         return input;
       };
 
-      /* Spot time is the departure less the padding, and yard depart is spot
-         time less the drive from the yard; yard return is the end plus the
-         drive back. Each is worked out only from what was just typed. */
       const recalcYard = () => {
         const spot = toMin(val('scheduler-f-spot'));
-        const drive = driveMin(val('scheduler-f-drive'));
-        if (spot != null && drive != null) setVal('scheduler-f-depart', fromMin(spot - drive));
+        setVal('scheduler-f-depart', spot != null && r.driveOut != null ? fromMin(spot - r.driveOut) : '');
       };
       const recalcSpot = () => {
         const leave = toMin(val('scheduler-f-leave'));
-        if (leave == null) return;
-        setVal('scheduler-f-spot', fromMin(leave - (driveMin(val('scheduler-f-padding')) ?? 0)));
+        setVal('scheduler-f-spot', leave == null ? '' : fromMin(leave - PADDING));
         recalcYard();
       };
       const recalcReturn = () => {
         const end = toMin(val('scheduler-f-endtrip'));
-        const back = routeRound() ? r.backDrive : driveMin(val('scheduler-f-driveback'));
-        if (end != null && back != null) setVal('scheduler-f-return', fromMin(end + back));
+        setVal('scheduler-f-return', end != null && r.backDrive != null ? fromMin(end + r.backDrive) : '');
       };
-      // A round trip drives home the way it came.
-      const syncBack = () => {
-        if (!routeRound()) return;
-        r.backDrive = driveMin(val('scheduler-f-drive'));
-        r.backMiles = r.driveMiles;
-        r.backSource = r.driveSource;
-      };
-      const lookupFailed = (e, what) => toast('warning', `The drive ${what} was not found.`,
-        `${e?.message || 'Mapbox did not answer.'} Type it in the drive field.`);
-      let showDrives = () => {};
 
-      /* The day in order: yard depart, spot time, depart, end and yard return,
-         each with what it was worked out from. A time before the departure's
-         clock time is the day before, and a yard return before the end's is
-         the day after. */
+      const lookupFailed = (e, what) => toast('warning', `The drive ${what} was not found.`,
+        `${e?.message || 'Mapbox did not answer.'} The yard time stays blank until it answers.`);
+
+      /* The day in order, each time named for who moves. The group's two are
+         the ones typed; the bus's three follow from them. A time before the
+         one under it is the day before, and a yard return before the group
+         arrives is the day after. */
       const timeline = el('dl', 'scheduler-def scheduler-route-timeline');
       const clock = t => {
         const m = toMin(t);
@@ -4498,19 +4488,21 @@
       const drawTimeline = () => {
         const leave = val('scheduler-f-leave'), spot = val('scheduler-f-spot'), yard = val('scheduler-f-depart');
         const end = val('scheduler-f-endtrip'), home = val('scheduler-f-return');
-        const drive = driveMin(val('scheduler-f-drive'));
-        const back = routeRound() ? r.backDrive : driveMin(val('scheduler-f-driveback'));
-        const pad = driveMin(val('scheduler-f-padding'));
         const before = (a, b) => a && b && toMin(a) > toMin(b) ? 'the day before' : null;
         const { from, to } = routeDates(r.leg);
         const endDay = end && to && from && to !== from
           ? parseISO(to).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : null;
+        const outWords = driveWords(r.driveOut, r.driveMiles);
+        const backWords = driveWords(r.backDrive, r.backMiles);
         const rows = [
-          ['Yard depart', yard, [driveWords(drive, r.driveMiles) && `${driveWords(drive, r.driveMiles)} from the yard`, before(yard, spot)]],
-          ['Spot time', spot, [pad != null && `${pad} min before depart`, before(spot, leave)]],
-          ['Depart', leave, [r.pickupPlace?.name]],
-          ['End', end, [routeRound() ? r.pickupPlace?.name : r.dropPlace?.name, endDay]],
-          ['Yard return', home, [driveWords(back, r.backMiles) && `${driveWords(back, r.backMiles)} back to the yard`,
+          ['Yard depart', yard, [outWords ? `${outWords} from the yard`
+                                          : (r.pickupPlace ? 'no drive from the yard yet' : null),
+                                 before(yard, spot)]],
+          ['Bus arrives', spot, [`${PADDING} min before the group leaves`, before(spot, leave)]],
+          ['Group departs', leave, [r.pickupPlace?.name]],
+          ['Group arrives', end, [r.dropPlace?.name, endDay]],
+          ['Yard return', home, [backWords ? `${backWords} back to the yard`
+                                           : (r.dropPlace ? 'no drive back yet' : null),
                                  home && end && toMin(home) < toMin(end) ? 'the next day' : null]],
         ];
         timeline.replaceChildren();
@@ -4523,114 +4515,93 @@
         }
       };
 
-      const pickupField = placeSearch('scheduler-f-pickup', 'Pickup location', r.pickupPlace, async (place, typed) => {
-        if (!place) {
-          if ((typed || null) !== (r.pickupPlace?.name ?? null)) {
-            r.pickupPlace = typed ? { name: typed, address: null, lat: null, lng: null, mapbox_id: null } : null;
-          }
-          drawTimeline();
-          return;
-        }
-        r.pickupPlace = place;
-        drawTimeline();
+      /* A place is two fields: a name anyone would recognise it by, and the
+         address the drive is measured from. Picking an address fills an empty
+         name from the result, and the name stays editable after. */
+      const named = (place, name) => (place || name ? { ...(place ?? placeOf({})), name: name ?? place?.name ?? null } : null);
+
+      const driveOutFrom = async place => {
         try {
           const drive = await driveBetween(yardPlace, place);
           if (!drive || r.pickupPlace !== place) return;
-          setVal('scheduler-f-drive', driveText(drive.min));
+          r.driveOut = drive.min;
           r.driveMiles = drive.miles;
           r.driveSource = 'estimated';
-          syncBack();
           recalcYard();
-          recalcReturn();
-          drawTimeline();
-        } catch (e) { lookupFailed(e, 'from the yard'); showDrives(); }
-        refreshDirty();
-      });
-      const dropField = placeSearch('scheduler-f-dropoff', 'Drop-off location', r.dropPlace, async (place, typed) => {
-        if (!place) {
-          if ((typed || null) !== (r.dropPlace?.name ?? null)) {
-            r.dropPlace = typed ? { name: typed, address: null, lat: null, lng: null, mapbox_id: null } : null;
-          }
-          drawTimeline();
-          return;
-        }
-        r.dropPlace = place;
-        drawTimeline();
+        } catch (e) { r.driveOut = null; recalcYard(); lookupFailed(e, 'from the yard'); }
+      };
+      const driveBackFrom = async place => {
         try {
           const drive = await driveBetween(place, yardPlace);
           if (!drive || r.dropPlace !== place) return;
-          setVal('scheduler-f-driveback', driveText(drive.min));
           r.backDrive = drive.min;
           r.backMiles = drive.miles;
           r.backSource = 'estimated';
           recalcReturn();
-          drawTimeline();
-        } catch (e) { lookupFailed(e, 'back to the yard'); showDrives(); }
-        refreshDirty();
-      });
+        } catch (e) { r.backDrive = null; recalcReturn(); lookupFailed(e, 'back to the yard'); }
+      };
 
-      /* The fields are what a dispatcher knows: where the group is picked up,
-         when it leaves and when its trip ends, and where it ends when that is
-         not the pickup. The padding and the drives, which the 15-minute
-         default and Mapbox usually have right, open from the section's
-         overflow menu, and open on their own when a lookup fails. */
-      const dropBox = el('div');
-      dropBox.appendChild(dropField);
+      const pickupName = textField('scheduler-f-pickupname', 'Pickup location', r.pickupPlace?.name);
+      const dropName = textField('scheduler-f-dropname', 'Drop-off location', r.dropPlace?.name);
+
+      const pickupField = placeSearch('scheduler-f-pickup', 'Pickup address', r.pickupPlace, async (place, typed) => {
+        if (!place) {
+          r.pickupPlace = named(typed ? { ...placeOf({}), address: typed } : null, val('scheduler-f-pickupname') || null);
+          r.driveOut = null;
+          recalcYard();
+          drawTimeline();
+          return;
+        }
+        if (!val('scheduler-f-pickupname')) setVal('scheduler-f-pickupname', place.name ?? '');
+        r.pickupPlace = named(place, val('scheduler-f-pickupname') || place.name || null);
+        // A drop-off nobody has changed follows the pickup, round trip or not.
+        if (!val('scheduler-f-dropname') && !val('scheduler-f-dropoff')) {
+          setVal('scheduler-f-dropname', val('scheduler-f-pickupname'));
+          setVal('scheduler-f-dropoff', place.address ?? '');
+          r.dropPlace = { ...r.pickupPlace };
+        }
+        drawTimeline();
+        await driveOutFrom(r.pickupPlace);
+        if (r.dropPlace && samePlace(r.dropPlace, r.pickupPlace)) {
+          r.backDrive = r.driveOut; r.backMiles = r.driveMiles; r.backSource = r.driveSource;
+          recalcReturn();
+        }
+        drawTimeline();
+        refreshDirty();
+      }, 'address');
+
+      const dropField = placeSearch('scheduler-f-dropoff', 'Drop-off address', r.dropPlace, async (place, typed) => {
+        if (!place) {
+          r.dropPlace = named(typed ? { ...placeOf({}), address: typed } : null, val('scheduler-f-dropname') || null);
+          r.backDrive = null;
+          recalcReturn();
+          drawTimeline();
+          return;
+        }
+        if (!val('scheduler-f-dropname')) setVal('scheduler-f-dropname', place.name ?? '');
+        r.dropPlace = named(place, val('scheduler-f-dropname') || place.name || null);
+        drawTimeline();
+        await driveBackFrom(r.dropPlace);
+        drawTimeline();
+        refreshDirty();
+      }, 'address');
+
       const fields = el('div', 'rux--stack-vertical rux--stack-scale-6');
       fields.append(
-        pickupField,
-        pair(timeField('scheduler-f-leave', 'Depart', r.first?.depart_prev),
-             timeField('scheduler-f-endtrip', 'End', r.back?.depart_prev)),
-        dropBox,
+        pair(pickupName, pickupField),
+        pair(dropName, dropField),
+        pair(timeField('scheduler-f-leave', 'Group departs', r.first?.depart_prev),
+             timeField('scheduler-f-endtrip', 'Group arrives', r.back?.depart_prev)),
       );
 
-      // Plain boxes, because a form item's own display outranks `hidden`.
-      const padBox = el('div');
-      padBox.hidden = true;
-      padBox.appendChild(pair(numberField('scheduler-f-padding', 'Padding, minutes', String(padding))));
-      const drivesBox = el('div');
-      drivesBox.hidden = true;
-      const driveBack = el('div');
-      driveBack.appendChild(textField('scheduler-f-driveback', 'Drive back', driveText(r.backDrive)));
-      const drives = pair(textField('scheduler-f-drive', 'Drive from yard', driveText(driveOpen)), driveBack);
-      drivesBox.appendChild(drives);
-      fields.append(padBox, drivesBox);
-      showDrives = () => { drivesBox.hidden = false; };
-
-      const menuBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
-      menuBtn.type = 'button';
-      menuBtn.id = 'scheduler-f-routemenu';
-      menuBtn.setAttribute('aria-haspopup', 'true');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.setAttribute('aria-label', 'Route options');
-      menuBtn.title = 'Route options';
-      menuBtn.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
-      menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
-      const reveal = (box, field) => {
-        box.hidden = !box.hidden;
-        if (!box.hidden) document.getElementById(field)?.focus();
-        else menuBtn.focus();
-      };
-      menuBtn.addEventListener('click', () => {
-        openRowMenu(menuBtn, {
-          editText: padBox.hidden ? `Change padding (${val('scheduler-f-padding') || 0} min)` : 'Hide padding',
-          edit: () => reveal(padBox, 'scheduler-f-padding'),
-          removeText: drivesBox.hidden ? 'Type drive times' : 'Hide drive times',
-          removeDanger: false,
-          remove: () => reveal(drivesBox, 'scheduler-f-drive'),
-        });
-      });
-      // The section is a group named by its title, as Day-of contacts is,
-      // because its title line also holds the menu.
+      // The section is a group named by its title, as Day-of contacts is.
       const routeBox = el('div', 'scheduler-panel-section');
       const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Trip');
       routeTitle.id = 'scheduler-f-routegroup';
-      const routeHead = el('div', 'scheduler-group__head');
-      routeHead.append(routeTitle, menuBtn);
       const routeGroup = el('div');
       routeGroup.setAttribute('role', 'group');
       routeGroup.setAttribute('aria-labelledby', routeTitle.id);
-      routeGroup.append(routeHead, fields);
+      routeGroup.append(routeTitle, fields);
       routeBox.appendChild(routeGroup);
 
       const times = el('div');
@@ -4643,12 +4614,6 @@
           ? "This leg has one stop from rux-ui's itinerary. It stays as it is."
           : `This leg has ${r.between} stops from rux-ui's itinerary. They stay as they are.`));
       }
-      const showRound = () => {
-        const round = routeRound();
-        dropBox.hidden = round;
-        driveBack.hidden = round;
-      };
-      showRound();
 
       /* The trip's miles, both legs together. The estimate is an override, as
          in rux-ui: left blank, the stops' own miles stand, and the field shows
@@ -4660,7 +4625,6 @@
       );
       if (stopMiles > 0) miles.querySelector('#scheduler-f-estmiles').placeholder = `${Math.round(stopMiles)} by route`;
 
-      // A return leg says so, since a split trip's two outings look alike.
       panelRoute.append(
         routeBox,
         section('Times', times),
@@ -4668,28 +4632,20 @@
       );
       drawTimeline();
 
-      for (const id of ['scheduler-f-leave', 'scheduler-f-padding']) {
-        document.getElementById(id)?.addEventListener('input', recalcSpot);
-      }
-      // The timeline follows every field, after the handlers above.
-      fields.addEventListener('input', drawTimeline);
-      document.getElementById('scheduler-f-drive')?.addEventListener('input', () => {
-        r.driveSource = 'manual';
-        syncBack();
-        recalcYard();
-        recalcReturn();
-      });
+      document.getElementById('scheduler-f-leave')?.addEventListener('input', recalcSpot);
       document.getElementById('scheduler-f-endtrip')?.addEventListener('input', recalcReturn);
-      document.getElementById('scheduler-f-driveback')?.addEventListener('input', e => {
-        r.backDrive = driveMin(e.target.value);
-        r.backSource = 'manual';
-        recalcReturn();
-      });
-      document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
-        showRound();
-        syncBack();
+      // A name typed by hand belongs to whichever place it names.
+      document.getElementById('scheduler-f-pickupname')?.addEventListener('input', () => {
+        r.pickupPlace = named(r.pickupPlace, val('scheduler-f-pickupname') || null);
         drawTimeline();
       });
+      document.getElementById('scheduler-f-dropname')?.addEventListener('input', () => {
+        r.dropPlace = named(r.dropPlace, val('scheduler-f-dropname') || null);
+        drawTimeline();
+      });
+      // The timeline follows every field, after the handlers above.
+      fields.addEventListener('input', drawTimeline);
+      document.getElementById('scheduler-f-type')?.addEventListener('change', drawTimeline);
     }
 
     /* ── Billing ── */
@@ -7885,13 +7841,18 @@
     trip_contact_2_phone: { id: 'scheduler-f-dphone2', kind: 'text' },
     // The Route tab. It is built when the panel opens, not when the tab is
     // shown, so these are on screen from the start like every other field.
-    departure_time: { id: 'scheduler-f-leave', kind: 'time' },
-    spot_time: { id: 'scheduler-f-spot', kind: 'time' },
+    pickup_location: { id: 'scheduler-f-pickupname', kind: 'text' },
     pickup_address: { id: 'scheduler-f-pickup', kind: 'place' },
-    /* `return_time` has no control here. It is the return leg's departure,
-       which the panel shows only when it opens on that leg's bar, and a draft
-       opens on the outbound. It goes in the notice instead. */
+    dropoff_location: { id: 'scheduler-f-dropname', kind: 'text' },
+    dropoff_address: { id: 'scheduler-f-dropoff', kind: 'place' },
+    departure_time: { id: 'scheduler-f-leave', kind: 'time' },
+    return_time: { id: 'scheduler-f-endtrip', kind: 'time' },
+    /* The spot time is not here because it is not typed any more: the tab
+       works it out from when the group leaves. */
   };
+
+  // What the notice calls a place that still needs choosing from its list.
+  const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
 
   // The draft whose fields are in the panel, deleted once the panel closes.
   let openDraft = null;
@@ -7936,7 +7897,7 @@
       /* A place search commits nothing until a result is chosen from its
          list: typing only searches. The address is in the box and the search
          has run, but Save keeps it only once it is picked. */
-      if (control.kind === 'place') unpicked.push(key);
+      if (control.kind === 'place') unpicked.push(PLACE_LABEL[key] ?? key);
     }
     refreshDirty();
     return { missed, unpicked };
@@ -7963,7 +7924,8 @@
     if (notes) texts.appendChild(el('div', 'rux--inline-notification__subtitle', notes));
     if (unpicked.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
-        `On the Route tab, choose the pickup from its list to keep it: typing the address only searches.`));
+        `On the Route tab, choose ${unpicked.join(' and ')} from the list to keep `
+        + `${unpicked.length > 1 ? 'them' : 'it'}: typing an address only searches.`));
     }
     if (missed.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',

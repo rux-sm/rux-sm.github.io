@@ -1222,11 +1222,14 @@ button.scheduler-row-head__num::after {
   font-size: var(--scheduler-fs);
   letter-spacing: var(--scheduler-ls);
 }
-/* The list's last rule and the card's own edge draw two lines on top of each
+/* The list's last rule and the region's own edge draw two lines on top of each
    other in a theme whose regions carry an edge, so there the row gives way to
-   it. A theme without one keeps the rule, which is all that closes its list. */
-.scheduler-avail__row:last-child > * {
-  border-block-end: var(--scheduler-avail-last-rule, 1px solid var(--rux-border-subtle-01));
+   it. A theme without one keeps the rule, which is all that closes its list.
+   `.scheduler-row--last`, which data.js marks on the board, reads the same
+   token: one answer for both lists. */
+.scheduler-avail__row:last-child > *,
+.scheduler-row--last > * {
+  border-block-end: var(--scheduler-last-rule, 1px solid var(--rux-border-subtle-01));
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
@@ -1430,6 +1433,9 @@ button.scheduler-row-head__num::after {
    they keep their corners. */
 .scheduler-page[data-board="compact"] .scheduler-frame {
   --scheduler-surface-radius: 0;
+  /* The edge it would have closed the grid with is gone, so the last row takes
+     the rule back. */
+  --scheduler-last-rule: 1px solid var(--rux-border-subtle-01);
   border: 0;
 }
 

@@ -17,7 +17,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DS = resolve(ROOT, process.env.DS ?? 'design');
 const BEGIN = /<!-- SPRITE:BEGIN[\s\S]*?-->\n/;
 const END = '<!-- SPRITE:END -->';
-const SITE_DIRS = ['.', 'account', 'login', 'scheduler', 'scheduler/share'];
+const SITE_DIRS = ['.', 'account', 'login', 'oauth/consent', 'scheduler', 'scheduler/share'];
 
 const args = process.argv.slice(2);
 const check = args.includes('--check');

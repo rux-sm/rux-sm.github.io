@@ -148,7 +148,16 @@
     // changes, so observing it would feed its own output back in.
     // `crowded` holds the last fit's answer, read through Rux.schedule.crowded.
     let crowded = false;
-    const fit = () => { fitHeight(sch); crowded = fitColumns(sch) === true; };
+    /* A crowded week is one whose seven days will not fit, so the grid scrolls
+       sideways. The page carries it because app.css asks: a rule down the side
+       of a region that scrolls is a stop where the week does not end. */
+    const page = document.querySelector('.scheduler-page');
+    const fit = () => {
+      fitHeight(sch);
+      crowded = fitColumns(sch) === true;
+      if (crowded) page?.setAttribute('data-week', 'crowded');
+      else page?.removeAttribute('data-week');
+    };
 
     // Three triggers: a window resize; the observer, for a box change the
     // window did not cause; and `Rux.schedule.fit`, which data.js calls after

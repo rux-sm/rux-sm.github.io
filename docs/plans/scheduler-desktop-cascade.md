@@ -24,8 +24,7 @@ Measured in `scheduler/app.css` and `data.js`, at 16px to the rem:
 | Schedule's floor, `SCHEDULE_FLOOR` | 26rem — three readable days |
 | Schedule compact | about 20rem — seven day slots and the bus column |
 
-So all four at full size need 96rem, and that is the window where nothing has
-to give.
+With one left panel, the widest case, nothing has to give above 76rem.
 
 ### What happens today, and what is wrong with it
 
@@ -40,43 +39,49 @@ Both of the first two take a panel away to keep the days wide, which is the
 wrong way round: the days are what the schedule can spend, and a panel is
 something rux asked for.
 
+### One left panel at a time
+
+The roster and the viewer both sit left of the board, and opening either
+closes the other. Two of them there squeeze the week from both sides for a
+pairing that is rarely read together, and with one the app never has to choose
+between them as the window narrows -- rux chose, by opening the last one.
+
+So the widest case is one left panel, the board and the editor.
+
 ### The order it should give way in
 
-1. **The viewer narrows to the editor's width,** 30rem to 20rem. The two side
-   panels then match, which is also tidier than one wide and one narrow. It
-   buys 10rem.
-2. **The board goes compact,** as it already does below the floor: all seven
-   days as square blocks rather than three readable ones. It buys 6rem.
-3. **A left panel closes,** under about 80rem, where three 20rem panels and a
-   compact week no longer fit. The trip editor is never the one: it holds
-   unsaved work and it is what the board is being read beside.
-4. **The other left panel closes** under about 60rem, leaving the editor and a
-   compact week.
-5. **The overlays take over** where a compact week and one 20rem panel no
-   longer fit side by side, which is 40rem. Carbon's md is 42rem and the
+The schedule takes what the panels leave, and gives way in this order:
+
+1. **The viewer narrows to the editor's width,** 30rem to 20rem, where three
+   readable days no longer fit beside it. The two panels then match, which is
+   tidier than one wide and one narrow.
+2. **The board goes compact,** as it already does below `SCHEDULE_FLOOR`: all
+   seven days as square blocks rather than three readable ones.
+3. **The left panel closes,** where a compact week no longer fits beside it and
+   the editor. The editor is never the one that closes: it holds unsaved work
+   and it is what the board is being read beside. The week takes the freed
+   20rem back and reads in full again until the window narrows through the
+   same two steps without it.
+4. **The overlays take over** where a compact week and one 20rem panel no
+   longer sit side by side, which is 40rem. Carbon's md is 42rem and the
    layout already turns there, within 32px of the same answer, so md stays the
    switch and the arithmetic is its reason rather than a second figure.
 
-The roster does not step aside to keep the days wide, as it does now. It
-closes only at step 3 or 4, with the viewer. Below md it still steps aside,
-where it is a full-width overlay and would cover the editor.
+The roster does not step aside to keep the days wide, as it does now. Below md
+it still steps aside, where it is a full-width overlay and would cover the
+editor.
 
-### The ladder
+### What that costs in window
 
-| Window | What the schedule shows | Panels |
-| :--- | :--- | :--- |
-| 96rem and up | three readable days | all three, viewer 30rem |
-| 86–96rem | three readable days | all three, viewer 20rem |
-| 80–86rem | compact week | all three at 20rem |
-| 60–80rem | compact week | one left panel closed |
-| 42–60rem | compact week | the editor alone |
-| under 42rem | the phone's own cascade | overlays, because a week and one panel no longer sit side by side |
+With the viewer open, three readable days need 76rem rather than today's 96rem,
+and 66rem once the viewer matches the editor. With the roster open instead,
+66rem throughout.
 
 ### Opening is gated where closing is
 
 A panel is refused at the width that would close it, so a press never draws
 something the next reflow takes away. The viewer's `viewerWide` figure moves
-from 82rem to the width the ladder closes a left panel at.
+from 82rem to that width.
 
 ### What does not change
 
@@ -90,22 +95,20 @@ from 82rem to the width the ladder closes a left panel at.
 
 ## Questions
 
-- **Which left panel closes first, the roster or the viewer?** The roster costs
-  nothing to bring back, a press away with nothing lost, while the viewer
-  loses the document being read. That argues the roster goes first, but a
-  roster open beside an editor is usually open because it is being used.
 - **Does a 20rem viewer still read?** A PDF fitted to the width of 320px is
   small. If it does not, the viewer's narrow width is a different number and
   step 1 buys less.
 
 ## Tasks
 
-- [ ] Answer the two questions above.
+- [ ] Answer the question above.
+- [ ] Close the other left panel when one opens, both ways round.
 - [ ] Give the viewer a narrow width and the rule that picks it, with the
       panels' widths named once in tokens rather than three times in rules.
-- [ ] Reorder `placeRoom` into the ladder: narrow the viewer, compact the
-      board, then close a left panel, and stop pricing the roster as the thing
-      that gives way above md.
-- [ ] Move the viewer's gate to the width the ladder closes it at, and gate
-      the roster the same way.
-- [ ] Read a week at each rung with all three panels open, in geist and g100.
+- [ ] Reorder `placeRoom`: narrow the viewer, compact the board, then close
+      the left panel, and stop pricing the roster as the thing that gives way
+      above md.
+- [ ] Move the viewer's gate to the width that closes it, and gate the roster
+      the same way.
+- [ ] Read a week at each step, with the viewer open and with the roster open,
+      in geist and g100.

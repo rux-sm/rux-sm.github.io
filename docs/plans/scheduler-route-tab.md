@@ -47,6 +47,12 @@ own simpler tab, and both boards still show the same times.
   `yard-location-v1` settings row with the token in `mapbox-token-v1`. A
   lookup that fails leaves the yard times blank and says so, rather than
   offering a box to type a drive into.
+- **A drop-off equal to the pickup writes no drop-off,** because that is what
+  a round trip already stores. The field is always on screen and defaults to
+  the pickup, but `routePlan` still asks whether the two places differ before
+  it writes a drop-off row, so a round trip's rows stay byte for byte what
+  they are today and rux-ui reads them unchanged. Without this the new
+  default would give every round trip a stop row it never had.
 - **The times keep living in the rows rux-ui reads,** so neither board has to
   change: the leg's `pickup` stop holds the pickup place, the drive from the
   yard, `spot` for Bus arrives and `depart_prev` for Yard depart; the first

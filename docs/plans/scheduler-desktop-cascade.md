@@ -47,11 +47,33 @@ something rux asked for.
    buys 10rem.
 2. **The board goes compact,** as it already does below the floor: all seven
    days as square blocks rather than three readable ones. It buys 6rem.
-3. **Nothing else gives.** Under about 80rem the panels no longer fit beside a
-   compact week, and that is the width the last question below is about.
+3. **A left panel closes,** under about 80rem, where three 20rem panels and a
+   compact week no longer fit. The trip editor is never the one: it holds
+   unsaved work and it is what the board is being read beside.
+4. **The other left panel closes** under about 60rem. That lands on md, 42rem,
+   where the layout becomes overlays anyway, so in practice the ladder ends
+   with the editor and a compact week.
 
-The roster does not step aside on a desktop at all. Below md it still does,
+The roster does not step aside to keep the days wide, as it does now. It
+closes only at step 3 or 4, with the viewer. Below md it still steps aside,
 where it is a full-width overlay and would cover the editor.
+
+### The ladder
+
+| Window | What the schedule shows | Panels |
+| :--- | :--- | :--- |
+| 96rem and up | three readable days | all three, viewer 30rem |
+| 86–96rem | three readable days | all three, viewer 20rem |
+| 80–86rem | compact week | all three at 20rem |
+| 60–80rem | compact week | one left panel closed |
+| 42–60rem | compact week | the editor alone |
+| under 42rem | the phone's own cascade | overlays |
+
+### Opening is gated where closing is
+
+A panel is refused at the width that would close it, so a press never draws
+something the next reflow takes away. The viewer's `viewerWide` figure moves
+from 82rem to the width the ladder closes a left panel at.
 
 ### What does not change
 
@@ -65,25 +87,22 @@ where it is a full-width overlay and would cover the editor.
 
 ## Questions
 
-- **What gives at the bottom?** Under about 80rem the three panels and a
-  compact week do not fit. The choices are the board scrolling sideways again,
-  the schedule shrinking under its compact width, or the viewer finally
-  closing as it does now. Which?
+- **Which left panel closes first, the roster or the viewer?** The roster costs
+  nothing to bring back, a press away with nothing lost, while the viewer
+  loses the document being read. That argues the roster goes first, but a
+  roster open beside an editor is usually open because it is being used.
 - **Does a 20rem viewer still read?** A PDF fitted to the width of 320px is
   small. If it does not, the viewer's narrow width is a different number and
   step 1 buys less.
-- **Should the viewer's 82rem gate move to 80rem,** so the width that lets it
-  open is the width where everything still fits?
-- **Does the roster keep its place in the order at all,** or is it simply never
-  given up on a desktop, and rux closes it by hand when the window is small?
 
 ## Tasks
 
-- [ ] Answer the questions above.
+- [ ] Answer the two questions above.
 - [ ] Give the viewer a narrow width and the rule that picks it, with the
       panels' widths named once in tokens rather than three times in rules.
-- [ ] Reorder `placeRoom`: narrow the viewer, then compact, and stop pricing
-      the roster as the thing that gives way above md.
-- [ ] Stop `viewerWide` closing an open viewer, keeping its gate on opening.
-- [ ] Read a week at each step of the cascade with all three panels open, in
-      geist and in g100.
+- [ ] Reorder `placeRoom` into the ladder: narrow the viewer, compact the
+      board, then close a left panel, and stop pricing the roster as the thing
+      that gives way above md.
+- [ ] Move the viewer's gate to the width the ladder closes it at, and gate
+      the roster the same way.
+- [ ] Read a week at each rung with all three panels open, in geist and g100.

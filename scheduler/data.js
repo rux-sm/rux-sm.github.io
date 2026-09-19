@@ -7883,6 +7883,14 @@
     trip_contact_1_phone: { id: 'scheduler-f-dphone1', kind: 'text' },
     trip_contact_2_name: { id: 'scheduler-f-d2', kind: 'text' },
     trip_contact_2_phone: { id: 'scheduler-f-dphone2', kind: 'text' },
+    // The Route tab. It is built when the panel opens, not when the tab is
+    // shown, so these are on screen from the start like every other field.
+    departure_time: { id: 'scheduler-f-leave', kind: 'time' },
+    spot_time: { id: 'scheduler-f-spot', kind: 'time' },
+    pickup_address: { id: 'scheduler-f-pickup', kind: 'place' },
+    /* `return_time` has no control here. It is the return leg's departure,
+       which the panel shows only when it opens on that leg's bar, and a draft
+       opens on the outbound. It goes in the notice instead. */
   };
 
   // The draft whose fields are in the panel, deleted once the panel closes.
@@ -7900,6 +7908,8 @@
     }
     const text = kind === 'date'
       ? (window.Rux?.datePicker?.format?.(value) ?? String(value))
+      // `trip_stops` times come back as HH:MM:SS; the control wants HH:MM.
+      : kind === 'time' ? String(value).slice(0, 5)
       : String(value);
     node.value = text;
     node.dispatchEvent(new Event('input', { bubbles: true }));
@@ -7916,22 +7926,27 @@
 
   function applyDraft(fields) {
     const missed = [];
+    const unpicked = [];
     for (const [key, value] of Object.entries(fields || {})) {
       const control = DRAFT_CONTROLS[key];
       const node = control ? document.getElementById(control.id) : null;
       if (!node) { missed.push([key, value]); continue; }
       typeInto(node, control.kind, value);
       markDrafted(node);
+      /* A place search commits nothing until a result is chosen from its
+         list: typing only searches. The address is in the box and the search
+         has run, but Save keeps it only once it is picked. */
+      if (control.kind === 'place') unpicked.push(key);
     }
     refreshDirty();
-    return missed;
+    return { missed, unpicked };
   }
 
   /* The notice above the fields: what Claude could not work out, and anything
      it filled that this panel has no field for, written out so it can be
      typed in by hand rather than lost. */
-  function draftNotice(notes, missed) {
-    if (!notes && !missed.length) return;
+  function draftNotice(notes, { missed, unpicked }) {
+    if (!notes && !missed.length && !unpicked.length) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
     const details = el('div', 'rux--inline-notification__details');
@@ -7946,6 +7961,10 @@
     const texts = el('div', 'rux--inline-notification__text-wrapper');
     texts.appendChild(el('div', 'rux--inline-notification__title', 'Filled in by Claude. Check the marked fields.'));
     if (notes) texts.appendChild(el('div', 'rux--inline-notification__subtitle', notes));
+    if (unpicked.length) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle',
+        `On the Route tab, choose the pickup from its list to keep it: typing the address only searches.`));
+    }
     if (missed.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `This panel has no field for: ${missed.map(([k, v]) => `${k} = ${v}`).join('; ')}.`));

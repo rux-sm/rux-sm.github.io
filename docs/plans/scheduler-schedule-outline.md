@@ -23,9 +23,15 @@ It is already this app's alone. The rule sits in the scheduler's own
 `overrides.css`, which only its pages link, so Home, Notes and Design keep
 Carbon's own padding untouched.
 
-16px is also what a panel in front of the board and the toast already inset
-themselves by, so the page's margin and the cards standing on it become one
-number.
+It is 16px on all four sides, so the board sits in an even frame of page and
+the margin is one number rather than a pair. It is also what a panel in front
+of the board and the toast already inset themselves by, so the page's margin
+and the cards standing on it match.
+
+The phone's safe areas meet that 16px two ways, because they are two different
+things: at the foot the home bar lies over the page, so its inset adds to the
+16px and leaves the margin visible above the bar, and at the sides in landscape
+the camera cutout is already well past 16px, so it takes over from it.
 
 16px rather than more, because the compact board has to fit seven days: at
 16px a 402px phone leaves the week 368px and it draws without scrolling
@@ -63,17 +69,15 @@ gives it and no width hands the rule back.
 
 ## Questions
 
-- **Does the 16px apply above and below the board as well as beside it?** The
-  sides are what this plan measures. Carbon's own 32px still stands top and
-  bottom, and matching them to the sides changes how far the toolbar sits under
-  the shell header on every page in the app.
+None open.
 
 ## Tasks
 
-- [ ] Give `.rux--content` 16px of inline padding at every width in
-      `scheduler/overrides.css`, keeping the landscape safe areas and the home
-      bar the foot already clears, and confirm `fitHeight` still stops the grid
-      above the bar.
+- [ ] Give `.rux--content` 16px of padding on all four sides at every width in
+      `scheduler/overrides.css`, with the safe areas meeting it as above, and
+      confirm `fitHeight` still stops the grid above the home bar.
+- [ ] Read the toolbar under the shell header on every scheduler page, which
+      loses 16px of the gap above it, and the foot of each page with it.
 - [ ] Take the crowded rule out of `scheduler/theme.css`, and the `data-week`
       write, the `crowded` value and its `Rux.schedule` entry out of
       `scheduler/app.js`.

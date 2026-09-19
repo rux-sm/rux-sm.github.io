@@ -59,6 +59,17 @@
   --scheduler-surface-radius: 0;
 }
 
+/* Design draws a box around every side panel in this theme, and overrides.css
+   takes one side off a left-placed one -- Carbon's own edge, which parts a
+   panel floating over a page from what it covers. That left the document
+   viewer the one region on the board missing a side while the roster and the
+   trip editor carry four, so its edge is put back here. overrides.css keeps
+   the rule for the themes where that edge is all Carbon draws and a lone line
+   beside an unruled week would be the odd one. */
+[data-theme="geist-dark"] .rux--side-panel.rux--side-panel--left-placement {
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
+}
+
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those

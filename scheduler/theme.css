@@ -45,6 +45,16 @@
      roster draws no rule of its own and the two lines do not stack. */
   --scheduler-last-rule: 0;
 }
+/* With the roster closed the schedule has nothing to be told apart from, so it
+   drops the sides of that edge and its corners and runs to the board's own
+   edges, keeping the rules that close it above and below. A box outlined and
+   rounded on a board it fills alone reads as a card on a page, which the
+   schedule is not; the compact board drops the same edge for the same reason.
+   Only this theme draws the edge, so only this theme has one to drop. */
+[data-theme="geist-dark"] .scheduler-page:not(:has(.scheduler-aside:not([hidden]))) .scheduler-frame {
+  border-inline: 0;
+  --scheduler-surface-radius: 0;
+}
 
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's

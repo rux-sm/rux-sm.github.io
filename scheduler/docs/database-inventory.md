@@ -21,6 +21,8 @@ the schema to match the page.
   in `apps`. `my_staff_profile()` returns that row with `owner` and `apps`.
   This app's client is the site's `account.js`; the old app's is
   `../rux-ui/js/data/supabase.js`.
+- **A third reader is the Claude connector**, an Edge Function rather than a
+  page; section 5 covers it.
 - **The old app goes through a proxy.** Its client's URL is a Cloudflare
   Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
   route of its own, `/ai/extract`, used only by the intake page. This app
@@ -169,3 +171,32 @@ as in `screen-inventory.md`.
 and `list_trip_request_documents` and uploads to a `trip-request-uploads`
 bucket. None of the three exists in the live project, and neither does a
 `trip_request_documents` table.
+
+## 5. The Claude connector
+
+`scheduler-connector`, the project's one Edge Function, source in
+`scheduler/connector/index.ts`. It serves MCP at
+`/functions/v1/scheduler-connector`, which the Claude app speaks to a custom
+connector, and it is deployed with Verify JWT off because it carries its own
+check: `withOAuthProtectedResource` and `withSupabase({ auth: 'user' })` from
+Supabase's middleware refuse a request with no token and answer the
+unauthenticated one with the header that starts the sign-in. Every query runs
+on the caller's own session, so the same rules apply to it as to a page.
+
+Sign-in is Supabase's OAuth 2.1 server, whose consent screen is the site's
+own page at `/oauth/consent/`; Supabase hosts none.
+
+**Six tools read**, each on the tables above: `find_trips` and `get_trip` on
+`trips` with its assignments, drivers and stops; `find_availability`, which
+reads the trips running across a range and subtracts their buses and drivers,
+then `bus_out_of_service` and `driver_time_off`; `find_contacts`,
+`list_buses` and `list_drivers`.
+
+**Two tools write, and neither writes a trip.** `draft_trip` and
+`draft_trip_change` put a row in `trip_drafts` and return
+`/scheduler/?draft=<id>`. A draft may fill only the trip fields the function
+lists, so it can carry nothing the editor has no way to show; `data.js` maps
+each of those to the control it is typed into, and names in the panel's notice
+any it cannot place. The editor's Save stays the only writer of a trip.
+
+`scheduler/docs/working-from-claude.md` is how to use it.

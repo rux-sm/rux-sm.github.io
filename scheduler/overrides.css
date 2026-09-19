@@ -124,13 +124,22 @@
      none to drop. */
   border: 0;
 }
-.scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel {
-  inset-inline-end: 0;
-  inline-size: min(var(--scheduler-panel-w), 100%);
+/* Each keeps its own width and docks to the side it sits on beside the week,
+   so the strip of board it leaves is the part of the week it was covering.
+   Below md there is no strip worth leaving -- 20rem of form on a 402px phone
+   would leave 82px of dimmed board and nothing readable in it -- so the block
+   below fills the width instead, which is what the roster does there too. */
+@media (min-width: 42rem) {
+  .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel {
+    inset-inline-end: 0;
+    inline-size: var(--scheduler-panel-w);
+  }
+  .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
+    inset-inline-start: 0;
+    inline-size: var(--scheduler-viewer-w);
+  }
 }
 .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
-  inset-inline-start: 0;
-  inline-size: min(var(--scheduler-viewer-w), 100%);
   /* The frame takes the panel's corners through this token, and there are
      none to take here. */
   --scheduler-surface-radius: 0;

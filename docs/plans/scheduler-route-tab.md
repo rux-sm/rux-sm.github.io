@@ -9,8 +9,9 @@ type: plan
 The Route tab asks six things and works out the rest: where the group is
 picked up and its address, where it is dropped off and its address, and the
 two times the group moves. From those it works out when the bus reaches the
-pickup and both yard times. rux-ui's itinerary builder is left alone; this is the scheduler's
-own simpler tab, and both boards still show the same times.
+pickup and both yard times. rux-ui's Itinerary tab follows it, so both apps
+describe a route the same way and show the same times; that change is planned
+in rux-ui's own `docs/itinerary-simplify-plan.md`.
 
 ## Decisions
 
@@ -63,7 +64,8 @@ own simpler tab, and both boards still show the same times.
 - **A trip rux-ui built a full itinerary for keeps every stop.** The tab
   writes only the rows above and says how many stops the leg has, so nothing
   in between is lost by opening it here, and the Times section shows only the
-  five.
+  five. Once rux-ui's tab is simplified too, those stops are shown by both and
+  editable by neither; whether that stands is rux-ui's plan to answer.
 - **A drop-off and pick-up trip shows the fields for the leg its bar is,** as
   the tab does today.
 - **`trips.departure_time`, `spot_time` and `return_time` are still not

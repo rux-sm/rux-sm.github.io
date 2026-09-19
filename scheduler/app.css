@@ -1457,58 +1457,37 @@ button.scheduler-row-head__num::after {
   font-size: var(--rux-heading-compact-01-font-size);
 }
 
-/* A block says which trip it is, in two lines and no icons: the destination,
-   and the time the bus leaves. The same two on every block at every span and
-   every width, because a block that reads differently from its neighbour is
-   what makes a week hard to scan. Beside a destination this short an icon
-   would take the destination, and the marks are what the trip is opened for;
-   the colour is still the trip's own, and a double booking still shows.
+/* A block says which trip it is in one word: the destination's code, centred,
+   and nothing else. Every row the full board draws comes off. At a day this
+   narrow each of them was a cut word -- "San ...", "Cor...", "Lare..." down a
+   whole week -- and the departure under them was the same 7:30a on nearly
+   every trip, so two lines were spent saying less than one. The colour is
+   still the trip's own, red for unconfirmed, and a double booking still shows.
 
-   A bar's own children only: the docked bar below clones these rows onto its
-   head, where the rest of them are the whole point. */
-/* A block is 34px of writing at the day's floor, and "12:30p" needs 41px of it
-   at label-01, so every ten, eleven and twelve o'clock was cut to "12:…" —
-   worse than no time at all. Three things buy the 7px back and none is enough
-   alone: 2px of inline padding instead of 4px, label-01's tracking, and a
-   step down to 11px. The type is set here rather than on the pane because the
-   docked sheet's head sits inside the pane too and has the room for label-01;
-   only a block is short of width. The row keeps label-01's 16px line, so the
-   block is still 44px and still a tap. 11px is under Carbon's smallest step,
-   which is worth leaving for a departure that can be read at all. */
-.scheduler-page[data-board="compact"] .scheduler-bar {
-  padding: var(--rux-spacing-02) var(--rux-spacing-01);
-  /* 0px, not 0: a bare zero is not a length once it has been through a custom
-     property, and the declaration would be dropped for `normal`. */
-  --scheduler-fs: 0.6875rem;
-  --scheduler-ls: 0px;
-}
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__client,
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__contact,
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__notes,
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__drivers { display: none; }
-/* The marks and the leg reference go with them, so the destination has the
-   whole line to ellipse into. */
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__ref,
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest > .scheduler-bar__warn { display: none; }
-/* The block keeps its departure whatever the view menu says. Turning the time
-   row off is a choice about how tall a bar is on the full board, where five
-   other rows still name the trip; here it is one of the two lines there are,
-   and without it a block is a truncated destination and nothing else. Same
-   reason `--scheduler-bar-rows` is left alone: compact is the board's state and
-   must not be overridden by, or write over, what was chosen in `scheduler.view`. */
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__time { display: flex; }
-/* The departure alone, in place of whichever form `fitTimes` chose: a block
-   this narrow has room for one time. */
-.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-long,
-.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-short { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-bar__time > .scheduler-bar__time-dep {
-  display: inline;
-  /* Proportional digits, so the narrowest block has room for the widest time. */
-  font-variant-numeric: normal;
+   `--scheduler-bar-rows` is left alone, as ever: compact is the board's state
+   and must not be overridden by, or write over, what was chosen in
+   `scheduler.view`. The block keeps its 44px, which is the tap. */
+.scheduler-page[data-board="compact"] .scheduler-bar { padding: 0; }
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__row { display: none; }
+/* The code itself, which `destCode` in data.js writes. It is the app's own
+   element rather than a row, so the full board never draws it and neither does
+   the docked sheet below, which draws every row and has the destination whole.
+   Carbon's data-table header type, 14px at 600: the largest step that leaves
+   three letters room in the narrowest day, measured at 40px. */
+.scheduler-bar__code { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__code {
+  display: flex;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
 /* A double booking becomes a band across the block's foot rather than a strip
-   with words in it: 44px holds the two lines and no third, and the error
-   colour is what carries the warning. The bar's own label still says it. */
+   with words in it: the block holds its code and no line beside it, and the
+   error colour is what carries the warning. The bar's own label still says it. */
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__conflict {
   block-size: var(--rux-spacing-02);
   padding: 0;
@@ -1542,6 +1521,13 @@ button.scheduler-row-head__num::after {
   position: fixed;
   inset: auto 0 0 0;
   z-index: 997;
+  /* Docked, it is a sheet across the foot of the screen rather than a chip
+     floating over one trip, so it takes the page's own raised surface in place
+     of Carbon's inverse one: that surface is for a tooltip's 40px, and a 150px
+     slab of it reads as another app's. The trip's colour stays as the stripe,
+     which is what says which trip this is. */
+  background: var(--rux-layer-02);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
   /* The head takes a whole line and the slots flow beneath it, which spares
      the slots a wrapper and `drawShortcuts` any knowledge of this. */
   flex-wrap: wrap;
@@ -1551,6 +1537,12 @@ button.scheduler-row-head__num::after {
 }
 /* No arrow: from the bottom edge it points at nothing. */
 .scheduler-bar-shortcuts[data-docked]::after { content: none; }
+/* Its writing and its slots take the ink of the surface they now sit on, and
+   the ring and the hover with them. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip { color: var(--rux-text-primary); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
 /* The slots share the width rather than sitting in a clump at one end. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { flex: 1 1 auto; }
 /* The trip, above its slots: the bar's own rows, cloned, so they keep one

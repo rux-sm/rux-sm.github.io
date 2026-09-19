@@ -92,6 +92,25 @@
   const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
     ?? standardHueOf(trip);
 
+  /* The three letters a compact block carries in place of a destination that
+     will not fit in a day column. Initials where the place is more than one
+     word and the first three letters where it is one, which is how the office
+     already says them: San Antonio is SA, Corpus Christi is CC, Laredo is LAR.
+     The trailing state comes off first, because six destinations in ten end in
+     one and a phone does not need it, and the small joining words go with it so
+     that Port of Brownsville is PB. Three at most. The bar's `aria-label` keeps
+     the whole name, so nothing is lost to a screen reader. */
+  const CODE_SKIP = new Set(['of', 'the', 'at', 'on', 'and']);
+  const destCode = dest => {
+    const words = String(dest || '')
+      .replace(/,\s*[A-Za-z]{2}\.?\s*$/, '')
+      .split(/[\s\-/]+/)
+      .map(w => w.replace(/[^A-Za-z0-9]/g, ''))
+      .filter(w => w && !CODE_SKIP.has(w.toLowerCase()));
+    if (!words.length) return '';
+    return (words.length > 1 ? words.map(w => w[0]).join('') : words[0]).slice(0, 3).toUpperCase();
+  };
+
   const UNASSIGNED = ' unassigned';
 
   const client = window.Rux?.account?.client
@@ -870,6 +889,11 @@
     const crewBox = el('span', 'scheduler-bar__crew', assign ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
     addRow(bar, 'scheduler-bar__drivers', crewBox);
+
+    /* The compact board's label. Not a row, so the full board never draws it
+       and neither does the docked sheet, which draws every row. */
+    const code = destCode(trip.destination);
+    if (code) bar.appendChild(el('span', 'scheduler-bar__code', code));
 
     bar.setAttribute('aria-label', [
       trip.destination || 'No destination', trip.customer, ref,

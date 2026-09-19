@@ -67,20 +67,22 @@
     const panelTop = board ? board.getBoundingClientRect().top : top;
     const panelNext = `${Math.max(12 * 16, Math.round(window.innerHeight - panelTop - below))}px`;
 
-    /* The driver roster takes that height on the aside, and the pane inside
-       fills what the aside's head leaves: see
+    /* The driver roster takes that figure as a cap rather than a height: a
+       list shorter than the column ends where it ends instead of drawing an
+       empty card to the foot of the page, and a longer one scrolls inside the
+       cap, the pane taking what the aside's head leaves: see
        `.scheduler-aside .scheduler-week--avail`. */
     const aside = document.getElementById('scheduler-aside');
     const avail = document.getElementById('scheduler-avail');
     /* Below md the roster is a card fixed over the board, and its height is
-       the gap its own insets leave; the board's height would run it past the
-       bottom edge. The computed position is the test, so the width that
-       decides it stays in app.css. */
+       the gap its own insets leave; the board's would run it past the bottom
+       edge. The computed position is the test, so the width that decides it
+       stays in app.css. */
     const floats = aside && getComputedStyle(aside).position === 'fixed';
     if (aside && avail && !aside.hidden && aside.contains(avail) && !floats) {
-      if (aside.style.blockSize !== panelNext) aside.style.blockSize = panelNext;
-    } else if (aside && aside.style.blockSize) {
-      aside.style.removeProperty('block-size');
+      if (aside.style.maxBlockSize !== panelNext) aside.style.maxBlockSize = panelNext;
+    } else if (aside && aside.style.maxBlockSize) {
+      aside.style.removeProperty('max-block-size');
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 

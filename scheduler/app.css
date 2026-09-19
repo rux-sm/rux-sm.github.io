@@ -1199,8 +1199,10 @@ button.scheduler-row-head__num::after {
   /* Each day column is as wide as the row is tall, so a day reads as a square
      mark; the two-letter day heads fit inside it. */
   --scheduler-day-track: var(--rux-layout-size-height-sm);
-  /* Fills what the head leaves of the height app.js gives the aside.
-     `max-block-size: none` lifts the base `.scheduler-week` viewport cap. */
+  /* Takes what the head leaves of the cap app.js gives the aside, and no more:
+     the card is as tall as its list until the cap binds, and the pane scrolls
+     from there. `max-block-size: none` lifts the base `.scheduler-week`
+     viewport cap. */
   flex: 1 1 auto;
   min-block-size: 0;
   max-block-size: none;

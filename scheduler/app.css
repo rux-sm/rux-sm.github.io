@@ -530,9 +530,12 @@ button.scheduler-row-head__num::after {
   background: transparent;
 }
 .scheduler-bar-shortcut:hover { background: var(--rux-background-inverse-hover); }
-/* The end slots fill the bar's rounded corners, so their hover follows the curve. */
-.scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-surface-radius, 0); border-end-start-radius: var(--scheduler-surface-radius, 0); }
-.scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); border-end-end-radius: var(--scheduler-surface-radius, 0); }
+/* The end slots fill the bar's rounded corners, so their hover follows the
+   curve. Only while it floats: docked, the bar is square across the screen's
+   foot and its last child is a slot, which would otherwise curve inside a
+   square corner. */
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-surface-radius, 0); border-end-start-radius: var(--scheduler-surface-radius, 0); }
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); border-end-end-radius: var(--scheduler-surface-radius, 0); }
 .scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 /* An empty slot's dashed circle, and an action that cannot act on this trip,
    are drawn faint in the bar's own icon colour, so they read on every theme. */
@@ -1438,24 +1441,6 @@ button.scheduler-row-head__num::after {
      Set on the bar's height and never on `--scheduler-bar-rows`, which holds
      the row choices in `scheduler.view` and has to come back untouched. */
   --scheduler-bar-h: 2.75rem;
-}
-
-/* The schedule is the screen here, so the card's edges go. A rounded corner
-   and a side line want a page behind them, and at this width one pixel of it
-   shows; dropping them also gives the grid back the two pixels the lines took,
-   in the dimension that is short. The token squares the frame, the toolbar and
-   the week together. The edge goes whole rather than at the sides alone: the
-   region it told apart from the roster is the screen here, and the header
-   above and the grid's last rule below already draw a line where its own top
-   and bottom fell, which is the doubled border. The roster and the docked bar
-   sit outside the frame and float over the board rather than filling it, so
-   they keep their corners. */
-.scheduler-page[data-board="compact"] .scheduler-frame {
-  --scheduler-surface-radius: 0;
-  /* The edge it would have closed the grid with is gone, so the last row takes
-     the rule back. */
-  --scheduler-last-rule: 1px solid var(--rux-border-subtle-01);
-  border: 0;
 }
 
 /* The day band numbers the days and drops their names, which do not fit in a

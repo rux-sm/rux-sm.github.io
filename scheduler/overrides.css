@@ -399,29 +399,28 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 
 
-/* Below md the page content has no padding, so the board, which scrolls
-   sideways, meets the screen's edges and the shell header. Carbon declares
-   `.rux--content` as a flat 2rem, where its own grid margin at this width is
-   0. `fitHeight` in app.js reads this padding, so the grid takes the room. */
-@media (max-width: 41.98rem) {
-  .rux--content {
-    padding: 0;
-    /* Except at the foot, where the home bar lies over the page. `fitHeight`
-       reads this padding for the grid's height, so the board stops above the
-       bar rather than running its last row underneath it. */
-    padding-block-end: var(--scheduler-safe-bottom);
-  }
+/* 16px of page on all four sides, at every width. Carbon declares
+   `.rux--content` as a flat 2rem; this is the densest workspace on the site,
+   so it takes the smallest inset that still reads as a margin and gives the
+   board the other 32px. One number at every width, so the board is a card on a
+   page everywhere and nothing about it changes as the window narrows -- which
+   is what lets the schedule keep its edge and its corners throughout.
+   `fitHeight` in app.js reads this padding, so the grid takes the room.
+
+   The phone's safe areas meet that 16px two ways, being two different things.
+   At the foot the home bar lies over the page, so its inset adds to the margin
+   and leaves the 16px visible above the bar. At the sides in landscape the
+   camera cutout is already well past 16px, so it takes over from it. */
+.rux--content {
+  padding: var(--rux-spacing-05);
+  padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
+  padding-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 
 /* A phone in landscape has its camera cutout beside the page, so the header
-   and the page keep clear of it. */
+   keeps clear of it too. */
 .rux--header {
   padding-inline: var(--scheduler-safe-left) var(--scheduler-safe-right);
-}
-@media (min-width: 42rem) {
-  .rux--content {
-    padding-inline: max(var(--rux-spacing-07), var(--scheduler-safe-left)) max(var(--rux-spacing-07), var(--scheduler-safe-right));
-  }
 }
 
 /* The expandable search's focus ring is drawn inside its box. Carbon rings it

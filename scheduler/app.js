@@ -114,7 +114,7 @@
     const dayMin = px(sch, '--scheduler-day-min');
     const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
-    if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return false;
+    if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
 
     const available = pane - headBase;
     let day = Math.floor(available / days);
@@ -136,27 +136,15 @@
     // The head is pinned to a whole width that carries the remainder, so the
     // columns sum to the pane exactly.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
-
-    // Whether the week is crowded: seven days at their floor need more room
-    // than the pane has, and the grid scrolls.
-    return crowded;
   }
 
   const sch = document.getElementById('scheduler-week');
   if (sch && 'ResizeObserver' in window) {
     // The pane is observed, not the grid: the grid's width is what this
     // changes, so observing it would feed its own output back in.
-    // `crowded` holds the last fit's answer, read through Rux.schedule.crowded.
-    let crowded = false;
-    /* A crowded week is one whose seven days will not fit, so the grid scrolls
-       sideways. The page carries it because app.css asks: a rule down the side
-       of a region that scrolls is a stop where the week does not end. */
-    const page = document.querySelector('.scheduler-page');
     const fit = () => {
       fitHeight(sch);
-      crowded = fitColumns(sch) === true;
-      if (crowded) page?.setAttribute('data-week', 'crowded');
-      else page?.removeAttribute('data-week');
+      fitColumns(sch);
     };
 
     // Three triggers: a window resize; the observer, for a box change the
@@ -168,7 +156,7 @@
     if (sch.parentElement) watch.observe(sch.parentElement);
     window.addEventListener('resize', fit);
     window.Rux = window.Rux || {};
-    window.Rux.schedule = { fit, crowded: () => crowded };
+    window.Rux.schedule = { fit };
     fit();
   }
 })();

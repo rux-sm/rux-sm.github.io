@@ -482,3 +482,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   display: flex;
   align-items: center;
 }
+
+/* A field the Claude connector filled in, waiting to be checked. The mark is
+   a bar down the inline start, in the same blue Carbon uses for an
+   informational notice, so it reads as something to look at rather than
+   something wrong. It is cleared by saving or discarding, which closes the
+   panel and spends the draft. */
+.scheduler-drafted {
+  border-inline-start: 2px solid var(--rux-support-info);
+  padding-inline-start: var(--rux-spacing-03);
+}
+
+/* The notice above them, which names what Claude could not work out. */
+.scheduler-drafted-notice { margin-block-end: var(--rux-spacing-05); }
+.scheduler-drafted-notice .rux--inline-notification { max-inline-size: none; }

@@ -60,12 +60,11 @@ None open.
 
 ## Tasks
 
-- [ ] Open `?draft=<id>` in the scheduler's trip editor, new or existing,
-      with the filled fields marked and Claude's notes shown; delete the draft
-      on save or discard.
 - [ ] Describe the function and its tools in
       `scheduler/docs/database-inventory.md`, and the everyday use in a
       how-to in `scheduler/docs/`.
-- [ ] rux tries a trip from a real itinerary and a change to an existing
-      trip, from the desktop and the phone. Lookups, a draft and a
-      signed-out request are checked.
+- [ ] rux opens a draft link, checks the marked fields fill and Save writes
+      them, then tries a trip from a real itinerary and a change to an
+      existing trip, from the desktop and the phone. The editor's draft side
+      is built but has never been opened with a log-in. Lookups, writing a
+      draft and a signed-out request are checked.

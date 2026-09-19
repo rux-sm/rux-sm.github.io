@@ -2536,6 +2536,14 @@
   // closing it is setting `hidden`.
   function closePanel(returnFocus = true) {
     if (panelEl.hidden) return;
+    /* A draft is read the moment the panel shows it, so closing spends it
+       whether Save was pressed or not. A delete that fails leaves a row the
+       nightly cleanup takes instead. */
+    if (openDraft) {
+      const spent = openDraft;
+      openDraft = null;
+      client.from('trip_drafts').delete().eq('id', spent).then(() => {}, () => {});
+    }
     // Closing puts the editor's own trip down; a different trip selected
     // meanwhile stays selected.
     const picked = selectedBar();
@@ -7839,6 +7847,146 @@
      the trip's bar and opens it through `whenSafe`. A trip with no bar on that
      week still moves the week, and a toast says so. Search and the Drivers
      page's `?trip=<id>&date=<day>` both come here. */
+  /* ── A trip the Claude connector filled in ──
+     The connector parks a draft and hands back /scheduler/?draft=<id>. The
+     draft carries only the fields it was sure of, and its notes say what it
+     could not work out. This opens the editor on it -- a new trip, or the
+     trip the draft changes -- and types each field in as a person would, so
+     the panel counts them as unsaved changes and Reset takes them back out.
+     Every field it touched is marked. Nothing reaches the database until
+     Save. The draft is deleted when the panel closes, saved or not, because
+     it has been read either way. */
+
+  // Each field a draft may fill, and the control it is typed into. A field
+  // missing from here, or whose control is not on screen, is named in the
+  // panel's notice instead, so nothing the connector sent goes quietly.
+  const DRAFT_CONTROLS = {
+    destination: { id: 'scheduler-f-destination', kind: 'text' },
+    customer: { id: 'scheduler-f-customer', kind: 'text' },
+    notes: { id: 'scheduler-f-notes', kind: 'text' },
+    start_date: { id: 'scheduler-f-start', kind: 'date' },
+    end_date: { id: 'scheduler-f-end', kind: 'date' },
+    return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
+    return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
+    trip_type: { id: 'scheduler-f-type', kind: 'select' },
+    vehicle_type: { id: 'scheduler-f-vehicle', kind: 'select' },
+    req_sleeper: { id: 'scheduler-f-sleeper', kind: 'tag' },
+    req_ada: { id: 'scheduler-f-ada', kind: 'tag' },
+    req_56pax: { id: 'scheduler-f-56pax', kind: 'tag' },
+    need_hotel: { id: 'scheduler-f-hotel', kind: 'tag' },
+    quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
+    est_miles: { id: 'scheduler-f-estmiles', kind: 'text' },
+    booking_contact_name: { id: 'scheduler-f-cfind', kind: 'text' },
+    booking_contact_phone: { id: 'scheduler-f-cphone', kind: 'text' },
+    booking_contact_email: { id: 'scheduler-f-cemail', kind: 'text' },
+    trip_contact_1_name: { id: 'scheduler-f-d1', kind: 'text' },
+    trip_contact_1_phone: { id: 'scheduler-f-dphone1', kind: 'text' },
+    trip_contact_2_name: { id: 'scheduler-f-d2', kind: 'text' },
+    trip_contact_2_phone: { id: 'scheduler-f-dphone2', kind: 'text' },
+  };
+
+  // The draft whose fields are in the panel, deleted once the panel closes.
+  let openDraft = null;
+
+  /* Typing a value in. The events are the ones a person's typing fires, which
+     is what the panel listens to for its dirty state; setting `value` alone
+     leaves Save disabled. */
+  function typeInto(node, kind, value) {
+    if (kind === 'tag') {
+      const want = !!value;
+      if (pressed(node) === want) return true;
+      node.click();
+      return true;
+    }
+    const text = kind === 'date'
+      ? (window.Rux?.datePicker?.format?.(value) ?? String(value))
+      : String(value);
+    node.value = text;
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
+
+  /* Marks a field the draft filled, so it reads as something to check rather
+     than something already agreed. The mark sits on the form item, or on the
+     control when it has no item of its own, as a tag does. */
+  function markDrafted(node) {
+    (node.closest('.rux--form-item') ?? node).classList.add('scheduler-drafted');
+  }
+
+  function applyDraft(fields) {
+    const missed = [];
+    for (const [key, value] of Object.entries(fields || {})) {
+      const control = DRAFT_CONTROLS[key];
+      const node = control ? document.getElementById(control.id) : null;
+      if (!node) { missed.push([key, value]); continue; }
+      typeInto(node, control.kind, value);
+      markDrafted(node);
+    }
+    refreshDirty();
+    return missed;
+  }
+
+  /* The notice above the fields: what Claude could not work out, and anything
+     it filled that this panel has no field for, written out so it can be
+     typed in by hand rather than lost. */
+  function draftNotice(notes, missed) {
+    if (!notes && !missed.length) return;
+    const wrap = el('div', 'scheduler-drafted-notice');
+    const note = el('div', 'rux--inline-notification rux--inline-notification--info');
+    const details = el('div', 'rux--inline-notification__details');
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', 'rux--inline-notification__icon');
+    icon.setAttribute('width', '20'); icon.setAttribute('height', '20');
+    icon.setAttribute('viewBox', '0 0 32 32'); icon.setAttribute('fill', 'currentColor');
+    icon.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#i-information--filled');
+    icon.appendChild(use);
+    const texts = el('div', 'rux--inline-notification__text-wrapper');
+    texts.appendChild(el('div', 'rux--inline-notification__title', 'Filled in by Claude. Check the marked fields.'));
+    if (notes) texts.appendChild(el('div', 'rux--inline-notification__subtitle', notes));
+    if (missed.length) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle',
+        `This panel has no field for: ${missed.map(([k, v]) => `${k} = ${v}`).join('; ')}.`));
+    }
+    details.append(icon, texts);
+    note.appendChild(details);
+    wrap.appendChild(note);
+    panelDetails.prepend(wrap);
+  }
+
+  async function openDraftTrip(id) {
+    let row;
+    try {
+      ({ data: row } = await client.from('trip_drafts')
+        .select('id, trip_id, fields, notes').eq('id', id).maybeSingle());
+    } catch { row = null; }
+    if (!row) {
+      await show();
+      toast('info', 'That draft is not there', 'It was used already, or it ran out after its fourteen days.');
+      return;
+    }
+
+    if (row.trip_id) {
+      const { data: trip } = await client.from('trips')
+        .select('id, start_date').eq('id', row.trip_id).maybeSingle();
+      if (!trip) {
+        await show();
+        toast('info', 'That trip is gone', 'The draft changed a trip that is no longer there.');
+        return;
+      }
+      await goToTrip(trip.id, trip.start_date);
+      if (panelEl.hidden) return;
+    } else {
+      await show();
+      openCreate({ startDate: row.fields?.start_date });
+    }
+
+    openDraft = row.id;
+    draftNotice(row.notes, applyDraft(row.fields));
+  }
+
   async function goToTrip(id, day) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
     cursor = mondayOf(parseISO(day));
@@ -7891,6 +8039,9 @@
     if (asked.has('trip')) {
       history.replaceState(null, '', location.pathname);
       goToTrip(asked.get('trip'), asked.get('date'));
+    } else if (asked.has('draft')) {
+      history.replaceState(null, '', location.pathname);
+      openDraftTrip(asked.get('draft'));
     } else {
       show();
     }

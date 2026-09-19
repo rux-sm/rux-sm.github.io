@@ -105,10 +105,13 @@ and a desktop squeezed by two open panels reach this the same way.
 
 ## Questions
 
-- **Is a four-character destination worth the line?** On a 375px phone a
-  one-day block leaves 34px for it, about four characters — "Fox…", "Pro…" —
-  while the departure fits whole at every width. Wider compact boards, which is
-  every one that is not a phone, leave 55px to 93px and read in full.
+- **Is a cut destination worth the line?** On a 402px phone a one-day block
+  leaves 41px for it, which is four to eight characters rather than a fixed
+  count: the font's letters run from 3px for an `i` to 10.4px for a `W`, so the
+  same box holds "Illinois" whole and cuts "Miami". 44 of 837 destinations fit,
+  and six in ten end in a state the phone does not need. The departure fits
+  whole at every width. Wider compact boards, which is every one that is not a
+  phone, leave 55px to 93px and read in full.
 
 - **Nothing on a block says a trip has no driver, no purchase order or a
   requirement its bus fails.** That is what the marks carried, and the decision

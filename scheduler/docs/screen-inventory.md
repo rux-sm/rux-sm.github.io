@@ -34,7 +34,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Old surface | Verdict | Becomes |
 |---|---|---|
 | Trip editor, Itinerary and Files tabs | keep | Tabs in the trip panel. Files holds the Itinerary not needed switch, Carbon's file uploader and the trip's itineraries, contracts and POs, newest first, each replaced or deleted from its row menu; a file writes at once, stored as rux-ui stores it. The itinerary grid is *later*. |
-| Document viewer | keep | A `rux--side-panel--md` column left of the board from 82rem up, framing the PDF beside the trip panel; narrower, the file opens in a new tab. |
+| Document viewer | keep | A `rux--side-panel--md` column left of the board, framing the PDF beside the trip panel. A file always opens there, never in a browser tab: where the board cannot hold the column beside the week, the panel comes in front of the board instead. |
 | Trip editor, bus and driver assignment | keep | The Fleet tab: Buses needed per leg, then a tile per bus with a bus combo box and a combo box per seat, Driver always and Co-driver, Relief at start and Relief at end from the group's menu, a relief with Swap time and Note. Each seat's status is a Carbon status icon at the end of its field that opens the five statuses, and changing a driver resets that driver's status to Not sent, as rux-ui does. The pickers name what clashes on the trip's dates and a picked clash warns; a driver in two seats of one leg blocks Save. Fewer buses asks first when a bus that goes holds a bus or a driver. Saved with the trip, by id. Pay stays in rux-ui. |
 | Trip editor, Billing tab | keep | A summary card with the confirmation and billing status, then Price, Contract signed, PO received, Invoice sent and Payments, each milestone a switch on its heading. The switches open as rux-ui opens them, and a milestone the billing workflow turns off is hidden. |
 | Charter or Ticketed, ticket prices | later | With the trip manifest. |
@@ -69,7 +69,7 @@ Design account panel replaces it).
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |
 | Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
-| Compact board | keep | Where the schedule cannot show three readable days -- a phone, or a narrow window with panels open -- it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying two lines and no icons, the destination and the departure, the same on every block however long; a double booking is a band across its foot; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on, after the roster has stepped aside. |
+| Compact board | keep | Where the board itself cannot show three readable days, which is a phone, it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying two lines and no icons, the destination and the departure, the same on every block however long; a double booking is a band across its foot; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on from the board's own width, never from what the panels leave. |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
 the database. Dropped: the day column width slider, the second bar size, the
@@ -128,6 +128,11 @@ Three homes, and one rule for choosing.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any file opens there,
   with its type above the destination, and so does a form `print.html` draws.
+- **A panel is beside the week or in front of it, never over it.** Every open
+  panel sits beside the week while the board holds them and the week's 17rem
+  minimum; past that the newest comes in front of the board, dimming what it
+  covers, and the rest wait beside the week behind it. Nothing closes itself
+  and nothing is refused. `docs/plans/scheduler-panel-placement.md` decides it.
 - **A generated form is a page, not a modal.** `print.html` draws it and the
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.

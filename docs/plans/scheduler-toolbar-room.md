@@ -17,21 +17,21 @@ giving way to keep that true.
   buttons to a second row instead of ever letting the week ellipse. That one
   setting was the stacking.
 
-- **The schedule's floor is 26rem:** three whole days beside the 33px bus
-  column, since a day will not go under the 127px `--scheduler-day-min`. The
-  trip editor's own 20rem was asked for and shows 2.3 days, which leaves a part
-  column at the edge; 26rem is also what the itinerary panel's existing 82rem
-  gate already assumes.
+- **The schedule's minimum is 17rem,** the width the tight toolbar below is
+  measured to read at, so the week never goes narrower than its own controls.
+  It spends its days to get there and scrolls to fewer of them. 26rem, three
+  whole days beside the 33px bus column, is a different question and only the
+  compact week asks it.
 
 - **The week's short form is chosen by the toolbar's width, not the window's,**
   a container query at 25rem. The panels beside the schedule are what take the
   room and a window cannot see them. A small tablet now reads the full week,
   where it used to read the months alone, because at that width it fits.
 
-- **One measurement decides everything,** `placeRoom` in data.js: the roster's
-  yield, what the schedule is left, and whether `Today` is in the toolbar or in
-  the overflow menu. It reads the board and the panels, never the schedule,
-  which is its own output.
+- **One measurement decides everything,** `placeRoom` in data.js: which panel
+  is in front of the board, what the schedule is left, and whether `Today` is
+  in the toolbar or in the overflow menu. It reads the board and the panels,
+  never the schedule, which is its own output.
 
 ## Questions
 

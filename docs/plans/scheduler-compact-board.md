@@ -15,12 +15,12 @@ the bottom edge.
 
 ### When it turns on
 
-- **Compact is the phone's answer, below the floor and below md.**
-  `SCHEDULE_FLOOR` names the width under which the schedule cannot show three
-  whole days. On a desktop the week keeps its readable days and scrolls to
-  fewer of them, and the panels float rather than squeeze it, which
-  `scheduler-desktop-cascade.md` decides; compact is what a board with nothing
-  left to give does.
+- **Compact is the board's own answer, not a panel's.** `SCHEDULE_FLOOR` names
+  the width under which three whole days will not fit, and `placeRoom` asks the
+  board against it rather than the room the panels leave: a panel in front of
+  the week never makes the week itself a different week. On a desktop the week
+  keeps its readable days and scrolls to fewer of them, which
+  `scheduler-panel-placement.md` decides.
 
 - **`placeRoom` decides it, as it decides everything else.** It already measures
   the board and the panels and writes `--scheduler-room` and `data-room`; it
@@ -82,8 +82,9 @@ the bottom edge.
   trip, in the first slot, loads the trip into the panel as it does everywhere
   else, and Escape clears the selection and takes the bar with it.
 
-- **It sits over the board at 997,** under the roster overlay's 998 and the trip
-  panel's 999, so an open trip and an open roster are both in front of it.
+- **It sits over the board at 997,** under the scrim at 1000 and the panel in
+  front of the board at 1001, so an open trip and an open roster are both in
+  front of it.
 
 - **The board's foot clears it.** The pane's spacer grows by the sheet's
   measured height, so the last bus scrolls out from under it rather than being

@@ -2553,9 +2553,9 @@
     syncSelection();
     const opener = panelOpener;
     panelOpener = null;
-    // The roster comes back first, so the fit below measures a board that has
-    // it. `placeAvailability` fits too, and a second fit changes nothing.
-    if (availYielded) { availYielded = false; placeAvailability(); }
+    // The board is measured before it is fit, so whatever was behind the
+    // editor comes forward first.
+    placeRoom();
     window.Rux?.schedule?.fit?.();
     if (returnFocus && opener?.isConnected) opener.focus();
   }
@@ -5010,21 +5010,14 @@
     loadFleetClashes();
 
     if (!again) panelOpener = bar;
-    const wasOpen = !panelEl.hidden;
     panelEl.hidden = false;
     if (tripEl) tripEl.hidden = false;
     // Once the panel shows, so Open trip and the driver grid treat this trip
     // as the one in the editor.
     syncSelection();
+    // The editor is open now, so the board is measured again before it is fit.
+    placeRoom();
     window.Rux?.schedule?.fit?.();
-    /* The roster steps aside only below md, where app.css makes it and the
-       editor full-width overlays, so one would cover the other; on a desktop it
-       stays and the board scrolls. Only on the way in, so a `Drivers` press
-       made while the editor is open is not undone. */
-    if (!wasOpen && availOn && !availYielded && matchMedia('(max-width: 41.98rem)').matches) {
-      availYielded = true;
-      placeAvailability();
-    }
     document.getElementById('scheduler-panel-close')?.focus();
   }
 
@@ -5047,14 +5040,6 @@
     ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
-  /* The roster steps aside for the editor only below md, where both are
-     full-width overlays and one would cover the other (`openPanel`). The yield
-     is kept apart from `availOn`, the wanted state, so closing the editor
-     brings the roster back. */
-  let availYielded = false;
-  /* The second reason the roster steps aside: the board is too narrow for the
-     schedule to keep its floor beside the panels open. Its own flag, because
-     the reason is a width rather than an overlap, and `placeRoom` owns it. */
   let availRows = [];
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
@@ -5453,30 +5438,44 @@
   // Every selection change, from a click, a key or a script, lands here.
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
-  /* ── How much room the schedule has ─────────────────────────────────────────
+  /* ── Beside the week, or in front of it ─────────────────────────────────────
+     A panel either sits beside the week or comes in front of the board. There
+     is no third state: a panel drawn over a week that still claims the width
+     it is covering hides the toolbar's controls and the bus column, which are
+     the two things the week cannot be read without.
+
+     One sum decides it. The week's minimum plus every open panel is what the
+     board is asked for; while the board holds that, every panel sits beside
+     the week and the week spends its days, scrolling to fewer of them. Past it
+     the newest comes in front, and behind it the board is the week alone.
+     Nothing closes itself and nothing is refused: every panel stays open, and
+     what a narrowing window changes is only which one is in front.
+
      The board's width is what this reads, never the schedule's: the board is
      the whole content column whichever panels are open, so it holds still when
      one of them closes, while the schedule's width is this decision's own
-     outcome and reading it back would flip-flop. Each panel's width and the gap
-     between them are read from the stylesheet, which is where they are set, and
-     a panel the stylesheet floats over the board rather than laying out beside
-     it, as it does below md, costs the schedule nothing.
+     outcome and reading it back would flip-flop.
 
-     The floor is 26rem, which app.css states and gives the reason for, and a
-     toolbar under 21rem is one `Today` will not fit in beside its week. */
+     `WEEK_MIN` is 17rem, the width the tight toolbar is measured to read at in
+     app.css: the week never goes narrower than its own controls, which is what
+     makes it a derived number rather than a chosen one. `SCHEDULE_FLOOR` is a
+     different question -- whether the board can show three readable days --
+     and only the compact week asks it. A toolbar under 21rem is one `Today`
+     will not fit in beside its week. */
+  const WEEK_MIN = 17;
   const SCHEDULE_FLOOR = 26;
   const TOOLBAR_TIGHT = 21;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
-  /* The board and panel widths the yield was last decided at. A press on the
-     toggle is not undone until one of them changes, so asking for the roster in
-     a board too narrow for it keeps it until the next resize. */
-  let roomKey = null;
+  /* The panels open, oldest first, so the newest is the one that comes in
+     front. It is kept from what each pass finds open rather than pushed to by
+     the openers, so no path can forget to say it opened something. */
+  let openOrder = [];
 
   /* A panel's width, from the token app.css lays it out with rather than from
-     the panel itself. A panel that floats gives its width up, so pricing it by
-     what it takes right now would unmake the decision that floated it and the
-     two would flip back and forth. */
+     the panel itself. A panel in front of the board has given its width up, so
+     pricing it by what it takes right now would unmake the decision that moved
+     it and the two would flip back and forth. */
   const panelWidth = name => {
     const root = getComputedStyle(document.documentElement);
     const raw = root.getPropertyValue(name).trim();
@@ -5491,73 +5490,81 @@
     const board = boardEl.getBoundingClientRect().width;
     // Nothing to measure while the board is hidden, as it is behind a notice.
     if (!board) return;
-    /* Below md every panel floats over the board and none of them costs the
-       schedule anything; the phone's own cascade takes over there. */
-    const overlay = matchMedia('(max-width: 41.98rem)').matches;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
-    const price = name => overlay ? 0 : panelWidth(name) + gap;
-    const editor = tripEl?.hidden ? 0 : price('--scheduler-panel-w');
-    const itinerary = viewerEl?.hidden ? 0 : price('--scheduler-viewer-w');
-    /* The roster's width whether or not it is on screen, since that is what is
-       being decided; asking `hidden` would answer nothing every time. */
-    const roster = price('--scheduler-panel-w');
 
-    /* Nothing here takes a panel away. The roster is the week's companion --
-       "who is free on Thursday" is a question about both at once -- so it
-       stays beside the week and the week spends its days to keep it.
+    /* What is open, and in what order it was asked for. A panel already in the
+       list keeps its place, so widening the window and narrowing it again
+       brings the same one forward. */
+    const open = [
+      ['roster', availOn, '--scheduler-panel-w'],
+      ['editor', !!tripEl && !tripEl.hidden, '--scheduler-panel-w'],
+      ['viewer', !!viewerEl && !viewerEl.hidden, '--scheduler-viewer-w'],
+    ].filter(([, on]) => on);
+    const names = open.map(([name]) => name);
+    openOrder = openOrder.filter(name => names.includes(name))
+      .concat(names.filter(name => !openOrder.includes(name)));
 
-       The editor and the viewer are destinations: while a form is being
-       filled in or a document read, the week is context rather than
-       something read beside it. Each sits beside the week while a readable
-       week fits next to it, and floats over the board where it does not, so
-       neither the week nor the panel is ever squeezed past use. The editor
-       is asked first, being the one worked in while documents come and go. */
-    const rosterShown = availOn && !availYielded;
-    let left = board - (rosterShown ? roster : 0);
-    const over = (el, width, name) => {
-      if (!el || el.hidden || !width) { pageEl.removeAttribute(name); return 0; }
-      if (left - width >= SCHEDULE_FLOOR * rem) { pageEl.removeAttribute(name); left -= width; return width; }
-      pageEl.setAttribute(name, 'over');
-      return 0;
-    };
-    const editorBeside = over(tripEl, editor, 'data-editor');
-    const viewerBeside = over(viewerEl, itinerary, 'data-viewer');
-    const room = board - editorBeside - viewerBeside - (rosterShown ? roster : 0);
+    /* Below md nothing is laid out beside the week at all: Carbon's own fixed
+       panel stands there and the board has no room for a column either way, so
+       no panel is priced and whichever is open is in front. */
+    const overlay = matchMedia('(max-width: 41.98rem)').matches;
+    const width = Object.fromEntries(open.map(([name, , token]) => [name, panelWidth(token)]));
+    /* An open panel's wrapper keeps its place in the board's row whether the
+       panel is beside the week or in front of it, so the gap beside it is
+       charged either way and only the width ever comes back. */
+    const gaps = names.length * gap;
+    const widths = overlay ? 0 : names.reduce((sum, name) => sum + width[name], 0);
+
+    /* Past the sum the newest panel comes in front of the board, and behind it
+       the board is the week alone: the others are still open, are not drawn,
+       and come back the moment the one in front closes. One panel in front of
+       one week is the whole of it, at every width. */
+    const takeover = openOrder.length && (overlay || widths + gaps + WEEK_MIN * rem > board)
+      ? openOrder[openOrder.length - 1] : null;
+    if (takeover) pageEl.setAttribute('data-takeover', takeover);
+    else pageEl.removeAttribute('data-takeover');
+
+    /* Behind the one in front, the board is set aside rather than there to be
+       read, so it takes no click and no Tab: what is on screen and what can be
+       reached are the same thing. An open panel that is not the one in front
+       waits with it. */
+    frameEl.inert = !!takeover;
+    for (const [name, el] of [['roster', asideSlot], ['editor', tripEl], ['viewer', viewerEl]]) {
+      if (el) el.inert = !!takeover && name !== takeover;
+    }
+
+    /* Behind the one in front the board is the week alone, so it is charged
+       only the gaps the collapsed wrappers still hold open. */
+    const room = board - gaps - (takeover ? 0 : widths);
     frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
     // Under the tight width `Today` gives way to its menu row, in app.css.
 
     if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
     else pageEl.removeAttribute('data-room');
 
-    /* Compact is the phone's answer, where the board itself is narrower than
-       a readable week and there is nothing else to give. On a desktop the
-       week keeps its readable days and scrolls to fewer of them, which is
-       what a narrowed window asks for rather than a different week. */
-    if (overlay && room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
+    /* Compact is the board's own answer, not a panel's: a board that cannot
+       show three readable days shows all seven as blocks instead. It asks the
+       board rather than the room, because a panel over the week never makes
+       the week itself a different week. */
+    if (board < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
   }
 
-  /* The three inputs are watched, never the schedule: the board, whose width
-     the window sets, and the two panels, whose widths go to nothing when they
-     close. The schedule is this rule's own output — its width is held at the
-     floor the rule writes, so it reports no change once the floor binds and
-     watching it would leave the floor stale. */
+  /* The board is the one input watched: its width is what the window sets.
+     Opening or closing a panel calls `placeRoom` where it happens, because a
+     panel that has just taken the screen has no width of its own to report and
+     watching it would leave the decision to a frame that never comes. The
+     schedule is this rule's own output — its width is held at the minimum the
+     rule writes, so it reports no change once that binds. */
   if (boardEl && 'ResizeObserver' in window) {
-    const watch = new ResizeObserver(() => { placeRoom(); });
-    watch.observe(boardEl);
-    /* The panels by id, as app.js takes them, because the itinerary's own
-       handle is declared further down and this runs while the page is still
-       being set up. */
-    for (const id of ['scheduler-trip', 'scheduler-viewer']) {
-      const el = document.getElementById(id);
-      if (el) watch.observe(el);
-    }
+    new ResizeObserver(() => placeRoom()).observe(boardEl);
   }
 
   function placeAvailability() {
-    /* The toggle reports what is on screen, not `availOn`, so a yielded roster
-       does not leave a pressed button with nothing behind it. */
-    const shown = availOn && !availYielded;
+    /* The roster is on screen whenever it is asked for. Where it goes -- beside
+       the week or in front of it -- is `placeRoom`'s, and either way the toggle
+       reads as pressed, because either way the roster is there. */
+    const shown = availOn;
     if (asideSlot) {
       asideSlot.hidden = !shown;
       if (shown) asideSlot.appendChild(availEl);
@@ -5567,22 +5574,18 @@
     // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
     // Carbon's pressed look.
     availToggle.classList.toggle('rux--btn--selected', shown);
+    /* The room is measured again here: opening the roster is not a resize, so
+       nothing else would ask, and the board would lay out for a panel it no
+       longer has room for. */
+    placeRoom();
     window.Rux?.schedule?.fit?.();
     // The corner can only be named from a roster that has a size.
     if (shown) nameAvailBand();
   }
 
-  /* A press acts on what is on screen: off screen for either reason, it shows
-     the roster and clears both reasons it stepped aside; on screen, it hides
-     it. */
+  // A press shows the roster or hides it; where it then goes is `placeRoom`'s.
   availToggle?.addEventListener('click', () => {
-    if (availOn && !availYielded) { availOn = false; }
-    // A press wins over the editor having pushed the roster aside below md.
-    else {
-      // The other left panel gives up the side, as the viewer does to it.
-      if (viewerEl && !viewerEl.hidden) closeViewer(false);
-      availOn = true; availYielded = false;
-    }
+    availOn = !availOn;
     placeAvailability();
   });
 
@@ -6333,10 +6336,6 @@
   if (noZoom) for (const btn of viewerZooms) btn.hidden = true;
 
 
-  /* One left panel at a time. The roster and the viewer sit on the same side
-     of the board and squeeze the week from it together, and the last one
-     opened is the one rux asked for. */
-  const closeRosterForViewer = () => { if (availOn) { availOn = false; placeAvailability(); } };
   // The zooms Zoom in and Zoom out step through, in percent.
   const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
   let viewerOpener = null;
@@ -6453,9 +6452,10 @@
     // tab has nothing here to follow.
     viewerDocId = null;
     if (viewerEl.hidden) {
-      closeRosterForViewer();
       viewerOpener = opener ?? null;
       viewerEl.hidden = false;
+      // Open now, so the board is measured before it is fit.
+      placeRoom();
       window.Rux?.schedule?.fit?.();
     }
     viewerClose?.focus();
@@ -6482,9 +6482,10 @@
     viewerNewTab.href = url;
     viewerDocId = String(doc.id);
     if (viewerEl.hidden) {
-      closeRosterForViewer();
       viewerOpener = opener ?? null;
       viewerEl.hidden = false;
+      // Open now, so the board is measured before it is fit.
+      placeRoom();
       window.Rux?.schedule?.fit?.();
     }
     viewerClose?.focus();
@@ -6550,6 +6551,8 @@
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     viewerSeq++;
     dropShown();
+    // Shut now, so whatever was behind it comes forward before the fit.
+    placeRoom();
     window.Rux?.schedule?.fit?.();
     /* Focus goes back to what opened the panel. A Files tab row is rebuilt
        whenever the editor redraws, so its row is found again by document id;
@@ -7376,6 +7379,18 @@
     whenSafe(() => openCreate());
   });
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
+  /* Leaving whichever panel is in front of the board, which Escape and a press
+     on the scrim both do. It answers whether there was one, so Escape can go
+     on to what it means with nothing in front. */
+  function leaveFront() {
+    switch (pageEl?.getAttribute('data-takeover')) {
+      case 'viewer': closeViewer(); return true;
+      case 'editor': whenSafe(() => closePanel()); return true;
+      case 'roster': availOn = false; placeAvailability(); availToggle?.focus(); return true;
+      default: return false;
+    }
+  }
+  document.getElementById('scheduler-scrim')?.addEventListener('click', () => leaveFront());
   /* Escape acts where focus is. Inside the itinerary panel it closes that
      panel; inside the editor it closes the editor; on the board it clears a
      selection first. An open dialog or search keeps the key
@@ -7384,6 +7399,10 @@
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
+    /* A panel in front of the board is the only thing on screen, so Escape
+       leaves it wherever focus is: the board behind it is inert and has
+       nothing to take the key for. */
+    if (leaveFront()) { e.preventDefault(); return; }
     if (viewerEl && !viewerEl.hidden && viewerEl.contains(document.activeElement)) {
       e.preventDefault();
       closeViewer();

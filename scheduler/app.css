@@ -661,17 +661,19 @@ button.scheduler-row-head__num::after {
   border: var(--scheduler-region-edge, 0 solid transparent);
   border-radius: var(--scheduler-surface-radius, 0);
 }
-/* The schedule gives way to the panels beside it, but only to a floor: three
-   whole days beside the 33px bus column, since a day will not go under the
-   127px `--scheduler-day-min`, and less than that is not a week worth showing.
-   `--scheduler-room` is what data.js measured as actually free, so the floor is
-   kept wherever it fits and never pushes the board off the page where it does
-   not. Without script the frame shrinks as it always did. */
+/* The schedule gives way to the panels beside it, down to 17rem: the width the
+   tight toolbar below is measured to read at, so the week never goes narrower
+   than its own controls. It spends its days to get there and scrolls to fewer
+   of them; a week that cannot keep even this is one the panels no longer sit
+   beside, and data.js puts the newest of them in front of the board instead.
+   `--scheduler-room` is what data.js measured as actually free, so the minimum
+   is kept wherever it fits and never pushes the board off the page where it
+   does not. Without script the frame shrinks as it always did. */
 .scheduler-frame {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  min-inline-size: min(26rem, var(--scheduler-room, 0px));
+  min-inline-size: min(17rem, var(--scheduler-room, 0px));
 }
 /* The roster: its head, then the grid filling the height app.js gives it. */
 .scheduler-aside { display: flex; flex-direction: column; }
@@ -725,8 +727,9 @@ button.scheduler-row-head__num::after {
 
 /* The itinerary panel's column, left of everything on the board. 30rem matches
    the panel's `rux--side-panel--md` class, and the two move together. Like the
-   editor's column it never shrinks and app.js gives it a definite height;
-   data.js opens it only from 82rem up, where both columns fit. */
+   editor's column it never shrinks and app.js gives it a definite height. A
+   document always opens: where the board cannot hold this column the panel
+   comes in front of it instead, and is never sent to a browser tab. */
 .scheduler-viewer {
   order: -2;
   flex: 0 0 var(--scheduler-viewer-w);
@@ -1611,82 +1614,105 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02);
 }
 
-/* ══ A destination over the board ══════════════════════════════════════════
-   The editor and the viewer float where a readable week does not fit beside
-   them, which `placeRoom` marks on the page. The wrapper gives up its width,
-   as it does below md, and Carbon's own fixed panel comes back with the
-   shadow it casts over what it covers. Below md the block beneath does this
-   for every width, so these rules stop there. */
-@media (min-width: 42rem) {
-  .scheduler-page[data-editor="over"] .scheduler-trip,
-  .scheduler-page[data-viewer="over"] .scheduler-viewer {
-    flex: 0 0 0;
-    min-inline-size: 0;
-    inline-size: 0;
-  }
-  /* The panel itself is Carbon's, so overrides.css floats it. */
+/* ══ A panel in front of the board ═════════════════════════════════════════
+   A panel either sits beside the week or takes the screen; there is no state
+   in between, because a panel drawn over a week that still claims its full
+   width covers the toolbar's controls and the bus column, which are the two
+   things the week cannot be read without. `placeRoom` names the one in front
+   on the page, and it names only ever one.
+
+   In front, a panel is docked to its own side at its own width, under the
+   shell's header and down to the foot of the window, with the scrim below
+   parting it from the board. Its wrapper gives its width up, so the board
+   behind lays out as though the panel had closed and comes back whole the
+   moment it does. Square in the rounded themes too: every corner meets the
+   header or an edge of the window, and a rounded corner wants a page behind
+   it. Below md it fills the width, there being nothing beside it to leave
+   room for. */
+.scheduler-page[data-takeover] .scheduler-trip,
+.scheduler-page[data-takeover] .scheduler-viewer {
+  flex: 0 0 0;
+  min-inline-size: 0;
+  inline-size: 0;
+  block-size: auto;
+}
+/* And the roster leaves the row altogether, having no wrapper to collapse. */
+.scheduler-page[data-takeover]:not([data-takeover="roster"]) .scheduler-aside {
+  display: none;
+}
+/* Those two hold Carbon side panels, which overrides.css brings forward. The
+   roster has no Carbon component under it, so its own rules do the same by
+   hand, to the same place at the same width. */
+.scheduler-page[data-takeover="roster"] .scheduler-aside {
+  position: fixed;
+  inset-block: 3rem 0;
+  inset-inline-start: 0;
+  inline-size: min(var(--scheduler-panel-w), 100%);
+  block-size: auto;
+  flex: 0 0 0;
+  z-index: 1001;
+  display: block;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--rux-layer);
+  border: 0;
+  border-radius: 0;
+}
+/* The head sticks at the top of the panel, above the grid's highest layer, the
+   corner cell at 4, and the day row sticks 48px under it. */
+.scheduler-page[data-takeover="roster"] .scheduler-aside__head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 5;
+  border-radius: 0;
+}
+.scheduler-page[data-takeover="roster"] .scheduler-avail__days > .scheduler-avail__day {
+  inset-block-start: var(--rux-layout-size-height-lg);
+}
+.scheduler-page[data-takeover="roster"] .scheduler-week--avail { max-block-size: none; overflow: visible; }
+/* The names start 16px inside the panel, level with the Driver heading and the
+   panel title, the way Carbon's table cells pad their text. */
+.scheduler-page[data-takeover="roster"] .scheduler-avail__name {
+  padding-inline-start: var(--rux-spacing-05);
+}
+/* Its last row scrolls up past the home bar, as the side panels' content does:
+   padding on the panel, never a spacer inside, because the roster's rows are a
+   grid and a spacer there would take a cell of it. */
+.scheduler-page[data-takeover="roster"] .scheduler-aside {
+  padding-block-end: var(--scheduler-safe-bottom);
+}
+
+/* The dim behind it. Carbon's overlay belongs to its side panel and the roster
+   is not one, so the board's own scrim covers all three: it says the week is
+   set aside rather than there to be read, and a press on it leaves the panel.
+   1000 sits over the board and the docked shortcut bar and under the panel in
+   front at 1001; the shell's header stays above both, as it does on a phone. */
+.scheduler-scrim { display: none; }
+.scheduler-page[data-takeover] .scheduler-scrim {
+  display: block;
+  position: fixed;
+  inset: 3rem 0 0;
+  z-index: 1000;
+  background: var(--rux-overlay);
 }
 
 @media (max-width: 41.98rem) {
-  /* The trip editor floats over the board here (overrides.css restores Carbon's
-     fixed panel below md), so its wrapper gives up its basis and minimum and
-     takes no room. */
-  .scheduler-trip {
+  /* Nothing fits beside a panel here, so whichever is in front fills the width
+     and the others are never laid out beside the week to begin with. */
+  .scheduler-trip,
+  .scheduler-viewer {
     flex: 0 0 0;
     min-inline-size: 0;
     inline-size: 0;
     block-size: auto;
   }
+  .scheduler-page[data-takeover="roster"] .scheduler-aside { inline-size: 100%; }
 
-  /* The roster gets the same treatment by hand, having no Carbon component under
-     it: fixed below the 3rem shell header, full width, over the board. z-index
-     998 is one under the trip panel's 999, so a trip opens in front, and under
-     the shell's header panels. */
-  .scheduler-aside {
-    position: fixed;
-    /* A card on the page's background, 16px in from every edge, so the row
-       lines end at the card's edges. The gap is the inset rather than padding
-       inside, so a theme that outlines its regions draws that outline around
-       the card instead of around the screen. Both sizes are auto for the
-       insets to shape the box, and the shadow fills the rest of the screen
-       with the page's own colour, so the board does not show around the card.
-       The overlay scrolls rather than the grid, so the phone draws its scroll
-       bar inside the card, clear of the squares. Block, because the pane is
-       as tall as its rows. */
-    inset: calc(3rem + var(--rux-spacing-05)) var(--rux-spacing-05)
-           calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
-    inline-size: auto;
-    block-size: auto;
-    z-index: 998;
-    flex: 0 0 0;
-    order: 0;
-    display: block;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    background: var(--rux-background);
-    box-shadow: 0 0 0 100vmax var(--rux-background);
-  }
-  /* The board's last row scrolls up past the home bar the same way. */
+  /* The board's last row scrolls up past the home bar. */
   .scheduler-week:not(.scheduler-week--avail)::after {
     content: "";
     display: block;
     block-size: var(--scheduler-safe-bottom);
-  }
-  /* The head sticks at the top of the card, above the grid's highest layer,
-     the corner cell at 4, and the day row sticks 48px under it. */
-  .scheduler-aside__head {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 5;
-  }
-  .scheduler-aside .scheduler-avail__days > .scheduler-avail__day {
-    inset-block-start: var(--rux-layout-size-height-lg);
-  }
-  .scheduler-aside .scheduler-week--avail { max-block-size: none; overflow: visible; }
-  /* The names start 16px inside the card, level with the Driver heading and
-     the panel title, the way Carbon's table cells pad their text. */
-  .scheduler-aside .scheduler-avail__name {
-    padding-inline-start: var(--rux-spacing-05);
   }
 
   /* The toolbar's `Today` button gives way to its menu row. */
@@ -1723,17 +1749,13 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 
-/* The page holds still under a full-screen panel. Below md the trip editor and
-   the roster each cover the board, and a drag that reaches past the end of a
-   panel's list, or starts on its header, would otherwise scroll or bounce the
-   page behind it. The lock is on the root, where the page's own scroll lives;
-   the panels scroll inside themselves and are untouched. Read from `[hidden]`,
-   like the toast rule above, so nothing in data.js has to keep it in sync. */
-@media (max-width: 41.98rem) {
-  html:has(#scheduler-panel:not([hidden])),
-  html:has(#scheduler-aside:not([hidden])) {
-    overflow: hidden;
-  }
+/* The page holds still behind a panel in front of the board. A drag that
+   reaches past the end of that panel's list, or starts on its header, would
+   otherwise scroll or bounce the board behind it, which is set aside. The lock
+   is on the root, where the page's own scroll lives; the panel scrolls inside
+   itself and is untouched. */
+html:has(.scheduler-page[data-takeover]) {
+  overflow: hidden;
 }
 
 /* ── Header search ──────────────────────────────────────────────────────────

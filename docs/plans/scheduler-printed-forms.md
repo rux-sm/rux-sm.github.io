@@ -93,8 +93,9 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   `itinFrame.contentWindow.print()`, which prints the frame's own document
   under the frame's own `@page` — which is why the panel fetches PDFs into a
   blob of this origin in the first place. The board around it is untouched.
-- **Below 82rem it opens in a new tab,** the rule the panel already applies to
-  a PDF, and the same rule the phone will want.
+- **It always opens in the panel,** as a PDF does, at every width: where the
+  board cannot hold the panel beside the week the panel comes in front of the
+  board, so there is no width at which a form is sent to a browser tab.
 - **Zoom and Download are hidden for a generated form.** The zooms send
   `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is fluid
   instead; there is no file to download, and the print dialog saves a PDF.

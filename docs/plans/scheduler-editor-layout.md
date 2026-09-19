@@ -30,7 +30,9 @@ and reads right on real trips in every theme.
   fit the 20rem panel.
 - **The editor stays a column beside the board on every tab,** with its tabs,
   though Carbon's pattern discourages tabs in a side-panel form: the week stays
-  in sight while a trip is edited.
+  in sight while a trip is edited wherever the board can hold both. Where it
+  cannot, the editor comes in front of the board instead of squeezing the week
+  past reading, which `scheduler-panel-placement.md` decides.
 - **The destructive action says what it does.** The action bar's first button
   is "Cancel trip", a danger ghost button; the close button leaves the editor.
 

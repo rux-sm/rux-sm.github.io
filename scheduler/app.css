@@ -1611,6 +1611,40 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02);
 }
 
+/* ══ A destination over the board ══════════════════════════════════════════
+   The editor and the viewer float where a readable week does not fit beside
+   them, which `placeRoom` marks on the page. The wrapper gives up its width,
+   as it does below md, and Carbon's own fixed panel comes back with the
+   shadow it casts over what it covers. Below md the block beneath does this
+   for every width, so these rules stop there. */
+@media (min-width: 42rem) {
+  .scheduler-page[data-editor="over"] .scheduler-trip,
+  .scheduler-page[data-viewer="over"] .scheduler-viewer {
+    flex: 0 0 0;
+    min-inline-size: 0;
+    inline-size: 0;
+  }
+  /* Carbon's two-class specificity, to beat the `position: static` that
+     overrides.css gives a panel laid out beside the board. */
+  .scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel,
+  .scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
+    position: fixed;
+    /* Under the shell's 3rem header and down to the foot of the window. */
+    inset-block: 3rem 0;
+    block-size: auto;
+    z-index: 999;
+    box-shadow: 0 2px 8px rgb(0 0 0 / .4);
+  }
+  .scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel {
+    inset-inline-end: 0;
+    inline-size: var(--scheduler-panel-w);
+  }
+  .scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
+    inset-inline-start: 0;
+    inline-size: var(--scheduler-viewer-w);
+  }
+}
+
 @media (max-width: 41.98rem) {
   /* The trip editor floats over the board here (overrides.css restores Carbon's
      fixed panel below md), so its wrapper gives up its basis and minimum and

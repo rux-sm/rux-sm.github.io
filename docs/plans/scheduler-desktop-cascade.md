@@ -6,103 +6,53 @@ type: plan
 
 ## Goal
 
-Dragging a desktop window narrower never takes a panel away. The panels rux
-opened stay open; what gives way is the room the schedule spends on each day,
-in one order, until nothing is left to give.
+Dragging a desktop window narrower never takes a panel away and never refuses
+to open one. What gives way is the room the schedule spends on each day, and
+where a panel can no longer sit beside the week it floats over the board
+instead.
 
 ## Decisions
 
-### What the pieces cost
+### Two kinds of panel
 
-Measured in `scheduler/app.css` and `data.js`, at 16px to the rem:
+The three panels are not the same kind of thing, and the behaviour follows
+from what each is for.
 
-| | Width |
-| :--- | :--- |
-| Document viewer | 30rem, and `min-inline-size` holds it there |
-| Roster | 20rem |
-| Trip editor | 20rem |
-| Schedule's floor, `SCHEDULE_FLOOR` | 26rem — three readable days |
-| Schedule compact | about 20rem — seven day slots and the bus column |
+**The roster is a companion.** "Who is free on Thursday" is a question about
+the list and the week at once, so it is only useful beside the week. It stays
+there, and the week spends its days to keep it: below the floor the week goes
+compact rather than the roster going anywhere.
 
-With one left panel, the widest case, nothing has to give above 76rem.
+**The editor and the viewer are destinations.** While a form is being filled
+in or a document read, the week is context rather than something read beside
+it. Each sits beside the week while a readable week fits next to it, and
+floats over the board where it does not, at its own width and docked to its
+own side. The editor is asked first, being the one worked in while documents
+come and go.
 
-### What happens today, and what is wrong with it
+**One left panel at a time.** The roster and the viewer sit on the same side
+and squeeze the week from it together, for a pairing rarely read at once, so
+opening either closes the other.
 
-- **The viewer closes itself under 82rem.** `viewerWide` is a media query and
-  its `change` listener calls `closeViewer`. The document rux was reading is
-  gone, and reopening it is a trip back through the trip's Files.
-- **The roster steps aside next.** `placeRoom` prices the roster and sets
-  `availCramped` when the schedule cannot keep its floor with it there.
-- **Then the board goes compact.** Only after the roster has gone.
+### Nothing closes itself
 
-Both of the first two take a panel away to keep the days wide, which is the
-wrong way round: the days are what the schedule can spend, and a panel is
-something rux asked for.
+No panel is taken away by a window that narrowed, and none is refused because
+a window is small: a document always opens in the panel rather than a browser
+tab. The only widths that matter are the one that decides beside or over, and
+the one that compacts the week.
 
-### One left panel at a time
+### The widths that decide it
 
-The roster and the viewer both sit left of the board, and opening either
-closes the other. Two of them there squeeze the week from both sides for a
-pairing that is rarely read together, and with one the app never has to choose
-between them as the window narrows -- rux chose, by opening the last one.
+Measured in `scheduler/app.css`, at 16px to the rem: a side panel is 20rem,
+the viewer 30rem because its width is the document's zoom, and the week's
+readable floor is 26rem. `placeRoom` prices the panels from those tokens
+rather than from the panels themselves, because a floating panel gives its
+width up and pricing it by what it takes would unmake the decision that
+floated it.
 
-So the widest case is one left panel, the board and the editor.
-
-### The order it should give way in
-
-The schedule takes what the panels leave, and gives way in this order:
-
-1. **The board goes compact,** as it already does below `SCHEDULE_FLOOR`: all
-   seven days as square blocks rather than three readable ones.
-2. **The left panel closes,** where a compact week no longer fits beside it and
-   the editor. The editor is never the one that closes: it holds unsaved work
-   and it is what the board is being read beside. The week takes the freed
-   room back and reads in full again until the window narrows through the
-   same step without it.
-3. **The overlays take over** where a compact week and one 20rem panel no
-   longer sit side by side, which is 40rem. Carbon's md is 42rem and the
-   layout already turns there, within 32px of the same answer, so md stays the
-   switch and the arithmetic is its reason rather than a second figure.
-
-The roster does not step aside to keep the days wide, as it does now. Below md
-it still steps aside, where it is a full-width overlay and would cover the
-editor.
-
-### The viewer keeps its 30rem
-
-A document is fitted to the panel's width, so the width is the zoom. A letter
-page is 612pt across: at 30rem it renders 11pt text at 8.6px, at 25rem at
-7.2px and at 20rem at 5.8px, which is smaller than anything else in the app.
-Narrowing the panel the document is being read in defeats the reason it is
-open, so the schedule gives way first and the panel keeps its width until it
-closes.
-
-### What that costs in window
-
-Three readable days need 76rem with the viewer open and 66rem with the roster,
-rather than today's 96rem for all three.
-
-### A panel the window closed
-
-The roster comes back when the window widens, because `availOn` holds what was
-asked for. The viewer does not: the document may no longer be the one in hand,
-so it stays shut until it is asked for again.
-
-### Opening is gated where closing is
-
-A panel is refused at the width that would close it, so a press never draws
-something the next reflow takes away. The viewer's `viewerWide` figure moves
-from 82rem to that width.
-
-### What does not change
-
-- **Compact is still the board's state, never a preference.** `placeRoom`
-  writes `data-board`, and the row choices in `scheduler.view` come back
-  untouched when the board widens.
-- **Below md is untouched.** The phone's cascade is the compact board plan's,
-  and the roster and editor are overlays there.
-- **The viewer still needs room to open.** A first press with no room to draw
-  it is refused; that is not the same as closing one already open.
+So with one panel beside it the week stays readable to 47rem of board, and
+under that the panel floats or, for the roster, the week goes compact. Below
+md the phone's own cascade takes over, where every panel is an overlay.
 
 ## Questions
 
@@ -110,8 +60,8 @@ None open.
 
 ## Tasks
 
-- [ ] Read a week at each step, with the viewer open and with the roster open,
-      in geist and g100.
+- [ ] Read a week with the roster open and the window dragged narrow, and
+      again with a document open, in geist and g100.
 - [ ] Press Drivers with a document open and see the viewer give up the side;
       the browser this was built through could not be driven far enough to
       show it.

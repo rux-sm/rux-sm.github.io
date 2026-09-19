@@ -5055,7 +5055,6 @@
   /* The second reason the roster steps aside: the board is too narrow for the
      schedule to keep its floor beside the panels open. Its own flag, because
      the reason is a width rather than an overlap, and `placeRoom` owns it. */
-  let availCramped = false;
   let availRows = [];
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
@@ -5466,9 +5465,6 @@
      The floor is 26rem, which app.css states and gives the reason for, and a
      toolbar under 21rem is one `Today` will not fit in beside its week. */
   const SCHEDULE_FLOOR = 26;
-  /* The compact week's own width: seven single slots and the bus column. Under
-     it the left panel closes, because not even seven blocks fit beside it. */
-  const COMPACT_FLOOR = 20;
   const TOOLBAR_TIGHT = 21;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
@@ -5477,59 +5473,56 @@
      a board too narrow for it keeps it until the next resize. */
   let roomKey = null;
 
-  /* What a panel takes from the schedule: its own width and the gap. A panel
-     the stylesheet floats over the board rather than laying it out beside the
-     schedule, as it does below md, costs nothing. A closed panel still answers
-     with the width it would take, which is what the viewer's gate asks. */
-  const panelCost = el => {
-    if (!el || !boardEl) return 0;
-    const style = getComputedStyle(el);
-    if (style.position === 'fixed') return 0;
-    const width = parseFloat(style.flexBasis) || 0;
-    return width ? width + (parseFloat(getComputedStyle(boardEl).columnGap) || 0) : 0;
+  /* A panel's width, from the token app.css lays it out with rather than from
+     the panel itself. A panel that floats gives its width up, so pricing it by
+     what it takes right now would unmake the decision that floated it and the
+     two would flip back and forth. */
+  const panelWidth = name => {
+    const root = getComputedStyle(document.documentElement);
+    const raw = root.getPropertyValue(name).trim();
+    const n = parseFloat(raw);
+    if (!Number.isFinite(n)) return 0;
+    return raw.endsWith('rem') ? n * (parseFloat(root.fontSize) || 16) : n;
   };
 
   function placeRoom() {
-    if (!boardEl || !frameEl || !pageEl) return false;
+    if (!boardEl || !frameEl || !pageEl) return;
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     const board = boardEl.getBoundingClientRect().width;
     // Nothing to measure while the board is hidden, as it is behind a notice.
-    if (!board) return false;
-    const cost = panelCost;
-    const editor = tripEl?.hidden ? 0 : cost(tripEl);
-    const itinerary = viewerEl?.hidden ? 0 : cost(viewerEl);
-    /* The roster's cost whether or not it is on screen, since that is what is
+    if (!board) return;
+    /* Below md every panel floats over the board and none of them costs the
+       schedule anything; the phone's own cascade takes over there. */
+    const overlay = matchMedia('(max-width: 41.98rem)').matches;
+    const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
+    const price = name => overlay ? 0 : panelWidth(name) + gap;
+    const editor = tripEl?.hidden ? 0 : price('--scheduler-panel-w');
+    const itinerary = viewerEl?.hidden ? 0 : price('--scheduler-viewer-w');
+    /* The roster's width whether or not it is on screen, since that is what is
        being decided; asking `hidden` would answer nothing every time. */
-    const roster = cost(asideSlot);
+    const roster = price('--scheduler-panel-w');
 
-    /* A panel is what rux asked for and the days are what the schedule can
-       spend, so the schedule gives way first: the week goes compact below,
-       and only under the compact floor does the left panel close. One left
-       panel is open at a time, so this decides for whichever it is.
+    /* Nothing here takes a panel away. The roster is the week's companion --
+       "who is free on Thursday" is a question about both at once -- so it
+       stays beside the week and the week spends its days to keep it.
 
-       The roster comes back when the window widens, because `availOn` still
-       holds what was asked for. The viewer does not: the document may no
-       longer be the one in hand, so it closes for good. */
-    const key = `${Math.round(board)} ${editor} ${itinerary}`;
-    let changed = false;
-    if (key !== roomKey) {
-      roomKey = key;
-      /* A roster that costs nothing cannot be what is given up, which is the
-         case below md, where it floats over the board and the board itself may
-         be narrower than the floor. */
-      const cramped = roster > 0 && board - editor - roster < COMPACT_FLOOR * rem;
-      changed = cramped !== availCramped;
-      availCramped = cramped;
-      if (itinerary > 0 && board - editor - itinerary < COMPACT_FLOOR * rem) closeViewer(false);
-    }
-
-    /* What the schedule is actually left, which app.css caps its floor by, so
-       the floor is never asked for where it would push the board off the page.
-       The roster is priced by the decision just made rather than by what is on
-       screen, which `placeAvailability` has not applied yet: the stale `hidden`
-       would charge the schedule for a roster that is already leaving. */
-    const rosterShown = availOn && !availYielded && !availCramped;
-    const room = board - editor - itinerary - (rosterShown ? roster : 0);
+       The editor and the viewer are destinations: while a form is being
+       filled in or a document read, the week is context rather than
+       something read beside it. Each sits beside the week while a readable
+       week fits next to it, and floats over the board where it does not, so
+       neither the week nor the panel is ever squeezed past use. The editor
+       is asked first, being the one worked in while documents come and go. */
+    const rosterShown = availOn && !availYielded;
+    let left = board - (rosterShown ? roster : 0);
+    const over = (el, width, name) => {
+      if (!el || el.hidden || !width) { pageEl.removeAttribute(name); return 0; }
+      if (left - width >= SCHEDULE_FLOOR * rem) { pageEl.removeAttribute(name); left -= width; return width; }
+      pageEl.setAttribute(name, 'over');
+      return 0;
+    };
+    const editorBeside = over(tripEl, editor, 'data-editor');
+    const viewerBeside = over(viewerEl, itinerary, 'data-viewer');
+    const room = board - editorBeside - viewerBeside - (rosterShown ? roster : 0);
     frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
     // Under the tight width `Today` gives way to its menu row, in app.css.
 
@@ -5541,7 +5534,6 @@
        compact rather than scrolling sideways to about two. */
     if (room < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
-    return changed;
   }
 
   /* The three inputs are watched, never the schedule: the board, whose width
@@ -5550,7 +5542,7 @@
      floor the rule writes, so it reports no change once the floor binds and
      watching it would leave the floor stale. */
   if (boardEl && 'ResizeObserver' in window) {
-    const watch = new ResizeObserver(() => { if (placeRoom()) placeAvailability(); });
+    const watch = new ResizeObserver(() => { placeRoom(); });
     watch.observe(boardEl);
     /* The panels by id, as app.js takes them, because the itinerary's own
        handle is declared further down and this runs while the page is still
@@ -5564,7 +5556,7 @@
   function placeAvailability() {
     /* The toggle reports what is on screen, not `availOn`, so a yielded roster
        does not leave a pressed button with nothing behind it. */
-    const shown = availOn && !availYielded && !availCramped;
+    const shown = availOn && !availYielded;
     if (asideSlot) {
       asideSlot.hidden = !shown;
       if (shown) asideSlot.appendChild(availEl);
@@ -5583,14 +5575,12 @@
      the roster and clears both reasons it stepped aside; on screen, it hides
      it. */
   availToggle?.addEventListener('click', () => {
-    if (availOn && !availYielded && !availCramped) { availOn = false; }
-    /* A press wins over both reasons the roster stepped aside, including a
-       board too narrow for it: the schedule then goes under its floor until the
-       next resize, which is what `roomKey` holds the decision for. */
+    if (availOn && !availYielded) { availOn = false; }
+    // A press wins over the editor having pushed the roster aside below md.
     else {
       // The other left panel gives up the side, as the viewer does to it.
       if (viewerEl && !viewerEl.hidden) closeViewer(false);
-      availOn = true; availYielded = false; availCramped = false;
+      availOn = true; availYielded = false;
     }
     placeAvailability();
   });
@@ -6341,18 +6331,6 @@
   const noZoom = navigator.vendor === 'Apple Computer, Inc.';
   if (noZoom) for (const btn of viewerZooms) btn.hidden = true;
 
-  /* The panel opens where it would not immediately close: the board, less the
-     editor and the panel itself, still holding a compact week. A press with
-     no room opens the document in a tab instead, which is the whole reason
-     this is asked before the panel is drawn rather than after. */
-  const viewerFits = () => {
-    if (!boardEl || !viewerEl) return false;
-    const board = boardEl.getBoundingClientRect().width;
-    if (!board) return false;
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const editor = tripEl?.hidden ? 0 : panelCost(tripEl);
-    return board - editor - panelCost(viewerEl) >= COMPACT_FLOOR * rem;
-  };
 
   /* One left panel at a time. The roster and the viewer sit on the same side
      of the board and squeeze the week from it together, and the last one
@@ -6461,7 +6439,7 @@
      this site is already this origin, which is the whole reason a PDF is
      fetched into one -- so the panel may print what it frames. */
   function openGenerated({ url, kind, note, opener }) {
-    if (!viewerEl || (viewerEl.hidden && !viewerFits())) {
+    if (!viewerEl) {
       window.open(url, '_blank', 'noopener');
       return;
     }
@@ -6489,7 +6467,7 @@
     setViewerMode('file');
     const url = client && doc.file_path
       ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
-    if (!viewerEl || !url || (viewerEl.hidden && !viewerFits())) {
+    if (!viewerEl || !url) {
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }

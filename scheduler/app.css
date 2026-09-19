@@ -1642,12 +1642,15 @@ button.scheduler-row-head__num::after {
 }
 /* Those two hold Carbon side panels, which overrides.css brings forward. The
    roster has no Carbon component under it, so its own rules do the same by
-   hand, to the same place at the same width. */
+   hand, to the same card in the same place. It keeps the edge and the corners
+   `.scheduler-aside` already gives it, because inset from the window they have
+   a page behind them again. */
 .scheduler-page[data-takeover="roster"] .scheduler-aside {
   position: fixed;
-  inset-block: 3rem 0;
-  inset-inline-start: 0;
-  inline-size: min(var(--scheduler-panel-w), 100%);
+  inset-block: calc(3rem + var(--rux-spacing-05))
+               calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+  inset-inline: var(--rux-spacing-05) auto;
+  inline-size: min(var(--scheduler-panel-w), calc(100% - 2 * var(--rux-spacing-05)));
   block-size: auto;
   flex: 0 0 0;
   z-index: 1001;
@@ -1655,16 +1658,14 @@ button.scheduler-row-head__num::after {
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--rux-layer);
-  border: 0;
-  border-radius: 0;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .4);
 }
-/* The head sticks at the top of the panel, above the grid's highest layer, the
+/* The head sticks at the top of the card, above the grid's highest layer, the
    corner cell at 4, and the day row sticks 48px under it. */
 .scheduler-page[data-takeover="roster"] .scheduler-aside__head {
   position: sticky;
   inset-block-start: 0;
   z-index: 5;
-  border-radius: 0;
 }
 .scheduler-page[data-takeover="roster"] .scheduler-avail__days > .scheduler-avail__day {
   inset-block-start: var(--rux-layout-size-height-lg);
@@ -1674,12 +1675,6 @@ button.scheduler-row-head__num::after {
    panel title, the way Carbon's table cells pad their text. */
 .scheduler-page[data-takeover="roster"] .scheduler-avail__name {
   padding-inline-start: var(--rux-spacing-05);
-}
-/* Its last row scrolls up past the home bar, as the side panels' content does:
-   padding on the panel, never a spacer inside, because the roster's rows are a
-   grid and a spacer there would take a cell of it. */
-.scheduler-page[data-takeover="roster"] .scheduler-aside {
-  padding-block-end: var(--scheduler-safe-bottom);
 }
 
 /* The dim behind it. Carbon's overlay belongs to its side panel and the roster
@@ -1697,8 +1692,8 @@ button.scheduler-row-head__num::after {
 }
 
 @media (max-width: 41.98rem) {
-  /* Nothing fits beside a panel here, so whichever is in front fills the width
-     and the others are never laid out beside the week to begin with. */
+  /* Nothing is laid out beside the week here, so both wrappers give up their
+     width whether or not their panel is the one in front. */
   .scheduler-trip,
   .scheduler-viewer {
     flex: 0 0 0;
@@ -1706,7 +1701,6 @@ button.scheduler-row-head__num::after {
     inline-size: 0;
     block-size: auto;
   }
-  .scheduler-page[data-takeover="roster"] .scheduler-aside { inline-size: 100%; }
 
   /* The board's last row scrolls up past the home bar. */
   .scheduler-week:not(.scheduler-week--avail)::after {

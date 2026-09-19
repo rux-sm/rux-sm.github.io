@@ -1531,13 +1531,15 @@ button.scheduler-row-head__num::after {
 }
 
 /* The foot of the board clears the docked sheet, which stands over it. The
-   spacer is the pane's own scroll height, so the last bus scrolls out from
-   under the sheet rather than being stuck behind it. data.js measures the
-   sheet, because how tall it is depends on the rows the view is drawing. */
+   spacer is the sheet's own height and nothing else, so the last bus scrolls
+   out from under it and no empty strip is drawn where there is no sheet. The
+   home bar is not this spacer's to clear: the page's own foot padding keeps
+   the whole board above it. data.js measures the sheet, because how tall it is
+   depends on the rows the view is drawing. */
 .scheduler-page[data-board="compact"] .scheduler-week:not(.scheduler-week--avail)::after {
   content: "";
   display: block;
-  block-size: calc(var(--scheduler-docked-h, 0px) + var(--scheduler-safe-bottom));
+  block-size: var(--scheduler-docked-h, 0px);
 }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────
@@ -1700,13 +1702,6 @@ button.scheduler-row-head__num::after {
     min-inline-size: 0;
     inline-size: 0;
     block-size: auto;
-  }
-
-  /* The board's last row scrolls up past the home bar. */
-  .scheduler-week:not(.scheduler-week--avail)::after {
-    content: "";
-    display: block;
-    block-size: var(--scheduler-safe-bottom);
   }
 
   /* The toolbar's `Today` button gives way to its menu row. */

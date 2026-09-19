@@ -406,6 +406,10 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 @media (max-width: 41.98rem) {
   .rux--content {
     padding: 0;
+    /* Except at the foot, where the home bar lies over the page. `fitHeight`
+       reads this padding for the grid's height, so the board stops above the
+       bar rather than running its last row underneath it. */
+    padding-block-end: var(--scheduler-safe-bottom);
   }
 }
 

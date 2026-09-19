@@ -22,18 +22,22 @@ without. So there are two states and nothing between them.
 **Beside.** The panel is a column in the board and the week spends its days to
 make room, scrolling to fewer of them.
 
-**In front.** The panel is docked to its own side at its own width, under the
-shell's header, with the board dimmed behind it: not reachable by a click or a
-Tab, and not pretending to be. Escape, the panel's close button and a press on
-the dim all leave it.
+**In front.** The panel is a card over the board: 16px in from the header and
+from every edge, so its corners have a page behind them and keep the curve and
+the edge its theme gives them, and so the board it covers still shows around
+it. It takes its own width where that fits inside the inset and what the inset
+leaves where it does not, so only the schedule ever fills the board's width.
+The board behind is dimmed, and is not reachable by a click or a Tab: what is
+on screen and what can be reached are the same thing. Escape, the panel's close
+button and a press on the dim all leave it.
 
 ### One sum decides it
 
 The week's minimum plus every open panel is what the board is asked for. While
 the board holds that, every panel is beside the week. Past it the newest panel
-goes in front, and only ever one: the rest stay laid out beside the week behind
-it, so closing the one in front puts the board back exactly as it was rather
-than starting a cascade.
+goes in front, and only ever one: behind it the board is the week alone, the
+others still open and simply not drawn, so closing the one in front puts the
+board back exactly as it was rather than starting a cascade.
 
 Nothing closes itself and nothing is refused. What a narrowing window changes is
 only which panel is in front.
@@ -65,8 +69,5 @@ None open.
 - [ ] Read a week with each of the three panels in front in g100, where the
       card has no edge and no corner of its own and the dim is all that parts
       it from the board. Geist reads right already.
-- [ ] Open a trip, then a document, on a window around 1000px: the document
-      takes the front and the editor waits beside the week. Close it and the
-      board comes back whole.
 - [ ] Press Drivers with a trip open on a narrow window, and leave the roster
       by Escape, by its close button and by pressing the dim.

@@ -1624,29 +1624,7 @@ button.scheduler-row-head__num::after {
     min-inline-size: 0;
     inline-size: 0;
   }
-  /* Carbon's two-class specificity, to beat the `position: static` that
-     overrides.css gives a panel laid out beside the board. */
-  .scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel,
-  .scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
-    position: fixed;
-    /* Under the shell's 3rem header and down to the foot of the window. */
-    inset-block: 3rem 0;
-    block-size: auto;
-    z-index: 999;
-    box-shadow: 0 2px 8px rgb(0 0 0 / .4);
-    /* Square, in the rounded themes too: every corner here meets the header
-       or an edge of the window, and a corner wants a page behind it. The
-       shadow is what parts the panel from the board it covers. */
-    border-radius: 0;
-  }
-  .scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel {
-    inset-inline-end: 0;
-    inline-size: var(--scheduler-panel-w);
-  }
-  .scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
-    inset-inline-start: 0;
-    inline-size: var(--scheduler-viewer-w);
-  }
+  /* The panel itself is Carbon's, so overrides.css floats it. */
 }
 
 @media (max-width: 41.98rem) {

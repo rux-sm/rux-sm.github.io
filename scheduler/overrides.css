@@ -97,6 +97,41 @@
 }
 }
 
+/* ── A panel floating over the board ──
+   Where a readable week does not fit beside it, app.css marks the page and
+   the wrapper gives up its width; the panel itself comes back to the fixed,
+   shadowed box Carbon draws below md, at its own width and docked to its own
+   side. Carbon's two-class specificity, and then some, to beat the
+   `position: static` a panel laid out beside the board is given above. */
+@media (min-width: 42rem) {
+.scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel,
+.scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
+  position: fixed;
+  /* Under the shell's 3rem header and down to the foot of the window. */
+  inset-block: 3rem 0;
+  block-size: auto;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .4);
+  /* Square, in the rounded themes too: every corner meets the header or an
+     edge of the window, and a corner wants a page behind it. */
+  border-radius: 0;
+  /* And only the edge facing the board keeps its rule, for the same reason:
+     the other three have nothing on the far side of them. A theme that draws
+     no border on a panel is unchanged, having none to drop. */
+  border-block: 0;
+}
+.scheduler-page[data-editor="over"] .scheduler-trip .rux--side-panel {
+  inset-inline-end: 0;
+  inline-size: var(--scheduler-panel-w);
+  border-inline-end: 0;
+}
+.scheduler-page[data-viewer="over"] .scheduler-viewer .rux--side-panel {
+  inset-inline-start: 0;
+  inline-size: var(--scheduler-viewer-w);
+  border-inline-start: 0;
+}
+}
+
 /* On a phone the panel fills the screen. `--rux-side-panel-modified-size` is
    Carbon's hook for the `--sm` width, which would otherwise leave a narrow
    strip of board beside the panel. */

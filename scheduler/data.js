@@ -684,7 +684,11 @@
          nothing: its width, less the gap each of those still takes, less the
          leg reference, which is `flex: none` and so gives way to nothing. */
       const ref = row.querySelector('.scheduler-bar__ref');
-      const room = row.clientWidth - [...row.children].indexOf(box) * rowGap
+      /* And less what the box holds clear at its end, which is app.css keeping
+         the marks inside the trip's first day and differs with the bar's span.
+         It is read per box for that reason, not once from the probe. */
+      const kept = parseFloat(getComputedStyle(box).marginInlineEnd) || 0;
+      const room = row.clientWidth - kept - [...row.children].indexOf(box) * rowGap
         - (ref ? ref.getBoundingClientRect().width : 0);
       const total = box.children.length - 1;
       const fits = Math.floor((room + gap) / (chipW + gap));

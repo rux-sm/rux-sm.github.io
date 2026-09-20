@@ -277,7 +277,7 @@
   --rux-text-helper: #888888;
   --rux-text-inverse: #000000;
   --rux-text-on-color: #000000;
-  --rux-text-on-color-disabled: rgba(0, 0, 0, 0.4);
+  --rux-text-on-color-disabled: #8f8f8f;
   --rux-text-placeholder: rgba(237, 237, 237, 0.4);
   --rux-text-primary: #ededed;
   --rux-text-secondary: #a1a1a1;
@@ -366,15 +366,23 @@
   --rux-button-tertiary: #ededed;
   --rux-button-tertiary-hover: #d4d4d4;
   --rux-button-tertiary-active: #a1a1a1;
-  --rux-button-secondary: #333333;
-  --rux-button-secondary-hover: #3f3f3f;
-  --rux-button-secondary-active: #525252;
+  /* GEIST'S SECONDARY IS AN OUTLINE, NOT A FILL: measured on its Button page
+     as the page's own #0a0a0a behind a 1px ring, where Carbon's is a grey
+     block. The ring and the label are in rux-overrides.css, because Carbon
+     writes both straight onto the class. */
+  --rux-button-secondary: #0a0a0a;
+  --rux-button-secondary-hover: #1a1a1a;
+  --rux-button-secondary-active: #2e2e2e;
   --rux-button-danger-primary: #e5484d;
   --rux-button-danger-secondary: #e5484d;
   --rux-button-danger-hover: #cd2b31;
   --rux-button-danger-active: #702326;
   --rux-button-separator: #000000;
-  --rux-button-disabled: rgba(237, 237, 237, 0.25);
+  /* One disabled look for every kind, Geist's: a #1a1a1a block with a grey
+     label. Carbon's translucent light fill turns a dark button into a pale
+     block, and the label it pairs with it is black at 40%, which on that block
+     is unreadable -- the editor's Reset was the report. */
+  --rux-button-disabled: #1a1a1a;
 
   /* tag (component tokens — Carbon's own dark set, see header) */
   --rux-tag-background-red: #a2191f;

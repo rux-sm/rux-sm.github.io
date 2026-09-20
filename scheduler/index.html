@@ -531,11 +531,14 @@
       <!-- The action bar, least to most committing: Cancel trip, Reset, Save.
            The row-double and md classes give each button a flex basis of 50%,
            so three share the bar in even thirds, and two share it in halves
-           when Cancel trip is hidden for a new trip. Cancel trip only opens
-           #scheduler-cancel-modal, and names the trip because the close button
-           is what leaves the editor; Reset drops unsaved edits. -->
+           when Cancel trip is hidden for a new trip; geist-dark ends the bar
+           instead and gives each its own width. Cancel trip is filled rather
+           than a ghost, because a red word beside two buttons reads as a label
+           on them; it only opens #scheduler-cancel-modal, and names the trip
+           because the close button is what leaves the editor; Reset drops
+           unsaved edits. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--danger--ghost" id="scheduler-panel-cancel">Cancel trip</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--danger" id="scheduler-panel-cancel">Cancel trip</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
       </div>

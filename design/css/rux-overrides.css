@@ -203,6 +203,30 @@
   color: var(--rux-text-primary, #161616);
 }
 
+/* A FILLED BUTTON'S LABEL IS DARK ONLY WHERE THE FILL IS THE BRAND'S. Carbon
+   gives every filled button `text-on-color`, which this theme sets to black
+   because its brand colour -- the primary button, the badge, the batch bar,
+   the picked date -- is a light one. The two fills that are not: the secondary
+   button, which Geist draws as the page behind a ring, and the danger button,
+   whose red Geist labels in white. Each takes the theme's own light text here
+   rather than the token moving, because moving it would blacken nothing and
+   whiten four things that are right. */
+[data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
+[data-theme="geist-dark"] .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
+[data-theme="geist-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled),
+[data-theme="geist-dark"] .rux--btn--danger:not(:disabled):not(.rux--btn--disabled),
+[data-theme="geist-dark"] .rux--btn--danger:hover:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary, #161616);
+}
+/* The ring that makes the outline. Carbon already draws a 1px border on the
+   secondary button and leaves it transparent, so only its colour is named.
+   Disabled is excluded from both, as it is for the ghost above: Carbon's
+   disabled rule names one class and would lose to these, leaving a button that
+   cannot be pressed looking like one that can. */
+[data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
+  border-color: var(--rux-border-subtle-02, #e0e0e0);
+}
+
 /* The option at each end of a list takes the menu's curve. A selected or
    highlighted row paints its own background across the full width, and a
    square one shows in the rounded menu's corners -- most visible on a search

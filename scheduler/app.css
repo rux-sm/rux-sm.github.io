@@ -1651,9 +1651,9 @@ button.scheduler-row-head__num::after {
 .scheduler-page[data-room="tight"] .scheduler-toolbar__lg-only { display: none; }
 /* On the compact board a swipe changes the week, so the two chevrons come off
    and `Today` takes their place: a gesture replaces a step, and nothing
-   replaces a jump home. All three are icon-only at the same 40px, so the swap
-   costs the toolbar nothing. `Today` then sits in one place rather than two,
-   and the menu row that stood in for it goes. */
+   replaces a jump home. The two chevrons are 40px each and the `Today` button
+   71px, so the swap hands the week label back 9px. `Today` then sits in one
+   place rather than two, and the menu row that stood in for it goes. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
 body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { display: none; }
 /* In the same state the week's own button gives up two steps of inset, which

@@ -39,13 +39,9 @@
   --scheduler-band-surface: var(--rux-layer);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   /* The same line around each region, so the schedule and the roster are told
-     apart the way the trip panel beside them already is. */
+     apart the way the trip panel beside them already is. It is drawn at every
+     width, the page keeping 16px around the board throughout. */
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
-  /* That edge closes a region's list, so the last row of the board and of the
-     roster draws no rule of its own and the two lines do not stack. It is
-     drawn at every width, the page keeping 16px around the board throughout,
-     so no state hands the rule back. */
-  --scheduler-last-rule: 0;
 }
 /* Design draws a box around every side panel in this theme, and overrides.css
    takes one side off a left-placed one -- Carbon's own edge, which parts a
@@ -68,4 +64,8 @@
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;
+  /* A rounded region closes its own list, so the last row of the board and of
+     the roster draws no rule: a straight line laid across a 12px corner is cut
+     short at both ends. */
+  --scheduler-last-rule: 0;
 }

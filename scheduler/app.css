@@ -1506,66 +1506,30 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-docked-h, 0px);
 }
 
-/* ── The week sliding in ────────────────────────────────────────────────────
-   A drag on the compact board carries the week with it and brings the next one
-   in beside it. The week either side is already in hand, so what slides in is
-   the real one; `render` draws it into a spare grid and touches nothing else.
-
-   The spare is laid over the pane's own box rather than beside the grid in
-   flow, so the grid's width and the pane's height are untouched and there is
-   no wrapper between the two. An absolutely placed child of a scroll pane
-   scrolls with its content, so the two weeks stay level as the board scrolls.
-
-   Both are moved by one number, which the pointer writes on the pane. */
+/* Only trip tracks move. The grids and sticky headers never transform. */
 .scheduler-week--sliding { overflow-x: hidden; }
-.scheduler-week--sliding > .scheduler-grid {
+.scheduler-week--sliding .scheduler-track {
   transform: translateX(var(--scheduler-slide, 0px));
+  z-index: 1;
 }
 .scheduler-grid--spare {
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
   inline-size: var(--scheduler-pane-w, 100%);
+  pointer-events: none;
 }
-/* The arriving week brings no frame of its own. It is laid out with a head
-   column and a day band, as every grid is, but drawing them would send a second
-   column of the same numbers and a second row of dates travelling across the
-   middle of the screen. Both keep their size, so the days behind them stay on
-   the same grid; the band standing still reads its dates instead. */
 .scheduler-grid--spare .scheduler-corner,
 .scheduler-grid--spare .scheduler-day,
 .scheduler-grid--spare .scheduler-row-head { visibility: hidden; }
-/* So the days are what moves, and they move by the width of the days alone:
-   the arriving week's first day lands exactly where the leaving week's last one
-   was, with no gap between the two and no second head column in the way. */
-.scheduler-week--sliding > .scheduler-grid--next {
+.scheduler-week--sliding > .scheduler-grid--next .scheduler-track {
   transform: translateX(calc(var(--scheduler-slide, 0px) + var(--scheduler-slide-w, 100%)));
 }
-.scheduler-week--sliding > .scheduler-grid--prev {
+.scheduler-week--sliding > .scheduler-grid--prev .scheduler-track {
   transform: translateX(calc(var(--scheduler-slide, 0px) - var(--scheduler-slide-w, 100%)));
 }
-/* Settling, and springing back, take the same short ease. */
-.scheduler-week--settling > .scheduler-grid {
+.scheduler-week--settling .scheduler-track {
   transition: transform 200ms cubic-bezier(0.2, 0, 0.38, 0.9);
-}
-/* The frame does not travel with the week. The bus column names the rows and
-   the day band names the columns, and both name the same things in every week,
-   so they hold still and only the days slide behind them: a bar is under its
-   own date and beside its own bus for the whole move, and there is never a
-   moment with no frame at all. The grid carries every cell, so the frame is
-   taken back by the same number the grid is pushed forward, which leaves it
-   standing where it was.
-
-   Sticky is kept rather than swapped for relative. The band pins to the top of
-   the pane and the column to its left, and a week swiped while the fleet is
-   scrolled down must not drop either of them; a transform on a sticky cell
-   moves it without unpinning it. The dates the band shows are the swipe's to
-   change -- data.js turns them over at the half-way mark -- because a frozen
-   band cannot carry two weeks at once. */
-.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-corner,
-.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-day,
-.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-row > .scheduler-row-head {
-  transform: translateX(calc(-1 * var(--scheduler-slide, 0px)));
 }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────

@@ -8148,39 +8148,8 @@
   document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
-  /* ── A swipe changes the week ──────────────────────────────────────────────
-     On the compact board the horizontal axis is free: all seven days fit, where
-     the full board spends that axis scrolling to its other days. So the gesture
-     lives here alone, and the chevrons it replaces come off in app.css.
-
-     It stands down for the three things it would otherwise fight. A pane that
-     still scrolls sideways, which is every phone under about 346px, where the
-     finger is scrolling. A trip being carried, which starts as the same finger
-     held still. And the system's own edge-back, which is this gesture begun at
-     the screen's edge; the page's 16px margin is where that strip is measured
-     from. It reads the gesture on release rather than following it, because the
-     week is redrawn whole and not slid across.
-
-     No `touch-action` is set: with nothing to scroll sideways there is nothing
-     for the browser to take, and a pane that does scroll is let alone above. */
-  /* ── A drag carries the week ───────────────────────────────────────────────
-     The gesture picks its axis in its first 6px and keeps it, the way a
-     carousel does, rather than being judged on where it ended: a thumb arcs,
-     and a swipe 90px across with 70px of drift in it is still plainly sideways.
-     It picks early because the browser is deciding at the same time, and the
-     one that decides first keeps the gesture. Sideways wins unless the finger
-     is within 30 degrees of straight up or down, which is where a scroll
-     actually lives. Once it is sideways the week follows the finger and the
-     next one comes in beside it, drawn from the read that already covers it. On
-     release a deliberate 40px settles on the new week, or 24px if it was quick,
-     because speed is what says it was meant; anything less springs back. A
-     gesture that never moves 6px is a tap and leaves the week alone.
-
-     It runs on the compact board only, where the seven days fit and the axis is
-     free; on the full board a sideways drag is the week scrolling to its other
-     days. It also stands down while a trip is being carried, within the 24px
-     the system takes for its own back gesture, and where the week being swiped
-     to is not in hand -- a jump from the date picker draws as it always did. */
+  /* Compact weeks slide only their trip tracks. The date and bus headers
+     stay in place until a completed gesture commits one adjacent week. */
   const SWIPE_LOCK = 6;
   /* How much rise a swipe may carry and still be a swipe: the vertical may
      reach 1.73 times the horizontal, which is 60 degrees off the horizontal.
@@ -8196,45 +8165,9 @@
   if (schEl) {
     const calmly = matchMedia('(prefers-reduced-motion: reduce)');
     let g = null;
-    // The settle in flight, so the next swipe can end it rather than be dropped.
-    let finishSettle = null;
-
-    /* The day band holds still while the week slides, so it cannot carry both
-       weeks at once: it shows the week being left until the slide passes its
-       half-way mark, and the week being joined after that. Half-way is the
-       point where letting go would settle on the new week, so the dates say
-       what releasing now would do. `band` keeps the cells as they were, and is
-       null whenever the band is showing the week the board is actually on. */
-    let band = null;
-    const showDates = spare => {
-      if (band) return;
-      const mine = [...gridEl.querySelectorAll('.scheduler-day')];
-      const theirs = [...spare.querySelectorAll('.scheduler-day')];
-      if (mine.length !== theirs.length) return;
-      band = mine.map(c => ({ cell: c, html: c.innerHTML, cls: c.className, cur: c.getAttribute('aria-current') }));
-      mine.forEach((c, i) => {
-        c.innerHTML = theirs[i].innerHTML;
-        c.className = theirs[i].className;
-        const cur = theirs[i].getAttribute('aria-current');
-        if (cur) c.setAttribute('aria-current', cur); else c.removeAttribute('aria-current');
-      });
-    };
-    // Back to the week the board is on, for a swipe that does not go through.
-    const restoreDates = () => {
-      for (const b of band || []) {
-        b.cell.innerHTML = b.html;
-        b.cell.className = b.cls;
-        if (b.cur) b.cell.setAttribute('aria-current', b.cur); else b.cell.removeAttribute('aria-current');
-      }
-      band = null;
-    };
-    /* A swipe that does go through is followed by a render of the week the band
-       is already showing, so the cells are left alone and only the note of what
-       they used to say is dropped. */
-    const keepDates = () => { band = null; };
+    let settling = false;
 
     const teardown = () => {
-      restoreDates();
       for (const spare of schEl.querySelectorAll('.scheduler-grid--spare')) spare.remove();
       schEl.classList.remove('scheduler-week--sliding', 'scheduler-week--settling');
       schEl.style.removeProperty('--scheduler-slide');
@@ -8255,6 +8188,18 @@
       spare.setAttribute('aria-hidden', 'true');
       schEl.appendChild(spare);
       render({ ...cached.data, weekStart: week, weekEnd: addDays(week, 6) }, spare);
+      // Keep incoming buses aligned with the stationary row headers.
+      const rows = [...gridEl.querySelectorAll('.scheduler-row')];
+      [...spare.querySelectorAll('.scheduler-row')].forEach((row, i) => {
+        const source = rows[i];
+        if (!source) return;
+        row.hidden = source.hidden;
+        const height = source.querySelector('.scheduler-track').getBoundingClientRect().height;
+        const track = row.querySelector('.scheduler-track');
+        track.style.blockSize = `${height}px`;
+        track.style.minBlockSize = '0';
+        track.style.overflow = 'hidden';
+      });
       return spare;
     };
 
@@ -8264,13 +8209,8 @@
       && start.x >= SWIPE_EDGE;
 
     schEl.addEventListener('pointerdown', e => {
-      /* A swipe landing while the last one is still easing home. The ease is
-         finished on the spot rather than the gesture thrown away: dropping it
-         made a run of swipes move one week or two depending on how fast they
-         came, which is no way to count them. Ending it early costs the tail of
-         a 200ms animation and nothing else -- the week it was settling on is
-         the week this gesture starts from. */
-      if (schEl.classList.contains('scheduler-week--settling')) finishSettle?.();
+      // A gesture started during settling or loading is not queued.
+      if (settling || reading) return;
       const mine = e.pointerType === 'touch' && e.isPrimary;
       /* A second finger ends the gesture -- it is a pinch, not a swipe -- and
          the week has to come back with it. Nothing else would bring it: the
@@ -8278,12 +8218,12 @@
          undone, so the week would stay parked where the finger left it. */
       if (!mine && g?.sliding) settle(0, 0);
       g = mine
-        ? { x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null, sliding: false, allowed: false }
+        ? { pointer: e.pointerId, x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null, sliding: false, allowed: false }
         : null;
     });
 
     schEl.addEventListener('pointermove', e => {
-      if (!g) return;
+      if (!g || e.pointerId !== g.pointer) return;
       const dx = e.clientX - g.x;
       const dy = e.clientY - g.y;
       if (!g.axis) {
@@ -8315,19 +8255,9 @@
       if (g.axis !== 'x' || !g.sliding) return;
       // The week one step away is drawn the first time the finger asks for it.
       const spare = spareFor(dx < 0 ? -1 : 1);
-      if (spare) schEl.style.setProperty('--scheduler-slide', `${dx}px`);
+      if (spare) schEl.style.setProperty('--scheduler-slide', `${Math.max(-g.travel, Math.min(g.travel, dx))}px`);
       // With nothing to come in, the week holds still rather than baring the pane.
       else schEl.style.setProperty('--scheduler-slide', '0px');
-      /* The band turns over the moment letting go would land on the new week,
-         and back if the finger returns inside that. It asks the same question
-         the release asks, in the same words, so the dates are never a promise
-         the release breaks: half the travel was the wrong mark, because a flick
-         commits at 24px and never reaches it, which left the old dates standing
-         through the whole gesture and jumping at the end. */
-      const quick = e.timeStamp - g.at < SWIPE_FLICK_MS;
-      const lands = Math.abs(dx) >= (quick ? SWIPE_FLICK : SWIPE_MIN);
-      if (spare && lands) showDates(spare);
-      else restoreDates();
     });
 
     /* `touch-action: pan-y` hands the browser the up-and-down axis, and it
@@ -8350,25 +8280,27 @@
        step is drawn from what is held, which is synchronous, so the spare comes
        away in the same frame the real grid arrives in and no gap is painted. */
     function settle(to, days) {
+      settling = true;
       schEl.classList.add('scheduler-week--settling');
       schEl.style.setProperty('--scheduler-slide', `${to}px`);
+      const track = gridEl.querySelector('.scheduler-track');
+      let timer;
       const done = () => {
-        /* The step draws the week the band already shows, so the dates are left
-           where they are and nothing flickers between the two. Springing back
-           leaves `band` set, and teardown puts the old dates back. */
-        if (days) { keepDates(); go(days); }
+        clearTimeout(timer);
+        track?.removeEventListener('transitionend', ended);
         teardown();
+        if (days) go(days);
+        settling = false;
       };
-      let ran = false;
-      const once = () => { if (ran) return; ran = true; finishSettle = null; done(); };
-      // A swipe that arrives mid-ease finishes this one rather than be dropped.
-      finishSettle = once;
-      schEl.addEventListener('transitionend', once, { once: true });
-      // A transition that never starts, because the number did not change.
-      setTimeout(once, SLIDE_MS + 60);
+      const ended = e => {
+        if (e.target === track && e.propertyName === 'transform') done();
+      };
+      track?.addEventListener('transitionend', ended);
+      timer = setTimeout(done, SLIDE_MS + 60);
     }
 
     schEl.addEventListener('pointerup', e => {
+      if (!g || e.pointerId !== g.pointer) return;
       const start = g;
       g = null;
       if (!start || start.axis !== 'x') { if (start?.sliding) teardown(); return; }
@@ -8380,12 +8312,7 @@
       if (start.sliding) {
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
         if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }
-        /* Far enough, with nothing to bring in: a second swipe has overtaken
-           the first one's read, so the week swiped to is not in hand yet. It
-           steps without the slide, the way reduced motion does. The board never
-           moved -- `pointermove` holds it still with nothing to come in -- so
-           there is nothing to ease back. The compact board has no chevrons to
-           fall back on, which is why a swipe this plain is never dropped. */
+        // An uncached adjacent week loads in place while further swipes wait.
         if (far) { teardown(); go(days); return; }
         settle(0, 0);
         return;

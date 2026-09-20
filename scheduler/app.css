@@ -1518,6 +1518,14 @@ button.scheduler-row-head__num::after {
 }
 
 /* Only trip tracks move. The grids and sticky headers never transform. */
+/* Each stationary viewport ends at the bus-column boundary throughout the
+   drag and settle; transformed bars cannot paint into the header column. */
+.scheduler-track-viewport {
+  grid-column: span var(--scheduler-days);
+  min-inline-size: 0;
+  overflow: hidden;
+}
+.scheduler-track-viewport > .scheduler-track { block-size: 100%; }
 .scheduler-week--sliding { overflow-x: hidden; }
 .scheduler-week--sliding .scheduler-track {
   transform: translateX(var(--scheduler-slide, 0px));

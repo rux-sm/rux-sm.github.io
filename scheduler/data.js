@@ -8203,8 +8203,20 @@
       if (!weekMotion) weekMotion = new Promise(resolve => { releaseWeekMotion = resolve; });
     };
 
+    // Clip against stationary day-cell boxes, not the moving tracks themselves.
+    const clipTracks = grid => {
+      for (const track of grid.querySelectorAll('.scheduler-track')) {
+        const viewport = el('div', 'scheduler-track-viewport');
+        track.before(viewport);
+        viewport.appendChild(track);
+      }
+    };
+
     const teardown = () => {
       for (const spare of schEl.querySelectorAll('.scheduler-grid--spare')) spare.remove();
+      for (const viewport of gridEl.querySelectorAll('.scheduler-track-viewport')) {
+        viewport.replaceWith(...viewport.childNodes);
+      }
       schEl.classList.remove('scheduler-week--sliding', 'scheduler-week--settling');
       schEl.style.removeProperty('--scheduler-slide');
       schEl.style.removeProperty('--scheduler-pane-w');
@@ -8238,6 +8250,7 @@
         track.style.minBlockSize = '0';
         track.style.overflow = 'hidden';
       });
+      clipTracks(spare);
       return spare;
     };
 
@@ -8288,6 +8301,7 @@
           g.travel = Math.max(1, schEl.clientWidth - head);
           schEl.style.setProperty('--scheduler-pane-w', `${schEl.clientWidth}px`);
           schEl.style.setProperty('--scheduler-slide-w', `${g.travel}px`);
+          clipTracks(gridEl);
           schEl.classList.add('scheduler-week--sliding');
           g.sliding = true;
         }
@@ -8372,6 +8386,7 @@
         schEl.style.setProperty('--scheduler-pane-w', `${schEl.clientWidth}px`);
         schEl.style.setProperty('--scheduler-slide-w', `${travel}px`);
         schEl.style.setProperty('--scheduler-slide', '0px');
+        clipTracks(gridEl);
         schEl.classList.add('scheduler-week--sliding');
         spareFor(days > 0 ? -1 : 1);
         // Commit the starting position before enabling the settle transition.

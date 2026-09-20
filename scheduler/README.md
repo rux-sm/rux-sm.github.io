@@ -23,7 +23,8 @@ driver's schedule link is shown there but still made in rux-ui. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
 On the compact board, a swipe moves one week of trip cells while the date and
-bus headers stay fixed. Further swipes during a slide are ignored. Cached weeks
+bus headers stay fixed. Stationary cell viewports clip the moving bars at the
+bus-column boundary during both dragging and settling. Further swipes during a slide are ignored. Cached weeks
 are ready after the slide; background refreshes wait for a gesture to finish
 before repainting. An uncached week keeps the current board visible, shows a
 loading indicator after 200 ms, then slides in when ready. The indicator clears

@@ -176,7 +176,11 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification {
   border-radius: 8px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--tag {
+/* Ant's tag is a 4px rectangle. Geist has no square badge at all -- its Badge
+   and its Pill are both fully round, at the same 24px height Carbon's tag
+   already has -- so a 4px corner here squares a pill Carbon drew correctly and
+   Geist keeps the one it was given. */
+[data-theme="ant-dark"] .rux--tag {
   border-radius: 4px;
 }
 /* THE TWO BIGGEST SURFACES TAKE A BIGGER CURVE. Both themes scale a radius

@@ -61,16 +61,19 @@ two people do not spend ten minutes editing the same trip before one finds out.
   `is_staff()` is what closes it; without the rule nobody joins and no face is
   drawn, which is the safe way to fail.
 
-- **Both open and selected, told apart by weight.** A face on a trip somebody
-  has open is the firmer one; a face on a trip they have merely selected is
-  fainter. Selection is broadcast only once it has lasted a moment, so a click
+- **Both open and selected, told apart by weight.** The person holding the trip
+  is solid and lifted; somebody who has only selected it lies flat and quieter.
+  A shadow alone was tried and is too small a difference to read at this size. Selection is broadcast only once it has lasted a moment, so a click
   on the way past does not flash across everyone's board.
 
-- **The face sits in the middle of the bar, see-through.** A bar's corners and
-  rows are already spoken for -- destination, client, contact, times, note,
-  warnings, crew -- so the face lies over the middle of it rather than taking
-  anything away. Below a width that cannot hold one it is left off, because a
-  bar shrunk to a two-letter code has nothing to lie over.
+- **The face is a solid disc at the bar's right, level with the times.** Every
+  other part of a bar is spoken for: the destination row's end carries the
+  reference and, with the notes row off, the warning marks, and the notes row's
+  end carries them otherwise. The middle was tried and covered the contact's
+  phone; the top right was tried and covered both of those. A disc lifted by a
+  shadow reads as floating above the bar rather than staining it. Below a width
+  that cannot hold one it is left off, because a bar shrunk to a two-letter code
+  has no free right side.
 
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a

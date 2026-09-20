@@ -643,26 +643,33 @@ button.scheduler-row-head__num::after {
    order. The row gives way from the end, a whole name at a time. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
 
-/* WHO ELSE IS ON THIS TRIP. A face lies over the middle of the bar rather than
-   taking a corner, because every corner and row of a bar is already spoken
-   for. It is see-through, so the destination and the crew under it stay
-   readable, and it takes no clicks: the bar beneath still selects, opens and
-   drags. A trip somebody has open wears the firmer face; one they have only
-   selected wears the fainter. */
+/* WHO ELSE IS ON THIS TRIP. Hard right, level with the times: the one part of a
+   bar nothing else uses. The destination row's end carries the reference, and
+   every warning mark too once the notes row is turned off; the notes row's end
+   carries them otherwise. A disc in either place covers what it lands on.
+   It takes no clicks, so the bar beneath still selects, opens and drags. */
 .scheduler-presence {
   position: absolute;
-  inset: 0;
+  inset-block-start: 50%;
+  inset-inline-end: var(--rux-spacing-02);
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--rux-spacing-02);
   pointer-events: none;
 }
+/* A disc floating above the bar rather than a stain on it: solid, ringed in the
+   page's own colour and lifted by a shadow. The person holding the trip is the
+   lifted one, and somebody who has only selected it lies flat and quieter --
+   the shadow alone is too small a difference to read at this size. */
 .scheduler-presence__face {
-  opacity: 0.45;
+  opacity: 0.7;
   box-shadow: 0 0 0 2px var(--rux-background);
 }
-.scheduler-presence__face--open { opacity: 0.85; }
+.scheduler-presence__face--open {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--rux-background), 0 2px 6px var(--rux-shadow);
+}
 /* Past the third face the rest are a count, because four faces on one bar are
    a row of thumbnails and no longer a glance. */
 .scheduler-presence__more {
@@ -678,8 +685,8 @@ button.scheduler-row-head__num::after {
      it stands for. */
   opacity: 0.7;
 }
-/* With contrast raised the face stops being see-through, because a faint face
-   is the first thing lost. */
+/* With contrast raised nothing here is held back, because the quieter disc is
+   the first thing lost. */
 @media (prefers-contrast: more) {
   .scheduler-presence__face,
   .scheduler-presence__face--open,

@@ -310,6 +310,9 @@
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
+    // What the trip needs, for the bar's marks: the list the office keeps,
+    // with the older columns behind it for a trip saved before it existed.
+    'trip_reqs', 'need_fuel_card',
     // The vehicle the trip needs, `Coach` or `Van`; null is any.
     'vehicle_type',
     // Each leg's hotel: the bar's hotel mark, its menu item and the Details tab.
@@ -410,7 +413,7 @@
          the Mapbox token the Route tab looks drives up with. A refused read
          keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1'])
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -418,6 +421,7 @@
           const yard = byKey.get('yard-location-v1');
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
           if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
+          setRequirementNames(byKey.get('requirements-v1'));
         }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
@@ -552,6 +556,66 @@
       out[`trip_contact_${n}_phone`] = days[n - 1]?.phone || null;
     }
     return out;
+  }
+
+  /* WHAT A TRIP NEEDS, and how a bar says it.
+
+     THE LIST IS THE OFFICE'S. rux-ui's Settings page edits it and it already
+     holds more than the five below, so a requirement is named from that list
+     and falls back to these names, then to its own id. Dropping one the table
+     here does not know would take it off the bar without saying so.
+
+     ONLY FOUR CARRY A GLYPH, and not by accident: Design's sprite has these
+     because a bus row needed to say what a bus HAS, which is the same four the
+     bus can be measured against. Anything else -- the fuel card, and whatever
+     the office adds -- is a note about the trip rather than the vehicle, and
+     shows as its initial in the same square. */
+  const REQUIREMENTS = {
+    pax56: { label: '56 passenger', href: '#i-user--multiple' },
+    sleeper: { label: 'Sleeper', href: '#i-hotel' },
+    adaLift: { label: 'Wheelchair lift', href: '#i-accessibility' },
+    hotel: { label: 'Hotel', href: '#i-building' },
+    fuelCard: { label: 'Fuel card' },
+    oneWay: { label: 'One-way' },
+  };
+  // The order the marks take, most constraining first; anything the office
+  // added follows, in the order `trip_reqs` holds it.
+  const REQ_ORDER = ['pax56', 'sleeper', 'adaLift', 'hotel', 'fuelCard'];
+
+  // id -> label, from Settings. Empty until the week is read, and empty if
+  // that read was refused, which leaves the names above standing.
+  let requirementNames = new Map();
+  function setRequirementNames(list) {
+    if (!Array.isArray(list)) return;
+    requirementNames = new Map(list
+      .filter(r => r && typeof r.id === 'string' && r.label)
+      .map(r => [r.id, String(r.label)]));
+  }
+  const requirementLabel = id => requirementNames.get(id) || REQUIREMENTS[id]?.label || id;
+
+  /* The ids a trip carries, from `trip_reqs` where it is set and the older
+     columns where it is not -- the pair rux-ui reads, and print.js with it. */
+  function requirementsOf(trip) {
+    const reqs = trip.trip_reqs;
+    const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
+      ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k)
+      : [['pax56', trip.req_56pax], ['sleeper', trip.req_sleeper], ['adaLift', trip.req_ada],
+         ['hotel', trip.need_hotel], ['fuelCard', trip.need_fuel_card]]
+        .filter(([, v]) => v).map(([k]) => k);
+    return [...REQ_ORDER.filter(id => on.includes(id)), ...on.filter(id => !REQ_ORDER.includes(id))];
+  }
+
+  /* Where the bus this leg is on falls short of a requirement, said in full,
+     or null. No bus means nothing to compare, and an unrecorded capacity is
+     not a shortfall. */
+  function shortfall(id, bus) {
+    if (!bus) return null;
+    if (id === 'sleeper' && !bus.sleeper) return `Needs a sleeper, bus ${bus.number} has none`;
+    if (id === 'adaLift' && !bus.ada_lift) return `Needs an ADA lift, bus ${bus.number} has none`;
+    if (id === 'pax56' && bus.capacity != null && bus.capacity < 56) {
+      return `Needs 56 seats, bus ${bus.number} has ${bus.capacity}`;
+    }
+    return null;
   }
 
   /* The warning for a bus of another type than the trip needs, or null. A trip
@@ -810,18 +874,36 @@
     // this bar that is about the booking rather than the vehicle.
     const owed = paymentMark(trip);
     if (owed) marks.push(owed);
-    /* A requirement is drawn only when the bus fails it. A trip that needs a
-       sleeper on a sleeper bus has nothing to say, so the flags cost no row; a
-       trip on a bus without one shows the missing item as a warning icon. No
-       bus means nothing to compare, and an unrecorded capacity is not a
-       shortfall. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    if (bus) marks.push(...[
-      wrongType(trip.vehicle_type, bus) ? { href: '#i-bus', label: wrongType(trip.vehicle_type, bus) } : null,
-      trip.req_sleeper && !bus.sleeper ? { href: '#i-hotel', label: `Needs a sleeper, bus ${bus.number} has none` } : null,
-      trip.req_ada && !bus.ada_lift ? { href: '#i-accessibility', label: `Needs an ADA lift, bus ${bus.number} has none` } : null,
-      trip.req_56pax && bus.capacity != null && bus.capacity < 56 ? { href: '#i-user--multiple', label: `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` } : null,
-    ].filter(Boolean));
+    if (bus && wrongType(trip.vehicle_type, bus)) {
+      marks.push({ href: '#i-bus', label: wrongType(trip.vehicle_type, bus) });
+    }
+    /* EVERY REQUIREMENT THE TRIP CARRIES GETS ONE MARK, and its colour says
+       whether this bus meets it: the warning fill where it falls short, the
+       bar's own colour otherwise. Only the failing ones used to be drawn, so a
+       trip that needed a sleeper and had one said nothing at all; one mark
+       either way is one rule for the whole family, and the hotel below already
+       read this way on its own.
+
+       The met ones go after the paperwork marks, so the narrowest bar drops a
+       fact about the trip before it drops something still to be done. */
+    const needs = requirementsOf(trip).map(id => {
+      const missing = shortfall(id, bus);
+      /* The hotel is the one a bus cannot answer for: it is booked or it is
+         not, per leg, and the trip says which. */
+      if (id === 'hotel') {
+        const booked = !!trip[`hotel_booked_${leg.leg}`];
+        return { id, href: REQUIREMENTS.hotel.href, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
+      }
+      return {
+        id,
+        href: REQUIREMENTS[id]?.href || null,
+        letter: REQUIREMENTS[id]?.href ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
+        label: missing || requirementLabel(id),
+        done: !missing,
+      };
+    });
+    marks.push(...needs.filter(n => !n.done));
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
@@ -831,13 +913,9 @@
        warning is that the list is empty, not that the first slot is. */
     const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
     if (!dayOf && !trip.contact_not_needed) marks.push({ href: '#i-phone', label: 'No day-of contact' });
-    /* A trip that needs a hotel shows a building for this leg's: amber while it
-       is not booked, like the warnings, and in the bar's own text colour once it
-       is, so the bar still says the trip has a hotel. */
-    if (trip.need_hotel) {
-      const booked = !!trip[`hotel_booked_${leg.leg}`];
-      marks.push({ href: '#i-building', label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked });
-    }
+    // And what this bus already answers for, last: a fact about the trip, not
+    // something waiting to be done.
+    marks.push(...needs.filter(n => n.done));
     /* Drawn on the notes row and again on the destination row; app.css shows
        the second only while the notes row is turned off, so hiding a row never
        hides the warning. The notes row rather than the drivers row because a
@@ -855,7 +933,14 @@
         const tone = w.done ? 'done' : TONES.includes(w.tone) ? w.tone : null;
         const chip = el('span', `scheduler-bar__warn-chip${tone ? ` scheduler-bar__warn-chip--${tone}` : ''}`);
         chip.title = w.label;
-        chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
+        // A requirement Design has no glyph for wears its initial instead, in
+        // the same square. The name is on hover and in the bar's own label.
+        if (w.href) {
+          chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
+        } else {
+          chip.classList.add('scheduler-bar__warn-chip--letter');
+          chip.append(w.letter || '?');
+        }
         box.appendChild(chip);
       }
       /* The count that stands for the marks a narrow bar has no room for.
@@ -6784,10 +6869,6 @@
     ['invoice_number', 'Invoice number'],
   ];
   const HISTORY_TRIP_TYPES = { round_trip: 'Round trip', one_way: 'One-way', dropoff_pickup: 'Split trip' };
-  const HISTORY_REQUIREMENTS = {
-    pax56: '56 passenger', oneWay: 'One-way', sleeper: 'Sleeper', fuelCard: 'Fuel card',
-    adaLift: 'Wheelchair lift', hotel: 'Hotel', wifi: 'Wi-Fi',
-  };
   const HISTORY_ROLES = {
     driver: 'Driver', coDriver: 'Co-driver', 'co-driver': 'Co-driver', relief1: 'Relief driver',
     relief2: 'Relief driver', 'relief-start': 'Relief driver', 'relief-end': 'Relief driver',
@@ -6880,8 +6961,10 @@
       return [r[refField] ? `${noun} ${r[refField]}` : noun, money].filter(Boolean).join(' ');
     }).join(' · ');
   }
+  // Named the way the bar names them, so a requirement is called one thing
+  // wherever this app says it.
   const histRequirements = reqs => Object.keys(reqs || {}).filter(k => reqs[k]).sort()
-    .map(k => HISTORY_REQUIREMENTS[k] || k).join(', ') || null;
+    .map(requirementLabel).join(', ') || null;
 
   // A trip and every row a save can change, as the database holds them.
   const HISTORY_READ = '*,'

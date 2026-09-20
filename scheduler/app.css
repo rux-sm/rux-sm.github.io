@@ -596,8 +596,20 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__warn-chip[hidden] { display: none; }
 
-/* A booked hotel keeps its icon, in the bar's own text colour with no warning
-   fill: the trip has a hotel, and nothing is left to do about it. */
+/* A requirement Design has no glyph for wears its initial, in the same square
+   as every other mark so `fitMarks` still counts what fits from one of them.
+   Carbon's data-table header type, the same step the compact board's code
+   takes, which is the largest that sits inside a row-high square. */
+.scheduler-bar__warn-chip--letter {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* A mark this bus already answers for keeps its icon, in the bar's own text
+   colour with no warning fill: the trip has a sleeper, or a hotel, and nothing
+   is left to do about it. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
   background: none;
   color: inherit;

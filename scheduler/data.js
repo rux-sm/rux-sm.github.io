@@ -347,6 +347,12 @@
      catch runs. An abandoned write may still land, so its error carries
      `timedOut` and a save treats it as possibly written. */
   const READ_TIMEOUT = 15000;
+  /* How far either side of the week asked for one read reaches, in days. Four
+     weeks: a swipe draws from what is in hand, and four of them in a row still
+     do, which is further than anyone swipes before the next read lands. Every
+     week within it is drawn without the network, so this is the one number that
+     decides how far a run of swipes stays smooth. */
+  const NEAR_DAYS = 28;
   const withTimeout = promise => Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(
@@ -357,15 +363,16 @@
 
   async function read(weekStart) {
     const weekEnd = addDays(weekStart, 6);
-    /* The week either side comes with it, so a swipe draws from what is in hand
-       rather than waiting on the network. It costs one widened window and no
-       second query: a trip that started before the week can still run through
-       it, so this already reached 90 days back, and 7 days at each end of 97 is
-       14% more of the one read. The exact overlap is decided per leg in
-       `render`, not by this filter, which is what lets one payload draw three
-       weeks. */
-    const from = addDays(weekStart, -7);
-    const to = addDays(weekEnd, 7);
+    /* Four weeks either side come with the week asked for, so a run of swipes
+       draws from what is in hand rather than stopping at the second one to wait
+       on the network. It costs one widened window and no second query: a trip
+       that started before the week can still run through it, so this already
+       reached 90 days back, and carrying 28 days at each end rather than 7
+       takes the one read from 111 days to 153. The exact overlap is decided
+       per leg in `render`, not by this filter, which is what lets one payload
+       draw nine weeks. */
+    const from = addDays(weekStart, -NEAR_DAYS);
+    const to = addDays(weekEnd, NEAR_DAYS);
     const lo = iso(addDays(from, -90));
     const hi = iso(to);
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
@@ -1079,8 +1086,8 @@
       track.style.setProperty('--scheduler-day-rules', dayRuleStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       for (const w of windows) {
-        /* The read covers the week either side, so a window can miss the week
-           being drawn; `clip` says so by answering nothing. */
+        /* The read covers the four weeks either side, so a window can miss
+           the week being drawn; `clip` says so by answering nothing. */
         const place = clip(w.start_date, w.end_date, weekStart, weekEnd);
         if (!place) continue;
         const span = el('div', 'scheduler-oos');
@@ -7784,15 +7791,18 @@
   let reading = null;
   let readAgain = false;
   /* The payload last read, and the week it was centred on. It covers that week
-     and the one either side, so a swipe draws from it instead of waiting on the
-     network -- `render` decides the overlap per leg, so one payload draws three
-     weeks at three different starts. */
+     and the four either side, so a run of swipes draws from it instead of
+     waiting on the network -- `render` decides the overlap per leg, so one
+     payload draws nine weeks at nine different starts. */
   let cached = null;
+  // Whether a week is one of the nine the last read covers.
+  const holds = week => !!cached && iso(addDays(cached.centre, -NEAR_DAYS)) <= iso(week)
+    && iso(week) <= iso(addDays(cached.centre, NEAR_DAYS));
   /* What one week would have to change for a redraw to be worth it: which trips
      it draws and when each was last written, which is what an edit moves, and
      the windows that stripe a row or a day in it. It is taken for one week and
-     never for the payload, because two reads centred a week apart cover
-     different 111-day windows and their trip lists differ even where the week
+     never for the payload, because two reads centred on different weeks cover
+     different 153-day windows and their trip lists differ even where the week
      drawn is the same one. Sorted, since the order a read returns is its own. */
   const weekPrint = (data, weekStart) => {
     const weekEnd = addDays(weekStart, 6);
@@ -7846,8 +7856,7 @@
        network. The read still follows, because every change re-read before this
        and so always showed current data; caching without the check would let
        someone else's save go quietly missing while two people dispatch. */
-    const held = cached && iso(addDays(cached.centre, -7)) <= iso(asked)
-      && iso(asked) <= iso(addDays(cached.centre, 7));
+    const held = holds(asked);
     if (held) {
       render({ ...cached.data, weekStart: asked, weekEnd: addDays(asked, 6) });
       shown = asked;
@@ -8164,17 +8173,14 @@
      It runs on the compact board only, where the seven days fit and the axis is
      free; on the full board a sideways drag is the week scrolling to its other
      days. It also stands down while a trip is being carried, within the 24px
-     the system takes for its own back gesture, and where the week either side
-     is not in hand -- a jump from the date picker draws as it always did. */
+     the system takes for its own back gesture, and where the week being swiped
+     to is not in hand -- a jump from the date picker draws as it always did. */
   const SWIPE_LOCK = 10;
   const SWIPE_MIN = 40;
   const SWIPE_FLICK = 24;
   const SWIPE_FLICK_MS = 300;
   const SWIPE_EDGE = 24;
   const SLIDE_MS = 200;
-  // A week the last read covers, which is the only kind this can slide to.
-  const holds = week => !!cached && iso(addDays(cached.centre, -7)) <= iso(week)
-    && iso(week) <= iso(addDays(cached.centre, 7));
 
   if (schEl) {
     const calmly = matchMedia('(prefers-reduced-motion: reduce)');
@@ -8248,7 +8254,7 @@
         }
       }
       if (g.axis !== 'x' || !g.sliding) return;
-      // The week either side is drawn the first time the finger asks for it.
+      // The week one step away is drawn the first time the finger asks for it.
       if (spareFor(dx < 0 ? -1 : 1)) schEl.style.setProperty('--scheduler-slide', `${dx}px`);
       // With nothing to come in, the week holds still rather than baring the pane.
       else schEl.style.setProperty('--scheduler-slide', '0px');
@@ -8289,7 +8295,7 @@
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
         if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }
         /* Far enough, with nothing to bring in: a second swipe has overtaken
-           the first one's read, so the week either side is not in hand yet. It
+           the first one's read, so the week swiped to is not in hand yet. It
            steps without the slide, the way reduced motion does. The board never
            moved -- `pointermove` holds it still with nothing to come in -- so
            there is nothing to ease back. The compact board has no chevrons to

@@ -54,6 +54,17 @@ two people do not spend ten minutes editing the same trip before one finds out.
   connection: it appears when the editor opens and is gone when the tab closes
   or the Mac sleeps, so there is no row to leave behind and nothing to clear up.
 
+- **Both open and selected, told apart by weight.** A face on a trip somebody
+  has open is the firmer one; a face on a trip they have merely selected is
+  fainter. Selection is broadcast only once it has lasted a moment, so a click
+  on the way past does not flash across everyone's board.
+
+- **The face sits in the middle of the bar, see-through.** A bar's corners and
+  rows are already spoken for -- destination, client, contact, times, note,
+  warnings, crew -- so the face lies over the middle of it rather than taking
+  anything away. Below a width that cannot hold one it is left off, because a
+  bar shrunk to a two-letter code has nothing to lie over.
+
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a
   mark. A crew member on a bar is a coloured glyph and a name, so a photo does
@@ -76,30 +87,14 @@ two people do not spend ten minutes editing the same trip before one finds out.
 
 ## Questions
 
-- **Open, or selected too?** Opening a trip is deliberate and worth showing.
-  Selecting a bar happens constantly while reading the week, so broadcasting it
-  would set faces flickering across the board all day. Show only the trips
-  somebody has open, or show selection as something quieter?
-
-- **Where does the face go on a bar?** The bar already carries a destination,
-  a client, a contact, times, a note, its warnings and its crew, and the
-  compact board shrinks all of that to a code. Beside the crew, in a corner of
-  its own, or only on the bar's menu and the editor's head?
-
 ## Tasks
-
-- [ ] Check a change made in the old trips app appears on the board without a
-      reload: a trip moved to another bus, a driver's status changed, a bus put
-      out of service.
 
 - [ ] Check the board does not read twice for one of rux's own saves, and that
       a save's own toast still says what it says now.
 
-- [ ] Say in the trip editor who else has that trip open, from the same
-      connection, with their photo and name.
-
-- [ ] Put the same face on the trip's bar, once the two questions above are
-      answered.
+- [ ] Say in the trip editor who else has that trip open, in words, so the
+      person opening it is told rather than left to spot a face on a bar
+      behind the panel.
 
 - [ ] Check two accounts at once: the face appears when the second opens the
       trip, and goes when that tab is closed, when it sleeps and when the

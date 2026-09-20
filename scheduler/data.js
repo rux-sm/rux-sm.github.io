@@ -1137,6 +1137,8 @@
     drawAvailability(availabilityRows(data), weekStart);
     placeAvailability();
     syncSelection();
+    // Every bar is new, so the faces on them are drawn again.
+    presenceDraw();
 
     // The only mark for today is its header cell, so the grid brings that cell
     // into view rather than leaving it past the right edge -- which is where a
@@ -2605,6 +2607,7 @@
     if (panelEl.hidden) return;
     // A read that waited for this editor is owed as soon as it is out of the way.
     if (liveHeld) setTimeout(liveRefresh, 0);
+    setTimeout(presenceTell, 0);
     /* A draft is read the moment the panel shows it, so closing spends it
        whether Save was pressed or not. A delete that fails leaves a row the
        nightly cleanup takes instead. */
@@ -5401,6 +5404,8 @@
     markEditorBars();
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
+    // What this tab is on has changed, so everyone else's board says so.
+    presenceTell();
   }
 
   /* The trip changed under the editor. Reload trip drops the editor's changes
@@ -7925,7 +7930,89 @@
   /* Coming back to the tab always reads, held or not: the socket goes down
      with the Mac and comes back knowing nothing about what it missed, so the
      look is the floor and the subscription is only what makes it live. */
-  function listen() {
+
+  /* ── Who else is on a trip ─────────────────────────────────────────────────
+     A face lies over the middle of a bar somebody else has open or selected,
+     so two people do not spend ten minutes on the same trip before one finds
+     out. Nothing is stored: this rides the same connection as the board above
+     and a person disappears from it when their tab closes, their Mac sleeps or
+     the network drops, which is the whole reason it is not a lock.
+
+     Open is the firmer face and selected the fainter one. A selection is only
+     sent once it has lasted `PRESENCE_SETTLE`, because clicking along a row to
+     read it would otherwise flash a face across everyone's board for each bar
+     passed. Opening is sent at once, being deliberate. */
+  const PRESENCE_SETTLE = 900;
+  let presenceCh = null, presenceTimer = null;
+  let presenceMine = { tripId: null, state: null };
+  // tripId -> [{ id, name, photoPath, colour, state }], everyone but me.
+  let presenceOthers = new Map();
+
+  let presenceMe = null;
+  function presenceSend(tripId, state) {
+    presenceMine = { tripId: tripId ?? null, state: tripId ? state : null };
+    if (presenceMe && presenceCh?.state === 'joined') {
+      presenceCh.track({ ...presenceMe, ...presenceMine }).catch(() => {});
+    }
+  }
+
+  function presenceSoon(tripId, state) {
+    clearTimeout(presenceTimer);
+    if (!tripId || state === 'open') { presenceSend(tripId, state); return; }
+    presenceTimer = setTimeout(() => presenceSend(tripId, state), PRESENCE_SETTLE);
+  }
+
+  /* What this tab is on: the editor's trip while it is open, otherwise the
+     selected bar's. The panel's own `hidden` says the editor is open, as it
+     does for the read above. */
+  function presenceTell() {
+    if (!panelEl.hidden && editing?.id) return presenceSoon(editing.id, 'open');
+    const bar = selectedBar();
+    presenceSoon(bar?.dataset.tripId ?? null, 'selected');
+  }
+
+  function presenceRead() {
+    const seen = new Map();
+    const state = presenceCh?.presenceState?.() ?? {};
+    for (const [key, entries] of Object.entries(state)) {
+      if (key === presenceKey) continue;
+      for (const who of entries) {
+        if (!who?.tripId) continue;
+        if (!seen.has(who.tripId)) seen.set(who.tripId, []);
+        seen.get(who.tripId).push(who);
+      }
+    }
+    presenceOthers = seen;
+    presenceDraw();
+  }
+
+  /* Drawn after every render too, because `render` replaces every bar. A bar
+     too narrow to lie a face over is left alone: the compact board shrinks a
+     trip to a two-letter code, and a face there would be the whole bar. */
+  const PRESENCE_MIN_WIDTH = 72;
+  function presenceDraw() {
+    if (!gridEl) return;
+    for (const old of gridEl.querySelectorAll('.scheduler-presence')) old.remove();
+    if (!presenceOthers.size) return;
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
+      const here = presenceOthers.get(bar.dataset.tripId);
+      if (!here?.length) continue;
+      if (bar.getBoundingClientRect().width < PRESENCE_MIN_WIDTH) continue;
+      const box = el('span', 'scheduler-presence');
+      box.setAttribute('aria-hidden', 'true');
+      for (const who of here.slice(0, 3)) {
+        const face = el('span', `rux--user-avatar rux--user-avatar--sm scheduler-presence__face${who.state === 'open' ? ' scheduler-presence__face--open' : ''}`);
+        face.title = who.name ? `${who.name} has this trip ${who.state === 'open' ? 'open' : 'selected'}` : '';
+        window.Rux?.account?.drawAvatar?.(face, who, 'sm');
+        box.appendChild(face);
+      }
+      bar.appendChild(box);
+    }
+  }
+
+  let presenceKey = null;
+
+  async function listen() {
     document.addEventListener('visibilitychange', () => { if (!document.hidden) liveRefresh(); });
     window.addEventListener('focus', () => { if (liveHeld) liveRefresh(); });
     if (!client?.channel) return;
@@ -7934,6 +8021,21 @@
       board.on('postgres_changes', { event: '*', schema: 'public', table }, liveSoon);
     }
     board.subscribe();
+
+    /* One tab is one presence, so the key is this tab and not the account: the
+       same person on a laptop and a phone is two, and closing one leaves the
+       other. Without a person there is nobody to show, so the channel is not
+       opened at all. */
+    const me = await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null);
+    if (!me) return;
+    presenceKey = `${me.id}:${Math.random().toString(36).slice(2, 8)}`;
+    presenceCh = client.channel('scheduler-presence', { config: { presence: { key: presenceKey } } });
+    presenceCh.on('presence', { event: 'sync' }, presenceRead);
+    presenceCh.subscribe(status => {
+      if (status !== 'SUBSCRIBED') return;
+      presenceMe = { id: me.id, name: me.name, photoPath: me.photoPath, colour: me.colour };
+      presenceTell();
+    });
   }
 
   async function readWeek() {

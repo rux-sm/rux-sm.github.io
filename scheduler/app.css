@@ -607,6 +607,33 @@ button.scheduler-row-head__num::after {
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
+
+/* WHO ELSE IS ON THIS TRIP. A face lies over the middle of the bar rather than
+   taking a corner, because every corner and row of a bar is already spoken
+   for. It is see-through, so the destination and the crew under it stay
+   readable, and it takes no clicks: the bar beneath still selects, opens and
+   drags. A trip somebody has open wears the firmer face; one they have only
+   selected wears the fainter. */
+.scheduler-presence {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rux-spacing-02);
+  pointer-events: none;
+}
+.scheduler-presence__face {
+  opacity: 0.45;
+  box-shadow: 0 0 0 2px var(--rux-background);
+}
+.scheduler-presence__face--open { opacity: 0.85; }
+/* With motion turned down nothing here moves anyway; with contrast raised the
+   face stops being see-through, because a faint face is the first thing lost. */
+@media (prefers-contrast: more) {
+  .scheduler-presence__face,
+  .scheduler-presence__face--open { opacity: 1; }
+}
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }

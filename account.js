@@ -173,20 +173,20 @@
 
   // Every avatar on the page, redrawn when the person changes.
   const avatars = new Map();
-  const draw = (host, who) => {
+  const draw = (host, who, size) => {
     host.classList.remove(...ORDER_CLASSES);
     host.classList.add(COLOUR_ORDERS[who.colour] || hashedOrder(who.id));
     host.textContent = initials(who.name);
     const url = photoUrl(who.photoPath);
     if (!url) return;
     const img = document.createElement('img');
-    img.className = `rux--user-avatar__photo ${PHOTO_SIZES[avatars.get(host)] ?? PHOTO_SIZES.md}`;
+    img.className = `rux--user-avatar__photo ${PHOTO_SIZES[size] ?? PHOTO_SIZES.md}`;
     img.alt = '';
     // A photo that will not load leaves the initials showing.
     img.addEventListener('load', () => host.replaceChildren(img), { once: true });
     img.src = url;
   };
-  const redraw = who => { for (const host of avatars.keys()) draw(host, who); };
+  const redraw = who => { for (const [host, size] of avatars) draw(host, who, size); };
 
   // Draws `host`, a `rux--user-avatar` element, for the logged-in person at
   // `size`. False when nobody is logged in.
@@ -194,7 +194,17 @@
     const who = await person();
     if (!who) return false;
     avatars.set(host, size);
-    draw(host, who);
+    draw(host, who, size);
+    return true;
+  };
+
+  /* The same face for somebody else: the scheduler draws whoever has a trip
+     open on that trip's bar. It is not remembered, because nothing about
+     another person changes when the signed-in one does. `who` is their staff
+     row -- `{ id, name, photoPath, colour }`, the shape `person` returns. */
+  const drawAvatar = (host, who, size = 'md') => {
+    if (!host || !who) return false;
+    draw(host, who, size);
     return true;
   };
 
@@ -230,6 +240,7 @@
     client: sb,
     person,
     showAvatar,
+    drawAvatar,
     setPhoto,
     getSession: () => sb.auth.getSession().then(r => r.data.session),
     signOut: () => sb.auth.signOut(),

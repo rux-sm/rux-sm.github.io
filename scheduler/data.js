@@ -8196,6 +8196,8 @@
   if (schEl) {
     const calmly = matchMedia('(prefers-reduced-motion: reduce)');
     let g = null;
+    // The settle in flight, so the next swipe can end it rather than be dropped.
+    let finishSettle = null;
 
     /* The day band holds still while the week slides, so it cannot carry both
        weeks at once: it shows the week being left until the slide passes its
@@ -8262,7 +8264,13 @@
       && start.x >= SWIPE_EDGE;
 
     schEl.addEventListener('pointerdown', e => {
-      if (schEl.classList.contains('scheduler-week--settling')) return;
+      /* A swipe landing while the last one is still easing home. The ease is
+         finished on the spot rather than the gesture thrown away: dropping it
+         made a run of swipes move one week or two depending on how fast they
+         came, which is no way to count them. Ending it early costs the tail of
+         a 200ms animation and nothing else -- the week it was settling on is
+         the week this gesture starts from. */
+      if (schEl.classList.contains('scheduler-week--settling')) finishSettle?.();
       const mine = e.pointerType === 'touch' && e.isPrimary;
       /* A second finger ends the gesture -- it is a pinch, not a swipe -- and
          the week has to come back with it. Nothing else would bring it: the
@@ -8310,10 +8318,15 @@
       if (spare) schEl.style.setProperty('--scheduler-slide', `${dx}px`);
       // With nothing to come in, the week holds still rather than baring the pane.
       else schEl.style.setProperty('--scheduler-slide', '0px');
-      /* The band turns over where the finger crosses half the travel, and back
-         if it comes home again, so the dates always say which week letting go
-         would leave on screen. */
-      if (spare && Math.abs(dx) >= g.travel / 2) showDates(spare);
+      /* The band turns over the moment letting go would land on the new week,
+         and back if the finger returns inside that. It asks the same question
+         the release asks, in the same words, so the dates are never a promise
+         the release breaks: half the travel was the wrong mark, because a flick
+         commits at 24px and never reaches it, which left the old dates standing
+         through the whole gesture and jumping at the end. */
+      const quick = e.timeStamp - g.at < SWIPE_FLICK_MS;
+      const lands = Math.abs(dx) >= (quick ? SWIPE_FLICK : SWIPE_MIN);
+      if (spare && lands) showDates(spare);
       else restoreDates();
     });
 
@@ -8347,7 +8360,9 @@
         teardown();
       };
       let ran = false;
-      const once = () => { if (ran) return; ran = true; done(); };
+      const once = () => { if (ran) return; ran = true; finishSettle = null; done(); };
+      // A swipe that arrives mid-ease finishes this one rather than be dropped.
+      finishSettle = once;
       schEl.addEventListener('transitionend', once, { once: true });
       // A transition that never starts, because the number did not change.
       setTimeout(once, SLIDE_MS + 60);

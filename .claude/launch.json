@@ -6,12 +6,6 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/serve.mjs", "--cloud"],
       "port": 8641
-    },
-    {
-      "name": "serve",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/serve.mjs"],
-      "port": 8640
     }
   ]
 }

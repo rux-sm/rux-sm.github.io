@@ -1546,13 +1546,31 @@ button.scheduler-row-head__num::after {
 .scheduler-week--settling > .scheduler-grid {
   transition: transform 200ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-/* A week travelling away takes its own bus numbers and its own dates with it,
-   as a sheet of paper would, so the two grids' sticky cells stand down for the
-   length of the move. They pin to the pane, and two grids side by side would
-   otherwise pin both columns to the same left edge. */
-.scheduler-week--sliding .scheduler-corner,
-.scheduler-week--sliding .scheduler-day,
-.scheduler-week--sliding .scheduler-row-head {
+/* The dates travel with their own week, as the sheet of paper they head, so
+   their sticky cells stand down for the length of the move: they pin to the
+   pane, and two grids side by side would otherwise pin both bands to the same
+   top edge. */
+.scheduler-week--sliding .scheduler-day {
+  position: static;
+}
+/* The bus column does not travel. It names the rows, and the rows are the same
+   rows in every week, so it stays put and the days slide behind it -- a number
+   is beside its own row for the whole move, and there is never a moment with no
+   column at all. The grid carries every cell, so the column is taken back by
+   the same number the grid is pushed forward, which leaves it standing still.
+   Relative rather than sticky, because one number does the whole job here and
+   two rules fighting over the same column is how it drifted before; the z-index
+   is the sticky column's own, so the arriving days pass under it. */
+.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-corner,
+.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-row > .scheduler-row-head {
+  position: relative;
+  z-index: 2;
+  transform: translateX(calc(-1 * var(--scheduler-slide, 0px)));
+}
+/* The arriving week's column stays out of the way: hidden above, and held still
+   here too, so nothing of it shows at the edge as it comes in. */
+.scheduler-week--sliding > .scheduler-grid--spare > .scheduler-corner,
+.scheduler-week--sliding > .scheduler-grid--spare > .scheduler-row > .scheduler-row-head {
   position: static;
 }
 

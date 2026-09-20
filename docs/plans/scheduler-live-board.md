@@ -54,6 +54,13 @@ two people do not spend ten minutes editing the same trip before one finds out.
   connection: it appears when the editor opens and is gone when the tab closes
   or the Mac sleeps, so there is no row to leave behind and nothing to clear up.
 
+- **The channel is private, and the database says who may join it.** A public
+  channel is joinable by anyone holding the publishable key, which is in the
+  page, so staff names, photos, accounts and the trip each has open would be
+  readable and forgeable from outside. A rule on `realtime.messages` for
+  `is_staff()` is what closes it; without the rule nobody joins and no face is
+  drawn, which is the safe way to fail.
+
 - **Both open and selected, told apart by weight.** A face on a trip somebody
   has open is the firmer one; a face on a trip they have merely selected is
   fainter. Selection is broadcast only once it has lasted a moment, so a click
@@ -92,9 +99,17 @@ two people do not spend ten minutes editing the same trip before one finds out.
 - [ ] Check the board does not read twice for one of rux's own saves, and that
       a save's own toast still says what it says now.
 
-- [ ] Say in the trip editor who else has that trip open, in words, so the
-      person opening it is told rather than left to spot a face on a bar
-      behind the panel.
+- [ ] Apply the realtime rule to the database, so staff may join the private
+      presence channel. Until it is applied no face is drawn at all.
+
+      ```sql
+      create policy "staff_all" on realtime.messages
+        for all to authenticated
+        using (public.is_staff()) with check (public.is_staff());
+      ```
+
+- [ ] Say in `docs/database-access.md` that `realtime.messages` carries the
+      same rule as every table, once it does.
 
 - [ ] Check two accounts at once: the face appears when the second opens the
       trip, and goes when that tab is closed, when it sleeps and when the

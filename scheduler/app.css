@@ -628,11 +628,40 @@ button.scheduler-row-head__num::after {
   box-shadow: 0 0 0 2px var(--rux-background);
 }
 .scheduler-presence__face--open { opacity: 0.85; }
-/* With motion turned down nothing here moves anyway; with contrast raised the
-   face stops being see-through, because a faint face is the first thing lost. */
+/* Past the third face the rest are a count, because four faces on one bar are
+   a row of thumbnails and no longer a glance. */
+.scheduler-presence__more {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-primary);
+  background: var(--rux-background);
+  border-radius: var(--rux-spacing-03);
+  padding: 0 var(--rux-spacing-02);
+  /* Between the two faces: legible at a glance, because two characters cannot
+     be as faint as a face and still be read, but never louder than the people
+     it stands for. */
+  opacity: 0.7;
+}
+/* With contrast raised the face stops being see-through, because a faint face
+   is the first thing lost. */
 @media (prefers-contrast: more) {
   .scheduler-presence__face,
-  .scheduler-presence__face--open { opacity: 1; }
+  .scheduler-presence__face--open,
+  .scheduler-presence__more { opacity: 1; }
+}
+
+/* The same news in words, under the editor's header: the faces sit on bars
+   this panel covers, and a face is not read aloud. */
+.scheduler-presence-note {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  margin: 0;
 }
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }

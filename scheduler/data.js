@@ -5495,7 +5495,11 @@
 
   // The panel and the whole-pixel day columns move a bar's start edge, a frame
   // after the grid's own size changes.
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); fitMarks(); })).observe(gridEl);
+  /* The faces are placed from a bar's measured width, so a board that has just
+     changed width -- the editor opening beside it, the window resized, the
+     compact board taking over -- has to place them again, or a shrunken bar
+     keeps a face it can no longer hold and a grown one never gets its. */
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); fitMarks(); presenceDraw(); })).observe(gridEl);
   // A web font that arrives after the first render changes every time's width.
   document.fonts?.ready.then(() => { fitTimes(); fitMarks(); });
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
@@ -7966,23 +7970,32 @@
      selected bar's. The panel's own `hidden` says the editor is open, as it
      does for the read above. */
   function presenceTell() {
+    // The editor may have just opened on a trip somebody else already holds,
+    // or just closed, and either way its line is owed an answer now.
+    presenceNote();
     if (!panelEl.hidden && editing?.id) return presenceSoon(editing.id, 'open');
     const bar = selectedBar();
     presenceSoon(bar?.dataset.tripId ?? null, 'selected');
   }
 
+  /* Everyone but me, one face each. My own second tab is skipped by account
+     rather than by key: a laptop and a phone are two connections, but seeing
+     my own face on the trip I am holding says nothing. Somebody else's two
+     tabs are one face for the same reason, and open beats selected, being the
+     firmer of the two. */
   function presenceRead() {
     const seen = new Map();
     const state = presenceCh?.presenceState?.() ?? {};
-    for (const [key, entries] of Object.entries(state)) {
-      if (key === presenceKey) continue;
+    for (const entries of Object.values(state)) {
       for (const who of entries) {
-        if (!who?.tripId) continue;
-        if (!seen.has(who.tripId)) seen.set(who.tripId, []);
-        seen.get(who.tripId).push(who);
+        if (!who?.tripId || !who.id || who.id === presenceMe?.id) continue;
+        if (!seen.has(who.tripId)) seen.set(who.tripId, new Map());
+        const here = seen.get(who.tripId);
+        const already = here.get(who.id);
+        if (!already || (already.state !== 'open' && who.state === 'open')) here.set(who.id, who);
       }
     }
-    presenceOthers = seen;
+    presenceOthers = new Map([...seen].map(([id, here]) => [id, [...here.values()]]));
     presenceDraw();
   }
 
@@ -7990,7 +8003,9 @@
      too narrow to lie a face over is left alone: the compact board shrinks a
      trip to a two-letter code, and a face there would be the whole bar. */
   const PRESENCE_MIN_WIDTH = 72;
+  const PRESENCE_FACES = 3;
   function presenceDraw() {
+    presenceNote();
     if (!gridEl) return;
     for (const old of gridEl.querySelectorAll('.scheduler-presence')) old.remove();
     if (!presenceOthers.size) return;
@@ -8000,14 +8015,40 @@
       if (bar.getBoundingClientRect().width < PRESENCE_MIN_WIDTH) continue;
       const box = el('span', 'scheduler-presence');
       box.setAttribute('aria-hidden', 'true');
-      for (const who of here.slice(0, 3)) {
+      for (const who of here.slice(0, PRESENCE_FACES)) {
         const face = el('span', `rux--user-avatar rux--user-avatar--sm scheduler-presence__face${who.state === 'open' ? ' scheduler-presence__face--open' : ''}`);
         face.title = who.name ? `${who.name} has this trip ${who.state === 'open' ? 'open' : 'selected'}` : '';
         window.Rux?.account?.drawAvatar?.(face, who, 'sm');
         box.appendChild(face);
       }
+      // A fourth person is a count, not a fourth thumbnail.
+      if (here.length > PRESENCE_FACES) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - PRESENCE_FACES}`));
       bar.appendChild(box);
     }
+  }
+
+  // "Ann", "Ann and Bo", "Ann, Bo and Cy".
+  function presenceNames(list) {
+    const names = list.map(who => who.name || 'Somebody');
+    if (names.length < 3) return names.join(' and ');
+    return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  }
+
+  /* The faces lie on bars the editor covers, and a face is not read aloud, so
+     the open editor says the same thing in words. */
+  const presenceNoteEl = document.getElementById('scheduler-presence-note');
+  function presenceNote() {
+    if (!presenceNoteEl) return;
+    const here = (!panelEl.hidden && editing?.id) ? presenceOthers.get(editing.id) ?? [] : [];
+    const open = here.filter(who => who.state === 'open');
+    const picked = here.filter(who => who.state !== 'open');
+    const said = [];
+    if (open.length) said.push(`${presenceNames(open)} ${open.length > 1 ? 'have' : 'has'} this trip open too.`);
+    // "it" only after the sentence that named the trip; alone it has nothing
+    // to point at.
+    if (picked.length) said.push(`${presenceNames(picked)} ${picked.length > 1 ? 'have' : 'has'} ${said.length ? 'it' : 'this trip'} selected.`);
+    presenceNoteEl.textContent = said.join(' ');
+    presenceNoteEl.hidden = !said.length;
   }
 
   let presenceKey = null;
@@ -8028,12 +8069,24 @@
        opened at all. */
     const me = await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null);
     if (!me) return;
+    // Known before the channel opens, so the first sync already knows which
+    // account is mine and does not draw me to myself.
+    presenceMe = { id: me.id, name: me.name, photoPath: me.photoPath, colour: me.colour };
     presenceKey = `${me.id}:${Math.random().toString(36).slice(2, 8)}`;
-    presenceCh = client.channel('scheduler-presence', { config: { presence: { key: presenceKey } } });
+    /* PRIVATE, so only a signed-in staff account may join. A public channel is
+       joinable by anyone holding the publishable key, which is in this file,
+       and everything tracked on it -- name, photo, account and trip -- would be
+       readable and forgeable from outside. The database decides, through a rule
+       on realtime.messages; without that rule the channel is closed to
+       everyone and no face is drawn, which is the safe way to fail. */
+    presenceCh = client.channel('scheduler-presence', { config: { private: true, presence: { key: presenceKey } } });
     presenceCh.on('presence', { event: 'sync' }, presenceRead);
     presenceCh.subscribe(status => {
+      if (status === 'CHANNEL_ERROR') {
+        console.info('scheduler: presence is off -- realtime.messages has no rule letting staff join.');
+        return;
+      }
       if (status !== 'SUBSCRIBED') return;
-      presenceMe = { id: me.id, name: me.name, photoPath: me.photoPath, colour: me.colour };
       presenceTell();
     });
   }

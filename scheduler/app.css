@@ -607,12 +607,15 @@ button.scheduler-row-head__num::after {
   letter-spacing: 0;
 }
 
-/* A mark this bus already answers for keeps its icon, in the bar's own text
-   colour with no warning fill: the trip has a sleeper, or a hotel, and nothing
-   is left to do about it. */
+/* A mark this bus already answers for takes the blank fill and its dark ink,
+   the pair the crew's not-sent disc already uses: the trip has a sleeper, or a
+   hotel, and nothing is left to do about it. A square either way, so a
+   requirement reads as one thing whether it is met or not, and the colour is
+   the only thing that changes -- against the amber of a warning and the bar's
+   own colour behind both. */
 .scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
-  background: none;
-  color: inherit;
+  background: var(--scheduler-mark-blank);
+  color: var(--scheduler-on-warning);
   box-shadow: none;
 }
 

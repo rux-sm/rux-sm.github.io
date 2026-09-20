@@ -328,6 +328,16 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  /* WHAT DAY ONE LEAVES, for the things on a bar that travel to its end: the
+     leg reference and the marks. A bar is `span` days wide less the clear
+     space and the gap, so one day inside it is that width plus what was taken
+     off, divided by the span; day one's edge is then that, less the clear
+     space and the padding this side. `max()` holds it at zero on a one-day
+     bar, where the sum is the bar itself and the arithmetic would push them
+     out into the gap. `fitMarks` subtracts it from the room it counts. */
+  --scheduler-day-one-end: max(0px, calc(100% - (100%
+    + var(--scheduler-gap) + var(--scheduler-gap-clear) + 2 * var(--rux-spacing-03))
+    / var(--scheduler-span) + var(--scheduler-gap-clear) + var(--rux-spacing-03)));
   /* Square unless the theme rounds its controls, as ant-dark does. */
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-bg);
@@ -549,29 +559,21 @@ button.scheduler-row-head__num::after {
    every bar tint. They sit at the end of the notes row, because a note gives
    way by the letter and a crew gives way a whole name at a time. The copy
    on the destination row shows only while the notes row is turned off. */
-/* THE MARKS STOP AT THE END OF THE TRIP'S FIRST DAY, however many days the
-   bar runs. They used to sit at the bar's far end, so a week's marks landed
-   wherever each trip happened to finish and none of them lined up; held to the
-   first day they sit a fixed distance from where every bar starts, and the eye
-   runs down the column.
-
-   The right margin is what day one leaves. A bar is `span` days wide less the
-   clear space and the gap, so one day inside it is that width plus what was
-   taken off, divided by the span; day one's edge is then that, less the clear
-   space and the padding this side. `max()` holds it at zero for a one-day bar,
-   where the sum is the bar itself and the arithmetic would push the marks out
-   into the gap. `fitMarks` subtracts this margin from the room it counts. */
-.scheduler-bar__warn {
-  display: flex;
-  gap: var(--rux-spacing-01);
-  flex: none;
-  margin-inline-start: auto;
-  margin-inline-end: max(0px, calc(100% - (100%
-    + var(--scheduler-gap) + var(--scheduler-gap-clear) + 2 * var(--rux-spacing-03))
-    / var(--scheduler-span) + var(--scheduler-gap-clear) + var(--rux-spacing-03)));
-}
+.scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; margin-inline-start: auto; }
 .scheduler-bar__warn--dest { display: none; }
 .scheduler-week--no-notes .scheduler-bar__warn--dest { display: flex; }
+/* BOTH STOP AT THE END OF THE TRIP'S FIRST DAY, however many days the bar
+   runs. They used to sit at the bar's far end, so across a week they landed
+   wherever each trip happened to finish and none of them lined up; held to the
+   first day they sit a fixed distance from where every bar starts, and the eye
+   runs down the column. The rows themselves are not narrowed, so the
+   destination and the note still give way across the whole bar. */
+.scheduler-bar__ref,
+.scheduler-bar__warn { margin-inline-end: var(--scheduler-day-one-end); }
+/* On the destination row the two travel together, so only the one at the end
+   holds that space -- the marks when the notes row is off and they are drawn
+   here, the reference when it is on and they are not. */
+.scheduler-week--no-notes .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-end: 0; }
 /* The reference and the marks travel together at the destination row's end:
    the first of the two takes the row's free space, so the other sits beside it
    rather than at the far side of the row. */

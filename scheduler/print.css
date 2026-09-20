@@ -45,6 +45,30 @@
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
+/* The form's controls, in a row: a switcher, the copy, the tick and the two
+   print buttons. It takes the width the title leaves rather than sizing to
+   its content, because a wrapping flex container is only as wide as its
+   widest child and the row would otherwise collapse into a column. Given the
+   room it is one row, and in the 30rem viewer it wraps inside it. */
+.scheduler-print__controls {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--rux-spacing-03);
+}
+
+/* Carbon sizes both of these to their field, which in a toolbar is the whole
+   row, and lets them be squeezed to nothing beside the buttons. They keep
+   their own width here instead. */
+.scheduler-print__controls > * { flex: none; }
+.scheduler-print__controls .rux--select { inline-size: 14rem; }
+/* Carbon splits the switcher's width evenly between its buttons, so it takes
+   a width rather than its content's: max-content leaves the longer name
+   clipped to an ellipsis. */
+.scheduler-print__controls .rux--content-switcher { inline-size: 15rem; }
+
 .scheduler-print__bar-title {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);

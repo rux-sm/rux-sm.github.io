@@ -554,9 +554,12 @@
       const group = el('div', 'rux--content-switcher rux--content-switcher--sm');
       group.setAttribute('role', 'tablist');
       for (const option of form.layouts) {
-        const btn = el('button', 'rux--content-switcher-btn', option.name);
+        const btn = el('button', 'rux--content-switcher-btn');
         btn.type = 'button';
         btn.setAttribute('role', 'tab');
+        // Carbon paints the selected fill in the button's own ::after, so the
+        // name has to be in the span that lifts it above that fill.
+        btn.appendChild(el('span', 'rux--content-switcher__label', option.name));
         const on = option.id === layout;
         btn.classList.toggle('rux--content-switcher--selected', on);
         btn.setAttribute('aria-selected', String(on));

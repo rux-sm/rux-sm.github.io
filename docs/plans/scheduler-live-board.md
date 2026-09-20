@@ -59,20 +59,22 @@ two people do not spend ten minutes editing the same trip before one finds out.
   mark. A crew member on a bar is a coloured glyph and a name, so a photo does
   not read as another driver.
 
+- **An open editor with unsaved work holds the read until it is closed.** The
+  board redrawing under a form is not dangerous, but the form would be showing
+  a trip as it no longer is. The panel's own `hidden` says the editor is open,
+  because `editing` keeps the last trip it held after the panel closes.
+
+- **A change made by somebody else says nothing.** The board redraws and that
+  is all; a notice on every save anyone makes would be noise on a busy day.
+
+- **The week board only.** The drivers page and the maintenance schedule read
+  the same tables and have the same problem, but neither was asked for.
+
 - **Coming back to the tab always refreshes.** The connection drops whenever
   the Mac sleeps, so the board reads again when it is looked at, whether or not
   the socket survived. This is the floor; the socket is what makes it live.
 
 ## Questions
-
-- **What happens when the trip editor is open with unsaved edits?** Redrawing
-  the board underneath is safe, but if the open trip is the one that changed,
-  its form is now stale. Hold the refresh until the editor closes, refresh the
-  board but leave the form alone, or say so and offer a button?
-
-- **Does someone else's change announce itself?** The board could redraw
-  quietly, or a notice could say what moved. Quiet is calmer; a notice explains
-  why a bar just moved on its own.
 
 - **Open, or selected too?** Opening a trip is deliberate and worth showing.
   Selecting a bar happens constantly while reading the week, so broadcasting it
@@ -84,23 +86,14 @@ two people do not spend ten minutes editing the same trip before one finds out.
   compact board shrinks all of that to a code. Beside the crew, in a corner of
   its own, or only on the bar's menu and the editor's head?
 
-- **Which pages?** The week board is the ask. The drivers page and the
-  maintenance schedule read the same tables and have the same problem.
-
 ## Tasks
+
+- [ ] Subscribe the five tables the migration adds, beside the seven the board
+      already listens to.
 
 - [ ] Show rux the SQL that adds `trip_drivers`, `drivers`, `driver_time_off`,
       `bus_out_of_service` and `settings` to the database's live list, and
       apply it as a named migration on a yes.
-
-- [ ] Subscribe the board to those tables and the seven already broadcasting,
-      gather a burst into one read, and only while the tab is being looked at.
-
-- [ ] Read the week again when the tab is returned to, whether or not the
-      socket lived, and make that the path everything else falls back to.
-
-- [ ] Answer the open-editor question above in code, and leave the reason in a
-      comment beside it.
 
 - [ ] Check a change made in the old trips app appears on the board without a
       reload: a trip moved to another bus, a driver's status changed, a bus put

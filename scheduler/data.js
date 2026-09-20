@@ -2603,6 +2603,8 @@
   // closing it is setting `hidden`.
   function closePanel(returnFocus = true) {
     if (panelEl.hidden) return;
+    // A read that waited for this editor is owed as soon as it is out of the way.
+    if (liveHeld) setTimeout(liveRefresh, 0);
     /* A draft is read the moment the panel shows it, so closing spends it
        whether Save was pressed or not. A delete that fails leaves a row the
        nightly cleanup takes instead. */
@@ -7866,6 +7868,59 @@
     return reading;
   }
 
+  /* ── The week as it is now ─────────────────────────────────────────────────
+     The board is drawn from seven tables, and the old trips app writes the same
+     ones, so a schedule left open goes stale without saying so. A change to any
+     of them means the same thing here -- read the week again -- so one
+     subscription carries them all and `show` does the drawing, which is why a
+     live board and a reloaded board cannot come to differ.
+
+     Patching one bar instead was not an option even in principle: a delete
+     arrives as the row's id and nothing else, so a bar that vanished could not
+     be found without reading the week anyway.
+
+     `trip_drivers`, `drivers`, `driver_time_off`, `bus_out_of_service` and
+     `settings` are not in the database's publication yet, so a crew or a
+     driver's status still waits for the next read. The rest are. */
+  const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_stops', 'trip_payments',
+    'trip_pos', 'trip_invoices', 'buses'];
+  const LIVE_SETTLE = 400;
+  let liveTimer = null, liveHeld = false;
+
+  /* Nothing is redrawn under someone's hands. A week being dragged, an open
+     editor with unsaved work in it and a tab nobody is looking at all hold the
+     read until they are done, and `liveHeld` is what remembers one is owed.
+     The panel's own `hidden` is what says the editor is open: `editing` keeps
+     the last trip it held after the panel closes, so it alone would hold the
+     board for the rest of the session. */
+  function liveRefresh() {
+    const busyEditing = !panelEl.hidden && editing && changed();
+    if (document.hidden || weekMotion || busyEditing) { liveHeld = true; return; }
+    liveHeld = false;
+    show();
+  }
+
+  // Saving a trip writes several of these tables, so a burst settles into one
+  // read rather than one each.
+  function liveSoon() {
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(liveRefresh, LIVE_SETTLE);
+  }
+
+  /* Coming back to the tab always reads, held or not: the socket goes down
+     with the Mac and comes back knowing nothing about what it missed, so the
+     look is the floor and the subscription is only what makes it live. */
+  function listen() {
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) liveRefresh(); });
+    window.addEventListener('focus', () => { if (liveHeld) liveRefresh(); });
+    if (!client?.channel) return;
+    const board = client.channel('scheduler-board');
+    for (const table of LIVE_TABLES) {
+      board.on('postgres_changes', { event: '*', schema: 'public', table }, liveSoon);
+    }
+    board.subscribe();
+  }
+
   async function readWeek() {
     if (!client) {
       schEl.hidden = true;
@@ -8464,6 +8519,7 @@
     } else {
       show();
     }
+    listen();
     loadShortcuts();
   })();
 })();

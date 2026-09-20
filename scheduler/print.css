@@ -295,6 +295,15 @@
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
+/* A mark between them, because space alone runs them into one phrase and
+   these are separate facts about the trip. The header's own line already
+   separates the phone numbers this way. */
+.scheduler-envelope__need + .scheduler-envelope__need::before {
+  content: '·';
+  margin-inline-end: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+}
+
 /* The seat's own instruction, under the requirements and set apart from them
    by weight rather than a fill. */
 .scheduler-envelope__note {

@@ -109,16 +109,31 @@
   }
 
   /* What the trip needs, from `trip_reqs` where it is set and the older
-     booleans where it is not, which is the pair rux-ui reads. A fuel card
-     prints a rule for its number, because the office writes that in. */
+     booleans where it is not, which is the pair rux-ui reads.
+
+     THE FIVE BELOW ARE ONLY THE ONES THIS FORM SPELLS OUT. The list is the
+     office's to edit and already holds more than five, so a ticked id this
+     table does not know still prints, named from `requirementNames` and by
+     its raw id if that could not be read -- the same fallback the board's
+     history takes. Dropping it would take a requirement off the envelope
+     without saying so.
+
+     One way sits second because it changes how the driver runs the day, and
+     a fuel card prints a rule for its number, because the office writes that
+     in by hand. */
   const NEEDS = {
     pax56: { label: '56 passengers' },
+    oneWay: { label: 'One way' },
     sleeper: { label: 'Sleeper' },
     adaLift: { label: 'Wheelchair lift' },
     fuelCard: { label: 'Fuel card', fill: true },
     hotel: { label: 'Hotel' },
   };
-  const NEED_ORDER = ['pax56', 'sleeper', 'adaLift', 'fuelCard', 'hotel'];
+  const NEED_ORDER = ['pax56', 'oneWay', 'sleeper', 'adaLift', 'fuelCard', 'hotel'];
+
+  /* The requirements the office keeps, id to label, read once a form opens.
+     Empty until then, and empty if the read failed. */
+  let requirementNames = new Map();
 
   function needsOf(trip) {
     const reqs = trip.trip_reqs;
@@ -129,11 +144,27 @@
           ['adaLift', trip.req_ada], ['fuelCard', trip.need_fuel_card],
           ['hotel', trip.need_hotel],
         ].filter(([, v]) => v).map(([k]) => k));
-    const list = NEED_ORDER.filter(id => on.has(id)).map(id => ({ id, ...NEEDS[id] }));
-    if (trip.trip_type && trip.trip_type !== 'round_trip') {
-      list.push({ id: 'oneWay', label: 'One way' });
-    }
-    return list;
+    if (trip.trip_type && trip.trip_type !== 'round_trip') on.add('oneWay');
+    const named = NEED_ORDER.filter(id => on.has(id));
+    const rest = [...on].filter(id => !NEEDS[id]);
+    return [...named, ...rest].map(id => ({
+      id,
+      label: NEEDS[id]?.label || requirementNames.get(id) || id,
+      fill: Boolean(NEEDS[id]?.fill),
+    }));
+  }
+
+  /* The office's own requirement list, where rux-ui keeps it. A form asks for
+     it once it is on screen; a read that fails leaves the five above naming
+     themselves and everything else naming its id. */
+  const REQUIREMENTS_KEY = 'requirements-v1';
+  async function readRequirementNames(client) {
+    const { data } = await client
+      .from('settings').select('value').eq('key', REQUIREMENTS_KEY).maybeSingle();
+    if (!Array.isArray(data?.value)) return;
+    requirementNames = new Map(data.value
+      .filter(r => r && typeof r.id === 'string' && r.label)
+      .map(r => [r.id, String(r.label)]));
   }
 
   // The leg's pickup, where the Route tab keeps the address and the spot time.
@@ -225,10 +256,10 @@
     { label: 'ELD verified', choices: ['DRV', 'OFC'] },
     { label: 'Hotel', money: true },
     { label: 'ELD backup used', choices: ['Yes', 'No'] },
-    { label: 'Diesel / DEF', money: true },
-    { label: 'Card for trip', choices: ['Yes', 'No'] },
+    { label: 'Diesel/Blue Def', money: true },
+    { label: 'CC for trip', choices: ['Yes', 'No'] },
     { label: 'Repairs', money: true },
-    { label: 'Card received by', fill: true },
+    { label: 'CC received by', fill: true },
     { label: 'Miscellaneous', money: true },
     { label: 'Total trip miles', fill: true },
     { label: 'Total', money: true },
@@ -262,10 +293,12 @@
     const instruction = String(seat?.instructions || '').trim();
     if (!needs.length && !instruction) return notes;
 
+    /* Each one is a label, not a box. Directly above these sit the ELD and
+       card lines, which are real boxes for the driver's pen, and an empty
+       square beside "56 passengers" reads there as "not needed". */
     const list = el('div', 'scheduler-envelope__needs');
     for (const need of needs) {
       const item = el('div', 'scheduler-envelope__need');
-      item.appendChild(el('span', 'scheduler-envelope__box'));
       item.appendChild(el('span', null, need.label));
       if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
       list.appendChild(item);
@@ -749,8 +782,12 @@
     }
 
     say('info', 'Loading…', '');
-    const { data, error } = await client
-      .from('trip_assignments').select(ASSIGNMENT_QUERY).eq('id', assignmentId).maybeSingle();
+    // Both at once: the names only decide what a requirement is called, and
+    // waiting for them in turn would hold the form back for nothing.
+    const [{ data, error }] = await Promise.all([
+      client.from('trip_assignments').select(ASSIGNMENT_QUERY).eq('id', assignmentId).maybeSingle(),
+      readRequirementNames(client).catch(() => {}),
+    ]);
     if (error) return say('error', 'The schedule did not answer.', error.message);
     if (!data?.trips) return say('error', 'That bus is not on the schedule any more.', '');
 

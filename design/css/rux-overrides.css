@@ -190,6 +190,19 @@
   border-radius: 12px;
 }
 
+/* GEIST'S TERTIARY BUTTON IS PLAIN TEXT, NOT A LINK. Carbon paints a ghost
+   button's label with `link-primary` and everything else about it -- its icon,
+   and the glyph of its icon-only form -- with `icon-primary`, so one control
+   changes colour on whether it carries a word or a picture. Geist draws its
+   tertiary button as the page's own text at every size and keeps blue for
+   links, so the label takes `text-primary` here and meets the icons beside it.
+   Disabled is excluded by name because Carbon's disabled rule carries the same
+   specificity and this file loads after it; `danger--ghost` is its own class
+   and keeps its red. */
+[data-theme="geist-dark"] .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary, #161616);
+}
+
 /* The option at each end of a list takes the menu's curve. A selected or
    highlighted row paints its own background across the full width, and a
    square one shows in the rounded menu's corners -- most visible on a search

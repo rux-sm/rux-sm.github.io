@@ -287,7 +287,21 @@
     toastEl.replaceChildren();
     if (!kind) { toastEl.hidden = true; return; }
     toastEl.hidden = false;
-    toastEl.appendChild(note(kind, title, subtitle, action, true));
+    const box = note(kind, title, subtitle, action, true);
+    toastEl.appendChild(box);
+    /* A success with nothing to press is a receipt for something the person
+       just did and can see on the board, so it closes itself; a warning, an
+       error, the offer of an undo and the notice that a save is still in the
+       air all stay, because each of them is asking for something. The bar
+       along the toast's foot is the clock itself -- the toast goes when the
+       bar's animation ends -- so app.css pausing that animation under the
+       pointer pauses the dismissal, and there are not two clocks to agree. */
+    if (kind === 'success' && !action) {
+      const timer = el('span', 'scheduler-toast__timer');
+      timer.setAttribute('aria-hidden', 'true');
+      timer.addEventListener('animationend', () => { if (timer.isConnected) toast(null); });
+      box.appendChild(timer);
+    }
   }
 
   // -- reading --------------------------------------------------------------

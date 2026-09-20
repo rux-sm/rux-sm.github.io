@@ -1777,6 +1777,35 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 
+/* THE BAR IS THE CLOCK. A toast that only confirms what just happened wears a
+   line along its foot that runs out in four seconds, and data.js closes the
+   toast when that animation ends -- so the bar and the dismissal are one
+   thing, and pausing the bar pauses the dismissal. Only the card that holds
+   one is positioned, so every other toast keeps Carbon's own box. */
+.scheduler-toast > :has(> .scheduler-toast__timer) { position: relative; }
+.scheduler-toast__timer {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--rux-support-success);
+  transform-origin: 0 50%;
+  animation: scheduler-toast-timer 4s linear forwards;
+}
+@keyframes scheduler-toast-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+/* Reading stops the clock: a message never goes out from under the pointer,
+   or while the keyboard is somewhere inside it. */
+.scheduler-toast:hover .scheduler-toast__timer,
+.scheduler-toast:focus-within .scheduler-toast__timer { animation-play-state: paused; }
+/* With motion turned down the bar stops showing rather than stopping: it is
+   what times the toast, so it keeps running and only goes invisible. */
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-toast__timer { opacity: 0; }
+}
+
 /* The page holds still behind a panel in front of the board. A drag that
    reaches past the end of that panel's list, or starts on its header, would
    otherwise scroll or bounce the board behind it, which is set aside. The lock

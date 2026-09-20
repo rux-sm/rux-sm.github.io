@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_68 shipped fragments · 21 marked, holding 27 of the catalogue's 63 blocks · 281 candidate regions in the 47 unmarked._
+_68 shipped fragments · 21 marked, holding 27 of the catalogue's 63 blocks · 285 candidate regions in the 47 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -230,7 +230,7 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 63 blocks · 2
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |
 | `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, menu, overlay, profile | yes |
 | `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | copy-button, popover, tabs | yes |
-| `tags` | tag | — | 20 | — | — | dismiss | no |
+| `tags` | tag | — | 24 | — | — | dismiss | no |
 | `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | copy-button, form-controls, list-box, popover | no |
 | `textarea` | form, text-area | — | 5 | — | — | — | no |
 | `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | tile | yes |

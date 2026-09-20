@@ -592,16 +592,19 @@
     <h2>Tags</h2><p>colors · sizes · filter</p>
     <!-- PROVENANCE: rendered-dom · components-tag--operational, --dismissible,
          --read-only with its disabled and lg recipes, and --selectable,
-         2026-08-28 -->
+         2026-08-28. One specimen is not from a capture: the interactive tag is
+         read from @carbon/react 1.94.0 lib/components/Tag/Tag.js, because no
+         story renders that class -- see the note beside it. -->
     <!--
       OPERATIONAL is a real variant this fragment never demoed — 57 rules, more
       than any other tag modifier. It is a BUTTON, not a div, takes the size
       pair `layout--size-md`, and puts its glyph in `__custom-icon` and its text
       in `__label` inside a bare span. Added above.
 
-      EVERY TAG CARRIES ITS `layout--size-*`, because that class alone sets the
+      A SIZE IS WRITTEN AS A PAIR, because `layout--size-*` alone sets the
       height: `tag--sm` and `tag--lg` only move the inline padding, so a size
-      written without its pair renders medium.
+      written without its pair renders medium. The selectable row below asks
+      for no size at all, as its story does, and takes the md default.
 
       Not copied from the reference: the icon-tooltip popover it wraps
       operational and dismissible tags in, on the combo-button precedent — the
@@ -640,6 +643,63 @@
       </button>
       <button type="button" class="rux--tag rux--tag--operational rux--layout--size-md rux--tag--blue">
         <span><span class="rux--tag__label">Filter by region</span></span>
+      </button>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">selectable</div>
+    <!--
+      components-tag--selectable. A BUTTON carrying `tag--selectable` alone —
+      the story passes no size, so Carbon emits no size class and the tag takes
+      the md default from its own clamp. `aria-pressed` is not in the
+      extractor's recorded list, so the capture is silent about it;
+      SelectableTag's source writes it on every selectable tag and it is
+      written here. The pressed one is a STATIC state, like every other
+      selected state in this sink: there is no toggle module.
+
+      No disabled selectable, although `tag--selectable.tag--disabled` has a
+      rule: no story renders one, and check-tags has `tag--disabled` on a
+      <div> from the read-only recipe. The read-only row draws it.
+    -->
+    <div class="ks-row" role="group" aria-label="Filter by">
+      <button type="button" class="rux--tag rux--tag--selectable" aria-pressed="false">
+        <div class="rux--tag__custom-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-location"/></svg>
+        </div>
+        <span><span class="rux--tag__label">Region</span></span>
+      </button>
+      <button type="button" class="rux--tag rux--tag--selectable rux--tag--selectable-selected" aria-pressed="true">
+        <div class="rux--tag__custom-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-time"/></svg>
+        </div>
+        <span><span class="rux--tag__label">Last hour</span></span>
+      </button>
+      <button type="button" class="rux--tag rux--tag--selectable" aria-pressed="false">
+        <div class="rux--tag__custom-icon">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-user--multiple"/></svg>
+        </div>
+        <span><span class="rux--tag__label">Owner</span></span>
+      </button>
+    </div>
+
+    <div class="ks-label" style="margin-block-start:1.5rem">interactive</div>
+    <!--
+      SOURCE, not rendered-dom: `tag--interactive` appears in none of the 669
+      captured stories, because Carbon adds it from a measurement taken after
+      render. Tag.js writes it when a tag has an onClick, is not selectable,
+      filter or operational, and its `__label` is actually clipped — so it is a
+      plain colour tag made clickable, which makes it a BUTTON, whose label
+      outran the component's 13rem cap. The label below is 226px of text in a
+      192px box, so it really does ellipsise. The class carries a focus outline
+      and a background transition, nothing else.
+
+      Carbon pairs that same clipped label with a definition tooltip, whose
+      trigger is a button; inside this button that would be a button in a
+      button. The sink declines the popover chrome throughout, and declining it
+      here also keeps the markup valid.
+    -->
+    <div class="ks-row">
+      <button type="button" class="rux--tag rux--layout--size-md rux--tag--blue rux--tag--interactive">
+        <span class="rux--tag__label">eu-west-1 read replica, promoted today</span>
       </button>
     </div>
 

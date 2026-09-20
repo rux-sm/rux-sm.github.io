@@ -863,8 +863,10 @@
     if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
     addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', contact.phone) : null);
 
-    // Departure and return on one line, an en dash between them. The spot time
-    // is not drawn, because two times already fill the row; the editor shows it.
+    // Departure and return on one line, an en dash between them. A leg with
+    // neither says so, so an empty row never reads as a rendering fault. The
+    // spot time is not drawn, because two times already fill the row; the
+    // editor shows it.
     // A one-day leg whose return is earlier than its departure comes back after
     // midnight, so the return is marked +1.
     const legDays = daysBetween(parseISO(leg.from), parseISO(leg.to)) + 1;
@@ -874,7 +876,7 @@
       const span = el('span', `scheduler-bar__time-${short ? 'short' : 'long'}`, dep && back ? (short ? `${dep}\u2013${back}` : `${dep} \u2013 ${back}`)
         : dep ? `Dep ${dep}`
         : back ? `Ret ${back}`
-        : (legDays > 1 ? `${legDays} days` : ''));
+        : (short ? 'No times' : 'No times yet'));
       if (nextDay) {
         const mark = el('sup', 'scheduler-bar__next-day', '+1');
         mark.title = 'Returns the next day';
@@ -884,10 +886,11 @@
     };
     /* A third form, for the compact board: one line has room for one time, and
        the one worth reading at a glance is when the bus leaves. A leg with only
-       a return says so, and a leg with neither counts its days. */
+       a return says so, and a leg with neither says the times are still to come,
+       rather than leaving the row empty. */
     const depAlone = hhmm(leg.depart, true), backAlone = hhmm(leg.back, true);
     const whenDep = el('span', 'scheduler-bar__time-dep',
-      depAlone || (backAlone ? `Ret ${backAlone}` : legDays > 1 ? `${legDays} days` : ''));
+      depAlone || (backAlone ? `Ret ${backAlone}` : 'No times'));
     const when = times(false), whenShort = times(true);
     addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
 

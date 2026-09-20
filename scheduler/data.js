@@ -8164,21 +8164,29 @@
      No `touch-action` is set: with nothing to scroll sideways there is nothing
      for the browser to take, and a pane that does scroll is let alone above. */
   /* ── A drag carries the week ───────────────────────────────────────────────
-     The gesture picks its axis in its first 10px and keeps it, the way a
+     The gesture picks its axis in its first 6px and keeps it, the way a
      carousel does, rather than being judged on where it ended: a thumb arcs,
      and a swipe 90px across with 70px of drift in it is still plainly sideways.
-     Once it is sideways the week follows the finger and the next one comes in
-     beside it, drawn from the read that already covers it. On release a
-     deliberate 40px settles on the new week, or 24px if it was quick, because
-     speed is what says it was meant; anything less springs back. A gesture that
-     never moves 10px is a tap and leaves the week alone.
+     It picks early because the browser is deciding at the same time, and the
+     one that decides first keeps the gesture. Sideways wins unless the finger
+     is within 30 degrees of straight up or down, which is where a scroll
+     actually lives. Once it is sideways the week follows the finger and the
+     next one comes in beside it, drawn from the read that already covers it. On
+     release a deliberate 40px settles on the new week, or 24px if it was quick,
+     because speed is what says it was meant; anything less springs back. A
+     gesture that never moves 6px is a tap and leaves the week alone.
 
      It runs on the compact board only, where the seven days fit and the axis is
      free; on the full board a sideways drag is the week scrolling to its other
      days. It also stands down while a trip is being carried, within the 24px
      the system takes for its own back gesture, and where the week being swiped
      to is not in hand -- a jump from the date picker draws as it always did. */
-  const SWIPE_LOCK = 10;
+  const SWIPE_LOCK = 6;
+  /* How much rise a swipe may carry and still be a swipe: the vertical may
+     reach 1.73 times the horizontal, which is 60 degrees off the horizontal.
+     Wide, because a thumb arcs and the board's own scrolling is steeper than
+     that; anything a finger means as a scroll is near vertical. */
+  const SWIPE_CONE = 1.73;
   const SWIPE_MIN = 40;
   const SWIPE_FLICK = 24;
   const SWIPE_FLICK_MS = 300;
@@ -8236,8 +8244,13 @@
       const dx = e.clientX - g.x;
       const dy = e.clientY - g.y;
       if (!g.axis) {
-        if (Math.abs(dx) < SWIPE_LOCK && Math.abs(dy) < SWIPE_LOCK) return;
-        g.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (Math.hypot(dx, dy) < SWIPE_LOCK) return;
+        /* Sideways unless the gesture is plainly up or down. A thumb travels
+           in an arc, so an even split between the axes reads as a swipe with a
+           rise in it, not as scrolling; only past about 60 degrees off the
+           horizontal does it become a scroll. The board still scrolls, because
+           a scroll is nowhere near that shallow. */
+        g.axis = Math.abs(dx) * SWIPE_CONE >= Math.abs(dy) ? 'x' : 'y';
         /* Whether this gesture may change the week is settled here, once, and
            never asked again at release: a trip being carried clears its own
            flag on the way up, and the bar's handler runs first, so a check on
@@ -8262,6 +8275,17 @@
       // With nothing to come in, the week holds still rather than baring the pane.
       else schEl.style.setProperty('--scheduler-slide', '0px');
     });
+
+    /* `touch-action: pan-y` hands the browser the up-and-down axis, and it
+       takes any gesture that drifts into it -- scrolling the board and
+       cancelling the pointer part-way through a swipe, which is what made a
+       swipe with a little rise in it scroll instead of turning the week. Once
+       the axis is locked sideways the browser is told to keep off, and it obeys
+       that only from a listener declared not passive. The board still scrolls:
+       a gesture locked up-and-down never reaches this. */
+    schEl.addEventListener('touchmove', e => {
+      if (g?.axis === 'x' && g.sliding && e.cancelable) e.preventDefault();
+    }, { passive: false });
 
     schEl.addEventListener('pointercancel', () => {
       if (g?.sliding) settle(0, 0);

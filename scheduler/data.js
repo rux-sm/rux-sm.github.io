@@ -7879,11 +7879,12 @@
      arrives as the row's id and nothing else, so a bar that vanished could not
      be found without reading the week anyway.
 
-     `trip_drivers`, `drivers`, `driver_time_off`, `bus_out_of_service` and
-     `settings` are not in the database's publication yet, so a crew or a
-     driver's status still waits for the next read. The rest are. */
-  const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_stops', 'trip_payments',
-    'trip_pos', 'trip_invoices', 'buses'];
+     All twelve the week is drawn from broadcast their changes; `contacts` is
+     the one left out, because a booking contact is read far more often than it
+     is edited and it is the table of customers' own details. */
+  const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops',
+    'trip_payments', 'trip_pos', 'trip_invoices', 'buses', 'drivers',
+    'driver_time_off', 'bus_out_of_service', 'settings'];
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;
 

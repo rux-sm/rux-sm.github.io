@@ -88,13 +88,6 @@ two people do not spend ten minutes editing the same trip before one finds out.
 
 ## Tasks
 
-- [ ] Subscribe the five tables the migration adds, beside the seven the board
-      already listens to.
-
-- [ ] Show rux the SQL that adds `trip_drivers`, `drivers`, `driver_time_off`,
-      `bus_out_of_service` and `settings` to the database's live list, and
-      apply it as a named migration on a yes.
-
 - [ ] Check a change made in the old trips app appears on the board without a
       reload: a trip moved to another bus, a driver's status changed, a bus put
       out of service.

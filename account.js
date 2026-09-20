@@ -256,6 +256,35 @@
       panelButton.insertAdjacentElement('afterend', link);
     }
 
+    /* THE PANEL SAYS WHOSE ACCOUNT THIS IS. Until now only the missing Sign in
+       button said you were signed in at all, and the field below it asks for a
+       "display name" that is this browser's alone -- so the panel offered a
+       name that was not the account's and never gave the one that was. The
+       photo is left out: the header's Account button is this person's face and
+       sits directly above the panel. */
+    const stack = panel?.firstElementChild;
+    if (stack) {
+      const who = await person();
+      const line = document.createElement('div');
+      const label = document.createElement('div');
+      label.className = 'rux--label rux--label--no-margin';
+      label.textContent = 'Signed in';
+      line.appendChild(label);
+      if (who?.name) {
+        const name = document.createElement('div');
+        name.textContent = who.name;
+        line.appendChild(name);
+      }
+      stack.prepend(line);
+      // A name this browser keeps can change under the panel while it is open.
+      if (who && !who.staff) profile.onChange(p => {
+        const name = line.lastElementChild === label ? null : line.lastElementChild;
+        if (p.name && name) name.textContent = p.name;
+        else if (p.name) { const n = document.createElement('div'); n.textContent = p.name; line.appendChild(n); }
+        else if (name) name.remove();
+      });
+    }
+
     // The panel's one button becomes Log out. profile.js reveals it only when
     // something registers a handler.
     profile.onSignIn(async () => {

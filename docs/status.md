@@ -6,8 +6,6 @@ done and how.
 
 ## Home and account
 
-- The account panel never says who is signed in. Only the missing Sign in
-  button shows that you are.
 - An interrupted anonymous sign-in, when Turnstile times out or the network
   drops, isn't retried until the next page load.
 

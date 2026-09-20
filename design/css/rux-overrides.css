@@ -231,6 +231,17 @@
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
 
+/* A SELECTABLE TAG RINGS LIKE THE OUTLINE BUTTON. Carbon draws it with
+   `border-inverse`, the brightest line the theme has, so the trip editor's
+   Needs chips shout beside the fields around them. Geist rings an outlined
+   control in a grey barely above its surface -- measured at #2e2e2e on its own
+   secondary button -- so the tag takes the same line this theme already gives
+   that button. The content switcher keeps the bright ring: it is a control
+   that says which of several views is showing, and the line is what says it. */
+[data-theme="geist-dark"] .rux--tag--selectable {
+  border-color: var(--rux-border-subtle-02, #e0e0e0);
+}
+
 /* The option at each end of a list takes the menu's curve. A selected or
    highlighted row paints its own background across the full width, and a
    square one shows in the rounded menu's corners -- most visible on a search

@@ -437,8 +437,17 @@
   border: 1px solid transparent;
   color: var(--rux-text-primary);
 }
+/* A toast carries three parts an inline notification does not -- a subtitle, a
+   caption and a close button of its own -- and each names Carbon's inverse ink
+   rather than inheriting the card's, so on a tinted card they draw in black.
+   The container's colour above is what the title reads by. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__subtitle,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__caption {
+  color: var(--rux-text-primary);
+}
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification .rux--inline-notification__close-icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--inline-notification__close-icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--inline-notification__close-icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--toast-notification__close-icon {
   fill: var(--rux-icon-primary);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--error,

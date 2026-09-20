@@ -7831,9 +7831,23 @@
   const weekPrint = (data, weekStart) => {
     const weekEnd = addDays(weekStart, 6);
     const span = { from: iso(weekStart), to: iso(weekEnd) };
+    /* The whole trip, not its id and stamp: a bar's bus, its crew, its stops
+       and its money all live in tables of their own, and none of them moves
+       `trips.updated_at`. Fingerprinting the stamp alone made a trip dragged to
+       another bus print the same as before, so the read that followed the drag
+       was judged a no-op and the bar stayed where it had been until a reload.
+       The embedded rows are sorted, because the select fixes the columns but
+       not the order they come back in. */
+    const byId = (x, y) => String(x.id).localeCompare(String(y.id));
+    const whole = tr => JSON.stringify({
+      ...tr,
+      trip_assignments: [...(tr.trip_assignments || [])]
+        .map(a => ({ ...a, trip_drivers: [...(a.trip_drivers || [])].sort(byId) }))
+        .sort(byId),
+    });
     const drawn = (data.trips || [])
       .filter(tr => legsOf(tr).some(l => clip(l.from, l.to, weekStart, weekEnd)))
-      .map(tr => `${tr.id}@${tr.updated_at}`).sort();
+      .map(whole).sort();
     /* Whole rows, not how many of them: a window keeps its number while its
        dates move the stripe it draws and its reason rewrites the flag's words.
        The select is fixed, so two reads spell the same row the same way. */

@@ -1347,11 +1347,11 @@ button.scheduler-row-head__num::after {
 
 /* The three states. Free is the one being looked for, so it is empty; busy
    and off are Carbon's tag tints, the palette the trip bar uses. A mark is
-   painted on the content box inside 1px of padding, so it sits within its cell
+   painted on the content box inside 2px of padding, so it sits within its cell
    rather than filling it: a run of busy days still reads as a run, and the day
    it starts and ends on can still be counted against the rules. */
 .scheduler-avail__cell {
-  padding: 1px;
+  padding: 2px;
   overflow: hidden;
   background-clip: content-box;
 }

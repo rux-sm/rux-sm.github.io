@@ -5,7 +5,8 @@
       "name": "serve-cloud",
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/serve.mjs", "--cloud"],
-      "port": 8641
+      "port": 8641,
+      "autoPort": false
     }
   ]
 }

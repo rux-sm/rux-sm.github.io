@@ -487,3 +487,78 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:last-child {
   border-end-end-radius: 12px;
 }
+
+/* GEIST ENDS A SURFACE WITH BUTTONS, NOT WITH A BAND. Carbon fills the last
+   64px of a side panel or a modal with its buttons, edge to edge and divided
+   between them by a flex basis, which is why the rules above make them square
+   and lend them the surface's corner. Geist puts ordinary buttons inside the
+   surface and gathers them at the end -- measured on its Modal and Sheet, both
+   right aligned over a transparent footer with 6px corners. Only `geist-dark`
+   leaves; every other theme keeps the band, so the rules above stand and the
+   corner is taken back here rather than the selector list being written twice.
+
+   A GRID, SO NO FLEX BASIS HAS TO BE OUTWEIGHED. Carbon divides the bar with
+   ten flex-basis rules, one per button count and size, the heaviest naming six
+   classes; a rule beating that would be aimed at the wrong selector. Laying
+   the footer out as a grid instead leaves every one of them inert, because
+   `flex` means nothing to a grid item, and a column track takes its button's
+   own width. */
+[data-theme="geist-dark"] .rux--action-set,
+[data-theme="geist-dark"] .rux--modal-footer {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: end;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-05);
+  background-color: transparent;
+  block-size: auto;
+}
+/* The height is `md`, read through Carbon's own size variable rather than a
+   number, because 40px is the height of every field, toolbar button and menu
+   row in these apps and a footer is no reason for a third size. Carbon pads a
+   footer button's block to push its label to the top of a 64px block. A side
+   panel names its own button twice to set that height, so this names the panel
+   to meet it rather than doubling a class. */
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
+[data-theme="geist-dark"] .rux--side-panel .rux--side-panel__actions-container .rux--action-set__action-button,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn {
+  align-items: center;
+  /* `btn-set` hands a button the whole bar, which is the band's idea of a
+     button; in a column that takes the free space it would fill that too. */
+  inline-size: max-content;
+  block-size: var(--rux-layout-size-height-md);
+  min-block-size: var(--rux-layout-size-height-md);
+  padding-block: 0;
+}
+/* The corner comes back on the two buttons the rules above lend the surface's
+   own, which name a child and so outrank a plain radius here. */
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button:first-child,
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button:last-child,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn:first-child,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn:last-child {
+  border-radius: 6px;
+}
+/* Carbon pads a footer button's trailing edge for an icon and its leading edge
+   for a ghost; at its own width either reads as a label pushed off centre. */
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button--ghost,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn:not(.rux--skeleton) {
+  padding-inline: var(--rux-spacing-05);
+}
+/* Three or more, and the first stands away from the rest: the trip editor's
+   Cancel trip is destructive where Reset and Save are the safe pair, so a
+   reach for Save never crosses it. Two sit together at the end. The first
+   column takes the free space and its button sits at the column's start,
+   because a grid packed to the end leaves no space for an auto margin. */
+[data-theme="geist-dark"] .rux--action-set:has(> :nth-child(3)),
+[data-theme="geist-dark"] .rux--modal-footer:has(> :nth-child(3)) {
+  grid-template-columns: 1fr;
+  grid-auto-columns: max-content;
+}
+[data-theme="geist-dark"] .rux--action-set:has(> :nth-child(3)) > :first-child,
+[data-theme="geist-dark"] .rux--modal-footer:has(> :nth-child(3)) > :first-child {
+  justify-self: start;
+}

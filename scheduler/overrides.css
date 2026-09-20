@@ -294,7 +294,8 @@
    button's trailing edge for an optional icon, which raises Reset's and Save's
    minimum width above Cancel's; one symmetric padding lets the equal flex
    basis decide. Scoped to the panel's bar, so modal footers keep Carbon's
-   spacing. */
+   spacing. The geist-dark theme ends the bar instead, giving each button its
+   own width and the same padding, so this changes nothing there. */
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-05);
 }

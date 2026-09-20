@@ -7800,10 +7800,16 @@
     const drawn = (data.trips || [])
       .filter(tr => legsOf(tr).some(l => clip(l.from, l.to, weekStart, weekEnd)))
       .map(tr => `${tr.id}@${tr.updated_at}`).sort();
+    /* Whole rows, not how many of them: a window keeps its number while its
+       dates move the stripe it draws and its reason rewrites the flag's words.
+       The select is fixed, so two reads spell the same row the same way. */
     const windows = rows => (rows || [])
       .filter(r => datesOverlap(span, { from: r.start_date, to: r.end_date || r.start_date }))
-      .length;
-    return [drawn.join(','), windows(data.oos), windows(data.timeOff), (data.buses || []).length].join('|');
+      .map(r => JSON.stringify(r)).sort().join(',');
+    // Whole rows again: a number, a status or a fitting the row head draws all
+    // change without the fleet's size changing.
+    const fleet = (data.buses || []).map(b => JSON.stringify(b)).sort().join(',');
+    return [drawn.join(','), windows(data.oos), windows(data.timeOff), fleet].join('|');
   };
 
   /* One read at a time, and the last ask always gets its own. A week change or
@@ -8205,7 +8211,13 @@
 
     schEl.addEventListener('pointerdown', e => {
       if (schEl.classList.contains('scheduler-week--settling')) return;
-      g = e.pointerType === 'touch' && e.isPrimary
+      const mine = e.pointerType === 'touch' && e.isPrimary;
+      /* A second finger ends the gesture -- it is a pinch, not a swipe -- and
+         the week has to come back with it. Nothing else would bring it: the
+         release that follows reads a gesture already gone and leaves teardown
+         undone, so the week would stay parked where the finger left it. */
+      if (!mine && g?.sliding) settle(0, 0);
+      g = mine
         ? { x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null, sliding: false, allowed: false }
         : null;
     });
@@ -8275,8 +8287,15 @@
       const days = dx < 0 ? 7 : -7;
       if (start.sliding) {
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
-        if (far && arriving) settle(dx < 0 ? -start.travel : start.travel, days);
-        else settle(0, 0);
+        if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }
+        /* Far enough, with nothing to bring in: a second swipe has overtaken
+           the first one's read, so the week either side is not in hand yet. It
+           steps without the slide, the way reduced motion does. The board never
+           moved -- `pointermove` holds it still with nothing to come in -- so
+           there is nothing to ease back. The compact board has no chevrons to
+           fall back on, which is why a swipe this plain is never dropped. */
+        if (far) { teardown(); go(days); return; }
+        settle(0, 0);
         return;
       }
       // No slide -- reduced motion, or a week not in hand: the step alone.

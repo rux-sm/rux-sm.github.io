@@ -2955,10 +2955,12 @@
   /* A need as Carbon's selectable tag, from the capture `components-tag--selectable`:
      a button that carries its own state in `aria-pressed`, with the label in a
      span inside a span. Four checkboxes need 337px of a 288px row and wrap; four
-     tags fit, because the tag is its own hit area with no separate box beside it. */
+     tags fit, because the tag is its own hit area with no separate box beside it.
+     The size is written on the tag, because the panel around it is sm and a tag
+     with no size of its own would take the panel's. */
   function tagField(id, label, on) {
-    const tag = el('button', on ? 'rux--tag rux--tag--selectable rux--tag--selectable-selected'
-                                : 'rux--tag rux--tag--selectable');
+    const tag = el('button', on ? 'rux--tag rux--tag--selectable rux--layout--size-md rux--tag--selectable-selected'
+                                : 'rux--tag rux--tag--selectable rux--layout--size-md');
     tag.type = 'button';
     tag.id = id;
     tag.setAttribute('aria-pressed', String(!!on));

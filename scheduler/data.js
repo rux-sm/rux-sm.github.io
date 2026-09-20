@@ -8197,7 +8197,42 @@
     const calmly = matchMedia('(prefers-reduced-motion: reduce)');
     let g = null;
 
+    /* The day band holds still while the week slides, so it cannot carry both
+       weeks at once: it shows the week being left until the slide passes its
+       half-way mark, and the week being joined after that. Half-way is the
+       point where letting go would settle on the new week, so the dates say
+       what releasing now would do. `band` keeps the cells as they were, and is
+       null whenever the band is showing the week the board is actually on. */
+    let band = null;
+    const showDates = spare => {
+      if (band) return;
+      const mine = [...gridEl.querySelectorAll('.scheduler-day')];
+      const theirs = [...spare.querySelectorAll('.scheduler-day')];
+      if (mine.length !== theirs.length) return;
+      band = mine.map(c => ({ cell: c, html: c.innerHTML, cls: c.className, cur: c.getAttribute('aria-current') }));
+      mine.forEach((c, i) => {
+        c.innerHTML = theirs[i].innerHTML;
+        c.className = theirs[i].className;
+        const cur = theirs[i].getAttribute('aria-current');
+        if (cur) c.setAttribute('aria-current', cur); else c.removeAttribute('aria-current');
+      });
+    };
+    // Back to the week the board is on, for a swipe that does not go through.
+    const restoreDates = () => {
+      for (const b of band || []) {
+        b.cell.innerHTML = b.html;
+        b.cell.className = b.cls;
+        if (b.cur) b.cell.setAttribute('aria-current', b.cur); else b.cell.removeAttribute('aria-current');
+      }
+      band = null;
+    };
+    /* A swipe that does go through is followed by a render of the week the band
+       is already showing, so the cells are left alone and only the note of what
+       they used to say is dropped. */
+    const keepDates = () => { band = null; };
+
     const teardown = () => {
+      restoreDates();
       for (const spare of schEl.querySelectorAll('.scheduler-grid--spare')) spare.remove();
       schEl.classList.remove('scheduler-week--sliding', 'scheduler-week--settling');
       schEl.style.removeProperty('--scheduler-slide');
@@ -8271,9 +8306,15 @@
       }
       if (g.axis !== 'x' || !g.sliding) return;
       // The week one step away is drawn the first time the finger asks for it.
-      if (spareFor(dx < 0 ? -1 : 1)) schEl.style.setProperty('--scheduler-slide', `${dx}px`);
+      const spare = spareFor(dx < 0 ? -1 : 1);
+      if (spare) schEl.style.setProperty('--scheduler-slide', `${dx}px`);
       // With nothing to come in, the week holds still rather than baring the pane.
       else schEl.style.setProperty('--scheduler-slide', '0px');
+      /* The band turns over where the finger crosses half the travel, and back
+         if it comes home again, so the dates always say which week letting go
+         would leave on screen. */
+      if (spare && Math.abs(dx) >= g.travel / 2) showDates(spare);
+      else restoreDates();
     });
 
     /* `touch-action: pan-y` hands the browser the up-and-down axis, and it
@@ -8299,7 +8340,10 @@
       schEl.classList.add('scheduler-week--settling');
       schEl.style.setProperty('--scheduler-slide', `${to}px`);
       const done = () => {
-        if (days) go(days);
+        /* The step draws the week the band already shows, so the dates are left
+           where they are and nothing flickers between the two. Springing back
+           leaves `band` set, and teardown puts the old dates back. */
+        if (days) { keepDates(); go(days); }
         teardown();
       };
       let ran = false;

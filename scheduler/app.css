@@ -1527,11 +1527,13 @@ button.scheduler-row-head__num::after {
   inset-inline-start: 0;
   inline-size: var(--scheduler-pane-w, 100%);
 }
-/* The arriving week brings no bus numbers. It is laid out with its own head
-   column, as every grid is, but drawing it would send a second column of the
-   same numbers travelling across the middle of the screen. The column keeps
-   its width so the days behind it stay on the same grid. */
+/* The arriving week brings no frame of its own. It is laid out with a head
+   column and a day band, as every grid is, but drawing them would send a second
+   column of the same numbers and a second row of dates travelling across the
+   middle of the screen. Both keep their size, so the days behind them stay on
+   the same grid; the band standing still reads its dates instead. */
 .scheduler-grid--spare .scheduler-corner,
+.scheduler-grid--spare .scheduler-day,
 .scheduler-grid--spare .scheduler-row-head { visibility: hidden; }
 /* So the days are what moves, and they move by the width of the days alone:
    the arriving week's first day lands exactly where the leaving week's last one
@@ -1546,32 +1548,24 @@ button.scheduler-row-head__num::after {
 .scheduler-week--settling > .scheduler-grid {
   transition: transform 200ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-/* The dates travel with their own week, as the sheet of paper they head, so
-   their sticky cells stand down for the length of the move: they pin to the
-   pane, and two grids side by side would otherwise pin both bands to the same
-   top edge. */
-.scheduler-week--sliding .scheduler-day {
-  position: static;
-}
-/* The bus column does not travel. It names the rows, and the rows are the same
-   rows in every week, so it stays put and the days slide behind it -- a number
-   is beside its own row for the whole move, and there is never a moment with no
-   column at all. The grid carries every cell, so the column is taken back by
-   the same number the grid is pushed forward, which leaves it standing still.
-   Relative rather than sticky, because one number does the whole job here and
-   two rules fighting over the same column is how it drifted before; the z-index
-   is the sticky column's own, so the arriving days pass under it. */
+/* The frame does not travel with the week. The bus column names the rows and
+   the day band names the columns, and both name the same things in every week,
+   so they hold still and only the days slide behind them: a bar is under its
+   own date and beside its own bus for the whole move, and there is never a
+   moment with no frame at all. The grid carries every cell, so the frame is
+   taken back by the same number the grid is pushed forward, which leaves it
+   standing where it was.
+
+   Sticky is kept rather than swapped for relative. The band pins to the top of
+   the pane and the column to its left, and a week swiped while the fleet is
+   scrolled down must not drop either of them; a transform on a sticky cell
+   moves it without unpinning it. The dates the band shows are the swipe's to
+   change -- data.js turns them over at the half-way mark -- because a frozen
+   band cannot carry two weeks at once. */
 .scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-corner,
+.scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-day,
 .scheduler-week--sliding > .scheduler-grid:not(.scheduler-grid--spare) > .scheduler-row > .scheduler-row-head {
-  position: relative;
-  z-index: 2;
   transform: translateX(calc(-1 * var(--scheduler-slide, 0px)));
-}
-/* The arriving week's column stays out of the way: hidden above, and held still
-   here too, so nothing of it shows at the edge as it comes in. */
-.scheduler-week--sliding > .scheduler-grid--spare > .scheduler-corner,
-.scheduler-week--sliding > .scheduler-grid--spare > .scheduler-row > .scheduler-row-head {
-  position: static;
 }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────

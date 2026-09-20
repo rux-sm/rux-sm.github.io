@@ -7793,6 +7793,9 @@
   // The read in flight, and whether anything asked for another while it ran.
   let reading = null;
   let readAgain = false;
+  // A refresh may finish during a drag, but cannot replace its visible tracks.
+  let weekMotion = null;
+  let releaseWeekMotion = null;
   /* The payload last read, and the week it was centred on. It covers that week
      and the four either side, so a run of swipes draws from it instead of
      waiting on the network -- `render` decides the overlap per leg, so one
@@ -7831,6 +7834,11 @@
      Every caller gets the same promise, which settles once nothing is left to
      read, so `await show()` means the board is current. */
   function show() {
+    // Cached navigation paints synchronously even while a refresh is in flight.
+    if (!weekMotion && holds(cursor) && (!shown || iso(shown) !== iso(cursor))) {
+      render({ ...cached.data, weekStart: cursor, weekEnd: addDays(cursor, 6) });
+      shown = cursor;
+    }
     if (reading) { readAgain = true; return reading; }
     reading = (async () => {
       try {
@@ -7852,6 +7860,7 @@
     // The label moves to the asked week before the read, and the grid dims
     // rather than clearing, so a press shows at once and the last week stays
     // readable.
+    if (weekMotion) await weekMotion;
     const asked = cursor;
     setRange(asked, addDays(asked, 6));
 
@@ -7873,6 +7882,7 @@
 
     try {
       const data = await read(asked);
+      if (weekMotion) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;
       /* A week drawn from what was held is redrawn only if the read came back
@@ -8166,6 +8176,16 @@
     const calmly = matchMedia('(prefers-reduced-motion: reduce)');
     let g = null;
     let settling = false;
+    let loadingAdjacent = false;
+    const loadingStatus = document.getElementById('scheduler-week-loading');
+    const loadingRow = document.getElementById('scheduler-weekrow');
+    const stopLoading = () => {
+      loadingStatus?.replaceChildren();
+      loadingRow?.classList.remove('scheduler-toolbar__weekrow--loading');
+    };
+    const beginMotion = () => {
+      if (!weekMotion) weekMotion = new Promise(resolve => { releaseWeekMotion = resolve; });
+    };
 
     const teardown = () => {
       for (const spare of schEl.querySelectorAll('.scheduler-grid--spare')) spare.remove();
@@ -8173,6 +8193,8 @@
       schEl.style.removeProperty('--scheduler-slide');
       schEl.style.removeProperty('--scheduler-pane-w');
       schEl.style.removeProperty('--scheduler-slide-w');
+      releaseWeekMotion?.();
+      weekMotion = releaseWeekMotion = null;
     };
 
     /* The week one step away, drawn into a grid of its own. `render` with a
@@ -8209,14 +8231,15 @@
       && start.x >= SWIPE_EDGE;
 
     schEl.addEventListener('pointerdown', e => {
-      // A gesture started during settling or loading is not queued.
-      if (settling || reading) return;
+      // Background refreshes do not block cached navigation; gestures never queue.
+      if (settling || loadingAdjacent || !shown || iso(shown) !== iso(cursor)) return;
       const mine = e.pointerType === 'touch' && e.isPrimary;
       /* A second finger ends the gesture -- it is a pinch, not a swipe -- and
          the week has to come back with it. Nothing else would bring it: the
          release that follows reads a gesture already gone and leaves teardown
          undone, so the week would stay parked where the finger left it. */
       if (!mine && g?.sliding) settle(0, 0);
+      else if (!mine && g?.allowed) teardown();
       g = mine
         ? { pointer: e.pointerId, x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null, sliding: false, allowed: false }
         : null;
@@ -8240,6 +8263,7 @@
            release would find a clean slate and step the week at the end of
            every drag. */
         if (g.axis === 'x') g.allowed = canSlide(g);
+        if (g.allowed) beginMotion();
         if (g.allowed && !calmly.matches) {
           /* The days are what travels, so the step is the pane less the bus
              column: the arriving week's first day lands where the leaving
@@ -8273,6 +8297,7 @@
 
     schEl.addEventListener('pointercancel', () => {
       if (g?.sliding) settle(0, 0);
+      else teardown();
       g = null;
     });
 
@@ -8291,12 +8316,59 @@
         teardown();
         if (days) go(days);
         settling = false;
+        loadingAdjacent = false;
+        stopLoading();
       };
       const ended = e => {
         if (e.target === track && e.propertyName === 'transform') done();
       };
       track?.addEventListener('transitionend', ended);
       timer = setTimeout(done, SLIDE_MS + 60);
+    }
+
+    async function loadAdjacent(days) {
+      loadingAdjacent = true;
+      const from = cursor;
+      const target = addDays(from, days);
+      const timer = setTimeout(() => {
+        const box = el('div', 'rux--inline-loading');
+        const animation = el('div', 'rux--inline-loading__animation');
+        animation.appendChild(loadingSpinner());
+        box.append(animation, el('div', 'rux--inline-loading__text',
+          days > 0 ? 'Loading next week…' : 'Loading previous week…'));
+        loadingStatus?.replaceChildren(box);
+        loadingRow?.classList.add('scheduler-toolbar__weekrow--loading');
+      }, 200);
+      let sliding = false;
+      try {
+        // Reuse any refresh already in flight before asking for more data.
+        if (reading) await reading;
+        if (iso(cursor) !== iso(from)) return;
+        if (!holds(target)) {
+          const data = await read(target);
+          if (iso(cursor) !== iso(from)) return;
+          cached = { data, centre: target };
+        }
+        if (calmly.matches) { go(days); return; }
+        beginMotion();
+        const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
+        const travel = Math.max(1, schEl.clientWidth - head);
+        schEl.style.setProperty('--scheduler-pane-w', `${schEl.clientWidth}px`);
+        schEl.style.setProperty('--scheduler-slide-w', `${travel}px`);
+        schEl.style.setProperty('--scheduler-slide', '0px');
+        schEl.classList.add('scheduler-week--sliding');
+        spareFor(days > 0 ? -1 : 1);
+        // Commit the starting position before enabling the settle transition.
+        void schEl.offsetWidth;
+        sliding = true;
+        settle(days > 0 ? -travel : travel, days);
+      } catch (error) {
+        teardown();
+        say('error', 'Could not load that week', `${error.message || error} Still showing the current week. Swipe to try again.`);
+      } finally {
+        clearTimeout(timer);
+        if (!sliding) { loadingAdjacent = false; stopLoading(); }
+      }
     }
 
     schEl.addEventListener('pointerup', e => {
@@ -8312,14 +8384,14 @@
       if (start.sliding) {
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
         if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }
-        // An uncached adjacent week loads in place while further swipes wait.
-        if (far) { teardown(); go(days); return; }
+        if (far) { teardown(); loadAdjacent(days); return; }
         settle(0, 0);
         return;
       }
-      // No slide -- reduced motion, or a week not in hand: the step alone.
+      teardown();
       if (!far || !start.allowed) return;
-      go(days);
+      if (holds(addDays(cursor, days))) go(days);
+      else loadAdjacent(days);
     });
   }
 

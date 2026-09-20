@@ -22,6 +22,13 @@ details, photo and time off. A driver is set Inactive, never deleted, and the
 driver's schedule link is shown there but still made in rux-ui. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
+On the compact board, a swipe moves one week of trip cells while the date and
+bus headers stay fixed. Further swipes during a slide are ignored. Cached weeks
+are ready after the slide; background refreshes wait for a gesture to finish
+before repainting. An uncached week keeps the current board visible, shows a
+loading indicator after 200 ms, then slides in when ready. The indicator clears
+when the week lands; a failed load keeps the current week and offers a retry.
+
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates are edited on `quote-rates.html` and kept in
 the `quote_rates` and `quote_mileage_rates` tables, which only a staff session

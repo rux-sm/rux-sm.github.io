@@ -1305,14 +1305,13 @@ button.scheduler-row-head__num::after {
   border-block-end: var(--scheduler-band-rule);
 }
 
-/* The rule between the names and the days, as on the board. It stops at the
-   header row, where `.scheduler-avail__day--head` draws none. A driver's name
-   is read rather than scanned like the board's labels, so it takes Carbon's
+/* The rule between the names and the days belongs to the first day's cell, not
+   to this one, so all seven days have the same box. A driver's name is read
+   rather than scanned like the board's labels, so it takes Carbon's
    `body-compact-01`, 14px, over the 12px the grid sets; the 32px `line-height`
    above still centres it in its row. */
 .scheduler-avail__name {
   padding-inline: var(--rux-spacing-03);
-  border-inline-end: 1px solid var(--rux-border-subtle-01);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
@@ -1355,10 +1354,11 @@ button.scheduler-row-head__num::after {
   overflow: hidden;
   background-clip: content-box;
 }
-/* The day rules in the roster: each body cell but the first rules its start
-   edge, since the first edge is the name column's own rule. Only body rows use
-   `__cell`, so no rule enters the header row. */
-.scheduler-avail__cell:not([data-day="0"]) { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+/* The day rules in the roster: every body cell rules its start edge, the first
+   included, so each day's box is the same and every mark is the same size, 2px
+   inside the rules on all four sides. Only body rows use `__cell`, so no rule
+   enters the header row. */
+.scheduler-avail__cell { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* The selected trip's days tint the free cells with `--rux-layer-selected`,
    Carbon's selected-surface token. All three set `background-color`, not the
    `background` shorthand, which would reset the clip above; `--busy` and

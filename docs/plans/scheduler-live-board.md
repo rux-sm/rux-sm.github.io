@@ -99,18 +99,6 @@ two people do not spend ten minutes editing the same trip before one finds out.
 - [ ] Check the board does not read twice for one of rux's own saves, and that
       a save's own toast still says what it says now.
 
-- [ ] Apply the realtime rule to the database, so staff may join the private
-      presence channel. Until it is applied no face is drawn at all.
-
-      ```sql
-      create policy "staff_all" on realtime.messages
-        for all to authenticated
-        using (public.is_staff()) with check (public.is_staff());
-      ```
-
-- [ ] Say in `docs/database-access.md` that `realtime.messages` carries the
-      same rule as every table, once it does.
-
 - [ ] Check two accounts at once: the face appears when the second opens the
       trip, and goes when that tab is closed, when it sleeps and when the
       network drops.

@@ -29,6 +29,12 @@ owner and never consults these rules. Copy that pattern; never grant to `anon`.
 driver statuses and confirmations, trip requests and trip history. Only a
 definer function reaches them, which is the tightest arrangement there is.
 
+**Live channels are closed the same way.** The scheduler's presence channel is
+private, so joining it is a read of `realtime.messages`, which carries the same
+`staff_all` rule as a table. A channel that is not private is joinable by
+anyone holding the publishable key, whatever the tables say, because no rule is
+consulted at all.
+
 **TRUNCATE, TRIGGER and REFERENCES are revoked from `anon` and
 `authenticated`.** Row security cannot filter them, so a rule cannot stop them;
 only a revoke can. Supabase grants them again on every new table, so revoke
@@ -71,7 +77,9 @@ select
 ```
 
 To see which table a number is pointing at, drop the `count(*)` and select the
-table name from the same `where`. For files, the same question is asked of
+table name from the same `where`. For live channels, the same question is asked
+of `pg_policies` where `schemaname='realtime'`: no rule there may name
+strangers either. For files, it is asked of
 `pg_policies` where `schemaname='storage'`: no rule there may name strangers
 for anything but `SELECT`, and only for those three buckets.
 

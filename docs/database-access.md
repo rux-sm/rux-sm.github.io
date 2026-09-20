@@ -34,6 +34,19 @@ definer function reaches them, which is the tightest arrangement there is.
 only a revoke can. Supabase grants them again on every new table, so revoke
 them in the same migration that creates one.
 
+## Files
+
+**Five buckets.** Notes' two are private and their rules ask for the owner.
+`trip-documents`, `driver-photos` and `profile-photos` are public, and only
+staff may upload, replace or delete in them.
+
+**A public bucket serves its files to anyone holding the address**, whatever
+its rules say, so those three keep a rule that names strangers for reading.
+This is the one exception to the rule above, and it stands until the two
+document share pages ask for a time-limited link rather than a permanent one.
+Until then a trip's paperwork is readable by anyone who has, or guesses, its
+address.
+
 ## The check
 
 Run this against the project after any database change. **Every number is
@@ -58,7 +71,9 @@ select
 ```
 
 To see which table a number is pointing at, drop the `count(*)` and select the
-table name from the same `where`.
+table name from the same `where`. For files, the same question is asked of
+`pg_policies` where `schemaname='storage'`: no rule there may name strangers
+for anything but `SELECT`, and only for those three buckets.
 
 **What the check cannot tell you.** It reads names and grants, not meaning. A
 rule called `staff_all` that asks the wrong question still passes. The only

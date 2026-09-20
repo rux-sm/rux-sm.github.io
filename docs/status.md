@@ -35,9 +35,9 @@ done and how.
 
 ## The database
 
-- **Trip documents and photos are open to anyone.** `trip-documents`,
-  `driver-photos` and `profile-photos` each let anyone read, upload and delete;
-  the tables were closed, the buckets were not.
+- **Trip paperwork is readable by anyone with its address.** Writing is staff
+  only now, but the three buckets stay public, so closing reading waits on the
+  two document share pages asking for a time-limited link.
 
 ## Only rux can do
 

@@ -6,8 +6,12 @@
     <!--
       OPERATIONAL is a real variant this fragment never demoed — 57 rules, more
       than any other tag modifier. It is a BUTTON, not a div, takes the size
-      pair `layout--size-md`, and puts its glyph in `__custom-icon` with the
-      text in a bare span rather than __label. Added above.
+      pair `layout--size-md`, and puts its glyph in `__custom-icon` and its text
+      in `__label` inside a bare span. Added above.
+
+      EVERY TAG CARRIES ITS `layout--size-*`, because that class alone sets the
+      height: `tag--sm` and `tag--lg` only move the inline padding, so a size
+      written without its pair renders medium.
 
       Not copied from the reference: the icon-tooltip popover it wraps
       operational and dismissible tags in, on the combo-button precedent — the
@@ -16,24 +20,24 @@
       rule in @carbon/styles (§4.1.12).
     -->
     <div class="ks-row">
-      <div class="rux--tag rux--tag--red"><span class="rux--tag__label">Red</span></div>
-      <div class="rux--tag rux--tag--magenta"><span class="rux--tag__label">Magenta</span></div>
-      <div class="rux--tag rux--tag--purple"><span class="rux--tag__label">Purple</span></div>
-      <div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Blue</span></div>
-      <div class="rux--tag rux--tag--cyan"><span class="rux--tag__label">Cyan</span></div>
-      <div class="rux--tag rux--tag--teal"><span class="rux--tag__label">Teal</span></div>
-      <div class="rux--tag rux--tag--green"><span class="rux--tag__label">Green</span></div>
-      <div class="rux--tag rux--tag--gray"><span class="rux--tag__label">Gray</span></div>
-      <div class="rux--tag rux--tag--cool-gray"><span class="rux--tag__label">Cool gray</span></div>
-      <div class="rux--tag rux--tag--warm-gray"><span class="rux--tag__label">Warm gray</span></div>
-      <div class="rux--tag rux--tag--high-contrast"><span class="rux--tag__label">High contrast</span></div>
-      <div class="rux--tag rux--tag--outline"><span class="rux--tag__label">Outline</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--red"><span class="rux--tag__label">Red</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--magenta"><span class="rux--tag__label">Magenta</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--purple"><span class="rux--tag__label">Purple</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--blue"><span class="rux--tag__label">Blue</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--cyan"><span class="rux--tag__label">Cyan</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--teal"><span class="rux--tag__label">Teal</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--green"><span class="rux--tag__label">Green</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--gray"><span class="rux--tag__label">Gray</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--cool-gray"><span class="rux--tag__label">Cool gray</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--warm-gray"><span class="rux--tag__label">Warm gray</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--high-contrast"><span class="rux--tag__label">High contrast</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--outline"><span class="rux--tag__label">Outline</span></div>
     </div>
     <div class="ks-row">
-      <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Small</span></div>
-      <div class="rux--tag rux--tag--blue"><span class="rux--tag__label">Medium</span></div>
-      <div class="rux--tag rux--tag--blue rux--tag--lg"><span class="rux--tag__label">Large</span></div>
-      <div class="rux--tag rux--tag--gray rux--tag--disabled"><span class="rux--tag__label">Disabled</span></div>
+      <div class="rux--tag rux--layout--size-sm rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Small</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--blue"><span class="rux--tag__label">Medium</span></div>
+      <div class="rux--tag rux--layout--size-lg rux--tag--blue rux--tag--lg"><span class="rux--tag__label">Large</span></div>
+      <div class="rux--tag rux--layout--size-md rux--tag--gray rux--tag--disabled"><span class="rux--tag__label">Disabled</span></div>
     </div>
 
     <div class="ks-label" style="margin-block-start:1.5rem">operational</div>
@@ -42,10 +46,10 @@
         <div class="rux--tag__custom-icon">
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
         </div>
-        <span>Degraded</span>
+        <span><span class="rux--tag__label">Degraded</span></span>
       </button>
       <button type="button" class="rux--tag rux--tag--operational rux--layout--size-md rux--tag--blue">
-        <span>Filter by region</span>
+        <span><span class="rux--tag__label">Filter by region</span></span>
       </button>
     </div>
 

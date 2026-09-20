@@ -489,10 +489,10 @@
              page-header puts its tags in an unclassed box of siblings.
              composing-pages.md §3.10. -->
         <div>
-          <div class="rux--tag rux--tag--red rux--tag--sm"><span class="rux--tag__label">Draft</span></div>
-          <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Recovery</span></div>
-          <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Storage</span></div>
-          <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Updated 2026-09-08</span></div>
+          <div class="rux--tag rux--layout--size-sm rux--tag--red rux--tag--sm"><span class="rux--tag__label">Draft</span></div>
+          <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Recovery</span></div>
+          <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Storage</span></div>
+          <div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Updated 2026-09-08</span></div>
         </div>
         <!-- BLOCK:END document-header -->
 
@@ -608,7 +608,7 @@
                  child, so the kicker sits tight above its heading instead of taking
                  a full stack step away from it. -->
             <div>
-              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 0</span></div>
+              <div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 0</span></div>
               <h2 class="rux--type-productive-heading-03" id="doc-phase-0">Choose a snapshot</h2>
             </div>
             <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 0 happens">
@@ -628,22 +628,22 @@
                 <tbody>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">0.1</td>
-                    <td>Open <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Snapshots</span></div> and filter to the affected service</td>
+                    <td>Open <div class="rux--tag rux--layout--size-sm rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Snapshots</span></div> and filter to the affected service</td>
                     <td>A list ordered newest first, each row carrying a size and a completed time</td>
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">0.2</td>
-                    <td>Choose the newest snapshot whose state reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
+                    <td>Choose the newest snapshot whose state reads <div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
                     <td>The row expands to show the byte count and the checksum</td>
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">0.3</td>
                     <td>Copy the snapshot id into the run record below</td>
-                    <td>An id of the form <div class="rux--tag rux--tag--gray rux--tag--sm"><span class="rux--tag__label">snap-0000-0000</span></div></td>
+                    <td>An id of the form <div class="rux--tag rux--layout--size-sm rux--tag--gray rux--tag--sm"><span class="rux--tag__label">snap-0000-0000</span></div></td>
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">0.4</td>
-                    <td>Export the manifest for the record <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Optional</span></div></td>
+                    <td>Export the manifest for the record <div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Optional</span></div></td>
                     <td>A file download, named for the snapshot id</td>
                   </tr>
                 </tbody>
@@ -668,7 +668,7 @@
                  child, so the kicker sits tight above its heading instead of taking
                  a full stack step away from it. -->
             <div>
-              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 1</span></div>
+              <div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 1</span></div>
               <h2 class="rux--type-productive-heading-03" id="doc-phase-1">Restore into staging</h2>
             </div>
             <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 1 happens">
@@ -699,7 +699,7 @@
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">1.1</td>
                     <td>Start a restore job against the snapshot id from 0.3</td>
-                    <td>The job appears as <div class="rux--tag rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Running</span></div> with an estimate</td>
+                    <td>The job appears as <div class="rux--tag rux--layout--size-sm rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Running</span></div> with an estimate</td>
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">1.2</td>
@@ -732,7 +732,7 @@
                  child, so the kicker sits tight above its heading instead of taking
                  a full stack step away from it. -->
             <div>
-              <div class="rux--tag rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 2</span></div>
+              <div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Phase 2</span></div>
               <h2 class="rux--type-productive-heading-03" id="doc-phase-2">Promote the target</h2>
             </div>
             <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash" aria-label="Where phase 2 happens">
@@ -766,13 +766,13 @@
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">2.2</td>
-                    <td>Choose <div class="rux--tag rux--tag--purple rux--tag--sm"><span class="rux--tag__label">Promote</span></div> and confirm</td>
-                    <td>The previous target moves to <div class="rux--tag rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Retired</span></div></td>
+                    <td>Choose <div class="rux--tag rux--layout--size-sm rux--tag--purple rux--tag--sm"><span class="rux--tag__label">Promote</span></div> and confirm</td>
+                    <td>The previous target moves to <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Retired</span></div></td>
                   </tr>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">2.3</td>
                     <td>Watch the service's health for one full check interval</td>
-                    <td>The service reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Healthy</span></div> against the restored data</td>
+                    <td>The service reads <div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Healthy</span></div> against the restored data</td>
                   </tr>
                 </tbody>
               </table>
@@ -827,7 +827,7 @@
                 <tbody>
                   <tr>
                     <td class="rux--data-table--cell-secondary-text">0</td>
-                    <td>No snapshot reads <div class="rux--tag rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
+                    <td>No snapshot reads <div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Complete</span></div></td>
                     <td>The schedule is paused, so every snapshot listed was cancelled part way</td>
                   </tr>
                   <tr>

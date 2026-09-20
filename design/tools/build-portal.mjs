@@ -134,7 +134,9 @@ const tile = (label, value, note) =>
             </div>
           </div>`;
 
-const tag = (text, colour) => `<span class="rux--tag rux--tag--${colour} rux--tag--sm"><span class="rux--tag__label">${esc(text)}</span></span>`;
+// `layout--size-sm` beside `tag--sm`: the layout class is what sets a tag's
+// height, and `tag--sm` alone only moves the inline padding.
+const tag = (text, colour) => `<span class="rux--tag rux--layout--size-sm rux--tag--${colour} rux--tag--sm"><span class="rux--tag__label">${esc(text)}</span></span>`;
 
 // THE REFERENCE CELL SAYS WHAT KIND OF LINK IT IS, and the four kinds are not
 // interchangeable. `page` is IBM's own usage guidance for this component;

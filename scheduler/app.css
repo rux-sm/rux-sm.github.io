@@ -900,12 +900,16 @@ button.scheduler-row-head__num::after {
 /* Carbon's action toolbar has no inset of its own. The rule under it parts it
    from the frame, as the head's rule parts the head. It wraps, because a
    generated form puts its own controls in this row and they ask for more than
-   a stored file's six icons. */
+   a stored file's six icons.
+
+   NO INSET ABOVE OR BELOW: the buttons are the height of the bar and fill it,
+   as the board's own toolbar fills its, so the row reads as one band rather
+   than as buttons floating in one. The inset at the start is the copy's; the
+   actions run to the end. */
 .scheduler-viewer__toolbar {
   flex: none;
   flex-wrap: wrap;
-  row-gap: var(--rux-spacing-02);
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  padding-inline-start: var(--rux-spacing-03);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
@@ -916,11 +920,28 @@ button.scheduler-row-head__num::after {
    the row; the copy holds the width its longest name asks for, the same width
    print.css gives it where the page carries its own toolbar. */
 .scheduler-viewer__toolbar > [data-viewer-form] { flex: none; }
-.scheduler-viewer__toolbar > [data-viewer-form] + * { margin-inline-start: var(--rux-spacing-03); }
+.scheduler-viewer__toolbar > [data-viewer-form] + [data-viewer-form] {
+  margin-inline-start: var(--rux-spacing-03);
+}
 .scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
+
+/* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the
+   board's toolbar holds its week at one end and its buttons at the other.
+   Where a document offers nothing to choose between, the actions still end
+   the row rather than starting it. */
+.scheduler-viewer__toolbar > .rux--select { margin-inline-end: auto; }
+
+.scheduler-viewer__toolbar:not(:has(> .rux--select)) > :first-child {
+  margin-inline-start: auto;
+}
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons
    data.js hides in Safari are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }
+/* Empty it takes no room at all, so the actions beside it reach the end of the
+   row; a stored file's date, or a word a form has to say, pushes them back
+   along by its own width for as long as it is there. */
+.scheduler-viewer__uploaded:empty { display: none; }
+
 .scheduler-viewer__uploaded {
   margin-inline-start: auto;
   padding-inline-end: var(--rux-spacing-03);

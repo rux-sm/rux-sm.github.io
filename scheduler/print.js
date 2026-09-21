@@ -731,7 +731,7 @@
        than the header, so it is there in a tab and gone in the viewer, where
        the board behind it is the way back. */
     if (!framed) {
-      const back = el('a', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'All forms');
+      const back = el('a', 'rux--btn rux--btn--ghost rux--layout--size-md', 'All forms');
       back.href = 'print.html';
       nodes.push(back);
     }
@@ -747,7 +747,7 @@
         choose: () => chooseLayout(option.id),
       });
     } else if (form.layouts?.length > 1) {
-      const group = el('div', 'rux--content-switcher rux--layout--size-sm');
+      const group = el('div', 'rux--content-switcher rux--layout--size-md');
       group.setAttribute('role', 'tablist');
       for (const option of form.layouts) {
         const btn = el('button', 'rux--content-switcher-btn');
@@ -770,9 +770,10 @@
        back to the board to reach the next one. It starts as this bus's and
        grows when the trip's other buses answer. */
     if (every.length > 1) {
-      // Every control in this row is Carbon's small size, so the row is one
-      // band of one height whether it is the panel's or the page's own.
-      const field = el('div', 'rux--select rux--layout--size-sm');
+      // Every control in this row is Carbon's medium size, which is the
+      // height of the bar itself: the row is one band, not a strip of buttons
+      // floating in one.
+      const field = el('div', 'rux--select rux--layout--size-md');
       const wrapper = el('div', 'rux--select-input__wrapper');
       const select = el('select', 'rux--select-input');
       select.setAttribute('aria-label', `Which ${form.name.toLowerCase()} on this trip`);
@@ -827,7 +828,7 @@
        the page has to carry its own. */
     const actions = [];
     if (!host) {
-      const print = el('button', 'rux--btn rux--btn--primary rux--layout--size-sm', 'Print');
+      const print = el('button', 'rux--btn rux--btn--primary rux--layout--size-md', 'Print');
       print.type = 'button';
       print.addEventListener('click', () => window.print());
       actions.push(print);
@@ -840,7 +841,7 @@
       /* Ghost, not bordered: beside the panel's bare icons a box around one
          button reads as a different kind of thing, and beside the page's own
          Print it is the quieter of a pair, which is what ghost is for. */
-      const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', `Print all ${every.length}`);
+      const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md', `Print all ${every.length}`);
       all.type = 'button';
       all.title = 'Every envelope on this trip';
       all.setAttribute('aria-label', `Print every envelope on this trip, ${every.length} in all`);

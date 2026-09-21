@@ -505,10 +505,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline-end: var(--rux-spacing-05);
 }
 
-/* The toolbar's and the roster head's buttons fill their bar edge to edge, so
-   they stay square in a theme that rounds buttons, and the one in the pane's
-   top corner takes that corner's curve. */
+/* The toolbar's, the roster head's and the document panel's buttons fill their
+   bar edge to edge, so they stay square in a theme that rounds buttons, and
+   the one in the pane's top corner takes that corner's curve. */
 .scheduler-toolbar .rux--btn,
+.scheduler-viewer__toolbar .rux--btn,
 .scheduler-aside__head .rux--btn { border-radius: 0; }
 .scheduler-toolbar > .rux--btn:last-child,
 .scheduler-aside__head > .rux--btn:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); }

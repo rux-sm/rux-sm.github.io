@@ -565,17 +565,16 @@
      and falls back to these names, then to its own id. Dropping one the table
      here does not know would take it off the bar without saying so.
 
-     ONLY FOUR CARRY A GLYPH, and not by accident: Design's sprite has these
-     because a bus row needed to say what a bus HAS, which is the same four the
-     bus can be measured against. Anything else -- the fuel card, and whatever
-     the office adds -- is a note about the trip rather than the vehicle, and
-     shows as its initial in the same square. */
+     THE FIVE BELOW CARRY A GLYPH; anything the office adds shows as its
+     initial in the same square, because Carbon has no drawing for a Wi-Fi or
+     an outlet that survives 12px and the list is the office's to grow. */
   const REQUIREMENTS = {
     pax56: { label: '56 passenger', href: '#i-user--multiple' },
     sleeper: { label: 'Sleeper', href: '#i-hotel' },
     adaLift: { label: 'Wheelchair lift', href: '#i-accessibility' },
     hotel: { label: 'Hotel', href: '#i-building' },
-    fuelCard: { label: 'Fuel card' },
+    // Carbon's `purchase` is a credit card, which is what a fuel card is.
+    fuelCard: { label: 'Fuel card', href: '#i-purchase' },
     oneWay: { label: 'One-way' },
   };
   // The order the marks take, most constraining first; anything the office

@@ -61,6 +61,14 @@ const ICONS = [
   // this sprite -- which is why check-icons counts it among the symbols nothing
   // points at rather than failing on it.
   'color-palette',
+  // A FUEL CARD, asked for by Scheduler 2026-09-20 for a trip bar's mark strip,
+  // where a requirement the office arranges needed a drawing. Carbon has no
+  // credit-card icon; `purchase` IS the card, and of everything it does ship
+  // that could stand for one -- payment--methods, wallet, gas-station,
+  // fuel-can -- it is the only one still legible rasterised at the 12px a mark
+  // draws at, being a plain rectangle and one rule. Carbon's name is kept, as
+  // every symbol here keeps the name of the file it came from.
+  'purchase',
   // A CALCULATOR, asked for by Scheduler for its quote calculator's side-nav
   // item, where every entry needs an icon and none of the others says pricing.
   'calculator',

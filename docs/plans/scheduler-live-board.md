@@ -66,13 +66,14 @@ two people do not spend ten minutes editing the same trip before one finds out.
   tried and is too small a difference to read at this size. Selection is broadcast only once it has lasted a moment, so a click
   on the way past does not flash across everyone's board.
 
-- **A square within a square, drawn with one line.** The bar somebody is in is
-  ruled; the square notched into its top right corner shares that rule for its
-  own top and right edges, and its bottom and left are drawn to match -- one
-  width, one colour, the selection ring's own. The square covers the reference
-  and the marks that corner carries, which is rux's call: knowing somebody else
-  is in a trip is worth more than "1 of 2". A bar too narrow for a square is
-  still ruled, which is how it says so, and what reads from across the week.
+- **A square within a square, drawn with one line.** The bar somebody is in
+  carries an unbroken rule, and the square sits inside it in the top right
+  corner rather than over it, its own bottom and left drawn to match -- one
+  width, one colour, the selection ring's own, and on a rounded theme the one
+  corner they share is curved to match. The square covers the reference and the
+  marks that corner carries, which is rux's call: knowing somebody else is in a
+  trip is worth more than "1 of 2". A bar too narrow for a square is still
+  ruled, which is how it says so, and what reads from across the week.
 
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a

@@ -46,6 +46,10 @@
      two device pixels. */
   --scheduler-day-w: calc(100% / var(--scheduler-days));
   --scheduler-bar-rows: 6;
+  /* The one line that draws the rule round a bar somebody else is in and the
+     two inner edges of the square in its corner. A width, not a theme choice,
+     so every theme draws it the same. */
+  --scheduler-presence-rule: 2px;
   --scheduler-fs: var(--rux-label-01-font-size);
   --scheduler-ls: var(--rux-label-01-letter-spacing);
   /* Carbon writes label-01's line height as 1.33333, so a row comes to
@@ -652,8 +656,10 @@ button.scheduler-row-head__num::after {
    It takes no clicks, so the bar beneath still selects, opens and drags. */
 .scheduler-presence {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-end: 0;
+  /* Inside the bar's own rule, not over it, so that rule runs unbroken round
+     the corner and the square sits within it. */
+  inset-block-start: var(--scheduler-presence-rule);
+  inset-inline-end: var(--scheduler-presence-rule);
   display: flex;
   pointer-events: none;
 }
@@ -666,10 +672,10 @@ button.scheduler-row-head__num::after {
    quieter. */
 .scheduler-presence__face {
   opacity: 0.7;
-  box-shadow: -2px 2px 0 0 var(--rux-layer-selected-inverse);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
 }
 .scheduler-presence__face--open { opacity: 1; }
-.scheduler-bar--watched { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
+.scheduler-bar--watched { box-shadow: inset 0 0 0 var(--scheduler-presence-rule) var(--rux-layer-selected-inverse); }
 /* Past the third face the rest are a count, because four faces on one bar are
    a row of thumbnails and no longer a glance. */
 .scheduler-presence__more {
@@ -680,7 +686,7 @@ button.scheduler-row-head__num::after {
   align-items: center;
   color: var(--rux-text-primary);
   background: var(--rux-layer-01);
-  box-shadow: -2px 2px 0 0 var(--rux-layer-selected-inverse);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
   padding: 0 var(--rux-spacing-02);
   /* Between the two faces: legible at a glance, because two characters cannot
      be as faint as a face and still be read, but never louder than the people

@@ -421,7 +421,7 @@
           const yard = byKey.get('yard-location-v1');
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
           if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
-          setRequirementNames(byKey.get('requirements-v1'));
+          setRequirementList(byKey.get('requirements-v1'));
         }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
@@ -581,16 +581,36 @@
   // added follows, in the order `trip_reqs` holds it.
   const REQ_ORDER = ['pax56', 'sleeper', 'adaLift', 'hotel', 'fuelCard'];
 
-  // id -> label, from Settings. Empty until the week is read, and empty if
-  // that read was refused, which leaves the names above standing.
-  let requirementNames = new Map();
-  function setRequirementNames(list) {
+  /* The office's list, as Settings holds it: `{ id, label, type, active,
+     sortOrder }`. Empty until the week is read, and empty if that read was
+     refused, which leaves the names above standing. */
+  let requirementList = [];
+  function setRequirementList(list) {
     if (!Array.isArray(list)) return;
-    requirementNames = new Map(list
-      .filter(r => r && typeof r.id === 'string' && r.label)
-      .map(r => [r.id, String(r.label)]));
+    requirementList = list.filter(r => r && typeof r.id === 'string' && r.label);
   }
-  const requirementLabel = id => requirementNames.get(id) || REQUIREMENTS[id]?.label || id;
+  const requirementLabel = id =>
+    requirementList.find(r => r.id === id)?.label || REQUIREMENTS[id]?.label || id;
+
+  /* The needs the editor offers: the office's active list, vehicle before
+     driver and each in its own order, which is how rux-ui's trip panel groups
+     them. Before that list has been read the five this app names itself stand,
+     so the row is never empty and the connector always has a tag to type into. */
+  const FALLBACK_NEEDS = ['sleeper', 'pax56', 'adaLift', 'hotel', 'fuelCard'];
+  function editableNeeds() {
+    const active = requirementList.filter(r => r.active !== false);
+    if (!active.length) return FALLBACK_NEEDS.map(id => ({ id, label: REQUIREMENTS[id].label }));
+    const byType = t => active.filter(r => (r.type || 'vehicle') === t)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    return [...byType('vehicle'), ...byType('driver')];
+  }
+  const needFieldId = id => `scheduler-f-req-${id}`;
+  // A tag's state, or undefined where the office has since deactivated that
+  // requirement and the editor never drew it.
+  function needPressed(id) {
+    const tag = document.getElementById(needFieldId(id));
+    return tag ? tag.getAttribute('aria-pressed') === 'true' : undefined;
+  }
 
   /* The ids a trip carries, from `trip_reqs` where it is set and the older
      columns where it is not -- the pair rux-ui reads, and print.js with it. */
@@ -2076,12 +2096,9 @@
   // What the trip needs that a bus lacks, in the bar's words.
   function busLacks(bus) {
     if (!bus) return [];
-    const need = id => pressed(document.getElementById(id));
     return [
       wrongType(document.getElementById('scheduler-f-vehicle')?.value, bus),
-      need('scheduler-f-sleeper') && !bus.sleeper ? `Needs a sleeper, bus ${bus.number} has none` : null,
-      need('scheduler-f-ada') && !bus.ada_lift ? `Needs an ADA lift, bus ${bus.number} has none` : null,
-      need('scheduler-f-56pax') && bus.capacity != null && bus.capacity < 56 ? `Needs 56 seats, bus ${bus.number} has ${bus.capacity}` : null,
+      ...['sleeper', 'adaLift', 'pax56'].map(id => (needPressed(id) ? shortfall(id, bus) : null)),
     ].filter(Boolean);
   }
 
@@ -2380,9 +2397,7 @@
     panelFleet.replaceChildren();
     const reqs = [
       document.getElementById('scheduler-f-vehicle')?.value || null,
-      pressed(document.getElementById('scheduler-f-sleeper')) ? 'Sleeper' : null,
-      pressed(document.getElementById('scheduler-f-ada')) ? 'ADA lift' : null,
-      pressed(document.getElementById('scheduler-f-56pax')) ? '56 pax' : null,
+      ...editableNeeds().filter(r => needPressed(r.id)).map(r => r.label),
     ].filter(Boolean).join(', ');
     if (reqs) panelFleet.appendChild(section(null, def([['Needs', reqs]])));
     const split = fleetSplit();
@@ -3316,11 +3331,24 @@
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     // `confirmed`, `balance_paid` and `date_paid` are derived, not edited:
     // `derivedBilling` writes them with any billing change.
-    { key: 'req_sleeper', get: f => pressed(f['scheduler-f-sleeper']) },
-    { key: 'req_ada', get: f => pressed(f['scheduler-f-ada']) },
-    { key: 'req_56pax', get: f => pressed(f['scheduler-f-56pax']) },
-    // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
-    { key: 'need_hotel', get: f => pressed(f['scheduler-f-hotel']) },
+    /* THE NEEDS GO IN `trip_reqs`, which is where rux-ui keeps them and so what
+       the bar, the envelope and the history all read. It is merged over what
+       the trip already held, so a requirement the office has since deactivated
+       keeps its answer instead of being dropped by a save that never drew it.
+
+       THE FIVE OLDER COLUMNS ARE WRITTEN FROM THE SAME TAGS, because rux-ui's
+       own screens and this panel's hotel block still read them, and a trip
+       whose two records disagree reads one way here and another there. They go
+       when nothing reads them. A column whose tag was not drawn is left as it
+       was, for the same reason as above. */
+    { key: 'trip_reqs', get: () => ({
+        ...(editing?.reqs || {}),
+        ...Object.fromEntries(editableNeeds().map(r => [r.id, needPressed(r.id) === true])),
+      }) },
+    ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56'],
+        // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
+        ['need_hotel', 'hotel'], ['need_fuel_card', 'fuelCard']]
+      .map(([key, id]) => ({ key, get: () => needPressed(id) ?? !!editing?.before?.[key] })),
     // Each leg's hotel: whether it is booked, and its confirmation number.
     ...['outbound', 'return'].flatMap(l => [
       { key: `hotel_booked_${l}`, get: () => !!document.getElementById(`scheduler-f-hotelbooked-${l}`)?.checked },
@@ -3641,7 +3669,7 @@
 
   function readForm() {
     const f = {};
-    for (const id of ['destination', 'customer', 'type', 'vehicle', 'sleeper', 'ada', '56pax', 'hotel', 'notes',
+    for (const id of ['destination', 'customer', 'type', 'vehicle', 'notes',
                       // Every id `EDITS` reads through `f` is listed, and only
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
@@ -4123,7 +4151,13 @@
     }
   }
 
-  const same = (a, b) => (a ?? null) === (b ?? null);
+  /* `===` for the columns that hold a value, and a key-by-key compare for
+     `trip_reqs`, which holds an object: two equal objects are never `===`, so
+     without this every open would read as an unsaved change. `histStable`
+     sorts the keys, which is the same shape the history compares. */
+  const same = (a, b) => (a && typeof a === 'object') || (b && typeof b === 'object')
+    ? histSame(a, b)
+    : (a ?? null) === (b ?? null);
 
   function patchOf() {
     if (!editing) return null;
@@ -4206,6 +4240,7 @@
       start_date: start, end_date: start,
       return_start_date: null, return_end_date: null,
       req_sleeper: false, req_ada: false, req_56pax: false, need_hotel: false,
+      need_fuel_card: false, trip_reqs: {},
       notes: null, trip_assignments: [], trip_stops: [],
       // The id the trip is inserted with, fixed for the panel's life, so a
       // second press of Save cannot make a second trip.
@@ -4240,7 +4275,12 @@
       ? parseISO(leg.from).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
       : `${parseISO(leg.from).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} to ${parseISO(leg.to).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} (${legDays} days)`;
 
-    editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, before: {
+    editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null,
+      /* What the trip already answered, whether or not the editor draws a tag
+         for it: a save merges its own tags over this, so a requirement the
+         office has since deactivated keeps its answer. */
+      reqs: (trip.trip_reqs && typeof trip.trip_reqs === 'object') ? { ...trip.trip_reqs } : {},
+      before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       trip_type: trip.trip_type ?? null,
@@ -4252,6 +4292,16 @@
       req_ada: !!trip.req_ada,
       req_56pax: !!trip.req_56pax,
       need_hotel: !!trip.need_hotel,
+      need_fuel_card: !!trip.need_fuel_card,
+      /* Every need the trip carries, answered true or false, so a tag turned
+         off counts as a change rather than as a key that quietly vanished. It
+         is merged over the stored object exactly as a save is, or an untouched
+         trip would read as changed on every open. */
+      trip_reqs: {
+        ...(trip.trip_reqs && typeof trip.trip_reqs === 'object' ? trip.trip_reqs : {}),
+        ...Object.fromEntries(editableNeeds()
+          .map(r => [r.id, requirementsOf(trip).includes(r.id)])),
+      },
       hotel_booked_outbound: !!trip.hotel_booked_outbound,
       hotel_booked_return: !!trip.hotel_booked_return,
       hotel_itinerary_number_outbound: trip.hotel_itinerary_number_outbound ?? null,
@@ -4369,12 +4419,11 @@
     const needsRow = el('div', 'scheduler-needs__tags');
     needsRow.setAttribute('role', 'group');
     needsRow.setAttribute('aria-labelledby', needsLabel.id);
-    needsRow.append(
-      tagField('scheduler-f-sleeper', 'Sleeper', trip.req_sleeper),
-      tagField('scheduler-f-ada', 'ADA lift', trip.req_ada),
-      tagField('scheduler-f-56pax', '56 pax', trip.req_56pax),
-      tagField('scheduler-f-hotel', 'Hotel', trip.need_hotel),
-    );
+    /* One tag per requirement the office keeps, rather than four written out
+       here: the list is theirs to grow, and a need this app did not know about
+       was one the board could show and nobody could set. */
+    const on = new Set(requirementsOf(trip));
+    needsRow.append(...editableNeeds().map(r => tagField(needFieldId(r.id), r.label, on.has(r.id))));
     flags.append(needsLabel, needsRow);
 
     /* The vehicle types are the fleet's own, so a new type needs no code, and
@@ -4383,17 +4432,22 @@
        and Hotel always shows, since it is not the bus's. */
     const fleet = [...(panelIndex.buses?.values() ?? [])].filter(b => b.status === 'active');
     const vehicleTypes = [...new Set([...fleet.map(b => b.type), trip.vehicle_type].filter(Boolean))].sort();
+    // The needs a bus can be measured against, and how. Everything else the
+    // office keeps on its list is about the trip, not the vehicle, so no
+    // vehicle type hides it.
     const EQUIPMENT = [
-      ['scheduler-f-sleeper', b => b.sleeper],
-      ['scheduler-f-ada', b => b.ada_lift],
-      ['scheduler-f-56pax', b => b.capacity != null && b.capacity >= 56],
+      ['sleeper', b => b.sleeper],
+      ['adaLift', b => b.ada_lift],
+      ['pax56', b => b.capacity != null && b.capacity >= 56],
     ];
     /* A tag the type does not offer hides. On a change of type it also turns
        off; on opening, a tag already on stays shown, so no saved need is
        hidden. */
     const syncNeeds = (type, clear) => {
       for (const [id, has] of EQUIPMENT) {
-        const tag = flags.querySelector(`#${id}`);
+        // Absent where the office has deactivated that requirement.
+        const tag = flags.querySelector(`#${needFieldId(id)}`);
+        if (!tag) continue;
         const offered = !type || fleet.some(b => b.type === type && has(b));
         if (!offered && clear && pressed(tag)) {
           tag.setAttribute('aria-pressed', 'false');
@@ -4428,7 +4482,8 @@
     };
     setHotelLegs(trip.trip_type === SPLIT);
     hotelBox.hidden = !trip.need_hotel;
-    flags.querySelector('#scheduler-f-hotel').addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
+    flags.querySelector(`#${needFieldId('hotel')}`)
+      ?.addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
     /* The trip's own fields are one stack, 24px apart. Type and Vehicle share a
        row, so the split type is named "Split" there, which half the panel
@@ -8367,10 +8422,11 @@
     return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
     trip_type: { id: 'scheduler-f-type', kind: 'select' },
     vehicle_type: { id: 'scheduler-f-vehicle', kind: 'select' },
-    req_sleeper: { id: 'scheduler-f-sleeper', kind: 'tag' },
-    req_ada: { id: 'scheduler-f-ada', kind: 'tag' },
-    req_56pax: { id: 'scheduler-f-56pax', kind: 'tag' },
-    need_hotel: { id: 'scheduler-f-hotel', kind: 'tag' },
+    req_sleeper: { id: needFieldId('sleeper'), kind: 'tag' },
+    req_ada: { id: needFieldId('adaLift'), kind: 'tag' },
+    req_56pax: { id: needFieldId('pax56'), kind: 'tag' },
+    need_hotel: { id: needFieldId('hotel'), kind: 'tag' },
+    need_fuel_card: { id: needFieldId('fuelCard'), kind: 'tag' },
     quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
     est_miles: { id: 'scheduler-f-estmiles', kind: 'text' },
     booking_contact_name: { id: 'scheduler-f-cfind', kind: 'text' },

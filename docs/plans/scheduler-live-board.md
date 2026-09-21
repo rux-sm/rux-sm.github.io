@@ -91,9 +91,13 @@ two people do not spend ten minutes editing the same trip before one finds out.
 - **The week board only.** The drivers page and the maintenance schedule read
   the same tables and have the same problem, but neither was asked for.
 
-- **Coming back to the tab always refreshes.** The connection drops whenever
-  the Mac sleeps, so the board reads again when it is looked at, whether or not
-  the socket survived. This is the floor; the socket is what makes it live.
+- **Coming back to the tab always refreshes, and opens what died.** The
+  connection drops whenever the Mac sleeps, so the board reads again when it is
+  looked at, whether or not the socket survived. This is the floor; the socket
+  is what makes it live. A channel that did not survive is thrown out and a new
+  one opened, because the library refuses to join the same channel twice, and
+  this tab says again which trip it is on -- a presence lives on the connection,
+  so the server may have timed it out while the tab was away.
 
 ## Questions
 

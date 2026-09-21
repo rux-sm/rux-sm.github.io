@@ -8139,15 +8139,74 @@
 
   let presenceKey = null;
 
-  async function listen() {
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) liveRefresh(); });
-    window.addEventListener('focus', () => { if (liveHeld) liveRefresh(); });
-    if (!client?.channel) return;
-    const board = client.channel('scheduler-board');
-    for (const table of LIVE_TABLES) {
-      board.on('postgres_changes', { event: '*', schema: 'public', table }, liveSoon);
+  let boardCh = null;
+  const boardStatus = status => {
+    // Only a failure is worth a line; a healthy channel says nothing, as it did.
+    if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+      console.info(`scheduler: the live board is ${status.toLowerCase()}; coming back to this tab opens it again.`);
     }
-    board.subscribe();
+  };
+  function openBoard() {
+    boardCh = client.channel('scheduler-board');
+    for (const table of LIVE_TABLES) {
+      boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, liveSoon);
+    }
+    boardCh.subscribe(boardStatus);
+  }
+
+  const presenceStatus = status => {
+    if (status === 'CHANNEL_ERROR') {
+      console.info('scheduler: presence is off -- realtime.messages has no rule letting staff join.');
+      return;
+    }
+    if (status !== 'SUBSCRIBED') return;
+    presenceTell();
+  };
+  function openPresence() {
+    /* PRIVATE, so only a signed-in staff account may join. A public channel is
+       joinable by anyone holding the publishable key, which is in this file,
+       and everything tracked on it -- name, photo, account and trip -- would be
+       readable and forgeable from outside. The database decides, through a rule
+       on realtime.messages; without that rule the channel is closed to
+       everyone and no face is drawn, which is the safe way to fail. */
+    presenceCh = client.channel('scheduler-presence', { config: { private: true, presence: { key: presenceKey } } });
+    presenceCh.on('presence', { event: 'sync' }, presenceRead);
+    presenceCh.subscribe(presenceStatus);
+  }
+
+  /* A channel that has gone away is thrown out and a new one opened in its
+     place: the library refuses to join the same channel twice, so reviving one
+     is not an option. The socket comes back on its own after a sleep or a
+     dropped network, but a channel it lost on the way does not always come with
+     it, and a dead channel says nothing -- the board stops moving and the faces
+     stop arriving, with no sign anything is wrong. */
+  function wake(ch, open) {
+    if (!ch || ch.state === 'joined' || ch.state === 'joining') return false;
+    client.removeChannel(ch);
+    open();
+    return true;
+  }
+
+  /* Coming back re-announces this tab as well as re-reading the week. A
+     presence lives on the connection, so a connection that died while the Mac
+     slept took it with it; and even where the socket survived, the server may
+     have timed this tab out while it was away. Saying it again costs one
+     message and is the only thing that brings the face back. */
+  function liveWake() {
+    if (!document.hidden) liveRefresh();
+    if (!client?.channel) return;
+    wake(boardCh, openBoard);
+    if (presenceCh && !wake(presenceCh, openPresence)) presenceTell();
+  }
+
+  async function listen() {
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) liveWake(); });
+    window.addEventListener('focus', () => { if (liveHeld) liveRefresh(); });
+    // The network coming back is the other half of a sleep, and it does not
+    // always arrive with a visibility change.
+    window.addEventListener('online', liveWake);
+    if (!client?.channel) return;
+    openBoard();
 
     /* One tab is one presence, so the key is this tab and not the account: the
        same person on a laptop and a phone is two, and closing one leaves the
@@ -8159,22 +8218,7 @@
     // account is mine and does not draw me to myself.
     presenceMe = { id: me.id, name: me.name, photoPath: me.photoPath, colour: me.colour };
     presenceKey = `${me.id}:${Math.random().toString(36).slice(2, 8)}`;
-    /* PRIVATE, so only a signed-in staff account may join. A public channel is
-       joinable by anyone holding the publishable key, which is in this file,
-       and everything tracked on it -- name, photo, account and trip -- would be
-       readable and forgeable from outside. The database decides, through a rule
-       on realtime.messages; without that rule the channel is closed to
-       everyone and no face is drawn, which is the safe way to fail. */
-    presenceCh = client.channel('scheduler-presence', { config: { private: true, presence: { key: presenceKey } } });
-    presenceCh.on('presence', { event: 'sync' }, presenceRead);
-    presenceCh.subscribe(status => {
-      if (status === 'CHANNEL_ERROR') {
-        console.info('scheduler: presence is off -- realtime.messages has no rule letting staff join.');
-        return;
-      }
-      if (status !== 'SUBSCRIBED') return;
-      presenceTell();
-    });
+    openPresence();
   }
 
   async function readWeek() {

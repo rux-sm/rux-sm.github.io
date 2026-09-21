@@ -569,12 +569,12 @@
      initial in the same square, because Carbon has no drawing for a Wi-Fi or
      an outlet that survives 12px and the list is the office's to grow. */
   const REQUIREMENTS = {
-    pax56: { label: '56 passenger', href: '#m-groups' },
-    sleeper: { label: 'Sleeper', href: '#m-airline_seat_flat' },
-    adaLift: { label: 'Wheelchair lift', href: '#m-accessible' },
-    hotel: { label: 'Hotel', href: '#m-apartment' },
+    pax56: { label: '56 passenger', href: '#m-groups-fill' },
+    sleeper: { label: 'Sleeper', href: '#m-airline_seat_flat-fill' },
+    adaLift: { label: 'Wheelchair lift', href: '#m-accessible-fill' },
+    hotel: { label: 'Hotel', href: '#m-apartment-fill' },
     // Carbon's `purchase` is a credit card, which is what a fuel card is.
-    fuelCard: { label: 'Fuel card', href: '#m-credit_card' },
+    fuelCard: { label: 'Fuel card', href: '#m-credit_card-fill' },
     oneWay: { label: 'One-way' },
   };
 
@@ -749,10 +749,16 @@
      order the drivers row lists them. Relief is the one role that is not a
      person, so it cannot be taken for a co-driver at 12px. */
   const ROLES = [
-    { role: 'driver', label: 'Driver', icon: '#m-person', box: '0 0 16 16' },
-    { role: 'co-driver', label: 'Co-driver', icon: '#m-person', box: '0 0 16 16' },
-    { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz', box: '0 0 32 32' },
-    { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz', box: '0 0 32 32' },
+    /* The box is the one the <svg> around the <use> takes, and it is a plain
+       `0 0 n n` for every role. It is NOT the symbol's own viewBox: Material
+       draws on `0 -960 960 960`, and a <use> with no x or y sits at the outer
+       box's origin, so an outer box starting at -960 puts the glyph a whole
+       viewport below what is shown and nothing appears. The symbol scales its
+       own drawing into whatever box it is given. */
+    { role: 'driver', label: 'Driver', icon: '#m-person-fill', box: '0 0 32 32' },
+    { role: 'co-driver', label: 'Co-driver', icon: '#m-person-fill', box: '0 0 32 32' },
+    { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
+    { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
   ];
   /* The five states `trip_driver_statuses` holds, and the tone each paints.
      Not sent is grey rather than no disc at all: it is the first step of the
@@ -905,12 +911,12 @@
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
-    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#m-attachment', label: 'No itinerary yet' });
+    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#m-attachment-fill', label: 'No itinerary yet' });
     /* And the day-of contact the same way: nobody to call on the day, and the
        trip not marked as needing no one. Any of the five counts, since the
        warning is that the list is empty, not that the first slot is. */
     const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
-    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#m-call', label: 'No day-of contact' });
+    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#m-call-fill', label: 'No day-of contact' });
 
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
     /* EVERY REQUIREMENT THE TRIP CARRIES GETS ONE MARK, and its colour says
@@ -942,7 +948,7 @@
     });
     const marks = [
       ...pending,
-      ...(wrong ? [{ href: '#m-directions_bus', label: wrong }] : []),
+      ...(wrong ? [{ href: '#m-directions_bus-fill', label: wrong }] : []),
       ...needs,
     ];
     /* Drawn on the notes row and again on the destination row; app.css shows
@@ -3660,7 +3666,7 @@
     if (trip.confirmed === false) return null;
     const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
     if (price <= 0) return null;
-    const mark = (label, tone) => ({ href: '#m-attach_money', label, tone });
+    const mark = (label, tone) => ({ href: '#m-attach_money-fill', label, tone });
     if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
     if (rung === 'contract_signed') return mark('No purchase order yet', 'error');
     if (rung === 'po_partial') return mark(`Purchase order covers ${usd(poAmount)} of ${usd(remaining)}`, 'warning');

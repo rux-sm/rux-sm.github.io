@@ -620,23 +620,18 @@ button.scheduler-row-head__num::after {
   color: var(--rux-support-warning);
 }
 .scheduler-bar__warn-chip svg { display: block; }
-/* THE PAYMENT MARK KEEPS ITS FILL on the two rungs that are not amber, and it
-   is the only mark that does. Measured against all nine bar hues, the error
-   colour reaches 2.29 to 2.33 and the success colour 3.22 to 3.27, so a glyph
-   drawn in either is at or under the 3 to 1 a 12px mark needs -- red on the
-   money, which is the loudest thing this bar has to say, worst of all. The
-   warning colour clears 4.57 and needs nothing.
+/* The payment mark carries its rung in its own colour like every other mark:
+   red while nothing stands against the quote, the warning colour while what
+   does is the wrong amount, green once the money is in.
 
-   So this one reads as a block among bare glyphs, which suits the one mark
-   that is about the booking rather than the vehicle. */
-.scheduler-bar__warn-chip--error {
-  background: var(--rux-support-error);
-  color: var(--rux-text-inverse);
-}
-.scheduler-bar__warn-chip--success {
-  background: var(--rux-support-success);
-  color: var(--rux-text-inverse);
-}
+   RED AND GREEN ARE LOW AGAINST A COLOURED BAR, and rux chose this knowing it:
+   measured against all nine hues the error colour reaches 2.29 to 2.33 and the
+   success colour 3.22 to 3.27, against the 3 to 1 a 12px mark wants. The solid
+   glyph is what makes it liveable -- a filled silhouette carries at a contrast
+   that would lose an outline's strokes -- and no mark on this bar is a block
+   any more. */
+.scheduler-bar__warn-chip--error { color: var(--rux-support-error); }
+.scheduler-bar__warn-chip--success { color: var(--rux-support-success); }
 /* The count standing in for the marks a narrow bar has no room for, in the
    place of the last that fits. It is a chip like the others and the same
    square, so `fitMarks` can count what fits from one measurement. `hidden`
@@ -739,11 +734,10 @@ button.scheduler-row-head__num::after {
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
-/* The role icon on a disc, one per status: grey still to send, amber sent and
-   waiting, green confirmed, red declined or nobody assigned. On green and red
-   the icon is the inverse text colour: white in a light theme, where white
-   clears 3:1 on both, and dark in a dark theme, where white does not. On amber
-   it is dark in every theme, as the warning chips are. */
+/* The role glyph alone, in its status colour: the bar's own for still to send,
+   amber sent and waiting, green confirmed, red declined or nobody assigned.
+   The disc each sat on is gone, as every block on this bar is -- see the
+   contrast note above, which is the same trade and the same choice. */
 .scheduler-crew__mark {
   display: flex;
   flex: none;
@@ -751,16 +745,15 @@ button.scheduler-row-head__num::after {
   justify-content: center;
   inline-size: var(--scheduler-row-h);
   block-size: var(--scheduler-row-h);
-  border-radius: 50%;
 }
 .scheduler-crew__mark svg { display: block; }
-.scheduler-crew__mark--success { background: var(--rux-support-success); color: var(--rux-text-inverse); }
-.scheduler-crew__mark--error { background: var(--rux-support-error); color: var(--rux-text-inverse); }
-.scheduler-crew__mark--warning { background: var(--rux-support-warning); color: var(--scheduler-on-warning); }
-/* Not sent is a blank disc, the theme's light neutral with its dark ink:
-   nothing has happened to this driver yet, so it holds no colour of its own
-   and reads as the empty first step rather than as a state. */
-.scheduler-crew__mark--off { background: var(--scheduler-mark-blank); color: var(--scheduler-on-warning); }
+.scheduler-crew__mark--success { color: var(--rux-support-success); }
+.scheduler-crew__mark--error { color: var(--rux-support-error); }
+.scheduler-crew__mark--warning { color: var(--rux-support-warning); }
+/* Not sent takes the bar's own colour: nothing has happened to this driver
+   yet, so it holds no colour of its own and reads as the empty first step
+   rather than as a state. */
+.scheduler-crew__mark--off { color: inherit; }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 

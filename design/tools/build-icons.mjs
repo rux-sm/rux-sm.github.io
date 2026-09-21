@@ -154,8 +154,15 @@ const symbolFrom = (raw, id, fallbackBox) => {
   return `<symbol id="${id}" viewBox="${viewBox}">${body}</symbol>`;
 };
 
-// Material, from the sheet. A row naming a file the package does not have is
-// named rather than skipped, because a silent gap is a mark that draws nothing.
+/* Material, from the sheet, AND THE SOLID TWIN OF EVERY OUTLINE ONE. Material
+   ships both and a surface chooses: a trip bar draws its marks at 12px, where
+   an outline loses its strokes and a solid keeps its silhouette, while a
+   toolbar at 20px reads either. Carrying both means a surface can change its
+   mind without the build changing, and costs a page nothing -- a page carries
+   only the symbols it names.
+
+   A row naming a file the package does not have is named rather than skipped,
+   because a silent gap is a mark that draws nothing. */
 const matMissing = [];
 let matCount = 0;
 for (const [carbon, row] of Object.entries(SHEET)) {
@@ -163,6 +170,15 @@ for (const [carbon, row] of Object.entries(SHEET)) {
   const at = `${MATERIAL_SRC}/${row.material}.svg`;
   if (!existsSync(at)) { matMissing.push(`${carbon} -> ${row.material}`); continue; }
   symbols.push(symbolFrom(readFileSync(at, 'utf8'), `${PREFIX.material}${row.material}`, '0 -960 960 960'));
+  matCount++;
+  /* Its solid twin, unless the sheet already carries that twin as a row of its
+     own -- `info` and `info-fill` are both rows, being Carbon's outline and
+     filled pair, and emitting one from the other would write the id twice. */
+  if (row.material.endsWith('-fill')) continue;
+  if (Object.values(SHEET).some(r => r.material === `${row.material}-fill`)) continue;
+  const solid = `${MATERIAL_SRC}/${row.material}-fill.svg`;
+  if (!existsSync(solid)) continue;
+  symbols.push(symbolFrom(readFileSync(solid, 'utf8'), `${PREFIX.material}${row.material}-fill`, '0 -960 960 960'));
   matCount++;
 }
 if (matMissing.length) console.log(`  NOT FOUND in @material-symbols: ${matMissing.join(', ')}`);

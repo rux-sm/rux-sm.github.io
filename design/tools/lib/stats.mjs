@@ -132,14 +132,19 @@ export function stats() {
   }
 
   // Icons: symbols the sprite DEFINES against symbols the pages REFERENCE. The
-  // match is on `<use href="#i-...">` alone -- a template inlines the sprite, so
+  // match is on `<use href="#…">` alone -- a template inlines the sprite, so
   // counting `<symbol id=` there would count definitions as references.
+  //
+  // ALL THREE FAMILIES, or the figure reads as a sprite a third its size:
+  // `i-` Carbon, `m-` Material, `r-` drawn here. Design's own pages reference
+  // only Carbon, so the unreferenced count is mostly the other two -- which is
+  // true and worth seeing, since a page carries only what it names.
   const sprite = read('assets/icons.svg');
-  const symbols = new Set([...sprite.matchAll(/<symbol[^>]*\bid="(i-[^"]+)"/g)].map(m => m[1]));
+  const symbols = new Set([...sprite.matchAll(/<symbol[^>]*\bid="((?:i|m|r)-[^"]+)"/g)].map(m => m[1]));
   const referenced = new Set();
   for (const [dir, names] of [['sink', htmlIn('sink')], ['templates', htmlIn('templates')]]) {
     for (const f of names) {
-      for (const m of read(join(dir, f)).matchAll(/href="#(i-[^"]+)"/g)) {
+      for (const m of read(join(dir, f)).matchAll(/href="#((?:i|m|r)-[^"]+)"/g)) {
         if (symbols.has(m[1])) referenced.add(m[1]);
       }
     }

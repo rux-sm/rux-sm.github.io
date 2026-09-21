@@ -117,7 +117,11 @@ const quarry = readFileSync(QUARRY, 'utf8');
 const listBody = quarry.match(/const ICONS = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const listed = [
   ...[...listBody.replace(/\/\/[^\n]*/g, '').matchAll(/'([^']+)'/g)].map(m => `i-${m[1]}`),
-  ...Object.values(SHEET).filter(r => r.material).map(r => `${PREFIX.material}${r.material}`),
+  // Each Material name and, where the build found one, its solid twin.
+  ...Object.values(SHEET).filter(r => r.material).flatMap(r => [
+    `${PREFIX.material}${r.material}`,
+    ...(r.material.endsWith('-fill') ? [] : [`${PREFIX.material}${r.material}-fill`]),
+  ]),
   ...Object.values(SHEET).filter(r => r.rux).map(r => `${PREFIX.rux}${r.rux}`),
 ];
 

@@ -3666,7 +3666,7 @@
     if (trip.confirmed === false) return null;
     const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
     if (price <= 0) return null;
-    const mark = (label, tone) => ({ href: '#m-attach_money-fill', label, tone });
+    const mark = (label, tone) => ({ href: '#m-paid-fill', label, tone });
     if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
     if (rung === 'contract_signed') return mark('No purchase order yet', 'error');
     if (rung === 'po_partial') return mark(`Purchase order covers ${usd(poAmount)} of ${usd(remaining)}`, 'warning');

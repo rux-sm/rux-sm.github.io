@@ -130,7 +130,15 @@ const ICONS = [
   // size, next to chips that are already rectangles, and `order-details` and
   // `document--tasks` read as a person and as a tick. `currency--dollar` is a
   // single dollar sign, which stays a dollar sign at 12 and means one thing.
-  'currency--dollar',
+  //
+  // AND THE SAME SIGN INSIDE A RING, asked for by Scheduler 2026-09-20 once the
+  // bar's marks went solid. Material's fill axis does nothing to `attach_money`
+  // -- the outline and the `-fill` file are byte-identical, both a bare stroked
+  // sign -- so the payment mark was the one mark on the bar with no solid form
+  // to take. `currency` is the ring both families draw around it, and Material's
+  // `paid-fill` is a filled disc with the sign knocked out of it, which is a
+  // silhouette where a stroked sign is three thin strokes.
+  'currency', 'currency--dollar',
 ];
 
 const symbols = [], missing = [], from = {};

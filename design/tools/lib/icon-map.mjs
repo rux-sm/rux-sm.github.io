@@ -93,6 +93,7 @@ export const ICONS = {
   'copy': { material: 'content_copy', rux: null },
   'critical': { material: 'dangerous', rux: null },  // `error` is taken by error--filled.
   'critical-severity': { material: 'change_history', rux: null },
+  'currency': { material: 'paid', rux: null },  // A dollar inside a ring, in both families; `currency--dollar` is the bare sign.
   'currency--dollar': { material: 'attach_money', rux: null },
   'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
   'document': { material: 'description', rux: null },

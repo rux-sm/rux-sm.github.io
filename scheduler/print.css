@@ -197,9 +197,12 @@
    blank for the driver's pen. */
 
 /* No rule under the letterhead: the table below it carries its own border,
-   and two lines an eighth of an inch apart are one line drawn twice. */
+   and two lines an eighth of an inch apart are one line drawn twice. It stands
+   off the top edge by more than the paper's margin: that margin is what the
+   printer can reach, not how close the heading should sit to the fold. */
 .scheduler-envelope__head {
   text-align: center;
+  padding-block-start: var(--rux-spacing-05);
   padding-block-end: var(--rux-spacing-05);
 }
 

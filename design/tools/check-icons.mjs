@@ -215,7 +215,8 @@ const JS = 'js';
 for (const f of (existsSync(JS) ? readdirSync(JS) : []).filter(f => f.endsWith('.js'))) {
   const path = join(JS, f);
   const src = readFileSync(path, 'utf8');
-  for (const m of src.matchAll(/['"`](#i-[a-z0-9-]+)['"`]/g)) {
+  // Every family, and the underscore Material names carry.
+  for (const m of src.matchAll(/['"`](#(?:i|m|r)-[a-z0-9_-]+)['"`]/g)) {
     const id = m[1].slice(1);
     const line = src.slice(0, m.index).split('\n').length;
     used.add(id);

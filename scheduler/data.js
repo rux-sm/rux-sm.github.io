@@ -125,7 +125,7 @@
   };
 
   /* `box` is the whole viewBox string, not its last number. Sprite symbols are
-     drawn in different boxes -- `#i-checkmark` in 20, the chevrons in 16, most
+     drawn in different boxes -- `#m-check` in 20, the chevrons in 16, most
      icons in 32 -- so a caller passes the symbol's own. */
   const svgUse = (href, size, box) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -157,27 +157,27 @@
   // Every class is written out in full, never `--${kind}`: check-classes reads
   // the source and cannot see through an interpolation.
   const NOTE = {
-    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#i-error--filled' },
-    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#i-information--filled' },
-    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#i-checkmark--filled' },
-    warning: { cls: 'rux--inline-notification rux--inline-notification--warning', icon: '#i-warning--filled' },
+    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
+    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
+    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#m-check_circle-fill' },
+    warning: { cls: 'rux--inline-notification rux--inline-notification--warning', icon: '#m-report-fill' },
   };
 
   // The same kinds as Carbon's actionable notification, for a notice that
   // offers an action.
   const ACTION_NOTE = {
-    error: { cls: 'rux--actionable-notification rux--actionable-notification--error', icon: '#i-error--filled' },
-    info: { cls: 'rux--actionable-notification rux--actionable-notification--info', icon: '#i-information--filled' },
-    success: { cls: 'rux--actionable-notification rux--actionable-notification--success', icon: '#i-checkmark--filled' },
-    warning: { cls: 'rux--actionable-notification rux--actionable-notification--warning', icon: '#i-warning--filled' },
+    error: { cls: 'rux--actionable-notification rux--actionable-notification--error', icon: '#m-error-fill' },
+    info: { cls: 'rux--actionable-notification rux--actionable-notification--info', icon: '#m-info-fill' },
+    success: { cls: 'rux--actionable-notification rux--actionable-notification--success', icon: '#m-check_circle-fill' },
+    warning: { cls: 'rux--actionable-notification rux--actionable-notification--warning', icon: '#m-report-fill' },
   };
 
   // And as Carbon's toast notification, for a plain notice over the page.
   const TOAST_NOTE = {
-    error: { cls: 'rux--toast-notification rux--toast-notification--error', icon: '#i-error--filled' },
-    info: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#i-information--filled' },
-    success: { cls: 'rux--toast-notification rux--toast-notification--success', icon: '#i-checkmark--filled' },
-    warning: { cls: 'rux--toast-notification rux--toast-notification--warning', icon: '#i-warning--filled' },
+    error: { cls: 'rux--toast-notification rux--toast-notification--error', icon: '#m-error-fill' },
+    info: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#m-info-fill' },
+    success: { cls: 'rux--toast-notification rux--toast-notification--success', icon: '#m-check_circle-fill' },
+    warning: { cls: 'rux--toast-notification rux--toast-notification--warning', icon: '#m-report-fill' },
   };
 
   /* One builder for both places: `say` puts a notice above the board and
@@ -259,7 +259,7 @@
     const b = el('button', spec.btn);
     b.type = 'button';
     b.setAttribute('aria-label', 'Close notification');
-    const svg = svgUse('#i-close', '20', '0 0 32 32');
+    const svg = svgUse('#m-close', '20', '0 0 32 32');
     svg.setAttribute('class', spec.icon);
     b.appendChild(svg);
     b.addEventListener('click', () => toast(null));
@@ -569,12 +569,12 @@
      initial in the same square, because Carbon has no drawing for a Wi-Fi or
      an outlet that survives 12px and the list is the office's to grow. */
   const REQUIREMENTS = {
-    pax56: { label: '56 passenger', href: '#i-user--multiple' },
-    sleeper: { label: 'Sleeper', href: '#i-hotel' },
-    adaLift: { label: 'Wheelchair lift', href: '#i-accessibility' },
-    hotel: { label: 'Hotel', href: '#i-building' },
+    pax56: { label: '56 passenger', href: '#m-groups' },
+    sleeper: { label: 'Sleeper', href: '#m-airline_seat_flat' },
+    adaLift: { label: 'Wheelchair lift', href: '#m-accessible' },
+    hotel: { label: 'Hotel', href: '#m-apartment' },
     // Carbon's `purchase` is a credit card, which is what a fuel card is.
-    fuelCard: { label: 'Fuel card', href: '#i-purchase' },
+    fuelCard: { label: 'Fuel card', href: '#m-credit_card' },
     oneWay: { label: 'One-way' },
   };
 
@@ -749,10 +749,10 @@
      order the drivers row lists them. Relief is the one role that is not a
      person, so it cannot be taken for a co-driver at 12px. */
   const ROLES = [
-    { role: 'driver', label: 'Driver', icon: '#i-user', box: '0 0 16 16' },
-    { role: 'co-driver', label: 'Co-driver', icon: '#i-user', box: '0 0 16 16' },
-    { role: 'relief-start', label: 'Relief start', icon: '#i-channels', box: '0 0 32 32' },
-    { role: 'relief-end', label: 'Relief end', icon: '#i-channels', box: '0 0 32 32' },
+    { role: 'driver', label: 'Driver', icon: '#m-person', box: '0 0 16 16' },
+    { role: 'co-driver', label: 'Co-driver', icon: '#m-person', box: '0 0 16 16' },
+    { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz', box: '0 0 32 32' },
+    { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz', box: '0 0 32 32' },
   ];
   /* The five states `trip_driver_statuses` holds, and the tone each paints.
      Not sent is grey rather than no disc at all: it is the first step of the
@@ -905,12 +905,12 @@
     /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
        Pending itinerary is: no document labelled Itinerary, and the trip not
        marked as not needing one. */
-    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#i-attachment', label: 'No itinerary yet' });
+    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#m-attachment', label: 'No itinerary yet' });
     /* And the day-of contact the same way: nobody to call on the day, and the
        trip not marked as needing no one. Any of the five counts, since the
        warning is that the list is empty, not that the first slot is. */
     const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
-    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#i-phone', label: 'No day-of contact' });
+    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#m-call', label: 'No day-of contact' });
 
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
     /* EVERY REQUIREMENT THE TRIP CARRIES GETS ONE MARK, and its colour says
@@ -942,7 +942,7 @@
     });
     const marks = [
       ...pending,
-      ...(wrong ? [{ href: '#i-bus', label: wrong }] : []),
+      ...(wrong ? [{ href: '#m-directions_bus', label: wrong }] : []),
       ...needs,
     ];
     /* Drawn on the notes row and again on the destination row; app.css shows
@@ -1208,7 +1208,7 @@
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {
-        flag('#i-warning--filled', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
+        flag('#m-report-fill', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
       }
       if (kit.childElementCount) head.appendChild(kit);
 
@@ -1620,7 +1620,7 @@
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
     btn.type = 'button';
     if (id) btn.id = id;
-    const icon = svgUse('#i-add', '16', '0 0 32 32');
+    const icon = svgUse('#m-add', '16', '0 0 32 32');
     icon.setAttribute('class', 'rux--btn__icon');
     btn.append(icon, label);
     btn.addEventListener('click', onClick);
@@ -1742,7 +1742,7 @@
     more.setAttribute('aria-expanded', 'false');
     // The trigger's name is the record's, so two records' menus are told apart.
     more.setAttribute('aria-label', `Actions for ${title}`);
-    more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+    more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
     more.addEventListener('click', () => openRowMenu(more, {
       edit, remove, removeLabel, editText, removeText,
@@ -1800,7 +1800,7 @@
       }
       if (radio) {
         const check = el('div', 'rux--menu-item__selection-icon');
-        if (it.checked) check.appendChild(svgUse('#i-checkmark', '16', '0 0 20 20'));
+        if (it.checked) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
         li.appendChild(check);
       }
       if (it.icon) {
@@ -2149,7 +2149,7 @@
       body.appendChild(el('span', 'scheduler-contact-option__name', o.name));
       const detail = [o.detail, o.clash].filter(Boolean).join(' · ');
       if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
-      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      const tick = svgUse('#m-check', '16', '0 0 20 20');
       tick.classList.add('rux--list-box__menu-item__selected-icon');
       body.appendChild(tick);
       option.appendChild(body);
@@ -2164,7 +2164,7 @@
         root.setAttribute('data-invalid', '');
         input.setAttribute('aria-invalid', 'true');
       } else root.classList.add('rux--list-box--warning');
-      const icon = svgUse(error ? '#i-warning--filled' : '#i-warning--alt--filled', '16', '0 0 32 32');
+      const icon = svgUse(error ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 32 32');
       icon.setAttribute('class', error
         ? 'rux--list-box__invalid-icon'
         : 'rux--list-box__invalid-icon rux--list-box__invalid-icon--warning');
@@ -2205,11 +2205,11 @@
      role, so the form needs no role icon. Each class is written out whole,
      for the class sweep. */
   const STATUS_ICON = {
-    off: { cls: 'rux--icon-indicator--not-started', icon: '#i-circle-dash' },
-    'pending-assignment': { cls: 'rux--icon-indicator--caution-major', icon: '#i-warning--alt-inverted--filled' },
-    'pending-response': { cls: 'rux--icon-indicator--caution-minor', icon: '#i-warning--alt--filled' },
-    confirmed: { cls: 'rux--icon-indicator--succeeded', icon: '#i-checkmark--filled' },
-    declined: { cls: 'rux--icon-indicator--failed', icon: '#i-error--filled' },
+    off: { cls: 'rux--icon-indicator--not-started', icon: '#m-motion_photos_on' },
+    'pending-assignment': { cls: 'rux--icon-indicator--caution-major', icon: '#m-do_not_disturb_on-fill' },
+    'pending-response': { cls: 'rux--icon-indicator--caution-minor', icon: '#m-warning-fill' },
+    confirmed: { cls: 'rux--icon-indicator--succeeded', icon: '#m-check_circle-fill' },
+    declined: { cls: 'rux--icon-indicator--failed', icon: '#m-error-fill' },
   };
   const statusIcon = value => {
     const svg = svgUse(STATUS_ICON[value].icon, '16', '0 0 32 32');
@@ -2306,7 +2306,7 @@
     more.setAttribute('aria-expanded', 'false');
     more.setAttribute('aria-label', `Bus ${n} actions`);
     more.title = `Bus ${n} actions`;
-    more.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+    more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
     more.addEventListener('click', () => openItemsMenu(more, [
       ...ROLES.filter(r => r.role !== 'driver').map(r => {
@@ -2387,8 +2387,8 @@
       b.appendChild(svgUse(icon, '16', '0 0 32 32'));
       return b;
     };
-    controls.append(stepBtn('down-icon', '#i-subtract', 'Fewer buses'), el('div', 'rux--number__rule-divider'),
-                    stepBtn('up-icon', '#i-add', 'More buses'), el('div', 'rux--number__rule-divider'));
+    controls.append(stepBtn('down-icon', '#m-remove', 'Fewer buses'), el('div', 'rux--number__rule-divider'),
+                    stepBtn('up-icon', '#m-add', 'More buses'), el('div', 'rux--number__rule-divider'));
     wrap.append(input, controls);
     root.append(lab, wrap);
     const item = el('div', 'rux--form-item');
@@ -2623,12 +2623,12 @@
       fail: (title, text) => {
         box.classList.add('rux--file__selected-file--invalid');
         wrap.className = 'rux--file-filename-container-wrap-invalid';
-        const icon = svgUse('#i-warning--filled', '16', '0 0 16 16');
+        const icon = svgUse('#m-report-fill', '16', '0 0 16 16');
         icon.setAttribute('class', 'rux--file-invalid');
         const close = el('button', 'rux--file-close');
         close.type = 'button';
         close.setAttribute('aria-label', `Dismiss ${name}`);
-        close.appendChild(svgUse('#i-close', '16', '0 0 32 32'));
+        close.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
         close.addEventListener('click', () => box.remove());
         state.replaceChildren(icon, close);
         const req = el('div', 'rux--form-requirement');
@@ -2891,7 +2891,7 @@
       body.appendChild(el('span', 'scheduler-contact-option__name', c.name ?? ''));
       const detail = [c.client, c.phone].filter(Boolean).join(' · ');
       if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
-      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      const tick = svgUse('#m-check', '16', '0 0 20 20');
       tick.classList.add('rux--list-box__menu-item__selected-icon');
       body.appendChild(tick);
       option.appendChild(body);
@@ -3008,7 +3008,7 @@
     }
     btn.tabIndex = -1;
     btn.setAttribute('aria-label', `${word} ${label.charAt(0).toLowerCase()}${label.slice(1)}`);
-    btn.appendChild(svgUse(open ? '#i-launch' : '#i-copy', '16', '0 0 32 32'));
+    btn.appendChild(svgUse(open ? '#m-open_in_new' : '#m-content_copy', '16', '0 0 32 32'));
     trigger.appendChild(btn);
     const pop = el('span', 'rux--popover');
     pop.append(el('span', 'rux--popover-content rux--tooltip-content', word), el('span', 'rux--popover-caret'));
@@ -3058,7 +3058,7 @@
     svg.setAttribute('viewBox', '0 0 32 32'); svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('aria-hidden', 'true');
     const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '#i-chevron--down');
+    use.setAttribute('href', '#m-keyboard_arrow_down');
     svg.appendChild(use);
     wrap.append(sel, svg);
     box.append(lab, wrap);
@@ -3139,7 +3139,7 @@
     field.setAttribute('aria-haspopup', 'listbox');
     const shown = el('span', 'rux--list-box__label');
     const caret = el('div', 'rux--list-box__menu-icon');
-    caret.appendChild(svgUse('#i-chevron--down', '16', '0 0 16 16'));
+    caret.appendChild(svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16'));
     field.append(shown, caret);
     const paint = choice => shown.replaceChildren(chip(choice.hue), choice.label);
     const menu = el('ul', 'rux--list-box__menu');
@@ -3151,7 +3151,7 @@
       option.setAttribute('role', 'option');
       option.setAttribute('aria-selected', String(on));
       option.dataset.color = choice.value;
-      const tick = svgUse('#i-checkmark', '16', '0 0 20 20');
+      const tick = svgUse('#m-check', '16', '0 0 20 20');
       tick.classList.add('rux--list-box__menu-item__selected-icon');
       const body = el('div', 'rux--list-box__menu-item__option');
       body.append(chip(choice.hue), choice.label, tick);
@@ -3221,7 +3221,7 @@
     b.type = 'button';
     b.setAttribute('aria-label', 'Open calendar');
     b.tabIndex = -1;
-    b.appendChild(svgUse('#i-calendar', '16', '0 0 32 32'));
+    b.appendChild(svgUse('#m-calendar_month', '16', '0 0 32 32'));
     return b;
   };
 
@@ -3277,10 +3277,10 @@
     const month = el('div', 'rux--date-picker__month');
     const prev = el('button', 'rux--date-picker__month-nav');
     prev.type = 'button'; prev.setAttribute('aria-label', 'Previous month');
-    prev.appendChild(svgUse('#i-chevron--left', '16', '0 0 16 16'));
+    prev.appendChild(svgUse('#m-keyboard_arrow_left', '16', '0 0 16 16'));
     const next = el('button', 'rux--date-picker__month-nav');
     next.type = 'button'; next.setAttribute('aria-label', 'Next month');
-    next.appendChild(svgUse('#i-chevron--right', '16', '0 0 16 16'));
+    next.appendChild(svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
     month.append(prev, el('div', 'rux--date-picker__current-month'), next);
     const weekdays = el('div', 'rux--date-picker__weekdays');
     for (let i = 0; i < 7; i++) weekdays.appendChild(el('div', 'rux--date-picker__weekday'));
@@ -3660,7 +3660,7 @@
     if (trip.confirmed === false) return null;
     const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
     if (price <= 0) return null;
-    const mark = (label, tone) => ({ href: '#i-currency--dollar', label, tone });
+    const mark = (label, tone) => ({ href: '#m-attach_money', label, tone });
     if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
     if (rung === 'contract_signed') return mark('No purchase order yet', 'error');
     if (rung === 'po_partial') return mark(`Purchase order covers ${usd(poAmount)} of ${usd(remaining)}`, 'warning');
@@ -4600,7 +4600,7 @@
       menuBtn.setAttribute('aria-expanded', 'false');
       menuBtn.setAttribute('aria-label', 'Day-of contact actions');
       menuBtn.title = 'Day-of contact actions';
-      menuBtn.appendChild(svgUse('#i-overflow-menu--vertical', '16', '0 0 32 32'));
+      menuBtn.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
       menuBtn.addEventListener('click', () => {
         const count = readContacts().length;
@@ -5034,7 +5034,7 @@
         /* The status line: Carbon's icon indicator for whether the trip is
            confirmed, and the billing status as a tag at the end. */
         const state = el('div', 'rux--icon-indicator');
-        const mark = svgUse(confirmed ? '#i-checkmark--filled' : '#i-circle-dash', '20', '0 0 32 32');
+        const mark = svgUse(confirmed ? '#m-check_circle-fill' : '#m-motion_photos_on', '20', '0 0 32 32');
         mark.setAttribute('class', confirmed ? 'rux--icon-indicator--succeeded' : 'rux--icon-indicator--not-started');
         state.append(mark, confirmed ? 'Confirmed' : 'Not confirmed');
         const status = el('span', `rux--tag rux--layout--size-sm ${rungTone}`, rungLabel);
@@ -5863,7 +5863,7 @@
       const on = !!view[key];
       item.setAttribute('aria-checked', String(on));
       const slot = item.querySelector('.rux--menu-item__selection-icon');
-      if (slot) { if (on) slot.replaceChildren(svgUse('#i-checkmark', '16', '0 0 20 20')); else slot.replaceChildren(); }
+      if (slot) { if (on) slot.replaceChildren(svgUse('#m-check', '16', '0 0 20 20')); else slot.replaceChildren(); }
     }
     try { localStorage.setItem(VIEW_KEY, JSON.stringify(view)); } catch { /* nothing to do */ }
     window.Rux?.schedule?.fit?.();
@@ -6383,7 +6383,7 @@
       const on = item.dataset.color === (bar.dataset.tripColor || '');
       item.setAttribute('aria-checked', String(on));
       item.querySelector('.rux--menu-item__selection-icon')
-        .replaceChildren(...(on ? [svgUse('#i-checkmark', '16', '0 0 20 20')] : []));
+        .replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
       if (!item.dataset.color) {
         item.querySelector('.scheduler-swatch').className = `scheduler-swatch scheduler-bar--${bar.dataset.standardHue || 'blue'}`;
       }
@@ -6427,7 +6427,7 @@
       const icon = el('div', 'rux--menu-item__icon');
       icon.appendChild(crewEl(c).firstChild);
       const caret = el('div', 'rux--menu-item__shortcut');
-      caret.appendChild(svgUse('#i-caret--right', '16', '0 0 32 32'));
+      caret.appendChild(svgUse('#m-arrow_right', '16', '0 0 32 32'));
       const sub = el('ul', 'rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items');
       sub.setAttribute('role', 'menu');
       sub.setAttribute('aria-label', `${c.label} status`);
@@ -6447,7 +6447,7 @@
         opt.dataset.crewRole = c.role;
         opt.dataset.driverStatus = st.value;
         const check = el('div', 'rux--menu-item__selection-icon');
-        if (on) check.appendChild(svgUse('#i-checkmark', '16', '0 0 20 20'));
+        if (on) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
         const mark = el('div', 'rux--menu-item__icon');
         mark.appendChild(crewEl({ ...c, status: st }).firstChild);
         opt.append(check, mark, el('div', 'rux--menu-item__label', st.label));
@@ -7392,28 +7392,28 @@
     /* Slot 1 works the editor both ways: it opens the trip, and on the very bar
        the editor holds it closes it. That is what the tab down the bar's start
        edge used to do, without taking any of the bar's writing. */
-    { id: 'open', label: 'Open trip', icon: '#i-launch',
+    { id: 'open', label: 'Open trip', icon: '#m-open_in_new',
       label_for: bar => (isEditorBar(bar) ? 'Close trip' : 'Open trip'),
-      icon_for: bar => (isEditorBar(bar) ? '#i-close' : '#i-launch'),
+      icon_for: bar => (isEditorBar(bar) ? '#m-close' : '#m-open_in_new'),
       blocked: () => null,
       run: bar => (isEditorBar(bar) ? whenSafe(() => closePanel()) : openSelected()) },
-    { id: 'itinerary', label: 'Open itinerary', icon: '#i-attachment',
+    { id: 'itinerary', label: 'Open itinerary', icon: '#m-attachment',
       blocked: bar => (bar.dataset.itineraryId ? null : 'No itinerary yet'),
       run: bar => openItinerary(bar) },
-    { id: 'hotel', label: 'Mark hotel booked', icon: '#i-building',
+    { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment',
       label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
       blocked: bar => (!bar.dataset.needHotel ? 'No hotel on this trip' : EDITOR_HAS.hotel(bar)),
       run: bar => markHotel(bar) },
-    { id: 'color', label: 'Color', icon: '#i-color-palette',
+    { id: 'color', label: 'Color', icon: '#m-palette',
       blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
-    { id: 'envelope', label: 'Print envelope', icon: '#i-printer',
+    { id: 'envelope', label: 'Print envelope', icon: '#m-print',
       blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
         : !barHasCrew(bar) ? 'No driver on this bus' : null),
       run: bar => openEnvelope(bar) },
-    { id: 'unassign', label: 'Take off this bus', icon: '#i-subtract',
+    { id: 'unassign', label: 'Take off this bus', icon: '#m-remove',
       blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
       run: bar => takeOffBus(bar) },
-    { id: 'cancel', label: 'Cancel trip…', icon: '#i-trash-can',
+    { id: 'cancel', label: 'Cancel trip…', icon: '#m-delete',
       blocked: () => null, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
   // How many actions follow Open trip, and so how many dropdowns Customize
@@ -7483,7 +7483,7 @@
         btn.classList.add('scheduler-bar-shortcut--empty');
         btn.setAttribute('aria-label', 'Add a shortcut');
         btn.title = 'Add a shortcut';
-        btn.appendChild(svgUse('#i-circle-dash', '16', '0 0 32 32'));
+        btn.appendChild(svgUse('#m-motion_photos_on', '16', '0 0 32 32'));
         return btn;
       }
       // Open trip and Mark hotel booked each say which way they act on this bar.
@@ -8601,7 +8601,7 @@
     icon.setAttribute('viewBox', '0 0 32 32'); icon.setAttribute('fill', 'currentColor');
     icon.setAttribute('aria-hidden', 'true');
     const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '#i-information--filled');
+    use.setAttribute('href', '#m-info-fill');
     icon.appendChild(use);
     const texts = el('div', 'rux--inline-notification__text-wrapper');
     texts.appendChild(el('div', 'rux--inline-notification__title', 'Filled in by Claude. Check the marked fields.'));

@@ -35,7 +35,7 @@
     svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('aria-hidden', 'true');
     const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '#i-chevron--down');
+    use.setAttribute('href', '#m-keyboard_arrow_down');
     svg.appendChild(use);
     return svg;
   };

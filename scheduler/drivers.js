@@ -98,9 +98,9 @@
 
   // Each status icon written out whole, so the class sweep can read it.
   const INDICATOR = {
-    expired: { cls: 'rux--icon-indicator--failed', icon: '#i-error--filled' },
-    soon: { cls: 'rux--icon-indicator--caution-minor', icon: '#i-warning--alt--filled' },
-    none: { cls: 'rux--icon-indicator--unknown', icon: '#i-unknown--filled' },
+    expired: { cls: 'rux--icon-indicator--failed', icon: '#m-error-fill' },
+    soon: { cls: 'rux--icon-indicator--caution-minor', icon: '#m-warning-fill' },
+    none: { cls: 'rux--icon-indicator--unknown', icon: '#m-help-fill' },
   };
   function indicator(c) {
     if (c.kind === 'ok') return el('span', null, c.text);
@@ -137,9 +137,9 @@
   // ── the notice ──────────────────────────────────────────────────────────
   // Every class is written out in full: the class sweep reads the source.
   const NOTE = {
-    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#i-information--filled' },
-    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#i-error--filled' },
-    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#i-checkmark--filled' },
+    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
+    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
+    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#m-check_circle-fill' },
   };
   const say = (kind, title, text) => {
     $('scheduler-drivers-notice').hidden = !kind;
@@ -478,7 +478,7 @@
     input.setAttribute('aria-describedby', `scheduler-d-${id}-error`);
     let icon = wrap.querySelector('.rux--text-input__invalid-icon');
     if (on && !icon) {
-      icon = svgUse('#i-warning--filled', '16', '0 0 32 32', 'rux--text-input__invalid-icon');
+      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--text-input__invalid-icon');
       wrap.prepend(icon);
     }
     if (!on) icon?.remove();
@@ -543,7 +543,7 @@
     b.type = 'button';
     b.setAttribute('aria-label', 'Open calendar');
     b.tabIndex = -1;
-    b.appendChild(svgUse('#i-calendar', '16', '0 0 32 32'));
+    b.appendChild(svgUse('#m-calendar_month', '16', '0 0 32 32'));
     return b;
   };
   const DP_CONTAINER = {
@@ -577,10 +577,10 @@
     const month = el('div', 'rux--date-picker__month');
     const prev = el('button', 'rux--date-picker__month-nav');
     prev.type = 'button'; prev.setAttribute('aria-label', 'Previous month');
-    prev.appendChild(svgUse('#i-chevron--left', '16', '0 0 16 16'));
+    prev.appendChild(svgUse('#m-keyboard_arrow_left', '16', '0 0 16 16'));
     const next = el('button', 'rux--date-picker__month-nav');
     next.type = 'button'; next.setAttribute('aria-label', 'Next month');
-    next.appendChild(svgUse('#i-chevron--right', '16', '0 0 16 16'));
+    next.appendChild(svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
     month.append(prev, el('div', 'rux--date-picker__current-month'), next);
     const weekdays = el('div', 'rux--date-picker__weekdays');
     for (let i = 0; i < 7; i++) weekdays.appendChild(el('div', 'rux--date-picker__weekday'));
@@ -602,7 +602,7 @@
       o.selected = v === value;
       sel.appendChild(o);
     }
-    wrap.append(sel, svgUse('#i-chevron--down', '16', '0 0 16 16', 'rux--select__arrow'));
+    wrap.append(sel, svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16', 'rux--select__arrow'));
     box.append(lab, wrap);
     item.appendChild(box);
     return item;

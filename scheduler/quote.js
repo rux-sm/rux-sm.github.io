@@ -363,7 +363,7 @@
       remove.type = 'button';
       remove.className = 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm';
       remove.setAttribute('aria-label', 'Remove rate');
-      remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-trash-can"/></svg>';
+      remove.innerHTML = '<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg>';
       remove.addEventListener('click', () => row.remove());
 
       row.append(rate, note, radio, remove);
@@ -380,7 +380,7 @@
       $('scheduler-quote-rates-result').hidden = !kind;
       if (!kind) return;
       $('scheduler-quote-rates-result-box').className = RESULT_CLASS[kind];
-      $('scheduler-quote-rates-result-icon').setAttribute('href', kind === 'success' ? '#i-checkmark--filled' : '#i-error--filled');
+      $('scheduler-quote-rates-result-icon').setAttribute('href', kind === 'success' ? '#m-check_circle-fill' : '#m-error-fill');
       $('scheduler-quote-rates-result-text').textContent = text;
     };
 

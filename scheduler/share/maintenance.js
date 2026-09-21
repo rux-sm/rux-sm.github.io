@@ -44,9 +44,9 @@
   // Every class is written out in full: check-classes reads the source and
   // cannot see through an interpolation.
   const NOTE = {
-    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#i-information--filled' },
-    warning: { cls: 'rux--inline-notification rux--inline-notification--warning', icon: '#i-warning--filled' },
-    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#i-error--filled' },
+    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
+    warning: { cls: 'rux--inline-notification rux--inline-notification--warning', icon: '#m-report-fill' },
+    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
   };
   const say = (kind, title, text) => {
     $('scheduler-share-notice').hidden = !kind;

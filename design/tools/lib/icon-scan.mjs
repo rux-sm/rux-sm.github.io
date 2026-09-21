@@ -23,7 +23,10 @@ import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 const SPRITE_BLOCK = /<!-- SPRITE:BEGIN[\s\S]*?<!-- SPRITE:END -->/;
-const NAME = /#((?:i|m)-[a-z0-9-]+)/g;
+/* `r-` is here too, and so is the underscore: every Material name has one --
+   `account_circle`, `grid_view` -- and a class without it matched `m-account`,
+   so the page named a symbol that does not exist and lost the one it meant. */
+const NAME = /#((?:i|m|r)-[a-z0-9_-]+)/g;
 
 // The local scripts a page loads, resolved. A root-absolute src is the site's,
 // so it needs the site root; an external one is nobody's to read.

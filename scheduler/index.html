@@ -544,7 +544,12 @@
            Chrome's scrolls sideways at 30rem. The file's actions start disabled
            and data.js enables them once the file has loaded. -->
       <div class="scheduler-viewer__body">
-        <div class="rux--side-panel__action-toolbar scheduler-viewer__toolbar" role="group" aria-label="Document actions">
+        <!-- A GENERATED FORM'S OWN CONTROLS -- its layout, which copy, the
+             Printed tick and Print all -- are built by print.html and handed
+             up into this row, ahead of the buttons every document gets, so
+             every document in the panel carries its buttons in one place.
+             data.js puts them in; a stored file adds none. -->
+        <div class="rux--side-panel__action-toolbar scheduler-viewer__toolbar" id="scheduler-viewer-toolbar" role="group" aria-label="Document actions">
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-zoom--out"/></svg>
           </button>

@@ -89,21 +89,27 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 - **The panel frames the page's address directly,** through `swapFrame`. A PDF
   needs a fetch and a blob address; a same-origin page of this site does not.
-- **A form prints from its own toolbar, and the panel's Print is hidden.**
-  Printing the frame is the same call either way, so two buttons for it is one
-  too many, and the form's own is the one that can sit beside Print all and
-  after the choices that change what comes out. A stored file has no toolbar
-  of its own, so the panel keeps Print for one.
+- **A form's own controls go in the panel's toolbar, beside the buttons every
+  document gets.** A stored file carries Print and Open in new tab in that
+  row, so the form's layout, its copy, its Printed tick and its Print all go in
+  the same row rather than a second bar under it, and a document's buttons are
+  in one place whatever the document is. `print.html` builds them and hands the
+  nodes up, which keeps one builder and keeps the listeners it gave them; the
+  panel adopts them as the row's own children, so the row breaks as one line,
+  and takes them out again when the frame moves on. A page in its own tab hands
+  them to nobody and keeps them in its own bar, with the plain Print the
+  panel's printer button stands for.
 - **It always opens in the panel,** as a PDF does, at every width: where the
   board cannot hold the panel beside the week the panel comes in front of the
   board, so there is no width at which a form is sent to a browser tab.
-- **Zoom, Download and Print are hidden for a generated form.** The zooms send
+- **Zoom and Download are hidden for a generated form.** The zooms send
   `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is fluid
   instead; there is no file to download, and the print dialog saves a PDF.
 - **The head names the form and its subject** — "Trip envelope" over "Driver
   copy — <name>" — where a stored file names its type over when it was
-  uploaded. The form's own toolbar drops its title there, because the head has
-  just said it.
+  uploaded. The form's own bar is gone there: the head has said the name and
+  the toolbar holds the rest. Whatever the form has to say, such as a tick
+  saved, borrows that same line and gives it back.
 - **The panel is named the viewer,** `scheduler-viewer-*` and `viewer*`, not
   `scheduler-document-*`: `doc` and `document*` already mean a stored file
   record throughout `data.js`, so the panel takes the name rux-ui gives the

@@ -6554,6 +6554,7 @@
   const viewerUploaded = document.getElementById('scheduler-viewer-uploaded');
   const viewerStatus = document.getElementById('scheduler-viewer-status');
   const viewerPrint = document.getElementById('scheduler-viewer-print');
+  const viewerToolbar = document.getElementById('scheduler-viewer-toolbar');
   const viewerDownload = document.getElementById('scheduler-viewer-download');
   const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
   const viewerClose = document.getElementById('scheduler-viewer-close');
@@ -6656,18 +6657,50 @@
   }
 
   /* A stored file and a form this app draws are both documents, and the panel
-     frames either; what differs is the toolbar. The zooms send `#zoom=` to a
-     PDF viewer, which an HTML page ignores, and there is no file to download
-     -- the print dialog saves a PDF. Print goes too, because a form carries
-     its own toolbar and prints from there, beside the Print all that only the
-     form can offer; a stored file has no toolbar of its own, so this is its
-     only one. Open in new tab stands for both. */
+     frames either; what differs is only what the toolbar can offer. The zooms
+     send `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is
+     fluid instead; there is no file to download, and the print dialog saves a
+     PDF. Print and Open in new tab stand for both, and a form adds its own
+     controls ahead of them. */
   function setViewerMode(mode) {
     const form = mode === 'form';
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
-    viewerPrint.hidden = form;
+    if (!form) setFormControls([]);
   }
+
+  /* WHAT A GENERATED FORM PUTS IN THIS TOOLBAR. print.html builds its own
+     controls and hands the nodes up; this adopts them, so the listeners it
+     registered keep working and there is one builder rather than two. It hands
+     them over again on every rebuild -- a copy chosen, Print all's count
+     arriving -- so the slot is replaced whole each time. */
+  let formNodes = [];
+  function setFormControls(nodes) {
+    if (!viewerToolbar) return;
+    for (const node of formNodes) node.remove();
+    formNodes = nodes.map(node => {
+      const here = document.adoptNode(node);
+      // What the toolbar's own rules size and hold in place, and what a later
+      // hand-over takes back out again.
+      here.setAttribute('data-viewer-form', '');
+      return here;
+    });
+    viewerToolbar.prepend(...formNodes);
+  }
+
+  /* The line a form has to say, in the place a stored file says when it was
+     uploaded: the right-hand end of the same row. It borrows the line and
+     gives it back, so the leg a form was opened on returns once the form has
+     finished saying whatever it had to say. */
+  let viewerNote = '';
+  function setFormNote(text, bad) {
+    if (!viewerUploaded) return;
+    viewerUploaded.textContent = text || viewerNote;
+    viewerUploaded.toggleAttribute('data-bad', Boolean(text) && Boolean(bad));
+  }
+
+  window.Rux = window.Rux || {};
+  window.Rux.viewer = { setFormControls, setFormNote };
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is
@@ -6679,8 +6712,13 @@
     }
     dropShown();
     setViewerMode('form');
+    // The controls belong to the frame being replaced, so they go with it and
+    // the page hands its own up once it has drawn.
+    setFormControls([]);
     for (const h of [viewerTitle, viewerTitleCollapsed]) h.textContent = kind;
-    viewerUploaded.textContent = note || '';
+    viewerNote = note || '';
+    setFormNote('');
+    viewerPrint.disabled = false;
     viewerNewTab.href = url;
     // No document row stands behind it, so a replace or a delete in the Files
     // tab has nothing here to follow.

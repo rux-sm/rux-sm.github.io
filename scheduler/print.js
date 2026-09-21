@@ -458,6 +458,25 @@
     document.getElementById('scheduler-print-shell').hidden = false;
   }
 
+  /* THE TOOLBAR IS THE PANEL'S, WHERE THERE IS A PANEL. A stored file carries
+     its buttons in the document panel's own row, so a form carries its buttons
+     there too and every document in that panel reads the same way. The page
+     hands the panel the controls it built and the panel holds them; its own
+     bar then has nothing to show and stays hidden. Opened in a tab there is no
+     panel, and the page's bar is the only toolbar there is.
+     `window.parent` is this origin either way, and the guard is for a frame
+     that is not the board's. */
+  const host = (() => {
+    if (!framed) return null;
+    try { return window.parent.Rux?.viewer ?? null; } catch { return null; }
+  })();
+
+  /* A new page in the frame takes the last one's controls out of the panel.
+     The panel clears them when it opens a document, but a tile on the hub
+     moves the frame on its own, and a form that cannot be drawn has none. */
+  host?.setFormControls([]);
+  host?.setFormNote('');
+
   const bar = document.getElementById('scheduler-print-bar');
   const title = document.getElementById('scheduler-print-title');
   const controls = document.getElementById('scheduler-print-controls');
@@ -542,8 +561,11 @@
      form is on it. */
   let noteTimer = null;
   function flash(text, bad) {
-    note.textContent = text;
-    note.toggleAttribute('data-bad', Boolean(bad));
+    if (host) host.setFormNote(text, bad);
+    else {
+      note.textContent = text;
+      note.toggleAttribute('data-bad', Boolean(bad));
+    }
     clearTimeout(noteTimer);
     if (text) noteTimer = setTimeout(() => flash(''), 6000);
   }
@@ -647,14 +669,16 @@
       nodes.push(box);
     }
 
-    /* The two prints are one thing in the toolbar, so a narrow viewer wraps
-       them together rather than leaving Print all stranded on a row of its
-       own below its own Print. */
-    const prints = el('div', 'scheduler-print__prints');
-    const print = el('button', 'rux--btn rux--btn--primary rux--btn--sm', 'Print');
-    print.type = 'button';
-    print.addEventListener('click', () => window.print());
-    prints.appendChild(print);
+    /* In the panel the plain Print is the panel's own printer button, which
+       prints this frame, exactly as it prints a stored file; standing alone
+       the page has to carry its own. */
+    const actions = [];
+    if (!host) {
+      const print = el('button', 'rux--btn rux--btn--primary rux--btn--sm', 'Print');
+      print.type = 'button';
+      print.addEventListener('click', () => window.print());
+      actions.push(print);
+    }
 
     /* Print all is the trip's, not this bus's, so it is offered whenever the
        trip has more than one envelope on it -- including a bus with a single
@@ -672,11 +696,20 @@
         drawAll();
         requestAnimationFrame(() => window.print());
       });
-      prints.appendChild(all);
+      actions.push(all);
     }
-    nodes.push(prints);
 
-    controls.replaceChildren(...nodes);
+    /* The prints are one thing in the toolbar, so a row that has to break
+       keeps them together rather than stranding Print all under its own
+       Print. One of them alone needs no group. */
+    if (actions.length > 1) {
+      const prints = el('div', 'scheduler-print__prints');
+      prints.append(...actions);
+      nodes.push(prints);
+    } else nodes.push(...actions);
+
+    if (host) host.setFormControls(nodes);
+    else controls.replaceChildren(...nodes);
   }
 
   /* The buses a trip has, so the hub can offer a form that binds one. A trip
@@ -713,7 +746,7 @@
   async function showHub() {
     const trip = params.get('trip');
     title.textContent = 'Forms';
-    bar.hidden = false;
+    bar.hidden = Boolean(host);
     hub.hidden = false;
     sheet.replaceChildren();
 
@@ -769,7 +802,7 @@
   async function showForm(form) {
     title.textContent = form.name;
     setPaper(form);
-    bar.hidden = false;
+    bar.hidden = Boolean(host);
     hub.hidden = true;
 
     const assignmentId = params.get('assignment');

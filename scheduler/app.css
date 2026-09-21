@@ -876,12 +876,27 @@ button.scheduler-row-head__num::after {
   min-block-size: 0;
 }
 /* Carbon's action toolbar has no inset of its own. The rule under it parts it
-   from the frame, as the head's rule parts the head. */
+   from the frame, as the head's rule parts the head. It wraps, because a
+   generated form puts its own controls in this row and they ask for more than
+   a stored file's six icons. */
 .scheduler-viewer__toolbar {
   flex: none;
-  padding-inline: var(--rux-spacing-03);
+  flex-wrap: wrap;
+  row-gap: var(--rux-spacing-02);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
+
+/* WHAT A GENERATED FORM HANDS UP, which data.js marks as it puts it in. They
+   are the row's own children rather than a group inside it, so the whole
+   toolbar breaks as one line and the buttons every document gets join the
+   form's rather than being pushed below them. Carbon would stretch a field to
+   the row; these hold the width their content asks for, the same widths
+   print.css gives them where the page carries its own toolbar. */
+.scheduler-viewer__toolbar > [data-viewer-form] { flex: none; }
+.scheduler-viewer__toolbar > [data-viewer-form] + * { margin-inline-start: var(--rux-spacing-03); }
+.scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
+.scheduler-viewer__toolbar > .rux--content-switcher { inline-size: 13rem; }
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons
    data.js hides in Safari are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }

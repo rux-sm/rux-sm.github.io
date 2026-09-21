@@ -24,7 +24,7 @@
      list of them, with one the form itself, drawn from the subject its
      address names. print.js holds the registry and draws each one.
 
-     THE PAPER IS WHITE WHATEVER THEME THE PERSON KEEPS, so data-theme sits on
+     THE PAPER IS LIGHT WHATEVER THEME THE PERSON KEEPS, so data-theme sits on
      the desk below rather than on this page: every --rux-* token there
      resolves to ink on paper, while the chrome around it follows the theme as
      every other page's does.
@@ -179,8 +179,13 @@
     <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
   </div>
   <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
-    <!-- The desk and the paper on it, white whatever theme the page is in. -->
-  <div class="scheduler-print__sheet" id="scheduler-print-sheet" data-theme="white"></div>
+    <!-- The desk and the paper on it, light whatever theme the page is in. It
+       says g10 and not white because white is Carbon's default rather than a
+       theme it writes a rule for: `data-theme="white"` matches nothing, so a
+       sheet asking for it kept the dark theme of the page around it and the
+       ink came out white on the paper. g10 is the lightest theme Carbon does
+       write, and its ink is the same #161616. -->
+  <div class="scheduler-print__sheet" id="scheduler-print-sheet" data-theme="g10"></div>
 </main>
 
 <script src="/design/js/overlay.js"></script>

@@ -23,10 +23,33 @@
 // collapsed nine such pairs and every one was given a distinct counterpart; the
 // comments below say which name was already taken.
 //
-// EVERY COUNTERPART EXISTS AS A SOLID, checked against
-// @material-symbols/svg-400/sharp. A trip bar draws its marks at 12px, where an
-// outline glyph loses its strokes and a solid one keeps its silhouette, so the
-// solid set is the one an app takes.
+// ONE SETTING OF MATERIAL, AND SIZE IS THE ONLY THING THAT VARIES.
+// Material Symbols is a variable font with four axes -- fill, weight, grade and
+// optical size -- but the SVG package exposes only two of them: weight is fixed
+// by which package is installed, and style and fill are the folder and the
+// `-fill` suffix. Grade and optical size are not in the files at all; Google
+// bakes one drawing per style, weight and fill. So the whole rule is:
+//
+//   style   sharp     flat terminals, which is how Carbon's geometry reads
+//   weight  400       @material-symbols/svg-400
+//   fill    the map   Carbon's own fill, which a small surface may override
+//
+// and nothing else is left to pin. An icon is that one drawing at whatever size
+// it is asked for.
+//
+// SCALING ONE DRAWING IS FINE HERE, measured rather than assumed. Carbon draws
+// 16, 20 and 32 separately and this sprite carries a mix of all three, so
+// `search` comes from a 16 grid and `close` from a 32. Material has one drawing
+// for every icon. Rasterised at 12, 16 and 20px and compared by how much of the
+// box each inks, Material at 400 sharp sits within about two points of Carbon
+// at every size -- heavier on `close`, lighter on `search`, with no drift one
+// way. So no second weight for small sizes is needed, and the family is in fact
+// steadier across sizes than the Carbon set it replaces.
+//
+// EVERY COUNTERPART EXISTS AS A SOLID, checked against the same package. A trip
+// bar draws its marks at 12px, where an outline glyph loses its strokes and a
+// solid one keeps its silhouette, so the solid set is the one that surface
+// takes whatever the map says about fill.
 //
 // A pairing is a judgement about meaning, not a lookup. Where Material draws
 // the same idea under an unobvious name, the reason is written beside it.

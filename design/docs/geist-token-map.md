@@ -8,8 +8,8 @@ Every colour `[data-theme="geist-dark"]` sets, against the Geist token that
 best matches it. Geist's values are read from its own published Colors page
 in dark mode and converted to sRGB; ours are read from `css/rux-theme.css`.
 
-**201 colours. 63 land on a Geist token exactly, 52 sit within a
-shade of one, and 86 have no Geist colour near them** -- the third column
+**201 colours. 66 land on a Geist token exactly, 52 sit within a
+shade of one, and 83 have no Geist colour near them** -- the third column
 then names the closest there is, which is a starting point and not a match.
 
 A transparent value is only ever matched against a transparent Geist token, so
@@ -154,13 +154,13 @@ Nothing in these apps draws them.
 | `--rux-support-caution-major` | `#f97316` | `--ds-amber-800 #ff9300` | nearest |
 | `--rux-support-caution-minor` | `#f5a623` | `--ds-amber-700 #ffae00` | nearest |
 | `--rux-support-caution-undefined` | `#8e4ec6` | `--ds-purple-600 #9440d5` | nearest |
-| `--rux-support-error` | `#e5484d` | `--ds-red-700 #f13342` | nearest |
+| `--rux-support-error` | `#f13342` | `--ds-red-700 #f13342` | exact |
 | `--rux-support-error-inverse` | `#cd2b31` | `--ds-red-800 #e2162a` | nearest |
 | `--rux-support-info` | `#52a8ff` | `--ds-blue-900 #47a8ff` | close |
 | `--rux-support-info-inverse` | `#0070f3` | `--ds-blue-700 #006efe` | close |
-| `--rux-support-success` | `#46a758` | `--ds-green-700 #00ac3a` | nearest |
+| `--rux-support-success` | `#00ac3a` | `--ds-green-700 #00ac3a` | exact |
 | `--rux-support-success-inverse` | `#2a7e3b` | `--ds-green-800 #009432` | nearest |
-| `--rux-support-warning` | `#f5a623` | `--ds-amber-700 #ffae00` | nearest |
+| `--rux-support-warning` | `#ffae00` | `--ds-amber-700 #ffae00` | exact |
 | `--rux-support-warning-inverse` | `#d97706` | `--ds-amber-600 #ed9a00` | nearest |
 | `--rux-notification-background-error` | `#220b0c` | `--ds-red-100 #330a11` | nearest |
 | `--rux-notification-background-success` | `#0b190d` | `--ds-background-100 #0a0a0a` | nearest |

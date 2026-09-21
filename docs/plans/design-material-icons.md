@@ -10,11 +10,13 @@ Design draws from Google's Material Symbols as well as Carbon, so a page can
 use an icon Carbon has no drawing for and, where the glyphs are small, a solid
 one. Carbon stays the house family and everything it draws today it keeps.
 
-The first caller is the scheduler's trip bar, which draws its marks at 12px.
-That surface takes the solid set whole: outlines do not survive at that size,
-Carbon has almost no solid variants, and the requirements the office adds have
-no Carbon drawing at all. What the bar gains is one family, legible, and every
-requirement wearing the icon the office picked.
+The first caller is the whole scheduler, which moves to the Material solid
+set: its trip bar draws marks at 12px where outlines do not survive, Carbon has
+almost no solid variants, and the requirements the office adds have no Carbon
+drawing at all. An app is the unit rather than a surface, because a bar drawn
+in one family and a toolbar above it in another is the inconsistency this is
+meant to end. What the scheduler gains is one family throughout, legible at the
+size it needs, and every requirement wearing the icon the office picked.
 
 ## Decisions
 
@@ -61,27 +63,33 @@ requirement wearing the icon the office picked.
   Carbon keeps `i-`, Material takes `m-`: `#i-phone` is Carbon's handset and
   `#m-wifi` is Material's. A name says its family, which is what makes a mixed
   strip reviewable.
-- **A surface takes one family, not one decision.** The line is not which app
-  owns a choice; it is how small the glyphs are. A trip bar draws its marks at
-  12px, where only a solid glyph survives, so the whole bar goes Material
-  solid -- the paperclip, the phone, the dollar, the bus and every
-  requirement. Everything else in the app draws icons at 16 to 20px in
-  toolbars, menus and the side nav, where Carbon's outlines read properly, and
-  none of that changes. A strip that mixed the two would show it.
-- **Which means the bar's five Carbon marks are replaced, not kept.** Carbon
-  has a filled variant for `phone` and `user` and for none of the other nine
-  the bar uses, so a solid bar cannot be a Carbon bar. This is the cost of the
-  decision above and is worth saying plainly.
-- **Material's live area is looser than Carbon's, and both are normalised.**
-  Measured across the bar's set, Carbon's wide glyphs fill 81 to 89% of their
-  box and its dollar 46%, which is a narrow glyph being honestly narrow.
-  Material's solid set runs 58 to 100%, with its money at 37%. So Material is
-  the looser family even on its own, and a strip of it would step in size from
-  mark to mark. The build fits each glyph to a common live area, which is now
-  a question of Material agreeing with itself rather than with Carbon.
+- **An app takes one family.** Not a surface: a bar drawn in one family under
+  a toolbar drawn in another is the inconsistency this is meant to end. The
+  scheduler goes Material solid throughout -- its bar marks, its toolbar, its
+  menus, its side nav, its crew roles. Home, Notes and the log-in stay Carbon,
+  and Design itself is compiled from Carbon and always will be.
+- **Which means 43 Carbon references in the scheduler are replaced.** The
+  scheduler names 43 distinct symbols today. It is the only caller of 15 of
+  them, so those leave the sprite; the other 28 are shared with Design's own
+  pages or with Home and Notes and stay for them.
+- **No glyph is refitted.** Carbon's wide glyphs fill 81 to 89% of their box
+  and its dollar 46%; Material's solid set runs 58 to 100% with its money at
+  37%. Both families draw a narrow glyph narrow, which is the drawing being
+  honest rather than the family being sloppy. The spread only mattered while
+  the two were to share a strip, and with an app on one family they never do.
+  So Material's own boxes stand, and a build dependency and a hand-kept table
+  of sizes are both avoided. If a strip reads unevenly once it is real, that is
+  evidence to act on rather than a cost to pay up front.
 - **The grid itself needs nothing.** Material's `0 -960 960 960` and Carbon's
   `0 0 32 32` both normalise through the `<symbol>` viewBox the sprite already
   writes per icon.
+- **A page carries only the symbols it names.** The build inlines the whole
+  sprite into all 45 pages today, so a Notes page references four icons and
+  carries 78 -- 23 KB, 11% of the page. A second family would double that bill
+  for pages that use none of it. `build-icons.mjs` already rewrites each page's
+  block and already knows which symbols exist, so it can write the ones that
+  page references instead of all of them. This is worth doing whether or not
+  Material lands, and it is what makes a second family cost only its callers.
 
 ### The gates
 
@@ -111,19 +119,19 @@ requirement wearing the icon the office picked.
 
 ## Questions
 
-- **How is a glyph fitted to a common live area?** Node has no native way to
-  measure an arbitrary path, so it is a small build dependency, or a per-icon
-  viewBox recorded by hand and checked by the gate, or the crop is skipped and
-  Material's own boxes stand. Skipping is the cheapest and would leave the bar
-  stepping in size from mark to mark.
-- **Does the crew row go with the bar?** It sits on the same bar at the same
-  size, and its role glyphs would be the only Carbon left there. Moving them
-  makes the bar one family throughout; leaving them keeps a change that is
-  already large from growing. Either way its colours are a separate problem.
-- **Which other pages want this first?** The plan is written for the trip bar
-  because that is where the gap bites, but the reason to build it is that other
-  apps get a second drawer. Knowing the next caller would say how much more
-  than the bar's set goes in.
+- **Is per-page subsetting part of this, or its own change?** It is the
+  difference between a second family costing its callers and costing every
+  page on the site, and it pays for itself today. But it touches how every
+  page is built, which is a wider blast radius than the icons themselves, and
+  the two could ship in either order.
+- **Do the scheduler's printed forms follow?** `print.html` draws a chevron
+  from the sprite and its forms are ink on paper, where a solid glyph is a
+  heavier mark than an outline. It is the one scheduler surface where the
+  reason for solid does not apply.
+- **What happens to the 15 Carbon symbols nothing else names?** Dropping them
+  keeps the sprite honest, and `check-icons --unused` already lists such
+  symbols. Keeping them costs a few hundred bytes each and leaves a way back
+  if the move is regretted.
 
 ## Tasks
 
@@ -131,14 +139,17 @@ requirement wearing the icon the office picked.
 - [ ] Teach `build-icons.mjs` a second source: a Material list beside the
       Carbon one, each entry with its reason, quarried from
       `@material-symbols/svg-400/sharp` and written as `m-<name>`.
-- [ ] Fit each Material glyph to a common live area, by whichever answer the
-      first question takes.
+- [ ] Write each page's sprite block from the symbols that page names, not the
+      whole sprite, if the first question says so.
 - [ ] Split the glyph snapshot in two and teach `check-glyphs` to pick by
       prefix; regenerate both.
 - [ ] Add Google's entry to `NOTICE`, beside IBM's.
 - [ ] Say in `design/README.md` that the sprite holds two families and what
       each is for.
-- [ ] Move the trip bar's marks to the Material solid set, and point each
-      requirement at the icon name the office's list already stores, so the
-      letter fallback is left only for a name Material does not have.
-- [ ] rux looks at a real week and says whether the two families sit together.
+- [ ] Move all 43 of the scheduler's icon references to the Material solid
+      set, and point each requirement at the icon name the office's list
+      already stores, so the letter fallback is left only for a name Material
+      does not have.
+- [ ] Drop the Carbon symbols the scheduler was the only caller of.
+- [ ] rux looks at a real week, a toolbar and a menu, and says whether the
+      scheduler reads as one thing.

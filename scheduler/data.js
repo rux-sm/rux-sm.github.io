@@ -4806,12 +4806,16 @@
         refreshDirty();
       }, 'address');
 
+      /* One field per row: an address search needs the whole width to show
+         what is being typed, and the rest follow it so the column reads down. */
       const fields = el('div', 'rux--stack-vertical rux--stack-scale-6');
       fields.append(
-        pair(pickupName, pickupField),
-        pair(dropName, dropField),
-        pair(timeField('scheduler-f-leave', 'Group departs', r.first?.depart_prev),
-             timeField('scheduler-f-endtrip', 'Group arrives', r.back?.depart_prev)),
+        full(pickupName),
+        full(pickupField),
+        full(dropName),
+        full(dropField),
+        full(timeField('scheduler-f-leave', 'Group departs', r.first?.depart_prev)),
+        full(timeField('scheduler-f-endtrip', 'Group arrives', r.back?.depart_prev)),
       );
 
       // The section is a group named by its title, as Day-of contacts is.

@@ -144,6 +144,9 @@ const symbolsIn = html => new Set(
   [...strip(html).matchAll(/<symbol\s+id="([^"]+)"/g)].map(m => m[1]));
 
 const spriteBody = sprite.trim();
+// The sprite by id, to compare a page's inlined copy of one symbol at a time.
+const shippedSymbols = new Map(
+  [...spriteBody.matchAll(/<symbol id="([^"]+)"[\s\S]*?<\/symbol>/g)].map(m => [m[1], m[0]]));
 let shipped = 0;
 
 const advise = id =>
@@ -158,9 +161,22 @@ for (const f of sources) {
     if (!block) {
       faults.push(['NO SPRITE', f.path, `no SPRITE:BEGIN/END block — a template is copied, not` +
         ` assembled, so it must carry the sprite. Run \`npm run icons\``]);
-    } else if (block[1].trim() !== spriteBody) {
-      faults.push(['STALE COPY', f.path, `its inlined sprite has drifted from ${SPRITE}` +
-        ` — run \`npm run icons\` to refresh it`]);
+    } else {
+      /* A PAGE CARRIES WHAT IT NAMES, so its block is a SUBSET of the sprite
+         rather than a copy of it -- a template still takes the whole thing,
+         being a starting point to copy from. So the question is not whether
+         the bytes match but whether every symbol it does carry is the one
+         Design ships, drawn the same. A symbol it should carry and does not is
+         `tools/inline-sprite.mjs --check`'s to catch, which reads the same
+         names this page was built from. */
+      const inline = new Map([...block[1].matchAll(/<symbol id="([^"]+)"[\s\S]*?<\/symbol>/g)]
+        .map(m => [m[1], m[0]]));
+      const drifted = [...inline].filter(([id, markup]) => shippedSymbols.get(id) !== markup);
+      if (drifted.length) {
+        faults.push(['STALE COPY', f.path, `${drifted.map(([id]) => id).join(', ')} ` +
+          `${drifted.length === 1 ? 'is' : 'are'} not what ${SPRITE} draws` +
+          ` — run \`npm run icons\` to refresh it`]);
+      }
     }
   }
 

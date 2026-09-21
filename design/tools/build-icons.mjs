@@ -16,6 +16,7 @@
 //
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { spritePages } from './lib/sources.mjs';
+import { symbolsFor, subset } from './lib/icon-scan.mjs';
 
 const SRC = 'node_modules/@carbon/icons/svg';
 const SIZES = ['16', '20', '32', ''];   // preference order; '' is the unsized root
@@ -160,6 +161,10 @@ const END = '<!-- SPRITE:END -->';
 // markers, which keeps the GENERATED pages out: kitchen-sink.html and
 // portal.html have no block, because build-sink and build-portal inline the
 // sprite as they assemble and must stay the only writers.
+/* A TEMPLATE KEEPS THE WHOLE SPRITE and a page carries what it names. A
+   template is a starting point to copy, so the next icon someone adds to their
+   copy should already be there; a page that ships has no use for 78 symbols
+   when it draws five. See tools/lib/icon-scan.mjs. */
 let refreshed = 0;
 const targets = [
   ...(existsSync('templates') ? readdirSync('templates') : [])
@@ -172,7 +177,9 @@ for (const path of targets) {
   const close = html.indexOf(END);
   if (!open_ || close === -1) continue;          // a template with no block wants none
   const head = html.slice(0, open_.index + open_[0].length);
-  const next = head + sprite.trim() + '\n' + html.slice(close);
+  const mine = path.startsWith('templates/') ? sprite.trim()
+    : subset(sprite.trim(), symbolsFor(path, '.'));
+  const next = head + mine + '\n' + html.slice(close);
   if (next !== html) { writeFileSync(path, next); refreshed++; }
 }
 console.log(`  pages refreshed: ${refreshed} of ${targets.length}`);

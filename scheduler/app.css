@@ -620,11 +620,23 @@ button.scheduler-row-head__num::after {
   color: var(--rux-support-warning);
 }
 .scheduler-bar__warn-chip svg { display: block; }
-/* The payment mark carries its rung in its colour, as the crew marks do: red
-   while nothing stands against the quote, the warning colour while what does
-   is the wrong amount, green once the money is in. */
-.scheduler-bar__warn-chip--error { color: var(--rux-support-error); }
-.scheduler-bar__warn-chip--success { color: var(--rux-support-success); }
+/* THE PAYMENT MARK KEEPS ITS FILL on the two rungs that are not amber, and it
+   is the only mark that does. Measured against all nine bar hues, the error
+   colour reaches 2.29 to 2.33 and the success colour 3.22 to 3.27, so a glyph
+   drawn in either is at or under the 3 to 1 a 12px mark needs -- red on the
+   money, which is the loudest thing this bar has to say, worst of all. The
+   warning colour clears 4.57 and needs nothing.
+
+   So this one reads as a block among bare glyphs, which suits the one mark
+   that is about the booking rather than the vehicle. */
+.scheduler-bar__warn-chip--error {
+  background: var(--rux-support-error);
+  color: var(--rux-text-inverse);
+}
+.scheduler-bar__warn-chip--success {
+  background: var(--rux-support-success);
+  color: var(--rux-text-inverse);
+}
 /* The count standing in for the marks a narrow bar has no room for, in the
    place of the last that fits. It is a chip like the others and the same
    square, so `fitMarks` can count what fits from one measurement. `hidden`

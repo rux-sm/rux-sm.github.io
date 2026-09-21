@@ -574,6 +574,12 @@
           <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-viewer-new-tab" target="_blank" rel="noopener" aria-label="Open in new tab" title="Open in new tab">
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg>
           </a>
+          <!-- The overflow (#scheduler-viewer-menu): a generated form's layout
+               and its Printed tick, which are read more than they are pressed.
+               It shows only where a form has something to put in it. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="scheduler-viewer-more" aria-label="More" aria-haspopup="menu" aria-expanded="false" hidden>
+            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
+          </button>
           <span class="scheduler-viewer__uploaded" id="scheduler-viewer-uploaded"></span>
         </div>
         <!-- The file's wait or its failure, which data.js fills: Carbon's inline
@@ -598,6 +604,10 @@
        data.js puts the checkmark in and takes it out, because this app sets no
        rule on a rux-- class. Dividers, not rux--menu-item-group, separate the
        blocks. -->
+  <!-- The document panel's overflow, filled by data.js from what the framed
+       form says it has. Empty, and hidden with its button, for a stored file. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-menu" role="menu" tabindex="-1" hidden></ul>
+
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking an empty cell prefills
          the bus and the day, but the Unassigned row hides when it is empty and

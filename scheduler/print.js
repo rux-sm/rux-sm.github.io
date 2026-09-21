@@ -474,7 +474,7 @@
   /* A new page in the frame takes the last one's controls out of the panel.
      The panel clears them when it opens a document, but a tile on the hub
      moves the frame on its own, and a form that cannot be drawn has none. */
-  host?.setFormControls([]);
+  host?.setFormControls([], []);
   host?.setFormNote('');
 
   const bar = document.getElementById('scheduler-print-bar');
@@ -570,31 +570,37 @@
     if (text) noteTimer = setTimeout(() => flash(''), 6000);
   }
 
-  /* The tick, written where rux-ui keeps it so its task list agrees. The box
-     goes back to what the row says if the write fails, rather than showing a
-     trip as done that the database never heard about. */
-  async function markPrinted(seat, input) {
+  /* The tick, written where rux-ui keeps it so its task list agrees. It shows
+     at once and goes back to what the row says if the write fails, rather than
+     showing a trip as done that the database never heard about. `sync` is how
+     whatever is drawing the tick -- a box in this page's own bar, a row in the
+     panel's menu -- follows the seat. */
+  async function markPrinted(seat, want, sync) {
+    const was = Boolean(seat.envelope_printed);
+    seat.envelope_printed = want;
+    sync();
+    const fail = why => { seat.envelope_printed = was; sync(); flash(why, true); };
     const client = window.Rux?.account?.client;
-    const want = input.checked;
-    if (!client) {
-      input.checked = !want;
-      return flash('Not connected, so the tick was not saved.', true);
-    }
-    input.disabled = true;
+    if (!client) return fail('Not connected, so the tick was not saved.');
     const { error } = await client
       .from('trip_drivers').update({ envelope_printed: want }).eq('id', seat.id);
-    input.disabled = false;
-    if (error) {
-      input.checked = !want;
-      return flash(`The tick did not save. ${error.message}`, true);
-    }
-    seat.envelope_printed = want;
+    if (error) return fail(`The tick did not save. ${error.message}`);
     flash(want ? 'Marked printed.' : 'No longer marked printed.');
   }
 
+  /* WHAT GOES IN THE ROW AND WHAT GOES UNDER THE OVERFLOW. The panel's toolbar
+     is 30rem wide with a document's own buttons already in it, so the two
+     controls that are read rather than reached for -- which layout, and
+     whether this copy is done -- go under its overflow menu, and the row keeps
+     what a person came to press. The menu is the panel's: a surface opened
+     from inside the frame could not draw outside it, so this page says what
+     the items are and the panel builds them. In its own tab there is no
+     overflow and no menu script, and the page has the width to show all of
+     them, so they stay in its bar. */
   function buildControls() {
     const { form, copies, layout } = current;
     const nodes = [];
+    const menu = [];
 
     /* The way back to the other forms. It is in the page's own toolbar rather
        than the header, so it is there in a tab and gone in the viewer, where
@@ -605,7 +611,17 @@
       nodes.push(back);
     }
 
-    if (form.layouts?.length > 1) {
+    const chooseLayout = id => { current.layout = id; buildControls(); draw(); };
+
+    if (form.layouts?.length > 1 && host) {
+      for (const option of form.layouts) menu.push({
+        id: `layout-${option.id}`,
+        label: option.name,
+        kind: 'radio',
+        checked: option.id === layout,
+        choose: () => chooseLayout(option.id),
+      });
+    } else if (form.layouts?.length > 1) {
       const group = el('div', 'rux--content-switcher rux--content-switcher--sm');
       group.setAttribute('role', 'tablist');
       for (const option of form.layouts) {
@@ -618,11 +634,7 @@
         const on = option.id === layout;
         btn.classList.toggle('rux--content-switcher--selected', on);
         btn.setAttribute('aria-selected', String(on));
-        btn.addEventListener('click', () => {
-          current.layout = option.id;
-          buildControls();
-          draw();
-        });
+        btn.addEventListener('click', () => chooseLayout(option.id));
         group.appendChild(btn);
       }
       nodes.push(group);
@@ -654,8 +666,17 @@
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
        and the person chooses. This is that choice, and it unticks. */
-    if (form.marks && copies[current.chosen]?.seat) {
-      const seat = copies[current.chosen].seat;
+    const seat = form.marks ? copies[current.chosen]?.seat : null;
+    if (seat && host) {
+      if (menu.length) menu.push({ kind: 'separator' });
+      menu.push({
+        id: 'printed',
+        label: 'Printed',
+        kind: 'check',
+        checked: Boolean(seat.envelope_printed),
+        choose: () => void markPrinted(seat, !seat.envelope_printed, buildControls),
+      });
+    } else if (seat) {
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
       const input = el('input', 'rux--checkbox');
       input.type = 'checkbox';
@@ -664,7 +685,8 @@
       const label = el('label', 'rux--checkbox-label');
       label.htmlFor = input.id;
       label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
-      input.addEventListener('change', () => void markPrinted(seat, input));
+      input.addEventListener('change', () => void markPrinted(seat, input.checked,
+        () => { input.checked = Boolean(seat.envelope_printed); }));
       box.append(input, label);
       nodes.push(box);
     }
@@ -708,7 +730,7 @@
       nodes.push(prints);
     } else nodes.push(...actions);
 
-    if (host) host.setFormControls(nodes);
+    if (host) host.setFormControls(nodes, menu);
     else controls.replaceChildren(...nodes);
   }
 

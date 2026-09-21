@@ -497,6 +497,14 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   text-align: start;
 }
 
+/* Carbon keeps 4rem at the end of a labelled button for an icon it may carry.
+   The document toolbar's buttons carry none, and in a 30rem panel that space
+   is the difference between one row and two, so they end where the label
+   does. */
+#scheduler-viewer-toolbar .rux--btn:not(.rux--btn--icon-only) {
+  padding-inline-end: var(--rux-spacing-05);
+}
+
 /* The toolbar's and the roster head's buttons fill their bar edge to edge, so
    they stay square in a theme that rounds buttons, and the one in the pane's
    top corner takes that corner's curve. */

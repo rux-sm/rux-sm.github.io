@@ -90,15 +90,23 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **The panel frames the page's address directly,** through `swapFrame`. A PDF
   needs a fetch and a blob address; a same-origin page of this site does not.
 - **A form's own controls go in the panel's toolbar, beside the buttons every
-  document gets.** A stored file carries Print and Open in new tab in that
-  row, so the form's layout, its copy, its Printed tick and its Print all go in
-  the same row rather than a second bar under it, and a document's buttons are
-  in one place whatever the document is. `print.html` builds them and hands the
-  nodes up, which keeps one builder and keeps the listeners it gave them; the
-  panel adopts them as the row's own children, so the row breaks as one line,
-  and takes them out again when the frame moves on. A page in its own tab hands
-  them to nobody and keeps them in its own bar, with the plain Print the
-  panel's printer button stands for.
+  document gets.** A stored file carries Print and Open in new tab in that row,
+  so the form's copy and its Print all go in the same row rather than a second
+  bar under it, and a document's buttons are in one place whatever the document
+  is. `print.html` builds them and hands the nodes up, which keeps one builder
+  and keeps the listeners it gave them; the panel adopts them as the row's own
+  children, so the row breaks as one line, and takes them out again when the
+  frame moves on. A page in its own tab hands them to nobody and keeps them in
+  its own bar, with the plain Print the panel's printer button stands for.
+- **What is read rather than pressed goes under the panel's overflow:** which
+  layout, and whether this copy is done. A menu opened from inside the frame
+  could not draw outside it, so the form says what its items are and the panel
+  builds them from the same rows the board's own view menu uses. A page in its
+  own tab has the width for all of them and no menu script, so it keeps them in
+  its bar as a switcher and a tick.
+- **A labelled button in that row ends where its label does.** Carbon keeps
+  4rem at a button's end for an icon it may carry, and in a 30rem panel that
+  space is the difference between one row and two.
 - **It always opens in the panel,** as a PDF does, at every width: where the
   board cannot hold the panel beside the week the panel comes in front of the
   board, so there is no width at which a form is sent to a browser tab.

@@ -59,11 +59,18 @@
      can do it. */
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   /* THE GLYPH INSIDE A MARK, one number for the bar's marks and its crew. The
-     box around it is a row high either way, so this changes the ink and not
-     the layout -- at 16 it would fill the box and the marks would abut, at 12
-     it read smaller than the 12px text beside it. 14 matches that text's
-     weight and keeps a pixel of air between marks. */
-  --scheduler-mark-glyph: 14px;
+     box around it is a row high whatever this is, so it changes the ink and
+     not the row.
+
+     16 BECAUSE IT IS THE CRISPEST. Material draws on a 24 unit grid, and 16
+     divides it far more cleanly than 14 does: rasterised and counted, the soft
+     fraction of a glyph's ink runs 45 to 61 per cent at 16 against 58 to 84 at
+     14, on every icon but one. 14 looked better than 12 for having more ink,
+     not for being sharper.
+
+     It fills the box, so the air between marks is the gap alone -- which is
+     why that gap is a step wider than the row's own. */
+  --scheduler-mark-glyph: 16px;
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
   /* One square slot on the selected trip's shortcut bar: Carbon's md control
      height, as the board's toolbar buttons are. The bar floats clear of the
@@ -573,7 +580,10 @@ button.scheduler-row-head__num::after {
    every other row begins and read down the week as a column. The note follows
    and gives way to them, which is why they share this row rather than the
    drivers row: a note ends in an ellipsis, a crew loses a whole name. */
-.scheduler-bar__warn { display: flex; gap: var(--rux-spacing-01); flex: none; }
+/* The gap is a step wider than elsewhere because the glyph fills its box: at
+   16 there is no air inside a mark, so all of it is here. Two marks would
+   otherwise sit 2px apart and the strip would read as one run. */
+.scheduler-bar__warn { display: flex; gap: var(--rux-spacing-02); flex: none; }
 /* The row hands its first child the shrinking, which on this row is now the
    marks: without this they are squeezed and every chip with them. The note
    gives way instead, and `min-inline-size` is what lets a flex item cut below
@@ -900,12 +910,11 @@ button.scheduler-row-head__num::after {
    are the row's own children rather than a group inside it, so the whole
    toolbar breaks as one line and the buttons every document gets join the
    form's rather than being pushed below them. Carbon would stretch a field to
-   the row; these hold the width their content asks for, the same widths
-   print.css gives them where the page carries its own toolbar. */
+   the row; the copy holds the width its longest name asks for, the same width
+   print.css gives it where the page carries its own toolbar. */
 .scheduler-viewer__toolbar > [data-viewer-form] { flex: none; }
 .scheduler-viewer__toolbar > [data-viewer-form] + * { margin-inline-start: var(--rux-spacing-03); }
 .scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
-.scheduler-viewer__toolbar > .rux--content-switcher { inline-size: 13rem; }
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons
    data.js hides in Safari are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }

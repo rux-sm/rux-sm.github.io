@@ -62,18 +62,17 @@ two people do not spend ten minutes editing the same trip before one finds out.
   drawn, which is the safe way to fail.
 
 - **Both open and selected, told apart by weight.** The person holding the trip
-  is solid and lifted; somebody who has only selected it lies flat and quieter.
-  A shadow alone was tried and is too small a difference to read at this size. Selection is broadcast only once it has lasted a moment, so a click
+  is solid; somebody who has only selected it is quieter. A shadow alone was
+  tried and is too small a difference to read at this size. Selection is broadcast only once it has lasted a moment, so a click
   on the way past does not flash across everyone's board.
 
-- **The face is a solid disc at the bar's right, level with the times.** Every
-  other part of a bar is spoken for: the destination row's end carries the
-  reference and, with the notes row off, the warning marks, and the notes row's
-  end carries them otherwise. The middle was tried and covered the contact's
-  phone; the top right was tried and covered both of those. A disc lifted by a
-  shadow reads as floating above the bar rather than staining it. Below a width
-  that cannot hold one it is left off, because a bar shrunk to a two-letter code
-  has no free right side.
+- **A square within a square, drawn with one line.** The bar somebody is in is
+  ruled; the square notched into its top right corner shares that rule for its
+  own top and right edges, and its bottom and left are drawn to match -- one
+  width, one colour, the selection ring's own. The square covers the reference
+  and the marks that corner carries, which is rux's call: knowing somebody else
+  is in a trip is worth more than "1 of 2". A bar too narrow for a square is
+  still ruled, which is how it says so, and what reads from across the week.
 
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a

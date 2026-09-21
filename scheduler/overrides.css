@@ -448,6 +448,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   object-fit: cover;
 }
 
+/* THE PRESENCE SQUARE is notched into the corner of a trip bar, sharing two of
+   the bar's own edges, so Carbon's round avatar is squared off: a circle in a
+   corner leaves three gaps and stops reading as part of the bar. */
+.scheduler-presence__face.rux--user-avatar { border-radius: 0; }
+.scheduler-presence .rux--user-avatar__photo { border-radius: 0; }
+
 /* A driver's notes take the form's width, as the side panel's do above. */
 .scheduler-driver-notes .rux--text-area { flex: 1 1 auto; }
 

@@ -8143,27 +8143,39 @@
   /* Drawn after every render too, because `render` replaces every bar. A bar
      too narrow to lie a face over is left alone: the compact board shrinks a
      trip to a two-letter code, and a face there would be the whole bar. */
-  const PRESENCE_MIN_WIDTH = 72;
+  /* The square is Carbon's md avatar, 32px, which on a six-row bar is about a
+     third of its height -- the size rux drew. A bar narrower than three of them
+     is left with its rule alone, because a square there is most of the bar, and
+     no more squares are drawn than fit in half the width. */
+  const PRESENCE_SQUARE = 32;
+  const PRESENCE_MIN_WIDTH = PRESENCE_SQUARE * 3;
   const PRESENCE_FACES = 3;
   function presenceDraw() {
     presenceNote();
     if (!gridEl) return;
     for (const old of gridEl.querySelectorAll('.scheduler-presence')) old.remove();
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar--watched')) bar.classList.remove('scheduler-bar--watched');
     if (!presenceOthers.size) return;
     for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
       const here = presenceOthers.get(bar.dataset.tripId);
       if (!here?.length) continue;
-      if (bar.getBoundingClientRect().width < PRESENCE_MIN_WIDTH) continue;
+      /* The rule goes on whatever the bar's width, because a bar too narrow for
+         a square is exactly the one that needs telling some other way. */
+      bar.classList.add('scheduler-bar--watched');
+      const width = bar.getBoundingClientRect().width;
+      if (width < PRESENCE_MIN_WIDTH) continue;
+      const room = Math.max(1, Math.floor(width / 2 / PRESENCE_SQUARE));
       const box = el('span', 'scheduler-presence');
       box.setAttribute('aria-hidden', 'true');
-      for (const who of here.slice(0, PRESENCE_FACES)) {
-        const face = el('span', `rux--user-avatar rux--user-avatar--sm scheduler-presence__face${who.state === 'open' ? ' scheduler-presence__face--open' : ''}`);
+      const shown = Math.min(here.length, PRESENCE_FACES, room);
+      for (const who of here.slice(0, shown)) {
+        const face = el('span', `rux--user-avatar rux--user-avatar--md scheduler-presence__face${who.state === 'open' ? ' scheduler-presence__face--open' : ''}`);
         face.title = who.name ? `${who.name} has this trip ${who.state === 'open' ? 'open' : 'selected'}` : '';
-        window.Rux?.account?.drawAvatar?.(face, who, 'sm');
+        window.Rux?.account?.drawAvatar?.(face, who, 'md');
         box.appendChild(face);
       }
-      // A fourth person is a count, not a fourth thumbnail.
-      if (here.length > PRESENCE_FACES) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - PRESENCE_FACES}`));
+      // Anyone past the last square is a count, not another square.
+      if (here.length > shown) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - shown}`));
       bar.appendChild(box);
     }
   }

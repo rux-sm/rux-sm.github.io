@@ -645,42 +645,42 @@ button.scheduler-row-head__num::after {
    order. The row gives way from the end, a whole name at a time. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
 
-/* WHO ELSE IS ON THIS TRIP. Hard right, level with the times: the one part of a
-   bar nothing else uses. The destination row's end carries the reference, and
-   every warning mark too once the notes row is turned off; the notes row's end
-   carries them otherwise. A disc in either place covers what it lands on.
+/* WHO ELSE IS ON THIS TRIP. A square notched into the bar's top right corner,
+   sharing the bar's own top and right edges, so only its two inner edges are
+   ruled. It sits over the reference and the marks that corner carries, which
+   rux chose: knowing somebody else is in a trip is worth more than "1 of 2".
    It takes no clicks, so the bar beneath still selects, opens and drags. */
 .scheduler-presence {
   position: absolute;
-  inset-block-start: 50%;
-  inset-inline-end: var(--rux-spacing-02);
-  transform: translateY(-50%);
+  inset-block-start: 0;
+  inset-inline-end: 0;
   display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-02);
   pointer-events: none;
 }
-/* A disc floating above the bar rather than a stain on it: solid, ringed in the
-   page's own colour and lifted by a shadow. The person holding the trip is the
-   lifted one, and somebody who has only selected it lies flat and quieter --
-   the shadow alone is too small a difference to read at this size. */
+/* ONE LINE DRAWS ALL OF IT -- a square within a square. The bar someone is in
+   is ruled, the square's top and right edges are that same rule, and its bottom
+   and left are drawn to match: same width, same colour, the selection ring's
+   own, which is white on a dark theme and black on a light one. A bar too
+   narrow for a square is still ruled, which is how it says so.
+   The person holding the trip is solid; somebody who has only selected it is
+   quieter. */
 .scheduler-presence__face {
   opacity: 0.7;
-  box-shadow: 0 0 0 2px var(--rux-background);
+  box-shadow: -2px 2px 0 0 var(--rux-layer-selected-inverse);
 }
-.scheduler-presence__face--open {
-  opacity: 1;
-  box-shadow: 0 0 0 2px var(--rux-background), 0 2px 6px var(--rux-shadow);
-}
+.scheduler-presence__face--open { opacity: 1; }
+.scheduler-bar--watched { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
 /* Past the third face the rest are a count, because four faces on one bar are
    a row of thumbnails and no longer a glance. */
 .scheduler-presence__more {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
+  display: flex;
+  align-items: center;
   color: var(--rux-text-primary);
-  background: var(--rux-background);
-  border-radius: var(--rux-spacing-03);
+  background: var(--rux-layer-01);
+  box-shadow: -2px 2px 0 0 var(--rux-layer-selected-inverse);
   padding: 0 var(--rux-spacing-02);
   /* Between the two faces: legible at a glance, because two characters cannot
      be as faint as a face and still be read, but never louder than the people

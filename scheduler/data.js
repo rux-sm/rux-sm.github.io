@@ -6551,6 +6551,8 @@
   const viewerStatus = document.getElementById('scheduler-viewer-status');
   const viewerPrint = document.getElementById('scheduler-viewer-print');
   const viewerToolbar = document.getElementById('scheduler-viewer-toolbar');
+  const viewerKind = document.getElementById('scheduler-viewer-kind');
+  const viewerCopies = document.getElementById('scheduler-viewer-copies');
   const viewerMore = document.getElementById('scheduler-viewer-more');
   const viewerMenu = document.getElementById('scheduler-viewer-menu');
   const viewerDownload = document.getElementById('scheduler-viewer-download');
@@ -6768,8 +6770,84 @@
     viewerUploaded.toggleAttribute('data-bad', Boolean(text) && Boolean(bad));
   }
 
+  /* THE HEAD: what kind of document, then which one. A document that is one of
+     several makes its title the button that lists them, as the board's week
+     label opens its date picker; one that stands alone stays text, because a
+     menu of one thing is a menu that wastes a press. */
+  let viewerPick = [];
+  function setViewerHead(kind, title, picks = []) {
+    if (viewerKind) viewerKind.textContent = kind || '';
+    viewerPick = picks;
+    const chosen = picks.find(p => p.checked);
+    const name = chosen ? chosen.label : title;
+    for (const h of [viewerTitle, viewerTitleCollapsed]) {
+      h.replaceChildren();
+      h.textContent = name || '';
+    }
+    if (!viewerTitle) return;
+    const listed = picks.length > 1;
+    viewerTitle.classList.toggle('scheduler-viewer__pick', listed);
+    if (!listed) {
+      viewerTitle.removeAttribute('role');
+      viewerTitle.removeAttribute('tabindex');
+      viewerTitle.removeAttribute('aria-haspopup');
+      if (window.Rux?.menu?.isOpen?.(viewerCopies)) window.Rux.menu.close(viewerCopies);
+      return;
+    }
+    viewerTitle.setAttribute('role', 'button');
+    viewerTitle.setAttribute('tabindex', '0');
+    viewerTitle.setAttribute('aria-haspopup', 'menu');
+    viewerTitle.appendChild(svgUse('#m-keyboard_arrow_down', '16', '0 0 960 960'));
+  }
+
+  // The same rows the overflow draws, from the same table, so a list of
+  // documents and a list of choices are one kind of thing to read.
+  function drawCopies() {
+    if (!viewerCopies) return;
+    viewerCopies.replaceChildren(...viewerPick.map((pick, i) => {
+      const row = el('li', 'rux--menu-item');
+      row.setAttribute('role', 'menuitemradio');
+      row.setAttribute('aria-checked', String(Boolean(pick.checked)));
+      row.tabIndex = 0;
+      row.dataset.viewerPick = String(i);
+      row.append(
+        el('div', 'rux--menu-item__selection-icon',
+          ...(pick.checked ? [] : [])),
+        el('div', 'rux--menu-item__icon'),
+        el('div', 'rux--menu-item__label', pick.label),
+      );
+      if (pick.checked) {
+        row.querySelector('.rux--menu-item__selection-icon')
+          .replaceChildren(svgUse('#m-check', '16', '0 0 20 20'));
+      }
+      return row;
+    }));
+  }
+
+  viewerTitle?.addEventListener('click', () => {
+    if (viewerPick.length < 2) return;
+    drawCopies();
+    const r = viewerTitle.getBoundingClientRect();
+    popMenuAt(viewerCopies, { clientX: r.left, clientY: r.bottom });
+  });
+
+  viewerTitle?.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (viewerPick.length < 2) return;
+    e.preventDefault();
+    viewerTitle.click();
+  });
+
+  viewerCopies?.addEventListener('click', e => {
+    const row = e.target.closest('[data-viewer-pick]');
+    if (!row) return;
+    viewerPick[Number(row.dataset.viewerPick)]?.choose?.();
+  });
+
+  viewerCopies?.addEventListener('rux:menu-closed', () => { viewerCopies.hidden = true; });
+
   window.Rux = window.Rux || {};
-  window.Rux.viewer = { setFormControls, setFormNote };
+  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead };
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is
@@ -6784,7 +6862,7 @@
     // The controls belong to the frame being replaced, so they go with it and
     // the page hands its own up once it has drawn.
     setFormControls([], []);
-    for (const h of [viewerTitle, viewerTitleCollapsed]) h.textContent = kind;
+    setViewerHead(kind, kind);
     viewerNote = note || '';
     setFormNote('');
     viewerPrint.disabled = false;
@@ -6812,11 +6890,12 @@
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
     }
-    /* The head names the file's type and nothing else. Which trip it belongs
-       to is the editor's own heading, open behind this panel, so naming the
-       destination here said it twice. */
+    /* A stored file's head names its type and nothing else. Which trip it
+       belongs to is the editor's own heading, open behind this panel, so
+       naming the destination here said it twice, and a file that is only
+       itself has nothing to list. */
     const kind = docTypeName(doc);
-    for (const h of [viewerTitle, viewerTitleCollapsed]) h.textContent = kind;
+    setViewerHead('Document', kind);
     const when = uploadedOn(doc.created_at);
     viewerUploaded.textContent = when ? `Uploaded ${when}` : '';
     viewerNewTab.href = url;

@@ -532,8 +532,15 @@
                in app.css draws it left of the driver availability pane. -->
           <div class="scheduler-viewer" id="scheduler-viewer" hidden>
     <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-viewer-panel" aria-label="Document">
+      <!-- THE HEAD SAYS WHAT KIND, THEN WHICH ONE. Carbon's label line carries
+           the kind -- a driver envelope, an itinerary -- and the title carries
+           the one on screen. Where a document is one of several, the title is
+           the button that lists them (#scheduler-viewer-copies), the way the
+           board's week label opens its date picker; where it is the only one,
+           data.js leaves it as text. -->
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
-        <div class="rux--side-panel__title rux--side-panel__title--no-label">
+        <p class="rux--side-panel__label-text" id="scheduler-viewer-kind">Document</p>
+        <div class="rux--side-panel__title">
           <h2 class="rux--side-panel__title-text" id="scheduler-viewer-title">Document</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>
         </div>
@@ -607,6 +614,10 @@
   <!-- The document panel's overflow, filled by data.js from what the framed
        form says it has. Empty, and hidden with its button, for a stored file. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-menu" role="menu" tabindex="-1" hidden></ul>
+
+  <!-- The documents the head's title lists, filled by data.js from what the
+       framed form says it has: every envelope on the trip, one of them ticked. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-copies" role="menu" tabindex="-1" hidden></ul>
 
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking an empty cell prefills

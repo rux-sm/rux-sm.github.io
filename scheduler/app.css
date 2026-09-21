@@ -891,6 +891,25 @@ button.scheduler-row-head__num::after {
   max-inline-size: 100%;
   block-size: max(24rem, calc(100dvh - 15rem));
 }
+/* A TITLE THAT LISTS. Where a document is one of several the head's title is
+   the button that names the others, so it takes a pointer and the chevron sits
+   on the baseline beside the name. It is Carbon's title still: only what it
+   does is added. */
+.scheduler-viewer__pick {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  cursor: pointer;
+  user-select: none;
+}
+
+.scheduler-viewer__pick svg { flex: none; }
+
+.scheduler-viewer__pick:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: 2px;
+}
+
 /* The panel's middle row: the toolbar, and the frame taking what it leaves. */
 .scheduler-viewer__body {
   display: flex;

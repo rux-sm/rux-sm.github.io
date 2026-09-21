@@ -768,8 +768,24 @@
     /* EVERY ENVELOPE ON THE TRIP, not only this bus's. The button beside it
        already counts the trip, and a list that stopped at one bus meant going
        back to the board to reach the next one. It starts as this bus's and
-       grows when the trip's other buses answer. */
-    if (every.length > 1) {
+       grows when the trip's other buses answer.
+
+       IN THE PANEL THE LIST IS THE HEAD'S, not the toolbar's: the head is
+       already saying which envelope this is, so it is the thing to press to
+       say which other one, the way the board's week label opens its date
+       picker. That leaves the toolbar to the actions. */
+    if (host) {
+      const chosen = every[current.chosen];
+      host.setViewerHead(
+        form.name,
+        chosen?.seat ? form.copyName(chosen) : 'Blank',
+        every.length > 1 ? every.map((copy, i) => ({
+          label: form.copyName(copy),
+          checked: i === current.chosen,
+          choose: () => { current.chosen = i; buildControls(); draw(); },
+        })) : [],
+      );
+    } else if (every.length > 1) {
       // Every control in this row is Carbon's medium size, which is the
       // height of the bar itself: the row is one band, not a strip of buttons
       // floating in one.
@@ -900,6 +916,7 @@
   async function showHub() {
     setPaper(null);
     fitPaper();
+    host?.setViewerHead('Forms', 'Every form');
     const trip = params.get('trip');
     title.textContent = 'Forms';
     bar.hidden = Boolean(host);
@@ -907,7 +924,10 @@
     sheet.replaceChildren();
 
     const found = trip ? await tripBuses(trip) : null;
-    if (found?.destination) title.textContent = `Forms — ${found.destination}`;
+    if (found?.destination) {
+      title.textContent = `Forms — ${found.destination}`;
+      host?.setViewerHead('Forms', found.destination);
+    }
 
     const list = document.createDocumentFragment();
     for (const form of FORMS) {

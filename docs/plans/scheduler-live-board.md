@@ -61,10 +61,12 @@ two people do not spend ten minutes editing the same trip before one finds out.
   `is_staff()` is what closes it; without the rule nobody joins and no face is
   drawn, which is the safe way to fail.
 
-- **Both open and selected, told apart by weight.** A trip somebody has open is
-  drawn solid, rule and square together; one they have merely selected is faint,
-  rule and square together. A shadow alone was tried and is too small a
-  difference to read at this size. Selection is broadcast only once it has lasted a moment, so a click
+- **Both open and selected, told apart by colour.** Open takes the page's own
+  strongest edge, white on a dark theme and black on a light one; selected takes
+  a mid grey, the same grey in every theme. Both are solid: fading the lesser
+  one dulled the photo inside its square with it, which read as a rendering
+  fault. Each square carries its own person's colour, so one open and one only
+  looking are told apart on the same bar, and the bar takes the firmer. Selection is broadcast only once it has lasted a moment, so a click
   on the way past does not flash across everyone's board.
 
 - **A square within a square, drawn with one line.** The bar somebody is in is

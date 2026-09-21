@@ -680,26 +680,32 @@ button.scheduler-row-head__num::after {
    and left are drawn to match: same width, same colour, the selection ring's
    own, which is white on a dark theme and black on a light one. A bar too
    narrow for a square is still ruled, which is how it says so.
-   The person holding the trip is solid; somebody who has only selected it is
-   quieter. */
+
+   OPEN AND SELECTED DIFFER BY COLOUR, NOT BY WEIGHT. Both are drawn solid:
+   fading the fainter one dulled the photo inside the square with it, which
+   read as a rendering fault rather than a lesser state. A trip somebody has
+   open takes the page's own strongest edge -- white on a dark theme, black on
+   a light one -- and one they have merely selected takes a mid grey, the same
+   grey in every theme, plainly less than the other and not an error colour.
+   Each square carries its own person's, so one open and one only looking are
+   told apart on the same bar. */
+.scheduler-presence__face { --scheduler-presence-ink: var(--rux-border-strong-01); }
+.scheduler-presence__face--open { --scheduler-presence-ink: var(--rux-layer-selected-inverse); }
 .scheduler-presence__face {
-  opacity: 0.7;
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--scheduler-presence-ink);
 }
-.scheduler-presence__face--open { opacity: 1; }
-/* The bar's rule, on its own layer so one rule serves both weights: faint for
-   a trip somebody has merely selected, solid for one they have open, exactly
-   as the squares above. `inherit` keeps a rounded theme's corners. */
+/* The bar takes the firmer of the states on it. Its rule is on its own layer,
+   so `inherit` carries a rounded theme's corners. */
+.scheduler-bar--watched { --scheduler-presence-ink: var(--rux-border-strong-01); }
+.scheduler-bar--watched-open { --scheduler-presence-ink: var(--rux-layer-selected-inverse); }
 .scheduler-bar--watched::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 0 var(--scheduler-presence-rule) var(--rux-layer-selected-inverse);
-  opacity: 0.45;
+  box-shadow: inset 0 0 0 var(--scheduler-presence-rule) var(--scheduler-presence-ink);
   pointer-events: none;
 }
-.scheduler-bar--watched-open::after { opacity: 1; }
 /* Past the third face the rest are a count, because four faces on one bar are
    a row of thumbnails and no longer a glance. */
 .scheduler-presence__more {
@@ -710,19 +716,8 @@ button.scheduler-row-head__num::after {
   align-items: center;
   color: var(--rux-text-primary);
   background: var(--rux-layer-01);
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--scheduler-presence-ink);
   padding: 0 var(--rux-spacing-02);
-  /* Between the two faces: legible at a glance, because two characters cannot
-     be as faint as a face and still be read, but never louder than the people
-     it stands for. */
-  opacity: 0.7;
-}
-/* With contrast raised nothing here is held back, because the quieter disc is
-   the first thing lost. */
-@media (prefers-contrast: more) {
-  .scheduler-presence__face,
-  .scheduler-presence__face--open,
-  .scheduler-presence__more { opacity: 1; }
 }
 
 /* The same news in words, under the editor's header: the faces sit on bars

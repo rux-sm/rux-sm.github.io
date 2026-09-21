@@ -39,11 +39,15 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 - **It is served at `data-theme="white"`,** so `--rux-*` tokens already resolve
   to ink on paper. rux-ui needed its parallel `--print-*` palette only because
   it printed out of a `g100` page.
-- **On screen a form is fluid; on paper it is its own page size.** rux-ui draws a
-  fixed-width card and scales it with a transform, a `ResizeObserver` and a
-  `fitToHeight` whose own comments record several rounds of clipping bugs. A
-  form that fills its viewport on screen and takes `@page` size under
-  `@media print` needs none of that machinery.
+- **A form is its paper on screen too, and shrinks whole rather than
+  reflowing,** so the preview is what comes out of the printer and nothing
+  wraps in the 30rem viewer that would not wrap on the sheet. It keeps the
+  paper's width and height and `zoom` takes it down to the room it has;
+  `print.js` measures that room, because CSS cannot divide one length by
+  another. rux-ui scales a fixed card with a transform, a `ResizeObserver` and
+  a `fitToHeight` whose own comments record several rounds of clipping bugs;
+  `zoom` lays out at the smaller size instead of drawing over it, so there is
+  nothing to clip.
 - **Margins go in the box model, not in `@page`,** because print drivers do not
   reliably honour an `@page` margin, which rux-ui measured and recorded.
 - **A form prints with no background fills.** Chrome leaves Background graphics
@@ -143,6 +147,13 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   verified, ELD backup used, CC for trip, CC received by, total trip miles, and
   hotel, diesel, repairs, miscellaneous and total, all filled in by hand after
   the trip.
+- **A requirement is one name and one drawing, in `scheduler/requirements.js`,**
+  which the board and the forms page both load and neither owns: the board
+  draws them on a bar and the envelope prints them, and a requirement that
+  means two things in two places is a fault nobody sees until it is in a
+  driver's hand. The office's own list in Settings names anything it adds, and
+  what it adds has no drawing, so both apps show its initial in the same
+  square.
 - **Requirements come from `trip_reqs`,** with the older booleans as the
   fallback rux-ui keeps, plus a One-way mark on a trip that is not a round
   trip. A fuel card prints a write-in line for its number, and the seat's

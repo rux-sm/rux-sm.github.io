@@ -121,18 +121,9 @@
      One way sits second because it changes how the driver runs the day, and
      a fuel card prints a rule for its number, because the office writes that
      in by hand. */
-  /* The five that carry a glyph carry the board's, so a requirement is the same
-     drawing on a bar and on paper. The board keeps its own copy of this pair in
-     `data.js`, which this page does not load; anything the office adds has no
-     drawing in either place and shows as its initial in the same square. */
-  const NEEDS = {
-    pax56: { label: '56 passengers', icon: '#m-groups-fill' },
-    oneWay: { label: 'One way' },
-    sleeper: { label: 'Sleeper', icon: '#m-airline_seat_flat-fill' },
-    adaLift: { label: 'Wheelchair lift', icon: '#m-accessible-fill' },
-    fuelCard: { label: 'Fuel card', icon: '#m-credit_card-fill', fill: true },
-    hotel: { label: 'Hotel', icon: '#m-apartment-fill' },
-  };
+  /* The table is `requirements.js`, which the board loads too, so a
+     requirement is one drawing and one name on a bar and on paper alike. */
+  const NEEDS = window.SchedulerRequirements || {};
   const NEED_ORDER = ['pax56', 'oneWay', 'sleeper', 'adaLift', 'fuelCard', 'hotel'];
 
   /* The requirements the office keeps, id to label, read once a form opens.
@@ -153,7 +144,9 @@
     const rest = [...on].filter(id => !NEEDS[id]);
     return [...named, ...rest].map(id => ({
       id,
-      label: NEEDS[id]?.label || requirementNames.get(id) || id,
+      // The office's own list names it first, as it does on the board: what
+      // Settings calls a requirement is what it is called.
+      label: requirementNames.get(id) || NEEDS[id]?.label || id,
       icon: NEEDS[id]?.icon || null,
       fill: Boolean(NEEDS[id]?.fill),
     }));
@@ -593,6 +586,32 @@
     }
   }
 
+  /* THE SHEET AT THE SIZE THE ROOM ALLOWS. A form keeps the paper's own width
+     on screen, so what wraps here is what wraps on paper; where the room is
+     narrower than the sheet -- the 30rem viewer beside the board, a phone --
+     the whole sheet is taken down together rather than reflowed. The factor is
+     a number, and CSS cannot divide one length by another, so it is measured
+     here and written onto the page for the stylesheet to use.
+
+     IT WATCHES THE ROOM, NOT THE SHEET. The sheet's own width is what this
+     rule sets, and an observer on it would stop hearing once the rule bound. */
+  function fitPaper() {
+    const paper = getComputedStyle(document.documentElement)
+      .getPropertyValue('--scheduler-paper-width').trim();
+    const inches = paper.endsWith('in') ? parseFloat(paper) : NaN;
+    const root = document.documentElement.style;
+    // A form on no named paper is fluid and wants no scaling.
+    if (!Number.isFinite(inches) || !inches) return root.removeProperty('--scheduler-fit');
+    const style = getComputedStyle(sheet);
+    const room = sheet.clientWidth
+      - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd);
+    // 96 CSS pixels to the inch, which is what an inch means in CSS.
+    const fit = Math.min(1, room / (inches * 96));
+    if (fit > 0) root.setProperty('--scheduler-fit', String(Math.round(fit * 1000) / 1000));
+  }
+
+  if (typeof ResizeObserver === 'function') new ResizeObserver(fitPaper).observe(sheet);
+
   let current = null; // { form, subject, copies, chosen, layout }
   let printingAll = false;
 
@@ -825,6 +844,8 @@
   };
 
   async function showHub() {
+    setPaper(null);
+    fitPaper();
     const trip = params.get('trip');
     title.textContent = 'Forms';
     bar.hidden = Boolean(host);
@@ -883,6 +904,8 @@
   async function showForm(form) {
     title.textContent = form.name;
     setPaper(form);
+    // The paper is named now, so the sheet can be fitted to the room it has.
+    fitPaper();
     bar.hidden = Boolean(host);
     hub.hidden = true;
 

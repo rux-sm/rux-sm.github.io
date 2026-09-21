@@ -558,25 +558,15 @@
     return out;
   }
 
-  /* WHAT A TRIP NEEDS, and how a bar says it.
+  /* WHAT A TRIP NEEDS, and how a bar says it. The table itself is
+     `requirements.js`, which the forms page loads too, so a requirement is one
+     drawing and one name wherever it shows.
 
      THE LIST IS THE OFFICE'S. rux-ui's Settings page edits it and it already
-     holds more than the five below, so a requirement is named from that list
-     and falls back to these names, then to its own id. Dropping one the table
-     here does not know would take it off the bar without saying so.
-
-     THE FIVE BELOW CARRY A GLYPH; anything the office adds shows as its
-     initial in the same square, because Carbon has no drawing for a Wi-Fi or
-     an outlet that survives 12px and the list is the office's to grow. */
-  const REQUIREMENTS = {
-    pax56: { label: '56 passenger', href: '#m-groups-fill' },
-    sleeper: { label: 'Sleeper', href: '#m-airline_seat_flat-fill' },
-    adaLift: { label: 'Wheelchair lift', href: '#m-accessible-fill' },
-    hotel: { label: 'Hotel', href: '#m-apartment-fill' },
-    // Carbon's `purchase` is a credit card, which is what a fuel card is.
-    fuelCard: { label: 'Fuel card', href: '#m-credit_card-fill' },
-    oneWay: { label: 'One-way' },
-  };
+     holds more than that table does, so a requirement is named from the
+     office's list and falls back to the table, then to its own id. Dropping
+     one the table does not know would take it off the bar without saying so. */
+  const REQUIREMENTS = window.SchedulerRequirements || {};
 
   /* The office's list, as Settings holds it: `{ id, label, type, active,
      sortOrder }`. Empty until the week is read, and empty if that read was
@@ -936,12 +926,12 @@
          not, per leg, and the trip says which. */
       if (id === 'hotel') {
         const booked = !!trip[`hotel_booked_${leg.leg}`];
-        return { id, href: REQUIREMENTS.hotel.href, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
+        return { id, href: REQUIREMENTS.hotel?.icon, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
       }
       return {
         id,
-        href: REQUIREMENTS[id]?.href || null,
-        letter: REQUIREMENTS[id]?.href ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
+        href: REQUIREMENTS[id]?.icon || null,
+        letter: REQUIREMENTS[id]?.icon ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
         label: missing || requirementLabel(id),
         done: !missing,
       };

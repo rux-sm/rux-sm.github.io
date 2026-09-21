@@ -135,7 +135,7 @@
    are Letter, for a form that names no paper. */
 
 .scheduler-form {
-  max-width: var(--scheduler-paper-width, 8.5in);
+  inline-size: var(--scheduler-paper-width, 8.5in);
   margin-inline: auto;
   background: var(--rux-background);
   color: var(--rux-text-primary);
@@ -145,12 +145,21 @@
   flex-direction: column;
 }
 
-/* A form on a named paper is as tall on screen as the sheet it is printed on,
-   so the preview shows the whole envelope and how much of it the form leaves
-   for the driver's pen. With no paper named the height is invalid and ignored,
-   which leaves the form as tall as what is on it. */
+/* A FORM IS ITS PAPER ON SCREEN TOO, and shrinks whole rather than reflowing.
+   It keeps the sheet's width and its height, so nothing wraps in the 30rem
+   viewer that would not wrap on paper, and `zoom` takes the whole sheet down
+   to what the room allows -- print.js measures the room and sets the factor.
+   rux-ui scales a fixed card with a transform, a ResizeObserver and a fit pass
+   whose own comments record several rounds of clipping bugs; `zoom` lays out
+   at the smaller size instead of drawing over it, so there is nothing to clip.
+
+   With no paper named the height is invalid and ignored, which leaves the form
+   as tall as what is on it. */
 @media screen {
-  .scheduler-form { min-block-size: var(--scheduler-paper-height); }
+  .scheduler-form {
+    min-block-size: var(--scheduler-paper-height);
+    zoom: var(--scheduler-fit, 1);
+  }
 }
 
 /* THE STOCK, ON SCREEN AND NOT ON PAPER. The standard envelope is printed on

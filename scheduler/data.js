@@ -577,9 +577,6 @@
     fuelCard: { label: 'Fuel card', href: '#i-purchase' },
     oneWay: { label: 'One-way' },
   };
-  // The order the marks take, most constraining first; anything the office
-  // added follows, in the order `trip_reqs` holds it.
-  const REQ_ORDER = ['pax56', 'sleeper', 'adaLift', 'hotel', 'fuelCard'];
 
   /* The office's list, as Settings holds it: `{ id, label, type, active,
      sortOrder }`. Empty until the week is read, and empty if that read was
@@ -621,7 +618,12 @@
       : [['pax56', trip.req_56pax], ['sleeper', trip.req_sleeper], ['adaLift', trip.req_ada],
          ['hotel', trip.need_hotel], ['fuelCard', trip.need_fuel_card]]
         .filter(([, v]) => v).map(([k]) => k);
-    return [...REQ_ORDER.filter(id => on.includes(id)), ...on.filter(id => !REQ_ORDER.includes(id))];
+    /* In the office's own order, the same one the editor lays its tags out in,
+       so a need sits in the same place on the bar as in the panel. Anything
+       the trip carries that is not on the list -- a need since deactivated --
+       follows in the order the trip holds it, rather than being dropped. */
+    const order = editableNeeds().map(r => r.id);
+    return [...order.filter(id => on.includes(id)), ...on.filter(id => !order.includes(id))];
   }
 
   /* Where the bus this leg is on falls short of a requirement, said in full,
@@ -889,27 +891,39 @@
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
-    /* The marks, most urgent first: the money, then the bus, then the
-       paperwork. A narrow bar drops them from the end, so the order is which
-       one rux would want left standing. */
-    const marks = [];
+    /* THE MARKS COME IN TWO GROUPS: what is still to be done, then what the
+       trip needs. Within each they keep a fixed order -- the office's own list
+       for the needs -- so a mark is in the same place on every bar and the eye
+       learns where to look, which grouping buys at the cost of the old
+       arrangement by urgency. A narrow bar still drops from the end, so what it
+       drops is a need rather than a job. */
+    const pending = [];
     // Where a confirmed trip's money stands, bus or no bus: the one mark on
     // this bar that is about the booking rather than the vehicle.
     const owed = paymentMark(trip);
-    if (owed) marks.push(owed);
+    if (owed) pending.push(owed);
+    /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
+       Pending itinerary is: no document labelled Itinerary, and the trip not
+       marked as not needing one. */
+    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#i-attachment', label: 'No itinerary yet' });
+    /* And the day-of contact the same way: nobody to call on the day, and the
+       trip not marked as needing no one. Any of the five counts, since the
+       warning is that the list is empty, not that the first slot is. */
+    const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
+    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#i-phone', label: 'No day-of contact' });
+
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    if (bus && wrongType(trip.vehicle_type, bus)) {
-      marks.push({ href: '#i-bus', label: wrongType(trip.vehicle_type, bus) });
-    }
     /* EVERY REQUIREMENT THE TRIP CARRIES GETS ONE MARK, and its colour says
        whether this bus meets it: the warning fill where it falls short, the
        bar's own colour otherwise. Only the failing ones used to be drawn, so a
        trip that needed a sleeper and had one said nothing at all; one mark
-       either way is one rule for the whole family, and the hotel below already
-       read this way on its own.
+       either way is one rule for the whole family, and the hotel already read
+       this way on its own. They keep the office's order whether they are met
+       or not, so a need does not move about as a bus changes.
 
-       The met ones go after the paperwork marks, so the narrowest bar drops a
-       fact about the trip before it drops something still to be done. */
+       The wrong bus leads them: it is the same kind of thing as a need this
+       bus falls short of, not a job somebody has to go and do. */
+    const wrong = bus ? wrongType(trip.vehicle_type, bus) : null;
     const needs = requirementsOf(trip).map(id => {
       const missing = shortfall(id, bus);
       /* The hotel is the one a bus cannot answer for: it is booked or it is
@@ -926,19 +940,11 @@
         done: !missing,
       };
     });
-    marks.push(...needs.filter(n => !n.done));
-    /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
-       Pending itinerary is: no document labelled Itinerary, and the trip not
-       marked as not needing one. */
-    if (!itinerary && !trip.itinerary_not_needed) marks.push({ href: '#i-attachment', label: 'No itinerary yet' });
-    /* And the day-of contact the same way: nobody to call on the day, and the
-       trip not marked as needing no one. Any of the five counts, since the
-       warning is that the list is empty, not that the first slot is. */
-    const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
-    if (!dayOf && !trip.contact_not_needed) marks.push({ href: '#i-phone', label: 'No day-of contact' });
-    // And what this bus already answers for, last: a fact about the trip, not
-    // something waiting to be done.
-    marks.push(...needs.filter(n => n.done));
+    const marks = [
+      ...pending,
+      ...(wrong ? [{ href: '#i-bus', label: wrong }] : []),
+      ...needs,
+    ];
     /* Drawn on the notes row and again on the destination row; app.css shows
        the second only while the notes row is turned off, so hiding a row never
        hides the warning. The notes row rather than the drivers row because a
@@ -1017,10 +1023,11 @@
     addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
 
     // The trip's note on one line, cut with an ellipsis; the whole of it on
-    // hover. The marks sit at its end, and the note gives way to them.
-    const note = el('span', null, trip.notes || '');
+    // hover. The marks lead the row and the note follows them, so they start
+    // where every other row starts and read down the week as a column.
+    const note = el('span', 'scheduler-bar__note', trip.notes || '');
     if (trip.notes) note.title = trip.notes;
-    addRow(bar, 'scheduler-bar__notes', note, warn('notes'));
+    addRow(bar, 'scheduler-bar__notes', warn('notes'), note);
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses) : [];

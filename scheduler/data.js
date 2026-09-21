@@ -6673,15 +6673,38 @@
      registered keep working and there is one builder rather than two. It hands
      them over again on every rebuild -- a copy chosen, Print all's count
      arriving -- so the slot is replaced whole each time. */
+  /* One step through a document's own list, drawn here rather than handed over
+     built: an SVG drawing referred to by name is resolved against the document
+     its element was born in, and does not follow that element into another. */
+  function stepButton(step, icon) {
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md');
+    btn.type = 'button';
+    btn.title = step.label;
+    btn.setAttribute('aria-label', step.label);
+    btn.disabled = Boolean(step.disabled);
+    // The box is the one the board's own week arrows draw these in. A box that
+    // starts below the origin puts the drawing off the top of its own frame.
+    btn.appendChild(svgUse(icon, '16', '0 0 16 16'));
+    btn.addEventListener('click', () => step.choose?.());
+    return btn;
+  }
+
   let formNodes = [];
-  function setFormControls(nodes, menu = []) {
+  function setFormControls(nodes, menu = [], steps = null) {
     if (!viewerToolbar) return;
+    const all = steps
+      ? [stepButton(steps.prev, '#m-keyboard_arrow_left'),
+         stepButton(steps.next, '#m-keyboard_arrow_right'),
+         ...nodes]
+      : nodes;
     for (const node of formNodes) node.remove();
-    formNodes = nodes.map(node => {
+    formNodes = all.map((node, i) => {
       const here = document.adoptNode(node);
-      // What the toolbar's own rules size and hold in place, and what a later
-      // hand-over takes back out again.
-      here.setAttribute('data-viewer-form', '');
+      /* What the toolbar's own rules size and hold in place, and what a later
+         hand-over takes back out again. The last one is named, because it is
+         the one that parts these from the buttons every document gets, and
+         the zoom buttons hidden between them are no use as a landmark. */
+      here.setAttribute('data-viewer-form', i === all.length - 1 ? 'last' : '');
       return here;
     });
     viewerToolbar.prepend(...formNodes);
@@ -6720,7 +6743,10 @@
         return rule;
       }
       const row = el('li', 'rux--menu-item');
-      row.setAttribute('role', item.kind === 'radio' ? 'menuitemradio' : 'menuitemcheckbox');
+      // An action is pressed, not chosen, so it carries no ticked state --
+      // only the empty column that keeps its label out of the tick's place.
+      const role = { radio: 'menuitemradio', check: 'menuitemcheckbox' }[item.kind] || 'menuitem';
+      row.setAttribute('role', role);
       row.tabIndex = 0;
       row.dataset.formItem = String(i);
       row.append(
@@ -6737,6 +6763,7 @@
   // on a rux-- class -- the same way the board's own view menu is ticked.
   function markFormMenu() {
     for (const row of viewerMenu.querySelectorAll('[data-form-item]')) {
+      if (row.getAttribute('role') === 'menuitem') continue;
       const item = formMenu[Number(row.dataset.formItem)];
       const on = Boolean(item?.checked);
       row.setAttribute('aria-checked', String(on));
@@ -6859,7 +6886,7 @@
     setViewerMode('form');
     // The controls belong to the frame being replaced, so they go with it and
     // the page hands its own up once it has drawn.
-    setFormControls([], []);
+    setFormControls([], [], null);
     setViewerHead(kind);
     viewerNote = note || '';
     setFormNote('');

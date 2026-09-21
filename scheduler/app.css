@@ -945,12 +945,14 @@ button.scheduler-row-head__num::after {
 .scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
 
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the
-   board's toolbar holds its week at one end and its buttons at the other.
-   Where a document offers nothing to choose between, the actions still end
-   the row rather than starting it. */
-.scheduler-viewer__toolbar > .rux--select { margin-inline-end: auto; }
+   board's toolbar holds its week at one end and its buttons at the other. A
+   form's own controls -- stepping through the trip's envelopes -- hold the
+   start; the buttons every document gets end the row. Where a document has no
+   controls of its own, its buttons still end the row rather than starting
+   it. */
+.scheduler-viewer__toolbar > [data-viewer-form="last"] { margin-inline-end: auto; }
 
-.scheduler-viewer__toolbar:not(:has(> .rux--select)) > :first-child {
+.scheduler-viewer__toolbar:not(:has(> [data-viewer-form])) > :first-child {
   margin-inline-start: auto;
 }
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons

@@ -774,6 +774,29 @@
        already saying which envelope this is, so it is the thing to press to
        say which other one, the way the board's week label opens its date
        picker. That leaves the toolbar to the actions. */
+    /* STEP THROUGH THEM, where the panel's head is holding the list. One press
+       is the next envelope on the trip, which is what dispatch does with a
+       stack of them; the head still names the one on the sheet and still
+       opens the whole list. They stop at the ends rather than wrapping: a
+       list of six is not a carousel.
+
+       The panel draws them from this, rather than taking buttons built here,
+       because a drawing referred to by name does not follow its button from
+       one document into another: the reference is resolved once, against the
+       document the button was born in. */
+    const steps = host && every.length > 1 ? {
+      prev: {
+        label: `Previous ${form.name.toLowerCase()}`,
+        disabled: !every[current.chosen - 1],
+        choose: () => { current.chosen -= 1; buildControls(); draw(); },
+      },
+      next: {
+        label: `Next ${form.name.toLowerCase()}`,
+        disabled: !every[current.chosen + 1],
+        choose: () => { current.chosen += 1; buildControls(); draw(); },
+      },
+    } : null;
+
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
@@ -849,10 +872,23 @@
       actions.push(print);
     }
 
-    /* Print all covers the same list the toolbar's own offers: every envelope
-       on the trip, including a bus with a single driver on a trip that has
-       three more buses. */
-    if (every.length > 1) {
+    /* Print all covers the same list the head's own offers: every envelope on
+       the trip, including a bus with a single driver on a trip that has three
+       more buses. In the panel it is under the overflow, because the row
+       beside it is for what is pressed often and a whole stack is not. */
+    if (host && every.length > 1) {
+      if (menu.length) menu.push({ kind: 'separator' });
+      menu.push({
+        id: 'print-all',
+        label: `Print all ${every.length}`,
+        kind: 'action',
+        choose: () => {
+          printingAll = true;
+          drawAll();
+          requestAnimationFrame(() => window.print());
+        },
+      });
+    } else if (every.length > 1) {
       /* Ghost, not bordered: beside the panel's bare icons a box around one
          button reads as a different kind of thing, and beside the page's own
          Print it is the quieter of a pair, which is what ghost is for. */
@@ -877,7 +913,7 @@
       nodes.push(prints);
     } else nodes.push(...actions);
 
-    if (host) host.setFormControls(nodes, menu);
+    if (host) host.setFormControls(nodes, menu, steps);
     else controls.replaceChildren(...nodes);
   }
 

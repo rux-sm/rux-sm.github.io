@@ -66,8 +66,17 @@ two people do not spend ten minutes editing the same trip before one finds out.
   a mid grey, the same grey in every theme. Both are solid: fading the lesser
   one dulled the photo inside its square with it, which read as a rendering
   fault. Each square carries its own person's colour, so one open and one only
-  looking are told apart on the same bar, and the bar takes the firmer. Selection is broadcast only once it has lasted a moment, so a click
-  on the way past does not flash across everyone's board.
+  looking are told apart on the same bar, and the bar takes the firmer.
+
+- **Only a settled selection is broadcast, and only once.** A click on the way
+  past does not flash across everyone's board, and deselecting waits with it, so
+  running along a row is one message rather than two for every bar passed. The
+  server takes only so many a second and drops the rest, saying so in what it
+  answers rather than failing; a burst used to spend the allowance and every
+  message after it was lost, which is why the square stopped appearing until the
+  page was reloaded. Nothing is said twice, and anything that did not land is
+  said again once the burst is over. Opening a trip is deliberate and said at
+  once.
 
 - **A square within a square, drawn with one line.** The bar somebody is in is
   ruled; the square in its top right corner carries that same rule through its

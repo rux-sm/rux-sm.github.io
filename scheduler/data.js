@@ -8095,23 +8095,39 @@
      read it would otherwise flash a face across everyone's board for each bar
      passed. Opening is sent at once, being deliberate. */
   const PRESENCE_SETTLE = 900;
-  let presenceCh = null, presenceTimer = null;
+  let presenceCh = null, presenceTimer = null, presenceRetry = null;
+  // What this tab is on, and what the server was last successfully told.
   let presenceMine = { tripId: null, state: null };
+  let presenceSaid = null;
   // tripId -> [{ id, name, photoPath, colour, state }], everyone but me.
   let presenceOthers = new Map();
 
   let presenceMe = null;
-  function presenceSend(tripId, state) {
-    presenceMine = { tripId: tripId ?? null, state: tripId ? state : null };
-    if (presenceMe && presenceCh?.state === 'joined') {
-      presenceCh.track({ ...presenceMe, ...presenceMine }).catch(() => {});
-    }
+  /* THE SERVER TAKES ONLY SO MANY OF THESE A SECOND and drops the rest, saying
+     so in what it answers rather than failing: a run along a row used to spend
+     that allowance in a couple of seconds, and every message after it was lost,
+     which is why the square stopped appearing until the page was reloaded.
+     So: nothing is said twice, and anything that did not land is said again
+     once the burst is over. */
+  async function presenceSend() {
+    clearTimeout(presenceRetry);
+    if (!presenceMe || presenceCh?.state !== 'joined') return;
+    const saying = `${presenceMine.tripId}:${presenceMine.state}`;
+    if (saying === presenceSaid) return;
+    const answer = await presenceCh.track({ ...presenceMe, ...presenceMine }).catch(() => 'error');
+    if (answer === 'ok') { presenceSaid = saying; return; }
+    presenceSaid = null;
+    presenceRetry = setTimeout(presenceSend, PRESENCE_SETTLE);
   }
 
+  /* Opening a trip is deliberate and said at once. Everything else waits for
+     the clicking to stop, deselecting included, so running along a row is one
+     message rather than two per bar passed. */
   function presenceSoon(tripId, state) {
+    presenceMine = { tripId: tripId ?? null, state: tripId ? state : null };
     clearTimeout(presenceTimer);
-    if (!tripId || state === 'open') { presenceSend(tripId, state); return; }
-    presenceTimer = setTimeout(() => presenceSend(tripId, state), PRESENCE_SETTLE);
+    if (tripId && state === 'open') { presenceSend(); return; }
+    presenceTimer = setTimeout(presenceSend, PRESENCE_SETTLE);
   }
 
   /* What this tab is on: the editor's trip while it is open, otherwise the
@@ -8246,6 +8262,7 @@
        readable and forgeable from outside. The database decides, through a rule
        on realtime.messages; without that rule the channel is closed to
        everyone and no face is drawn, which is the safe way to fail. */
+    presenceSaid = null;
     presenceCh = client.channel('scheduler-presence', { config: { private: true, presence: { key: presenceKey } } });
     presenceCh.on('presence', { event: 'sync' }, presenceRead);
     presenceCh.subscribe(presenceStatus);

@@ -58,6 +58,12 @@
      in the gap below it. Snapped to whole pixels just below, where the browser
      can do it. */
   --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
+  /* THE GLYPH INSIDE A MARK, one number for the bar's marks and its crew. The
+     box around it is a row high either way, so this changes the ink and not
+     the layout -- at 16 it would fill the box and the marks would abut, at 12
+     it read smaller than the 12px text beside it. 14 matches that text's
+     weight and keeps a pixel of air between marks. */
+  --scheduler-mark-glyph: 14px;
   --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
   /* One square slot on the selected trip's shortcut bar: Carbon's md control
      height, as the board's toolbar buttons are. The bar floats clear of the
@@ -619,7 +625,13 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-row-h);
   color: var(--rux-support-warning);
 }
-.scheduler-bar__warn-chip svg { display: block; }
+/* The size is CSS's, not the attribute the script writes: one place to change
+   it, and the same number for the crew's glyphs below. */
+.scheduler-bar__warn-chip svg {
+  display: block;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+}
 /* The payment mark carries its rung in its own colour like every other mark:
    red while nothing stands against the quote, the warning colour while what
    does is the wrong amount, green once the money is in.
@@ -746,7 +758,11 @@ button.scheduler-row-head__num::after {
   inline-size: var(--scheduler-row-h);
   block-size: var(--scheduler-row-h);
 }
-.scheduler-crew__mark svg { display: block; }
+.scheduler-crew__mark svg {
+  display: block;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+}
 .scheduler-crew__mark--success { color: var(--rux-support-success); }
 .scheduler-crew__mark--error { color: var(--rux-support-error); }
 .scheduler-crew__mark--warning { color: var(--rux-support-warning); }

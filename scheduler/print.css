@@ -30,6 +30,20 @@
   padding: var(--rux-spacing-07);
 }
 
+/* THE PAGE IS THE ROOM, on screen and standing alone: it is exactly the window
+   under the fixed header, so the desk takes what the title row leaves and
+   print.js fits the sheet to it. A page that is only as tall as its content
+   would give the desk no height to fit against. */
+@media screen {
+  [data-rux-standalone] .scheduler-print {
+    box-sizing: border-box;
+    block-size: calc(100dvh - 3rem);
+    min-height: 0;
+  }
+
+  [data-rux-standalone] .scheduler-print__sheet { min-block-size: 0; }
+}
+
 @media print { .scheduler-print__shell { display: none; } }
 
 /* [hidden] is a UA rule of the lowest weight, so the display below outranks it

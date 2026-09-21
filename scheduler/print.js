@@ -609,17 +609,33 @@
      IT WATCHES THE ROOM, NOT THE SHEET. The sheet's own width is what this
      rule sets, and an observer on it would stop hearing once the rule bound. */
   function fitPaper() {
-    const paper = getComputedStyle(document.documentElement)
-      .getPropertyValue('--scheduler-paper-width').trim();
-    const inches = paper.endsWith('in') ? parseFloat(paper) : NaN;
+    const page = getComputedStyle(document.documentElement);
+    const paperOf = side => {
+      const value = page.getPropertyValue(`--scheduler-paper-${side}`).trim();
+      const inches = value.endsWith('in') ? parseFloat(value) : NaN;
+      // 96 CSS pixels to the inch, which is what an inch means in CSS.
+      return Number.isFinite(inches) && inches ? inches * 96 : NaN;
+    };
+    const wide = paperOf('width');
+    const tall = paperOf('height');
     const root = document.documentElement.style;
     // A form on no named paper is fluid and wants no scaling.
-    if (!Number.isFinite(inches) || !inches) return root.removeProperty('--scheduler-fit');
+    if (!Number.isFinite(wide)) return root.removeProperty('--scheduler-fit');
+
     const style = getComputedStyle(sheet);
     const room = sheet.clientWidth
       - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd);
-    // 96 CSS pixels to the inch, which is what an inch means in CSS.
-    const fit = Math.min(1, room / (inches * 96));
+    /* THE WHOLE SHEET, WHERE THE PAGE IS THE ROOM. Standing alone the desk is
+       what the window leaves under the title row, and the form takes the
+       smaller of the two fits so the envelope is on screen entire -- a sheet
+       of paper you can see all of beats one you scroll. Framed in the panel
+       only the width is fitted: the panel scrolls, and a short one would take
+       the envelope down to nothing. */
+    const standing = sheet.clientHeight
+      - parseFloat(style.paddingBlockStart) - parseFloat(style.paddingBlockEnd);
+    const height = framed || !Number.isFinite(tall) || !(standing > 0) ? Infinity
+      : standing / tall;
+    const fit = Math.min(1, room / wide, height);
     if (fit > 0) root.setProperty('--scheduler-fit', String(Math.round(fit * 1000) / 1000));
   }
 
@@ -637,6 +653,10 @@
     const card = current.form.render(current.every[current.chosen], current.layout);
     if (current.typed) letThemType(card);
     sheet.replaceChildren(card);
+    /* Fitted here, with the sheet holding what it will hold. The observer
+       hears the room change and not the drawing, and the first drawing lands
+       after the room is already its final size. */
+    fitPaper();
   };
 
   /* WHAT CAN BE TYPED INTO ON A BLANK FORM. Only what dispatch would have

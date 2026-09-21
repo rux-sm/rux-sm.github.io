@@ -4422,8 +4422,8 @@
     /* One tag per requirement the office keeps, rather than four written out
        here: the list is theirs to grow, and a need this app did not know about
        was one the board could show and nobody could set. */
-    const on = new Set(requirementsOf(trip));
-    needsRow.append(...editableNeeds().map(r => tagField(needFieldId(r.id), r.label, on.has(r.id))));
+    const ticked = new Set(requirementsOf(trip));
+    needsRow.append(...editableNeeds().map(r => tagField(needFieldId(r.id), r.label, ticked.has(r.id))));
     flags.append(needsLabel, needsRow);
 
     /* The vehicle types are the fleet's own, so a new type needs no code, and

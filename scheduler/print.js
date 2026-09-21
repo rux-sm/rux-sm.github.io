@@ -11,7 +11,8 @@
      binds    'assignment' | 'assignment+seat' | 'trip' | 'week' | null
      marks    the column a print sets, or null
      page     the one paper it is printed on, or left out to fit any paper
-     copies   the subjects one Print all covers, given what it is bound to
+     copies   the subjects this one binding covers, which the toolbar's list
+              and Print all start from and grow past
      render   (subject) -> an element
 
    A FORM COMPUTES NOTHING. Every number arrives worked out: a quote's from
@@ -451,7 +452,14 @@
       // Print all covers the bus's whole crew, one sheet each.
       copies: subject => seatsOf(subject.assignment)
         .map(seat => ({ ...subject, seat })),
-      copyName: subject => `${nameOf(subject.seat)} — ${roleName(subject.seat?.role)}`,
+      /* The bus and the leg first, because they are what tells two copies
+         apart in a list that covers the whole trip; the seat's name follows. */
+      copyName: subject => [
+        subject.assignment?.buses?.number != null
+          ? `Bus ${subject.assignment.buses.number}${subject.leg === 'return' ? ' return' : ''}`
+          : null,
+        `${nameOf(subject.seat)} — ${roleName(subject.seat?.role)}`,
+      ].filter(Boolean).join(' · '),
       render: envelope,
     },
   ];
@@ -617,12 +625,16 @@
 
   if (typeof ResizeObserver === 'function') new ResizeObserver(fitPaper).observe(sheet);
 
-  let current = null; // { form, subject, copies, chosen, layout }
+  /* `every` is the list the toolbar offers and `chosen` indexes it: every
+     envelope on the trip, which starts as this bus's and grows when the rest
+     of the trip answers. `copies` stays this bus's, as the fallback for a trip
+     that will not answer. */
+  let current = null; // { form, subject, copies, every, chosen, layout }
   let printingAll = false;
 
   const draw = () => {
     if (!current) return;
-    const card = current.form.render(current.copies[current.chosen], current.layout);
+    const card = current.form.render(current.every[current.chosen], current.layout);
     if (current.typed) letThemType(card);
     sheet.replaceChildren(card);
   };
@@ -708,7 +720,10 @@
      overflow and no menu script, and the page has the width to show all of
      them, so they stay in its bar. */
   function buildControls() {
-    const { form, copies, layout } = current;
+    const { form, layout } = current;
+    // Every envelope this trip has; it is this bus's until the trip's other
+    // buses answer, and one of them is on the sheet.
+    const every = current.every;
     const nodes = [];
     const menu = [];
 
@@ -750,14 +765,18 @@
       nodes.push(group);
     }
 
-    if (copies.length > 1) {
+    /* EVERY ENVELOPE ON THE TRIP, not only this bus's. The button beside it
+       already counts the trip, and a list that stopped at one bus meant going
+       back to the board to reach the next one. It starts as this bus's and
+       grows when the trip's other buses answer. */
+    if (every.length > 1) {
       // Every control in this row is Carbon's small size, so the row is one
       // band of one height whether it is the panel's or the page's own.
       const field = el('div', 'rux--select rux--layout--size-sm');
       const wrapper = el('div', 'rux--select-input__wrapper');
       const select = el('select', 'rux--select-input');
-      select.setAttribute('aria-label', `Which copy of the ${form.name.toLowerCase()}`);
-      copies.forEach((copy, i) => {
+      select.setAttribute('aria-label', `Which ${form.name.toLowerCase()} on this trip`);
+      every.forEach((copy, i) => {
         const option = el('option', null, form.copyName(copy));
         option.value = String(i);
         select.appendChild(option);
@@ -778,7 +797,7 @@
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
        and the person chooses. This is that choice, and it unticks. */
-    const seat = form.marks ? copies[current.chosen]?.seat : null;
+    const seat = form.marks ? every[current.chosen]?.seat : null;
     if (seat && host) {
       if (menu.length) menu.push({ kind: 'separator' });
       menu.push({
@@ -814,19 +833,16 @@
       actions.push(print);
     }
 
-    /* Print all is the trip's, not this bus's, so it is offered whenever the
-       trip has more than one envelope on it -- including a bus with a single
-       driver on a trip that has three more buses. */
-    const every = current.every || copies;
+    /* Print all covers the same list the toolbar's own offers: every envelope
+       on the trip, including a bus with a single driver on a trip that has
+       three more buses. */
     if (every.length > 1) {
       /* Ghost, not bordered: beside the panel's bare icons a box around one
          button reads as a different kind of thing, and beside the page's own
          Print it is the quieter of a pair, which is what ghost is for. */
       const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', `Print all ${every.length}`);
       all.type = 'button';
-      all.title = every.length > copies.length
-        ? 'Every envelope on this trip, all buses'
-        : 'Every envelope on this trip';
+      all.title = 'Every envelope on this trip';
       all.setAttribute('aria-label', `Print every envelope on this trip, ${every.length} in all`);
       all.addEventListener('click', () => {
         printingAll = true;
@@ -1027,9 +1043,15 @@
     buildControls();
     draw();
 
-    // The trip's other buses arrive after the form is on screen, so nothing
-    // waits on them; only Print all's count changes when they land.
+    /* The trip's other buses arrive after the form is on screen, so nothing
+       waits on them. The list in the toolbar grows to the whole trip when they
+       land, and the envelope on the sheet keeps its place in it: the same seat
+       on the same bus, further down a longer list. */
+    const shown = current.every[current.chosen];
     current.every = await everyCopyOnTrip(client, data.trips.id, form, subject, copies);
+    current.chosen = Math.max(0, current.every.findIndex(copy =>
+      String(copy.seat?.id) === String(shown?.seat?.id)
+      && String(copy.assignment?.id) === String(shown?.assignment?.id)));
     buildControls();
   }
 

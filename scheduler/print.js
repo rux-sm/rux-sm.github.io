@@ -716,7 +716,7 @@
        than the header, so it is there in a tab and gone in the viewer, where
        the board behind it is the way back. */
     if (!framed) {
-      const back = el('a', 'rux--btn rux--btn--ghost rux--btn--sm', 'All forms');
+      const back = el('a', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'All forms');
       back.href = 'print.html';
       nodes.push(back);
     }
@@ -732,7 +732,7 @@
         choose: () => chooseLayout(option.id),
       });
     } else if (form.layouts?.length > 1) {
-      const group = el('div', 'rux--content-switcher rux--content-switcher--sm');
+      const group = el('div', 'rux--content-switcher rux--layout--size-sm');
       group.setAttribute('role', 'tablist');
       for (const option of form.layouts) {
         const btn = el('button', 'rux--content-switcher-btn');
@@ -751,7 +751,9 @@
     }
 
     if (copies.length > 1) {
-      const field = el('div', 'rux--select');
+      // Every control in this row is Carbon's small size, so the row is one
+      // band of one height whether it is the panel's or the page's own.
+      const field = el('div', 'rux--select rux--layout--size-sm');
       const wrapper = el('div', 'rux--select-input__wrapper');
       const select = el('select', 'rux--select-input');
       select.setAttribute('aria-label', `Which copy of the ${form.name.toLowerCase()}`);
@@ -806,7 +808,7 @@
        the page has to carry its own. */
     const actions = [];
     if (!host) {
-      const print = el('button', 'rux--btn rux--btn--primary rux--btn--sm', 'Print');
+      const print = el('button', 'rux--btn rux--btn--primary rux--layout--size-sm', 'Print');
       print.type = 'button';
       print.addEventListener('click', () => window.print());
       actions.push(print);
@@ -817,7 +819,10 @@
        driver on a trip that has three more buses. */
     const every = current.every || copies;
     if (every.length > 1) {
-      const all = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm', `Print all ${every.length}`);
+      /* Ghost, not bordered: beside the panel's bare icons a box around one
+         button reads as a different kind of thing, and beside the page's own
+         Print it is the quieter of a pair, which is what ghost is for. */
+      const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', `Print all ${every.length}`);
       all.type = 'button';
       all.title = every.length > copies.length
         ? 'Every envelope on this trip, all buses'

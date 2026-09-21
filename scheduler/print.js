@@ -121,13 +121,17 @@
      One way sits second because it changes how the driver runs the day, and
      a fuel card prints a rule for its number, because the office writes that
      in by hand. */
+  /* The five that carry a glyph carry the board's, so a requirement is the same
+     drawing on a bar and on paper. The board keeps its own copy of this pair in
+     `data.js`, which this page does not load; anything the office adds has no
+     drawing in either place and shows as its initial in the same square. */
   const NEEDS = {
-    pax56: { label: '56 passengers' },
+    pax56: { label: '56 passengers', icon: '#m-groups-fill' },
     oneWay: { label: 'One way' },
-    sleeper: { label: 'Sleeper' },
-    adaLift: { label: 'Wheelchair lift' },
-    fuelCard: { label: 'Fuel card', fill: true },
-    hotel: { label: 'Hotel' },
+    sleeper: { label: 'Sleeper', icon: '#m-airline_seat_flat-fill' },
+    adaLift: { label: 'Wheelchair lift', icon: '#m-accessible-fill' },
+    fuelCard: { label: 'Fuel card', icon: '#m-credit_card-fill', fill: true },
+    hotel: { label: 'Hotel', icon: '#m-apartment-fill' },
   };
   const NEED_ORDER = ['pax56', 'oneWay', 'sleeper', 'adaLift', 'fuelCard', 'hotel'];
 
@@ -150,6 +154,7 @@
     return [...named, ...rest].map(id => ({
       id,
       label: NEEDS[id]?.label || requirementNames.get(id) || id,
+      icon: NEEDS[id]?.icon || null,
       fill: Boolean(NEEDS[id]?.fill),
     }));
   }
@@ -196,15 +201,6 @@
       ? el('span', 'scheduler-envelope__blank')
       : el('span', 'scheduler-envelope__value', value || ''));
     return node;
-  };
-
-  // A cell whose value is built rather than a string: the requirements are a
-  // list, one of which carries a line for a number.
-  const cellOf = (label, node) => {
-    const held = el('div');
-    held.appendChild(el('span', 'scheduler-envelope__label', label));
-    held.appendChild(node);
-    return held;
   };
 
   const row = (...cells) => {
@@ -316,33 +312,53 @@
     return grid;
   }
 
-  /* WHAT THE TRIP NEEDS, a row of the table like every other thing dispatch
-     knows. Each one is a label, not a box: the ELD and card lines below are
+  /* WHAT THE TRIP NEEDS, in the box at the foot of the envelope -- the space
+     the office used to write these into by hand. What dispatch knows is
+     printed there now, and the room under it is for whatever is added on the
+     day. Each one is a label, not a tick box: the ELD and card lines above are
      real boxes for the driver's pen, and an empty square beside "56
-     passengers" would read there as "not needed". A trip that needs nothing
-     has no row at all. */
-  function envelopeNeeds(trip) {
+     passengers" would read there as "not needed".
+
+     The one note written to this driver goes in the same box, under them and
+     set apart by weight: it is the only other thing said in prose to the
+     person holding the envelope. */
+  function envelopeNeeds(trip, seat) {
+    const box = el('div', 'scheduler-envelope__reqs');
+    box.appendChild(el('span', 'scheduler-envelope__label', 'Requirements:'));
+
     const needs = needsOf(trip);
-    if (!needs.length) return null;
-    const list = el('div', 'scheduler-envelope__needs');
-    for (const need of needs) {
-      const item = el('div', 'scheduler-envelope__need');
-      item.appendChild(el('span', null, need.label));
-      if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
-      list.appendChild(item);
+    if (needs.length) {
+      const list = el('div', 'scheduler-envelope__needs');
+      for (const need of needs) {
+        const item = el('div', 'scheduler-envelope__need');
+        item.appendChild(needMark(need));
+        item.appendChild(el('span', null, need.label));
+        if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
+        list.appendChild(item);
+      }
+      box.appendChild(list);
     }
-    return row(cellOf('Requirements:', list));
+
+    const instruction = String(seat?.instructions || '').trim();
+    if (instruction) box.appendChild(el('p', 'scheduler-envelope__note', instruction));
+    return box;
   }
 
-  /* THE SPACE THE DRIVER WRITES IN, and the one note written to them. It is a
-     box like the fields above it, because an empty area under a label reads as
-     the form having run out rather than as somewhere to write. */
-  function envelopeNotes(seat) {
-    const notes = el('div', 'scheduler-envelope__notes');
-    notes.appendChild(el('span', 'scheduler-envelope__label', 'Notes:'));
-    const instruction = String(seat?.instructions || '').trim();
-    if (instruction) notes.appendChild(el('p', 'scheduler-envelope__note', instruction));
-    return notes;
+  // The drawing, or the initial in its place, so every requirement in the list
+  // starts at the same point whether Carbon has a glyph for it or not.
+  function needMark(need) {
+    if (!need.icon) {
+      return el('span', 'scheduler-envelope__need-letter', String(need.label).trim().charAt(0));
+    }
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'scheduler-envelope__need-icon');
+    svg.setAttribute('viewBox', '0 0 32 32');
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', need.icon);
+    svg.appendChild(use);
+    return svg;
   }
 
   // The multi-stop layout's log, in place of the destination line. rux-ui
@@ -384,17 +400,14 @@
     const table = el('div', 'scheduler-envelope__table');
     table.appendChild(envelopeSchedule(trip, assignment, leg, seat));
 
-    const needs = envelopeNeeds(trip);
-
     if (card.dataset.layout === 'multi-stop') {
       table.appendChild(row(
         cell('Contact:', contact.name),
         cell('Phone:', contact.phone),
       ));
-      if (needs) table.appendChild(needs);
       card.appendChild(table);
       card.appendChild(envelopeLog());
-      card.appendChild(envelopeNotes(seat));
+      card.appendChild(envelopeNeeds(trip, seat));
       card.appendChild(envelopeTally());
       return card;
     }
@@ -404,7 +417,6 @@
       cell('Contact:', contact.name),
       cell('Phone:', contact.phone),
     ));
-    if (needs) table.appendChild(needs);
     // Last in the table, because it is the one row filled in after the trip.
     table.appendChild(row(
       cell('Starting odometer:', '', true),
@@ -412,7 +424,7 @@
     ));
     card.appendChild(table);
     card.appendChild(envelopeTally());
-    card.appendChild(envelopeNotes(seat));
+    card.appendChild(envelopeNeeds(trip, seat));
     return card;
   }
 

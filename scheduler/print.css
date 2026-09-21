@@ -360,21 +360,21 @@
   flex: 0 0 3rem;
 }
 
-/* Notes is the last block of the standard envelope, so it takes the room the
-   rest of the form leaves: that space is where the note is written, and a
-   border around it says so where a label over an empty area reads as the form
-   having run out. Multi-stop gives its slack to the log instead, which sits
-   above Notes there. */
-.scheduler-envelope__notes {
+/* THE REQUIREMENTS BOX, the last block of the standard envelope, so it takes
+   the room the rest of the form leaves. That room is what the office used to
+   write these into by hand, and the border says so where a label over an empty
+   area reads as the form having run out. Multi-stop gives its slack to the log
+   instead, which sits above this box there. */
+.scheduler-envelope__reqs {
   border: 1px solid var(--rux-border-strong-01);
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   margin-block-start: var(--rux-spacing-05);
 }
 
-/* A floor only where Notes takes the slack. Multi-stop gives its slack to the
-   log, and a floor there is a second envelope: the box grows past the sheet
-   instead of the log giving way. */
-.scheduler-form[data-layout="standard"] .scheduler-envelope__notes {
+/* A floor only where this box takes the slack. Multi-stop gives its slack to
+   the log, and a floor there is a second envelope: the box grows past the
+   sheet instead of the log giving way. */
+.scheduler-form[data-layout="standard"] .scheduler-envelope__reqs {
   flex: 1 1 auto;
   min-block-size: 1.5in;
 }
@@ -383,6 +383,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--rux-spacing-02) var(--rux-spacing-05);
+  padding-block-start: var(--rux-spacing-02);
 }
 
 .scheduler-envelope__need {
@@ -396,12 +397,29 @@
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
-/* A mark between them, because space alone runs them into one phrase and
-   these are separate facts about the trip. The header's own line already
-   separates the phone numbers this way. */
-.scheduler-envelope__need + .scheduler-envelope__need::before {
-  content: '·';
-  margin-inline-end: var(--rux-spacing-02);
+/* THE DRAWING EACH ONE OPENS WITH, the board's own glyph for that requirement,
+   so a bar and a printed envelope say the same thing the same way. It is ink,
+   not a fill, so it survives a print driver with Background graphics off. The
+   drawing is what parts one requirement from the next; they needed a mark
+   between them only while they were bare words. */
+.scheduler-envelope__need-icon {
+  inline-size: 1rem;
+  block-size: 1rem;
+  flex: none;
+}
+
+/* Anything the office added, which Carbon has no drawing for: its initial in
+   the same square, as the board draws it on a bar. */
+.scheduler-envelope__need-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1rem;
+  block-size: 1rem;
+  flex: none;
+  border: 1px solid var(--rux-border-strong-01);
+  font-size: var(--rux-label-01-font-size);
+  line-height: 1;
 }
 
 /* The seat's own instruction, under the requirements and set apart from them

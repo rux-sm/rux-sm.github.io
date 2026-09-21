@@ -727,15 +727,6 @@
     const nodes = [];
     const menu = [];
 
-    /* The way back to the other forms. It is in the page's own toolbar rather
-       than the header, so it is there in a tab and gone in the viewer, where
-       the board behind it is the way back. */
-    if (!framed) {
-      const back = el('a', 'rux--btn rux--btn--ghost rux--layout--size-md', 'All forms');
-      back.href = 'print.html';
-      nodes.push(back);
-    }
-
     const chooseLayout = id => { current.layout = id; buildControls(); draw(); };
 
     if (form.layouts?.length > 1 && host) {

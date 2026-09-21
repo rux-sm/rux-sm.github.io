@@ -22,11 +22,13 @@
   flex-direction: column;
 }
 
-/* Carbon's header is fixed, so the page clears it, and the toolbar sticks
-   below it rather than under it. Neither applies while the page is framed,
-   where there is no header. */
-[data-rux-standalone] .scheduler-print { padding-block-start: 3rem; }
-[data-rux-standalone] .scheduler-print__bar { top: 3rem; }
+/* Carbon's header is fixed, so the page clears it and then keeps the inset
+   `rux--content` gives every other page in this app. Neither applies while the
+   page is framed, where there is no header and the panel is the room. */
+[data-rux-standalone] .scheduler-print {
+  margin-block-start: 3rem;
+  padding: var(--rux-spacing-07);
+}
 
 @media print { .scheduler-print__shell { display: none; } }
 
@@ -35,40 +37,31 @@
    what it did in the panel, where the toolbar is the panel's own. */
 .scheduler-print__bar[hidden] { display: none; }
 
-/* The toolbar above the paper: the form's own controls, which travel with it
-   into a new tab where the viewer's toolbar cannot follow. Screen only. */
+/* THE PAGE'S OWN TITLE ROW, where the panel's toolbar cannot follow: the form's
+   name at one end and what to do with it at the other, laid out as the quote
+   calculator's title row is, because they are the same thing -- a page, its
+   name, and its actions. It is a row on a page and not a bar across it, so it
+   takes the page's own inset and keeps nothing of its own. Screen only. */
 .scheduler-print__bar {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--rux-spacing-03);
-  /* No inset above or below: the controls are the height of the bar and fill
-     it, as the document panel's toolbar does and as the board's own does. */
-  padding-inline: var(--rux-spacing-05);
-  background: var(--rux-layer-01);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+  margin-block-end: var(--rux-spacing-07);
 }
 
-/* The form's controls, in a row: a switcher, the copy, the tick and the two
-   print buttons. It takes the width the title leaves rather than sizing to
-   its content, because a wrapping flex container is only as wide as its
-   widest child and the row would otherwise collapse into a column. Given the
-   room it is one row, and in the 30rem viewer it wraps inside it. It starts at
-   the left, where framed there is no title to push it off. */
+/* The form's controls, at the end of the title row: a switcher, the copy, the
+   tick and the two print buttons, in a group of their own so they wrap
+   together and away from the name rather than among it. */
 .scheduler-print__controls {
   display: flex;
-  flex: 1;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--rux-spacing-03);
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+  /* Pushed to the end by the name rather than spread against it, so a word the
+     form has to say lands after them instead of between. */
+  margin-inline-start: auto;
 }
-
-/* Standing alone the title holds the left, so the controls sit at the right
-   end of what it leaves. */
-[data-rux-standalone] .scheduler-print__controls { justify-content: flex-end; }
 
 /* Carbon sizes both of these to their field, which in a toolbar is the whole
    row, and lets them be squeezed to nothing beside the buttons. They keep
@@ -90,19 +83,19 @@
   gap: var(--rux-spacing-03);
 }
 
-/* The form's name, and only while the page stands alone: framed in the
-   viewer the panel's own head already names it, and saying it twice is chrome
-   inside chrome, the same reason the header is gone there. */
+/* The form's name, and only while the page stands alone: framed in the viewer
+   the panel's own head already names it, and saying it twice is chrome inside
+   chrome, the same reason the header is gone there. Its type is Carbon's own
+   productive heading, the one the quote calculator titles itself with. */
 .scheduler-print__bar-title { display: none; }
 
 [data-rux-standalone] .scheduler-print__bar-title {
   display: block;
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
-  margin-inline-end: auto;
+  margin: 0;
 }
+
+/* Empty it takes no room, so nothing sits between the name and the actions. */
+.scheduler-print__bar-note:empty { display: none; }
 
 .scheduler-print__bar-note {
   font-size: var(--rux-label-01-font-size);
@@ -190,6 +183,7 @@
   .scheduler-print,
   [data-rux-standalone] .scheduler-print {
     min-height: 0;
+    margin: 0;
     padding: 0;
   }
 

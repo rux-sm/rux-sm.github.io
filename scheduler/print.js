@@ -148,7 +148,6 @@
       // Settings calls a requirement is what it is called.
       label: requirementNames.get(id) || NEEDS[id]?.label || id,
       icon: NEEDS[id]?.icon || null,
-      fill: Boolean(NEEDS[id]?.fill),
     }));
   }
 
@@ -272,7 +271,10 @@
     { label: 'Hotel', money: true },
     { label: 'ELD backup used', choices: ['Yes', 'No'] },
     { label: 'Diesel/Blue Def', money: true },
-    { label: 'CC for trip', choices: ['Yes', 'No'] },
+    /* Which card, written in. A number here is the yes, so the pair of boxes
+       that used to ask it went: a card written down and a card ticked for are
+       the same fact asked twice. */
+    { label: 'CC for trip', fill: true },
     { label: 'Repairs', money: true },
     { label: 'CC received by', fill: true },
     { label: 'Miscellaneous', money: true },
@@ -326,7 +328,6 @@
         const item = el('div', 'scheduler-envelope__need');
         item.appendChild(needMark(need));
         item.appendChild(el('span', null, need.label));
-        if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
         list.appendChild(item);
       }
       box.appendChild(list);

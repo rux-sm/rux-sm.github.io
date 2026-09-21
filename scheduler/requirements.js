@@ -19,8 +19,7 @@
     adaLift: { label: 'Wheelchair lift', icon: '#m-accessible-fill' },
     hotel: { label: 'Hotel', icon: '#m-apartment-fill' },
     // Carbon's `purchase` is a credit card, which is what a fuel card is.
-    // `fill` is the envelope's: the card's number is written in beside it.
-    fuelCard: { label: 'Fuel card', icon: '#m-credit_card-fill', fill: true },
+    fuelCard: { label: 'Fuel card', icon: '#m-credit_card-fill' },
     // A leg that does not come back. No drawing, and nothing to write in.
     oneWay: { label: 'One-way' },
   };

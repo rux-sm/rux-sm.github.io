@@ -442,13 +442,6 @@
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
-/* A need whose number the office writes in, the fuel card's. */
-.scheduler-envelope__need-fill {
-  display: inline-block;
-  min-width: 6rem;
-  border-block-end: 1px solid var(--rux-border-strong-01);
-}
-
 /* The multi-stop layout's log, in place of the single destination. */
 /* The log takes the room the rest of the multi-stop envelope leaves, on screen
    as on paper, so the preview shows the rows at the height they print at. */

@@ -687,26 +687,22 @@ button.scheduler-row-head__num::after {
   display: flex;
   pointer-events: none;
 }
-/* ONE LINE DRAWS ALL OF IT -- a square within a square. The bar someone is in
-   is ruled, the square's top and right edges are that same rule, and its bottom
-   and left are drawn to match: same width, same colour, the selection ring's
-   own, which is white on a dark theme and black on a light one. A bar too
-   narrow for a square is still ruled, which is how it says so.
+/* ONE LINE DRAWS ALL OF IT -- a square within a square, in the selection
+   ring's own colour, white on a dark theme and black on a light one. The
+   square's four sides are ruled in overrides.css, and its top and right are
+   the bar's rule carried through.
 
    OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears the
-   square alone; one they have open wears the square and the rule round the
+   square alone; one they have open wears the square and this rule round the
    whole bar. So there is one colour and no second style to learn, and the
    state that matters -- somebody is in there and might be saving over you --
    is the louder of the two rather than merely another shade of it. Fading and
    a dashed rule were both tried: fading dulled the photo inside the square,
-   and dashed is what a leg of the trip in your own editor already wears. */
-.scheduler-presence__face {
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
-}
-/* The rule is drawn only for a trip somebody has open, on its own layer so
-   `inherit` carries a rounded theme's corners. A bar too narrow even for the
-   small square then shows nothing when it is merely selected, which is the
-   right thing to lose: selected is the state nothing turns on. */
+   and dashed is what a leg of the trip in your own editor already wears.
+
+   On its own layer, so `inherit` carries a rounded theme's corners. A bar too
+   narrow even for the small square shows nothing at all when it is merely
+   selected, which is the right thing to lose: this rule is the open one's. */
 .scheduler-bar--watched::after {
   content: '';
   position: absolute;
@@ -725,7 +721,6 @@ button.scheduler-row-head__num::after {
   align-items: center;
   color: var(--rux-text-primary);
   background: var(--rux-layer-01);
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
   padding: 0 var(--rux-spacing-02);
 }
 

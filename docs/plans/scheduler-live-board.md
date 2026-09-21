@@ -80,10 +80,12 @@ two people do not spend ten minutes editing the same trip before one finds out.
   once.
 
 - **A square within a square, drawn with one line.** The bar somebody is in is
-  ruled; the square in its top right corner carries that same rule through its
-  own top and right edges rather than sitting beside them, which left a hairline
-  of bar between the two, and its bottom and left are drawn to match. The corner
-  they share takes the bar's own curve. The square covers the reference and the
+  ruled; the square in its top right corner is ruled on all four sides, its top
+  and right carrying the bar's own rule through rather than sitting beside it,
+  which left a hairline of bar between the two. The corner they share takes the
+  bar's own curve. All four sides are one border: the left and bottom were once
+  a shadow offset down and left, which left the other two corners short of
+  meeting. The square covers the reference and the
   marks that corner carries, which is rux's call: knowing somebody else is in a
   trip is worth more than "1 of 2". A narrow bar takes Carbon's smaller avatar
   rather than none, because opening the editor squeezes the board and one fixed

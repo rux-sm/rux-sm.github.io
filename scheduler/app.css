@@ -693,29 +693,26 @@ button.scheduler-row-head__num::after {
    own, which is white on a dark theme and black on a light one. A bar too
    narrow for a square is still ruled, which is how it says so.
 
-   OPEN AND SELECTED DIFFER BY COLOUR, NOT BY WEIGHT. Both are drawn solid:
-   fading the fainter one dulled the photo inside the square with it, which
-   read as a rendering fault rather than a lesser state. A trip somebody has
-   open takes the page's own strongest edge -- white on a dark theme, black on
-   a light one -- and one they have merely selected takes a mid grey, the same
-   grey in every theme, plainly less than the other and not an error colour.
-   Each square carries its own person's, so one open and one only looking are
-   told apart on the same bar. */
-.scheduler-presence__face { --scheduler-presence-ink: var(--rux-border-strong-01); }
-.scheduler-presence__face--open { --scheduler-presence-ink: var(--rux-layer-selected-inverse); }
+   OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears the
+   square alone; one they have open wears the square and the rule round the
+   whole bar. So there is one colour and no second style to learn, and the
+   state that matters -- somebody is in there and might be saving over you --
+   is the louder of the two rather than merely another shade of it. Fading and
+   a dashed rule were both tried: fading dulled the photo inside the square,
+   and dashed is what a leg of the trip in your own editor already wears. */
 .scheduler-presence__face {
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--scheduler-presence-ink);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
 }
-/* The bar takes the firmer of the states on it. Its rule is on its own layer,
-   so `inherit` carries a rounded theme's corners. */
-.scheduler-bar--watched { --scheduler-presence-ink: var(--rux-border-strong-01); }
-.scheduler-bar--watched-open { --scheduler-presence-ink: var(--rux-layer-selected-inverse); }
+/* The rule is drawn only for a trip somebody has open, on its own layer so
+   `inherit` carries a rounded theme's corners. A bar too narrow even for the
+   small square then shows nothing when it is merely selected, which is the
+   right thing to lose: selected is the state nothing turns on. */
 .scheduler-bar--watched::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 0 var(--scheduler-presence-rule) var(--scheduler-presence-ink);
+  box-shadow: inset 0 0 0 var(--scheduler-presence-rule) var(--rux-layer-selected-inverse);
   pointer-events: none;
 }
 /* Past the third face the rest are a count, because four faces on one bar are
@@ -728,7 +725,7 @@ button.scheduler-row-head__num::after {
   align-items: center;
   color: var(--rux-text-primary);
   background: var(--rux-layer-01);
-  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--scheduler-presence-ink);
+  box-shadow: calc(-1 * var(--scheduler-presence-rule)) var(--scheduler-presence-rule) 0 0 var(--rux-layer-selected-inverse);
   padding: 0 var(--rux-spacing-02);
 }
 

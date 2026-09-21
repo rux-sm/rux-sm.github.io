@@ -61,12 +61,13 @@ two people do not spend ten minutes editing the same trip before one finds out.
   `is_staff()` is what closes it; without the rule nobody joins and no face is
   drawn, which is the safe way to fail.
 
-- **Both open and selected, told apart by colour.** Open takes the page's own
-  strongest edge, white on a dark theme and black on a light one; selected takes
-  a mid grey, the same grey in every theme. Both are solid: fading the lesser
-  one dulled the photo inside its square with it, which read as a rendering
-  fault. Each square carries its own person's colour, so one open and one only
-  looking are told apart on the same bar, and the bar takes the firmer.
+- **Open is more, not different.** A trip somebody has merely selected wears
+  the square alone; one they have open wears the square and the rule round the
+  whole bar. One colour, no second style to learn, and the state that matters --
+  somebody is in there and might save over you -- is the louder of the two
+  rather than another shade of it. Fading the lesser state dulled the photo
+  inside its square with it, and a dashed rule is already what a leg of the trip
+  in your own editor wears.
 
 - **Only a settled selection is broadcast, and only once.** A click on the way
   past does not flash across everyone's board, and deselecting waits with it, so
@@ -87,7 +88,9 @@ two people do not spend ten minutes editing the same trip before one finds out.
   trip is worth more than "1 of 2". A narrow bar takes Carbon's smaller avatar
   rather than none, because opening the editor squeezes the board and one fixed
   size emptied the whole week the moment a trip was opened beside it; only where
-  even the small one would take half the bar is the rule left to say it alone.
+  even the small one would take half the bar is nothing drawn, which costs a
+  merely selected trip its mark and an open one nothing, the rule being the
+  open one's anyway.
 
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a

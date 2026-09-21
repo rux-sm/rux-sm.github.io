@@ -458,8 +458,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    Carbon's own 0.5px transparent border is what these replace. */
 .scheduler-presence__face.rux--user-avatar,
 .scheduler-presence__more {
-  border-block-start: var(--scheduler-presence-rule) solid var(--scheduler-presence-ink);
-  border-inline-end: var(--scheduler-presence-rule) solid var(--scheduler-presence-ink);
+  border-block-start: var(--scheduler-presence-rule) solid var(--rux-layer-selected-inverse);
+  border-inline-end: var(--scheduler-presence-rule) solid var(--rux-layer-selected-inverse);
 }
 /* Except the one corner that meets the bar's own, which takes its curve. */
 .scheduler-presence > :last-child.rux--user-avatar,

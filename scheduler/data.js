@@ -8182,17 +8182,16 @@
     presenceNote();
     if (!gridEl) return;
     for (const old of gridEl.querySelectorAll('.scheduler-presence')) old.remove();
-    for (const bar of gridEl.querySelectorAll('.scheduler-bar--watched')) bar.classList.remove('scheduler-bar--watched', 'scheduler-bar--watched-open');
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar--watched')) bar.classList.remove('scheduler-bar--watched');
     if (!presenceOthers.size) return;
     for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
       const here = presenceOthers.get(bar.dataset.tripId);
       if (!here?.length) continue;
-      /* The rule goes on whatever the bar's width, because a bar too narrow for
-         a square is exactly the one that needs telling some other way. Solid
-         for a trip somebody has open, faint for one merely selected, which is
-         the weight the squares carry too. */
-      bar.classList.add('scheduler-bar--watched');
-      if (here.some(who => who.state === 'open')) bar.classList.add('scheduler-bar--watched-open');
+      /* The rule is for a trip somebody has OPEN, whatever the bar's width: the
+         state nothing turns on says it with its square alone, and this one is
+         worth seeing from across the week and on a bar too narrow to hold a
+         square. */
+      if (here.some(who => who.state === 'open')) bar.classList.add('scheduler-bar--watched');
       const width = bar.getBoundingClientRect().width;
       // The largest square that takes no more than half the bar, and as many
       // of them as that half holds.

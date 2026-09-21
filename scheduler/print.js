@@ -198,6 +198,15 @@
     return node;
   };
 
+  // A cell whose value is built rather than a string: the requirements are a
+  // list, one of which carries a line for a number.
+  const cellOf = (label, node) => {
+    const held = el('div');
+    held.appendChild(el('span', 'scheduler-envelope__label', label));
+    held.appendChild(node);
+    return held;
+  };
+
   const row = (...cells) => {
     const node = el('div', 'scheduler-envelope__row');
     node.dataset.cells = String(cells.length);
@@ -217,7 +226,6 @@
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-envelope__line', COMPANY.address));
     head.appendChild(el('p', 'scheduler-envelope__line', COMPANY.phones));
-    head.appendChild(el('h2', 'scheduler-envelope__section', 'Trip information'));
     return head;
   }
 
@@ -308,16 +316,14 @@
     return grid;
   }
 
-  function envelopeNotes(trip, seat) {
-    const notes = el('div', 'scheduler-envelope__notes');
-    notes.appendChild(el('span', 'scheduler-envelope__label', 'Notes:'));
+  /* WHAT THE TRIP NEEDS, a row of the table like every other thing dispatch
+     knows. Each one is a label, not a box: the ELD and card lines below are
+     real boxes for the driver's pen, and an empty square beside "56
+     passengers" would read there as "not needed". A trip that needs nothing
+     has no row at all. */
+  function envelopeNeeds(trip) {
     const needs = needsOf(trip);
-    const instruction = String(seat?.instructions || '').trim();
-    if (!needs.length && !instruction) return notes;
-
-    /* Each one is a label, not a box. Directly above these sit the ELD and
-       card lines, which are real boxes for the driver's pen, and an empty
-       square beside "56 passengers" reads there as "not needed". */
+    if (!needs.length) return null;
     const list = el('div', 'scheduler-envelope__needs');
     for (const need of needs) {
       const item = el('div', 'scheduler-envelope__need');
@@ -325,9 +331,16 @@
       if (need.fill) item.appendChild(el('span', 'scheduler-envelope__need-fill'));
       list.appendChild(item);
     }
-    if (needs.length) notes.appendChild(list);
-    // Under the requirements, not among them: the note is written to this one
-    // driver, and a line without a box reads as a requirement beside them.
+    return row(cellOf('Requirements:', list));
+  }
+
+  /* THE SPACE THE DRIVER WRITES IN, and the one note written to them. It is a
+     box like the fields above it, because an empty area under a label reads as
+     the form having run out rather than as somewhere to write. */
+  function envelopeNotes(seat) {
+    const notes = el('div', 'scheduler-envelope__notes');
+    notes.appendChild(el('span', 'scheduler-envelope__label', 'Notes:'));
+    const instruction = String(seat?.instructions || '').trim();
     if (instruction) notes.appendChild(el('p', 'scheduler-envelope__note', instruction));
     return notes;
   }
@@ -371,14 +384,17 @@
     const table = el('div', 'scheduler-envelope__table');
     table.appendChild(envelopeSchedule(trip, assignment, leg, seat));
 
+    const needs = envelopeNeeds(trip);
+
     if (card.dataset.layout === 'multi-stop') {
       table.appendChild(row(
         cell('Contact:', contact.name),
         cell('Phone:', contact.phone),
       ));
+      if (needs) table.appendChild(needs);
       card.appendChild(table);
       card.appendChild(envelopeLog());
-      card.appendChild(envelopeNotes(trip, seat));
+      card.appendChild(envelopeNotes(seat));
       card.appendChild(envelopeTally());
       return card;
     }
@@ -388,13 +404,15 @@
       cell('Contact:', contact.name),
       cell('Phone:', contact.phone),
     ));
+    if (needs) table.appendChild(needs);
+    // Last in the table, because it is the one row filled in after the trip.
     table.appendChild(row(
       cell('Starting odometer:', '', true),
       cell('Ending odometer:', '', true),
     ));
     card.appendChild(table);
     card.appendChild(envelopeTally());
-    card.appendChild(envelopeNotes(trip, seat));
+    card.appendChild(envelopeNotes(seat));
     return card;
   }
 

@@ -187,9 +187,6 @@
      flow onto as many sheets as it needs. */
   .scheduler-form { height: calc(var(--scheduler-paper-height) - 1pt); }
 
-  /* The rows share the slack, but never shrink below a line a driver can
-     still write a location and an odometer reading on. */
-  .scheduler-envelope__log td { height: 0.19in; }
 }
 
 /* ── The envelope ─────────────────────────────────────────────────────────
@@ -224,25 +221,15 @@
   margin-block: var(--rux-spacing-02);
 }
 
+/* SOLID INK, EVERYWHERE ON THE ENVELOPE. A laser prints a grey as a pattern of
+   dots, and small capitals in it come out fuzzy on a tinted stock. Size, case
+   and weight carry the hierarchy instead, which survives any printer. */
 .scheduler-envelope__line {
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
-  color: var(--rux-text-secondary);
   margin: 0;
-}
-
-/* Spaced capitals, which is how the form in use names its one section and
-   what keeps a short heading from reading as a field's label. */
-.scheduler-envelope__section {
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  text-align: center;
-  margin: var(--rux-spacing-05) 0 0;
 }
 
 /* THE TABLE. Every field is a cell with a border around it, because a box is
@@ -279,8 +266,6 @@
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-  color: var(--rux-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -376,25 +361,35 @@
 }
 
 /* Notes is the last block of the standard envelope, so it takes the room the
-   rest of the form leaves: that space is where the note is written. Multi-stop
-   gives its slack to the log instead, which sits above Notes there. */
-.scheduler-envelope__notes { padding-block-start: var(--rux-spacing-03); }
+   rest of the form leaves: that space is where the note is written, and a
+   border around it says so where a label over an empty area reads as the form
+   having run out. Multi-stop gives its slack to the log instead, which sits
+   above Notes there. */
+.scheduler-envelope__notes {
+  border: 1px solid var(--rux-border-strong-01);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  margin-block-start: var(--rux-spacing-05);
+}
 
+/* A floor only where Notes takes the slack. Multi-stop gives its slack to the
+   log, and a floor there is a second envelope: the box grows past the sheet
+   instead of the log giving way. */
 .scheduler-form[data-layout="standard"] .scheduler-envelope__notes {
   flex: 1 1 auto;
+  min-block-size: 1.5in;
 }
 
 .scheduler-envelope__needs {
   display: flex;
   flex-wrap: wrap;
   gap: var(--rux-spacing-02) var(--rux-spacing-05);
-  padding-block-start: var(--rux-spacing-02);
 }
 
 .scheduler-envelope__need {
   display: inline-flex;
   align-items: center;
   gap: var(--rux-spacing-02);
+  text-transform: uppercase;
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
@@ -407,7 +402,6 @@
 .scheduler-envelope__need + .scheduler-envelope__need::before {
   content: '·';
   margin-inline-end: var(--rux-spacing-02);
-  color: var(--rux-text-secondary);
 }
 
 /* The seat's own instruction, under the requirements and set apart from them
@@ -454,12 +448,16 @@
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
-  color: var(--rux-text-secondary);
   text-transform: uppercase;
 }
 
 .scheduler-envelope__log tbody { height: 100%; }
-.scheduler-envelope__log td { height: 1.5rem; }
+
+/* The rows share whatever the rest of the envelope leaves, and never shrink
+   below a line a driver can still write a location and an odometer reading
+   on. The floor is the same on screen as on paper, or the preview would stand
+   taller than the sheet it is showing. */
+.scheduler-envelope__log td { height: 0.19in; }
 
 /* Every copy after the first starts a new sheet: Print all is one press and
    one stack of paper, one envelope per driver. */

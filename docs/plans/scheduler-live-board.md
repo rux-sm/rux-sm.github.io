@@ -84,8 +84,10 @@ two people do not spend ten minutes editing the same trip before one finds out.
   of bar between the two, and its bottom and left are drawn to match. The corner
   they share takes the bar's own curve. The square covers the reference and the
   marks that corner carries, which is rux's call: knowing somebody else is in a
-  trip is worth more than "1 of 2". A bar too narrow for a square is still
-  ruled, which is how it says so, and what reads from across the week.
+  trip is worth more than "1 of 2". A narrow bar takes Carbon's smaller avatar
+  rather than none, because opening the editor squeezes the board and one fixed
+  size emptied the whole week the moment a trip was opened beside it; only where
+  even the small one would take half the bar is the rule left to say it alone.
 
 - **A face, not a name.** Staff profiles already carry a photo and a colour, and
   the header already draws them; the board reuses that rather than inventing a

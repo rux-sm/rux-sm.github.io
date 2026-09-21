@@ -70,6 +70,7 @@
 // this names the fourth line, before the restored component renders blank.
 //
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { ICONS as SHEET, PREFIX } from './lib/icon-map.mjs';
 import { join, dirname, normalize } from 'node:path';
 import { markupFiles, spritePages } from './lib/sources.mjs';
 
@@ -108,10 +109,17 @@ const defined = new Set(symbols);
 // build-icons.mjs is a script that writes the sprite on import, so its list is read
 // as text rather than imported. It is also the only readable source of truth on
 // a fresh clone: @carbon/icons is a gitignored quarry that may not be present.
+/* WHAT THE SPRITE SHOULD HOLD, across all three families: Carbon's names from
+   the list in build-icons.mjs, Material's from the sheet, and whatever has
+   been drawn in assets/icons-rux/. Reading only the first would call every
+   Material symbol an intruder. */
 const quarry = readFileSync(QUARRY, 'utf8');
 const listBody = quarry.match(/const ICONS = \[([\s\S]*?)\n\];/)?.[1] ?? '';
-const listed = [...listBody.replace(/\/\/[^\n]*/g, '').matchAll(/'([^']+)'/g)]
-  .map(m => `i-${m[1]}`);
+const listed = [
+  ...[...listBody.replace(/\/\/[^\n]*/g, '').matchAll(/'([^']+)'/g)].map(m => `i-${m[1]}`),
+  ...Object.values(SHEET).filter(r => r.material).map(r => `${PREFIX.material}${r.material}`),
+  ...Object.values(SHEET).filter(r => r.rux).map(r => `${PREFIX.rux}${r.rux}`),
+];
 
 const faults = [];
 

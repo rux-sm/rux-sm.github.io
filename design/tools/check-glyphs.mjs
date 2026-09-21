@@ -66,36 +66,46 @@
 import { readFileSync } from 'node:fs';
 import { geometry, spriteSymbols } from './build-glyphs.mjs';
 
-const SNAPSHOT = 'data/carbon-glyphs.json';
-const { glyphs } = JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
+/* ONE SNAPSHOT PER PUBLISHED FAMILY, and each symbol is compared with its own
+   publisher's drawing. The drawings in assets/icons-rux/ have no publisher, so
+   they are counted and skipped -- and said aloud below, because a family
+   nothing checks has to be named rather than quietly passed over. */
+const SNAPSHOTS = {
+  carbon: { file: 'data/carbon-glyphs.json', of: 'Carbon' },
+  material: { file: 'data/material-glyphs.json', of: 'Material' },
+};
+const loaded = Object.fromEntries(Object.entries(SNAPSHOTS)
+  .map(([family, s]) => [family, JSON.parse(readFileSync(s.file, 'utf8')).glyphs]));
 
 const wrong = [], unknown = [];
-let checked = 0;
+let checked = 0, ours = 0;
 
 for (const sym of spriteSymbols()) {
+  if (!SNAPSHOTS[sym.family]) { ours++; continue; }
   const key = `${sym.name}@${sym.size}`;
-  const ref = glyphs[key];
-  if (!ref) { unknown.push(key); continue; }
+  const ref = loaded[sym.family][key];
+  if (!ref) { unknown.push(`${sym.family} ${key}`); continue; }
   checked++;
   if (JSON.stringify(sym.geometry) === JSON.stringify(ref.geometry)) continue;
-  wrong.push({ key, ours: sym.geometry, theirs: ref.geometry, source: ref.source });
+  wrong.push({ key, of: SNAPSHOTS[sym.family].of, ours: sym.geometry, theirs: ref.geometry, source: ref.source });
 }
 
-for (const { key, ours, theirs, source } of wrong) {
+for (const { key, of, ours: mine, theirs, source } of wrong) {
   console.log(`\n  ${key}`);
-  console.log(`     ours    ${ours.join('\n             ') || '(nothing drawn)'}`);
-  console.log(`     Carbon  ${theirs.join('\n             ') || '(nothing drawn)'}`);
+  console.log(`     ours      ${mine.join('\n               ') || '(nothing drawn)'}`);
+  console.log(`     ${of.padEnd(9)} ${theirs.join('\n               ') || '(nothing drawn)'}`);
   console.log(`     ${source}`);
 }
 for (const key of unknown) {
   console.log(`\n  ${key}`);
-  console.log('     no entry in the snapshot — regenerate with `node tools/build-glyphs.mjs`,');
-  console.log('     and if Carbon still has no file for it, the name is invented');
+  console.log('     no entry in its snapshot — regenerate with `node tools/build-glyphs.mjs`,');
+  console.log('     and if the package still has no file for it, the name is invented');
 }
 
 const faults = wrong.length + unknown.length;
-console.log(`\n  ${checked} symbols checked against @carbon/icons · ${wrong.length} drawing a different glyph`
-  + ` · ${unknown.length} not in the snapshot`);
+console.log(`\n  ${checked} symbols checked against their publisher · ${wrong.length} drawing a different glyph`
+  + ` · ${unknown.length} not in a snapshot`
+  + (ours ? ` · ${ours} drawn here, which nothing checks` : ''));
 if (!faults) console.log('  this says the sprite is faithful; it does NOT say each icon is in the right slot');
 console.log();
 process.exit(faults ? 1 : 0);

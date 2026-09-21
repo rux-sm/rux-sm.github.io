@@ -1,13 +1,20 @@
 //
-// EVERY CARBON SYMBOL AND ITS MATERIAL COUNTERPART, one to one.
+// THE ICON SHEET: every symbol, and how each family draws it.
 //
-// This table is what makes the two families swappable. An app draws from one
-// of them, and moving it from Carbon to Material -- or back -- is reading this
-// map rather than deciding 78 times. A page therefore never mixes them: which
-// family it uses is an app's decision, taken once.
+// THREE FAMILIES, one row per idea. Carbon's name is the row's key, because
+// Carbon is where this system started and its names are what pages reference
+// today. Material fills the second column and rux's own drawings the third,
+// which is null until one is drawn.
 //
-// ONE MATERIAL FILE PER CARBON SYMBOL, and no two share one, so the map runs
-// both ways exactly and an app can be moved back as easily as forward.
+//   carbon    i-<name>    @carbon/icons, quarried by build-icons.mjs
+//   material  m-<name>    @material-symbols/svg-400/sharp, quarried the same way
+//   rux       r-<name>    design/assets/icons-rux/<name>.svg, drawn here
+//
+// AN APP DRAWS FROM ONE FAMILY. Moving it across -- or back -- is reading this
+// sheet rather than deciding 78 times, and a page never mixes them.
+//
+// ONE FILE PER ROW PER FAMILY, and no two rows share one, so the sheet runs
+// every direction exactly.
 //
 // FILL IS PART OF THE NAME. Carbon splits several icons into an outline and a
 // filled twin -- `information` and `information--filled`, `checkmark--outline`
@@ -18,10 +25,10 @@
 // because at 12px an outline loses its strokes.
 //
 // AND NO TWO IDEAS COLLAPSE. Carbon's shape-indicator and icon-indicator sets
-// give each status its own SHAPE so colour is never the only signal, and a map
-// that put two of those on one drawing would quietly undo it. The first pass
-// collapsed nine such pairs and every one was given a distinct counterpart; the
-// comments below say which name was already taken.
+// give each status its own SHAPE so colour is never the only signal, and a
+// sheet that put two of those on one drawing would quietly undo it. The first
+// pass collapsed nine such pairs and every one was given a distinct
+// counterpart; the comments below say which name was already taken.
 //
 // ONE SETTING OF MATERIAL, AND SIZE IS THE ONLY THING THAT VARIES.
 // Material Symbols is a variable font with four axes -- fill, weight, grade and
@@ -32,7 +39,7 @@
 //
 //   style   sharp     flat terminals, which is how Carbon's geometry reads
 //   weight  400       @material-symbols/svg-400
-//   fill    the map   Carbon's own fill, which a small surface may override
+//   fill    the sheet Carbon's own fill, which a small surface may override
 //
 // and nothing else is left to pin. An icon is that one drawing at whatever size
 // it is asked for.
@@ -46,95 +53,97 @@
 // way. So no second weight for small sizes is needed, and the family is in fact
 // steadier across sizes than the Carbon set it replaces.
 //
-// EVERY COUNTERPART EXISTS AS A SOLID, checked against the same package. A trip
-// bar draws its marks at 12px, where an outline glyph loses its strokes and a
-// solid one keeps its silhouette, so the solid set is the one that surface
-// takes whatever the map says about fill.
-//
-// A pairing is a judgement about meaning, not a lookup. Where Material draws
+// A pairing is a judgement about meaning, not a lookup. Where a family draws
 // the same idea under an unobvious name, the reason is written beside it.
 //
-export const TO_MATERIAL = {
-  'accessibility': 'accessible',
-  'add': 'add',
-  'arrow--down': 'arrow_downward',
-  'arrow--right': 'arrow_forward',
-  'arrow--up': 'arrow_upward',
-  'arrows--vertical': 'swap_vert',
-  'attachment': 'attachment',
-  'building': 'apartment',
-  'bus': 'directions_bus',
-  'calculator': 'calculate',
-  'calendar': 'calendar_month',
-  'caret--down': 'arrow_drop_down',
-  'caret--left': 'arrow_left',
-  'caret--right': 'arrow_right',
-  'caret--up': 'arrow_drop_up',
-  'caution': 'warning',
-  'channels': 'swap_horiz',
-  'checkmark': 'check',
-  'checkmark--filled': 'check_circle-fill',
-  'checkmark--outline': 'check_circle',
-  'chevron--down': 'keyboard_arrow_down',
-  'chevron--left': 'keyboard_arrow_left',
-  'chevron--right': 'keyboard_arrow_right',
-  'chevron--up': 'keyboard_arrow_up',
-  'circle-dash': 'motion_photos_on',  // A broken ring, which is what not-started means here.
-  'circle-fill': 'circle-fill',
-  'circle-stroke': 'trip_origin',  // A plain ring; `radio_button_unchecked` is taken by radio-button.
-  'close': 'close',
-  'close--filled': 'cancel-fill',
-  'color-palette': 'palette',
-  'copy': 'content_copy',
-  'critical': 'dangerous',  // `error` is taken by error--filled.
-  'critical-severity': 'change_history',
-  'currency--dollar': 'attach_money',
-  'diamond-fill': 'diamond-fill',  // Material draws the diamond; `square` is low-severity's.
-  'document': 'description',
-  'download': 'download',
-  'edit': 'edit',
-  'error--filled': 'error-fill',
-  'fit-to-width': 'fit_screen',
-  'folder': 'folder',
-  'grid': 'grid_view',
-  'hotel': 'airline_seat_flat',  // Carbon's hotel is a bed, which is what a sleeper coach is.
-  'in-progress': 'progress_activity',  // `pending` is taken by pending--filled.
-  'incomplete': 'incomplete_circle',
-  'information': 'info',
-  'information--filled': 'info-fill',
-  'launch': 'open_in_new',
-  'list': 'list',
-  'location': 'location_on',
-  'low-severity': 'square',
-  'menu': 'menu',
-  'notification': 'notifications',
-  'overflow-menu--horizontal': 'more_horiz',
-  'overflow-menu--vertical': 'more_vert',
-  'pending--filled': 'pending-fill',
-  'phone': 'call',
-  'printer': 'print',
-  'purchase': 'credit_card',  // Carbon's purchase is a credit card.
-  'radio-button': 'radio_button_unchecked',
-  'search': 'search',
-  'subtract': 'remove',
-  'time': 'schedule',
-  'trash-can': 'delete',
-  'undefined--filled': 'quiz-fill',  // `help` is taken by unknown--filled.
-  'unknown--filled': 'help-fill',
-  'upload': 'upload',
-  'user': 'person',
-  'user--avatar': 'account_circle',
-  'user--multiple': 'groups',
-  'view': 'visibility',
-  'view--off': 'visibility_off',
-  'warning--alt--filled': 'warning-fill',
-  'warning--alt-inverted--filled': 'do_not_disturb_on-fill',  // The inverted triangle, kept distinct from the upright.
-  'warning--filled': 'report-fill',  // The filled octagon; `error` is taken.
-  'warning-square--filled': 'gpp_maybe-fill',  // The filled square badge; `report` is taken.
-  'zoom--in': 'zoom_in',
-  'zoom--out': 'zoom_out',
+export const FAMILIES = ['carbon', 'material', 'rux'];
+export const PREFIX = { carbon: 'i-', material: 'm-', rux: 'r-' };
+
+export const ICONS = {
+  'accessibility': { material: 'accessible', rux: null },
+  'add': { material: 'add', rux: null },
+  'arrow--down': { material: 'arrow_downward', rux: null },
+  'arrow--right': { material: 'arrow_forward', rux: null },
+  'arrow--up': { material: 'arrow_upward', rux: null },
+  'arrows--vertical': { material: 'swap_vert', rux: null },
+  'attachment': { material: 'attachment', rux: null },
+  'building': { material: 'apartment', rux: null },
+  'bus': { material: 'directions_bus', rux: null },
+  'calculator': { material: 'calculate', rux: null },
+  'calendar': { material: 'calendar_month', rux: null },
+  'caret--down': { material: 'arrow_drop_down', rux: null },
+  'caret--left': { material: 'arrow_left', rux: null },
+  'caret--right': { material: 'arrow_right', rux: null },
+  'caret--up': { material: 'arrow_drop_up', rux: null },
+  'caution': { material: 'warning', rux: null },
+  'channels': { material: 'swap_horiz', rux: null },
+  'checkmark': { material: 'check', rux: null },
+  'checkmark--filled': { material: 'check_circle-fill', rux: null },
+  'checkmark--outline': { material: 'check_circle', rux: null },
+  'chevron--down': { material: 'keyboard_arrow_down', rux: null },
+  'chevron--left': { material: 'keyboard_arrow_left', rux: null },
+  'chevron--right': { material: 'keyboard_arrow_right', rux: null },
+  'chevron--up': { material: 'keyboard_arrow_up', rux: null },
+  'circle-dash': { material: 'motion_photos_on', rux: null },  // A broken ring, which is what not-started means here.
+  'circle-fill': { material: 'circle-fill', rux: null },
+  'circle-stroke': { material: 'trip_origin', rux: null },  // A plain ring; `radio_button_unchecked` is taken by radio-button.
+  'close': { material: 'close', rux: null },
+  'close--filled': { material: 'cancel-fill', rux: null },
+  'color-palette': { material: 'palette', rux: null },
+  'copy': { material: 'content_copy', rux: null },
+  'critical': { material: 'dangerous', rux: null },  // `error` is taken by error--filled.
+  'critical-severity': { material: 'change_history', rux: null },
+  'currency--dollar': { material: 'attach_money', rux: null },
+  'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
+  'document': { material: 'description', rux: null },
+  'download': { material: 'download', rux: null },
+  'edit': { material: 'edit', rux: null },
+  'error--filled': { material: 'error-fill', rux: null },
+  'fit-to-width': { material: 'fit_screen', rux: null },
+  'folder': { material: 'folder', rux: null },
+  'grid': { material: 'grid_view', rux: null },
+  'hotel': { material: 'airline_seat_flat', rux: null },  // Carbon's hotel is a bed, which is what a sleeper coach is.
+  'in-progress': { material: 'progress_activity', rux: null },  // `pending` is taken by pending--filled.
+  'incomplete': { material: 'incomplete_circle', rux: null },
+  'information': { material: 'info', rux: null },
+  'information--filled': { material: 'info-fill', rux: null },
+  'launch': { material: 'open_in_new', rux: null },
+  'list': { material: 'list', rux: null },
+  'location': { material: 'location_on', rux: null },
+  'low-severity': { material: 'square', rux: null },
+  'menu': { material: 'menu', rux: null },
+  'notification': { material: 'notifications', rux: null },
+  'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
+  'overflow-menu--vertical': { material: 'more_vert', rux: null },
+  'pending--filled': { material: 'pending-fill', rux: null },
+  'phone': { material: 'call', rux: null },
+  'printer': { material: 'print', rux: null },
+  'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
+  'radio-button': { material: 'radio_button_unchecked', rux: null },
+  'search': { material: 'search', rux: null },
+  'subtract': { material: 'remove', rux: null },
+  'time': { material: 'schedule', rux: null },
+  'trash-can': { material: 'delete', rux: null },
+  'undefined--filled': { material: 'quiz-fill', rux: null },  // `help` is taken by unknown--filled.
+  'unknown--filled': { material: 'help-fill', rux: null },
+  'upload': { material: 'upload', rux: null },
+  'user': { material: 'person', rux: null },
+  'user--avatar': { material: 'account_circle', rux: null },
+  'user--multiple': { material: 'groups', rux: null },
+  'view': { material: 'visibility', rux: null },
+  'view--off': { material: 'visibility_off', rux: null },
+  'warning--alt--filled': { material: 'warning-fill', rux: null },
+  'warning--alt-inverted--filled': { material: 'do_not_disturb_on-fill', rux: null },  // The inverted triangle, kept distinct from the upright.
+  'warning--filled': { material: 'report-fill', rux: null },  // The filled octagon; `error` is taken.
+  'warning-square--filled': { material: 'gpp_maybe-fill', rux: null },  // The filled square badge; `report` is taken.
+  'zoom--in': { material: 'zoom_in', rux: null },
+  'zoom--out': { material: 'zoom_out', rux: null },
 };
 
-// The other direction, for moving an app back.
-export const TO_CARBON = Object.fromEntries(
-  Object.entries(TO_MATERIAL).map(([carbon, material]) => [material, carbon]));
+// A family's name for a row, or null where it has none yet.
+export const nameIn = (family, carbon) =>
+  family === 'carbon' ? carbon : (ICONS[carbon]?.[family] ?? null);
+
+// The row a family's name belongs to, for reading the sheet the other way.
+export const rowOf = (family, name) => family === 'carbon' ? name
+  : Object.keys(ICONS).find(c => ICONS[c][family] === name) ?? null;

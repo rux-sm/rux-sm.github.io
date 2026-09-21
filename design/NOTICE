@@ -18,11 +18,17 @@ Specifically:
   css/base/ carries the same origin.
 
   assets/icons.svg is assembled by tools/build-icons.mjs from individual SVG
-    sources in @carbon/icons. The path data is IBM's; the sprite
-    wrapper and the `i-` symbol naming are not.
+    sources in two packages, and from drawings made here.
+      `i-` path data is IBM's, from @carbon/icons.
+      `m-` path data is Google's, from @material-symbols/svg-400, which is
+        Material Symbols, Copyright Google LLC, under the same Apache
+        License, Version 2.0.
+      `r-` is drawn in assets/icons-rux/ and is ours.
+    The sprite wrapper and the symbol naming are not either publisher's.
 
-  data/carbon-*.json are captures of Carbon's own rendered output, kept
-    as a markup reference. They are recorded observations of the
+  data/carbon-*.json and data/material-glyphs.json are captures of each
+    publisher's own drawings, kept as a reference for the gate that asks
+    whether the sprite is faithful. They are recorded observations of the
     upstream work.
 
 Carbon's Sass sources carry `// Copyright IBM Corp.` headers which Sass

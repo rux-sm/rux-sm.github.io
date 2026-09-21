@@ -203,16 +203,20 @@
   padding-block-end: var(--rux-spacing-05);
 }
 
+/* The day leads the envelope: it is the one thing a driver checks against the
+   stack in their hand, and on the form in use it is the largest thing on the
+   page by some way. The logo sits under it rather than beside it in size, so
+   the two do not compete. */
 .scheduler-envelope__day {
-  font-size: var(--rux-heading-04-font-size);
+  font-size: var(--rux-heading-06-font-size);
   font-weight: var(--rux-heading-04-font-weight);
-  line-height: var(--rux-heading-04-line-height);
+  line-height: var(--rux-heading-06-line-height);
   text-transform: uppercase;
   margin: 0;
 }
 
 .scheduler-envelope__logo {
-  height: 2.5rem;
+  height: 2rem;
   width: auto;
   margin-block: var(--rux-spacing-02);
 }
@@ -314,7 +318,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--rux-spacing-03);
+  /* Tight, because the longest label and its two ticks together come within a
+     few pixels of the column, and a wider gap is what pushed the second tick
+     onto a line of its own. */
+  gap: var(--rux-spacing-02);
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
@@ -356,10 +363,13 @@
   vertical-align: -1px;
 }
 
+/* Each tick is a column of the same width at the end of its line, so the boxes
+   stand under one another down the block however long the label beside them
+   is. The label lengths are what made them ragged. */
 .scheduler-envelope__choice {
   display: inline-flex;
   align-items: center;
-  margin-inline-start: var(--rux-spacing-04);
+  flex: 0 0 3rem;
 }
 
 /* Notes is the last block of the standard envelope, so it takes the room the

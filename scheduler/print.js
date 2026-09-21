@@ -288,6 +288,10 @@
     for (const line of TALLY) {
       const node = el('div', 'scheduler-envelope__tally-line');
       node.appendChild(el('span', 'scheduler-envelope__tally-label', line.label));
+      // Whatever a line answers with is pushed to the end of it, so the boxes
+      // and the dollar signs stand in columns down the block rather than
+      // following labels of every length.
+      node.appendChild(el('span', 'scheduler-envelope__tally-fill'));
       if (line.choices) {
         for (const choice of line.choices) {
           const opt = el('span', 'scheduler-envelope__choice');
@@ -295,14 +299,9 @@
           opt.appendChild(document.createTextNode(choice));
           node.appendChild(opt);
         }
-      } else {
-        node.appendChild(el('span', 'scheduler-envelope__tally-fill'));
-        /* The dollar sign sits where the writing starts, not against the
-           label, so the figures down a column line up under one another. */
-        if (line.money) {
-          node.appendChild(el('span', 'scheduler-envelope__tally-label', '$'));
-          node.appendChild(el('span', 'scheduler-envelope__tally-money'));
-        }
+      } else if (line.money) {
+        node.appendChild(el('span', 'scheduler-envelope__tally-label', '$'));
+        node.appendChild(el('span', 'scheduler-envelope__tally-money'));
       }
       grid.appendChild(node);
     }

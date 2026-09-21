@@ -141,6 +141,16 @@
   color: var(--rux-text-primary);
   padding: var(--scheduler-paper-margin, var(--rux-spacing-06));
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* A form on a named paper is as tall on screen as the sheet it is printed on,
+   so the preview shows the whole envelope and how much of it the form leaves
+   for the driver's pen. With no paper named the height is invalid and ignored,
+   which leaves the form as tall as what is on it. */
+@media screen {
+  .scheduler-form { min-block-size: var(--scheduler-paper-height); }
 }
 
 /* THE STOCK, ON SCREEN AND NOT ON PAPER. The standard envelope is printed on
@@ -175,14 +185,7 @@
      an exact fit from rounding into a blank second page; with no paper named
      the calc is invalid, which leaves the height auto and the form free to
      flow onto as many sheets as it needs. */
-  .scheduler-form {
-    height: calc(var(--scheduler-paper-height) - 1pt);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .scheduler-envelope__log { flex: 1 1 auto; }
-  .scheduler-envelope__log tbody { height: 100%; }
+  .scheduler-form { height: calc(var(--scheduler-paper-height) - 1pt); }
 
   /* The rows share the slack, but never shrink below a line a driver can
      still write a location and an odometer reading on. */
@@ -193,21 +196,23 @@
    The driver's paperwork: what dispatch knows printed, and the day-of fields
    blank for the driver's pen. */
 
+/* No rule under the letterhead: the table below it carries its own border,
+   and two lines an eighth of an inch apart are one line drawn twice. */
 .scheduler-envelope__head {
   text-align: center;
-  border-block-end: 2px solid var(--rux-border-strong-01);
-  padding-block-end: var(--rux-spacing-03);
+  padding-block-end: var(--rux-spacing-05);
 }
 
 .scheduler-envelope__day {
   font-size: var(--rux-heading-04-font-size);
   font-weight: var(--rux-heading-04-font-weight);
   line-height: var(--rux-heading-04-line-height);
+  text-transform: uppercase;
   margin: 0;
 }
 
 .scheduler-envelope__logo {
-  height: 2rem;
+  height: 2.5rem;
   width: auto;
   margin-block: var(--rux-spacing-02);
 }
@@ -221,22 +226,41 @@
   margin: 0;
 }
 
+/* Spaced capitals, which is how the form in use names its one section and
+   what keeps a short heading from reading as a field's label. */
 .scheduler-envelope__section {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
   line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   text-align: center;
-  margin: var(--rux-spacing-03) 0 0;
+  margin: var(--rux-spacing-05) 0 0;
 }
 
-/* One row of cells, each cell a label over its value or over the rule the
-   driver writes on. */
-.scheduler-envelope__row {
-  display: grid;
-  gap: var(--rux-spacing-05);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
-  padding-block: var(--rux-spacing-03);
+/* THE TABLE. Every field is a cell with a border around it, because a box is
+   what tells a driver where to write. The borders are the only division: no
+   gap between the cells and no fill in them, so the whole grid survives a
+   print driver with Background graphics off. */
+.scheduler-envelope__table {
+  border: 1px solid var(--rux-border-strong-01);
+}
+
+/* One row of cells, each cell a label over its value or over the room the
+   driver writes in. */
+.scheduler-envelope__row { display: grid; }
+
+.scheduler-envelope__row + .scheduler-envelope__row {
+  border-block-start: 1px solid var(--rux-border-strong-01);
+}
+
+.scheduler-envelope__row > * {
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  min-width: 0;
+}
+
+.scheduler-envelope__row > * + * {
+  border-inline-start: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-envelope__row[data-cells="1"] { grid-template-columns: 1fr; }
@@ -254,20 +278,24 @@
   letter-spacing: 0.02em;
 }
 
+/* Capitals, the way the form in use prints what dispatch filled in: a name and
+   an address are read at arm's length in a bus, off a page held in one hand.
+   Only these short answers; the driver's own note stays as it was typed,
+   because a sentence in capitals is slower to read, not faster. */
 .scheduler-envelope__value {
   display: block;
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  text-transform: uppercase;
   min-height: 1.25rem;
 }
 
-/* A field the driver fills in: the rule is the whole point, so it keeps its
-   height when it is empty. */
+/* A field the driver fills in. The cell's own border is the box now, so this
+   only keeps the room the pen needs. */
 .scheduler-envelope__blank {
   display: block;
-  border-block-end: 1px solid var(--rux-border-strong-01);
   height: 1.25rem;
 }
 
@@ -276,24 +304,46 @@
 .scheduler-envelope__tally {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 var(--rux-spacing-06);
-  padding-block: var(--rux-spacing-03);
+  border: 1px solid var(--rux-border-strong-01);
+  margin-block-start: var(--rux-spacing-05);
 }
 
+/* The lines fill the two columns in turn, so an odd one is the left column and
+   carries the rule between them, and the last two close the table. */
 .scheduler-envelope__tally-line {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: var(--rux-spacing-03);
-  padding-block: var(--rux-spacing-02);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
-.scheduler-envelope__tally-label { white-space: nowrap; }
+.scheduler-envelope__tally-line:nth-child(odd) {
+  border-inline-end: 1px solid var(--rux-border-strong-01);
+}
+
+.scheduler-envelope__tally-line:not(:nth-last-child(-n+2)) {
+  border-block-end: 1px solid var(--rux-border-strong-01);
+}
+
+/* Capitals here too: this is the same form and the table above it is capitals,
+   and a block that follows the rule only where it had to reads as a mistake. */
+.scheduler-envelope__tally-line { text-transform: uppercase; }
+
+/* A label wraps rather than pushing its line past the edge of the paper: the
+   30rem viewer draws the envelope narrower than the envelope is, and a column
+   that cannot give way spills out of the sheet. */
+.scheduler-envelope__tally-line { min-inline-size: 0; }
 .scheduler-envelope__tally-fill { flex: 1; }
+
+/* The room a figure is written in, kept to the right of the dollar sign so a
+   column of them lines up, and the first thing to give when the sheet is
+   drawn narrow. */
+.scheduler-envelope__tally-money { flex: 0 1 30%; }
 
 /* A box the driver ticks. Drawn as a border, never a fill, so it survives
    Background graphics being off. */
@@ -312,7 +362,14 @@
   margin-inline-start: var(--rux-spacing-04);
 }
 
+/* Notes is the last block of the standard envelope, so it takes the room the
+   rest of the form leaves: that space is where the note is written. Multi-stop
+   gives its slack to the log instead, which sits above Notes there. */
 .scheduler-envelope__notes { padding-block-start: var(--rux-spacing-03); }
+
+.scheduler-form[data-layout="standard"] .scheduler-envelope__notes {
+  flex: 1 1 auto;
+}
 
 .scheduler-envelope__needs {
   display: flex;
@@ -359,7 +416,10 @@
 }
 
 /* The multi-stop layout's log, in place of the single destination. */
+/* The log takes the room the rest of the multi-stop envelope leaves, on screen
+   as on paper, so the preview shows the rows at the height they print at. */
 .scheduler-envelope__log {
+  flex: 1 1 auto;
   width: 100%;
   border-collapse: collapse;
   font-size: var(--rux-body-compact-01-font-size);
@@ -371,8 +431,8 @@
 
 .scheduler-envelope__log th,
 .scheduler-envelope__log td {
-  border: 1px solid var(--rux-border-subtle-01);
-  padding: var(--rux-spacing-03) var(--rux-spacing-03);
+  border: 1px solid var(--rux-border-strong-01);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
   text-align: start;
 }
 
@@ -385,6 +445,7 @@
   text-transform: uppercase;
 }
 
+.scheduler-envelope__log tbody { height: 100%; }
 .scheduler-envelope__log td { height: 1.5rem; }
 
 /* Every copy after the first starts a new sheet: Print all is one press and

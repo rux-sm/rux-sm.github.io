@@ -171,6 +171,24 @@
   const pickupOf = (trip, leg) => (trip.trip_stops || [])
     .find(s => (s.leg || 'outbound') === leg && s.type === 'pickup') || null;
 
+  /* AN ADDRESS AS AN ENVELOPE CAN CARRY IT. A stop's address is what a map
+     service returned, and on a 6 by 9 envelope that line wraps onto two: the
+     country is understood and the state beside a ZIP is a postal code. Only
+     what is printed changes; the stored address is untouched. */
+  const STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
+    .split(',').map(pair => pair.split(':')));
+
+  const COUNTRY = /^(united states( of america)?|usa|u\.s\.a\.|us)$/i;
+
+  function shortAddress(text) {
+    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
+    if (COUNTRY.test(parts.at(-1) || '')) parts.pop();
+    const tail = parts.at(-1);
+    const named = tail && tail.match(/^(.+?)\s+(\d{5}(?:-\d{4})?)$/);
+    if (named && STATES[named[1]]) parts[parts.length - 1] = `${STATES[named[1]]} ${named[2]}`;
+    return parts.join(', ');
+  }
+
   const cell = (label, value, blank) => {
     const node = el('div');
     node.appendChild(el('span', 'scheduler-envelope__label', label));
@@ -206,8 +224,8 @@
   /* The company's own line. It is here rather than read from Settings because
      there is no Settings page yet to hold the yard. */
   const COMPANY = {
-    address: '2801 Zinnia Avenue, McAllen, Texas 78504',
-    phones: '(956) 994-1169 · Fax 994-9491 · Cell 648-9691',
+    address: '2801 Zinnia Avenue, McAllen, TX 78504',
+    phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
   };
 
   /* Bus, then the seat this copy is for beside the trip's own driver. A
@@ -246,7 +264,7 @@
         : cell('Spot time:', clock(stop?.spot || trip.spot_time || trip.departure_time)),
     ));
 
-    frag.appendChild(row(cell('Pick up address:', stop?.address || '')));
+    frag.appendChild(row(cell('Pick up address:', shortAddress(stop?.address))));
     return frag;
   }
 
@@ -278,8 +296,13 @@
           node.appendChild(opt);
         }
       } else {
-        if (line.money) node.appendChild(el('span', 'scheduler-envelope__tally-label', '$'));
         node.appendChild(el('span', 'scheduler-envelope__tally-fill'));
+        /* The dollar sign sits where the writing starts, not against the
+           label, so the figures down a column line up under one another. */
+        if (line.money) {
+          node.appendChild(el('span', 'scheduler-envelope__tally-label', '$'));
+          node.appendChild(el('span', 'scheduler-envelope__tally-money'));
+        }
       }
       grid.appendChild(node);
     }
@@ -288,7 +311,7 @@
 
   function envelopeNotes(trip, seat) {
     const notes = el('div', 'scheduler-envelope__notes');
-    notes.appendChild(el('span', 'scheduler-envelope__label', 'Notes'));
+    notes.appendChild(el('span', 'scheduler-envelope__label', 'Notes:'));
     const needs = needsOf(trip);
     const instruction = String(seat?.instructions || '').trim();
     if (!needs.length && !instruction) return notes;
@@ -340,30 +363,37 @@
     const card = el('article', 'scheduler-form scheduler-envelope');
     card.dataset.layout = layout === 'multi-stop' ? 'multi-stop' : 'standard';
     card.appendChild(envelopeHead(trip, leg));
-    card.appendChild(envelopeSchedule(trip, assignment, leg, seat));
+
+    /* THE FIELDS ARE ONE BORDERED TABLE, as the form in use is drawn. A box
+       tells a driver where to write; a rule under a whole row does not, and an
+       empty field between two rules reads as nothing rather than as a space
+       for an answer. */
+    const contact = contactOf(trip);
+    const table = el('div', 'scheduler-envelope__table');
+    table.appendChild(envelopeSchedule(trip, assignment, leg, seat));
 
     if (card.dataset.layout === 'multi-stop') {
-      const contact = contactOf(trip);
-      card.appendChild(row(
+      table.appendChild(row(
         cell('Contact:', contact.name),
         cell('Phone:', contact.phone),
       ));
+      card.appendChild(table);
       card.appendChild(envelopeLog());
       card.appendChild(envelopeNotes(trip, seat));
       card.appendChild(envelopeTally());
       return card;
     }
 
-    card.appendChild(row(cell('Destination:', trip.destination || '')));
-    const contact = contactOf(trip);
-    card.appendChild(row(
+    table.appendChild(row(cell('Destination:', trip.destination || '')));
+    table.appendChild(row(
       cell('Contact:', contact.name),
       cell('Phone:', contact.phone),
     ));
-    card.appendChild(row(
+    table.appendChild(row(
       cell('Starting odometer:', '', true),
       cell('Ending odometer:', '', true),
     ));
+    card.appendChild(table);
     card.appendChild(envelopeTally());
     card.appendChild(envelopeNotes(trip, seat));
     return card;

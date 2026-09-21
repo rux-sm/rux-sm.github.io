@@ -117,30 +117,39 @@ size it needs, and every requirement wearing the icon the office picked.
   3 to 1 a 12px glyph needs. That is a colour problem, not an icon problem, and
   no change of family touches it.
 
+### What the office can pick is a closed list
+
+- **Thirty names, and no more.** rux-ui's requirements editor offers a fixed
+  `ICON_OPTIONS` of 30 Material names and nothing else writes that field, so
+  the set a requirement's icon can hold is known at build time. Design ships
+  those 30 alongside the scheduler's own, and the letter fallback is left for
+  a row saved before the list existed.
+- **This is what makes subsetting safe.** A page's symbols are found by
+  reading the literal `#i-` and `#m-` names out of its HTML and the scripts it
+  loads -- every one of the 90 in this repo is a literal, none is composed --
+  but a requirement's icon comes from the database and would be composed.
+  Naming the 30 in the scheduler's own source keeps every symbol a page needs
+  findable, and `check-icons` fails a page that references one its block does
+  not carry.
+
 ## Questions
 
-- **Is per-page subsetting part of this, or its own change?** It is the
-  difference between a second family costing its callers and costing every
-  page on the site, and it pays for itself today. But it touches how every
-  page is built, which is a wider blast radius than the icons themselves, and
-  the two could ship in either order.
-- **Do the scheduler's printed forms follow?** `print.html` draws a chevron
-  from the sprite and its forms are ink on paper, where a solid glyph is a
-  heavier mark than an outline. It is the one scheduler surface where the
-  reason for solid does not apply.
-- **What happens to the 15 Carbon symbols nothing else names?** Dropping them
-  keeps the sprite honest, and `check-icons --unused` already lists such
-  symbols. Keeping them costs a few hundred bytes each and leaves a way back
-  if the move is regretted.
+- **Does the scheduler's Settings page, when it is built, keep the same 30?**
+  The list is rux-ui's today. A Settings page here could offer more of
+  Material, which would unbound what a requirement's icon can be and take
+  subsetting's safety with it. Whatever it offers has to stay a list Design
+  ships.
 
 ## Tasks
 
-- [ ] rux answers the questions above and says go.
+- [ ] Subset each page's sprite block to the symbols it names, as its own
+      change and first, so the second family never costs a page that has no
+      use for it.
 - [ ] Teach `build-icons.mjs` a second source: a Material list beside the
       Carbon one, each entry with its reason, quarried from
       `@material-symbols/svg-400/sharp` and written as `m-<name>`.
-- [ ] Write each page's sprite block from the symbols that page names, not the
-      whole sprite, if the first question says so.
+- [ ] Fail a page whose block is missing a symbol it references, so a subset
+      can never quietly drop one.
 - [ ] Split the glyph snapshot in two and teach `check-glyphs` to pick by
       prefix; regenerate both.
 - [ ] Add Google's entry to `NOTICE`, beside IBM's.

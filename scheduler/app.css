@@ -574,6 +574,10 @@ button.scheduler-row-head__num::after {
    its own text rather than push the row wide. */
 .scheduler-bar__notes > .scheduler-bar__warn { flex: none; }
 .scheduler-bar__notes > .scheduler-bar__note { flex: 0 1 auto; min-inline-size: 0; }
+/* And the note follows the marks rather than being thrown to the far end:
+   the row spaces its parts apart, which is what carried the marks to the end
+   while the note led it. */
+.scheduler-bar__notes { justify-content: flex-start; }
 /* On the destination row they travel to the end instead, with the reference,
    because the destination is the row's own subject and wants the near side. */
 .scheduler-bar__warn--dest { display: none; margin-inline-start: auto; }
@@ -596,32 +600,31 @@ button.scheduler-row-head__num::after {
    rather than at the far side of the row. */
 .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
 .scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__warn { margin-inline-start: 0; }
-/* Every mark on a bar is drawn the same way: a fill in its own colour and
-   nothing around it. A mark whose colour is the bar's own colour loses its
-   edges and reads as a loose glyph, which rux chose over an outline on every
-   mark. */
+/* EVERY MARK IS THE GLYPH ALONE, carrying its state in its own colour: the
+   warning colour while something is still to be done, and the bar's own text
+   colour once nothing is. A filled square each was too heavy a block beside a
+   note, and rux chose the bare glyph over an outline.
+
+   It keeps a row-high box, though nothing is drawn on it, so the glyphs sit
+   evenly apart and `fitMarks` still counts what fits from one measurement.
+
+   THE AMBER BAR LOSES ITS PENDING MARKS, which rux accepted: the warning
+   colour is that bar's own fill, so a glyph in it cannot be seen. On the other
+   eight hues it clears 4.5 to 1. */
 .scheduler-bar__warn-chip {
   display: flex;
   align-items: center;
   justify-content: center;
   inline-size: var(--scheduler-row-h);
   block-size: var(--scheduler-row-h);
-  border-radius: var(--scheduler-mark-radius, 0);
-  background: var(--rux-support-warning);
-  color: var(--scheduler-on-warning);
+  color: var(--rux-support-warning);
 }
 .scheduler-bar__warn-chip svg { display: block; }
-/* The payment mark carries its rung in its fill, in the same support colours
-   the crew marks use: red while nothing stands against the quote, the warning
-   colour while what does is the wrong amount, green once the money is in. */
-.scheduler-bar__warn-chip--error {
-  background: var(--rux-support-error);
-  color: var(--rux-text-inverse);
-}
-.scheduler-bar__warn-chip--success {
-  background: var(--rux-support-success);
-  color: var(--rux-text-inverse);
-}
+/* The payment mark carries its rung in its colour, as the crew marks do: red
+   while nothing stands against the quote, the warning colour while what does
+   is the wrong amount, green once the money is in. */
+.scheduler-bar__warn-chip--error { color: var(--rux-support-error); }
+.scheduler-bar__warn-chip--success { color: var(--rux-support-success); }
 /* The count standing in for the marks a narrow bar has no room for, in the
    place of the last that fits. It is a chip like the others and the same
    square, so `fitMarks` can count what fits from one measurement. `hidden`
@@ -646,17 +649,11 @@ button.scheduler-row-head__num::after {
   letter-spacing: 0;
 }
 
-/* A mark this bus already answers for takes the blank fill and its dark ink,
-   the pair the crew's not-sent disc already uses: the trip has a sleeper, or a
-   hotel, and nothing is left to do about it. A square either way, so a
-   requirement reads as one thing whether it is met or not, and the colour is
-   the only thing that changes -- against the amber of a warning and the bar's
-   own colour behind both. */
-.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done {
-  background: var(--scheduler-mark-blank);
-  color: var(--scheduler-on-warning);
-  box-shadow: none;
-}
+/* A mark this bus already answers for takes the bar's own text colour: the
+   trip has a sleeper, or a hotel, and nothing is left to do about it. The
+   glyph is the same either way and only its colour changes, so a requirement
+   reads as one thing whether it is met or not. */
+.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done { color: inherit; }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time. */

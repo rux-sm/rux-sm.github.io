@@ -178,11 +178,23 @@
      rux-ui needs over the board is one rule here. */
   .scheduler-print__bar { display: none; }
   .scheduler-print__sheet { padding: 0; }
+
+  /* The room this page keeps to clear the header goes with the header. Half an
+     inch above a form that is already the whole sheet is the difference
+     between one envelope and two, and the printer had been taking the second.
+     The screen's full-window height goes too: a sheet is as tall as a sheet.
+     It names the standalone selector because that is the rule it is undoing,
+     and a rule of lower weight loses to it however late it is written. */
+  .scheduler-print,
+  [data-rux-standalone] .scheduler-print {
+    min-height: 0;
+    padding: 0;
+  }
+
   .scheduler-print,
   .scheduler-print__sheet,
   .scheduler-form { background: #fff; }
   .scheduler-form {
-    max-width: none;
     margin: 0;
     padding: var(--scheduler-paper-margin, 0.4in);
   }

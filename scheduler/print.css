@@ -30,6 +30,11 @@
 
 @media print { .scheduler-print__shell { display: none; } }
 
+/* [hidden] is a UA rule of the lowest weight, so the display below outranks it
+   and an empty bar would draw a band and a rule over the paper -- which is
+   what it did in the panel, where the toolbar is the panel's own. */
+.scheduler-print__bar[hidden] { display: none; }
+
 /* The toolbar above the paper: the form's own controls, which travel with it
    into a new tab where the viewer's toolbar cannot follow. Screen only. */
 .scheduler-print__bar {

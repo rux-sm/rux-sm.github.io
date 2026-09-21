@@ -491,6 +491,31 @@
    taller than the sheet it is showing. */
 .scheduler-envelope__log td { height: 0.19in; }
 
+/* ── A BLANK ONE ──────────────────────────────────────────────────────────
+   Fields on a blank form can be typed into before it is printed. The dotted
+   rule says which, and it is a screen rule: on paper there is only what was
+   typed, on a form as empty as one from the drawer. */
+@media screen {
+  [data-typed] { border-block-end: 1px dotted var(--rux-border-strong-01); }
+
+  /* The requirements box already has a border all the way round, so it says
+     it is writable by taking the focus ring like the rest and nothing more. */
+  .scheduler-envelope__reqs[data-typed] { border: 1px solid var(--rux-border-strong-01); }
+
+  [data-typed]:focus {
+    outline: 2px solid var(--rux-focus);
+    outline-offset: 1px;
+  }
+
+  /* Every other field has its label printed above it. The day has none, so
+     while it is empty it says what it is; the word is gone the moment one is
+     typed, and it was never on the paper. */
+  .scheduler-envelope__day[data-typed]:empty::before {
+    content: 'Day';
+    color: var(--rux-text-placeholder);
+  }
+}
+
 /* Every copy after the first starts a new sheet: Print all is one press and
    one stack of paper, one envelope per driver. */
 .scheduler-form + .scheduler-form { margin-block-start: var(--rux-spacing-06); }

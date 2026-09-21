@@ -430,6 +430,10 @@
       name: 'Driver envelope',
       blurb: 'What dispatch knows, printed; the day-of fields blank for the driver.',
       binds: 'assignment+seat',
+      /* It can also be opened on nothing: a blank envelope to fill in by hand
+         or type into, which is what the Forms page is for when no trip sent
+         you there. */
+      blank: true,
       marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat' },
       /* The one form here that names its paper, because it is printed on a
          particular stock rather than on whatever is in the tray. A form that
@@ -618,8 +622,35 @@
 
   const draw = () => {
     if (!current) return;
-    sheet.replaceChildren(current.form.render(current.copies[current.chosen], current.layout));
+    const card = current.form.render(current.copies[current.chosen], current.layout);
+    if (current.typed) letThemType(card);
+    sheet.replaceChildren(card);
   };
+
+  /* WHAT CAN BE TYPED INTO ON A BLANK FORM. Only what dispatch would have
+     filled in: the day, the answers in the table, and the requirements box.
+     The day-of block is left alone, because it is blank on every envelope and
+     the driver's pen fills it after the trip.
+
+     What is typed is on the page and nowhere else. It prints, and it is gone
+     when the page is closed or the layout is switched, which is what a spare
+     form in a drawer does too. */
+  function letThemType(card) {
+    const fields = [
+      ...card.querySelectorAll('.scheduler-envelope__value'),
+      ...card.querySelectorAll('.scheduler-envelope__blank'),
+      ...card.querySelectorAll('.scheduler-envelope__day'),
+      ...card.querySelectorAll('.scheduler-envelope__reqs'),
+    ];
+    for (const field of fields) {
+      // Chrome takes plaintext-only, which keeps pasted markup out of a form
+      // that is about to be printed; everything else falls back to true.
+      field.contentEditable = 'plaintext-only';
+      if (field.contentEditable !== 'plaintext-only') field.contentEditable = 'true';
+      field.spellcheck = false;
+      field.dataset.typed = '';
+    }
+  }
 
   // Print all lays every envelope on the trip on the sheet, prints, and puts
   // the one copy back once the dialog closes. print.css starts each on a new
@@ -864,11 +895,17 @@
 
       const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
 
+      const blankLink = () =>
+        tileLink(`print.html?form=${form.id}&blank=1`, 'Open a blank one');
+
       if (form.binds === null) {
         tile.appendChild(tileLink(`print.html?form=${form.id}`, 'Open a blank one'));
       } else if (!trip) {
-        // The tile says what it still wants rather than opening on nothing.
-        tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
+        /* No trip sent us here. A form that can be opened on nothing offers
+           that; one that cannot says what it still wants rather than opening
+           on nothing. */
+        if (form.blank) tile.appendChild(blankLink());
+        else tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
       } else if (found.why) {
         tile.appendChild(el('p', 'scheduler-print__tile-need', found.why));
       } else if (!found.buses.length) {
@@ -876,6 +913,7 @@
       } else {
         const links = el('div', 'scheduler-print__tile-links');
         for (const a of found.buses) links.appendChild(tileLink(query(a.id), busLabel(a)));
+        if (form.blank) links.appendChild(blankLink());
         tile.appendChild(links);
       }
       list.appendChild(tile);
@@ -909,6 +947,28 @@
     fitPaper();
     bar.hidden = Boolean(host);
     hub.hidden = true;
+
+    /* A BLANK ONE, asked for in the address. Every field is empty and every
+       one of them can be typed into before it is printed; nothing is saved and
+       nothing is read, so this needs no trip and no connection. It is the
+       spare form in the drawer, and the reason the Forms page is worth a way
+       in of its own. */
+    if (params.get('blank') && form.blank) {
+      const subject = { trip: {}, assignment: {}, leg: 'outbound', seat: null };
+      current = {
+        form,
+        subject,
+        copies: [subject],
+        chosen: 0,
+        every: [subject],
+        typed: true,
+        layout: form.layouts?.some(l => l.id === params.get('layout'))
+          ? params.get('layout') : form.layouts?.[0]?.id,
+      };
+      buildControls();
+      draw();
+      return;
+    }
 
     const assignmentId = params.get('assignment');
     if (!assignmentId) {

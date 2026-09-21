@@ -6551,7 +6551,6 @@
   const viewerStatus = document.getElementById('scheduler-viewer-status');
   const viewerPrint = document.getElementById('scheduler-viewer-print');
   const viewerToolbar = document.getElementById('scheduler-viewer-toolbar');
-  const viewerKind = document.getElementById('scheduler-viewer-kind');
   const viewerCopies = document.getElementById('scheduler-viewer-copies');
   const viewerMore = document.getElementById('scheduler-viewer-more');
   const viewerMenu = document.getElementById('scheduler-viewer-menu');
@@ -6770,13 +6769,12 @@
     viewerUploaded.toggleAttribute('data-bad', Boolean(text) && Boolean(bad));
   }
 
-  /* THE HEAD: what kind of document, then which one. A document that is one of
+  /* THE HEAD: which document is on screen, in one line. One that is one of
      several makes its title the button that lists them, as the board's week
      label opens its date picker; one that stands alone stays text, because a
      menu of one thing is a menu that wastes a press. */
   let viewerPick = [];
-  function setViewerHead(kind, title, picks = []) {
-    if (viewerKind) viewerKind.textContent = kind || '';
+  function setViewerHead(title, picks = []) {
     viewerPick = picks;
     const chosen = picks.find(p => p.checked);
     const name = chosen ? chosen.label : title;
@@ -6862,7 +6860,7 @@
     // The controls belong to the frame being replaced, so they go with it and
     // the page hands its own up once it has drawn.
     setFormControls([], []);
-    setViewerHead(kind, kind);
+    setViewerHead(kind);
     viewerNote = note || '';
     setFormNote('');
     viewerPrint.disabled = false;
@@ -6895,7 +6893,7 @@
        naming the destination here said it twice, and a file that is only
        itself has nothing to list. */
     const kind = docTypeName(doc);
-    setViewerHead('Document', kind);
+    setViewerHead(kind);
     const when = uploadedOn(doc.created_at);
     viewerUploaded.textContent = when ? `Uploaded ${when}` : '';
     viewerNewTab.href = url;

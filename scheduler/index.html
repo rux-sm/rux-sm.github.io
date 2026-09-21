@@ -532,15 +532,15 @@
                in app.css draws it left of the driver availability pane. -->
           <div class="scheduler-viewer" id="scheduler-viewer" hidden>
     <aside class="rux--side-panel rux--side-panel--md rux--side-panel--left-placement" id="scheduler-viewer-panel" aria-label="Document">
-      <!-- THE HEAD SAYS WHAT KIND, THEN WHICH ONE. Carbon's label line carries
-           the kind -- a driver envelope, an itinerary -- and the title carries
-           the one on screen. Where a document is one of several, the title is
-           the button that lists them (#scheduler-viewer-copies), the way the
-           board's week label opens its date picker; where it is the only one,
-           data.js leaves it as text. -->
+      <!-- THE HEAD SAYS WHICH DOCUMENT, in one line. Where it is one of
+           several the title is the button that lists the others
+           (#scheduler-viewer-copies), the way the board's week label opens its
+           date picker; where it is the only one, data.js leaves it as text.
+           The kind is not said here: a stored file's title already is its
+           type, and a form's was chosen by name a moment ago. A second line
+           for it made three rows of a panel that holds a sheet of paper. -->
       <div class="rux--side-panel__header rux--side-panel__header--has-title">
-        <p class="rux--side-panel__label-text" id="scheduler-viewer-kind">Document</p>
-        <div class="rux--side-panel__title">
+        <div class="rux--side-panel__title rux--side-panel__title--no-label">
           <h2 class="rux--side-panel__title-text" id="scheduler-viewer-title">Document</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>
         </div>

@@ -777,8 +777,7 @@
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
-        form.name,
-        chosen?.seat ? form.copyName(chosen) : 'Blank',
+        chosen?.seat ? form.copyName(chosen) : `${form.name} — blank`,
         every.length > 1 ? every.map((copy, i) => ({
           label: form.copyName(copy),
           checked: i === current.chosen,
@@ -916,7 +915,7 @@
   async function showHub() {
     setPaper(null);
     fitPaper();
-    host?.setViewerHead('Forms', 'Every form');
+    host?.setViewerHead('Forms');
     const trip = params.get('trip');
     title.textContent = 'Forms';
     bar.hidden = Boolean(host);
@@ -926,7 +925,7 @@
     const found = trip ? await tripBuses(trip) : null;
     if (found?.destination) {
       title.textContent = `Forms — ${found.destination}`;
-      host?.setViewerHead('Forms', found.destination);
+      host?.setViewerHead(`Forms — ${found.destination}`);
     }
 
     const list = document.createDocumentFragment();

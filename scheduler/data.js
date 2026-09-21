@@ -6666,6 +6666,22 @@
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
     if (!form) setFormControls([], []);
+
+    /* A FORM OPENS IN THIS TAB, a stored file in another. The forms page is a
+       page of this app, with the nav to come back by, so sending it to a tab
+       of its own leaves two of the same app open. A stored file is not a page
+       of anything: it is a file for a viewer, and one in place of the board
+       would take the week away to show a PDF. */
+    const label = form ? 'Open as a page' : 'Open in new tab';
+    viewerNewTab.setAttribute('aria-label', label);
+    viewerNewTab.title = label;
+    if (form) {
+      viewerNewTab.removeAttribute('target');
+      viewerNewTab.removeAttribute('rel');
+    } else {
+      viewerNewTab.setAttribute('target', '_blank');
+      viewerNewTab.setAttribute('rel', 'noopener');
+    }
   }
 
   /* WHAT A GENERATED FORM PUTS IN THIS TOOLBAR. print.html builds its own

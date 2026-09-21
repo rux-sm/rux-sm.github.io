@@ -45,7 +45,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  /* No inset above or below: the controls are the height of the bar and fill
+     it, as the document panel's toolbar does and as the board's own does. */
+  padding-inline: var(--rux-spacing-05);
   background: var(--rux-layer-01);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }

@@ -933,6 +933,160 @@
       "close": "      <!-- BLOCK:END form -->\n"
     },
     {
+      "id": "templates/list-page/title",
+      "source": "templates/list-page.html",
+      "name": "title",
+      "label": "Page title and actions",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 685,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; content switcher from sink/content-switcher.html; inline notification from sink/notification.html, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=title label=\"Page title and actions\" -->\n",
+      "html": "      <!-- REPLACE: the page's name and the actions that act on the whole page.\n\n           THE PARTS STACK; THEY DO NOT SIT IN A ROW. templates/detail-page.html\n           carried tpl-detail-head, -title and -actions in its first draft with no\n           CSS behind any of them and the buttons piled on top of the title, and\n           no gate saw it — check-classes validates `rux--*` and ignores every\n           other class. Carbon's own `page-header`, which is the component that\n           would put a title and its actions on one line, is CUT from this build;\n           docs/inventory.md carries the reason. So this template stacks, which\n           needs no rule of its own.\n\n           AN APP MAY PUT THEM SIDE BY SIDE, and that is the app's own component\n           under the app's own prefix with real CSS behind it, as AGENTS.md\n           requires — scheduler/app.css does it as `scheduler-quote-title`, a flex\n           row with `justify-content: space-between`. Do not put that class here;\n           a template must run on its own.\n\n           WHICH ACTIONS BELONG HERE. The ones that act on the PAGE — Save, Edit\n           rates, Export. An action on the table's contents — the search, New —\n           belongs in the toolbar inside the table block instead, where the thing\n           it acts on is. A page with no page-level action keeps the h1 and drops\n           the button set; keep the block so adding one later fills a slot rather\n           than restructuring the page.\n\n           `btn-set` IS FOR A SET and caps its children at 196px so a row of them\n           stays even. A SINGLE button goes in a plain container and sizes itself\n           — copy the set for one and the label wraps, which is what happened to\n           \"Add a deployment\" in templates/empty-state.html. -->\n      <h1 id=\"list-page-heading\">Documents</h1>\n      <div class=\"rux--btn-set\">\n        <button type=\"button\" class=\"rux--btn rux--btn--secondary\">Export</button>\n        <button type=\"button\" class=\"rux--btn rux--btn--primary\">New document</button>\n      </div>\n",
+      "close": "      <!-- BLOCK:END title -->\n"
+    },
+    {
+      "id": "templates/list-page/notice",
+      "source": "templates/list-page.html",
+      "name": "notice",
+      "label": "Page notice",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "title",
+      "deps": [],
+      "frameDeps": [],
+      "line": 721,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; content switcher from sink/content-switcher.html; inline notification from sink/notification.html, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=notice label=\"Page notice\" follows=title -->\n",
+      "html": "      <!-- REPLACE, or delete the block. ONE notice slot for the whole page, and\n           it lives here — under the title, inside the column, above everything\n           else — so a page that gains a notice does not move its other parts.\n           scheduler/drivers.html puts its notice in a second `css-grid` outside\n           the column, which is the thing this position exists to stop.\n\n           `hidden` ON A PLAIN WRAPPER, NOT ON THE NOTIFICATION. Carbon's own\n           `display` rule beats the browser's `[hidden]`, so a notification\n           carrying the attribute is still drawn. An app that shows and hides\n           this at runtime wraps it in a bare div and hides that. -->\n      <div class=\"rux--inline-notification rux--inline-notification--info\" role=\"status\">\n        <div class=\"rux--inline-notification__details\">\n          <svg class=\"rux--inline-notification__icon\" width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-information--filled\"/></svg>\n          <div class=\"rux--inline-notification__text-wrapper\">\n            <div class=\"rux--inline-notification__subtitle\">Two documents are waiting for review.</div>\n          </div>\n        </div>\n      </div>\n",
+      "close": "      <!-- BLOCK:END notice -->\n"
+    },
+    {
+      "id": "templates/list-page/filter",
+      "source": "templates/list-page.html",
+      "name": "filter",
+      "label": "Content switcher filter",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "notice",
+      "deps": [],
+      "frameDeps": [],
+      "line": 742,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; content switcher from sink/content-switcher.html; inline notification from sink/notification.html, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=filter label=\"Content switcher filter\" follows=notice -->\n",
+      "html": "      <!-- REPLACE, or delete the block. The switcher parts the list into the\n           views people actually ask for, with a count on each, and it sits OUTSIDE\n           the table container: it changes which rows the table holds, so it is not\n           one of the table's own toolbar actions.\n\n           IT IS A TABLIST AND THE ROVING TABINDEX IS NOT DECORATION. The selected\n           button is `tabindex=\"0\"` and the rest are `-1`, so the group is one tab\n           stop and the arrow keys move inside it. Ship the selected state on the\n           view the page opens in, and put the rows in that view. -->\n      <div class=\"rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg\" role=\"tablist\" aria-label=\"Which documents\">\n        <button type=\"button\" class=\"rux--content-switcher-btn rux--content-switcher--selected\" role=\"tab\" aria-selected=\"true\" tabindex=\"0\">\n          <span class=\"rux--content-switcher__label\">Open 3</span>\n        </button>\n        <button type=\"button\" class=\"rux--content-switcher-btn\" role=\"tab\" aria-selected=\"false\" tabindex=\"-1\">\n          <span class=\"rux--content-switcher__label\">Archived 12</span>\n        </button>\n        <button type=\"button\" class=\"rux--content-switcher-btn\" role=\"tab\" aria-selected=\"false\" tabindex=\"-1\">\n          <span class=\"rux--content-switcher__label\">All 15</span>\n        </button>\n      </div>\n",
+      "close": "      <!-- BLOCK:END filter -->\n"
+    },
+    {
+      "id": "templates/list-page/table",
+      "source": "templates/list-page.html",
+      "name": "table",
+      "label": "Data table, a row opens the record",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "filter",
+      "deps": [
+        "title"
+      ],
+      "frameDeps": [],
+      "line": 765,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; content switcher from sink/content-switcher.html; inline notification from sink/notification.html, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=table label=\"Data table, a row opens the record\" follows=filter -->\n",
+      "html": "      <!-- REPLACE: the table. A row opens the record page, which is what parts\n           this from templates/table-page.html.\n\n           NO CHECKBOX COLUMN AND NO BATCH BAR, deliberately. A row that opens a\n           record and a row that selects one are two different rows, and a page\n           cannot be both without teaching people that a click sometimes navigates\n           and sometimes ticks. Take table-page.html when the job is acting on\n           several rows at once; take this one when the job is opening one.\n\n           NO `data-table-header` EITHER, and this is why the container is labelled\n           by the page's own h1. table-page.html carries both an h1 and the\n           container's h2 because its table is one thing ON a page; here the table\n           IS the page, and two headings would announce \"Documents heading level 1,\n           Documents heading level 2\" and say nothing about the nesting. The\n           container keeps an accessible name by pointing at the h1 — a reference\n           that resolves in another block, which check-blocks records as a\n           dependency the builder honours.\n\n           THE CONTAINER MUST BE ABLE TO SHRINK. `.rux--css-grid-column` gets\n           `min-inline-size: 0` in the <head>: a grid item will not go below its\n           content's width, so without it a wide table widens the PAGE instead of\n           scrolling inside `data-table-content`, which carries `overflow-x: auto`.\n           The centring is what makes this load-bearing — at full width there is\n           usually nothing to overflow.\n\n           SORT IS `aria-sort` PLUS THE CLASS THE MODULE DERIVES FROM IT. Ship the\n           column you actually sorted by with aria-sort and put the rows in that\n           order: js/data-table.js syncs the classes without reordering, because it\n           presumes the markup is in the order it claims. Both arrows stay in the\n           DOM at all times and CSS reveals one. -->\n      <section class=\"rux--data-table-container\" aria-labelledby=\"list-page-heading\">\n        <section class=\"rux--table-toolbar\" role=\"group\" aria-label=\"Table actions\">\n          <div class=\"rux--toolbar-content\">\n            <div class=\"rux--search rux--layout--size-lg rux--toolbar-search-container-persistent\" role=\"search\">\n              <div class=\"rux--search-magnifier\"><svg class=\"rux--search-magnifier-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-search\"/></svg></div>\n              <label class=\"rux--label\" for=\"list-search\">Search documents</label>\n              <input id=\"list-search\" class=\"rux--search-input\" type=\"text\" role=\"searchbox\" placeholder=\"Search documents\" autocomplete=\"off\">\n              <button type=\"button\" class=\"rux--search-close rux--search-close--hidden\" aria-label=\"Clear\">\n                <svg width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-close\"/></svg>\n              </button>\n            </div>\n          </div>\n        </section>\n\n        <div class=\"rux--data-table-content\">\n          <table class=\"rux--data-table rux--data-table--lg rux--data-table--sort\">\n            <thead>\n              <tr>\n                <th scope=\"col\" class=\"rux--table-sort__header\" aria-sort=\"ascending\">\n                  <div class=\"rux--table-sort__description rux--visually-hidden\">Sort by Name</div>\n                  <button type=\"button\" class=\"rux--table-sort rux--table-sort--active\">\n                    <span class=\"rux--table-sort__flex\">\n                      <div class=\"rux--table-header-label\">Name</div>\n                      <svg class=\"rux--table-sort__icon\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-arrow--up\"/></svg>\n                      <svg class=\"rux--table-sort__icon-unsorted\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-arrows--vertical\"/></svg>\n                      <div class=\"rux--table-header-label--decorator-inner\"></div>\n                    </span>\n                  </button>\n                </th>\n                <th scope=\"col\"><div class=\"rux--table-header-label\">Owner<div class=\"rux--table-header-label--decorator-inner\"></div></div></th>\n                <th scope=\"col\"><div class=\"rux--table-header-label\">Status<div class=\"rux--table-header-label--decorator-inner\"></div></div></th>\n                <th scope=\"col\" class=\"rux--table-sort__header\" aria-sort=\"none\">\n                  <div class=\"rux--table-sort__description rux--visually-hidden\">Sort by Modified</div>\n                  <button type=\"button\" class=\"rux--table-sort\">\n                    <span class=\"rux--table-sort__flex\">\n                      <div class=\"rux--table-header-label\">Modified</div>\n                      <svg class=\"rux--table-sort__icon\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-arrow--up\"/></svg>\n                      <svg class=\"rux--table-sort__icon-unsorted\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-arrows--vertical\"/></svg>\n                      <div class=\"rux--table-header-label--decorator-inner\"></div>\n                    </span>\n                  </button>\n                </th>\n              </tr>\n            </thead>\n            <!-- THE NAME IS THE LINK, AND THE WHOLE ROW OPENS THE RECORD. The\n                 link is what a keyboard reaches and what a reader announces; the\n                 row's own click handler is the app's, and it is a convenience\n                 over the link rather than the only way in. A row whose only\n                 affordance is a click handler cannot be reached at all. -->\n            <tbody>\n              <tr>\n                <td><a class=\"rux--link\" href=\"#main-content\">Annual report</a></td>\n                <td>A. Fisher</td>\n                <td><div class=\"rux--tag rux--tag--green\"><span class=\"rux--tag__label\">Approved</span></div></td>\n                <td>24 Aug 2026</td>\n              </tr>\n              <tr>\n                <td><a class=\"rux--link\" href=\"#main-content\">Budget forecast</a></td>\n                <td>M. Okafor</td>\n                <td><div class=\"rux--tag rux--tag--blue\"><span class=\"rux--tag__label\">In review</span></div></td>\n                <td>26 Aug 2026</td>\n              </tr>\n              <tr>\n                <td><a class=\"rux--link\" href=\"#main-content\">Vendor contract</a></td>\n                <td>R. Lindqvist</td>\n                <td><div class=\"rux--tag rux--tag--gray\"><span class=\"rux--tag__label\">Draft</span></div></td>\n                <td>29 Aug 2026</td>\n              </tr>\n            </tbody>\n          </table>\n        </div>\n      </section>\n",
+      "close": "      <!-- BLOCK:END table -->\n"
+    },
+    {
+      "id": "templates/record-page/breadcrumb",
+      "source": "templates/record-page.html",
+      "name": "breadcrumb",
+      "label": "Breadcrumb back to the list",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 666,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; form structure from components-form--default and components-formgroup--default; controls from the sink fragments they were diffed in, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-8 rux--lg:col-start-5 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=breadcrumb label=\"Breadcrumb back to the list\" -->\n",
+      "html": "      <!-- REPLACE: the link back to the list half of the pair. EVERY record page\n           has a parent — it was opened from a list — so this block is not\n           optional the way the notice and the tabs are.\n\n           THE PARENT LINK ALONE, NOT A TRAIL. templates/detail-page.html shows\n           three items ending in the current page, marked `--current` with\n           `aria-current=\"page\"`, and that is right for an app three levels deep.\n           A pair is two: the breadcrumb would read \"Requests / Request 4102\"\n           with the h1 immediately below saying \"Request 4102\" again, which\n           announces the same words twice and tells a reader nothing about the\n           nesting. Take detail-page's trail when the hierarchy earns it.\n\n           THE LINK CARRIES BEHAVIOUR IN AN APP, and it is not just an <a>. A\n           record with unsaved changes asks before it leaves, and a record saved\n           from `?new` replaces its address with `?id=` so that going back does\n           not return to a blank form. scheduler/drivers.js does both. Neither\n           belongs in a template, but a copy of this file that forgets them\n           loses work. -->\n      <!-- `--no-trailing-slash` IS NOT OPTIONAL HERE, and the page looks finished\n           without it. Carbon draws `content: \"/\"` on EVERY `breadcrumb-item`,\n           last one included, so a breadcrumb that ends where it means to ends in\n           a separator pointing at nothing — read at 1440 on 2026-09-21 as\n           \"Requests /\". The modifier is Carbon's own and suppresses it on the\n           last item only. A trail that ends in the current page needs it just as\n           much; templates/detail-page.html ships without it and dangles. -->\n      <nav aria-label=\"Breadcrumb\">\n        <ol class=\"rux--breadcrumb rux--breadcrumb--no-trailing-slash\">\n          <li class=\"rux--breadcrumb-item\"><a class=\"rux--link\" href=\"#main-content\">Requests</a></li>\n        </ol>\n      </nav>\n",
+      "close": "      <!-- BLOCK:END breadcrumb -->\n"
+    },
+    {
+      "id": "templates/record-page/page-title",
+      "source": "templates/record-page.html",
+      "name": "page-title",
+      "label": "Page title",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "breadcrumb",
+      "deps": [],
+      "frameDeps": [],
+      "line": 699,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; form structure from components-form--default and components-formgroup--default; controls from the sink fragments they were diffed in, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-8 rux--lg:col-start-5 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=page-title label=\"Page title\" follows=breadcrumb -->\n",
+      "html": "      <h1>New request</h1>\n",
+      "close": "      <!-- BLOCK:END page-title -->\n"
+    },
+    {
+      "id": "templates/record-page/notice",
+      "source": "templates/record-page.html",
+      "name": "notice",
+      "label": "Save result notice",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "page-title",
+      "deps": [],
+      "frameDeps": [],
+      "line": 703,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; form structure from components-form--default and components-formgroup--default; controls from the sink fragments they were diffed in, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-8 rux--lg:col-start-5 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=notice label=\"Save result notice\" follows=page-title -->\n",
+      "html": "      <!-- REPLACE, or delete the block. What the last save did, in the same slot\n           the list half puts its notice: under the title, inside the column,\n           above the body. One place on both halves, so a page that gains a\n           notice does not move its other parts.\n\n           `role=\"status\"` AND NOT `alert`. A save that worked is not an\n           interruption; alert stops a screen reader mid-sentence. A save that\n           FAILED is still status here, because the form it refers to is still on\n           screen and the reader is about to reach it.\n\n           `hidden` ON A PLAIN WRAPPER, NOT ON THE NOTIFICATION, because Carbon's\n           own `display` rule beats the browser's `[hidden]` and the notification\n           is drawn anyway. -->\n      <div class=\"rux--inline-notification rux--inline-notification--success\" role=\"status\">\n        <div class=\"rux--inline-notification__details\">\n          <svg class=\"rux--inline-notification__icon\" width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-checkmark--filled\"/></svg>\n          <div class=\"rux--inline-notification__text-wrapper\">\n            <div class=\"rux--inline-notification__subtitle\">Request saved.</div>\n          </div>\n        </div>\n      </div>\n",
+      "close": "      <!-- BLOCK:END notice -->\n"
+    },
+    {
+      "id": "templates/record-page/form",
+      "source": "templates/record-page.html",
+      "name": "form",
+      "label": "Form",
+      "kind": "composition",
+      "slot": "body",
+      "follows": "notice",
+      "deps": [],
+      "frameDeps": [],
+      "line": 727,
+      "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; form structure from components-form--default and components-formgroup--default; controls from the sink fragments they were diffed in, 2026-08-28",
+      "grid": "rux--css-grid",
+      "column": "rux--css-grid-column rux--lg:col-span-8 rux--lg:col-start-5 rux--md:col-span-8 rux--sm:col-span-4",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "      <!-- BLOCK:BEGIN name=form label=\"Form\" follows=notice -->\n",
+      "html": "      <!-- REPLACE: the form. Structure is components-form--default: a <form>\n           holding fieldsets and `form-item`s, each control in its own item.\n\n           THE <form> TAKES NO CLASS. Carbon's capture puts `cds--form` on it,\n           but @carbon/styles defines no rule for that class — it is a marker,\n           not a style — so check-classes would reject it. The element stays\n           because it is what makes this a form.\n\n           SPACING COMES FROM THE HEAD, NOT FROM HERE. Carbon's own form wraps\n           its children in `stack-vertical stack-scale-7`; `stack` is commented\n           out in src/app.scss and `form-item` carries no vertical margin of\n           its own, so the rule in the <style> block stands in for it at the\n           same 2rem. See the note there. -->\n      <form>\n        <!-- components-form--default puts a `stack-vertical stack-scale-7`\n             between the form and its items, and that div is where the whole of\n             the form's vertical rhythm comes from. It replaces the <style> rule\n             this file used to carry. -->\n        <div class=\"rux--stack-vertical rux--stack-scale-7\">\n\n          <div class=\"rux--form-item rux--text-input-wrapper\">\n              <div class=\"rux--text-input__label-wrapper\">\n                <label class=\"rux--label\" for=\"f-name\">Full name</label>\n              </div>\n              <div class=\"rux--text-input__field-outer-wrapper\">\n                <div class=\"rux--text-input__field-wrapper\">\n                  <input id=\"f-name\" class=\"rux--text-input\" type=\"text\" placeholder=\"Ada Lovelace\">\n                </div>\n              </div>\n            </div>\n\n          <div class=\"rux--form-item rux--text-input-wrapper\">\n              <div class=\"rux--text-input__label-wrapper\">\n                <label class=\"rux--label\" for=\"f-email\">Email</label>\n              </div>\n              <div class=\"rux--text-input__field-outer-wrapper\">\n                <div class=\"rux--text-input__field-wrapper\">\n                  <input id=\"f-email\" class=\"rux--text-input\" type=\"email\" placeholder=\"name@example.com\">\n                </div>\n                <div class=\"rux--form__helper-text\">We only use this to reply.</div>\n              </div>\n            </div>\n\n          <div class=\"rux--form-item\">\n            <div class=\"rux--select rux--layout--size-md\">\n              <label class=\"rux--label\" for=\"f-dept\">Department</label>\n              <div class=\"rux--select-input__wrapper\">\n                <select id=\"f-dept\" class=\"rux--select-input\">\n                  <option class=\"rux--select-option\" value=\"ops\">Operations</option>\n                  <option class=\"rux--select-option\" value=\"fin\">Finance</option>\n                  <option class=\"rux--select-option\" value=\"eng\">Engineering</option>\n                </select>\n                <svg class=\"rux--select__arrow\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-chevron--down\"/></svg>\n              </div>\n            </div>\n          </div>\n\n          <div class=\"rux--form-item\">\n            <fieldset class=\"rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical\">\n              <legend class=\"rux--label rux--type-heading-compact-01\">Priority</legend>\n              <div class=\"rux--radio-button-wrapper\">\n                <input id=\"f-p1\" class=\"rux--radio-button\" type=\"radio\" name=\"f-priority\" checked>\n                <label for=\"f-p1\" class=\"rux--radio-button__label\">\n                  <span class=\"rux--radio-button__appearance\"></span>\n                  <span class=\"rux--radio-button__label-text\">Standard</span>\n                </label>\n              </div>\n              <div class=\"rux--radio-button-wrapper\">\n                <input id=\"f-p2\" class=\"rux--radio-button\" type=\"radio\" name=\"f-priority\">\n                <label for=\"f-p2\" class=\"rux--radio-button__label\">\n                  <span class=\"rux--radio-button__appearance\"></span>\n                  <span class=\"rux--radio-button__label-text\">Urgent</span>\n                </label>\n              </div>\n            </fieldset>\n          </div>\n\n          <fieldset class=\"rux--checkbox-group\" aria-disabled=\"false\">\n            <legend class=\"rux--label rux--type-heading-compact-01\">Notify me when</legend>\n            <div class=\"rux--form-item rux--checkbox-wrapper\">\n              <input id=\"f-n1\" class=\"rux--checkbox\" type=\"checkbox\" checked>\n              <label for=\"f-n1\" class=\"rux--checkbox-label\"><div class=\"rux--checkbox-label-text\">The request is approved</div></label>\n              <div class=\"rux--checkbox__validation-msg\"></div>\n            </div>\n            <div class=\"rux--form-item rux--checkbox-wrapper\">\n              <input id=\"f-n2\" class=\"rux--checkbox\" type=\"checkbox\">\n              <label for=\"f-n2\" class=\"rux--checkbox-label\"><div class=\"rux--checkbox-label-text\">Someone comments</div></label>\n              <div class=\"rux--checkbox__validation-msg\"></div>\n            </div>\n          </fieldset>\n\n          <div class=\"rux--form-item\">\n            <div class=\"rux--text-area__label-wrapper\">\n              <label class=\"rux--label\" for=\"f-notes\">Notes</label>\n            </div>\n            <div class=\"rux--text-area__wrapper\">\n              <textarea id=\"f-notes\" class=\"rux--text-area\" rows=\"4\" cols=\"50\" maxlength=\"500\" placeholder=\"Anything else we should know?\"></textarea>\n              <span class=\"rux--text-area__counter-alert\" role=\"alert\"></span>\n            </div>\n            <div class=\"rux--form__helper-text\">Optional.</div>\n          </div>\n\n          <!-- js/form-controls.js drives this; the markup needs no script.\n\n               `aria-hidden=\"true\"` ON `toggle__text` IS LOAD-BEARING. Without\n               it a screen reader announces the control's name and then this\n               text again as part of it. That is the defect fixed at a5f95c8 —\n               heard on 2026-08-30 — and the fix went into sink/toggle.html and\n               NOT into this file or detail-page.html, where it was found on\n               2026-08-31 by building a third page with a toggle on it. No gate\n               reads it. -->\n          <div class=\"rux--toggle\">\n            <button id=\"f-copy\" class=\"rux--toggle__button\" role=\"switch\" type=\"button\" aria-checked=\"false\" aria-labelledby=\"f-copy-l\"></button>\n            <label class=\"rux--toggle__label\" for=\"f-copy\" id=\"f-copy-l\">\n              <span class=\"rux--toggle__label-text\">Send me a copy</span>\n              <div class=\"rux--toggle__appearance\">\n                <div class=\"rux--toggle__switch\"></div>\n                <span class=\"rux--toggle__text\" aria-hidden=\"true\">Off</span>\n              </div>\n            </label>\n          </div>\n\n          <!-- `btn-set` IS FOR A SET, and it caps its children at\n               max-inline-size 196px so a row of them stays even. Copy it for ONE\n               action and the label wraps — \"Add a deployment\" came out over three\n               lines in templates/empty-state.html before that was found. A single\n               button goes in a plain container and sizes itself. -->\n          <div class=\"rux--btn-set\">\n            <button type=\"button\" class=\"rux--btn rux--btn--secondary\">Cancel</button>\n            <button type=\"submit\" class=\"rux--btn rux--btn--primary\">Submit</button>\n          </div>\n\n        </div>\n      </form>\n",
+      "close": "      <!-- BLOCK:END form -->\n"
+    },
+    {
       "id": "templates/schedule-page/page-title",
       "source": "templates/schedule-page.html",
       "name": "page-title",
@@ -1396,6 +1550,66 @@
           ],
           "pre": "",
           "gaps": [
+            "\n"
+          ],
+          "post": ""
+        }
+      ]
+    },
+    {
+      "name": "list-page",
+      "path": "templates/list-page.html",
+      "slots": [
+        {
+          "name": "body",
+          "line": 683,
+          "start": 95696,
+          "end": 107760,
+          "container": {
+            "grid": "rux--css-grid",
+            "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
+            "stack": "rux--stack-scale-5 rux--stack-vertical"
+          },
+          "blocks": [
+            "title",
+            "notice",
+            "filter",
+            "table"
+          ],
+          "pre": "\n",
+          "gaps": [
+            "\n",
+            "\n",
+            "\n"
+          ],
+          "post": "\n"
+        }
+      ]
+    },
+    {
+      "name": "record-page",
+      "path": "templates/record-page.html",
+      "slots": [
+        {
+          "name": "body",
+          "line": 664,
+          "start": 94310,
+          "end": 105461,
+          "container": {
+            "grid": "rux--css-grid",
+            "column": "rux--css-grid-column rux--lg:col-span-8 rux--lg:col-start-5 rux--md:col-span-8 rux--sm:col-span-4",
+            "stack": "rux--stack-scale-7 rux--stack-vertical"
+          },
+          "blocks": [
+            "breadcrumb",
+            "page-title",
+            "notice",
+            "form"
+          ],
+          "pre": "\n",
+          "gaps": [
+            "\n",
+            "\n",
             "\n"
           ],
           "post": ""

@@ -231,6 +231,16 @@
           "reviewed": false
         }
       ]
+    },
+    "list-page": {
+      "purpose": "A list of records where a row opens one — the table half of the pair, centred.",
+      "reviewed": false,
+      "suggestions": []
+    },
+    "record-page": {
+      "purpose": "One record, opened from a list and saved back to it — the record half of the pair, centred.",
+      "reviewed": false,
+      "suggestions": []
     }
   },
   "variants": {
@@ -357,6 +367,21 @@
     "templates/search-results-page/filters#0": {
       "recommended": "as-attested",
       "reason": "Bare, which is lg. The same reading rux made on 2026-09-06 for every other button here: the sm guidance in docs/choices.md is for tables and toolbars, and a filter column is neither. This block shipped sm for one draft and was put back. NOT YET READ BY RUX.",
+      "reviewed": false
+    },
+    "templates/list-page/title#0": {
+      "recommended": "as-attested",
+      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
+      "reviewed": false
+    },
+    "templates/list-page/table#0": {
+      "recommended": "as-attested",
+      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
+      "reviewed": false
+    },
+    "templates/record-page/form#0": {
+      "recommended": "as-attested",
+      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
       "reviewed": false
     }
   }

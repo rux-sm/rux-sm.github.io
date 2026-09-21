@@ -19,6 +19,7 @@ what you do not need.
 | an overview of many things | `templates/dashboard-page.html` |
 | a list of records, sortable, selectable | `templates/table-page.html` |
 | creating or editing one record | `templates/form-page.html` |
+| a list where a row opens one record | `templates/list-page.html`, then `templates/record-page.html` |
 | viewing one record | `templates/detail-page.html` |
 | reading one record top to bottom, in order | `templates/document-page.html` |
 | a query, facets that narrow it, and the results | `templates/search-results-page.html` |

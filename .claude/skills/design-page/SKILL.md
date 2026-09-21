@@ -13,13 +13,15 @@ for why any line here is true.
 
 ## 1. Copy a template — never start from scratch
 
-Twelve exist, each a **complete page**, shell included.
+Fourteen exist, each a **complete page**, shell included.
 
 | page | start from |
 | :--- | :--- |
 | nav and header, nothing else | `design/templates/app-shell.html` |
 | list of records, sortable, selectable | `design/templates/table-page.html` |
 | create or edit one record | `design/templates/form-page.html` |
+| a list of records where a row opens one | `design/templates/list-page.html` |
+| one record, opened from that list | `design/templates/record-page.html` |
 | view one record | `design/templates/detail-page.html` |
 | read one record top to bottom | `design/templates/document-page.html` |
 | a query, facets, and the results | `design/templates/search-results-page.html` |

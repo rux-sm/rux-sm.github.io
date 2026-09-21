@@ -853,7 +853,7 @@
     const tone = c.needed ? 'error' : c.status.tone;
     const item = el('span', c.status?.value === 'declined' ? 'scheduler-crew scheduler-crew--declined' : 'scheduler-crew');
     const mark = el('span', tone ? `scheduler-crew__mark scheduler-crew__mark--${tone}` : 'scheduler-crew__mark');
-    mark.appendChild(svgUse(c.icon, '12', c.box));
+    mark.appendChild(svgUse(c.icon, '16', c.box));
     item.appendChild(mark);
     if (!c.needed) item.appendChild(el('span', 'scheduler-crew__name', crewName(c)));
     item.title = crewText(c);
@@ -971,7 +971,7 @@
         // A requirement Design has no glyph for wears its initial instead, in
         // the same square. The name is on hover and in the bar's own label.
         if (w.href) {
-          chip.appendChild(svgUse(w.href, '12', '0 0 32 32'));
+          chip.appendChild(svgUse(w.href, '16', '0 0 32 32'));
         } else {
           chip.classList.add('scheduler-bar__warn-chip--letter');
           chip.append(w.letter || '?');

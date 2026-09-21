@@ -635,8 +635,11 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-row-h);
   color: var(--rux-support-warning);
 }
-/* The size is CSS's, not the attribute the script writes: one place to change
-   it, and the same number for the crew's glyphs below. */
+/* The size is CSS's, not the attribute the script writes, which is why one
+   number here changes the bar's marks and the crew's glyphs together. The
+   attribute says 16 as well, so a mark drawn where this sheet is not loaded --
+   a print, a page fragment lifted out -- is the size it is meant to be rather
+   than an older one. */
 .scheduler-bar__warn-chip svg {
   display: block;
   inline-size: var(--scheduler-mark-glyph);

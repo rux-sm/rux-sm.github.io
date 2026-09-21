@@ -162,9 +162,12 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
   shrinking at a line someone can still write on.
 - **The company line is the page's own,** since there is no Settings page yet
   to hold the yard.
-- **rux-ui's Yellow and White tint is dropped.** It tints the preview to match
-  the paper stock and is forced off in print, so it changes nothing that comes
-  out of the printer.
+- **The standard layout previews on its yellow stock,** because that is the
+  envelope it is printed on and the preview should be the paper it lands on;
+  multi-stop is printed on white and previews white. It is a screen colour
+  only: the yellow is the stock, already there, so printing it would be
+  printing something the paper has. rux-ui's Yellow and White switch is not
+  kept -- the layout already says which stock it is.
 
 ### From the board
 

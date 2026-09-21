@@ -138,6 +138,17 @@
   box-sizing: border-box;
 }
 
+/* THE STOCK, ON SCREEN AND NOT ON PAPER. The standard envelope is printed on
+   the yellow envelope itself, so the preview shows that paper rather than
+   white and what is on screen is what comes out. The yellow never reaches the
+   printer: it is the stock, already there. Multi-stop is printed on white and
+   stays white. */
+@media screen {
+  .scheduler-form[data-layout="standard"] {
+    background: var(--scheduler-envelope-paper);
+  }
+}
+
 @media print {
   /* Nothing on this page is chrome except the toolbar, so the blanket hide
      rux-ui needs over the board is one rule here. */

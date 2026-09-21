@@ -332,9 +332,9 @@
     return table;
   }
 
-  /* One copy. `layout` is 'standard' or 'multi-stop', chosen in the page's own
-     toolbar rather than guessed from the trip: which form the office uses is
-     an arrangement with the customer, not something the data says. */
+  /* One copy. `layout` is 'standard' or 'multi-stop', chosen in the toolbar
+     rather than guessed from the trip: which form the office uses is an
+     arrangement with the customer, not something the data says. */
   function envelope(subject, layout) {
     const { trip, assignment, leg, seat } = subject;
     const card = el('article', 'scheduler-form scheduler-envelope');

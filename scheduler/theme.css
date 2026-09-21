@@ -5,6 +5,13 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
+/* The stock the standard driver envelope is printed on, so its preview is the
+   paper it lands on. It sits on :root and in no [data-theme] block because the
+   envelope is this yellow whatever theme the person keeps; it is the colour of
+   a thing, not of the interface. The value is the one rux-ui tints its own
+   preview with, so the two apps show the same envelope. */
+:root { --scheduler-envelope-paper: oklch(88% 0.05 95); }
+
 /* The pair a trip bar's marks are drawn from, both of them text-primary and
    text-inverse the way round the theme puts them: `on-warning` is the dark one,
    the ink on a warning fill, and `mark-blank` is the light one, the fill of a

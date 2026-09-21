@@ -89,19 +89,21 @@ panel beside the trip — the same panel a trip's PDF opens in — then prints i
 
 - **The panel frames the page's address directly,** through `swapFrame`. A PDF
   needs a fetch and a blob address; a same-origin page of this site does not.
-- **The panel's Print button already works on it.** It calls
-  `itinFrame.contentWindow.print()`, which prints the frame's own document
-  under the frame's own `@page` — which is why the panel fetches PDFs into a
-  blob of this origin in the first place. The board around it is untouched.
+- **A form prints from its own toolbar, and the panel's Print is hidden.**
+  Printing the frame is the same call either way, so two buttons for it is one
+  too many, and the form's own is the one that can sit beside Print all and
+  after the choices that change what comes out. A stored file has no toolbar
+  of its own, so the panel keeps Print for one.
 - **It always opens in the panel,** as a PDF does, at every width: where the
   board cannot hold the panel beside the week the panel comes in front of the
   board, so there is no width at which a form is sent to a browser tab.
-- **Zoom and Download are hidden for a generated form.** The zooms send
+- **Zoom, Download and Print are hidden for a generated form.** The zooms send
   `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is fluid
   instead; there is no file to download, and the print dialog saves a PDF.
 - **The head names the form and its subject** — "Trip envelope" over "Driver
   copy — <name>" — where a stored file names its type over when it was
-  uploaded.
+  uploaded. The form's own toolbar drops its title there, because the head has
+  just said it.
 - **The panel is named the viewer,** `scheduler-viewer-*` and `viewer*`, not
   `scheduler-document-*`: `doc` and `document*` already mean a stored file
   record throughout `data.js`, so the panel takes the name rux-ui gives the

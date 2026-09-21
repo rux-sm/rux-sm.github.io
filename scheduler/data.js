@@ -6658,11 +6658,15 @@
   /* A stored file and a form this app draws are both documents, and the panel
      frames either; what differs is the toolbar. The zooms send `#zoom=` to a
      PDF viewer, which an HTML page ignores, and there is no file to download
-     -- the print dialog saves a PDF. Print and Open in new tab stand for both. */
+     -- the print dialog saves a PDF. Print goes too, because a form carries
+     its own toolbar and prints from there, beside the Print all that only the
+     form can offer; a stored file has no toolbar of its own, so this is its
+     only one. Open in new tab stands for both. */
   function setViewerMode(mode) {
     const form = mode === 'form';
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
+    viewerPrint.hidden = form;
   }
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
@@ -6689,7 +6693,6 @@
       window.Rux?.schedule?.fit?.();
     }
     viewerClose?.focus();
-    viewerPrint.disabled = false;
     swapFrame(url);
   }
 

@@ -49,27 +49,47 @@
    print buttons. It takes the width the title leaves rather than sizing to
    its content, because a wrapping flex container is only as wide as its
    widest child and the row would otherwise collapse into a column. Given the
-   room it is one row, and in the 30rem viewer it wraps inside it. */
+   room it is one row, and in the 30rem viewer it wraps inside it. It starts at
+   the left, where framed there is no title to push it off. */
 .scheduler-print__controls {
   display: flex;
   flex: 1;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
   gap: var(--rux-spacing-03);
 }
+
+/* Standing alone the title holds the left, so the controls sit at the right
+   end of what it leaves. */
+[data-rux-standalone] .scheduler-print__controls { justify-content: flex-end; }
 
 /* Carbon sizes both of these to their field, which in a toolbar is the whole
    row, and lets them be squeezed to nothing beside the buttons. They keep
    their own width here instead. */
 .scheduler-print__controls > * { flex: none; }
 .scheduler-print__controls .rux--select { inline-size: 14rem; }
+
 /* Carbon splits the switcher's width evenly between its buttons, so it takes
    a width rather than its content's: max-content leaves the longer name
-   clipped to an ellipsis. */
-.scheduler-print__controls .rux--content-switcher { inline-size: 15rem; }
+   clipped to an ellipsis. 13rem is the longest layout name plus Carbon's
+   padding, twice, and it leaves the copy beside it a whole row in the 30rem
+   viewer. */
+.scheduler-print__controls .rux--content-switcher { inline-size: 13rem; }
 
-.scheduler-print__bar-title {
+/* Print and Print all, kept side by side wherever the row breaks. */
+.scheduler-print__prints {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+}
+
+/* The form's name, and only while the page stands alone: framed in the
+   viewer the panel's own head already names it, and saying it twice is chrome
+   inside chrome, the same reason the header is gone there. */
+.scheduler-print__bar-title { display: none; }
+
+[data-rux-standalone] .scheduler-print__bar-title {
+  display: block;
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
   line-height: var(--rux-heading-compact-01-line-height);

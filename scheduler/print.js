@@ -647,10 +647,14 @@
       nodes.push(box);
     }
 
+    /* The two prints are one thing in the toolbar, so a narrow viewer wraps
+       them together rather than leaving Print all stranded on a row of its
+       own below its own Print. */
+    const prints = el('div', 'scheduler-print__prints');
     const print = el('button', 'rux--btn rux--btn--primary rux--btn--sm', 'Print');
     print.type = 'button';
     print.addEventListener('click', () => window.print());
-    nodes.push(print);
+    prints.appendChild(print);
 
     /* Print all is the trip's, not this bus's, so it is offered whenever the
        trip has more than one envelope on it -- including a bus with a single
@@ -668,8 +672,9 @@
         drawAll();
         requestAnimationFrame(() => window.print());
       });
-      nodes.push(all);
+      prints.appendChild(all);
     }
+    nodes.push(prints);
 
     controls.replaceChildren(...nodes);
   }

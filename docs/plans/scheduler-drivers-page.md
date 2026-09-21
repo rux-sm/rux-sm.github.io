@@ -12,13 +12,14 @@ opens rux-ui to change a phone number, an expiry date or time off.
 
 ## Decisions
 
-- **Two pages, both centred.** `scheduler/drivers.html` lists the drivers;
+- **Two pages.** `scheduler/drivers.html` lists the drivers;
   `scheduler/drivers.html?id=<driver id>` edits one, and New driver opens it
   with no id. A driver's form is long and edited now and then, which Carbon's
   forms pattern gives a page rather than a side panel.
-- **The list is centred in twelve of the sixteen columns at lg**, as
-  `scheduler/quote-rates.html` is; the editor is centred in eight. Both use
-  the scheduler's collapsible side nav, so neither needs the 18rem offset.
+- **Both take the page pair's layout**, which `docs/plans/site-page-pair.md`
+  decides for every such pair and this plan does not restate. The scheduler's
+  side nav is the collapsible one, so neither page needs the 18rem offset a
+  persistent nav would.
 - **The board's rule that a driver opens in the panel changes to this page**,
   and `scheduler/docs/screen-inventory.md` changes with it.
 - **The list is Carbon's data table at large density, sortable**, with a

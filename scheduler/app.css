@@ -921,14 +921,13 @@ button.scheduler-row-head__num::after {
    generated form puts its own controls in this row and they ask for more than
    a stored file's six icons.
 
-   NO INSET ABOVE OR BELOW: the buttons are the height of the bar and fill it,
-   as the board's own toolbar fills its, so the row reads as one band rather
-   than as buttons floating in one. The inset at the start is the copy's; the
-   actions run to the end. */
+   NO INSET AT ALL: the buttons are the height of the bar and fill it end to
+   end, as the board's own toolbar fills its, so the row reads as one band
+   rather than as buttons floating in one. The first reaches the start and the
+   last the end. */
 .scheduler-viewer__toolbar {
   flex: none;
   flex-wrap: wrap;
-  padding-inline-start: var(--rux-spacing-03);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 

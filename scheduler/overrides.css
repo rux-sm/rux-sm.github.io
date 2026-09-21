@@ -453,11 +453,18 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    corner leaves three gaps and stops reading as part of the bar. */
 .scheduler-presence__face.rux--user-avatar { border-radius: 0; }
 .scheduler-presence .rux--user-avatar__photo { border-radius: 0; }
-/* Except the one corner that meets the bar's own: the bar's radius less the
-   rule it sits inside, so the two curves are concentric. */
+/* Its top and right edges ARE the bar's rule, carried through the square, so
+   the line runs unbroken and there is no bar left showing between the two.
+   Carbon's own 0.5px transparent border is what these replace. */
+.scheduler-presence__face.rux--user-avatar,
+.scheduler-presence__more {
+  border-block-start: var(--scheduler-presence-rule) solid var(--rux-layer-selected-inverse);
+  border-inline-end: var(--scheduler-presence-rule) solid var(--rux-layer-selected-inverse);
+}
+/* Except the one corner that meets the bar's own, which takes its curve. */
 .scheduler-presence > :last-child.rux--user-avatar,
 .scheduler-presence > .scheduler-presence__more:last-child {
-  border-start-end-radius: max(0px, calc(var(--scheduler-bar-radius, 0px) - var(--scheduler-presence-rule)));
+  border-start-end-radius: var(--scheduler-bar-radius, 0px);
 }
 
 /* A driver's notes take the form's width, as the side panel's do above. */

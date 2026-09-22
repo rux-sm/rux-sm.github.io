@@ -168,6 +168,13 @@
   flex-direction: column;
 }
 
+/* NO FRAME WHERE THERE IS NO FORM. The hub and the frame are never both the
+   thing on the page: a tile is chosen and the hub goes, a form is drawn and
+   the frame comes. Left standing on the hub the frame kept the height the page
+   hands it and drew its outline round nothing -- a tall empty box under the
+   tiles. */
+.scheduler-print__hub:not([hidden]) + .scheduler-print__frame { display: none; }
+
 /* THE OUTLINE IS THIS PAGE'S OWN, and only where this page stands alone. On
    the page it is what binds the band to the desk and says where the app ends
    and the sheet begins. Framed in the panel there is no band -- the panel

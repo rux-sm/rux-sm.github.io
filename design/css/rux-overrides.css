@@ -406,6 +406,16 @@
 [data-theme="geist-dark"] .rux--side-panel__header {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
+/* A BREADCRUMB UNDER 42rem. Carbon lays the list out as a wrapping row only
+   from 42rem up, and gives every item a box of its own at every width; below
+   that the list falls back to `inline` while each item keeps its box, so a
+   two-crumb trail takes two lines in room enough for six. Naming the list at
+   Carbon's own specificity and outside the query lets a trail wrap when it
+   runs out of room rather than stack when it has not. */
+.rux--breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+}
 /* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
    draws it in the support yellow, which is a light colour: on the inverse slab
    the dark themes give a notification it reads 1.5 to 2.7 against its own

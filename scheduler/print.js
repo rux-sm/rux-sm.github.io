@@ -10,7 +10,8 @@
      name     what the hub and the viewer's head call it
      binds    'assignment' | 'assignment+seat' | 'trip' | 'week' | null
      marks    the tick a print offers: { table, column, by }, or left out
-     page     the one paper it is printed on, or left out to fit any paper
+     page     the paper it is printed on: size, width, height, ink margin, and
+              `exact` where the form must not run past one sheet of it
      copies   the subjects this one binding covers, which the toolbar's list
               and Print all start from and grow past
      typed    { fields, always }: what can be typed into, and whether a filled
@@ -706,7 +707,7 @@
          offers as Trip Envelope. The ink margin is the form's own, because
          the stock's own margins are zero and a laser printer still cannot
          reach its edges. */
-      page: { size: '6in 9in', width: '6in', height: '9in', margin: '0.3in' },
+      page: { size: '6in 9in', width: '6in', height: '9in', margin: '0.3in', exact: true },
       layouts: [
         { id: 'standard', name: 'Standard' },
         { id: 'multi-stop', name: 'Multi-stop' },
@@ -749,10 +750,11 @@
       /* The mark rux-ui already writes and its task list already reads, so a
          sheet printed here shows as printed there. */
       marks: { table: 'trips', column: 'itinerary_printed', by: 'leg' },
-      /* NO PAPER OF ITS OWN: `page` left out is `size: auto`, which lays the
-         form out to whatever is in the tray and runs onto as many sheets as
-         the stops need. The envelope names 6 by 9 because it is an envelope;
-         this goes inside one. */
+      /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
+         this runs onto as many sheets as the stops need, and the height is
+         the paper's rather than a limit -- a short itinerary still draws a
+         whole page of it, because that is what comes out of the printer. */
+      page: { size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
       copies: subject => legsOf(subject.trip).map(leg => ({
         ...subject,
         leg,
@@ -882,6 +884,9 @@
      that names a paper names that ink margin with it, and the width the sheet
      draws at on screen, so the page shows the shape that comes out of the
      printer. A form that names no paper keeps the page's own defaults. */
+  // Whether the form on the sheet must not run past one page of its paper.
+  let exactSheet = false;
+
   function setPaper(form) {
     let style = document.getElementById('scheduler-print-page');
     if (!style) {
@@ -892,17 +897,22 @@
     const paper = form?.page;
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: 0; }`;
 
-    /* AND HOW IT IS SHOWN. A form on named stock is shown as that stock -- the
-       envelope in the kraft it is really printed on, at the size it really is
-       -- because it has to come out on exactly that much paper and the preview
-       is where that is checked. It carries the light theme for its ink, since
-       nothing dark is ever printed on it. A form on whatever is in the tray
-       has no stock to show and runs as long as it needs, so it is a page of
-       this app in the theme the person keeps. @media print pins the ink and
-       whitens the stock: the kraft is already there, in the printer. */
-    sheet.dataset.paper = paper ? 'named' : 'any';
-    if (paper) sheet.setAttribute('data-theme', 'g10');
-    else sheet.removeAttribute('data-theme');
+    /* AND THE SHEET IS PAPER, whatever theme the page around it is in: every
+       form here is going to a printer, and the preview is where anyone sees
+       what will come out. So the theme goes on the sheet rather than the page,
+       and every --rux-* token under it resolves to ink on paper. It says g10
+       and not white because white is Carbon's default rather than a theme it
+       writes a rule for: `data-theme="white"` matches nothing, so a sheet
+       asking for it kept the dark theme of the page around it and the ink came
+       out white on the paper. g10 is the lightest theme Carbon does write, and
+       its ink is the same #161616. */
+    sheet.setAttribute('data-theme', 'g10');
+    /* AND WHETHER IT IS ONE SHEET OR MANY. The envelope has to come out on one
+       envelope, so print.css holds it to that height and the fit below shows
+       it whole; the itinerary runs as long as its stops and is only fitted
+       across. */
+    exactSheet = Boolean(paper?.exact);
+    sheet.dataset.sheet = exactSheet ? 'exact' : 'flows';
 
     const root = document.documentElement.style;
     for (const [prop, value] of [
@@ -941,16 +951,18 @@
     const style = getComputedStyle(sheet);
     const room = sheet.clientWidth
       - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd);
-    /* THE WHOLE SHEET, WHERE THE PAGE IS THE ROOM. Standing alone the desk is
-       what the window leaves under the title row, and the form takes the
-       smaller of the two fits so the envelope is on screen entire -- a sheet
-       of paper you can see all of beats one you scroll. Framed in the panel
-       only the width is fitted: the panel scrolls, and a short one would take
-       the envelope down to nothing. */
+    /* THE WHOLE SHEET, WHERE THE FORM IS ONE OF THEM. Standing alone the room
+       is what the window leaves under the title row, and a one-sheet form
+       takes the smaller of the two fits so the envelope is on screen entire --
+       a sheet of paper you can see all of beats one you scroll. A form that
+       runs onto as many sheets as it needs is scrolled anyway, so only its
+       width is fitted. Framed in the panel only the width is fitted either
+       way: the panel scrolls, and a short one would take the envelope down to
+       nothing. */
     const standing = sheet.clientHeight
       - parseFloat(style.paddingBlockStart) - parseFloat(style.paddingBlockEnd);
-    const height = framed || !Number.isFinite(tall) || !(standing > 0) ? Infinity
-      : standing / tall;
+    const height = framed || !exactSheet || !Number.isFinite(tall) || !(standing > 0)
+      ? Infinity : standing / tall;
     const fit = Math.min(1, room / wide, height);
     if (fit > 0) root.setProperty('--scheduler-fit', String(Math.round(fit * 1000) / 1000));
   }

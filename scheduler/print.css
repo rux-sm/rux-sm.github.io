@@ -143,30 +143,31 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   max-inline-size: none;
 }
 
-/* NO DESK UNDER ANYTHING. Every form is a page of this app, so there is no
-   surface to lie a sheet on and nothing to tell apart from the page. */
+/* NO DESK UNDER THE SHEET. The paper is the thing to look at, and a lighter
+   surface behind it only made a bigger pale rectangle in a dark app. The page
+   shows through around it, and the sheet's own edge is where the paper ends. */
 .scheduler-print__sheet { flex: 1; }
 
 /* No form drawn, so nothing here: the hub is a page, not a sheet. */
 .scheduler-print__sheet:empty { display: none; }
 
 /* ── The paper ────────────────────────────────────────────────────────────
-   A form is not drawn as paper. It is a page of this app in the theme the
-   person keeps, and @media print below pins the ink so it comes out black on
-   white whatever theme that was.
+   EVERY FORM IS DRAWN AS THE PAPER IT PRINTS ON: white, at that paper's width,
+   with that paper's ink margin, whatever theme the page around it is in. The
+   preview is where anyone sees what will come out, and print.html says how the
+   sheet gets the light theme that makes the ink ink.
 
-   What the paper still decides is the shape. A form that names its stock keeps
-   that stock's width, its ink margin and its height, here and on screen, so
-   what wraps here is what wraps on the envelope; `zoom` takes the whole thing
-   down to the room it has, and print.js measures that room. A form that names
-   none takes the column it is in and runs as long as it needs.
+   The width and the margin are written onto the root by print.js from the
+   paper the form names, so the sheet on screen is the sheet in the tray;
+   `zoom` below takes the whole thing down where the room is narrower. A form
+   that names no paper is fluid and takes the column it is in.
 
    On paper the page size comes from @page and the margins from the box model,
    because a print driver does not reliably honour an @page margin. */
 .scheduler-form {
   inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
-  background: none;
+  background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   padding: var(--scheduler-paper-margin, 0);
   box-sizing: border-box;
@@ -182,8 +183,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    whose own comments record several rounds of clipping bugs; `zoom` lays out
    at the smaller size instead of drawing over it, so there is nothing to clip.
 
-   With no paper named the height is invalid and ignored, which leaves the form
-   as tall as what is on it. */
+   The height is a minimum and not a limit: a short itinerary still draws a
+   whole page of white, because that is what comes out of the printer, and a
+   long one keeps going. With no paper named it is invalid and ignored, which
+   leaves the form as tall as what is on it. */
 @media screen {
   .scheduler-form {
     min-block-size: var(--scheduler-paper-height);
@@ -191,22 +194,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
-/* THE STOCK, ON SCREEN AND NOT ON PAPER. A form on named stock is shown as
-   that stock: the standard envelope in the kraft it is really printed on, and
-   the multi-stop layout on the white sheet that one takes. It is the whole of
-   the preview's job -- what comes out of the printer lands on this, and where
-   the colour stops is where the envelope stops. The sheet carries the light
-   theme with it, so the ink on that stock is the ink that prints.
-
-   None of it reaches the printer. The kraft is already there, in the tray, and
-   @media print whitens the form. A form on no named stock has none of this and
-   is a page of this app. */
+/* THE ONE STOCK THAT IS NOT WHITE, on screen and not on paper. The standard
+   envelope is printed on the kraft envelope itself, so the preview is that
+   envelope; the multi-stop layout takes a white sheet and stays white, as
+   every other form does. The kraft never reaches the printer -- it is already
+   there, in the tray -- so @media print whitens it again. */
 @media screen {
-  .scheduler-print__sheet[data-paper="named"] .scheduler-form {
-    background: var(--rux-background);
-  }
-
-  .scheduler-print__sheet[data-paper="named"] .scheduler-form[data-layout="standard"] {
+  .scheduler-form[data-layout="standard"] {
     background: var(--scheduler-envelope-paper);
   }
 }
@@ -220,20 +214,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     display: block;
     padding-inline: 0;
     max-inline-size: none;
-  }
-
-  /* INK, WHATEVER THEME THE PAGE IS IN. A form on named stock already carries
-     g10 on the sheet; a form shown as a page of this app is in the theme the
-     person keeps, and a dark one prints as white ink on white paper. These are
-     g10's own values for the tokens a form reads, so the two agree and the
-     sheet can be pinned without asking which it is holding. */
-  .scheduler-print__sheet {
-    --rux-background: #ffffff;
-    --rux-layer-01: #ffffff;
-    --rux-text-primary: #161616;
-    --rux-text-secondary: #525252;
-    --rux-border-strong-01: #8d8d8d;
-    --rux-border-subtle-01: #e0e0e0;
   }
 
   /* The room this page keeps to clear the header goes with the header. Half an
@@ -257,14 +237,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     padding: var(--scheduler-paper-margin, 0.4in);
   }
 
-  /* A form on a named paper is exactly one sheet, and the log takes whatever
-     room the rest of the form leaves. A fixed eight rows spills onto a second
-     envelope as soon as a seat's note runs to a second line, and a quarter
-     inch of overflow costs a whole envelope. The hairline off the height keeps
-     an exact fit from rounding into a blank second page; with no paper named
-     the calc is invalid, which leaves the height auto and the form free to
-     flow onto as many sheets as it needs. */
-  .scheduler-form { height: calc(var(--scheduler-paper-height) - 1pt); }
+  /* A FORM THAT NAMES A HEIGHT IS EXACTLY ONE SHEET, and its last block takes
+     whatever room the rest of it leaves. The envelope's log at a fixed eight
+     rows spilled onto a second envelope as soon as a seat's note ran to a
+     second line, and a quarter inch of overflow costs a whole envelope. The
+     hairline off the height keeps an exact fit from rounding into a blank
+     second page. A form that names no height -- the itinerary, which is as
+     long as its stops -- makes this calc invalid, which leaves the height auto
+     and the form free to run onto as many sheets as it needs. */
+  .scheduler-print__sheet[data-sheet="exact"] .scheduler-form {
+    height: calc(var(--scheduler-paper-height) - 1pt);
+  }
 
 }
 
@@ -740,15 +723,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-form[data-blank] .scheduler-driver-itinerary__table td[data-typed]:empty {
     border-block-end: 1px dotted var(--rux-border-strong-01);
   }
-}
-
-/* THE FORM NAMES ITSELF ON PAPER AND NOT ON SCREEN. The page's title row and
-   the panel's head already say which form this is, and saying it again under
-   the letterhead is the same two words twice on one screen; on paper neither
-   of them is there. It is the mirror of the toolbar, which is on screen and
-   never on paper. */
-@media screen {
-  .scheduler-driver-itinerary__title { display: none; }
 }
 
 @media print {

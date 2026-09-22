@@ -194,23 +194,17 @@
         <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
       </div>
       <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
-      <!-- WHERE THE FORM IS DRAWN, and how depends on the stock it names.
+      <!-- THE SHEET, AND IT IS PAPER whatever theme the page around it is in:
+           the envelope on its 6 by 9 in kraft, the itinerary on white Letter,
+           each at the size it really is, because the preview is where anyone
+           sees what will come out of the printer. print.js puts the theme
+           here rather than on the page, so every --rux-* token under it
+           resolves to ink on paper while the chrome around it follows the
+           theme as every other page's does.
 
-           The envelope names its own: 6 by 9, in kraft, and the preview is
-           that envelope, because what comes out of the printer lands on it and
-           this is where anyone sees whether it fits. The sheet carries g10
-           with it, so the ink on that stock is the ink that prints; it says
-           g10 and not white because white is Carbon's default rather than a
-           theme it writes a rule for, and `data-theme="white"` matches nothing.
-
-           A form printed on whatever is in the tray has no stock to show, so it
-           is a page of this app in the theme the person keeps: a long sheet of
-           white standing in a dark app reads as the app having broken rather
-           than as paper.
-
-           There is no desk under either. @media print pins g10's ink and
-           whitens the stock, because the kraft is already in the tray.
-           print.js sets `data-paper` and the theme from the form's entry. -->
+           There is no desk under it. A lighter surface behind the sheet only
+           made a bigger pale rectangle in a dark app; the page shows through
+           around the paper instead. -->
       <div class="scheduler-print__sheet" id="scheduler-print-sheet"></div>
     </div>
   </div>

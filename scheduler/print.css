@@ -477,13 +477,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* Capitals, the way the form in use prints what dispatch filled in: a name and
    an address are read at arm's length in a bus, off a page held in one hand.
    Only these short answers; the driver's own note stays as it was typed,
-   because a sentence in capitals is slower to read, not faster. */
+   because a sentence in capitals is slower to read, not faster.
+
+   Carbon's heading at the same size as the body, so the answer carries the
+   weight and the label stays light: the label is one word learned once, and
+   the value is the thing that changes every trip. */
 .scheduler-envelope__value {
   display: block;
-  font-size: var(--rux-body-compact-01-font-size);
-  font-weight: var(--rux-body-compact-01-font-weight);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   text-transform: uppercase;
   min-height: 1.25rem;
 }

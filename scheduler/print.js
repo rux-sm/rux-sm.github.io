@@ -296,10 +296,12 @@
     { label: 'Diesel/Blue Def', money: true },
     /* Which card, written in. A number here is the yes, so the pair of boxes
        that used to ask it went: a card written down and a card ticked for are
-       the same fact asked twice. */
-    { label: 'CC for trip', fill: true },
+       the same fact asked twice. It is named as the requirement below it is
+       named, because one object gets one name on a page. The line under it
+       does not repeat that name: what else would have been received. */
+    { label: 'Fuel card', fill: true },
     { label: 'Repairs', money: true },
-    { label: 'CC received by', fill: true },
+    { label: 'Received by', fill: true },
     { label: 'Miscellaneous', money: true },
     { label: 'Total trip miles', fill: true },
     { label: 'Total', money: true },
@@ -342,9 +344,14 @@
      person holding the envelope. */
   function envelopeNeeds(trip, seat) {
     const box = el('div', 'scheduler-envelope__reqs');
-    box.appendChild(el('span', 'scheduler-envelope__label', 'Requirements:'));
-
     const needs = needsOf(trip);
+    // The label names what is under it. A requirement is something the driver
+    // must do, and calling it a note demotes it; but an empty box headed
+    // "requirements" reads as a form that ran out, and the hand that writes
+    // in it is writing a note. A driver holds one envelope, never both.
+    box.appendChild(el('span', 'scheduler-envelope__label',
+      needs.length ? 'Requirements:' : 'Notes:'));
+
     if (needs.length) {
       const list = el('div', 'scheduler-envelope__needs');
       for (const need of needs) {

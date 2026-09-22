@@ -126,12 +126,19 @@
 .scheduler-print__grid {
   flex: 1;
   min-block-size: 0;
+  /* One row, and it takes the page's height rather than its content's. A grid
+     row sizes to what is in it by default, so a sheet as tall as a sheet of
+     paper made the row that tall and the fit had nothing to fit against. */
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .scheduler-print__column {
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
+  /* The same again down the chain: without it the sheet keeps its content's
+     height and the room print.js measures is the paper it is measuring. */
+  min-block-size: 0;
 }
 
 /* Framed in the board's panel the grid is not the room: the panel is 30rem and
@@ -145,8 +152,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* NO DESK UNDER THE SHEET. The paper is the thing to look at, and a lighter
    surface behind it only made a bigger pale rectangle in a dark app. The page
-   shows through around it, and the sheet's own edge is where the paper ends. */
-.scheduler-print__sheet { flex: 1; }
+   shows through around it, and the sheet's own edge is where the paper ends.
+
+   The room below it is 16px and is room the fit does not get to use, so the
+   paper never sits on the bottom edge of the window however far it has been
+   scaled down. print.js measures the sheet's box less its padding. */
+.scheduler-print__sheet {
+  flex: 1;
+  padding-block-end: var(--rux-spacing-05);
+}
 
 /* No form drawn, so nothing here: the hub is a page, not a sheet. */
 .scheduler-print__sheet:empty { display: none; }

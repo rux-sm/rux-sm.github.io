@@ -884,9 +884,6 @@
      that names a paper names that ink margin with it, and the width the sheet
      draws at on screen, so the page shows the shape that comes out of the
      printer. A form that names no paper keeps the page's own defaults. */
-  // Whether the form on the sheet must not run past one page of its paper.
-  let exactSheet = false;
-
   function setPaper(form) {
     let style = document.getElementById('scheduler-print-page');
     if (!style) {
@@ -908,11 +905,10 @@
        its ink is the same #161616. */
     sheet.setAttribute('data-theme', 'g10');
     /* AND WHETHER IT IS ONE SHEET OR MANY. The envelope has to come out on one
-       envelope, so print.css holds it to that height and the fit below shows
-       it whole; the itinerary runs as long as its stops and is only fitted
-       across. */
-    exactSheet = Boolean(paper?.exact);
-    sheet.dataset.sheet = exactSheet ? 'exact' : 'flows';
+       envelope, so print.css holds it to that height; the itinerary runs onto
+       as many as its stops need. Both are fitted the same way on screen -- a
+       page at a time. */
+    sheet.dataset.sheet = paper?.exact ? 'exact' : 'flows';
 
     const root = document.documentElement.style;
     for (const [prop, value] of [
@@ -951,17 +947,20 @@
     const style = getComputedStyle(sheet);
     const room = sheet.clientWidth
       - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd);
-    /* THE WHOLE SHEET, WHERE THE FORM IS ONE OF THEM. Standing alone the room
-       is what the window leaves under the title row, and a one-sheet form
-       takes the smaller of the two fits so the envelope is on screen entire --
-       a sheet of paper you can see all of beats one you scroll. A form that
-       runs onto as many sheets as it needs is scrolled anyway, so only its
-       width is fitted. Framed in the panel only the width is fitted either
-       way: the panel scrolls, and a short one would take the envelope down to
-       nothing. */
+    /* A PAGE AT A TIME, WHERE THE PAGE IS THE ROOM. Standing alone the room is
+       what the window leaves under the title row, and the form takes the
+       smaller of the two fits, so one page of its paper is on screen entire --
+       a sheet you can see all of beats one that runs off the bottom. A form
+       longer than a page is still scrolled for the rest of it, as a print
+       dialog scrolls; what is fitted is the page, not the whole form. The
+       sheet's own padding is off the room already, which is what keeps a gap
+       under the paper at every size.
+
+       Framed in the panel only the width is fitted: the panel scrolls, and a
+       short one would take the envelope down to nothing. */
     const standing = sheet.clientHeight
       - parseFloat(style.paddingBlockStart) - parseFloat(style.paddingBlockEnd);
-    const height = framed || !exactSheet || !Number.isFinite(tall) || !(standing > 0)
+    const height = framed || !Number.isFinite(tall) || !(standing > 0)
       ? Infinity : standing / tall;
     const fit = Math.min(1, room / wide, height);
     if (fit > 0) root.setProperty('--scheduler-fit', String(Math.round(fit * 1000) / 1000));

@@ -2740,3 +2740,17 @@ html:has(.scheduler-page[data-takeover]) {
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
+/* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
+   `display: grid`, which outranks the bare `[hidden]` attribute. */
+.scheduler-route-drop[hidden] { display: none; }
+/* The link that opens them is a button, because it acts on this page rather
+   than going anywhere, and Carbon's link is written for an anchor. */
+.scheduler-route-open {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  justify-self: start;
+}
+.scheduler-route-open[hidden] { display: none; }

@@ -64,8 +64,8 @@ in rux-ui's own `docs/itinerary-simplify-plan.md`.
 - **A trip rux-ui built a full itinerary for keeps every stop.** The tab
   writes only the rows above and says how many stops the leg has, so nothing
   in between is lost by opening it here, and the Times section shows only the
-  five. Once rux-ui's tab is simplified too, those stops are shown by both and
-  editable by neither; whether that stands is rux-ui's plan to answer.
+  five. Whether those stops are shown here, and what else the tab asks for the
+  middle of a trip, is `scheduler-route-stops.md`.
 - **A drop-off and pick-up trip shows the fields for the leg its bar is,** as
   the tab does today.
 - **`trips.departure_time`, `spot_time` and `return_time` are still not

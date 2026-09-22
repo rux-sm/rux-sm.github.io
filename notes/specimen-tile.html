@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="white"><head>
+<script src="/funnel.js"></script>
+<style>html:not([data-rux-unlocked]){visibility:hidden}</style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tile specimen — Notes</title>
+<link rel="stylesheet" href="/design/assets/fonts/plex.css">
+<link rel="stylesheet" href="/design/css/rux.css">
+<link rel="stylesheet" href="/design/css/rux-theme.css">
+<link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="theme.css"><link rel="stylesheet" href="overrides.css">
+<style>
+body { background: var(--rux-background); color: var(--rux-text-primary); }
+.notes-spec { max-inline-size: 48rem; margin: auto; padding: 3rem 1.25rem 6rem; }
+.notes-eyebrow, .notes-section-label { font-size: .75rem; color: var(--rux-text-secondary); letter-spacing: .06em; }
+.notes-intro { margin: .75rem 0 2rem; color: var(--rux-text-secondary); max-inline-size: 34rem; line-height: 1.6; }
+.notes-overview { display:flex; justify-content:space-between; gap:1rem; padding-block:1rem; border-block-start:1px solid var(--rux-border-subtle-01); font-size:.75rem; color:var(--rux-text-secondary); }
+.notes-map { display:grid; gap:.5rem; }
+.notes-node { display:grid; grid-template-columns:2rem 1fr auto; align-items:center; gap:.75rem; padding:1rem; border:1px solid var(--rux-border-subtle-01); color:var(--rux-text-primary); text-decoration:none; background:var(--rux-layer-01); }
+.notes-node:hover { background:var(--rux-layer-hover-01); }
+.notes-node small { display:block; color:var(--rux-text-secondary); margin-block-start:.3rem; }
+.notes-seal { display:grid; place-items:center; inline-size:1.75rem; block-size:1.75rem; border:1px solid var(--rux-interactive); border-radius:50%; background:var(--rux-interactive); color:var(--rux-text-on-color); font-size:.875rem; font-variant-numeric:tabular-nums; }
+.notes-incomplete { border-style:dashed; }
+.notes-incomplete .notes-seal { background:none; border-style:dashed; border-color:var(--rux-border-strong-01); color:var(--rux-text-secondary); }
+.notes-state { font-size:.75rem; color:var(--rux-text-secondary); white-space:nowrap; }
+.notes-section-label { margin:2.5rem 0 .75rem; }
+.notes-tile { border:1px solid var(--rux-border-subtle-01); background:var(--rux-layer-01); scroll-margin-top:1rem; }
+.notes-tile[data-incomplete] { border-style:dashed; }
+.notes-tile > summary { list-style:none; cursor:pointer; padding:1.5rem; display:grid; grid-template-columns:2rem 1fr auto; gap:.75rem; align-items:center; }
+.notes-tile > summary::-webkit-details-marker { display:none; }
+.notes-tile-title { font-size:1.25rem; font-weight:600; line-height:1.3; margin:0; }
+.notes-caret { font-size:1rem; color:var(--rux-text-secondary); }
+.notes-tile[open] .notes-caret { transform:rotate(180deg); }
+.notes-body { padding:0 1.5rem 1.5rem; }
+.notes-location { padding-bottom:1.25rem; border-bottom:1px solid var(--rux-border-subtle-01); font-size:.875rem; color:var(--rux-text-secondary); line-height:1.6; }
+.notes-location code { font:inherit; }
+.notes-code { background:none; border:0; padding:0; cursor:pointer; color:var(--rux-link-primary); font-family:var(--rux-code-01-font-family,'IBM Plex Mono',monospace); font-size:.875rem; white-space:nowrap; }
+.notes-code:hover { text-decoration:underline; }
+.notes-copied:not(:empty) { margin-inline-start:.4rem; color:var(--rux-support-success); }
+.notes-group { margin-top:1.25rem; }
+.notes-group h3 { font-size:.75rem; color:var(--rux-text-secondary); margin-bottom:.5rem; font-weight:600; }
+.notes-step { padding:.25rem 0; }
+.notes-step .rux--checkbox-label-text { font-size:.875rem; line-height:1.6; }
+.notes-step:has(:checked) .rux--checkbox-label-text { color:var(--rux-text-secondary); text-decoration:line-through; }
+.notes-step strong { font-weight:600; }
+.notes-step small { display:block; font-size:.75rem; color:var(--rux-text-secondary); text-decoration:none; }
+.notes-result { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; margin-top:1.5rem; padding-top:1rem; font-size:.75rem; color:var(--rux-text-secondary); border-top:1px solid var(--rux-border-subtle-01); }
+.notes-progress { color:var(--rux-text-secondary); }
+.notes-next { margin:1.5rem -1.5rem -1.5rem; padding:1.25rem 1.5rem; border-top:1px solid var(--rux-border-subtle-01); background:var(--rux-layer-02); }
+.notes-next h3 { font-size:1rem; font-weight:600; margin-bottom:.75rem; }
+.notes-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+.notes-missing { border:1px dashed var(--rux-border-strong-01); color:var(--rux-text-secondary); padding:.65rem 1rem; text-decoration:none; font-size:.875rem; }
+.notes-missing:hover { background:var(--rux-layer-hover-01); }
+.notes-quest { margin:.375rem 0 .75rem 1.75rem; border:1px dashed var(--rux-border-strong-01); scroll-margin-top:1rem; }
+.notes-quest summary { display:flex; gap:.5rem; align-items:baseline; padding:.75rem; cursor:pointer; font-size:.8125rem; line-height:1.5; list-style:none; }
+.notes-quest summary::-webkit-details-marker { display:none; }
+/* The quest mark. Carbon's warning disc needs a fixed dark counter that no
+   rux token exposes, so the specimen names it here; shipping it means one
+   symbol or token added to Design. */
+:root { --notes-on-warning:#161616; }
+.notes-quest-mark { flex:none; align-self:center; }
+.notes-missing { display:inline-flex; align-items:center; gap:.5rem; }
+.notes-quest-title { font:inherit; margin:0; }
+.notes-quest-number { font-family:var(--rux-code-01-font-family,'IBM Plex Mono',monospace); color:var(--rux-text-secondary); font-size:.6875rem; flex:none; }
+.notes-quest summary::after { content:'+'; margin-left:auto; }
+.notes-quest[open] summary::after { content:'−'; }
+.notes-quest-content { padding:0 .75rem .75rem; }
+.notes-quest-content p { font-size:.8125rem; line-height:1.6; color:var(--rux-text-secondary); margin-bottom:.75rem; }
+.notes-quest form { display:grid; gap:.75rem; }
+.notes-quest .rux--text-area { inline-size:100%; }
+.notes-feedback { font-size:.75rem; color:var(--rux-text-secondary); }
+.notes-quest[data-answered] { border-style:solid; border-color:var(--rux-border-interactive); }
+/* Carbon rings on :focus, so app-own controls do too; :focus-visible alone
+   left them ringless for anything but a keyboard. */
+a:focus, summary:focus, input:focus, .notes-code:focus { outline:2px solid var(--rux-focus); outline-offset:3px; }
+.notes-footnote { font-size:.75rem; line-height:1.6; color:var(--rux-text-secondary); margin-top:2rem; }
+@media(max-width: 42rem) { .notes-spec { padding:1.5rem .75rem 3rem; } .notes-tile > summary { padding:1rem; } .notes-body { padding:0 1rem 1rem; } .notes-next { margin:1.25rem -1rem -1rem; padding:1.25rem 1rem; } .notes-next .rux--btn { inline-size:100%; max-inline-size:none; justify-content:flex-start; } .notes-tile-title { font-size:1.125rem; } .notes-node { padding:.75rem; } .notes-node .notes-state { max-width:5rem; white-space:normal; text-align:right; } .notes-quest { margin-left:0; } }
+</style></head><body><!-- SPRITE:BEGIN -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<!-- Generated by tools/build-icons.mjs. Do not edit by hand.
+     i- path data: Carbon Design System, Copyright IBM Corp. 2015, 2026.
+     m- path data: Material Symbols, Copyright Google LLC.
+     Both licensed under the Apache License, Version 2.0. r- is drawn here.
+     The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></symbol>
+<symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></symbol>
+<symbol id="i-warning--filled" viewBox="0 0 16 16"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0"/></symbol>
+<symbol id="i-information--filled" viewBox="0 0 32 32"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z"/></symbol>
+<symbol id="i-search" viewBox="0 0 16 16"><path d="M15,14.3L10.7,10c1.9-2.3,1.6-5.8-0.7-7.7S4.2,0.7,2.3,3S0.7,8.8,3,10.7c2,1.7,5,1.7,7,0l4.3,4.3L15,14.3z M2,6.5	C2,4,4,2,6.5,2S11,4,11,6.5S9,11,6.5,11S2,9,2,6.5z"/></symbol>
+<symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z"/><path d="M2 9H14V10H2z"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
+<symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z"/></symbol>
+<symbol id="i-document" viewBox="0 0 32 32"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></symbol>
+<symbol id="i-edit" viewBox="0 0 32 32"><path d="M2 26H30V28H2z"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6	l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 32 32"><path d="M12,4H6A2,2,0,0,0,4,6v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,12,4Zm0,8H6V6h6Z"/><path d="M26,4H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,8H20V6h6Z"/><path d="M12,18H6a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,12,18Zm0,8H6V20h6Z"/><path d="M26,18H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,26,18Zm0,8H20V20h6Z"/></symbol>
+</svg>
+<!-- SPRITE:END --><main class="notes-spec" id="main"><p class="notes-eyebrow">NOTES / PATH SPECIMEN</p><h1 class="rux--type-productive-heading-05">A clear next step.</h1><p class="notes-intro">Do the task. Check your result. Choose what comes next.<br>When a piece is missing, help finish the guide.</p><div class="notes-overview"><span>Ship from stock</span><span>2 of 4 guides complete · 3 quests</span></div><nav class="notes-map" aria-label="Tiles in this path"><a class="notes-node " href="#sales"><span class="notes-seal">01</span><span>Create a sales order<small>Approved order</small></span></a><a class="notes-node " href="#release"><span class="notes-seal">02</span><span>Release to Warehousing<small>Order ready for outbound advice</small></span></a><a class="notes-node notes-incomplete" href="#advice"><span class="notes-seal">03</span><span>Generate outbound advice<small>Advice ready for picking</small></span><span class="notes-state">2 quests</span></a><a class="notes-node notes-incomplete" href="#ship"><span class="notes-seal">04</span><span>Pick and ship<small>Shipment confirmed</small></span><span class="notes-state">1 quest</span></a></nav><p class="notes-section-label">COMPLETE GUIDE</p><details class="notes-tile " id="sales"  open><summary><span class="notes-seal" role="img" aria-label="Step 1, complete">01</span><h2 class="notes-tile-title">Create a sales order</h2><span class="notes-caret" aria-hidden="true">⌄</span></summary><div class="notes-body"><p class="notes-location">Sales → Orders → <strong>Order Intake Workbench</strong> <button type="button" class="notes-code" data-code="tdsls4601m200" aria-label="Copy session code tdsls4601m200">(<code>tdsls4601m200</code>)</button><span class="notes-copied" role="status"></span></p><section class="notes-group"><h3>Header</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-1" class="rux--checkbox" type="checkbox"><label for="st-1" class="rux--checkbox-label"><div class="rux--checkbox-label-text"><strong>New</strong> → enter <strong>Sold-to Business Partner</strong>.</div></label></div><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-2" class="rux--checkbox" type="checkbox"><label for="st-2" class="rux--checkbox-label"><div class="rux--checkbox-label-text">On <strong>Control</strong>, set <strong>Planned Delivery Date</strong> and <strong>Warehouse</strong>. Then <strong>Save</strong>.<small>Keep the sales order number.</small></div></label></div></section><section class="notes-group"><h3>Line</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-3" class="rux--checkbox" type="checkbox"><label for="st-3" class="rux--checkbox-label"><div class="rux--checkbox-label-text"><strong>New</strong> → choose <strong>Item</strong>, enter <strong>Ordered Quantity</strong>, then <strong>Save</strong>.</div></label></div></section><section class="notes-group"><h3>Back to header</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-4" class="rux--checkbox" type="checkbox"><label for="st-4" class="rux--checkbox-label"><div class="rux--checkbox-label-text"><strong>Actions → Approve</strong>.<small>Check that Status is In Process.</small></div></label></div></section><div class="notes-result"><span class="notes-progress" role="status">0 of 4 steps checked</span><a class="rux--link" href="pages/ship-from-stock.html#p-1">Full procedure ↗</a></div><section class="notes-next"><h3>Is there stock to cover it?</h3><div class="notes-actions"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#release">Yes · release to warehouse →</a><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="index.html#tile-plan-all">No · plan supply →</a></div></section></div></details><p class="notes-section-label">GUIDE IN PROGRESS · 2 MISSING PIECES</p><details class="notes-tile notes-incomplete" id="advice" data-incomplete open><summary><span class="notes-seal" role="img" aria-label="Step 3, not done">03</span><h2 class="notes-tile-title">Generate outbound advice</h2><span class="notes-caret" aria-hidden="true">⌄</span></summary><div class="notes-body"><p class="notes-location">Warehousing → Orders → <strong>Warehousing Orders</strong> <button type="button" class="notes-code" data-code="whinh2100m000" aria-label="Copy session code whinh2100m000">(<code>whinh2100m000</code>)</button><span class="notes-copied" role="status"></span></p><section class="notes-group"><h3>Header</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-5" class="rux--checkbox" type="checkbox"><label for="st-5" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Open the warehousing order.</div></label></div><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-6" class="rux--checkbox" type="checkbox"><label for="st-6" class="rux--checkbox-label"><div class="rux--checkbox-label-text"><strong>Actions → Generate Outbound Advice</strong>, then <strong>Save</strong>.</div></label></div></section><details class="notes-quest" id="quest-1"><summary><svg class="notes-quest-mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--rux-support-warning)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--notes-on-warning)"/></svg><span class="notes-quest-number">Q01</span><h3 class="notes-quest-title">Check the shortage setting</h3></summary><div class="notes-quest-content"><p>In Inventory Handling Parameters (whinh0100m000), capture the value of Create Outbound Advice Despite Inventory Shortage.</p><form><div class="rux--form-item"><div class="rux--text-area__label-wrapper"><label class="rux--label" for="note-1">What did you find?</label></div><div class="rux--text-area__wrapper"><textarea class="rux--text-area" id="note-1" rows="3" required placeholder="The value, the result, or the next step…"></textarea></div></div><div class="rux--form-item"><p class="rux--file--label">Screenshot</p><p class="rux--label-description">Optional</p><div class="rux--file"><button type="button" class="rux--file__drop-container rux--file-browse-btn">Drag one here or click to upload</button><label class="rux--visually-hidden" for="shot-1">Screenshot</label><input id="shot-1" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept="image/*"></div></div><div class="notes-actions"><button class="rux--btn rux--btn--primary rux--btn--sm" type="submit">Send answer</button></div><span class="notes-feedback" role="status"></span></form></div></details><section class="notes-group"><h3>Line</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-7" class="rux--checkbox" type="checkbox"><label for="st-7" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Read the advised quantity against the ordered quantity.</div></label></div></section><details class="notes-quest" id="quest-2"><summary><svg class="notes-quest-mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--rux-support-warning)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--notes-on-warning)"/></svg><span class="notes-quest-number">Q02</span><h3 class="notes-quest-title">Find the route for a shortage</h3></summary><div class="notes-quest-content"><p>In a practice environment, generate advice for more than the available stock. Record the advised quantity and what LN offers next. This fills the missing “No” branch.</p><form><div class="rux--form-item"><div class="rux--text-area__label-wrapper"><label class="rux--label" for="note-2">What did you find?</label></div><div class="rux--text-area__wrapper"><textarea class="rux--text-area" id="note-2" rows="3" required placeholder="The value, the result, or the next step…"></textarea></div></div><div class="rux--form-item"><p class="rux--file--label">Screenshot</p><p class="rux--label-description">Optional</p><div class="rux--file"><button type="button" class="rux--file__drop-container rux--file-browse-btn">Drag one here or click to upload</button><label class="rux--visually-hidden" for="shot-2">Screenshot</label><input id="shot-2" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept="image/*"></div></div><div class="notes-actions"><button class="rux--btn rux--btn--primary rux--btn--sm" type="submit">Send answer</button></div><span class="notes-feedback" role="status"></span></form></div></details><div class="notes-result"><span class="notes-progress" role="status">0 of 3 steps checked</span><span>2 gaps in this guide</span></div><section class="notes-next"><h3>Did advice cover the whole quantity?</h3><div class="notes-actions"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#ship">Yes · pick and ship →</a><a class="notes-missing" href="#quest-2"><svg class="notes-quest-mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--rux-support-warning)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--notes-on-warning)"/></svg>No · discover this route</a></div></section></div></details><p class="notes-section-label">CONNECTED TILES</p><details class="notes-tile " id="release" ><summary><span class="notes-seal" role="img" aria-label="Step 2, complete">02</span><h2 class="notes-tile-title">Release to Warehousing</h2><span class="notes-caret" aria-hidden="true">⌄</span></summary><div class="notes-body"><p class="notes-location">Sales order · approved lines</p><section class="notes-group"><h3>Header</h3><div class="rux--form-item rux--checkbox-wrapper notes-step"><input id="st-8" class="rux--checkbox" type="checkbox"><label for="st-8" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Release the approved lines to Warehousing.<small>Keep the warehousing order number.</small></div></label></div></section><div class="notes-result"><span class="notes-progress" role="status">0 of 1 steps checked</span><a class="rux--link" href="pages/ship-from-stock.html#p-2">Full procedure ↗</a></div><section class="notes-next"><h3>Is the warehousing order available?</h3><div class="notes-actions"><a class="rux--btn rux--btn--tertiary rux--btn--sm" href="#advice">Yes · generate advice →</a></div></section></div></details><details class="notes-tile notes-incomplete" id="ship" data-incomplete><summary><span class="notes-seal" role="img" aria-label="Step 4, not done">04</span><h2 class="notes-tile-title">Pick and ship</h2><span class="notes-caret" aria-hidden="true">⌄</span></summary><div class="notes-body"><p class="notes-location">Warehousing · outbound order</p><details class="notes-quest" id="quest-3"><summary><svg class="notes-quest-mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--rux-support-warning)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" fill="var(--notes-on-warning)"/></svg><span class="notes-quest-number">Q03</span><h3 class="notes-quest-title">Capture the picking and shipment steps</h3></summary><div class="notes-quest-content"><p>Follow the full procedure in a practice environment. Capture the fewest actions and the final shipment status.</p><form><div class="rux--form-item"><div class="rux--text-area__label-wrapper"><label class="rux--label" for="note-3">What did you find?</label></div><div class="rux--text-area__wrapper"><textarea class="rux--text-area" id="note-3" rows="3" required placeholder="The value, the result, or the next step…"></textarea></div></div><div class="rux--form-item"><p class="rux--file--label">Screenshot</p><p class="rux--label-description">Optional</p><div class="rux--file"><button type="button" class="rux--file__drop-container rux--file-browse-btn">Drag one here or click to upload</button><label class="rux--visually-hidden" for="shot-3">Screenshot</label><input id="shot-3" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept="image/*"></div></div><div class="notes-actions"><button class="rux--btn rux--btn--primary rux--btn--sm" type="submit">Send answer</button></div><span class="notes-feedback" role="status"></span></form></div></details><div class="notes-result"><a class="rux--link" href="pages/ship-from-stock.html#p-3">Full procedure ↗</a></div></div></details><p class="notes-footnote">Interactive specimen · illustrative steps, not a verified LN procedure.<br>Checks and answers last only while this page is open. Sending an answer previews review; it does not publish a guide or upload a screenshot.</p></main>
+<script>
+for (const tile of document.querySelectorAll('.notes-tile')) {
+  tile.addEventListener('change', () => {
+    const checks = [...tile.querySelectorAll('.notes-step input')];
+    const status = tile.querySelector('.notes-progress');
+    if (status && checks.length) status.textContent = checks.every(c => c.checked) ? '✓ Steps checked · choose what comes next' : `${checks.filter(c => c.checked).length} of ${checks.length} steps checked`;
+  });
+}
+for (const btn of document.querySelectorAll('.notes-code')) {
+  btn.addEventListener('click', async () => {
+    const say = btn.nextElementSibling;
+    try { await navigator.clipboard.writeText(btn.dataset.code); say.textContent = 'Copied'; }
+    catch {
+      // Some browsers refuse the clipboard outright; select the code so the
+      // keyboard can still take it, rather than asking for a selection that
+      // has not been made.
+      const r = document.createRange(); r.selectNodeContents(btn.firstElementChild);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      say.textContent = 'Selected \u2014 press \u2318C';
+    }
+    clearTimeout(btn.dataset.t); btn.dataset.t = setTimeout(() => { say.textContent = ''; }, 1600);
+  });
+}
+
+function reveal(hash) {
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return;
+  for (let el=target; el; el=el.parentElement) if(el.tagName==='DETAILS') el.open=true;
+  target.scrollIntoView({block:'start'});
+  const focus = target.matches('details') ? target.querySelector('summary') : target;
+  focus?.focus({preventScroll:true});
+}
+document.addEventListener('click', e => {
+  const link=e.target.closest('a[href^="#"]');
+  if (link) { e.preventDefault(); history.replaceState(null,'',link.hash); reveal(link.hash); }
+});
+window.addEventListener('hashchange',()=>reveal(location.hash));
+if(location.hash) reveal(location.hash);
+for(const form of document.querySelectorAll('.notes-quest form')) {
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const note=form.querySelector('textarea');
+    if(!note.value.trim()) { note.setCustomValidity('Add what you found first.'); note.reportValidity(); return; }
+    const quest=form.closest('.notes-quest');
+    quest.dataset.answered='true';
+    form.querySelector('[role="status"]').textContent='Answer captured for this preview. The gap stays open until reviewed.';
+    form.querySelector('button[type="submit"]').textContent='Update answer';
+  });
+  form.querySelector('textarea').addEventListener('input',e=>e.target.setCustomValidity(''));
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
+</body></html>

@@ -186,6 +186,17 @@
        board's panel, where the panel is the room, and on paper. -->
   <div class="rux--css-grid scheduler-print__grid">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12 scheduler-print__column">
+      <!-- THE WAY BACK, and only where this page stands alone: framed in the
+           board's panel the panel's own head and its close button are the way
+           back, and a trail inside a frame is chrome inside chrome. It keeps
+           the trip, so Forms returns to that trip's list rather than the bare
+           one. print.js fills it and takes the `hidden` off. -->
+      <nav class="scheduler-print__crumbs" id="scheduler-print-crumbs" aria-label="Breadcrumb" hidden>
+        <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">
+          <li class="rux--breadcrumb-item"><a class="rux--link" href="print.html" id="scheduler-print-crumb-up">Forms</a></li>
+          <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="" aria-current="page" id="scheduler-print-crumb-here"></a></li>
+        </ol>
+      </nav>
       <div class="scheduler-print__bar" id="scheduler-print-bar" hidden>
         <h1 class="rux--type-productive-heading-04 scheduler-print__bar-title" id="scheduler-print-title"></h1>
         <div class="scheduler-print__controls" id="scheduler-print-controls"></div>

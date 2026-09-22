@@ -853,6 +853,22 @@
   const sheet = document.getElementById('scheduler-print-sheet');
   const note = document.getElementById('scheduler-print-note');
   const hub = document.getElementById('scheduler-print-hub');
+  const crumbs = document.getElementById('scheduler-print-crumbs');
+  const crumbUp = document.getElementById('scheduler-print-crumb-up');
+  const crumbHere = document.getElementById('scheduler-print-crumb-here');
+
+  /* THE WAY BACK TO THE LIST, and only where this page stands alone: framed in
+     the panel the panel's own head is the way back. Forms keeps the trip, so
+     it returns to that trip's forms rather than to the bare list. */
+  function setCrumbs(form, trip) {
+    if (!form) return void (crumbs.hidden = true);
+    crumbUp.href = trip?.id
+      ? `print.html?trip=${encodeURIComponent(trip.id)}`
+      : 'print.html';
+    crumbHere.textContent = form.name;
+    crumbHere.href = location.href;
+    crumbs.hidden = Boolean(host);
+  }
 
   const NOTE_KIND = {
     info: 'rux--inline-notification rux--inline-notification--info',
@@ -892,7 +908,19 @@
       document.head.appendChild(style);
     }
     const paper = form?.page;
-    style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: 0; }`;
+    /* WHERE THE MARGIN GOES, and it is not the same answer for both forms. A
+       block's padding is at its start and its end, so on a form that runs onto
+       a second sheet the middle pages have none at all and the ink goes to the
+       edge of the paper. An @page margin is the only one that repeats, so a
+       form that flows names it there and keeps no padding of its own on paper;
+       print.css says the same thing from its side.
+
+       A form held to one sheet keeps the margin in the box model, because it
+       has no middle pages to lose and because a print driver does not
+       reliably honour an @page margin -- which is what the envelope's own
+       stock, 6 by 9 with zero margins of its own, was measured against. */
+    const pageMargin = paper && !paper.exact && paper.margin ? paper.margin : '0';
+    style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: ${pageMargin}; }`;
 
     /* AND THE SHEET IS PAPER, whatever theme the page around it is in: every
        form here is going to a printer, and the preview is where anyone sees
@@ -975,6 +1003,60 @@
   let current = null; // { form, subject, copies, every, chosen, layout }
   let printingAll = false;
 
+  // A length written onto the root in inches, as the CSS pixels it means.
+  const paperPx = name => {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(name).trim();
+    const inches = value.endsWith('in') ? parseFloat(value) : NaN;
+    // 96 CSS pixels to the inch, which is what an inch means in CSS.
+    return Number.isFinite(inches) ? inches * 96 : NaN;
+  };
+
+  /* WHERE THE PAPER RUNS OUT. A form that flows onto more than one sheet says
+     where each one ends, because otherwise the only place anyone finds out is
+     the print dialog, and a stop cut in half is found after it is printed.
+
+     It walks the rows the way the printer does: a page holds what fits between
+     its margins, `break-inside: avoid` keeps a row whole, and a row that will
+     not fit starts the next page. The line is drawn at that row's own top,
+     which is where the page really begins rather than where the measure ran
+     out.
+
+     The marks are laid over the form and take no room in it, so the rows below
+     a break stay where the measure put them. The preview is one running sheet
+     with the folds marked on it, not a stack of separate ones: the 0.8in of
+     margin a real fold puts between two rows is not drawn. They are a guide --
+     a printer's own unprintable margin can still take a row -- and they are
+     drawn on screen only. */
+  function showPageBreaks(card) {
+    if (sheet.dataset.sheet !== 'flows') return;
+    const page = paperPx('--scheduler-paper-height');
+    const margin = paperPx('--scheduler-paper-margin');
+    const usable = page - margin * 2;
+    if (!Number.isFinite(usable) || usable <= 0) return;
+
+    const rows = [...card.querySelectorAll('tbody > tr')];
+    const origin = card.firstElementChild?.offsetTop;
+    if (!rows.length || !Number.isFinite(origin)) return;
+
+    // Measured first and marked after, because a mark laid over the form does
+    // not move a row but reading one row at a time while inserting would.
+    const breaks = [];
+    let ends = usable;
+    for (const row of rows) {
+      const top = row.offsetTop - origin;
+      if (top + row.offsetHeight <= ends) continue;
+      breaks.push(row.offsetTop);
+      ends = top + usable;
+    }
+    for (const [i, top] of breaks.entries()) {
+      const mark = el('div', 'scheduler-driver-itinerary__break');
+      mark.style.insetBlockStart = `${top}px`;
+      mark.appendChild(el('span', 'scheduler-driver-itinerary__break-label', `Page ${i + 2}`));
+      card.appendChild(mark);
+    }
+  }
+
   const draw = () => {
     if (!current) return;
     const card = current.form.render(current.every[current.chosen], current.layout);
@@ -983,6 +1065,9 @@
     if (current.blank) card.dataset.blank = '';
     if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     sheet.replaceChildren(card);
+    // The rows have to be on screen to be measured, and the marks take no room
+    // in the form, so nothing moves under them once they are laid.
+    showPageBreaks(card);
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
        after the room is already its final size. */
@@ -1318,6 +1403,7 @@
 
   async function showHub() {
     setPaper(null);
+    setCrumbs(null);
     fitPaper();
     host?.setViewerHead('Forms');
     const trip = params.get('trip');
@@ -1402,6 +1488,7 @@
 
   // The form on the sheet, once its subject has answered.
   function show(form, subject, copies, chosen, blank) {
+    setCrumbs(form, subject.trip);
     current = {
       form,
       subject,
@@ -1536,6 +1623,9 @@
 
   async function showForm(form) {
     title.textContent = form.name;
+    // Named from the address first, so a form that cannot be drawn still has a
+    // way back; `show` names it again from the trip once that has answered.
+    setCrumbs(form, { id: params.get('trip') });
     setPaper(form);
     // The paper is named now, so the sheet can be fitted to the room it has.
     fitPaper();

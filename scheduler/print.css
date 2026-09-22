@@ -51,6 +51,17 @@
    what it did in the panel, where the toolbar is the panel's own. */
 .scheduler-print__bar[hidden] { display: none; }
 
+/* THE WAY BACK, above the title and only on a page that stands alone. It is
+   Carbon's breadcrumb, so the trail on this page reads as the trail on any
+   other; print.css only places it. */
+.scheduler-print__crumbs[hidden] { display: none; }
+
+.scheduler-print__crumbs {
+  margin-block-end: var(--rux-spacing-03);
+}
+
+@media print { .scheduler-print__crumbs { display: none; } }
+
 /* THE PAGE'S OWN TITLE ROW, where the panel's toolbar cannot follow: the form's
    name at one end and what to do with it at the other, laid out as the quote
    calculator's title row is, because they are the same thing -- a page, its
@@ -181,6 +192,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-form {
   inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
+  /* The page marks are laid over it, so they take no room in what prints. */
+  position: relative;
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   padding: var(--scheduler-paper-margin, 0);
@@ -250,6 +263,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     margin: 0;
     padding: var(--scheduler-paper-margin, 0.4in);
   }
+
+  /* A FORM THAT FLOWS KEEPS NO PADDING ON PAPER. Padding is at a block's start
+     and its end, so on the second sheet of three there would be none and the
+     ink would run to the edge; print.js names the margin in @page instead,
+     which is the only one that repeats. */
+  .scheduler-print__sheet[data-sheet="flows"] .scheduler-form { padding: 0; }
 
   /* A FORM THAT NAMES A HEIGHT IS EXACTLY ONE SHEET, and its last block takes
      whatever room the rest of it leaves. The envelope's log at a fixed eight
@@ -700,6 +719,34 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-weight: var(--rux-heading-compact-01-font-weight);
   text-transform: uppercase;
 }
+
+/* WHERE THE PAPER RUNS OUT, on screen and never on it. A dashed rule across
+   the sheet at the top of the row that starts the next page, so a stop cut in
+   half is found here rather than in the print dialog. It is laid over the form
+   and takes no room in it, so nothing below it moves. print.js measures the
+   rows and places them. */
+.scheduler-driver-itinerary__break {
+  position: absolute;
+  inset-inline: 0;
+  border-block-start: 1px dashed var(--rux-border-strong-01);
+  pointer-events: none;
+}
+
+/* Hung under the rule at the outer edge, in the paper's own margin, so it
+   stands off the writing rather than among it. */
+.scheduler-driver-itinerary__break-label {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: var(--rux-spacing-01);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  text-transform: uppercase;
+  color: var(--rux-text-secondary);
+}
+
+@media print { .scheduler-driver-itinerary__break { display: none; } }
 
 /* Rows are added before printing, never printed empty, so the button that
    adds them lives with the form and comes off the paper. */

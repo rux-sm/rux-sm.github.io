@@ -3704,6 +3704,82 @@
   // Whole dollars: trip amounts are round, so cents would be noise on every row.
   const usd = n => `$${Math.round(n).toLocaleString('en-US')}`;
 
+  /* ── THE QUICKBOOKS DESCRIPTION ──
+     The office's estimate carries one line item, and its description is the
+     lines below. QuickBooks fills the customer, the bill-to address, the terms
+     and the signature line from its own record and template, so the block is
+     the only part of a quote worth carrying across; the price and the customer
+     name are one field each there, and a pasted block would have to be cleaned
+     back out of them. The lines are read from the controls rather than the
+     saved trip, so a quote can be copied while it is still being written. */
+  const QB_TRIP_TYPES = { round_trip: 'round trip', one_way: 'one way', dropoff_pickup: 'drop-off and pickup' };
+
+  /* State names as a quote abbreviates them: a stored address carries the name
+     in full, "Texas 78504", because that is what the map service returned. */
+  const QB_STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
+    .split(',').map(pair => pair.split(':')));
+
+  /* A place as a quote names it, "Edinburg, TX": the part before the one
+     carrying the ZIP, and that part's state. An address shaped otherwise is
+     carried across whole, because a quote reads better with too much address
+     than with none. */
+  function qbPlace(text) {
+    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
+    const zipAt = parts.findIndex(part => /\s\d{5}(-\d{4})?$/.test(part));
+    const state = zipAt > 0 ? QB_STATES[parts[zipAt].replace(/\s+\d{5}(-\d{4})?$/, '')] : null;
+    return state ? `${parts[zipAt - 1]}, ${state}` : parts.join(', ');
+  }
+
+  /* A range as the office writes one: "December 11-13, 2026", the month named
+     once inside a month and twice across two, and a single day left alone. */
+  function qbDates(from, to) {
+    if (!from) return '';
+    const a = parseISO(from);
+    const b = to ? parseISO(to) : a;
+    const month = d => d.toLocaleDateString('en-US', { month: 'long' });
+    if (a.getTime() === b.getTime()) return `${month(a)} ${a.getDate()}, ${a.getFullYear()}`;
+    if (a.getFullYear() !== b.getFullYear()) {
+      return `${month(a)} ${a.getDate()}, ${a.getFullYear()} to ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
+    }
+    return a.getMonth() === b.getMonth()
+      ? `${month(a)} ${a.getDate()}-${b.getDate()}, ${b.getFullYear()}`
+      : `${month(a)} ${a.getDate()} to ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
+  }
+
+  // "7:00 AM", the long form a quote takes, from the board's own "7:00am".
+  const qbClock = t => hhmm(t).replace(/([ap])m$/, (_, half) => ` ${half.toUpperCase()}M`);
+
+  /* The vehicle line. The seats are the assigned bus's, so before a bus is
+     picked the line names the vehicle alone rather than guessing a size. */
+  function qbVehicle() {
+    const buses = editing?.fleet?.outbound ?? [];
+    const picked = buses.find(b => b.busId);
+    const seats = picked ? panelIndex.buses.get(picked.busId)?.capacity ?? null : null;
+    const count = Math.max(buses.length, 1);
+    const what = count > 1 ? `${count} buses` : 'Bus';
+    return seats ? `${what} (${seats} passengers${count > 1 ? ' each' : ''})` : what;
+  }
+
+  /* The block itself. A line the trip cannot answer yet is dropped, except the
+     two times, which the office writes as TBD and settles with the customer. */
+  function qbDescription() {
+    const val = id => document.getElementById(id)?.value.trim() || '';
+    // Not `iso`, which is this file's own Date formatter.
+    const day = id => isoOrNull(document.getElementById(id)?.value ?? '');
+    const split = val('scheduler-f-type') === SPLIT;
+    const start = day('scheduler-f-start');
+    const end = (split ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
+    const pickup = qbPlace(val('scheduler-f-pickup') || editing?.route?.pickupPlace?.address || '');
+    const drop = val('scheduler-f-destination');
+    return [
+      `${qbVehicle()} ${QB_TRIP_TYPES[val('scheduler-f-type')] || 'trip'}`,
+      [pickup ? `from ${pickup}` : null, drop ? `to ${drop}` : null].filter(Boolean).join(' '),
+      start ? `on ${qbDates(start, end)}` : null,
+      `departing at ${qbClock(val('scheduler-f-leave')) || 'TBD'}`,
+      `arriving at ${qbClock(val('scheduler-f-endtrip')) || 'TBD'}`,
+    ].filter(Boolean).join('\n');
+  }
+
   /* The six methods rux-ui offers, in its order. `trip_payments.method` is free
      text both apps write, so a spelling rux-ui's menu lacks would not
      round-trip. */
@@ -5065,6 +5141,24 @@
       // One field needs no heading over its own label.
       panelBilling.appendChild(section(null,
         moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price)));
+
+      /* The description the office pastes into its QuickBooks estimate. It
+         sits under the price because the two are the halves of one line item
+         there, and it carries the block alone for the reason `qbDescription`
+         gives. A browser that refuses the clipboard says so, because a copy
+         button that goes quiet is worse than one that reports a failure. */
+      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md', 'Copy for QuickBooks');
+      qbButton.type = 'button';
+      qbButton.id = 'scheduler-f-quickbooks';
+      qbButton.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(qbDescription());
+          toast('success', 'Copied for QuickBooks', 'Paste it into the estimate description.');
+        } catch {
+          toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
+        }
+      });
+      panelBilling.appendChild(section(null, qbButton));
 
       /* Payments use the same `rowList` as PO and invoice, named by their
          method, with no switch: a receipt has no milestone to gate. */

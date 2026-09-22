@@ -104,7 +104,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `brand/` | `logo.svg` and `logo-dark.svg`, the mark in gray 10 and gray 100, `favicon.svg`, and `icon.svg`, the app tile icon; swap a file and every page follows |
 | `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site |
 | `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
-| `docs/*.md` | `verbs.md` the routine · `choices.md` what an app may choose · `verifying-templates.md` · `composing-pages.md` · `screen-reader-pass.md` · `inventory.md` every component's disposition · `builder-coverage.md` the builder's catalogue · `agent-tooling.md` the maintenance instruments · `geist-token-map.md` geist-dark's colours beside Geist's own |
+| `docs/*.md` | `verbs.md` the routine · `choices.md` what an app may choose · `verifying-templates.md` · `composing-pages.md` how to assemble a page · `checking-a-page.md` how to check the one you built · `carbon-website.md` what IBM's pattern guidance is good for · `screen-reader-pass.md` · `inventory.md` every component's disposition · `builder-coverage.md` the builder's catalogue · `agent-tooling.md` the maintenance instruments · `geist-token-map.md` geist-dark's colours beside Geist's own |
 | `data/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
 | `LICENSE` · `NOTICE` | Apache-2.0; `NOTICE` names each artefact carrying Carbon-derived material |
 | `carbon-website/` | gitignored quarry of Carbon's docs; read from, never shipped |

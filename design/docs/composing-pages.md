@@ -8,6 +8,10 @@ type: how-to
 and what goes wrong on the way. `.claude/skills/design-page/` is the ordered
 version for doing the work; the reasons live here, so a rule is written once.
 
+Two neighbours carry the rest: `docs/checking-a-page.md` is how to check the
+page once it is built, and `docs/carbon-website.md` is what IBM's own pattern
+guidance is good for and where it stops.
+
 ## 1. Start from a template, never from scratch
 
 Each is a **complete page**, shell included. Copy the nearest shape and delete
@@ -238,57 +242,9 @@ shape everywhere: top right, `--rux-spacing-03` apart, newest on top. The corner
 is a default; the scheduler uses bottom right because the top corner covers its
 toolbar. Position, gutter, z-index and a narrow-width rule are the app's.
 
-## 4. Where IBM's own guidance fits
-
-`carbon-website/` is gitignored and on disk: *read from, never shipped.* Its
-pattern pages under `carbon-website/src/pages/patterns/` cover empty states, forms, dialogs,
-notifications, filtering, global header, login, loading, search, and disabled and
-read-only states. They are good on anatomy and when-to-use, which the component
-reference cannot answer. `templates/empty-state.html` follows its empty-states
-pattern.
-
-**Two limits.**
-
-**It assumes all of Carbon.** Read every pattern against `docs/inventory.md`
-before following it; a pattern built on `page-header` describes something that
-is not here.
-
-**Take facts and decisions, not prose.** This repository is **public**, and its
-`NOTICE` covers Carbon's Apache-2.0 *code*: the compiled CSS and the icon path
-data. Website guidance is under a different licence. Record what it establishes
-and cite it; do not paste paragraphs.
-
-**It does not replace the captures.** For *markup*, `data/carbon-*.json` is the
-reference, matching the compiled version and needing no network;
-`node tools/diff-fragment.mjs <name>` compares against it. The website says what
-a pattern should do; the captures say what the markup is.
-
-## 5. Verify by opening the page
-
-**The gates cannot see everything, so looking is not optional.** Defects that
-passed every gate include chevrons rotated from the wrong base glyph, missing
-wrappers, and menu specimens that were `visibility: hidden`.
-
-Run the browser gates against **your page**, not only the sink. `check-a11y`,
-`check-runtime-classes` and `check-spacing` take **no page argument**: they read
-whatever document they are evaluated in, so load your page and run the tool
-there. Fetch it from the server rather than pasting, so the file on disk is what
-runs.
-
-`check-rendered` cannot be pointed at an arbitrary page: its unit is the
-`.ks-sec` section no template has, and it throws. `check-behaviour` can: it
-scopes each case to the sink section where one exists and to the document where
-not, and reports a component the page lacks as **skipped**. Read it on your page
-as a diagnostic; the required coverage is still the sink's.
-
-`docs/verifying-templates.md` covers behaviour: a template's behaviour is
-verified against a **running Carbon page**, never derived from `css/rux.css`,
-because the stylesheet gives the mechanism and not the intent.
-
 ## What this does not cover
 
-- **No content or writing guidance.** `carbon-website/src/pages/guidelines/content`
-  exists and has not been read for this.
+- **No content or writing guidance.** `docs/carbon-website.md` says why.
 - **Theming is one attribute.** `data-theme` on `<html>` is `white`, `g10`,
   `g90`, `g100`, one of the three blocks `css/rux-theme.css` adds, or a theme
   saved in the Theme Creator. The shell zone keeps g100 under Carbon's four and

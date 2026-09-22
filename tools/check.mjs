@@ -62,7 +62,13 @@ step('docs fixtures', process.execPath, ['tools/check-docs.test.mjs']);
 // everything. Measured 2026-09-12: 12 entries, 0.08 s over the whole family.
 const EXT = new Set(['.html', '.md', '.js', '.mjs', '.json', '.css', '.svg', '.yml', '.yaml', '.toml', '.sh', '.txt']);
 const tracked = spawnSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).stdout ?? '';
-const text = tracked.split('\0').filter(p => p && EXT.has(extname(p)));
+// A file deleted but not yet staged is still in the index, so git lists a name
+// with no bytes behind it and the sweep died reading it. There is nothing to
+// sweep and nothing left to publish, so it is dropped here rather than in the
+// sweep, which is also run by hand on paths a person named and should still
+// say so when one of those is missing.
+const text = tracked.split('\0')
+  .filter(p => p && EXT.has(extname(p)) && existsSync(join(ROOT, p)));
 step(`names (${text.length} text files)`, process.execPath, ['notes/tools/check-publishable.mjs', ...text]);
 
 // THE SWITCHER RULE. Two things can go wrong and both are quiet: a list that

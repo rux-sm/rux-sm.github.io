@@ -191,20 +191,47 @@
            back, and a trail inside a frame is chrome inside chrome. It keeps
            the trip, so Forms returns to that trip's list rather than the bare
            one. print.js fills it and takes the `hidden` off. -->
-      <nav class="scheduler-print__crumbs" id="scheduler-print-crumbs" aria-label="Breadcrumb" hidden>
-        <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">
-          <li class="rux--breadcrumb-item"><a class="rux--link" href="print.html" id="scheduler-print-crumb-up">Forms</a></li>
-          <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="" aria-current="page" id="scheduler-print-crumb-here"></a></li>
-        </ol>
-      </nav>
-      <div class="scheduler-print__bar" id="scheduler-print-bar" hidden>
-        <h1 class="rux--type-productive-heading-04 scheduler-print__bar-title" id="scheduler-print-title"></h1>
-        <div class="scheduler-print__controls" id="scheduler-print-controls"></div>
-        <!-- Whatever the toolbar has to say, beside the controls rather than on
-             the sheet, because the sheet is holding a form. -->
-        <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
+      <!-- THE PAGE'S HEAD: the trail and the name, spaced by Carbon's stack
+           rather than by a margin picked here, because nothing else on a page
+           supplies vertical rhythm and every number chosen by hand is one more
+           thing to keep in step. It takes no room at all on a framed page,
+           where both of its lines are hidden. -->
+      <div class="scheduler-print__head rux--stack-vertical rux--stack-scale-3">
+        <nav class="scheduler-print__crumbs" id="scheduler-print-crumbs" aria-label="Breadcrumb" hidden>
+          <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">
+            <li class="rux--breadcrumb-item"><a class="rux--link" href="print.html" id="scheduler-print-crumb-up">Forms</a></li>
+            <!-- The page you are on is a span and not a link: an anchor here
+                 takes a tab stop and goes nowhere, which is a keyboard trap in
+                 miniature. Carbon's own capture of a current item is a span
+                 carrying the link class and aria-current. -->
+            <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><span class="rux--link" aria-current="page" id="scheduler-print-crumb-here"></span></li>
+          </ol>
+        </nav>
+      <!-- THE FORM'S NAME, above the bar rather than in it: it names the page,
+           and a page's name is not one of its actions. Framed in the panel the
+           panel's own head says it and this one goes. -->
+        <h1 class="rux--type-productive-heading-04 scheduler-print__bar-title" id="scheduler-print-title" hidden></h1>
       </div>
+
+      <!-- THE BAR, and it is Carbon's table toolbar: a band the width of the
+           sheet below it, the layer's own colour, with the actions flush at
+           its end. That is the shape this page wanted -- chrome in a band,
+           paper under it -- and Carbon writes it already for a table. Framed
+           in the board's panel the panel's toolbar is the bar, and this one
+           stays hidden; print.js hands it the same controls either way. -->
+      <!-- THE BAR AND THE DESK ARE ONE SURFACE, so they are one box: the head
+           above is spaced off it, and these two are flush against each other. -->
       <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
+
+      <div class="scheduler-print__frame">
+        <section class="rux--table-toolbar scheduler-print__bar" id="scheduler-print-bar" role="group" aria-label="Form actions" hidden>
+          <div class="rux--toolbar-content scheduler-print__controls-row">
+          <!-- Whatever the bar has to say, at its start and away from the
+               controls, because the sheet below is holding a form. -->
+            <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
+            <div class="scheduler-print__controls" id="scheduler-print-controls"></div>
+          </div>
+        </section>
       <!-- THE SHEET, AND IT IS PAPER whatever theme the page around it is in:
            the envelope on its 6 by 9 in kraft, the itinerary on white Letter,
            each at the size it really is, because the preview is where anyone
@@ -216,7 +243,8 @@
            There is no desk under it. A lighter surface behind the sheet only
            made a bigger pale rectangle in a dark app; the page shows through
            around the paper instead. -->
-      <div class="scheduler-print__sheet" id="scheduler-print-sheet"></div>
+        <div class="scheduler-print__sheet" id="scheduler-print-sheet"></div>
+      </div>
     </div>
   </div>
 </main>

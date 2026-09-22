@@ -866,7 +866,6 @@
       ? `print.html?trip=${encodeURIComponent(trip.id)}`
       : 'print.html';
     crumbHere.textContent = form.name;
-    crumbHere.href = location.href;
     crumbs.hidden = Boolean(host);
   }
 
@@ -922,16 +921,6 @@
     const pageMargin = paper && !paper.exact && paper.margin ? paper.margin : '0';
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: ${pageMargin}; }`;
 
-    /* AND THE SHEET IS PAPER, whatever theme the page around it is in: every
-       form here is going to a printer, and the preview is where anyone sees
-       what will come out. So the theme goes on the sheet rather than the page,
-       and every --rux-* token under it resolves to ink on paper. It says g10
-       and not white because white is Carbon's default rather than a theme it
-       writes a rule for: `data-theme="white"` matches nothing, so a sheet
-       asking for it kept the dark theme of the page around it and the ink came
-       out white on the paper. g10 is the lightest theme Carbon does write, and
-       its ink is the same #161616. */
-    sheet.setAttribute('data-theme', 'g10');
     /* AND WHETHER IT IS ONE SHEET OR MANY. The envelope has to come out on one
        envelope, so print.css holds it to that height; the itinerary runs onto
        as many as its stops need. Both are fitted the same way on screen -- a
@@ -1060,6 +1049,15 @@
   const draw = () => {
     if (!current) return;
     const card = current.form.render(current.every[current.chosen], current.layout);
+    /* THE PAPER CARRIES THE PAPER'S THEME, and only the paper: every --rux-*
+       token on the form resolves to ink on it, while the desk it lies on and
+       the bar above it follow the theme the person keeps. It says g10 and not
+       white because white is Carbon's default rather than a theme it writes a
+       rule for -- `data-theme="white"` matches nothing, so a sheet asking for
+       it kept the dark theme around it and the ink came out white on the
+       paper. g10 is the lightest theme Carbon does write, and its ink is the
+       same #161616. */
+    card.setAttribute('data-theme', 'g10');
     // A form opened on nothing says so, for the rules that have to show where
     // the writing goes when there is none of it anywhere.
     if (current.blank) card.dataset.blank = '';
@@ -1302,14 +1300,37 @@
       nodes.push(box);
     }
 
-    /* In the panel the plain Print is the panel's own printer button, which
-       prints this frame, exactly as it prints a stored file; standing alone
-       the page has to carry its own. */
+    /* PRINT IS A GHOST ICON, which is what a toolbar's own actions are: in
+       Carbon's band the persistent ones are ghost icon buttons and a primary
+       belongs to the batch bar, where filling the whole height is the point.
+       Built as a primary it read as exactly that, a slab wedged into the
+       corner. The panel's printer button is the same drawing, so the two bars
+       now carry the same thing.
+
+       In the panel that button is the panel's own, which prints this frame
+       exactly as it prints a stored file; standing alone the page carries it. */
     const actions = [];
     if (!host) {
-      const print = el('button', 'rux--btn rux--btn--primary rux--layout--size-md', 'Print');
+      // Carbon's own toolbar action: no size class, because the band's height
+      // is the button's and a square of it is what fills the end of the bar.
+      const print = el('button', 'rux--toolbar-action rux--btn rux--btn--ghost rux--btn--icon-only');
       print.type = 'button';
-      print.addEventListener('click', () => window.print());
+      print.title = 'Print';
+      print.setAttribute('aria-label', 'Print');
+      const mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      mark.setAttribute('width', '16');
+      mark.setAttribute('height', '16');
+      /* The sprite's own box, as every other use of an m- symbol in this app
+         writes it. A viewBox with its origin at -960 -- the symbol's, not the
+         `use` element's -- puts the drawing a whole viewport below the visible
+         one, and the button paints as nothing at all. */
+      mark.setAttribute('viewBox', '0 0 32 32');
+      mark.setAttribute('fill', 'currentColor');
+      mark.setAttribute('aria-hidden', 'true');
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#m-print');
+      mark.appendChild(use);
+      print.appendChild(mark);
       actions.push(print);
     }
 
@@ -1336,9 +1357,10 @@
         },
       });
     } else if (stack) {
-      /* Ghost, not bordered: beside the panel's bare icons a box around one
-         button reads as a different kind of thing, and beside the page's own
-         Print it is the quieter of a pair, which is what ghost is for. */
+      /* Ghost and labelled, where Print beside it is a bare icon: the count is
+         the whole of what this button has to say, and an icon cannot say six.
+         It is the rarer of the two and the quieter, which is what ghost is
+         for. */
       const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md', `Print all ${every.length}`);
       all.type = 'button';
       all.title = 'Every envelope on this trip';
@@ -1404,7 +1426,8 @@
     host?.setViewerHead('Forms');
     const trip = params.get('trip');
     title.textContent = 'Forms';
-    bar.hidden = Boolean(host);
+    bar.hidden = true;
+    title.hidden = Boolean(host);
     hub.hidden = false;
     sheet.replaceChildren();
 
@@ -1626,6 +1649,7 @@
     // The paper is named now, so the sheet can be fitted to the room it has.
     fitPaper();
     bar.hidden = Boolean(host);
+    title.hidden = Boolean(host);
     hub.hidden = true;
 
     /* A BLANK ONE, asked for in the address. Every field is empty and every

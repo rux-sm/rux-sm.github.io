@@ -46,10 +46,11 @@
 
 @media print { .scheduler-print__shell { display: none; } }
 
-/* [hidden] is a UA rule of the lowest weight, so the display below outranks it
-   and an empty bar would draw a band and a rule over the paper -- which is
+/* [hidden] is a UA rule of the lowest weight, so Carbon's own display on the
+   toolbar outranks it and an empty band would draw over the paper -- which is
    what it did in the panel, where the toolbar is the panel's own. */
-.scheduler-print__bar[hidden] { display: none; }
+.scheduler-print__bar[hidden],
+.scheduler-print__bar-title[hidden] { display: none; }
 
 /* THE WAY BACK, above the title and only on a page that stands alone. It is
    Carbon's breadcrumb, so the trail on this page reads as the trail on any
@@ -62,17 +63,27 @@
 
 @media print { .scheduler-print__crumbs { display: none; } }
 
-/* THE PAGE'S OWN TITLE ROW, where the panel's toolbar cannot follow: the form's
-   name at one end and what to do with it at the other, laid out as the quote
-   calculator's title row is, because they are the same thing -- a page, its
-   name, and its actions. It is a row on a page and not a bar across it, so it
-   takes the page's own inset and keeps nothing of its own. Screen only. */
-.scheduler-print__bar {
-  display: flex;
-  flex-wrap: wrap;
+/* THE PAGE'S OWN BAR, which is Carbon's table toolbar: a band the width of the
+   desk below it, in the layer's own colour, with the actions flush at its end.
+   Chrome in a band and paper under it is the shape a page that previews a
+   printout wants, and Carbon writes that band already. It sits against the
+   desk with nothing between them, so the two read as one surface. */
+.scheduler-print__bar { margin: 0; }
+
+/* THE CONTROLS SIT IN THE BAND, not stretched to it. Carbon's toolbar row is a
+   flex box with no cross-axis rule, so a control in it grew to the band's whole
+   48px whatever size its own class asked for -- which is what made one read as
+   a slab rather than a button. The controls are a flex box of their own inside
+   the row, so both have to say it. */
+.scheduler-print__controls { align-items: center; }
+
+.scheduler-print__controls-row {
   align-items: center;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
-  margin-block-end: var(--rux-spacing-07);
+  /* Only at the start. Carbon sets a toolbar's actions against its end, and a
+     gap after the last one reads as a misplaced button rather than a margin. */
+  padding-inline-start: var(--rux-spacing-05);
+  padding-inline-end: 0;
 }
 
 /* The form's controls, at the end of the title row: the layout, the copy, the
@@ -101,24 +112,42 @@
   gap: var(--rux-spacing-03);
 }
 
-/* The form's name, and only while the page stands alone: framed in the viewer
-   the panel's own head already names it, and saying it twice is chrome inside
-   chrome, the same reason the header is gone there. Its type is Carbon's own
-   productive heading, the one the quote calculator titles itself with. */
-.scheduler-print__bar-title { display: none; }
-
-[data-rux-standalone] .scheduler-print__bar-title {
-  display: block;
-  margin: 0;
+/* THE HEAD, and the one gap on this page that is a layout decision rather than
+   rhythm: the trail and the name are one block, the bar and the desk another,
+   and Carbon's stack spaces the two lines inside the first. Nothing else on a
+   page supplies vertical rhythm, and every number picked by hand is one more
+   to keep in step. With both of its lines hidden -- which is every framed
+   page -- it takes no room either. */
+.scheduler-print__head {
+  margin-block-end: var(--rux-spacing-05);
 }
 
-/* Empty it takes no room, so nothing sits between the name and the actions. */
-.scheduler-print__bar-note:empty { display: none; }
+.scheduler-print__head:not(:has(> :not([hidden]))) { display: none; }
+
+/* The form's name, above the bar and only while the page stands alone: framed
+   in the viewer the panel's own head already names it, and saying it twice is
+   chrome inside chrome, the same reason the header is gone there. print.js
+   hides it there. Its type is Carbon's own productive heading, the one the
+   Drivers page and the quote calculator title themselves with. */
+.scheduler-print__bar-title { margin: 0; }
+
+/* The bar and the desk, flush: one surface with a band of chrome at its top.
+   It takes the page's height and hands it down to the desk, which fits the
+   paper to it. */
+.scheduler-print__frame {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 .scheduler-print__bar-note {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   color: var(--rux-text-secondary);
+  /* At the start of the band whatever it has to say, and holding that end of
+     it even when it has nothing, so the controls do not shift when it speaks. */
+  margin-inline-end: auto;
 }
 
 .scheduler-print__bar-note[data-bad] { color: var(--rux-text-error); }
@@ -154,16 +183,24 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   max-inline-size: none;
 }
 
-/* NO DESK UNDER THE SHEET. The paper is the thing to look at, and a lighter
-   surface behind it only made a bigger pale rectangle in a dark app. The page
-   shows through around it, and the sheet's own edge is where the paper ends.
+/* THE DESK THE PAPER LIES ON, and it is a step above the bar rather than the
+   same surface: the bar takes Carbon's own layer, so the desk takes the next
+   one up and the three read in order -- the page, the band of chrome on it,
+   the desk, the paper. Made level with the bar they were one grey field and
+   the controls still floated on nothing, which is the whole of what was wrong
+   with them.
 
-   The room below it is 16px and is room the fit does not get to use, so the
-   paper never sits on the bottom edge of the window however far it has been
-   scaled down. print.js measures the sheet's box less its padding. */
+   The pale desk this page used to have was pale because the light theme sat on
+   this element; it sits on the paper now, so the desk is the app's and the
+   sheet on it is the printer's.
+
+   The 16px round it is room the fit does not get to use, so the paper never
+   sits against an edge however far it has been scaled down. print.js measures
+   this box less its padding. */
 .scheduler-print__sheet {
   flex: 1;
-  padding-block-end: var(--rux-spacing-05);
+  background: var(--rux-layer-02);
+  padding: var(--rux-spacing-05);
 }
 
 /* No form drawn, so nothing here: the hub is a page, not a sheet. */
@@ -214,6 +251,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
+/* THE PAPER'S OWN EDGE, on screen and not on paper. Carbon's layers alternate
+   in the light themes and ascend in the dark ones, so no fill tells a white
+   sheet from the desk under it in all of them: in Gray 10 the desk came out
+   the colour of the page and the paper the colour of the bar, and the sheet
+   had no boundary at all. A line does not care which way the greys run. It is
+   drawn in the paper's own theme, so it is g10's, which reads on a pale desk
+   and on a dark one alike. */
+@media screen {
+  .scheduler-form { border: 1px solid var(--rux-border-strong-01); }
+}
+
 /* THE ONE STOCK THAT IS NOT WHITE, on screen and not on paper. The standard
    envelope is printed on the kraft envelope itself, so the preview is that
    envelope; the multi-stop layout takes a white sheet and stays white, as
@@ -226,9 +274,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 @media print {
-  /* Nothing on this page is chrome except the toolbar, so the blanket hide
-     rux-ui needs over the board is one rule here. */
-  .scheduler-print__bar { display: none; }
+  /* Nothing on this page is chrome except the bar and the name over it, so the
+     blanket hide rux-ui needs over the board is two rules here. The bar names
+     Carbon's toolbar class too, because that is the display it is undoing. */
+  .rux--table-toolbar.scheduler-print__bar,
+  .scheduler-print__bar-title { display: none; }
+
+  /* The desk is a screen surface; on paper there is only paper. */
+  .scheduler-print__sheet { padding: 0; }
 
   .scheduler-print__grid {
     display: block;

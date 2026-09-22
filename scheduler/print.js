@@ -593,8 +593,8 @@
 
   const headField = (label, value) => {
     const node = el('div', 'scheduler-driver-itinerary__field');
-    node.appendChild(el('span', 'scheduler-driver-itinerary__label', label));
-    node.appendChild(el('span',
+    node.appendChild(el('dt', 'scheduler-driver-itinerary__label', label));
+    node.appendChild(el('dd',
       'scheduler-driver-itinerary__value scheduler-driver-itinerary__typed', value || ''));
     return node;
   };
@@ -610,15 +610,15 @@
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
     const day = [weekdayOf(start), mdy(start)].filter(Boolean).join(' ');
     const contact = contactOf(trip);
-    const meta = el('div', 'scheduler-driver-itinerary__meta');
-    meta.appendChild(headField('Leg:', trip.start_date ? legName(leg) : ''));
-    meta.appendChild(headField('Date:',
+    const meta = el('dl', 'scheduler-driver-itinerary__meta');
+    meta.appendChild(headField('Leg', trip.start_date ? legName(leg) : ''));
+    meta.appendChild(headField('Date',
       [day, end && end !== start ? `– ${mdy(end)}` : ''].filter(Boolean).join(' ')));
-    meta.appendChild(headField('Client:', trip.customer || ''));
-    meta.appendChild(headField('Bus:',
+    meta.appendChild(headField('Client', trip.customer || ''));
+    meta.appendChild(headField('Bus',
       assignment?.buses?.number != null ? String(assignment.buses.number) : ''));
-    meta.appendChild(headField('Destination:', trip.destination || ''));
-    meta.appendChild(headField('Contact:',
+    meta.appendChild(headField('Destination', trip.destination || ''));
+    meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
     return meta;
   }
@@ -891,6 +891,18 @@
     }
     const paper = form?.page;
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: 0; }`;
+
+    /* AND HOW IT IS SHOWN. A form on named stock is that stock on a desk,
+       light whatever theme the page is in, so what is on screen is what comes
+       out; a form on whatever is in the tray is a page of this app, in the
+       theme the person keeps, because a long sheet of white standing in a dark
+       app reads as the app having broken rather than as paper. print.html says
+       it at length, print.css answers both, and @media print pins the ink so
+       the printout is black on white either way. */
+    sheet.dataset.paper = paper ? 'named' : 'any';
+    if (paper) sheet.setAttribute('data-theme', 'g10');
+    else sheet.removeAttribute('data-theme');
+
     const root = document.documentElement.style;
     for (const [prop, value] of [
       ['--scheduler-paper-width', paper?.width],
@@ -954,6 +966,9 @@
   const draw = () => {
     if (!current) return;
     const card = current.form.render(current.every[current.chosen], current.layout);
+    // A form opened on nothing says so, for the rules that have to show where
+    // the writing goes when there is none of it anywhere.
+    if (current.blank) card.dataset.blank = '';
     if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     sheet.replaceChildren(card);
     /* Fitted here, with the sheet holding what it will hold. The observer

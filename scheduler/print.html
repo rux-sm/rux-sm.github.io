@@ -171,21 +171,42 @@
 </div>
 
 <main id="main-content" class="scheduler-print">
-  <div class="scheduler-print__bar" id="scheduler-print-bar" hidden>
-    <h1 class="rux--type-productive-heading-04 scheduler-print__bar-title" id="scheduler-print-title"></h1>
-    <div class="scheduler-print__controls" id="scheduler-print-controls"></div>
-    <!-- Whatever the toolbar has to say, beside the controls rather than on
-         the sheet, because the sheet is holding a form. -->
-    <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
+  <!-- TWELVE OF THE SIXTEEN COLUMNS, as the Drivers page and the quote pages
+       take: the title, the list and the form all start and end on the same two
+       lines, and a form is not a thing to read the full width of a window. The
+       grid is Carbon's own, so the inset is the one every other page has
+       rather than a number written here. print.css takes it off again in the
+       board's panel, where the panel is the room, and on paper. -->
+  <div class="rux--css-grid scheduler-print__grid">
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12 scheduler-print__column">
+      <div class="scheduler-print__bar" id="scheduler-print-bar" hidden>
+        <h1 class="rux--type-productive-heading-04 scheduler-print__bar-title" id="scheduler-print-title"></h1>
+        <div class="scheduler-print__controls" id="scheduler-print-controls"></div>
+        <!-- Whatever the toolbar has to say, beside the controls rather than on
+             the sheet, because the sheet is holding a form. -->
+        <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
+      </div>
+      <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
+      <!-- WHERE THE FORM IS DRAWN, and how depends on the paper it names.
+
+           A form printed on one particular stock -- the envelope -- is shown
+           as that stock, on a desk, light whatever theme the page is in, so
+           what is on screen is what comes out. It says g10 and not white
+           because white is Carbon's default rather than a theme it writes a
+           rule for: `data-theme="white"` matches nothing, so a sheet asking
+           for it kept the dark theme of the page around it and the ink came
+           out white on the paper. g10 is the lightest theme Carbon does write,
+           and its ink is the same #161616.
+
+           A form printed on whatever is in the tray is shown as a page of this
+           app instead, in the theme the person keeps, because a long sheet of
+           white standing in a dark app reads as the app having broken rather
+           than as paper. print.js sets `data-paper` from the form's own entry
+           and takes the theme off for that one; @media print pins the ink, so
+           the printout is black on white either way. -->
+      <div class="scheduler-print__sheet" id="scheduler-print-sheet" data-theme="g10"></div>
+    </div>
   </div>
-  <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
-    <!-- The desk and the paper on it, light whatever theme the page is in. It
-       says g10 and not white because white is Carbon's default rather than a
-       theme it writes a rule for: `data-theme="white"` matches nothing, so a
-       sheet asking for it kept the dark theme of the page around it and the
-       ink came out white on the paper. g10 is the lightest theme Carbon does
-       write, and its ink is the same #161616. -->
-  <div class="scheduler-print__sheet" id="scheduler-print-sheet" data-theme="g10"></div>
 </main>
 
 <script src="/design/js/overlay.js"></script>

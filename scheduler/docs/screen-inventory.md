@@ -20,7 +20,6 @@ of Design's `js/*.js` behaviours; an *app component* is this app's own.
 
 | Old view | Verdict | Becomes |
 |---|---|---|
-| Fleet | keep | `table-page`, sortable, out-of-service shown as a tag column. |
 | Customers | keep | `table-page`, four columns. |
 | Requests | keep | `table-page` with a content switcher for status. Detail opens in the panel. |
 | Itineraries | later | Needs the itinerary editor, an app component, and the AI intake. |
@@ -39,7 +38,6 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip editor, Billing tab | keep | A summary card with the confirmation and billing status, then Price, Contract signed, PO received, Invoice sent and Payments, each milestone a switch on its heading. The switches open as rux-ui opens them, and a milestone the billing workflow turns off is hidden. |
 | Charter or Ticketed, ticket prices | later | With the trip manifest. |
 | Trip editor, Route tab | keep | One section: Pickup location, Depart beside End, and Drop-off location when the trip is not a round trip; its overflow menu opens Padding and the drive fields. A Times section lists yard depart, spot time, depart, end and yard return, each with what it was worked out from; drives are looked up from Mapbox. It edits the leg's pickup, first stop, drop-off and return rows and leaves rux-ui's other stops alone. |
-| Fleet editor | keep | Panel, one form, out-of-service rows as a small editable list. |
 | Customer editor | keep | Panel, four fields (§7). |
 | Request detail | keep | Panel with a Create draft trip button. |
 | Itinerary editor | later | App component, with the Itineraries view. |
@@ -92,7 +90,7 @@ Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 Each step ends with the page opened in every theme.
 
-4. Fleet and Customers as tables with their editors.
+4. Customers as a table with its editor.
 5. Print schedule. Requests and `../rux-ui/request.html`. Driver page.
 6. Everything marked *later*.
 
@@ -111,10 +109,12 @@ Three homes, and one rule for choosing.
 | **A page** | A list, a feed or a workspace: something you navigate to. |
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
-- **Trip, bus, request and customer detail go in the panel.** One editing
-  surface beats two, so the customer editor is not a modal. A driver is edited
-  on its own page, `drivers.html?id=`, because the form is long and edited now
-  and then, which Carbon's forms pattern gives a page.
+- **Trip, request and customer detail go in the panel.** One editing surface
+  beats two, so the customer editor is not a modal. A driver and a bus are
+  each edited on their own page, `drivers.html?id=` and `buses.html?id=`,
+  because the form is long and edited now and then, which Carbon's forms
+  pattern gives a page; `docs/plans/site-page-pair.md` decides the shape both
+  take.
 - **Tasks and History are pages.** Neither is the detail of anything, and as
   panels they would hold the panel open. History sits below Settings in the nav:
   it is consulted, not worked in.

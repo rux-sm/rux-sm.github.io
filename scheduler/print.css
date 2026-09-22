@@ -119,10 +119,50 @@
 
 .scheduler-print__bar-note[data-bad] { color: var(--rux-text-error); }
 
+/* CARBON'S GRID IS THIS PAGE'S INSET, so the title, the hub and the form all
+   start and end on the lines the Drivers page uses. The column has to pass the
+   page's height down to the sheet, which fits itself to the room it has, and a
+   `rux--*` class takes no rule of ours. */
+.scheduler-print__grid {
+  flex: 1;
+  min-block-size: 0;
+}
+
+.scheduler-print__column {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+/* Framed in the board's panel the grid is not the room: the panel is 30rem and
+   its own margins would inset that twice. On paper there is no room to give
+   away either. Both take the columns off and leave the column the full width. */
+html:not([data-rux-standalone]) .scheduler-print__grid {
+  display: block;
+  padding-inline: 0;
+  max-inline-size: none;
+}
+
 .scheduler-print__sheet {
   flex: 1;
   background: var(--rux-layer-01);
   padding: var(--rux-spacing-05);
+}
+
+/* A FORM ON WHATEVER IS IN THE TRAY IS A PAGE OF THIS APP, not paper on a
+   desk: no desk under it, and it takes the column it is in. print.html says
+   why, and print.js sets the attribute from the form's own entry. */
+.scheduler-print__sheet[data-paper="any"] {
+  background: none;
+  padding: 0;
+}
+
+@media screen {
+  .scheduler-print__sheet[data-paper="any"] .scheduler-form {
+    inline-size: 100%;
+    background: none;
+    padding: 0;
+  }
 }
 
 /* No form drawn, so no desk: the hub is a page, not a sheet. */
@@ -191,6 +231,26 @@
      rux-ui needs over the board is one rule here. */
   .scheduler-print__bar { display: none; }
   .scheduler-print__sheet { padding: 0; }
+
+  .scheduler-print__grid {
+    display: block;
+    padding-inline: 0;
+    max-inline-size: none;
+  }
+
+  /* INK, WHATEVER THEME THE PAGE IS IN. A form on named stock carries g10 on
+     the sheet and needs none of this. A form shown as a page of this app is in
+     the theme the person keeps, and a dark one prints as white ink on white
+     paper. These are g10's own values for the tokens a form reads, which is
+     the same palette that attribute would have set. */
+  .scheduler-print__sheet[data-paper="any"] {
+    --rux-background: #ffffff;
+    --rux-layer-01: #ffffff;
+    --rux-text-primary: #161616;
+    --rux-text-secondary: #525252;
+    --rux-border-strong-01: #8d8d8d;
+    --rux-border-subtle-01: #e0e0e0;
+  }
 
   /* The room this page keeps to clear the header goes with the header. Half an
      inch above a form that is already the whole sheet is the difference
@@ -506,13 +566,19 @@
 .scheduler-envelope__log td { height: 0.19in; }
 
 /* ── The driver itinerary ────────────────────────────────────────────────
-   The plan for the day: the company's head, what the leg is, and the stops in
-   four columns. It names no paper, so it lays out to whatever is in the tray
-   and runs onto as many sheets as the stops need. */
+   The plan for the day. It names no paper, so on screen it is a page of this
+   app in the theme the person keeps, and it prints onto whatever is in the
+   tray, running to as many sheets as the stops need.
+
+   AND IT IS NOT THE ENVELOPE. That form is a grid of boxes because a box is
+   what tells a driver where to write on a 6 by 9 envelope held in one hand.
+   This one is read down, at a desk or on a seat, so it is ruled rather than
+   boxed: a line under the column names, a hairline between the stops, and
+   nothing else. Two forms drawn the same way are one form printed twice. */
 
 .scheduler-driver-itinerary__head {
   text-align: center;
-  padding-block-end: var(--rux-spacing-05);
+  padding-block-end: var(--rux-spacing-06);
 }
 
 .scheduler-driver-itinerary__logo {
@@ -521,75 +587,68 @@
   margin-block-end: var(--rux-spacing-02);
 }
 
-/* Solid ink, as on the envelope: a laser prints a grey as a pattern of dots,
-   so size, case and weight carry the hierarchy on every form here. */
 .scheduler-driver-itinerary__line {
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
   margin: 0;
 }
 
-/* The envelope leads with the day, because a driver picks one out of a stack
-   by it. This is one sheet in one envelope, so it leads with what it is. */
+/* The envelope leads with the day in the largest type on the page, because a
+   driver picks one out of a stack by it. This is one sheet in one envelope and
+   the page around it is already named, so its own name is quiet. */
 .scheduler-driver-itinerary__title {
-  font-size: var(--rux-heading-04-font-size);
-  font-weight: var(--rux-heading-04-font-weight);
-  line-height: var(--rux-heading-04-line-height);
-  text-transform: uppercase;
-  margin: var(--rux-spacing-03) 0 0;
+  font-size: var(--rux-productive-heading-03-font-size);
+  font-weight: var(--rux-productive-heading-03-font-weight);
+  line-height: var(--rux-productive-heading-03-line-height);
+  margin: var(--rux-spacing-04) 0 0;
 }
 
-/* THE HEAD'S ANSWERS ARE A BORDERED GRID, as the envelope's fields are: a box
-   is what tells a pen where to write, and a rule under a whole row does not.
-   Two pairs to a row, which is six fields in three rows. */
+/* WHAT THE HEAD NAMES, as pairs rather than as fields to fill in: this form
+   arrives filled and is corrected, where the envelope arrives blank in the
+   places a pen is wanted. Three to a row where there is room, two where there
+   is not, and never boxed. */
 .scheduler-driver-itinerary__meta {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--rux-border-strong-01);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--rux-spacing-05);
+  margin: 0;
 }
 
-.scheduler-driver-itinerary__field {
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
-  min-width: 0;
+@media screen and (max-width: 42rem) {
+  .scheduler-driver-itinerary__meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.scheduler-driver-itinerary__field:nth-child(odd) {
-  border-inline-end: 1px solid var(--rux-border-strong-01);
-}
-
-.scheduler-driver-itinerary__field:not(:nth-last-child(-n+2)) {
-  border-block-end: 1px solid var(--rux-border-strong-01);
-}
+.scheduler-driver-itinerary__field { min-inline-size: 0; }
 
 .scheduler-driver-itinerary__label {
   display: block;
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
 }
 
-/* Capitals for the head's short answers, as on the envelope: a client and a
-   destination are read at arm's length off a page held in one hand. The table
-   below keeps what was typed, because an address and an activity are
-   sentences and capitals make a sentence slower to read, not faster. */
+/* As it was typed. The envelope prints its answers in capitals because they
+   are read at arm's length in a moving bus; this is read at a desk, and a name
+   in capitals is slower to read, not faster. */
 .scheduler-driver-itinerary__value {
   display: block;
+  margin: 0;
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
-  text-transform: uppercase;
   min-height: 1.25rem;
 }
 
 .scheduler-driver-itinerary__table {
   width: 100%;
   border-collapse: collapse;
-  margin-block-start: var(--rux-spacing-05);
+  margin-block-start: var(--rux-spacing-06);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
@@ -598,26 +657,31 @@
 
 .scheduler-driver-itinerary__table th,
 .scheduler-driver-itinerary__table td {
-  border: 1px solid var(--rux-border-strong-01);
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05) var(--rux-spacing-03) 0;
   text-align: start;
   vertical-align: top;
 }
 
 .scheduler-driver-itinerary__table th {
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  padding-block-end: var(--rux-spacing-02);
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
-  text-transform: uppercase;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-driver-itinerary__table td {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
 /* Time and Location are what a glance lands on and they are short, so they
    keep a width; the address and the activity share what is left. */
-.scheduler-driver-itinerary__table th:nth-child(1) { inline-size: 15%; }
-.scheduler-driver-itinerary__table th:nth-child(2) { inline-size: 27%; }
-.scheduler-driver-itinerary__table th:nth-child(3) { inline-size: 33%; }
-.scheduler-driver-itinerary__table th:nth-child(4) { inline-size: 25%; }
+.scheduler-driver-itinerary__table th:nth-child(1) { inline-size: 14%; }
+.scheduler-driver-itinerary__table th:nth-child(2) { inline-size: 26%; }
+.scheduler-driver-itinerary__table th:nth-child(3) { inline-size: 34%; }
+.scheduler-driver-itinerary__table th:nth-child(4) { inline-size: 26%; }
 
 /* One time to a line, its label in a column of its own so the times stand
    under one another however the rows are labelled. */
@@ -633,30 +697,74 @@
   font-weight: var(--rux-label-01-font-weight);
   letter-spacing: var(--rux-label-01-letter-spacing);
   text-transform: uppercase;
+  color: var(--rux-text-secondary);
 }
 
-/* The leg into this stop, under its name and smaller than it: what was driven
+/* The leg into this stop, under its name and quieter than it: what was driven
    to get here, never a total worked out on the page. */
 .scheduler-driver-itinerary__leg {
   display: block;
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
   padding-block-start: var(--rux-spacing-01);
 }
 
 /* A day is a line across the table rather than a stop on it, set apart by
-   weight and case because a fill prints as nothing. */
+   weight, case and the room above it, because a fill prints as nothing. */
 .scheduler-driver-itinerary__day td {
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  padding-block-start: var(--rux-spacing-05);
   font-weight: var(--rux-heading-compact-01-font-weight);
   text-transform: uppercase;
 }
 
 /* Rows are added before printing, never printed empty, so the button that
-   adds them lives on the sheet and comes off the paper. */
+   adds them lives with the form and comes off the paper. */
 .scheduler-driver-itinerary__add {
   align-self: start;
-  margin-block-start: var(--rux-spacing-03);
+  margin-block-start: var(--rux-spacing-05);
+}
+
+/* EVERY LINE OF THIS FORM TAKES A PEN, so nothing is marked out as the one
+   that does: a dotted rule under all four columns of every row is a page of
+   dots. A cell says so when the pointer is over it and when it has the focus,
+   which is how a table you can edit behaves. */
+@media screen {
+  .scheduler-driver-itinerary__table td[data-typed]:hover {
+    background: var(--rux-layer-hover-01);
+  }
+
+  /* The envelope underlines every field it lets a pen into. Here that is all
+     of them, and a page of dotted rules is a page of dots. */
+  .scheduler-driver-itinerary__value[data-typed] { border-block-end: 0; }
+
+  /* AN EMPTY FIELD IN THE HEAD SAYS SO. There are six of them and they are
+     filled together, so a gap among five answers is a question rather than a
+     shape. The rule goes the moment something is typed, and it was never on
+     the paper. */
+  .scheduler-driver-itinerary__value[data-typed]:empty {
+    border-block-end: 1px dotted var(--rux-border-strong-01);
+  }
+
+  /* IN THE TABLE, ONLY ON A FORM OPENED BLANK. A filled itinerary has nothing
+     under Activity against most of its stops, and a rule under each of them is
+     a column of dots down the page saying nothing; there the cell answers the
+     pointer instead. A blank form is empty everywhere and has to show where
+     the writing goes. */
+  .scheduler-form[data-blank] .scheduler-driver-itinerary__table td[data-typed]:empty {
+    border-block-end: 1px dotted var(--rux-border-strong-01);
+  }
+}
+
+/* THE FORM NAMES ITSELF ON PAPER AND NOT ON SCREEN. The page's title row and
+   the panel's head already say which form this is, and saying it again under
+   the letterhead is the same two words twice on one screen; on paper neither
+   of them is there. It is the mirror of the toolbar, which is on screen and
+   never on paper. */
+@media screen {
+  .scheduler-driver-itinerary__title { display: none; }
 }
 
 @media print {

@@ -31,9 +31,10 @@ capacity, a service date or the days a bus is out.
   to do to several at once. Search reads the number, make, model, VIN
   and `bus_ref`.
 - **Six fixed columns, with no column picker:** Bus (a disc in the bus's own
-  colour carrying its type icon, then the number, with the type and the make
-  and model beneath), Capacity, Equipment, Status, Next service, Compliance. A
-  whole row opens the bus. The old app offers eighteen columns behind a
+  colour, then the number, with the model year, the make and model, and the
+  type beneath), Capacity, Equipment, Status, Next service, Compliance. The
+  year is on the row because it is what the order is by. A whole row opens the
+  bus. The old app offers eighteen columns behind a
   drag-and-drop picker saved in the database; six columns chosen once is the
   same answer every time and costs no setting.
 - **Equipment is icons with labels for a screen reader:** the ADA lift and the
@@ -110,14 +111,9 @@ None open.
 ## Tasks
 
 - [ ] Renumber `buses.sort_order` from the model year once, newest first, as a
-      named migration through the Supabase connection, so the board is in the
-      new order before the page exists. The statement is shown to rux first.
-- [ ] Build the list: the table, the four counts, the search and New bus.
-- [ ] Build the record: the form, its two tabs, the out-of-service list and
-      Save's compare-before-writing.
-- [ ] Add the Buses link to the side nav, which is copied into six pages.
-- [ ] Correct `scheduler/docs/screen-inventory.md`, where §1 and §2 still send
-      a bus to a table page and a panel and §7 lists the bus with what the
-      panel holds.
+      named migration through the Supabase connection. Only two rows move: the
+      two 2017 coaches swap so the lower number leads, and the Van, which has
+      no place at all today, takes the last one. The statement is shown to rux
+      before it runs.
 - [ ] rux saves one real bus, and checks the board's rows and rux-ui's roster
       show the same order.

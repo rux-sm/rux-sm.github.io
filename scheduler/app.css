@@ -2439,6 +2439,7 @@ html:has(.scheduler-page[data-takeover]) {
      title and a list, so they keep a gutter, as does the Drivers page. */
   .scheduler-quote-page,
   .scheduler-drivers-page,
+  .scheduler-buses-page,
   .scheduler-share-page {
     padding: var(--rux-spacing-05) max(var(--rux-spacing-05), var(--scheduler-safe-right)) var(--rux-spacing-07) max(var(--rux-spacing-05), var(--scheduler-safe-left));
   }
@@ -2448,7 +2449,8 @@ html:has(.scheduler-page[data-takeover]) {
    drivers.html: the list, then one driver's form. Its views, notices and
    buttons are shown and hidden with `hidden`, which a Carbon class's own
    `display` would otherwise beat. */
-.scheduler-drivers-page [hidden] { display: none; }
+.scheduler-drivers-page [hidden],
+.scheduler-buses-page [hidden] { display: none; }
 .scheduler-driver-cell {
   display: flex;
   align-items: center;
@@ -2474,7 +2476,10 @@ html:has(.scheduler-page[data-takeover]) {
 }
 .scheduler-driver-cell__short,
 .scheduler-driver-item__detail,
-.scheduler-driver-note {
+.scheduler-driver-note,
+.scheduler-bus-cell__detail,
+.scheduler-bus-item__detail,
+.scheduler-bus-note {
   color: var(--rux-text-secondary);
 }
 .scheduler-driver-cell__short { font-size: var(--rux-label-01-font-size, 0.75rem); }
@@ -2482,7 +2487,8 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-drivers-row td:nth-child(2) { white-space: nowrap; }
 /* The table scrolls inside its own box rather than widening the page, and a
    phone shows the driver and the licence only, each name on one line. */
-.scheduler-drivers-page .rux--css-grid-column { min-inline-size: 0; }
+.scheduler-drivers-page .rux--css-grid-column,
+.scheduler-buses-page .rux--css-grid-column { min-inline-size: 0; }
 @media (max-width: 41.98rem) {
   #scheduler-drivers-list th:nth-child(2),
   #scheduler-drivers-list th:nth-child(3),
@@ -2493,31 +2499,47 @@ html:has(.scheduler-page[data-takeover]) {
   .scheduler-drivers-row td:first-child { max-inline-size: 10rem; }
 }
 .scheduler-drivers-switcher { max-inline-size: 24rem; }
+/* Four filters, and the longest is "Out of service" with its count: Carbon
+   gives every button the same width, so the widest label sets the row. A
+   phone has no room for four of that width, so there the counts come off and
+   Out of service is just Out, which reads as a status between Active and
+   Inactive. Four short words fit; the counts and the words together do not. */
+.scheduler-buses-switcher { max-inline-size: 40rem; }
+@media (max-width: 41.98rem) {
+  .scheduler-buses-switcher [data-count],
+  .scheduler-buses-switcher [data-long] { display: none; }
+}
 
-.scheduler-driver-title {
+.scheduler-driver-title,
+.scheduler-bus-title {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--rux-spacing-04);
 }
-.scheduler-driver-group {
+.scheduler-driver-group,
+.scheduler-bus-group {
   border: 0;
   margin: 0;
   padding: 0;
   min-inline-size: 0;
 }
-.scheduler-driver-group > legend { margin-block-end: var(--rux-spacing-05); }
+.scheduler-driver-group > legend,
+.scheduler-bus-group > legend { margin-block-end: var(--rux-spacing-05); }
 /* A section that follows another opens with a 1px rule, 32px under what
    precedes it (the tab's stack gap) and 24px over its heading, as the trip
    editor's sections do. A legend floats so it sits under the rule rather than
    on it, as a fieldset draws its legend across its top border. */
-.scheduler-driver-group > legend {
+.scheduler-driver-group > legend,
+.scheduler-bus-group > legend {
   float: inline-start;
   inline-size: 100%;
   padding: 0;
 }
-.scheduler-driver-group > legend + * { clear: both; }
-.scheduler-driver-group + .scheduler-driver-group {
+.scheduler-driver-group > legend + *,
+.scheduler-bus-group > legend + * { clear: both; }
+.scheduler-driver-group + .scheduler-driver-group,
+.scheduler-bus-group + .scheduler-bus-group {
   border-block-start: 1px solid var(--rux-border-subtle-01);
   padding-block-start: var(--rux-spacing-06);
 }
@@ -2535,7 +2557,9 @@ html:has(.scheduler-page[data-takeover]) {
 /* Every row of fields sits on the same three columns, so field edges line
    up down the form, whatever a row holds. One column on a phone. */
 .scheduler-driver-grid,
-.scheduler-driver-endorsements {
+.scheduler-driver-endorsements,
+.scheduler-bus-grid,
+.scheduler-bus-equipment {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: var(--rux-spacing-05);
@@ -2543,23 +2567,128 @@ html:has(.scheduler-page[data-takeover]) {
 /* Rows 24px apart, as every field stacks on the page; columns 16px. The
    endorsements' rows are 8px apart, and their legend keeps the label's own
    8px margin, since a fieldset's legend takes no grid gap. */
-.scheduler-driver-grid { row-gap: var(--rux-spacing-06); }
-.scheduler-driver-endorsements { row-gap: var(--rux-spacing-03); }
+.scheduler-driver-grid,
+.scheduler-bus-grid { row-gap: var(--rux-spacing-06); }
+.scheduler-driver-endorsements,
+.scheduler-bus-equipment { row-gap: var(--rux-spacing-03); }
 .scheduler-driver-grid__wide { grid-column: span 2; }
 @media (max-width: 41.98rem) {
   .scheduler-driver-grid,
-  .scheduler-driver-endorsements { grid-template-columns: minmax(0, 1fr); }
+  .scheduler-driver-endorsements,
+  .scheduler-bus-grid,
+  .scheduler-bus-equipment { grid-template-columns: minmax(0, 1fr); }
   .scheduler-driver-grid__wide { grid-column: auto; }
 }
-.scheduler-driver-endorsements > legend { grid-column: 1 / -1; }
-.scheduler-driver-item {
+.scheduler-driver-endorsements > legend,
+.scheduler-bus-equipment > legend { grid-column: 1 / -1; }
+.scheduler-driver-item,
+.scheduler-bus-item {
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-01);
 }
 /* A trip is a link that reads as a list row, as the search results do. */
-.scheduler-driver-trip { text-decoration: none; }
+.scheduler-driver-trip,
+.scheduler-bus-trip { text-decoration: none; }
 .scheduler-off-error { color: var(--rux-text-error); }
+
+/* ── The Buses page ───────────────────────────────────────────────────────
+   buses.html: the list, then one bus's form. It shares the Drivers page's
+   shapes above; what follows is only what a bus has and a driver does not. */
+.scheduler-buses-row { cursor: pointer; }
+.scheduler-bus-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+}
+.scheduler-bus-cell__lines {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+/* The number is the link a keyboard reaches, but the whole row opens the
+   bus, so it reads as the row's text rather than a second target. */
+.scheduler-bus-cell__number {
+  color: var(--rux-text-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scheduler-bus-cell__number:focus {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+}
+.scheduler-bus-cell__detail { font-size: var(--rux-label-01-font-size, 0.75rem); }
+/* The bus's own colour as a disc, the size Carbon's small avatar is, so the
+   list reads down the same edge the Drivers page does. The colour is the
+   board's, set on the element; the icon sits on it in whichever of black or
+   white the row works out, since a bus may be any colour. */
+.scheduler-bus-disc {
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-primary);
+}
+/* Equipment is icons, so the row needs the gap a word would have had. */
+.scheduler-bus-equipment-marks {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+}
+.scheduler-buses-row td:nth-child(2) { white-space: nowrap; }
+/* The table scrolls inside its own box rather than widening the page, and a
+   phone shows the bus and its compliance only. */
+@media (max-width: 41.98rem) {
+  #scheduler-buses-list th:nth-child(2),
+  #scheduler-buses-list th:nth-child(3),
+  #scheduler-buses-list th:nth-child(4),
+  #scheduler-buses-list th:nth-child(5),
+  .scheduler-buses-row td:nth-child(2),
+  .scheduler-buses-row td:nth-child(3),
+  .scheduler-buses-row td:nth-child(4),
+  .scheduler-buses-row td:nth-child(5) { display: none; }
+  .scheduler-buses-row td:first-child { max-inline-size: 12rem; }
+  /* The year is what the fleet is ordered by and comes first, so the line is
+     cut rather than wrapped to three: a phone row stays two lines high. */
+  .scheduler-bus-cell__detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+/* Carbon has no colour control. The swatch is the browser's own input with
+   its chrome taken off, sized and bordered like the field beside it so the
+   pair reads as one control. */
+.scheduler-bus-colour {
+  display: flex;
+  align-items: stretch;
+  gap: var(--rux-spacing-03);
+}
+.scheduler-bus-colour .rux--text-input__field-wrapper { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-bus-colour__pick {
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  border-radius: 0;
+  background: var(--rux-field-01);
+  cursor: pointer;
+}
+.scheduler-bus-colour__pick::-webkit-color-swatch-wrapper { padding: 2px; }
+.scheduler-bus-colour__pick::-webkit-color-swatch { border: 0; }
+.scheduler-bus-colour__pick::-moz-color-swatch { border: 0; }
+.scheduler-bus-colour__pick:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+}
+.scheduler-oos-error { color: var(--rux-text-error); }
 
 /* The Route tab's note under its timeline, 8px below it, as the PO coverage
    line sits under the POs it speaks to; the timeline's rows are 8px apart. */

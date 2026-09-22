@@ -1173,6 +1173,28 @@
      the items are and the panel builds them. In its own tab there is no
      overflow and no menu script, and the page has the width to show all of
      them, so they stay in its bar. */
+  /* HOW A CHOICE IS MADE ON THIS BAR: a Carbon select, whichever choice it is
+     and wherever the bar is. Every control in the row is Carbon's medium size,
+     which is the height of the bar itself, so the row is one band rather than
+     a strip of controls floating in one. */
+  function pickField(label, names, chosen, choose) {
+    const field = el('div', 'rux--select rux--layout--size-md');
+    const wrapper = el('div', 'rux--select-input__wrapper');
+    const select = el('select', 'rux--select-input');
+    select.setAttribute('aria-label', label);
+    names.forEach((name, i) => {
+      const option = el('option', null, name);
+      option.value = String(i);
+      select.appendChild(option);
+    });
+    select.value = String(chosen);
+    select.addEventListener('change', e => choose(Number(e.target.value) || 0));
+    wrapper.appendChild(select);
+    wrapper.appendChild(arrow());
+    field.appendChild(wrapper);
+    return field;
+  }
+
   function buildControls() {
     const { form, layout } = current;
     // Every envelope this trip has; it is this bus's until the trip's other
@@ -1183,31 +1205,20 @@
 
     const chooseLayout = id => { current.layout = id; buildControls(); draw(); };
 
-    if (form.layouts?.length > 1 && host) {
-      for (const option of form.layouts) menu.push({
-        id: `layout-${option.id}`,
-        label: option.name,
-        kind: 'radio',
-        checked: option.id === layout,
-        choose: () => chooseLayout(option.id),
-      });
-    } else if (form.layouts?.length > 1) {
-      const group = el('div', 'rux--content-switcher rux--layout--size-md');
-      group.setAttribute('role', 'tablist');
-      for (const option of form.layouts) {
-        const btn = el('button', 'rux--content-switcher-btn');
-        btn.type = 'button';
-        btn.setAttribute('role', 'tab');
-        // Carbon paints the selected fill in the button's own ::after, so the
-        // name has to be in the span that lifts it above that fill.
-        btn.appendChild(el('span', 'rux--content-switcher__label', option.name));
-        const on = option.id === layout;
-        btn.classList.toggle('rux--content-switcher--selected', on);
-        btn.setAttribute('aria-selected', String(on));
-        btn.addEventListener('click', () => chooseLayout(option.id));
-        group.appendChild(btn);
-      }
-      nodes.push(group);
+    /* WHICH LAYOUT, AND IT IS A SELECT IN BOTH PLACES. It was a content
+       switcher on the page and two radio items in the panel's overflow, so one
+       choice looked like two different things depending on where the form was
+       opened. And Carbon gives the switcher a radius and an outline of its
+       own -- almost nothing else square in the system has either -- so it read
+       as a different family beside a row of square controls. The copy beside it
+       is already a select; this row makes its choices one way. */
+    if (form.layouts?.length > 1) {
+      nodes.push(pickField(
+        `Which layout of this ${form.name.toLowerCase()}`,
+        form.layouts.map(option => option.name),
+        form.layouts.findIndex(option => option.id === layout),
+        i => chooseLayout(form.layouts[i].id),
+      ));
     }
 
     /* EVERY ENVELOPE ON THE TRIP, not only this bus's. The button beside it
@@ -1253,27 +1264,12 @@
         })) : [],
       );
     } else if (every.length > 1) {
-      // Every control in this row is Carbon's medium size, which is the
-      // height of the bar itself: the row is one band, not a strip of buttons
-      // floating in one.
-      const field = el('div', 'rux--select rux--layout--size-md');
-      const wrapper = el('div', 'rux--select-input__wrapper');
-      const select = el('select', 'rux--select-input');
-      select.setAttribute('aria-label', `Which ${form.name.toLowerCase()} on this trip`);
-      every.forEach((copy, i) => {
-        const option = el('option', null, form.copyName(copy));
-        option.value = String(i);
-        select.appendChild(option);
-      });
-      select.value = String(current.chosen);
-      select.addEventListener('change', e => {
-        current.chosen = Number(e.target.value) || 0;
-        draw();
-      });
-      wrapper.appendChild(select);
-      wrapper.appendChild(arrow());
-      field.appendChild(wrapper);
-      nodes.push(field);
+      nodes.push(pickField(
+        `Which ${form.name.toLowerCase()} on this trip`,
+        every.map(copy => form.copyName(copy)),
+        current.chosen,
+        i => { current.chosen = i; draw(); },
+      ));
     }
 
     /* Printed is ticked by hand, never by printing. `afterprint` fires whether

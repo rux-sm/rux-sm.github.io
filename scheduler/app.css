@@ -937,10 +937,10 @@ button.scheduler-row-head__num::after {
    form's rather than being pushed below them. Carbon would stretch a field to
    the row; the copy holds the width its longest name asks for, the same width
    print.css gives it where the page carries its own toolbar. */
+/* FLUSH, LIKE EVERY OTHER BUTTON IN THIS APP. The board's toolbar and this
+   row's own buttons butt against one another, each the band's height; a gap
+   between the form's put them in a strip of their own inside the row. */
 .scheduler-viewer__toolbar > [data-viewer-form] { flex: none; }
-.scheduler-viewer__toolbar > [data-viewer-form] + [data-viewer-form] {
-  margin-inline-start: var(--rux-spacing-03);
-}
 .scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
 
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the

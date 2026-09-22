@@ -131,14 +131,22 @@
    Drivers page and the quote calculator title themselves with. */
 .scheduler-print__bar-title { margin: 0; }
 
-/* The bar and the desk, flush: one surface with a band of chrome at its top.
-   It takes the page's height and hands it down to the desk, which fits the
-   paper to it. */
+/* THE BAR AND THE DESK ARE TWO BOXES WITH THE PAGE BETWEEN THEM, which is how
+   Carbon composes a toolbar over its content: each is a surface on the page,
+   and the gap is the page showing through. It was one flush surface with the
+   desk a layer above the bar, and that only works in a dark theme -- Carbon's
+   light themes alternate, so `layer-02` came out the colour of the page and
+   the desk disappeared. Both take `layer`, which is a step off the background
+   in every one of the four.
+
+   The frame takes the page's height and hands what is left to the desk, which
+   fits the paper to it. */
 .scheduler-print__frame {
   flex: 1;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
+  gap: var(--rux-spacing-05);
 }
 
 .scheduler-print__bar-note {
@@ -183,14 +191,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   max-inline-size: none;
 }
 
-/* THE DESK THE PAPER LIES ON, and it is a step above the bar rather than the
-   same surface: the bar takes Carbon's own layer, so the desk takes the next
-   one up and the three read in order -- the page, the band of chrome on it,
-   the desk, the paper. Made level with the bar they were one grey field and
-   the controls still floated on nothing, which is the whole of what was wrong
-   with them.
+/* THE DESK THE PAPER LIES ON: a surface on the page, the same one the bar
+   above it takes, with the page between them. `layer` is the first step off
+   the background and the only one Carbon guarantees in every theme -- the next
+   one up is the background's own colour again in white and Gray 10, which is
+   how the desk came to vanish there.
 
-   The pale desk this page used to have was pale because the light theme sat on
+   The pale desk this page once had was pale because the light theme sat on
    this element; it sits on the paper now, so the desk is the app's and the
    sheet on it is the printer's.
 
@@ -199,7 +206,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    this box less its padding. */
 .scheduler-print__sheet {
   flex: 1;
-  background: var(--rux-layer-02);
+  background: var(--rux-layer);
   padding: var(--rux-spacing-05);
 }
 

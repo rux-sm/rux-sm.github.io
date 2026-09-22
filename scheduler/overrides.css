@@ -601,13 +601,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   align-items: center;
   align-self: stretch;
   gap: var(--rux-spacing-02);
-  /* Less at the end than at the start: what sits there is a chevron, and a
-     chevron reads as part of the rule beside it rather than as a word needing
-     room. A native select is as wide as its longest option whatever it is
-     showing, so the space before the chevron is the select's and not the
-     cell's. */
   padding-inline-start: var(--rux-spacing-05);
   padding-inline-end: var(--rux-spacing-03);
+  /* The chevron is laid over the cell rather than set beside it, so it needs
+     something to be laid over. */
+  position: relative;
   border: 0;
   border-inline-start: 1px solid var(--rux-border-subtle-01);
   background: none;
@@ -639,13 +637,23 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    taking those off it would be a local rule on a Carbon class, which this
    repository does not do. So the element is a bare select and the cell is its
    whole appearance -- the value, a chevron, and the rules either side. */
+/* THE WHOLE CELL IS THE TARGET, not the word in it. The select fills the cell
+   and keeps the cell's own padding as its own, so every pixel between the two
+   rules opens the menu; a chevron set beside it left most of the cell dead,
+   and the thing that looks like the control is the cell. */
+.scheduler-print__pick { padding: 0; }
+
 .scheduler-print__cell-select {
   appearance: none;
   border: 0;
   background: none;
   color: inherit;
   cursor: pointer;
-  padding: 0;
+  align-self: stretch;
+  padding-inline-start: var(--rux-spacing-05);
+  /* Room at the end for the chevron laid over it. */
+  padding-inline-end: var(--rux-spacing-07);
+  padding-block: 0;
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
@@ -657,4 +665,10 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 
 .scheduler-print__pick:hover { background: var(--rux-layer-hover); }
 
-.scheduler-print__cell-arrow { flex: none; }
+/* Over the select's trailing room, and deaf to the pointer so a press there
+   lands on the select under it. */
+.scheduler-print__cell-arrow {
+  position: absolute;
+  inset-inline-end: var(--rux-spacing-03);
+  pointer-events: none;
+}

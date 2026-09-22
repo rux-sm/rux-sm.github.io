@@ -1344,6 +1344,7 @@
       print.title = 'Print';
       print.setAttribute('aria-label', 'Print');
       print.appendChild(sprite('#m-print', 'scheduler-print__cell-icon'));
+      print.addEventListener('click', () => window.print());
       actions.push(print);
     }
 

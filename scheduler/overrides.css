@@ -601,7 +601,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   align-items: center;
   align-self: stretch;
   gap: var(--rux-spacing-02);
-  padding-inline: var(--rux-spacing-05);
+  /* Less at the end than at the start: what sits there is a chevron, and a
+     chevron reads as part of the rule beside it rather than as a word needing
+     room. A native select is as wide as its longest option whatever it is
+     showing, so the space before the chevron is the select's and not the
+     cell's. */
+  padding-inline-start: var(--rux-spacing-05);
+  padding-inline-end: var(--rux-spacing-03);
   border: 0;
   border-inline-start: 1px solid var(--rux-border-subtle-01);
   background: none;

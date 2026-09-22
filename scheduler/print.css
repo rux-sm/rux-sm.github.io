@@ -164,7 +164,14 @@
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--rux-border-subtle-01);
+}
+
+/* THE OUTLINE IS THE SCREEN'S, not the paper's. It is what says where the app
+   ends and the sheet begins, and a printer has no use for it: unscoped, it
+   came out down the side of the page. The bar's own rule goes with it, because
+   the bar is not printed either. */
+@media screen {
+  .scheduler-print__frame { border: 1px solid var(--rux-border-subtle-01); }
 }
 
 /* How many sheets, at the start of the band and in the same quiet type as

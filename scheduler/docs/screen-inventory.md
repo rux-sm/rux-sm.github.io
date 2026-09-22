@@ -44,7 +44,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
 | Trip finder results page | keep | Results in a data table on a page. The header search and Cmd-K exist. |
 | Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
-| Print schedule | later | An entry in `print.html`'s registry beside the driver envelope's and the driver itinerary's, naming what it binds to and the paper it takes. |
+| Print schedule | later | An entry in `print.html`'s registry beside the driver envelope's, the driver itinerary's and the customer quote's, naming what it binds to and the paper it takes. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
 | Notifications | later | Shell header panel, the one the switcher uses. |
 | Driver card | later | Popover from a cell of the availability grid (§7). |

@@ -41,8 +41,12 @@ them; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
 a multi-stop layout, on the 6 by 9 envelope itself. The driver itinerary is one
 copy per leg of a trip, on Letter, running onto as many sheets as its stops
-need, and every line of it can be typed into before it is printed. `print.js`
-holds the registry every form is an entry in. The page follows the theme the
+need, and every line of it can be typed into before it is printed. The
+customer quote is one copy per trip, on Letter: the QUOTE / PROPOSAL the office
+sends, with its price and its one line item read from the trip and its terms
+written into the form. Its wording is `quote-text.js`, which the trip editor's
+Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
+cannot disagree. `print.js` holds the registry every form is an entry in. The page follows the theme the
 person keeps and the sheet on it carries the light one, so the ink drawn there
 is the ink that prints.
 

@@ -908,6 +908,257 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-driver-itinerary__table tr { break-inside: avoid; }
 }
 
+/* ── The customer quote ──────────────────────────────────────────────────
+   The office's own QUOTE / PROPOSAL, drawn as the customer already knows it:
+   a centred letterhead, boxed parties, one ruled line item and the terms
+   under it.
+
+   AND IT IS BOXED WHERE THE OTHER TWO ARE NOT. The itinerary is ruled because
+   it is read down a column; this is read across, box by box, and the boxes
+   are what a customer's eye has followed on every quote before this one.
+
+   AND IT IS THE ONE FORM THAT FILLS. Every label cell on the office's sheet is
+   grey, and a customer who has had one before reads the grey as the document.
+   `print-color-adjust: exact` is what carries it past Chrome's Background
+   graphics box, which is off and which nobody ticks -- the property exists for
+   a page whose fills are the content rather than decoration, and this is one.
+
+   IT IS NOT A LICENCE FOR THE OTHER TWO. The envelope and the itinerary are
+   read, not recognised, and a fill on either buys nothing for a driver; the
+   page's rule still stands everywhere else. What is filled here is named cell
+   by cell below, and every division on this sheet is still a rule, so a
+   printer that drops the grey anyway leaves the form whole. */
+
+.scheduler-customer-quote__head {
+  text-align: center;
+  padding-block-end: var(--rux-spacing-05);
+}
+
+.scheduler-customer-quote__logo {
+  height: 2.5rem;
+  width: auto;
+  margin-block-end: var(--rux-spacing-02);
+}
+
+.scheduler-customer-quote__line {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  margin: 0;
+}
+
+/* The document's own name, in the largest type on the page and to the
+   trailing edge, which is where the office's sheet puts it. */
+.scheduler-customer-quote__title {
+  font-size: var(--rux-productive-heading-04-font-size);
+  font-weight: var(--rux-productive-heading-04-font-weight);
+  line-height: var(--rux-productive-heading-04-line-height);
+  text-align: end;
+  margin: var(--rux-spacing-05) 0 0;
+}
+
+/* A BOX IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and divided
+   once. The label is the quiet half and the answer the weighted one: on a
+   sheet that leaves the app, what the customer reads back is their own name,
+   not the word Contact. */
+.scheduler-customer-quote__box {
+  border: 1px solid var(--rux-border-strong-01);
+  min-inline-size: 0;
+}
+
+.scheduler-customer-quote__label {
+  margin: 0;
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  text-align: center;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+.scheduler-customer-quote__value {
+  display: block;
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  min-block-size: 1.25rem;
+}
+
+/* The bill-to block is three lines of address under a name, so its lines
+   stack; every other box holds one thing. */
+.scheduler-customer-quote__box--wide .scheduler-customer-quote__value > span {
+  display: block;
+}
+
+.scheduler-customer-quote__box--wide .scheduler-customer-quote__value {
+  min-block-size: 4.5rem;
+}
+
+/* The date sits alone above the parties, at the width a date needs. */
+.scheduler-customer-quote__meta {
+  display: flex;
+  margin-block-end: var(--rux-spacing-04);
+}
+
+.scheduler-customer-quote__meta .scheduler-customer-quote__box {
+  inline-size: 1.7in;
+}
+
+/* Who it is for, and who to answer: the bill-to on the leading edge and the
+   office's contact for them on the trailing one, as the office's sheet sets
+   them. */
+.scheduler-customer-quote__parties {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--rux-spacing-05);
+  align-items: start;
+}
+
+.scheduler-customer-quote__who {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--rux-spacing-03);
+}
+
+/* The name spans both, because an email is long and a phone is not. */
+.scheduler-customer-quote__who > .scheduler-customer-quote__box:first-child {
+  grid-column: 1 / -1;
+}
+
+.scheduler-customer-quote__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-block-start: var(--rux-spacing-05);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+
+.scheduler-customer-quote__table th,
+.scheduler-customer-quote__table td {
+  border: 1px solid var(--rux-border-strong-01);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  text-align: start;
+  vertical-align: top;
+}
+
+.scheduler-customer-quote__table th {
+  text-align: center;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+/* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box, the column
+   names, and the Total and its figure. Gray 20 is Carbon's own, the token the
+   paper's g10 theme resolves, so the sheet is not carrying a colour of its
+   own; it sits where the office's sheet has grey and nowhere else.
+
+   The label is read against it, so it keeps the primary ink rather than the
+   secondary the other forms' labels take -- secondary grey on grey is the one
+   combination on this page that would not carry. */
+.scheduler-customer-quote__label,
+.scheduler-customer-quote__table th,
+.scheduler-customer-quote__total {
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-primary);
+  /* The prefix is for the Chrome the office runs, which took it before the
+     unprefixed property landed. Both name the same behaviour. */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Item and Description are read, the three money columns are compared, so
+   the numbers go to the trailing edge and under one another. */
+.scheduler-customer-quote__num { text-align: end; }
+
+.scheduler-customer-quote__table th:nth-child(1) { inline-size: 14%; }
+.scheduler-customer-quote__table th:nth-child(2) { inline-size: 46%; }
+.scheduler-customer-quote__table th:nth-child(3) { inline-size: 12%; }
+.scheduler-customer-quote__table th:nth-child(4) { inline-size: 14%; }
+.scheduler-customer-quote__table th:nth-child(5) { inline-size: 14%; }
+
+/* THE LINE ITEM KEEPS THE HEIGHT OF ONE. A five-line description in a box
+   that fits five lines reads as a sheet nobody has room on; the office's own
+   has a hand's depth under it, and that is where a second bus or a note goes
+   when it is typed in.
+
+   `height` and not `min-block-size`, which a table cell ignores: on a row a
+   height is already the minimum and the row grows past it. */
+.scheduler-customer-quote__desc { height: 2.4in; }
+
+/* The empty run before the total, which is paper and not a cell: no rule
+   round it and no fill in it. */
+.scheduler-customer-quote__pad {
+  border: 0;
+  background: none;
+}
+
+.scheduler-customer-quote__total {
+  text-align: end;
+  font-weight: 600;
+}
+
+/* Small, and close-set: eight paragraphs have to leave the signature line on
+   the same sheet as the price. */
+.scheduler-customer-quote__terms {
+  margin-block-start: var(--rux-spacing-05);
+}
+
+.scheduler-customer-quote__term {
+  margin: 0 0 var(--rux-spacing-04);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+/* THE SIGNATURE LINE IS A RULE, NOT A ROW OF UNDERSCORES. A typed underscore
+   run is a different length in every font and breaks where the line ends; a
+   bordered span is the length it is told to be. */
+.scheduler-customer-quote__sign {
+  margin-block-start: auto;
+  padding-block-start: var(--rux-spacing-05);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+}
+
+.scheduler-customer-quote__rule {
+  margin: 0 0 var(--rux-spacing-02);
+}
+
+.scheduler-customer-quote__rule-line,
+.scheduler-customer-quote__rule-date {
+  display: inline-block;
+  border-block-end: 1px solid var(--rux-text-primary);
+}
+
+.scheduler-customer-quote__rule-line { inline-size: 3.2in; }
+.scheduler-customer-quote__rule-date { inline-size: 1in; }
+
+.scheduler-customer-quote__sign-note { margin: 0; }
+
+@media screen {
+  /* A BOX SAYS WHERE THE PEN GOES BY BEING EMPTY, not by a second rule inside
+     a border it already has. Filled, it is a quote; empty, it is a question.
+     The page's blanket dotted rule is what these undo. */
+  .scheduler-customer-quote__value[data-typed] { border-block-end: 0; }
+
+  .scheduler-customer-quote__table td[data-typed] { border-block-end: 1px solid var(--rux-border-strong-01); }
+
+  .scheduler-customer-quote__table td[data-typed]:hover {
+    background: var(--rux-layer-hover-01);
+  }
+}
+
+@media print {
+  /* One sheet, and the terms are not cut in half by the fold. */
+  .scheduler-customer-quote__term { break-inside: avoid; }
+  .scheduler-customer-quote__table { break-inside: avoid; }
+}
+
 /* ── A BLANK ONE ──────────────────────────────────────────────────────────
    Fields on a blank form can be typed into before it is printed. The dotted
    rule says which, and it is a screen rule: on paper there is only what was

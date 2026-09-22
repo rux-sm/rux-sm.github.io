@@ -8,7 +8,8 @@
 
      id       the ?form= value, and the class prefix its markup uses
      name     what the hub and the viewer's head call it
-     binds    'assignment' | 'assignment+seat' | 'trip' | 'week' | null
+     columns  the trip columns this form alone reads, beyond the shared list
+     binds    'assignment' | 'assignment+seat' | 'trip' | 'trip+leg' | 'week' | null
      marks    the tick a print offers: { table, column, by }, or left out
      page     the paper it is printed on: size, width, height, ink margin, and
               `exact` where the form must not run past one sheet of it
@@ -99,6 +100,9 @@
   const COMPANY = {
     address: '2801 Zinnia Avenue, McAllen, TX 78504',
     phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
+    // The quote's letterhead carries it, and its signature line asks for the
+    // signed copy back at it. The driver's forms have no use for it.
+    email: 'e-escamilla@sbcglobal.net',
   };
 
   /* The contact the envelope carries is the trip's day-of contact, first
@@ -699,6 +703,232 @@
     return card;
   }
 
+  /* ── The customer quote ───────────────────────────────────────────────
+     The document the office sends today, printed from the trip instead of
+     retyped into QuickBooks: the same letterhead, the same one line item, the
+     same terms and the same signature line. Nothing here is an improvement on
+     it -- a customer who has had one of these before should not be able to
+     tell this one apart.
+
+     IT STANDS BESIDE THE QUICKBOOKS ESTIMATE rather than replacing it, so the
+     estimate goes on carrying the number the office files by and this sheet
+     carries none, which is what the customer's copy shows today.
+
+     AND THE WORDING IS NOT ITS OWN. The one line item's description is
+     `quote-text.js`, which the Billing tab's Copy for QuickBooks reads too. */
+
+  /* THE TERMS, WRITTEN HERE. rux says they change rarely, so a change to them
+     is a commit rather than a settings row nobody would open twice a decade.
+     Each string is a paragraph, and the last is two lines because the sheet
+     sets them tight. */
+  const QUOTE_TERMS = [
+    'Quotes are based on itinerary provided. Prices are subject to change if itinerary is updated.',
+    'A Fuel Surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date.',
+    'A signed quote and 20% down payment are required to reserve/hold buses. School districts may provide a purchase order instead of down payment.',
+    'For overnight trips, the bus driver’s hotel room must be provided by the customer. If 2 drivers are on trip, the hotel room must have two separate beds. (Sofa beds are not acceptable).',
+    'Cancellation Fees: 20% if less than a month; 50% if 48 hrs.; 100% if 24 hrs. before departure.',
+    'Customers are responsible for parking fees and tolls if applicable. Damage caused by passengers will be added to invoice.',
+    'Escamilla Tour Buses reserves the right to stop or delay service if any Act of God, accidents, bad weather or other conditions beyond its control make it inadvisable or unsafe to operate the buses.',
+    'Escamilla Tour Buses is not responsible for any lost, stolen or damaged personal items during the service.',
+    'If you have any questions, please contact us at (956) 994-1169 or at (956) 648-9691.\nThank you for choosing Escamilla Tour Buses, we look forward to hearing from you soon.',
+  ];
+
+  // Today, as the sheet's Date box writes it. Built from the local parts and
+  // not from an ISO string, which is a day behind west of Greenwich.
+  const today = () => {
+    const now = new Date();
+    return `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
+  };
+
+  // Money as a quote prints it, cents and all: the office's own sheet carries
+  // two places in every column, and a price that divides to a half cent is
+  // the reason the Total line is the quoted price rather than a product.
+  const money = value => {
+    const n = Number(value);
+    return Number.isFinite(n) && n !== 0
+      ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : '';
+  };
+
+  /* THE TWO TIMES THE QUOTE NAMES ARE THE GROUP'S, not the bus's. The group
+     leaves the pickup at the first stop's `depart_prev` and is back at the
+     yard row's, which is where the Route tab keeps what the editor labels
+     Group departs and Group arrives. A leg that never comes back -- a one-way
+     -- has no yard row, and its arrival is the last stop's. */
+  function quoteTimes(trip) {
+    const legs = legsOf(trip);
+    const out = stopsOf(trip, legs[0]);
+    const home = stopsOf(trip, legs.at(-1));
+    return {
+      leave: out.find(s => s.type === 'stop')?.depart_prev || null,
+      back: home.find(s => s.type === 'return')?.depart_prev
+        || home.filter(s => s.type === 'stop').at(-1)?.arrive || null,
+    };
+  }
+
+  /* The line item's description, in the wording the Billing tab copies. The
+     seats are the outbound bus's, so a trip with no bus yet names the vehicle
+     without guessing a size. */
+  function quoteDescription(trip) {
+    const times = quoteTimes(trip);
+    const seats = (trip.trip_assignments || [])
+      .filter(a => (a.leg || 'outbound') === 'outbound')
+      .map(a => a.buses?.capacity).find(c => c != null) ?? null;
+    return window.SchedulerQuoteText.description({
+      type: trip.trip_type,
+      buses: trip.bus_count,
+      seats,
+      pickup: stopsOf(trip, 'outbound').find(s => s.type === 'pickup')?.address
+        || trip.pickup_address || '',
+      destination: trip.destination,
+      from: trip.start_date,
+      to: trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date,
+      leave: times.leave,
+      back: times.back,
+    });
+  }
+
+  /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and
+     divided once, with the label shaded as the office's own sheet shades it.
+     print.css names the fill and what carries it onto paper. */
+  function quoteBox(label, lines, wide) {
+    const box = el('div', `scheduler-customer-quote__box${wide ? ' scheduler-customer-quote__box--wide' : ''}`);
+    box.appendChild(el('p', 'scheduler-customer-quote__label', label));
+    const body = el('div', 'scheduler-customer-quote__value scheduler-customer-quote__typed');
+    for (const line of lines.filter(Boolean)) body.appendChild(el('span', null, line));
+    box.appendChild(body);
+    return box;
+  }
+
+  function quoteHead() {
+    const head = el('header', 'scheduler-customer-quote__head');
+    const mark = el('div', 'scheduler-customer-quote__mark');
+    const logo = el('img', 'scheduler-customer-quote__logo');
+    logo.src = 'brand/logo.png';
+    logo.alt = '';
+    mark.appendChild(logo);
+    mark.appendChild(el('p', 'scheduler-customer-quote__line', COMPANY.address));
+    mark.appendChild(el('p', 'scheduler-customer-quote__line', COMPANY.phones));
+    mark.appendChild(el('p', 'scheduler-customer-quote__line', `E-mail: ${COMPANY.email}`));
+    head.appendChild(mark);
+    head.appendChild(el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
+    return head;
+  }
+
+  // The cell of the one line item's row. The numbers read to the trailing
+  // edge, as money on a bill does; the description is a block of lines.
+  const quoteCell = (cls, text) => {
+    const td = el('td', `scheduler-customer-quote__${cls} scheduler-customer-quote__typed`);
+    for (const [i, line] of String(text || '').split('\n').entries()) {
+      if (i) td.appendChild(el('br'));
+      td.appendChild(document.createTextNode(line));
+    }
+    return td;
+  };
+
+  const QUOTE_COLUMNS = ['Item', 'Description', 'Quantity', 'Cost', 'Total'];
+
+  const QUOTE_FIELDS = ['.scheduler-customer-quote__typed'];
+
+  /* ONE LINE ITEM, "Bus Rental", AND THE PRICE IS THE TRIP'S. The quantity is
+     the buses and the cost is the price divided between them, which is how
+     the office's own estimate reads; the Total is the quoted price itself and
+     not the product, so a price that will not divide evenly still totals to
+     what was quoted. No breakdown of the parts, which would invite an argument
+     about them. */
+  function quoteTable(trip, blank) {
+    const table = el('table', 'scheduler-customer-quote__table');
+    const head = el('thead');
+    const headRow = el('tr');
+    for (const label of QUOTE_COLUMNS) headRow.appendChild(el('th', null, label));
+    head.appendChild(headRow);
+    table.appendChild(head);
+
+    const buses = Math.max(Number(trip.bus_count) || 0, 1);
+    const total = Number(trip.quoted_price);
+    const priced = Number.isFinite(total) && total !== 0;
+
+    const row = el('tr');
+    row.appendChild(quoteCell('item', blank ? '' : 'Bus Rental'));
+    row.appendChild(quoteCell('desc', blank ? '' : quoteDescription(trip)));
+    row.appendChild(quoteCell('num', blank || !trip.bus_count ? '' : String(buses)));
+    row.appendChild(quoteCell('num', priced ? money(total / buses) : ''));
+    row.appendChild(quoteCell('num', priced ? money(total) : ''));
+    const body = el('tbody');
+    body.appendChild(row);
+    table.appendChild(body);
+
+    /* The total sits under the two columns it belongs to and the row is
+       otherwise empty, which is where the office's sheet puts it: a figure
+       under Total, not a banner across the width of the table. */
+    const foot = el('tfoot');
+    const footRow = el('tr');
+    const pad = el('td', 'scheduler-customer-quote__pad');
+    pad.colSpan = QUOTE_COLUMNS.length - 2;
+    footRow.appendChild(pad);
+    footRow.appendChild(el('th', null, 'Total'));
+    footRow.appendChild(el('td',
+      'scheduler-customer-quote__total scheduler-customer-quote__typed',
+      priced ? `$${money(total)}` : ''));
+    foot.appendChild(footRow);
+    table.appendChild(foot);
+    return table;
+  }
+
+  /* THE BILL-TO ADDRESS IS TYPED, for now. An organization is not a record
+     yet -- `docs/plans/scheduler-organizations.md` makes it one -- so the
+     trip knows the customer's name and nobody's address, and the office
+     writes the two lines under it as it writes them into QuickBooks today.
+     When that plan lands the address arrives with the name and the typing
+     stops; the field stays open, because the contact box beside it is typed
+     for good and a quote is corrected before it is sent. */
+  function quote(subject) {
+    const trip = subject.trip || {};
+    const blank = !trip.id;
+    const card = el('article', 'scheduler-form scheduler-customer-quote');
+    card.appendChild(quoteHead());
+
+    const meta = el('div', 'scheduler-customer-quote__meta');
+    // Today, because a quote is dated the day it is written, not the day of
+    // the trip. It is typed into like every other field, for one written up
+    // on Monday and sent on Tuesday.
+    meta.appendChild(quoteBox('Date', [today()]));
+    card.appendChild(meta);
+
+    const parties = el('div', 'scheduler-customer-quote__parties');
+    parties.appendChild(quoteBox('Name/Address', [blank ? '' : trip.customer || ''], true));
+    const who = el('div', 'scheduler-customer-quote__who');
+    who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
+    who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
+    who.appendChild(quoteBox('Phone', [blank ? '' : trip.booking_contact_phone || '']));
+    parties.appendChild(who);
+    card.appendChild(parties);
+
+    card.appendChild(quoteTable(trip, blank));
+
+    const terms = el('div', 'scheduler-customer-quote__terms');
+    for (const text of QUOTE_TERMS) {
+      const p = el('p', 'scheduler-customer-quote__term');
+      for (const [i, line] of text.split('\n').entries()) {
+        if (i) p.appendChild(el('br'));
+        p.appendChild(document.createTextNode(line));
+      }
+      terms.appendChild(p);
+    }
+    card.appendChild(terms);
+
+    const sign = el('div', 'scheduler-customer-quote__sign');
+    const rule = el('p', 'scheduler-customer-quote__rule');
+    rule.appendChild(el('span', 'scheduler-customer-quote__rule-line'));
+    rule.appendChild(document.createTextNode(' Date '));
+    rule.appendChild(el('span', 'scheduler-customer-quote__rule-date'));
+    sign.appendChild(rule);
+    sign.appendChild(el('p', 'scheduler-customer-quote__sign-note',
+      `Please sign to confirm and email back to ${COMPANY.email}`));
+    card.appendChild(sign);
+    return card;
+  }
+
   /* ── The registry ─────────────────────────────────────────────────────── */
 
   const FORMS = [
@@ -758,7 +988,7 @@
          because it is personal, one name and one seat; the plan for the day is
          the same for every driver and every bus on the leg, and `trip_stops`
          are keyed by trip and leg with no bus among them. */
-      binds: 'trip',
+      binds: 'trip+leg',
       blank: true,
       /* The mark rux-ui already writes and its task list already reads, so a
          sheet printed here shows as printed there. */
@@ -780,9 +1010,38 @@
       typed: { always: true, fields: ITINERARY_FIELDS },
       render: itinerary,
     },
+    {
+      id: 'customer-quote',
+      name: 'Customer quote',
+      blurb: 'The quote the office sends, priced and worded from the trip; every field typed into.',
+      /* IT BINDS THE TRIP AND NOT A LEG. A quote is one price for the whole
+         journey, where the itinerary is one sheet per leg and the envelope one
+         per seat -- a round trip is quoted once. */
+      binds: 'trip',
+      blank: true,
+      // What the shared list does not already carry: the price and its
+      // quantity, the office's own contact for the customer, and the seats
+      // the description names, which are the outbound bus's.
+      columns: [
+        'quoted_price', 'bus_count', 'pickup_address', 'booking_contact_email',
+        'trip_assignments(leg,buses:bus_id(capacity))',
+      ],
+      // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
+      // record that a driver has their paperwork; a quote is sent, and whether
+      // it was is the Billing tab's business, not a form's.
+      page: { size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
+      copies: subject => [subject],
+      /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
+         it sends it -- a price agreed on the phone, a contact the trip has
+         not caught up with, the two times it writes TBD and settles after --
+         and this sheet leaves the app for a customer, so the last word on it
+         is the one typed here. */
+      typed: { always: true, fields: QUOTE_FIELDS },
+      render: quote,
+    },
   ];
 
-  window.SchedulerForms = { FORMS, envelope, itinerary, seatsOf, needsOf, contactOf, roleName };
+  window.SchedulerForms = { FORMS, envelope, itinerary, quote, seatsOf, needsOf, contactOf, roleName };
 
   /* ── The page ─────────────────────────────────────────────────────────────
      With no ?form= it lists the forms. With one, it reads that form's subject
@@ -1488,10 +1747,16 @@
         else tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
       } else if (found.why) {
         tile.appendChild(el('p', 'scheduler-print__tile-need', found.why));
-      } else if (form.binds === 'trip') {
+      } else if (form.binds === 'trip+leg') {
         // One link per leg, because that is what this form is a copy of.
         const links = el('div', 'scheduler-print__tile-links');
         for (const leg of found.legs) links.appendChild(tileLink(legQuery(leg), legName(leg)));
+        if (form.blank) links.appendChild(blankLink());
+        tile.appendChild(links);
+      } else if (form.binds === 'trip') {
+        // The whole trip is one copy, so there is one way in and no list.
+        const links = el('div', 'scheduler-print__tile-links');
+        links.appendChild(tileLink(`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it'));
         if (form.blank) links.appendChild(blankLink());
         tile.appendChild(links);
       } else if (!found.buses.length) {
@@ -1570,6 +1835,7 @@
 
   const tripQuery = form => [
     ...TRIP_COLUMNS,
+    ...(form.columns || []),
     ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
   ].join(',');
 
@@ -1692,7 +1958,7 @@
       return show(form, subject, [subject], 0, true);
     }
 
-    if (form.binds === 'trip') return showTripForm(form);
+    if (form.binds === 'trip' || form.binds === 'trip+leg') return showTripForm(form);
     return showBusForm(form);
   }
 

@@ -230,9 +230,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Carbon lays its collapsed title over the real one and fades it to nothing,
-   ready for a header that shrinks as its content scrolls. This panel's content
-   is a frame, not a scroller, so that title never shows -- but it was still
+/* Carbon lays its collapsed title over the real one and fades it in as the
+   title beneath shrinks. Neither panel animates its title -- index.html says
+   why on the trip panel's head -- so this one never shows, but it was still
    taking the press meant for the title beneath it, which is what stopped the
    head's list from opening. Invisible, it takes nothing. */
 #scheduler-viewer-title-collapsed { pointer-events: none; }

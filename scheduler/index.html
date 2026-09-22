@@ -461,7 +461,15 @@
                the panel's fixed positioning from md up. -->
           <div class="scheduler-trip" id="scheduler-trip" hidden>
     <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--condensed-actions" id="scheduler-panel" aria-label="Trip" hidden>
-      <div class="rux--side-panel__header rux--side-panel__header--has-title">
+      <!-- THE TITLE DOES NOT ANIMATE, in this panel or the document one.
+           Carbon shrinks a panel's title as its content scrolls and fades in
+           the rule under the head as it goes, driving both from a variable no
+           module here ever moves. So the rule sat at nothing and the head ran
+           straight into what was beneath it -- in the document panel, three
+           bands of one grey with a single hairline between them. This is
+           Carbon's own switch for a panel that does not animate: the rule is
+           simply on. -->
+      <div class="rux--side-panel__header rux--side-panel__header--has-title rux--side-panel__header--no-title-animation">
         <div class="rux--side-panel__title">
           <h2 class="rux--side-panel__title-text" id="scheduler-panel-title">&nbsp;</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-panel-title-collapsed">&nbsp;</h2>
@@ -546,7 +554,8 @@
            The kind is not said here: a stored file's title already is its
            type, and a form's was chosen by name a moment ago. A second line
            for it made three rows of a panel that holds a sheet of paper. -->
-      <div class="rux--side-panel__header rux--side-panel__header--has-title">
+      <!-- The title does not animate; see the trip panel above. -->
+      <div class="rux--side-panel__header rux--side-panel__header--has-title rux--side-panel__header--no-title-animation">
         <div class="rux--side-panel__title rux--side-panel__title--no-label">
           <h2 class="rux--side-panel__title-text" id="scheduler-viewer-title">Document</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>

@@ -48,7 +48,10 @@ capacity, a service date or the days a bus is out.
   insurance, registration and inspection expiries comes first, red for expired,
   yellow within 45 days, otherwise the date, gray for not on file. The old app
   colours none of these and warns on the service date alone, which is the one
-  date that is a plan rather than a rule.
+  date that is a plan rather than a rule. **The column is headed Compliance,**
+  the word this plan uses throughout, with the three documents named in its sort
+  description and in each cell's tooltip: a header spelling all three out sets
+  the widest column on the page for a cell holding an icon and two words.
 - **Next service is its own column**, red past due and yellow within 45 days,
   because a service that is late and a registration that is expired are
   different problems and one column cannot say which is which. The old app's

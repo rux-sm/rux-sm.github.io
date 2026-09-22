@@ -99,12 +99,23 @@
     if (n <= WARN_DAYS) return { kind: 'soon', text: `${what} expires in ${plural(n, 'day')}`, rank: n };
     return { kind: 'ok', text: longDate(when), rank: n };
   }
+  /* The column is headed Compliance, so what the cell shows names the document
+     itself: the tooltip spells out all three and says which one the cell is
+     about, since only the soonest to expire is drawn. */
+  const COMPLIANCE_NAMES = 'Insurance, registration and inspection';
   function compliance(b) {
     const dates = COMPLIANCE_DATES.map(([what, col]) => [what, day(b[col])])
       .filter(([, v]) => v)
       .sort((x, y) => x[1].localeCompare(y[1]));
-    if (!dates.length) return { kind: 'none', text: 'Not on file', rank: Number.MAX_SAFE_INTEGER };
-    return expiryState(dates[0][0], dates[0][1]);
+    if (!dates.length) {
+      return { kind: 'none', text: 'Not on file', rank: Number.MAX_SAFE_INTEGER,
+               hint: `${COMPLIANCE_NAMES}: none on file.` };
+    }
+    const soonest = expiryState(dates[0][0], dates[0][1]);
+    const rest = dates.slice(1).map(([what, when]) => `${what.toLowerCase()} ${longDate(when)}`);
+    soonest.hint = `${COMPLIANCE_NAMES}. Soonest: ${dates[0][0].toLowerCase()} ${longDate(dates[0][1])}`
+      + (rest.length ? `, then ${rest.join(', ')}.` : '.');
+    return soonest;
   }
   /* Next service is a plan rather than a rule, so it is its own column: a
      service that is late and a registration that has expired are different
@@ -251,14 +262,23 @@
       span.textContent = `(${counts[span.dataset.count]})`;
     }
 
-    const shown = buses
-      .filter(b => filter === 'all' || state(b, outByBus.get(b.id)) === filter)
+    // The view's own rows, which is what a search narrows and what the band
+    // counts against.
+    const pool = buses.filter(b => filter === 'all' || state(b, outByBus.get(b.id)) === filter);
+    const shown = pool
       .filter(b => matches(b, query))
       .sort((a, b) => {
         if (sortDir === 'none') return fleetOrder(a, b);
         const r = SORTS[sortKey](a, b) || fleetOrder(a, b);
         return sortDir === 'descending' ? -r : r;
       });
+
+    /* What the search came to, in the band beside it. Only a search narrows
+       the list to something a count can explain — a filter already carries its
+       own count on the switcher — so the band says nothing without one, and
+       the New button does not move. */
+    const note = $('scheduler-buses-count');
+    if (note) note.textContent = query ? `${shown.length} of ${pool.length} match` : '';
 
     const body = $('scheduler-buses-rows');
     body.replaceChildren();
@@ -300,7 +320,9 @@
       const due = el('td');
       due.appendChild(indicator(service(b)));
       const legal = el('td');
-      legal.appendChild(indicator(compliance(b)));
+      const legalState = compliance(b);
+      if (legalState.hint) legal.title = legalState.hint;
+      legal.appendChild(indicator(legalState));
 
       tr.append(which, seats, kit, status, due, legal);
       body.appendChild(tr);

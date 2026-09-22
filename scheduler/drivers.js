@@ -193,14 +193,23 @@
       span.textContent = `(${counts[span.dataset.count]})`;
     }
 
-    const shown = drivers
-      .filter(d => filter === 'all' || (filter === 'active') === isActive(d))
+    // The view's own rows, which is what a search narrows and what the band
+    // counts against.
+    const pool = drivers.filter(d => filter === 'all' || (filter === 'active') === isActive(d));
+    const shown = pool
       .filter(d => matches(d, query))
       .sort((a, b) => {
         if (sortDir === 'none') return standing(a, b);
         const r = SORTS[sortKey](a, b) || standing(a, b);
         return sortDir === 'descending' ? -r : r;
       });
+
+    /* What the search came to, in the band beside it. Only a search narrows
+       the list to something a count can explain — a filter already carries its
+       own count on the switcher — so the band says nothing without one, and
+       the New button does not move. */
+    const note = $('scheduler-drivers-count');
+    if (note) note.textContent = query ? `${shown.length} of ${pool.length} match` : '';
 
     const body = $('scheduler-drivers-rows');
     body.replaceChildren();

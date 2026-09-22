@@ -2498,6 +2498,42 @@ html:has(.scheduler-page[data-takeover]) {
   .scheduler-drivers-row td:nth-child(4) { display: none; }
   .scheduler-drivers-row td:first-child { max-inline-size: 10rem; }
 }
+/* THE FILTER'S STRIP, the first thing inside the table box and flush on the
+   toolbar band under it. It carries the band's own `layer` fill so the two read
+   as one head to the table, and the switcher keeps Carbon's own size inside it
+   rather than being stretched to the box. The inset is the start, the end and
+   the top; there is none at the foot, which is what puts the switcher against
+   the band. `design/templates/list-page.html` carries the same rule as
+   `list-page__filter`, and docs/plans/site-page-pair.md decides it for both.
+
+   No outline round the box: Carbon paints the band and the rows one `layer`,
+   a step off the page in every theme the app ships, so the box already parts
+   from the page. */
+.scheduler-table-filter {
+  background-color: var(--rux-layer);
+  padding: var(--rux-spacing-05) var(--rux-spacing-05) 0;
+}
+
+/* What a search came to, in the band after the search and before New, which is
+   where Carbon's own captures put the control that follows a persistent search.
+   Quiet label type, as the forms page's band says its sheet count in. Empty it
+   takes no room, so the button does not move when the table speaks. */
+.scheduler-table-note {
+  align-self: center;
+  white-space: nowrap;
+  margin-inline-end: var(--rux-spacing-05);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-table-note:empty { margin-inline-end: 0; }
+/* Not on a phone. The band there is the search and New bus and nothing else
+   fits: the count crushed the field to a magnifier and pushed the button off
+   the end. It goes for the same reason the switcher's counts do at this width. */
+@media (max-width: 41.98rem) {
+  .scheduler-table-note { display: none; }
+}
+
 .scheduler-drivers-switcher { max-inline-size: 24rem; }
 /* Four filters, and the longest is "Out of service" with its count: Carbon
    gives every button the same width, so the widest label sets the row. A

@@ -195,22 +195,29 @@
       <div class="rux--stack-vertical rux--stack-scale-5">
         <h1 class="rux--type-productive-heading-04" id="scheduler-buses-h">Buses</h1>
 
-        <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg scheduler-buses-switcher" role="tablist" aria-label="Which buses" id="scheduler-buses-filter">
-          <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-filter="active">
-            <span class="rux--content-switcher__label">Active <span data-count="active"></span></span>
-          </button>
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="out">
-            <span class="rux--content-switcher__label">Out<span data-long> of service</span> <span data-count="out"></span></span>
-          </button>
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="inactive">
-            <span class="rux--content-switcher__label">Inactive <span data-count="inactive"></span></span>
-          </button>
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="all">
-            <span class="rux--content-switcher__label">All <span data-count="all"></span></span>
-          </button>
-        </div>
-
         <section class="rux--data-table-container" aria-labelledby="scheduler-buses-h">
+          <!-- The filter, inside the box and flush on the band under it. It
+               changes which rows the table holds, so it belongs to the table
+               rather than to the page; above the container it read as a
+               control for something else. The strip carries the band's own
+               `layer` fill, so the two are one head to the table. -->
+          <div class="scheduler-table-filter">
+            <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg scheduler-buses-switcher" role="tablist" aria-label="Which buses" id="scheduler-buses-filter">
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-filter="active">
+                <span class="rux--content-switcher__label">Active <span data-count="active"></span></span>
+              </button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="out">
+                <span class="rux--content-switcher__label">Out<span data-long> of service</span> <span data-count="out"></span></span>
+              </button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="inactive">
+                <span class="rux--content-switcher__label">Inactive <span data-count="inactive"></span></span>
+              </button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="all">
+                <span class="rux--content-switcher__label">All <span data-count="all"></span></span>
+              </button>
+            </div>
+          </div>
+
           <section class="rux--table-toolbar" role="group" aria-label="Table actions">
             <div class="rux--toolbar-content">
               <div class="rux--search rux--layout--size-lg rux--toolbar-search-container-persistent" role="search">
@@ -221,6 +228,9 @@
                   <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
                 </button>
               </div>
+              <!-- What a search came to, beside the thing that changes it.
+                   Empty it takes no room, so the button does not move. -->
+              <span class="scheduler-table-note" id="scheduler-buses-count" role="status"></span>
               <a class="rux--btn rux--btn--primary" href="buses.html?new">New bus
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
               </a>
@@ -276,10 +286,16 @@
                       </span>
                     </button>
                   </th>
+                  <!-- One word for the column, and the three documents it stands
+                       for named in the description a screen reader reads and in
+                       each cell's tooltip. Spelled out in the header they set the
+                       widest column on the page for a cell holding an icon and
+                       two words. -->
                   <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="compliance">
+                    <div class="rux--table-sort__description rux--visually-hidden">Sort by the first of the insurance, the registration and the inspection to expire</div>
                     <button type="button" class="rux--table-sort">
                       <span class="rux--table-sort__flex">
-                        <div class="rux--table-header-label">Insurance, registration and inspection</div>
+                        <div class="rux--table-header-label">Compliance</div>
                         <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
                         <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
                       </span>

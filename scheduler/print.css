@@ -105,8 +105,12 @@
    what the band has to say. */
 .scheduler-print__controls {
   display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+  align-items: stretch;
+  /* NO GAP. The cells butt against one another and the rule down each one's
+     leading edge is the divider between them; a gap as well leaves a band of
+     dead surface between two controls and the rule floating in the middle of
+     it. */
+  gap: 0;
   /* Pushed to the end by the count rather than spread against it, so a word
      the form has to say lands after it instead of between. */
   margin-inline-start: auto;

@@ -30,9 +30,9 @@ done and how.
   list is in `scheduler/docs/quote-calculator.md`.
 - The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
   yet.
-- The forms page draws the driver envelope only. A driver sheet, the printed
-  schedule, a quote, an hours-of-service form and a passenger roster are the
-  ones named for it; which follows the envelope is undecided.
+- The forms page draws the driver envelope and the driver itinerary. The
+  printed schedule, a quote, an hours-of-service form and a passenger roster
+  are the ones still named for it; which comes next is undecided.
 
 ## The database
 
@@ -44,5 +44,7 @@ done and how.
 
 - Press Save on a real trip. The database is live and shared with rux-ui.
 - Try the scheduler on a real phone. The cell menu may be unreachable on iOS.
+- Print a driver itinerary from a real trip, in the panel and in its own tab,
+  and check the sheet against the itinerary the customer sent.
 - Delete the archived GitHub repositories, and decide whether `trip-board`
   stays.

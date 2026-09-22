@@ -38,9 +38,11 @@ spreadsheet's quirks.
 
 `print.html` is the forms this app fills in and prints. On its own it lists
 them; with a form named in the query it reads that form's subject and draws it,
-filled in. The driver envelope is the first, one copy per seat on a bus, in a
-standard and a multi-stop layout. `print.js` holds the registry every form is
-an entry in, and the page is served light because paper is.
+filled in. The driver envelope is one copy per seat on a bus, in a standard and
+a multi-stop layout, on the 6 by 9 envelope itself. The driver itinerary is one
+copy per leg of a trip, on whatever paper is in the tray, and every line of it
+can be typed into before it is printed. `print.js` holds the registry every
+form is an entry in, and the page is served light because paper is.
 
 The pages in `share/` are for people without a log-in, who arrive by a link:
 `share/document.html` opens a trip document, and `share/maintenance.html`

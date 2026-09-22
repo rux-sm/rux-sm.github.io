@@ -9,10 +9,12 @@
      id       the ?form= value, and the class prefix its markup uses
      name     what the hub and the viewer's head call it
      binds    'assignment' | 'assignment+seat' | 'trip' | 'week' | null
-     marks    the column a print sets, or null
+     marks    the tick a print offers: { table, column, by }, or left out
      page     the one paper it is printed on, or left out to fit any paper
      copies   the subjects this one binding covers, which the toolbar's list
               and Print all start from and grow past
+     typed    { fields, always }: what can be typed into, and whether a filled
+              copy can be too or only a blank one
      render   (subject) -> an element
 
    A FORM COMPUTES NOTHING. Every number arrives worked out: a quote's from
@@ -63,8 +65,8 @@
       .toLocaleDateString('en-US', { weekday: 'long' });
   };
 
-  // "9:15 AM". The envelope is read at arm's length in a bus, so it takes the
-  // long form where the board takes "9:15a".
+  // "9:15 AM". A form is read at arm's length in a bus, so it takes the long
+  // form where the board takes "9:15a".
   const clock = t => {
     if (!t) return '';
     const [h, m] = String(t).split(':');
@@ -72,6 +74,66 @@
     if (!Number.isFinite(hr) || m === undefined) return String(t).slice(0, 5);
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
+
+  /* A drive as `trip_stops` keeps it, "H:MM", in the words the office writes:
+     "4h 39m", or minutes alone under the hour. */
+  const driveWords = t => {
+    const m = /^(\d+):([0-5]\d)$/.exec(String(t || '').trim());
+    if (!m) return '';
+    const hours = Number(m[1]);
+    const mins = Number(m[2]);
+    if (!hours && !mins) return '';
+    return hours ? (mins ? `${hours}h ${mins}m` : `${hours}h`) : `${mins} min`;
+  };
+
+  // Miles as the stop holds them, without the trailing zero a whole number
+  // would otherwise print.
+  const milesWords = v => {
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? `${Math.round(n * 10) / 10} mi` : '';
+  };
+
+  /* The company's own line, at the head of every form. It is here rather than
+     read from Settings because there is no Settings page yet to hold the yard. */
+  const COMPANY = {
+    address: '2801 Zinnia Avenue, McAllen, TX 78504',
+    phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
+  };
+
+  /* The contact the envelope carries is the trip's day-of contact, first
+     filled of the five. The booking contact is the office's and is used only
+     where no day-of contact is set, because this sheet travels with the
+     driver. */
+  function contactOf(trip) {
+    for (let n = 1; n <= 5; n++) {
+      const name = trip[`trip_contact_${n}_name`] || trip[`c${n}`]?.name;
+      const phone = trip[`trip_contact_${n}_phone`] || trip[`c${n}`]?.phone;
+      if (name || phone) return { name: name || '', phone: phone || '' };
+    }
+    return {
+      name: trip.booking_contact_name || trip.contacts?.name || '',
+      phone: trip.booking_contact_phone || trip.contacts?.phone || '',
+    };
+  }
+
+  /* AN ADDRESS AS A FORM CAN CARRY IT. A stop's address is what a map service
+     returned, and its last two parts are noise on paper: the country is
+     understood and the state beside a ZIP is a postal code. On a 6 by 9
+     envelope they were the difference between one line and two. Only what is
+     printed changes; the stored address is untouched. */
+  const STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
+    .split(',').map(pair => pair.split(':')));
+
+  const COUNTRY = /^(united states( of america)?|usa|u\.s\.a\.|us)$/i;
+
+  function shortAddress(text) {
+    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
+    if (COUNTRY.test(parts.at(-1) || '')) parts.pop();
+    const tail = parts.at(-1);
+    const named = tail && tail.match(/^(.+?)\s+(\d{5}(?:-\d{4})?)$/);
+    if (named && STATES[named[1]]) parts[parts.length - 1] = `${STATES[named[1]]} ${named[2]}`;
+    return parts.join(', ');
+  }
 
   /* ── The envelope ─────────────────────────────────────────────────────── */
 
@@ -92,22 +154,6 @@
     .sort((a, b) => SEAT_ORDER.indexOf(a.role || 'driver') - SEAT_ORDER.indexOf(b.role || 'driver'));
 
   const nameOf = seat => String(seat?.drivers?.name || seat?.name || '').trim();
-
-  /* The contact the envelope carries is the trip's day-of contact, first
-     filled of the five. The booking contact is the office's and is used only
-     where no day-of contact is set, because this sheet travels with the
-     driver. */
-  function contactOf(trip) {
-    for (let n = 1; n <= 5; n++) {
-      const name = trip[`trip_contact_${n}_name`] || trip[`c${n}`]?.name;
-      const phone = trip[`trip_contact_${n}_phone`] || trip[`c${n}`]?.phone;
-      if (name || phone) return { name: name || '', phone: phone || '' };
-    }
-    return {
-      name: trip.booking_contact_name || trip.contacts?.name || '',
-      phone: trip.booking_contact_phone || trip.contacts?.phone || '',
-    };
-  }
 
   /* What the trip needs, from `trip_reqs` where it is set and the older
      booleans where it is not, which is the pair rux-ui reads.
@@ -169,24 +215,6 @@
   const pickupOf = (trip, leg) => (trip.trip_stops || [])
     .find(s => (s.leg || 'outbound') === leg && s.type === 'pickup') || null;
 
-  /* AN ADDRESS AS AN ENVELOPE CAN CARRY IT. A stop's address is what a map
-     service returned, and on a 6 by 9 envelope that line wraps onto two: the
-     country is understood and the state beside a ZIP is a postal code. Only
-     what is printed changes; the stored address is untouched. */
-  const STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
-    .split(',').map(pair => pair.split(':')));
-
-  const COUNTRY = /^(united states( of america)?|usa|u\.s\.a\.|us)$/i;
-
-  function shortAddress(text) {
-    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
-    if (COUNTRY.test(parts.at(-1) || '')) parts.pop();
-    const tail = parts.at(-1);
-    const named = tail && tail.match(/^(.+?)\s+(\d{5}(?:-\d{4})?)$/);
-    if (named && STATES[named[1]]) parts[parts.length - 1] = `${STATES[named[1]]} ${named[2]}`;
-    return parts.join(', ');
-  }
-
   const cell = (label, value, blank) => {
     const node = el('div');
     node.appendChild(el('span', 'scheduler-envelope__label', label));
@@ -217,13 +245,6 @@
     head.appendChild(el('p', 'scheduler-envelope__line', COMPANY.phones));
     return head;
   }
-
-  /* The company's own line. It is here rather than read from Settings because
-     there is no Settings page yet to hold the yard. */
-  const COMPANY = {
-    address: '2801 Zinnia Avenue, McAllen, TX 78504',
-    phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
-  };
 
   /* Bus, then the seat this copy is for beside the trip's own driver. A
      relief's copy shows the swap time it reports at, where a driver's shows
@@ -423,6 +444,247 @@
     return card;
   }
 
+  /* ── The driver itinerary ─────────────────────────────────────────────────
+     The office's clean copy of the plan for the day: where the bus goes, when,
+     and what happens there, on the company's own head and in one shape
+     whoever the customer is. The customer's own itinerary is a different
+     thing -- it arrives as a PDF, a text message or a photograph and is filed
+     against the trip unchanged. This is what the driver carries.
+
+     EVERY FIELD CAN BE TYPED INTO, on a filled copy as on a blank one. The
+     envelope prints what dispatch knows and dispatch is right; this prints
+     what the customer sent, which is the thing being tidied, so autofill is a
+     head start rather than a lock. What is typed is on the page and nowhere
+     else: it prints, and it is gone when the page closes. A line worth
+     keeping belongs upstream, in the stop's own `label` or the seat's
+     instructions, both of which already print.
+
+     AND IT WORKS NOTHING OUT. Miles and drive are columns on the stop. The
+     tight-leg warnings and the duty-hours-by-day footer rux-ui's own sheet
+     carries come from its Grid tab's arithmetic, which this app does not
+     have. */
+
+  const LEGS = ['outbound', 'return'];
+  const legName = leg => (leg === 'return' ? 'Return' : 'Outbound');
+
+  /* The legs a trip has, which is the list of copies. It reads the stops
+     rather than the buses because the stops are what this form prints: a leg
+     with a bus and no route has nothing to fill in. A trip with no stops at
+     all still offers the outbound one, blank. */
+  const legsOf = trip => {
+    const have = new Set((trip.trip_stops || []).map(s => s.leg || 'outbound'));
+    const found = LEGS.filter(leg => have.has(leg));
+    return found.length ? found : ['outbound'];
+  };
+
+  const stopsOf = (trip, leg) => (trip.trip_stops || [])
+    .filter(s => (s.leg || 'outbound') === leg)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+  /* A STOP'S TIMES, labelled by what the driver needs from that row rather
+     than by the column they are kept in.
+
+     `depart_prev` is the departure from the stop BEFORE, kept on the row it
+     leads to, so a stop's own departure is the next row's -- which is why
+     every row here is drawn with the one after it in hand. A sleeper is the
+     exception the Route tab's model makes: there the pair is the rest itself,
+     `depart_prev` when it starts and `arrive` when it ends, and the bus rolls
+     at the following row's `depart_prev`.
+
+     There is no report time. rux-ui works one out in its Grid tab from the
+     yard plan; nothing on `trip_stops` holds it, and a form does not compute. */
+  function itineraryTimes(stop, next) {
+    const after = next?.depart_prev || null;
+    // The yard line the sheet opens with: the one time on it is when the bus
+    // rolls, which the pickup lends it.
+    if (stop.type === 'yard') return [['Roll', after]];
+    if (stop.type === 'sleeper') return [['Rest', stop.depart_prev], ['Up', stop.arrive], ['Dep', after]];
+    if (stop.type === 'pickup') return [['Spot', stop.spot], ['Dep', after]];
+    if (stop.type === 'return') return [['Arr', stop.arrive]];
+    return [['Arr', stop.arrive], ['Dep', after]];
+  }
+
+  const ITINERARY_TITLE = {
+    pickup: 'Pickup',
+    stop: 'Stop',
+    sleeper: 'Rest',
+    return: 'Yard',
+  };
+
+  /* A `day` row is the itinerary's own day divider, and its `label` is the
+     day: an ISO date where rux-ui's import had one, free text where the
+     customer wrote "Day 1". Its `name` is a marker and never printed. */
+  const dayName = label => {
+    const day = weekdayOf(label);
+    return day ? `${day} ${mdy(label)}` : String(label || '').trim();
+  };
+
+  const timeCell = lines => {
+    const td = el('td', 'scheduler-driver-itinerary__time scheduler-driver-itinerary__typed');
+    for (const [label, time] of lines) {
+      if (!time) continue;
+      const at = el('span', 'scheduler-driver-itinerary__at');
+      at.appendChild(el('span', 'scheduler-driver-itinerary__at-label', label));
+      at.appendChild(document.createTextNode(clock(time)));
+      td.appendChild(at);
+    }
+    return td;
+  };
+
+  const textCell = (cls, text) =>
+    el('td', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, text || '');
+
+  /* THE LEG INTO THIS STOP, under its name: the miles and the drive the Route
+     tab worked out and wrote on the row. The first row of a leg has none,
+     because nothing was driven to reach it. */
+  function locationCell(stop) {
+    const td = textCell('loc', stop.name || ITINERARY_TITLE[stop.type] || '');
+    const words = [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
+    if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', words));
+    return td;
+  }
+
+  /* One line of the table. `activity` rides in `label` on every type but a
+     pickup, where "origin:yard" already owns that column. */
+  function itineraryRow(stop, next) {
+    const tr = el('tr');
+    tr.appendChild(timeCell(itineraryTimes(stop, next)));
+    tr.appendChild(locationCell(stop));
+    tr.appendChild(textCell('addr', shortAddress(stop.address)));
+    tr.appendChild(textCell('act', stop.type === 'pickup' ? '' : stop.label || ''));
+    return tr;
+  }
+
+  /* A row with nothing in it, for the Add a row button and for a blank form.
+     It has no type either, so the Location column stays empty rather than
+     naming what the row would have been. */
+  const blankRow = () => itineraryRow({}, null);
+
+  /* THE YARD IS NO ROW OF ITS OWN. The leg's pickup holds the drive from the
+     yard and the yard departure, in `depart_prev`, so the sheet opens with a
+     yard line built from them -- otherwise the one time that tells a driver
+     when to roll is the only stored time the form does not print, and the
+     pickup row would have to label it "Dep" and say the bus leaves the school
+     half an hour before it gets there. The yard's own name and address are
+     the leg's `return` row, which is the same yard at the end of the day. */
+  function yardRow(stops) {
+    const pickup = stops.find(s => s.type === 'pickup');
+    if (!pickup?.depart_prev) return null;
+    const yard = stops.find(s => s.type === 'return');
+    return itineraryRow({
+      type: 'yard',
+      name: yard?.name || 'Yard',
+      address: yard?.address || COMPANY.address,
+      arrive: null,
+    }, { depart_prev: pickup.depart_prev });
+  }
+
+  function itineraryHead() {
+    const head = el('header', 'scheduler-driver-itinerary__head');
+    const logo = el('img', 'scheduler-driver-itinerary__logo');
+    logo.src = 'brand/logo.png';
+    logo.alt = '';
+    head.appendChild(logo);
+    head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
+    head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.phones));
+    head.appendChild(el('h1', 'scheduler-driver-itinerary__title', 'Driver itinerary'));
+    return head;
+  }
+
+  const headField = (label, value) => {
+    const node = el('div', 'scheduler-driver-itinerary__field');
+    node.appendChild(el('span', 'scheduler-driver-itinerary__label', label));
+    node.appendChild(el('span',
+      'scheduler-driver-itinerary__value scheduler-driver-itinerary__typed', value || ''));
+    return node;
+  };
+
+  /* WHAT THE HEAD NAMES: the leg, the day, the client, where they are going
+     and who to call on the day. No crew, because the envelope beside this
+     sheet names the seat it is for and naming a driver twice is one fact with
+     two homes. The bus is the one exception, and it is blank unless the form
+     was opened on one: the sheet goes in that bus's envelope. */
+  function itineraryMeta(subject) {
+    const { trip, leg, assignment } = subject;
+    const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
+    const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
+    const day = [weekdayOf(start), mdy(start)].filter(Boolean).join(' ');
+    const contact = contactOf(trip);
+    const meta = el('div', 'scheduler-driver-itinerary__meta');
+    meta.appendChild(headField('Leg:', trip.start_date ? legName(leg) : ''));
+    meta.appendChild(headField('Date:',
+      [day, end && end !== start ? `– ${mdy(end)}` : ''].filter(Boolean).join(' ')));
+    meta.appendChild(headField('Client:', trip.customer || ''));
+    meta.appendChild(headField('Bus:',
+      assignment?.buses?.number != null ? String(assignment.buses.number) : ''));
+    meta.appendChild(headField('Destination:', trip.destination || ''));
+    meta.appendChild(headField('Contact:',
+      [contact.name, contact.phone].filter(Boolean).join(' · ')));
+    return meta;
+  }
+
+  const COLUMNS = ['Time', 'Location', 'Address', 'Activity'];
+
+  /* Everything on this form can be typed into, so one class marks it and the
+     registry entry hands this list to `letThemType`. */
+  const ITINERARY_FIELDS = ['.scheduler-driver-itinerary__typed'];
+
+  /* NO BLANK RULED ROWS. A printed grid of empty lines reads as a form nobody
+     filled in, which is the impression this form exists to get away from, so
+     the table holds the stops and nothing more and a row is added on screen
+     when one is wanted. A form opened on no trip starts with one, because a
+     header over an empty table reads as broken. */
+  function itinerary(subject) {
+    const { trip, leg } = subject;
+    const card = el('article', 'scheduler-form scheduler-driver-itinerary');
+    card.appendChild(itineraryHead());
+    card.appendChild(itineraryMeta(subject));
+
+    const table = el('table', 'scheduler-driver-itinerary__table');
+    const head = el('thead');
+    const headRow = el('tr');
+    for (const label of COLUMNS) headRow.appendChild(el('th', null, label));
+    head.appendChild(headRow);
+    table.appendChild(head);
+
+    const body = el('tbody');
+    const stops = stopsOf(trip, leg);
+    const yard = yardRow(stops);
+    if (yard) body.appendChild(yard);
+    // A day divider takes no place in the run of stops, because the departure
+    // a row lends the one before it is the next real stop's.
+    const onward = stops.filter(s => s.type !== 'day');
+    let place = 0;
+    for (const stop of stops) {
+      if (stop.type === 'day') {
+        const dayRow = el('tr', 'scheduler-driver-itinerary__day');
+        const cell = el('td', 'scheduler-driver-itinerary__typed', dayName(stop.label));
+        cell.colSpan = COLUMNS.length;
+        dayRow.appendChild(cell);
+        body.appendChild(dayRow);
+        continue;
+      }
+      body.appendChild(itineraryRow(stop, onward[place + 1] || null));
+      place += 1;
+    }
+    if (!body.children.length) body.appendChild(blankRow());
+    table.appendChild(body);
+    card.appendChild(table);
+
+    /* Screen only, and inside the sheet because that is where the row it adds
+       goes. print.css takes it off the paper. */
+    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-driver-itinerary__add', 'Add a row');
+    add.type = 'button';
+    add.addEventListener('click', () => {
+      const row = blankRow();
+      body.appendChild(row);
+      letThemType(row, ITINERARY_FIELDS);
+      row.querySelector('[contenteditable]')?.focus();
+    });
+    card.appendChild(add);
+    return card;
+  }
+
   /* ── The registry ─────────────────────────────────────────────────────── */
 
   const FORMS = [
@@ -460,11 +722,52 @@
           : null,
         `${nameOf(subject.seat)} — ${roleName(subject.seat?.role)}`,
       ].filter(Boolean).join(' · '),
+      /* Only what dispatch would have filled in, and only on a blank one: a
+         filled envelope prints what dispatch knows and dispatch is right. The
+         day-of block is left alone on both, because the driver's pen fills it
+         after the trip. */
+      typed: {
+        fields: [
+          '.scheduler-envelope__value',
+          '.scheduler-envelope__blank',
+          '.scheduler-envelope__day',
+          '.scheduler-envelope__reqs',
+        ],
+      },
       render: envelope,
+    },
+    {
+      id: 'driver-itinerary',
+      name: 'Driver itinerary',
+      blurb: 'The plan for the day, from the route already entered; every line typed into.',
+      /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
+         because it is personal, one name and one seat; the plan for the day is
+         the same for every driver and every bus on the leg, and `trip_stops`
+         are keyed by trip and leg with no bus among them. */
+      binds: 'trip',
+      blank: true,
+      /* The mark rux-ui already writes and its task list already reads, so a
+         sheet printed here shows as printed there. */
+      marks: { table: 'trips', column: 'itinerary_printed', by: 'leg' },
+      /* NO PAPER OF ITS OWN: `page` left out is `size: auto`, which lays the
+         form out to whatever is in the tray and runs onto as many sheets as
+         the stops need. The envelope names 6 by 9 because it is an envelope;
+         this goes inside one. */
+      copies: subject => legsOf(subject.trip).map(leg => ({
+        ...subject,
+        leg,
+        // The bus came from the assignment the form was opened on, and an
+        // assignment is one leg's: the other leg's copy names none, and its
+        // line is blank for the pen.
+        assignment: subject.assignment?.leg === leg ? subject.assignment : null,
+      })),
+      copyName: subject => legName(subject.leg),
+      typed: { always: true, fields: ITINERARY_FIELDS },
+      render: itinerary,
     },
   ];
 
-  window.SchedulerForms = { FORMS, envelope, seatsOf, needsOf, contactOf, roleName };
+  window.SchedulerForms = { FORMS, envelope, itinerary, seatsOf, needsOf, contactOf, roleName };
 
   /* ── The page ─────────────────────────────────────────────────────────────
      With no ?form= it lists the forms. With one, it reads that form's subject
@@ -651,7 +954,7 @@
   const draw = () => {
     if (!current) return;
     const card = current.form.render(current.every[current.chosen], current.layout);
-    if (current.typed) letThemType(card);
+    if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     sheet.replaceChildren(card);
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
@@ -659,21 +962,17 @@
     fitPaper();
   };
 
-  /* WHAT CAN BE TYPED INTO ON A BLANK FORM. Only what dispatch would have
-     filled in: the day, the answers in the table, and the requirements box.
-     The day-of block is left alone, because it is blank on every envelope and
-     the driver's pen fills it after the trip.
+  /* WHAT CAN BE TYPED INTO. The form's own entry says which of its fields
+     take a pen and whether a filled copy takes one too, because the two forms
+     answer that differently: the envelope prints what dispatch knows and only
+     a blank one is typed into, where the itinerary is tidying what the
+     customer sent and every line of it is open.
 
      What is typed is on the page and nowhere else. It prints, and it is gone
      when the page is closed or the layout is switched, which is what a spare
      form in a drawer does too. */
-  function letThemType(card) {
-    const fields = [
-      ...card.querySelectorAll('.scheduler-envelope__value'),
-      ...card.querySelectorAll('.scheduler-envelope__blank'),
-      ...card.querySelectorAll('.scheduler-envelope__day'),
-      ...card.querySelectorAll('.scheduler-envelope__reqs'),
-    ];
+  function letThemType(root, selectors) {
+    const fields = (selectors || []).flatMap(sel => [...root.querySelectorAll(sel)]);
     for (const field of fields) {
       // Chrome takes plaintext-only, which keeps pasted markup out of a form
       // that is about to be printed; everything else falls back to true.
@@ -712,20 +1011,43 @@
     if (text) noteTimer = setTimeout(() => flash(''), 6000);
   }
 
+  /* WHICH ROW A TICK IS WRITTEN ON, AND IN WHICH COLUMN. A mark `by: 'seat'`
+     is this copy's own row in `trip_drivers`. A mark `by: 'leg'` is the trip's
+     row, in the column the schema names for that leg: it keeps a per-leg flag
+     as a pair of columns, `itinerary_printed_outbound` and `_return`, so the
+     leg is the suffix rather than a value. Either way the row is one the page
+     already read, so the tick it draws is what the database says.
+
+     A copy with no row to write on -- a blank form, a trip that answered
+     without an id -- has no tick, and the toolbar leaves it out. */
+  function markOf(form, copy) {
+    const marks = form?.marks;
+    const row = !marks || !copy ? null
+      : marks.by === 'leg' ? copy.trip : copy.seat;
+    if (!row?.id) return null;
+    return {
+      table: marks.table,
+      row,
+      column: marks.by === 'leg'
+        ? `${marks.column}_${copy.leg === 'return' ? 'return' : 'outbound'}`
+        : marks.column,
+    };
+  }
+
   /* The tick, written where rux-ui keeps it so its task list agrees. It shows
      at once and goes back to what the row says if the write fails, rather than
      showing a trip as done that the database never heard about. `sync` is how
      whatever is drawing the tick -- a box in this page's own bar, a row in the
-     panel's menu -- follows the seat. */
-  async function markPrinted(seat, want, sync) {
-    const was = Boolean(seat.envelope_printed);
-    seat.envelope_printed = want;
+     panel's menu -- follows the row. */
+  async function markPrinted(mark, want, sync) {
+    const { table, row, column } = mark;
+    const was = Boolean(row[column]);
+    row[column] = want;
     sync();
-    const fail = why => { seat.envelope_printed = was; sync(); flash(why, true); };
+    const fail = why => { row[column] = was; sync(); flash(why, true); };
     const client = window.Rux?.account?.client;
     if (!client) return fail('Not connected, so the tick was not saved.');
-    const { error } = await client
-      .from('trip_drivers').update({ envelope_printed: want }).eq('id', seat.id);
+    const { error } = await client.from(table).update({ [column]: want }).eq('id', row.id);
     if (error) return fail(`The tick did not save. ${error.message}`);
     flash(want ? 'Marked printed.' : 'No longer marked printed.');
   }
@@ -811,7 +1133,7 @@
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
-        chosen?.seat ? form.copyName(chosen) : `${form.name} — blank`,
+        current.blank ? `${form.name} — blank` : form.copyName(chosen),
         every.length > 1 ? every.map((copy, i) => ({
           label: form.copyName(copy),
           checked: i === current.chosen,
@@ -847,27 +1169,27 @@
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
        and the person chooses. This is that choice, and it unticks. */
-    const seat = form.marks ? every[current.chosen]?.seat : null;
-    if (seat && host) {
+    const mark = markOf(form, every[current.chosen]);
+    if (mark && host) {
       if (menu.length) menu.push({ kind: 'separator' });
       menu.push({
         id: 'printed',
         label: 'Printed',
         kind: 'check',
-        checked: Boolean(seat.envelope_printed),
-        choose: () => void markPrinted(seat, !seat.envelope_printed, buildControls),
+        checked: Boolean(mark.row[mark.column]),
+        choose: () => void markPrinted(mark, !mark.row[mark.column], buildControls),
       });
-    } else if (seat) {
+    } else if (mark) {
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
       const input = el('input', 'rux--checkbox');
       input.type = 'checkbox';
       input.id = 'scheduler-print-marked';
-      input.checked = Boolean(seat.envelope_printed);
+      input.checked = Boolean(mark.row[mark.column]);
       const label = el('label', 'rux--checkbox-label');
       label.htmlFor = input.id;
       label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
-      input.addEventListener('change', () => void markPrinted(seat, input.checked,
-        () => { input.checked = Boolean(seat.envelope_printed); }));
+      input.addEventListener('change', () => void markPrinted(mark, input.checked,
+        () => { input.checked = Boolean(mark.row[mark.column]); }));
       box.append(input, label);
       nodes.push(box);
     }
@@ -886,8 +1208,14 @@
     /* Print all covers the same list the head's own offers: every envelope on
        the trip, including a bus with a single driver on a trip that has three
        more buses. In the panel it is under the overflow, because the row
-       beside it is for what is pressed often and a whole stack is not. */
-    if (host && every.length > 1) {
+       beside it is for what is pressed often and a whole stack is not.
+
+       A FORM THAT IS ALWAYS TYPED INTO DOES NOT OFFER IT. Laying the whole
+       stack out draws every copy again, which takes back what was typed into
+       the one on the sheet -- silently, between pressing the button and the
+       dialog opening. Its copies are printed one at a time instead. */
+    const stack = every.length > 1 && !form.typed?.always;
+    if (host && stack) {
       if (menu.length) menu.push({ kind: 'separator' });
       menu.push({
         id: 'print-all',
@@ -899,7 +1227,7 @@
           requestAnimationFrame(() => window.print());
         },
       });
-    } else if (every.length > 1) {
+    } else if (stack) {
       /* Ghost, not bordered: beside the panel's bare icons a box around one
          button reads as a different kind of thing, and beside the page's own
          Print it is the quieter of a pair, which is what ghost is for. */
@@ -928,11 +1256,13 @@
     else controls.replaceChildren(...nodes);
   }
 
-  /* The buses a trip has, so the hub can offer a form that binds one. A trip
-     is not an assignment: this is the step between "the forms for this trip"
-     and "the envelope for bus 12 on the way out". */
-  const TRIP_BUSES_QUERY =
-    'id,destination,trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id))';
+  /* WHAT A TRIP OFFERS THE HUB: its buses, and its legs. A trip is not an
+     assignment, and this is the step between "the forms for this trip" and
+     "the envelope for bus 12 on the way out"; a form that binds the trip and
+     the leg stops one step earlier, at "the itinerary for the way out", so the
+     legs are read beside the buses. */
+  const TRIP_BUSES_QUERY = 'id,destination,trip_stops(leg),'
+    + 'trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id))';
 
   const busLabel = a => {
     const number = a.buses?.number;
@@ -950,7 +1280,7 @@
     const buses = (data.trip_assignments || [])
       .filter(a => (a.trip_drivers || []).some(d => d.driver_id))
       .sort(byLegThenPosition);
-    return { destination: data.destination, buses };
+    return { destination: data.destination, buses, legs: legsOf(data) };
   }
 
   const tileLink = (href, text) => {
@@ -982,6 +1312,8 @@
       tile.appendChild(el('p', 'scheduler-print__tile-blurb', form.blurb));
 
       const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
+      const legQuery = leg =>
+        `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&leg=${leg}`;
 
       const blankLink = () =>
         tileLink(`print.html?form=${form.id}&blank=1`, 'Open a blank one');
@@ -996,6 +1328,12 @@
         else tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
       } else if (found.why) {
         tile.appendChild(el('p', 'scheduler-print__tile-need', found.why));
+      } else if (form.binds === 'trip') {
+        // One link per leg, because that is what this form is a copy of.
+        const links = el('div', 'scheduler-print__tile-links');
+        for (const leg of found.legs) links.appendChild(tileLink(legQuery(leg), legName(leg)));
+        if (form.blank) links.appendChild(blankLink());
+        tile.appendChild(links);
       } else if (!found.buses.length) {
         tile.appendChild(el('p', 'scheduler-print__tile-need', 'No bus on this trip has a driver yet.'));
       } else {
@@ -1028,49 +1366,106 @@
     return copies.length ? copies : fallback;
   }
 
-  async function showForm(form) {
-    title.textContent = form.name;
-    setPaper(form);
-    // The paper is named now, so the sheet can be fitted to the room it has.
-    fitPaper();
-    bar.hidden = Boolean(host);
-    hub.hidden = true;
+  // The layout the address asks for, where the form draws more than one.
+  const layoutWanted = form => (form.layouts?.some(l => l.id === params.get('layout'))
+    ? params.get('layout') : form.layouts?.[0]?.id);
 
-    /* A BLANK ONE, asked for in the address. Every field is empty and every
-       one of them can be typed into before it is printed; nothing is saved and
-       nothing is read, so this needs no trip and no connection. It is the
-       spare form in the drawer, and the reason the Forms page is worth a way
-       in of its own. */
-    if (params.get('blank') && form.blank) {
-      const subject = { trip: {}, assignment: {}, leg: 'outbound', seat: null };
-      current = {
-        form,
-        subject,
-        copies: [subject],
-        chosen: 0,
-        every: [subject],
-        typed: true,
-        layout: form.layouts?.some(l => l.id === params.get('layout'))
-          ? params.get('layout') : form.layouts?.[0]?.id,
-      };
-      buildControls();
-      draw();
-      return;
-    }
+  const notConnected = () => say('warning', 'Not connected.',
+    'This page reads the schedule through the account script, which a local preview leaves off. The cloud preview is http://localhost:8641/.');
+
+  // The form on the sheet, once its subject has answered.
+  function show(form, subject, copies, chosen, blank) {
+    current = {
+      form,
+      subject,
+      copies,
+      chosen,
+      every: copies,
+      blank: Boolean(blank),
+      layout: layoutWanted(form),
+    };
+    buildControls();
+    draw();
+  }
+
+  /* THE TRIP AND ITS STOPS, for a form that binds the trip and the leg rather
+     than a bus. `?trip=` is the way in, with the leg in `?leg=`; `?assignment=`
+     opens it too, resolving the trip and the leg from the bus, so a way in
+     that holds a bar's id needs no second address.
+
+     The columns a tick is written to come from the form's own `marks`, so the
+     registry stays the one place either is named. */
+  const TRIP_COLUMNS = [
+    'id', 'customer', 'destination', 'trip_type',
+    'start_date', 'end_date', 'return_start_date', 'return_end_date',
+    'booking_contact_name', 'booking_contact_phone',
+    'trip_contact_1_name', 'trip_contact_1_phone',
+    'trip_contact_2_name', 'trip_contact_2_phone',
+    'trip_contact_3_name', 'trip_contact_3_phone',
+    'trip_contact_4_name', 'trip_contact_4_phone',
+    'trip_contact_5_name', 'trip_contact_5_phone',
+    'trip_stops(id,position,leg,type,label,name,address,depart_prev,arrive,spot,miles,drive)',
+  ];
+
+  const tripQuery = form => [
+    ...TRIP_COLUMNS,
+    ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
+  ].join(',');
+
+  async function showTripForm(form) {
+    const client = window.Rux?.account?.client;
+    if (!client) return notConnected();
 
     const assignmentId = params.get('assignment');
+    const tripId = params.get('trip');
+    if (!assignmentId && !tripId) {
+      return say('info', `This ${form.name.toLowerCase()} needs a trip.`,
+        'Open it from the Forms page, or from a trip bar on the board.');
+    }
+
+    say('info', 'Loading…', '');
+    const columns = tripQuery(form);
+    const { data, error } = assignmentId
+      ? await client.from('trip_assignments')
+        .select(`id,leg,buses:bus_id(number),trips:trip_id(${columns})`)
+        .eq('id', assignmentId).maybeSingle()
+      : await client.from('trips').select(columns).eq('id', tripId).maybeSingle();
+    if (error) return say('error', 'The schedule did not answer.', error.message);
+
+    const trip = assignmentId ? data?.trips : data;
+    if (!trip) {
+      return say('error', assignmentId
+        ? 'That bus is not on the schedule any more.'
+        : 'That trip is not on the schedule any more.', '');
+    }
+
+    // The assignment carries its own leg, so the copy it belongs to is the one
+    // that names a bus however the page was opened.
+    const assignment = assignmentId ? { ...data, leg: data.leg || 'outbound' } : null;
+    const asked = LEGS.includes(params.get('leg')) ? params.get('leg') : null;
+    const subject = {
+      trip,
+      assignment,
+      leg: asked || assignment?.leg || 'outbound',
+      seat: null,
+    };
+    const copies = form.copies(subject);
+    show(form, subject, copies, Math.max(0, copies.findIndex(c => c.leg === subject.leg)));
+  }
+
+  /* ONE BUS ON ONE LEG, for a form that binds it: a bar on the board is that,
+     and a round trip's legs carry different dates, a different bus and a
+     different crew. Reading `trip_assignments` by id answers all of it in one
+     request. */
+  async function showBusForm(form) {
+    const assignmentId = params.get('assignment');
     if (!assignmentId) {
-      say('info', `This ${form.name.toLowerCase()} needs a bus.`,
+      return say('info', `This ${form.name.toLowerCase()} needs a bus.`,
         'Open it from a trip bar on the board, which is one bus on one leg.');
-      return;
     }
 
     const client = window.Rux?.account?.client;
-    if (!client) {
-      say('warning', 'Not connected.',
-        'This page reads the schedule through the account script, which a local preview leaves off. The cloud preview is http://localhost:8641/.');
-      return;
-    }
+    if (!client) return notConnected();
 
     say('info', 'Loading…', '');
     // Both at once: the names only decide what a requirement is called, and
@@ -1098,17 +1493,7 @@
       ? String(c.seat?.id) === String(wanted)
       : (c.seat?.role || 'driver') === 'driver'));
 
-    current = {
-      form,
-      subject,
-      copies,
-      chosen,
-      every: copies,
-      layout: form.layouts?.some(l => l.id === params.get('layout'))
-        ? params.get('layout') : form.layouts?.[0]?.id,
-    };
-    buildControls();
-    draw();
+    show(form, subject, copies, chosen);
 
     /* The trip's other buses arrive after the form is on screen, so nothing
        waits on them. The list in the toolbar grows to the whole trip when they
@@ -1120,6 +1505,30 @@
       String(copy.seat?.id) === String(shown?.seat?.id)
       && String(copy.assignment?.id) === String(shown?.assignment?.id)));
     buildControls();
+  }
+
+  async function showForm(form) {
+    title.textContent = form.name;
+    setPaper(form);
+    // The paper is named now, so the sheet can be fitted to the room it has.
+    fitPaper();
+    bar.hidden = Boolean(host);
+    hub.hidden = true;
+
+    /* A BLANK ONE, asked for in the address. Every field is empty and every
+       one of them can be typed into before it is printed; nothing is saved and
+       nothing is read, so this needs no trip and no connection. It is the
+       spare form in the drawer, and the reason the Forms page is worth a way
+       in of its own. */
+    if (params.get('blank') && form.blank) {
+      // An empty assignment rather than none: a blank form is drawn by the
+      // same code as a filled one, which reads the bus and its seats.
+      const subject = { trip: {}, assignment: {}, leg: 'outbound', seat: null };
+      return show(form, subject, [subject], 0, true);
+    }
+
+    if (form.binds === 'trip') return showTripForm(form);
+    return showBusForm(form);
   }
 
   const form = formOf(params.get('form'));

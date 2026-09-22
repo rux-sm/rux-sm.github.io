@@ -52,8 +52,9 @@ capacity, a service date or the days a bus is out.
   because a service that is late and a registration that is expired are
   different problems and one column cannot say which is which. The old app's
   three-month warning becomes 45 days, so one number covers the page.
-- **The default sort puts the soonest compliance first**, as the Drivers page
-  does. Every column sorts.
+- **The list opens newest bus first**, the same order the board's rows take,
+  so the page and the board read alike. Every column sorts, so the compliance
+  column is one click away.
 - **The editor has two line tabs, Details and Trips.** Details is the one
   form, in sections parted by the trip editor's rule: Bus, Equipment, Service,
   Compliance, Out of service, Notes, then Cancel and Save. Trips lists the
@@ -74,15 +75,19 @@ capacity, a service date or the days a bus is out.
   whose end is before its start blocks Save. Its help line says the bus stays
   on the board and can still be assigned, because that is what the old app
   does and dispatch relies on it.
-- **A bus is never deleted here, only set Inactive,** so past trips keep the
-  bus's number. The old app deletes the row outright, which leaves a finished
-  trip pointing at nothing.
-- **The board's row order stays in rux-ui.** `buses.sort_order` is what orders
-  the board's rows, and dragging rows to set it is a second job with its own
-  rules; this page shows the order it finds and Save never writes
-  `sort_order`, so a bus saved here does not move on the board. The old app's
-  save rewrites the column from a hidden field, which turns a stored 0 into
-  nothing.
+- **A bus is never deleted, only set Inactive,** so past trips keep the bus's
+  number. Deleting the row leaves a finished trip pointing at nothing, and
+  nothing needs it; rux-ui's Delete button is left for removal there.
+- **Buses are ordered by model year, newest first,** on this page and on the
+  board's rows, with the bus number breaking a tie and a bus with no year last.
+  Dragging rows into a hand-made order goes; a fleet in year order is the same
+  answer every time and nobody has to remember it.
+- **That order is written into `buses.sort_order`,** rather than each app
+  sorting for itself, because rux-ui draws its rows from that column and two
+  apps disagreeing about which row is which is worse than one derived column.
+  Saving a bus here renumbers the whole fleet when the years no longer match
+  the numbering, and a drag in rux-ui holds only until the next save here.
+  rux-ui's drag and its Set as order button are left for removal there.
 - **Fields and storage are rux-ui's**, so both apps read the same bus: the
   `buses` columns and `bus_out_of_service` rows.
 - **Save writes the bus and its out-of-service dates together.** `buses` has
@@ -99,17 +104,19 @@ capacity, a service date or the days a bus is out.
 
 ## Questions
 
-- **Is 45 days right for a bus?** It is the Drivers page's number, and one
-  number across the site is easier to hold, but an insurance renewal and a CDL
-  are not the same errand. A different number here means two to remember.
-- **Should the board's row order move to this page later,** as a drag on the
-  list, or stay in rux-ui for good? This plan leaves it alone either way; the
-  answer decides whether a later plan is coming.
-- **Does anything still need to delete a bus outright?** If a bus is only ever
-  set Inactive, rux-ui's Delete button is the one way to remove a mistyped row,
-  and it stays there.
+None open.
 
 ## Tasks
 
-- [ ] Read the decisions above and answer the three questions, before building
-      starts.
+- [ ] Renumber `buses.sort_order` from the model year once, newest first, as a
+      named migration through the Supabase connection, so the board is in the
+      new order before the page exists. The statement is shown to rux first.
+- [ ] Build the list: the table, the four counts, the search and New bus.
+- [ ] Build the record: the form, its two tabs, the out-of-service list and
+      Save's compare-before-writing.
+- [ ] Add the Buses link to the side nav, which is copied into six pages.
+- [ ] Correct `scheduler/docs/screen-inventory.md`, where §1 and §2 still send
+      a bus to a table page and a panel and §7 lists the bus with what the
+      panel holds.
+- [ ] rux saves one real bus, and checks the board's rows and rux-ui's roster
+      show the same order.

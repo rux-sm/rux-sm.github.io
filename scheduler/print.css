@@ -168,12 +168,20 @@
   flex-direction: column;
 }
 
-/* THE OUTLINE IS THE SCREEN'S, not the paper's. It is what says where the app
-   ends and the sheet begins, and a printer has no use for it: unscoped, it
-   came out down the side of the page. The bar's own rule goes with it, because
-   the bar is not printed either. */
+/* THE OUTLINE IS THIS PAGE'S OWN, and only where this page stands alone. On
+   the page it is what binds the band to the desk and says where the app ends
+   and the sheet begins. Framed in the panel there is no band -- the panel
+   holds those controls -- so it drew a rectangle round a desk and nothing
+   else, inside a panel that is already a box: chrome inside chrome, the same
+   reason the header and the title are gone there.
+
+   A printer has no use for it either. Unscoped, it came out down the side of
+   the page, so it is the screen's; the bar's own rule goes with it, because
+   the bar is not printed. */
 @media screen {
-  .scheduler-print__frame { border: 1px solid var(--rux-border-subtle-01); }
+  [data-rux-standalone] .scheduler-print__frame {
+    border: 1px solid var(--rux-border-subtle-01);
+  }
 }
 
 /* How many sheets, at the start of the band and in the same quiet type as

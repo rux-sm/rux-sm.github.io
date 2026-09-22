@@ -1176,42 +1176,47 @@
      the items are and the panel builds them. In its own tab there is no
      overflow and no menu script, and the page has the width to show all of
      them, so they stay in its bar. */
-  /* HOW A CHOICE IS MADE ON THIS BAR: Carbon's fluid select, which is the
-     style for a control that IS its container rather than one placed in it.
-     The name sits inside the field and the field fills the band, so there is
-     nothing perched on anything.
+  /* A CELL OF THE BAND. Carbon ships no text toolbar -- the pattern is a page
+     of guidance and a drawing, and the only toolbar classes it compiles are
+     the table's -- so the cells that make one are this app's own, under its
+     own prefix and in Carbon's own tokens. What a cell is: the band's full
+     height, a rule down its leading edge, and nothing else until the pointer
+     is over it. IBM's reference divides its whole bar this way and it is the
+     whole of why that bar reads as one thing rather than a row of controls.
 
-     AND IT DECLARES THE LAYER IT IS ON, which is the whole reason the default
-     style looked wrong there. A field takes `field-01` by default and a
-     surface takes `layer-01`, and those two are the same colour in every one
-     of Carbon's four themes -- so the field vanished into the band and left
-     its underline behind, a rule with nothing above it. `rux--layer-two` moves
-     the control to `field-02`, which is a step off the band in all four. Any
-     control put on this band wants the same. */
-  function pickField(label, names, chosen, choose) {
-    const id = `scheduler-print-pick-${label.toLowerCase()}`;
-    const item = el('div', 'rux--form-item rux--select--fluid rux--layer-two scheduler-print__pick');
-    const field = el('div', 'rux--select');
-    const name = el('label', 'rux--label', label);
-    name.htmlFor = id;
-    const wrapper = el('div', 'rux--select-input__wrapper');
-    const select = el('select', 'rux--select-input');
-    select.id = id;
+     A CHOICE IS A CELL WITH A SELECT IN IT. A Carbon select paints a field and
+     an underline, which is a control placed in a band rather than a part of
+     one; stripping those off it would be a local rule on a Carbon class, which
+     this repository does not do. The element is a bare `select` the cell
+     styles instead. */
+  function pickCell(label, names, chosen, choose) {
+    const cell = el('div', 'scheduler-print__cell scheduler-print__pick');
+    const select = el('select', 'scheduler-print__cell-select');
+    select.setAttribute('aria-label', label);
     names.forEach((text, i) => {
-      const option = el('option', 'rux--select-option', text);
+      const option = el('option', null, text);
       option.value = String(i);
       select.appendChild(option);
     });
     select.value = String(chosen);
     select.addEventListener('change', e => choose(Number(e.target.value) || 0));
-    wrapper.appendChild(select);
-    wrapper.appendChild(arrow());
-    // Carbon renders one on every fluid control; it shows only on an invalid
-    // or warning field, and the markup carries it either way.
-    wrapper.appendChild(el('hr', 'rux--select__divider'));
-    field.append(name, wrapper);
-    item.appendChild(field);
-    return item;
+    cell.append(select, sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow'));
+    return cell;
+  }
+
+  // One of the sprite's drawings, at the size a cell wants it.
+  function sprite(href, cls) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', cls);
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('viewBox', '0 0 32 32');
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', href);
+    svg.appendChild(use);
+    return svg;
   }
 
   function buildControls() {
@@ -1232,7 +1237,7 @@
        as a different family beside a row of square controls. The copy beside it
        is already a select; this row makes its choices one way. */
     if (form.layouts?.length > 1) {
-      nodes.push(pickField(
+      nodes.push(pickCell(
         'Layout',
         form.layouts.map(option => option.name),
         form.layouts.findIndex(option => option.id === layout),
@@ -1283,7 +1288,7 @@
         })) : [],
       );
     } else if (every.length > 1) {
-      nodes.push(pickField(
+      nodes.push(pickCell(
         'Copy',
         every.map(copy => form.copyName(copy)),
         current.chosen,
@@ -1296,29 +1301,31 @@
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
        and the person chooses. This is that choice, and it unticks. */
-    const mark = markOf(form, every[current.chosen]);
-    if (mark && host) {
+    const printed = markOf(form, every[current.chosen]);
+    if (printed && host) {
       if (menu.length) menu.push({ kind: 'separator' });
       menu.push({
         id: 'printed',
         label: 'Printed',
         kind: 'check',
-        checked: Boolean(mark.row[mark.column]),
-        choose: () => void markPrinted(mark, !mark.row[mark.column], buildControls),
+        checked: Boolean(printed.row[printed.column]),
+        choose: () => void markPrinted(printed, !printed.row[printed.column], buildControls),
       });
-    } else if (mark) {
+    } else if (printed) {
+      const cell = el('div', 'scheduler-print__cell');
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
       const input = el('input', 'rux--checkbox');
       input.type = 'checkbox';
       input.id = 'scheduler-print-marked';
-      input.checked = Boolean(mark.row[mark.column]);
+      input.checked = Boolean(printed.row[printed.column]);
       const label = el('label', 'rux--checkbox-label');
       label.htmlFor = input.id;
       label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
-      input.addEventListener('change', () => void markPrinted(mark, input.checked,
-        () => { input.checked = Boolean(mark.row[mark.column]); }));
+      input.addEventListener('change', () => void markPrinted(printed, input.checked,
+        () => { input.checked = Boolean(printed.row[printed.column]); }));
       box.append(input, label);
-      nodes.push(box);
+      cell.appendChild(box);
+      nodes.push(cell);
     }
 
     /* PRINT IS A GHOST ICON, which is what a toolbar's own actions are: in
@@ -1332,24 +1339,11 @@
        exactly as it prints a stored file; standing alone the page carries it. */
     const actions = [];
     if (!host) {
-      const print = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only');
+      const print = el('button', 'scheduler-print__cell scheduler-print__cell--action');
       print.type = 'button';
       print.title = 'Print';
       print.setAttribute('aria-label', 'Print');
-      const mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      mark.setAttribute('width', '16');
-      mark.setAttribute('height', '16');
-      /* The sprite's own box, as every other use of an m- symbol in this app
-         writes it. A viewBox with its origin at -960 -- the symbol's, not the
-         `use` element's -- puts the drawing a whole viewport below the visible
-         one, and the button paints as nothing at all. */
-      mark.setAttribute('viewBox', '0 0 32 32');
-      mark.setAttribute('fill', 'currentColor');
-      mark.setAttribute('aria-hidden', 'true');
-      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-      use.setAttribute('href', '#m-print');
-      mark.appendChild(use);
-      print.appendChild(mark);
+      print.appendChild(sprite('#m-print', 'scheduler-print__cell-icon'));
       actions.push(print);
     }
 

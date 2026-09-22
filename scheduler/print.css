@@ -76,9 +76,12 @@
   margin: 0;
   display: flex;
   background: var(--rux-layer);
-  /* The fluid control's own height, held whether or not a form has one: a band
-     that changed height from one form to the next moved the paper under it. */
-  min-block-size: 4rem;
+  /* One rule under the band, which is the only thing between it and the desk:
+     they are one surface and this is the line across it. */
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  /* Held whether or not a form has any controls, so a band does not change
+     height from one form to the next and move the paper under it. */
+  min-block-size: 3rem;
 }
 
 /* WHAT SITS IN THE BAND AND WHAT FILLS IT. A fluid control is the band's own
@@ -114,12 +117,7 @@
 .scheduler-print__bar-count,
 .scheduler-print__bar-note { align-self: center; }
 
-/* Carbon sizes both of these to their field, which in a row with nothing else
-   to say is the whole of it, and lets them be squeezed to nothing beside the
-   buttons. They keep their own width here instead, and the two picks take the
-   same one so a bar carrying both reads as a pair. */
 .scheduler-print__controls > * { flex: none; }
-.scheduler-print__pick { inline-size: 14rem; }
 
 /* Print and Print all, kept side by side wherever the row breaks. */
 .scheduler-print__prints {
@@ -147,13 +145,13 @@
    Drivers page and the quote calculator title themselves with. */
 .scheduler-print__bar-title { margin: 0; }
 
-/* THE BAR AND THE DESK ARE TWO BOXES WITH THE PAGE BETWEEN THEM, which is how
-   Carbon composes a toolbar over its content: each is a surface on the page,
-   and the gap is the page showing through. It was one flush surface with the
-   desk a layer above the bar, and that only works in a dark theme -- Carbon's
-   light themes alternate, so `layer-02` came out the colour of the page and
-   the desk disappeared. Both take `layer`, which is a step off the background
-   in every one of the four.
+/* THE BAR AND THE DESK ARE ONE BOX INSIDE ONE OUTLINE, flush, which is how
+   IBM's text toolbar is drawn: a band of controls sitting straight on the
+   surface it acts on, the pair bounded by a single rule. The outline is what
+   makes it read in every theme -- Carbon's layers alternate in the light ones,
+   so the fills alone cannot be relied on to part the box from the page.
+
+   Both still take `layer`, which is a step off the background in all four.
 
    The frame takes the page's height and hands what is left to the desk, which
    fits the paper to it. */
@@ -162,7 +160,7 @@
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--rux-spacing-05);
+  border: 1px solid var(--rux-border-subtle-01);
 }
 
 /* How many sheets, at the start of the band and in the same quiet type as

@@ -613,6 +613,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   font: inherit;
 }
 
+/* A RULE DIVIDES TWO THINGS. Framed in the board's panel the form's controls
+   start the toolbar row, so the leading rule of the first one landed on the
+   panel's own edge -- two lines in the same place, and nothing between them.
+   On the page the band begins with the sheet count, so the same rule is the
+   boundary between what the band says and what it offers, and it stays. */
+.scheduler-viewer__toolbar > .scheduler-print__cell:first-child {
+  border-inline-start: 0;
+}
+
 /* One that does something on a press is a button, so it takes a pointer, a
    hover and the focus ring every other control on the page takes. */
 .scheduler-print__cell--action {
@@ -623,7 +632,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline: 0;
 }
 
-.scheduler-print__cell--action:hover { background: var(--rux-layer-hover); }
+/* THE CHOICE HOVERS LIKE THE REST. It is as pressable as they are, and where
+   the rule above takes its edge away the hover is the only thing left saying
+   how far the control reaches -- which is what the panel's ghost buttons
+   beside it do too. */
+.scheduler-print__cell--action:hover,
+.scheduler-print__pick:hover { background: var(--rux-layer-hover); }
 
 .scheduler-print__cell:focus-within {
   outline: 2px solid var(--rux-focus);

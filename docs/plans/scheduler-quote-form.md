@@ -23,15 +23,15 @@ without QuickBooks.
   The office's estimate carries one line item, "Bus Rental", quantity one, and
   a breakdown on the customer's copy would invite an argument about the parts.
 - **The header is `print.js`'s `COMPANY`,** which the envelope already prints.
+- **The bill-to block is the trip's organization,** whose record holds the
+  address; `docs/plans/scheduler-organizations.md` builds it. Until that lands
+  the quote prints the customer's name alone.
 - **The contact box and the two times are `typed` fields,** as the registry's
   `typed` entry allows, because the office writes TBD on a quote today and
   settles both with the customer afterwards.
 
 ## Questions
 
-- The customer's address has no home: `contacts` holds a name, phone, email
-  and client, and the quote prints a bill-to block. Add address columns to
-  `contacts` as a migration, or type the address on the form each time?
 - Do the terms — the deposit, the cancellation percentages, the hotel room —
   ever change? Fixed, they belong in the form; changing, they belong in a
   settings row the office can edit.

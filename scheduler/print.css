@@ -314,10 +314,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 @media print {
-  /* Nothing on this page is chrome except the bar and the name over it, so the
-     blanket hide rux-ui needs over the board is two rules here. */
+  /* Nothing on this page is chrome except the bar and the head over it, so the
+     blanket hide rux-ui needs over the board is one rule here.
+
+     THE HEAD GOES AS A WHOLE, not by its lines. Hidden one by one it kept the
+     16px it holds between itself and the frame, and 16px above a form that is
+     already the whole sheet is the difference between one envelope and two --
+     the printer had been taking the second. The rule that collapses it on
+     screen reads the `hidden` attribute, which is how the panel hides it; here
+     the lines go by display, which that rule cannot see. */
   .scheduler-print__bar,
-  .scheduler-print__bar-title { display: none; }
+  .scheduler-print__head { display: none; }
 
   /* The desk is a screen surface; on paper there is only paper. */
   .scheduler-print__sheet { padding: 0; }

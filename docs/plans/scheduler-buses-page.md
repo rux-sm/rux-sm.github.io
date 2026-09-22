@@ -27,8 +27,8 @@ capacity, a service date or the days a bus is out.
 - **The list is Carbon's data table at large density, sortable**, with a
   toolbar holding the search and a primary New bus button, and a content
   switcher for Active, Out of service, Inactive and All with counts. No
-  checkboxes, batch actions or pagination: there are about twenty buses and
-  nothing to do to several at once. Search reads the number, make, model, VIN
+  checkboxes, batch actions or pagination: there are eleven buses and nothing
+  to do to several at once. Search reads the number, make, model, VIN
   and `bus_ref`.
 - **Six fixed columns, with no column picker:** Bus (a disc in the bus's own
   colour carrying its type icon, then the number, with the type and the make
@@ -79,9 +79,10 @@ capacity, a service date or the days a bus is out.
   number. Deleting the row leaves a finished trip pointing at nothing, and
   nothing needs it; rux-ui's Delete button is left for removal there.
 - **Buses are ordered by model year, newest first,** on this page and on the
-  board's rows, with the bus number breaking a tie and a bus with no year last.
-  Dragging rows into a hand-made order goes; a fleet in year order is the same
-  answer every time and nobody has to remember it.
+  board's rows. Two buses of one year are parted by the bus number, lowest
+  first and read as a number so 9 comes before 10, and a bus with no year goes
+  last. Dragging rows into a hand-made order goes; a fleet in year order is
+  the same answer every time and nobody has to remember it.
 - **That order is written into `buses.sort_order`,** rather than each app
   sorting for itself, because rux-ui draws its rows from that column and two
   apps disagreeing about which row is which is worse than one derived column.

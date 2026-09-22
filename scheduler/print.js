@@ -13,16 +13,19 @@
      marks    the tick a print offers: { table, column, by }, or left out
      page     the paper it is printed on: size, width, height, ink margin, and
               `exact` where the form must not run past one sheet of it
+     fileName (subject) -> the name Save as PDF offers, or left out
      copies   the subjects this one binding covers, which the toolbar's list
               and Print all start from and grow past
      typed    { fields, always }: what can be typed into, and whether a filled
               copy can be too or only a blank one
-     render   (subject) -> an element
+     render   (subject) -> an element, or a list of them, one per sheet
 
    A FORM COMPUTES NOTHING. Every number arrives worked out: a quote's from
    quote.js, which holds the office spreadsheet's formulas, and a leg's miles
    and hours from the Route tab. A second implementation of the same
-   arithmetic is a second answer waiting to disagree with the screen.
+   arithmetic is a second answer waiting to disagree with the screen. The
+   one sum on a form is the quote's, over lines typed on the sheet itself,
+   which no screen holds.
 
    AND IT PRINTS WITH NO BACKGROUND FILLS. Chrome leaves Background graphics
    off and nobody ticks it, so every division on paper is a rule or a border.
@@ -705,17 +708,31 @@
 
   /* ── The customer quote ───────────────────────────────────────────────
      The document the office sends today, printed from the trip instead of
-     retyped into QuickBooks: the same letterhead, the same one line item, the
-     same terms and the same signature line. Nothing here is an improvement on
-     it -- a customer who has had one of these before should not be able to
-     tell this one apart.
+     retyped into QuickBooks: the same letterhead, the same line items, the
+     same terms and signature line, and behind them the Terms and Conditions
+     Agreement Form the customer signs with it. A customer who has had one of
+     these before should not be able to tell this one apart, except that its
+     vehicle line and its quantity are read from one bus count and cannot
+     disagree.
 
-     IT STANDS BESIDE THE QUICKBOOKS ESTIMATE rather than replacing it, so the
-     estimate goes on carrying the number the office files by and this sheet
-     carries none, which is what the customer's copy shows today.
+     IT IS TWO SHEETS, the quote and the agreement, so `quote` returns both and
+     the page stacks them as it stacks Print all's envelopes: a gap between
+     them on screen and a new page on paper.
 
-     AND THE WORDING IS NOT ITS OWN. The one line item's description is
+     THE ESTIMATE NUMBER IS TYPED. QuickBooks numbers the estimate and the
+     office files by that number, so the box beside the date is where it is
+     copied across; the trip keeps no number of its own.
+
+     AND THE WORDING IS NOT ITS OWN. The first line item's description is
      `quote-text.js`, which the Billing tab's Copy for QuickBooks reads too. */
+
+  /* THE LETTERHEAD AS THE OFFICE'S SHEET SETS IT, which spells the street and
+     the phones differently from the driver forms' shorter line. */
+  const QUOTE_LETTERHEAD = [
+    '2801 Zinnia Ave. McAllen, TX 78504',
+    'Ph. (956) 994-1169 / Ph./Fax 994-9491 / Cell 648-9691',
+    `E-mail: ${COMPANY.email}`,
+  ];
 
   /* THE TERMS, WRITTEN HERE. rux says they change rarely, so a change to them
      is a commit rather than a settings row nobody would open twice a decade.
@@ -733,21 +750,54 @@
     'If you have any questions, please contact us at (956) 994-1169 or at (956) 648-9691.\nThank you for choosing Escamilla Tour Buses, we look forward to hearing from you soon.',
   ];
 
-  // Today, as the sheet's Date box writes it. Built from the local parts and
-  // not from an ISO string, which is a day behind west of Greenwich.
+  /* THE AGREEMENT'S POLICIES, as the office's Word form words them. A
+     paragraph is [heading, text]: a heading is underlined and bold and runs
+     into its text, a paragraph with none is the text alone, and `warn` sets
+     the one the form prints in red. */
+  const AGREEMENT_POLICIES = [
+    { heading: 'Pricing Policy:', text: 'Quotes are based on the itinerary provided at the time. Prices are subject to change if itinerary is updated. Any changes to the itinerary resulting in additional mileage or affecting driver hours will result in price changes. A Fuel surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date. The amount will be calculated based on the gallons of fuel used on the trip and the fuel price difference.' },
+    { heading: 'Trip Booking and Cancellation Policy:', text: 'Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and 20% deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.' },
+    { text: 'Cancellations one month prior to departure will incur a 20% cancellation fee. Cancellations 48 hours prior to departure will incur a 50% cancellation fee. Cancellations on the day of or during the trip will incur a 100% cancellation fee. All cancellations must be sent by email.' },
+    { heading: 'Payment Policy:', text: 'Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.' },
+    { heading: 'Driver Lodging Policy:', text: 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).' },
+    { heading: 'NOTE:', warn: true, text: 'As per FMCSA regulations, our drivers can drive up to 10 hours and stay on duty for a total of 15hrs, which includes both driving and non-driving duties. Once either the 15 hours on duty or 10 hour driving limits are reached, the driver must have 8 consecutive hours of rest. For your safety, please do not interrupt the driver’s rest period via constant phone calls, etc. The driver cannot move the bus during the rest period.' },
+    { heading: 'Passenger Behavior Policy:', text: 'Passengers must always stay seated in the bus when in motion. Minors cannot board the bus without a supervising adult present. Passengers should avoid making excessive noise in the bus or distractions for the drivers. Microphone usage should be limited to trip coordinators or supervising adults. Foul language or inappropriate topics may result in microphone privileges being taken away.' },
+    { text: 'Alcohol and drug usage is forbidden on our buses. Drivers can refuse passengers from boarding if they are under the influence of drugs or alcohol.' },
+    { text: 'The driver’s sleeping area must always be respected and is only to be used by our drivers. If there is a driver present in the sleeper, please do not disturb their rest. This is critical for your group’s safety!' },
+    { text: 'Damages to the bus interior caused by the chartering party will be billed separately. Examples: seat burns, stains, and rips, damaged monitors and electric plugs, and other equipment on the bus.' },
+    { heading: 'Bus Cleanliness Policy:', text: 'Please help keep our buses clean! We may assess a $250 fee for excessive amounts of trash left behind on the bus. To reduce the chances of spills, please only bring bottled drinks with caps on board. Avoid bringing sticky, gummy candies on board, as they are very difficult to clean.' },
+    { text: 'The restroom in the back of the bus is only to be used for emergencies. We strongly recommend avoiding #2 and keeping all bus restroom usage to a minimum to prevent unpleasant odors. Restroom breaks should be planned into your itinerary.' },
+    { heading: 'Other Company Policies:', text: 'Escamilla Tour Buses is not responsible for any lost, stolen or damaged items during provided service. Please double check that no personal belongings are left behind at the end of your trip.' },
+    { text: 'Our buses are equipped with power outlets, seat belts, DVD player, microphone & Wi-Fi as a courtesy to our passengers. However, we cannot guarantee these functions will always be operational.' },
+    { text: 'Escamilla Tour Buses reserves the right to stop or delay service if any Act of God, accidents, bad weather, or other conditions beyond our control make it inadvisable or unsafe to operate the buses. While we strive for all trips to go smoothly and on time, sometimes unexpected delays can occur.' },
+    { text: 'All our buses are equipped with modern emissions reduction equipment, as mandated by federal regulations. This can cause unplanned 1 hour trip delays, as occasional stationary exhaust filter regenerations are necessary to keep the buses operational. We have no control over these systems; the pollution control computers decide when a regen must take place.' },
+  ];
+
+  // Today, as the sheet's Date box writes it, 09/22/26. Built from the local
+  // parts and not from an ISO string, which is a day behind west of Greenwich.
   const today = () => {
     const now = new Date();
-    return `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
+    const two = n => String(n).padStart(2, '0');
+    return `${two(now.getMonth() + 1)}/${two(now.getDate())}/${two(now.getFullYear() % 100)}`;
   };
 
-  // Money as a quote prints it, cents and all: the office's own sheet carries
-  // two places in every column, and a price that divides to a half cent is
-  // the reason the Total line is the quoted price rather than a product.
+  // Money as a quote prints it, cents and all, and negative for a deduction:
+  // the office's own sheet carries two places in every column.
   const money = value => {
     const n = Number(value);
     return Number.isFinite(n) && n !== 0
       ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
       : '';
+  };
+
+  // What was typed into a money or quantity cell, as a number: "$1,400.00",
+  // "-250" and "(250.00)" all read, and anything else is no number.
+  const typedNumber = text => {
+    const raw = String(text || '').trim();
+    if (!raw) return NaN;
+    const negative = /^\(.*\)$/.test(raw);
+    const n = Number(raw.replace(/[$,\s()]/g, ''));
+    return negative ? -n : n;
   };
 
   /* THE TWO TIMES THE QUOTE NAMES ARE THE GROUP'S, not the bus's. The group
@@ -766,6 +816,10 @@
     };
   }
 
+  // The last day of the trip, which the description's range and the
+  // agreement's trip date both end on.
+  const lastDay = trip => trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date;
+
   /* The line item's description, in the wording the Billing tab copies. The
      seats are the outbound bus's, so a trip with no bus yet names the vehicle
      without guessing a size. */
@@ -782,7 +836,7 @@
         || trip.pickup_address || '',
       destination: trip.destination,
       from: trip.start_date,
-      to: trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date,
+      to: lastDay(trip),
       leave: times.leave,
       back: times.back,
     });
@@ -791,8 +845,8 @@
   /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and
      divided once, with the label shaded as the office's own sheet shades it.
      print.css names the fill and what carries it onto paper. */
-  function quoteBox(label, lines, wide) {
-    const box = el('div', `scheduler-customer-quote__box${wide ? ' scheduler-customer-quote__box--wide' : ''}`);
+  function quoteBox(label, lines, cls) {
+    const box = el('div', `scheduler-customer-quote__box${cls ? ` scheduler-customer-quote__box--${cls}` : ''}`);
     box.appendChild(el('p', 'scheduler-customer-quote__label', label));
     const body = el('div', 'scheduler-customer-quote__value scheduler-customer-quote__typed');
     for (const line of lines.filter(Boolean)) body.appendChild(el('span', null, line));
@@ -800,23 +854,20 @@
     return box;
   }
 
-  function quoteHead() {
+  // The logo over the letterhead's three lines, at the head of both sheets;
+  // the agreement carries the logo alone, as the office's Word form does.
+  function quoteHead(lines) {
     const head = el('header', 'scheduler-customer-quote__head');
-    const mark = el('div', 'scheduler-customer-quote__mark');
     const logo = el('img', 'scheduler-customer-quote__logo');
     logo.src = 'brand/logo.png';
     logo.alt = '';
-    mark.appendChild(logo);
-    mark.appendChild(el('p', 'scheduler-customer-quote__line', COMPANY.address));
-    mark.appendChild(el('p', 'scheduler-customer-quote__line', COMPANY.phones));
-    mark.appendChild(el('p', 'scheduler-customer-quote__line', `E-mail: ${COMPANY.email}`));
-    head.appendChild(mark);
-    head.appendChild(el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
+    head.appendChild(logo);
+    for (const line of lines) head.appendChild(el('p', 'scheduler-customer-quote__line', line));
     return head;
   }
 
-  // The cell of the one line item's row. The numbers read to the trailing
-  // edge, as money on a bill does; the description is a block of lines.
+  // A cell of a line item's row. The numbers read to the trailing edge, as
+  // money on a bill does; the description is a block of lines.
   const quoteCell = (cls, text) => {
     const td = el('td', `scheduler-customer-quote__${cls} scheduler-customer-quote__typed`);
     for (const [i, line] of String(text || '').split('\n').entries()) {
@@ -830,12 +881,50 @@
 
   const QUOTE_FIELDS = ['.scheduler-customer-quote__typed'];
 
-  /* ONE LINE ITEM, "Bus Rental", AND THE PRICE IS THE TRIP'S. The quantity is
-     the buses and the cost is the price divided between them, which is how
-     the office's own estimate reads; the Total is the quoted price itself and
-     not the product, so a price that will not divide evenly still totals to
-     what was quoted. No breakdown of the parts, which would invite an argument
-     about them. */
+  // One line item: Item, Description, Quantity, Cost and Total, in that order.
+  function lineRow(item, desc, qty, cost, total) {
+    const row = el('tr', 'scheduler-customer-quote__line-item');
+    row.appendChild(quoteCell('item', item));
+    row.appendChild(quoteCell('desc', desc));
+    row.appendChild(quoteCell('num', qty));
+    row.appendChild(quoteCell('num', cost));
+    row.appendChild(quoteCell('num', total));
+    return row;
+  }
+
+  /* WHAT IS TYPED IS ADDED UP, and only that. The first line comes from the
+     trip -- its buses, and the quoted price divided between them -- and its
+     Total is the quoted price itself, so a price that will not divide evenly
+     still totals to what was quoted. A Quantity or Cost typed on any line
+     makes that line's Total their product, and the Total box is the sum of the
+     lines, so a deduction typed under the bus rental takes the total down with
+     it. The trip's quoted price is not changed by any of it: that is the
+     Billing tab's, and a price agreed on the sheet is saved there. */
+  function addUp(card) {
+    const rows = [...card.querySelectorAll('.scheduler-customer-quote__line-item')];
+    let sum = 0;
+    let any = false;
+    for (const row of rows) {
+      const n = typedNumber(row.cells[4].textContent);
+      if (Number.isFinite(n)) { sum += n; any = true; }
+    }
+    const total = card.querySelector('.scheduler-customer-quote__total-value');
+    if (total && document.activeElement !== total) total.textContent = any ? `$${money(sum) || '0.00'}` : '';
+  }
+
+  function onLineTyped(event) {
+    const cell = event.target.closest('td');
+    const row = cell?.closest('.scheduler-customer-quote__line-item');
+    if (!row) return;
+    const at = cell.cellIndex;
+    if (at === 2 || at === 3) {
+      const qty = typedNumber(row.cells[2].textContent);
+      const cost = typedNumber(row.cells[3].textContent);
+      if (Number.isFinite(qty) && Number.isFinite(cost)) row.cells[4].textContent = money(qty * cost);
+    }
+    addUp(row.closest('.scheduler-customer-quote'));
+  }
+
   function quoteTable(trip, blank) {
     const table = el('table', 'scheduler-customer-quote__table');
     const head = el('thead');
@@ -848,55 +937,68 @@
     const total = Number(trip.quoted_price);
     const priced = Number.isFinite(total) && total !== 0;
 
-    const row = el('tr');
-    row.appendChild(quoteCell('item', blank ? '' : 'Bus Rental'));
-    row.appendChild(quoteCell('desc', blank ? '' : quoteDescription(trip)));
-    row.appendChild(quoteCell('num', blank || !trip.bus_count ? '' : String(buses)));
-    row.appendChild(quoteCell('num', priced ? money(total / buses) : ''));
-    row.appendChild(quoteCell('num', priced ? money(total) : ''));
     const body = el('tbody');
-    body.appendChild(row);
+    body.appendChild(blank ? lineRow('', '', '', '', '') : lineRow(
+      'Bus Rental',
+      quoteDescription(trip),
+      trip.bus_count ? String(buses) : '',
+      priced ? money(total / buses) : '',
+      priced ? money(total) : ''));
+    /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
+       office's sheet leaves room under its items and rules only the columns
+       down through it. It is the last row, so an added line goes above it. */
+    const room = el('tr', 'scheduler-customer-quote__room');
+    for (let i = 0; i < QUOTE_COLUMNS.length; i += 1) room.appendChild(el('td'));
+    body.appendChild(room);
     table.appendChild(body);
-
-    /* The total sits under the two columns it belongs to and the row is
-       otherwise empty, which is where the office's sheet puts it: a figure
-       under Total, not a banner across the width of the table. */
-    const foot = el('tfoot');
-    const footRow = el('tr');
-    const pad = el('td', 'scheduler-customer-quote__pad');
-    pad.colSpan = QUOTE_COLUMNS.length - 2;
-    footRow.appendChild(pad);
-    footRow.appendChild(el('th', null, 'Total'));
-    footRow.appendChild(el('td',
-      'scheduler-customer-quote__total scheduler-customer-quote__typed',
-      priced ? `$${money(total)}` : ''));
-    foot.appendChild(footRow);
-    table.appendChild(foot);
+    table.addEventListener('input', onLineTyped);
     return table;
   }
 
-  /* THE BILL-TO ADDRESS IS TYPED, for now. An organization is not a record
-     yet -- `docs/plans/scheduler-organizations.md` makes it one -- so the
-     trip knows the customer's name and nobody's address, and the office
-     writes the two lines under it as it writes them into QuickBooks today.
-     When that plan lands the address arrives with the name and the typing
-     stops; the field stays open, because the contact box beside it is typed
-     for good and a quote is corrected before it is sent. */
-  function quote(subject) {
-    const trip = subject.trip || {};
-    const blank = !trip.id;
-    const card = el('article', 'scheduler-form scheduler-customer-quote');
-    card.appendChild(quoteHead());
+  /* THE TOTAL STANDS UNDER THE TABLE, in two boxes of its own at the trailing
+     edge, which is where the office's sheet puts it: a figure under Total, not
+     a row of the table. */
+  function quoteTotal(trip) {
+    const total = Number(trip.quoted_price);
+    const box = el('div', 'scheduler-customer-quote__total');
+    box.appendChild(el('p', 'scheduler-customer-quote__total-label', 'Total'));
+    box.appendChild(el('p',
+      'scheduler-customer-quote__total-value scheduler-customer-quote__typed',
+      Number.isFinite(total) && total !== 0 ? `$${money(total)}` : ''));
+    return box;
+  }
 
+  // A line to sign on and a shorter one to date, as rules and not underscores.
+  function signLine(cls) {
+    const rule = el('p', `scheduler-customer-quote__rule${cls ? ` ${cls}` : ''}`);
+    rule.appendChild(el('span', 'scheduler-customer-quote__rule-line'));
+    rule.appendChild(document.createTextNode(' Date '));
+    rule.appendChild(el('span', 'scheduler-customer-quote__rule-date'));
+    return rule;
+  }
+
+  /* THE FIRST SHEET, THE QUOTE. The bill-to address is typed, for now: an
+     organization is not a record yet -- `docs/plans/scheduler-organizations.md`
+     makes it one -- so the trip knows the customer's name and nobody's
+     address, and the office writes the lines under it as it writes them into
+     QuickBooks today. The field stays open when that lands, because a quote
+     is corrected before it is sent. */
+  function quoteSheet(trip, blank) {
+    const card = el('article', 'scheduler-form scheduler-customer-quote');
+    card.appendChild(quoteHead(QUOTE_LETTERHEAD));
+
+    /* The date and the estimate number on the leading edge and the document's
+       name on the trailing one, on one line, as the office's sheet sets them.
+       The date is today's, because a quote is dated the day it is written, and
+       it is typed into like every other field for one sent a day later. */
     const meta = el('div', 'scheduler-customer-quote__meta');
-    // Today, because a quote is dated the day it is written, not the day of
-    // the trip. It is typed into like every other field, for one written up
-    // on Monday and sent on Tuesday.
-    meta.appendChild(quoteBox('Date', [today()]));
+    meta.appendChild(quoteBox('Date', [today()], 'date'));
+    meta.appendChild(quoteBox('Estimate No.', [], 'date'));
+    meta.appendChild(el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
     card.appendChild(meta);
 
     const parties = el('div', 'scheduler-customer-quote__parties');
-    parties.appendChild(quoteBox('Name/Address', [blank ? '' : trip.customer || ''], true));
+    parties.appendChild(quoteBox('Name/Address', [blank ? '' : trip.customer || ''], 'bill-to'));
     const who = el('div', 'scheduler-customer-quote__who');
     who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
     who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
@@ -904,7 +1006,21 @@
     parties.appendChild(who);
     card.appendChild(parties);
 
-    card.appendChild(quoteTable(trip, blank));
+    const table = quoteTable(trip, blank);
+    card.appendChild(table);
+
+    /* Screen only, and under the table because that is where the line it adds
+       goes. print.css takes it off the paper. */
+    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
+    add.type = 'button';
+    add.addEventListener('click', () => {
+      const row = lineRow('', '', '', '', '');
+      table.tBodies[0].insertBefore(row, table.querySelector('.scheduler-customer-quote__room'));
+      letThemType(row, QUOTE_FIELDS);
+      row.cells[0].focus();
+    });
+    card.appendChild(add);
+    card.appendChild(quoteTotal(blank ? {} : trip));
 
     const terms = el('div', 'scheduler-customer-quote__terms');
     for (const text of QUOTE_TERMS) {
@@ -918,16 +1034,67 @@
     card.appendChild(terms);
 
     const sign = el('div', 'scheduler-customer-quote__sign');
-    const rule = el('p', 'scheduler-customer-quote__rule');
-    rule.appendChild(el('span', 'scheduler-customer-quote__rule-line'));
-    rule.appendChild(document.createTextNode(' Date '));
-    rule.appendChild(el('span', 'scheduler-customer-quote__rule-date'));
-    sign.appendChild(rule);
+    sign.appendChild(signLine());
     sign.appendChild(el('p', 'scheduler-customer-quote__sign-note',
       `Please sign to confirm and email back to ${COMPANY.email}`));
     card.appendChild(sign);
     return card;
   }
+
+  /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
+     trip's destination and dates in the two boxes at its head, the policies,
+     and a line to sign and date. */
+  function agreementSheet(trip, blank) {
+    const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
+    card.appendChild(quoteHead([]));
+    card.appendChild(el('h2', 'scheduler-customer-quote__agreement-title', 'TERMS AND CONDITIONS AGREEMENT FORM'));
+
+    const tripBox = el('div', 'scheduler-customer-quote__trip');
+    const pair = (label, value) => {
+      tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-label', label));
+      tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-value scheduler-customer-quote__typed', value));
+    };
+    pair('TRIP DESTINATION:', blank ? '' : trip.destination || '');
+    pair('TRIP DATE:', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
+    card.appendChild(tripBox);
+
+    card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',
+      'I acknowledge that by signing this form I confirm that I have read and agree with the following Escamilla Tour Buses Policies:'));
+
+    const policies = el('div', 'scheduler-customer-quote__policies');
+    for (const { heading, text, warn } of AGREEMENT_POLICIES) {
+      const p = el('p', `scheduler-customer-quote__policy${warn ? ' scheduler-customer-quote__policy--warn' : ''}`);
+      if (heading) {
+        p.appendChild(el('strong', 'scheduler-customer-quote__policy-heading', heading));
+        p.appendChild(document.createTextNode(' '));
+      }
+      p.appendChild(document.createTextNode(text));
+      policies.appendChild(p);
+    }
+    card.appendChild(policies);
+
+    const sign = el('div', 'scheduler-customer-quote__agreement-sign');
+    for (const label of ['Customer Signature', 'Date']) {
+      const cell = el('div', 'scheduler-customer-quote__agreement-cell');
+      cell.appendChild(el('span', 'scheduler-customer-quote__agreement-rule'));
+      cell.appendChild(el('p', 'scheduler-customer-quote__agreement-label', label));
+      sign.appendChild(cell);
+    }
+    card.appendChild(sign);
+    return card;
+  }
+
+  function quote(subject) {
+    const trip = subject.trip || {};
+    const blank = !trip.id;
+    return [quoteSheet(trip, blank), agreementSheet(trip, blank)];
+  }
+
+  /* THE FILE A SAVED QUOTE IS NAMED, which is the title Chrome's Save as PDF
+     offers: the trip's first day and `qt`, 2026-12-05-qt, which is how the
+     office already names the ones QuickBooks makes. A blank one has no day
+     and keeps the page's own title. */
+  const quoteFileName = subject => (subject.trip?.start_date ? `${subject.trip.start_date}-qt` : null);
 
   /* ── The registry ─────────────────────────────────────────────────────── */
 
@@ -1013,7 +1180,7 @@
     {
       id: 'customer-quote',
       name: 'Customer quote',
-      blurb: 'The quote the office sends, priced and worded from the trip; every field typed into.',
+      blurb: 'The quote the office sends and the terms agreement behind it, priced and worded from the trip; every field typed into.',
       /* IT BINDS THE TRIP AND NOT A LEG. A quote is one price for the whole
          journey, where the itinerary is one sheet per leg and the envelope one
          per seat -- a round trip is quoted once. */
@@ -1037,6 +1204,7 @@
          and this sheet leaves the app for a customer, so the last word on it
          is the one typed here. */
       typed: { always: true, fields: QUOTE_FIELDS },
+      fileName: quoteFileName,
       render: quote,
     },
   ];
@@ -1323,7 +1491,8 @@
 
   const draw = () => {
     if (!current) return;
-    const card = current.form.render(current.every[current.chosen], current.layout);
+    // A form draws one sheet or, like the quote and its agreement, several.
+    const cards = [current.form.render(current.every[current.chosen], current.layout)].flat();
     /* THE PAPER CARRIES THE PAPER'S THEME, and only the paper: every --rux-*
        token on the form resolves to ink on it, while the desk it lies on and
        the bar above it follow the theme the person keeps. It says g10 and not
@@ -1332,16 +1501,18 @@
        it kept the dark theme around it and the ink came out white on the
        paper. g10 is the lightest theme Carbon does write, and its ink is the
        same #161616. */
-    card.setAttribute('data-theme', 'g10');
-    // A form opened on nothing says so, for the rules that have to show where
-    // the writing goes when there is none of it anywhere.
-    if (current.blank) card.dataset.blank = '';
-    if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
-    sheet.replaceChildren(card);
+    for (const card of cards) {
+      card.setAttribute('data-theme', 'g10');
+      // A form opened on nothing says so, for the rules that have to show where
+      // the writing goes when there is none of it anywhere.
+      if (current.blank) card.dataset.blank = '';
+      if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
+    }
+    sheet.replaceChildren(...cards);
     // The rows have to be on screen to be measured, and the marks take no room
     // in the form, so nothing moves under them once they are laid. What it
     // counted is what the band says.
-    const sheets = showPageBreaks(card);
+    const sheets = cards.reduce((n, card) => n + showPageBreaks(card), 0);
     count.textContent = sheets === 1 ? '1 page' : `${sheets} pages`;
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
@@ -1375,10 +1546,25 @@
   // page, and each is exactly one envelope tall.
   const drawAll = () => {
     if (!current) return;
-    sheet.replaceChildren(...current.every.map(c => current.form.render(c, current.layout)));
+    sheet.replaceChildren(...current.every.flatMap(c => [current.form.render(c, current.layout)].flat()));
   };
 
+  /* THE TITLE A SAVED COPY IS OFFERED UNDER. Chrome's Save as PDF names the
+     file after the page's title, so a form that says what its file is called
+     holds the title to that for the length of the dialog. */
+  let titleBefore = null;
+  window.addEventListener('beforeprint', () => {
+    const name = current?.form.fileName?.(current.every[current.chosen]);
+    if (!name) return;
+    titleBefore = document.title;
+    document.title = name;
+  });
+
   window.addEventListener('afterprint', () => {
+    if (titleBefore != null) {
+      document.title = titleBefore;
+      titleBefore = null;
+    }
     if (!printingAll) return;
     printingAll = false;
     draw();

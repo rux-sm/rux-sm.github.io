@@ -910,12 +910,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* ── The customer quote ──────────────────────────────────────────────────
    The office's own QUOTE / PROPOSAL, drawn as the customer already knows it:
-   a centred letterhead, boxed parties, one ruled line item and the terms
-   under it.
+   a centred letterhead, boxed parties, ruled line items and the terms under
+   them, and behind it the Terms and Conditions Agreement Form.
 
    AND IT IS BOXED WHERE THE OTHER TWO ARE NOT. The itinerary is ruled because
    it is read down a column; this is read across, box by box, and the boxes
    are what a customer's eye has followed on every quote before this one.
+
+   IT IS SET IN HELVETICA, at the office's sizes in points. The sheet it
+   stands in for comes out of QuickBooks in Helvetica, and a customer holding
+   the two side by side should not see a different hand; points, because the
+   sizes are measured off that paper rather than picked from a screen scale.
 
    AND IT IS THE ONE FORM THAT FILLS. Every label cell on the office's sheet is
    grey, and a customer who has had one before reads the grey as the document.
@@ -929,38 +934,58 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    by cell below, and every division on this sheet is still a rule, so a
    printer that drops the grey anyway leaves the form whole. */
 
+.scheduler-customer-quote {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 12pt;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+/* Carbon sets every paragraph to its own body size, which would undo the
+   sheet's; here a paragraph takes the type of the block it is in, and a class
+   below that names a size still wins, being written after. */
+.scheduler-customer-quote :where(p, h1, h2) {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
 .scheduler-customer-quote__head {
   text-align: center;
-  padding-block-end: var(--rux-spacing-05);
 }
 
 .scheduler-customer-quote__logo {
-  height: 2.5rem;
+  height: 0.55in;
   width: auto;
-  margin-block-end: var(--rux-spacing-02);
 }
 
 .scheduler-customer-quote__line {
-  font-size: var(--rux-body-compact-01-font-size);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
   margin: 0;
+  font-size: 12pt;
+  line-height: 1.25;
 }
 
-/* The document's own name, in the largest type on the page and to the
-   trailing edge, which is where the office's sheet puts it. */
+/* The date and the estimate number on the leading edge and the document's
+   name on the trailing one, on one line, as the office's sheet sets them. */
+.scheduler-customer-quote__meta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rux-spacing-03);
+  margin-block: var(--rux-spacing-05) var(--rux-spacing-05);
+}
+
 .scheduler-customer-quote__title {
-  font-size: var(--rux-productive-heading-04-font-size);
-  font-weight: var(--rux-productive-heading-04-font-weight);
-  line-height: var(--rux-productive-heading-04-line-height);
-  text-align: end;
-  margin: var(--rux-spacing-05) 0 0;
+  margin: 0 0 0 auto;
+  padding-inline-end: 0.6in;
+  font-size: 20pt;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 /* A BOX IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and divided
-   once. The label is the quiet half and the answer the weighted one: on a
-   sheet that leaves the app, what the customer reads back is their own name,
-   not the word Contact. */
+   once, the label and the answer in the same type, as the office's sheet sets
+   them. */
 .scheduler-customer-quote__box {
   border: 1px solid var(--rux-border-strong-01);
   min-inline-size: 0;
@@ -968,42 +993,33 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__label {
   margin: 0;
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  padding: 0 var(--rux-spacing-03);
   border-block-end: 1px solid var(--rux-border-strong-01);
   text-align: center;
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 
 .scheduler-customer-quote__value {
   display: block;
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
-  font-size: var(--rux-body-compact-01-font-size);
-  font-weight: var(--rux-body-compact-01-font-weight);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
-  min-block-size: 1.25rem;
+  padding: 0 var(--rux-spacing-03);
+  text-align: center;
+  min-block-size: 1.3em;
 }
 
-/* The bill-to block is three lines of address under a name, so its lines
-   stack; every other box holds one thing. */
-.scheduler-customer-quote__box--wide .scheduler-customer-quote__value > span {
+.scheduler-customer-quote__box--date { inline-size: 1.4in; }
+
+/* The bill-to block is a name over lines of address, read down the leading
+   edge, so its label and its lines stack to the start. */
+.scheduler-customer-quote__box--bill-to .scheduler-customer-quote__label,
+.scheduler-customer-quote__box--bill-to .scheduler-customer-quote__value {
+  text-align: start;
+}
+
+.scheduler-customer-quote__box--bill-to .scheduler-customer-quote__value > span {
   display: block;
 }
 
-.scheduler-customer-quote__box--wide .scheduler-customer-quote__value {
-  min-block-size: 4.5rem;
-}
-
-/* The date sits alone above the parties, at the width a date needs. */
-.scheduler-customer-quote__meta {
-  display: flex;
-  margin-block-end: var(--rux-spacing-04);
-}
-
-.scheduler-customer-quote__meta .scheduler-customer-quote__box {
-  inline-size: 1.7in;
+.scheduler-customer-quote__box--bill-to .scheduler-customer-quote__value {
+  min-block-size: 5.2em;
 }
 
 /* Who it is for, and who to answer: the bill-to on the leading edge and the
@@ -1012,19 +1028,21 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__parties {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-07);
   align-items: start;
 }
 
 .scheduler-customer-quote__who {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--rux-spacing-03);
+  /* The phone keeps a number on one line; the email takes the rest. */
+  grid-template-columns: minmax(0, 1fr) 1.4in;
+  gap: 0 var(--rux-spacing-02);
 }
 
 /* The name spans both, because an email is long and a phone is not. */
 .scheduler-customer-quote__who > .scheduler-customer-quote__box:first-child {
   grid-column: 1 / -1;
+  border-block-end: 0;
 }
 
 .scheduler-customer-quote__table {
@@ -1032,28 +1050,31 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-collapse: collapse;
   table-layout: fixed;
   margin-block-start: var(--rux-spacing-05);
-  font-size: var(--rux-body-compact-01-font-size);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
 .scheduler-customer-quote__table th,
 .scheduler-customer-quote__table td {
-  border: 1px solid var(--rux-border-strong-01);
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  border-inline: 1px solid var(--rux-border-strong-01);
+  padding: var(--rux-spacing-01) var(--rux-spacing-02);
   text-align: start;
   vertical-align: top;
+  font-weight: 400;
 }
 
+/* THE LINES ARE RULED DOWN, NOT ACROSS. The office's sheet rules its columns
+   through the whole table and draws no line between one item and the next,
+   so a deduction reads as part of the rental above it. */
 .scheduler-customer-quote__table th {
+  border: 1px solid var(--rux-border-strong-01);
   text-align: center;
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+.scheduler-customer-quote__table tbody tr:last-child td {
+  border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
 /* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box, the column
-   names, and the Total and its figure. Gray 20 is Carbon's own, the token the
+   names, and the Total's figure. Gray 20 is Carbon's own, the token the
    paper's g10 theme resolves, so the sheet is not carrying a colour of its
    own; it sits where the office's sheet has grey and nowhere else.
 
@@ -1062,7 +1083,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    combination on this page that would not carry. */
 .scheduler-customer-quote__label,
 .scheduler-customer-quote__table th,
-.scheduler-customer-quote__total {
+.scheduler-customer-quote__total-value {
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   /* The prefix is for the Chrome the office runs, which took it before the
@@ -1073,60 +1094,68 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* Item and Description are read, the three money columns are compared, so
    the numbers go to the trailing edge and under one another. */
-.scheduler-customer-quote__num { text-align: end; }
+.scheduler-customer-quote__table .scheduler-customer-quote__num { text-align: end; }
 
-.scheduler-customer-quote__table th:nth-child(1) { inline-size: 14%; }
-.scheduler-customer-quote__table th:nth-child(2) { inline-size: 46%; }
-.scheduler-customer-quote__table th:nth-child(3) { inline-size: 12%; }
-.scheduler-customer-quote__table th:nth-child(4) { inline-size: 14%; }
+.scheduler-customer-quote__table th:nth-child(1) { inline-size: 13%; }
+.scheduler-customer-quote__table th:nth-child(2) { inline-size: 53%; }
+.scheduler-customer-quote__table th:nth-child(3) { inline-size: 9%; }
+.scheduler-customer-quote__table th:nth-child(4) { inline-size: 11%; }
 .scheduler-customer-quote__table th:nth-child(5) { inline-size: 14%; }
 
-/* THE LINE ITEM KEEPS THE HEIGHT OF ONE. A five-line description in a box
-   that fits five lines reads as a sheet nobody has room on; the office's own
-   has a hand's depth under it, and that is where a second bus or a note goes
-   when it is typed in.
+/* THE HAND'S DEPTH UNDER THE LINES. The office's sheet leaves room under its
+   items, and that is where a second line goes when one is added; the row
+   is empty paper with the columns ruled down through it. `height` and not
+   `min-block-size`, which a table row ignores. */
+.scheduler-customer-quote__room { height: 1.4in; }
 
-   `height` and not `min-block-size`, which a table cell ignores: on a row a
-   height is already the minimum and the row grows past it. */
-.scheduler-customer-quote__desc { height: 2.4in; }
-
-/* The empty run before the total, which is paper and not a cell: no rule
-   round it and no fill in it. */
-.scheduler-customer-quote__pad {
-  border: 0;
-  background: none;
+/* Lines are added before printing, so the button that adds them lives with
+   the form and comes off the paper. */
+.scheduler-customer-quote__add {
+  align-self: start;
+  margin-block-start: var(--rux-spacing-03);
 }
 
+/* The total, in two boxes of its own under the Cost and Total columns: the
+   word in a ruled box and the figure in a grey one beside it. */
 .scheduler-customer-quote__total {
-  text-align: end;
-  font-weight: 600;
+  display: grid;
+  grid-template-columns: 1in 1.5in;
+  align-self: end;
+  margin-block-start: var(--rux-spacing-02);
 }
 
-/* Small, and close-set: eight paragraphs have to leave the signature line on
+.scheduler-customer-quote__total-label,
+.scheduler-customer-quote__total-value {
+  margin: 0;
+  padding: var(--rux-spacing-01) var(--rux-spacing-02);
+  border: 1px solid var(--rux-border-strong-01);
+}
+
+.scheduler-customer-quote__total-label { border-inline-end: 0; }
+
+.scheduler-customer-quote__total-value { text-align: end; }
+
+/* Small, and close-set: nine paragraphs have to leave the signature line on
    the same sheet as the price. */
 .scheduler-customer-quote__terms {
-  margin-block-start: var(--rux-spacing-05);
+  margin-block-start: var(--rux-spacing-02);
+  font-size: 9.5pt;
 }
 
 .scheduler-customer-quote__term {
-  margin: 0 0 var(--rux-spacing-04);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+  margin: 0 0 1.15em;
 }
 
 /* THE SIGNATURE LINE IS A RULE, NOT A ROW OF UNDERSCORES. A typed underscore
    run is a different length in every font and breaks where the line ends; a
    bordered span is the length it is told to be. */
 .scheduler-customer-quote__sign {
-  margin-block-start: auto;
-  padding-block-start: var(--rux-spacing-05);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
+  margin-block-start: var(--rux-spacing-04);
+  font-size: 9.5pt;
 }
 
 .scheduler-customer-quote__rule {
-  margin: 0 0 var(--rux-spacing-02);
+  margin: 0;
 }
 
 .scheduler-customer-quote__rule-line,
@@ -1135,18 +1164,109 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-block-end: 1px solid var(--rux-text-primary);
 }
 
-.scheduler-customer-quote__rule-line { inline-size: 3.2in; }
-.scheduler-customer-quote__rule-date { inline-size: 1in; }
+.scheduler-customer-quote__rule-line { inline-size: 2.6in; }
+.scheduler-customer-quote__rule-date { inline-size: 0.9in; }
 
 .scheduler-customer-quote__sign-note { margin: 0; }
+
+/* ── The agreement ────────────────────────────────────────────────────────
+   The second sheet, the terms the customer signs with the quote: the logo, the
+   form's name, the trip in two boxes, and the policies in small type with
+   their headings underlined into the text. */
+.scheduler-customer-quote--agreement {
+  font-size: 8.5pt;
+  line-height: 1.4;
+}
+
+.scheduler-customer-quote__agreement-title {
+  margin: var(--rux-spacing-04) 0 var(--rux-spacing-04);
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: 700;
+}
+
+/* The trip, as the Word form sets it: one ruled band, a bold label and its
+   answer, twice. */
+.scheduler-customer-quote__trip {
+  display: grid;
+  grid-template-columns: auto minmax(0, 2fr) auto minmax(0, 1fr);
+  border: 1px solid var(--rux-text-primary);
+}
+
+.scheduler-customer-quote__trip-label,
+.scheduler-customer-quote__trip-value {
+  margin: 0;
+  padding: var(--rux-spacing-01) var(--rux-spacing-03);
+  font-size: 11pt;
+}
+
+.scheduler-customer-quote__trip-label { font-weight: 700; }
+
+.scheduler-customer-quote__trip-value {
+  border-inline-start: 1px solid var(--rux-text-primary);
+  font-size: 12pt;
+}
+
+.scheduler-customer-quote__trip-value:not(:last-child) {
+  border-inline-end: 1px solid var(--rux-text-primary);
+}
+
+.scheduler-customer-quote__agreement-intro {
+  margin: var(--rux-spacing-05) 0 var(--rux-spacing-05);
+  text-align: center;
+}
+
+.scheduler-customer-quote__policy {
+  margin: 0 0 1.1em;
+}
+
+.scheduler-customer-quote__policy-heading {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* The one paragraph the Word form prints in red: the hours a driver may work,
+   which a group that keeps calling is costing them. */
+.scheduler-customer-quote__policy--warn { color: var(--rux-support-error); }
+
+.scheduler-customer-quote__policy--warn .scheduler-customer-quote__policy-heading {
+  text-decoration: none;
+}
+
+/* The signature and the date, far apart on one line, each over its label. */
+.scheduler-customer-quote__agreement-sign {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: var(--rux-spacing-06);
+  font-size: 10.5pt;
+  font-weight: 700;
+}
+
+.scheduler-customer-quote__agreement-rule {
+  display: block;
+  inline-size: 2.6in;
+  border-block-end: 1px solid var(--rux-text-primary);
+  margin-block-end: var(--rux-spacing-02);
+}
+
+.scheduler-customer-quote__agreement-cell:last-child .scheduler-customer-quote__agreement-rule {
+  inline-size: 2in;
+}
+
+.scheduler-customer-quote__agreement-label { margin: 0; }
 
 @media screen {
   /* A BOX SAYS WHERE THE PEN GOES BY BEING EMPTY, not by a second rule inside
      a border it already has. Filled, it is a quote; empty, it is a question.
      The page's blanket dotted rule is what these undo. */
-  .scheduler-customer-quote__value[data-typed] { border-block-end: 0; }
+  .scheduler-customer-quote__value[data-typed],
+  .scheduler-customer-quote__trip-value[data-typed] { border-block-end: 0; }
 
-  .scheduler-customer-quote__table td[data-typed] { border-block-end: 1px solid var(--rux-border-strong-01); }
+  .scheduler-customer-quote__total-value[data-typed] {
+    border-block-end: 1px solid var(--rux-border-strong-01);
+  }
+
+  .scheduler-customer-quote__table td[data-typed] { border-block-end: 0; }
 
   .scheduler-customer-quote__table td[data-typed]:hover {
     background: var(--rux-layer-hover-01);
@@ -1154,8 +1274,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 @media print {
-  /* One sheet, and the terms are not cut in half by the fold. */
-  .scheduler-customer-quote__term { break-inside: avoid; }
+  .scheduler-customer-quote__add { display: none; }
+
+  /* Each sheet is one sheet, and nothing on it is cut in half by a fold. */
+  .scheduler-customer-quote__term,
+  .scheduler-customer-quote__policy { break-inside: avoid; }
   .scheduler-customer-quote__table { break-inside: avoid; }
 }
 

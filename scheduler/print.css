@@ -149,6 +149,14 @@
   gap: var(--rux-spacing-05);
 }
 
+/* How many sheets, at the start of the band and in the same quiet type as
+   anything else the band has to say. */
+.scheduler-print__bar-count {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+
 .scheduler-print__bar-note {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);

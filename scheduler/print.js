@@ -853,6 +853,7 @@
   const sheet = document.getElementById('scheduler-print-sheet');
   const note = document.getElementById('scheduler-print-note');
   const hub = document.getElementById('scheduler-print-hub');
+  const count = document.getElementById('scheduler-print-count');
   const crumbs = document.getElementById('scheduler-print-crumbs');
   const crumbUp = document.getElementById('scheduler-print-crumb-up');
   const crumbHere = document.getElementById('scheduler-print-crumb-here');
@@ -1018,15 +1019,16 @@
      a printer's own unprintable margin can still take a row -- and they are
      drawn on screen only. */
   function showPageBreaks(card) {
-    if (sheet.dataset.sheet !== 'flows') return;
+    // A form held to one sheet is one sheet, and has no fold to draw.
+    if (sheet.dataset.sheet !== 'flows') return 1;
     const page = paperPx('--scheduler-paper-height');
     const margin = paperPx('--scheduler-paper-margin');
     const usable = page - margin * 2;
-    if (!Number.isFinite(usable) || usable <= 0) return;
+    if (!Number.isFinite(usable) || usable <= 0) return 1;
 
     const rows = [...card.querySelectorAll('tbody > tr')];
     const origin = card.firstElementChild?.offsetTop;
-    if (!rows.length || !Number.isFinite(origin)) return;
+    if (!rows.length || !Number.isFinite(origin)) return 1;
 
     // Measured first and marked after, because a mark laid over the form does
     // not move a row but reading one row at a time while inserting would.
@@ -1044,6 +1046,7 @@
       mark.appendChild(el('span', 'scheduler-driver-itinerary__break-label', `Page ${i + 2}`));
       card.appendChild(mark);
     }
+    return breaks.length + 1;
   }
 
   const draw = () => {
@@ -1064,8 +1067,10 @@
     if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     sheet.replaceChildren(card);
     // The rows have to be on screen to be measured, and the marks take no room
-    // in the form, so nothing moves under them once they are laid.
-    showPageBreaks(card);
+    // in the form, so nothing moves under them once they are laid. What it
+    // counted is what the band says.
+    const sheets = showPageBreaks(card);
+    count.textContent = sheets === 1 ? '1 page' : `${sheets} pages`;
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
        after the room is already its final size. */
@@ -1426,6 +1431,7 @@
     host?.setViewerHead('Forms');
     const trip = params.get('trip');
     title.textContent = 'Forms';
+    count.textContent = '';
     bar.hidden = true;
     title.hidden = Boolean(host);
     hub.hidden = false;

@@ -77,6 +77,7 @@ export const ICONS = {
   'caret--up': { material: 'arrow_drop_up', rux: null },
   'caution': { material: 'warning', rux: null },
   'channels': { material: 'swap_horiz', rux: null },
+  'chat': { material: 'chat', rux: null },
   'checkmark': { material: 'check', rux: null },
   'checkmark--filled': { material: 'check_circle-fill', rux: null },
   'checkmark--outline': { material: 'check_circle', rux: null },

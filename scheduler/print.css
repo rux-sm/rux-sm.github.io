@@ -46,9 +46,9 @@
 
 @media print { .scheduler-print__shell { display: none; } }
 
-/* [hidden] is a UA rule of the lowest weight, so Carbon's own display on the
-   toolbar outranks it and an empty band would draw over the paper -- which is
-   what it did in the panel, where the toolbar is the panel's own. */
+/* [hidden] is a UA rule of the lowest weight, so the display above outranks it
+   and an empty band would draw over the paper -- which is what it did in the
+   panel, where the toolbar is the panel's own. */
 .scheduler-print__bar[hidden],
 .scheduler-print__bar-title[hidden] { display: none; }
 
@@ -63,47 +63,63 @@
 
 @media print { .scheduler-print__crumbs { display: none; } }
 
-/* THE PAGE'S OWN BAR, which is Carbon's table toolbar: a band the width of the
-   desk below it, in the layer's own colour, with the actions flush at its end.
-   Chrome in a band and paper under it is the shape a page that previews a
-   printout wants, and Carbon writes that band already. It sits against the
-   desk with nothing between them, so the two read as one surface. */
-.scheduler-print__bar { margin: 0; }
+/* THE PAGE'S OWN BAR: a band the width of the desk below it, in the layer's
+   own colour, with what to do to the form flush at its end.
 
-/* THE CONTROLS SIT IN THE BAND, not stretched to it. Carbon's toolbar row is a
-   flex box with no cross-axis rule, so a control in it grew to the band's whole
-   48px whatever size its own class asked for -- which is what made one read as
-   a slab rather than a button. The controls are a flex box of their own inside
-   the row, so both have to say it. */
-.scheduler-print__controls { align-items: center; }
+   IT IS NOT CARBON'S TABLE TOOLBAR ANY MORE. That component pins its height at
+   48px, and a fluid control -- the one style for a control that IS its
+   container rather than one placed in it -- has a single height of its own and
+   is taller than that. The dashboard this shape came from is not a table
+   toolbar either. What is left is a box painted `layer`, which is what that
+   component was giving it. */
+.scheduler-print__bar {
+  margin: 0;
+  display: flex;
+  background: var(--rux-layer);
+  /* The fluid control's own height, held whether or not a form has one: a band
+     that changed height from one form to the next moved the paper under it. */
+  min-block-size: 4rem;
+}
 
+/* WHAT SITS IN THE BAND AND WHAT FILLS IT. A fluid control is the band's own
+   height and takes it; a button is a button and is centred in it. So the row
+   stretches what it holds and the group of controls centres its own.
+
+   The inset is only at the start. Carbon sets a toolbar's actions against its
+   end, and a gap after the last one reads as a misplaced button rather than a
+   margin. */
 .scheduler-print__controls-row {
-  align-items: center;
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
-  /* Only at the start. Carbon sets a toolbar's actions against its end, and a
-     gap after the last one reads as a misplaced button rather than a margin. */
   padding-inline-start: var(--rux-spacing-05);
   padding-inline-end: 0;
 }
 
-/* The form's controls, at the end of the title row: the layout, the copy, the
-   tick and the two print buttons, in a group of their own so they wrap
-   together and away from the name rather than among it. */
+/* The form's controls, at the end of the band: the layout, the copy, the tick
+   and the prints, in a group of their own so they keep together and away from
+   what the band has to say. */
 .scheduler-print__controls {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
-  /* Pushed to the end by the name rather than spread against it, so a word the
-     form has to say lands after them instead of between. */
+  /* Pushed to the end by the count rather than spread against it, so a word
+     the form has to say lands after it instead of between. */
   margin-inline-start: auto;
 }
 
-/* Carbon sizes both of these to their field, which in a toolbar is the whole
-   row, and lets them be squeezed to nothing beside the buttons. They keep
-   their own width here instead. */
+/* The count and whatever else the band has to say are text, not controls: they
+   read on its line rather than filling its height. */
+.scheduler-print__bar-count,
+.scheduler-print__bar-note { align-self: center; }
+
+/* Carbon sizes both of these to their field, which in a row with nothing else
+   to say is the whole of it, and lets them be squeezed to nothing beside the
+   buttons. They keep their own width here instead, and the two picks take the
+   same one so a bar carrying both reads as a pair. */
 .scheduler-print__controls > * { flex: none; }
-.scheduler-print__controls .rux--select { inline-size: 14rem; }
+.scheduler-print__pick { inline-size: 14rem; }
 
 /* Print and Print all, kept side by side wherever the row breaks. */
 .scheduler-print__prints {
@@ -290,9 +306,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 @media print {
   /* Nothing on this page is chrome except the bar and the name over it, so the
-     blanket hide rux-ui needs over the board is two rules here. The bar names
-     Carbon's toolbar class too, because that is the display it is undoing. */
-  .rux--table-toolbar.scheduler-print__bar,
+     blanket hide rux-ui needs over the board is two rules here. */
+  .scheduler-print__bar,
   .scheduler-print__bar-title { display: none; }
 
   /* The desk is a screen surface; on paper there is only paper. */

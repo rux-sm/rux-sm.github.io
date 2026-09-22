@@ -1176,17 +1176,29 @@
      the items are and the panel builds them. In its own tab there is no
      overflow and no menu script, and the page has the width to show all of
      them, so they stay in its bar. */
-  /* HOW A CHOICE IS MADE ON THIS BAR: a Carbon select, whichever choice it is
-     and wherever the bar is. Every control in the row is Carbon's medium size,
-     which is the height of the bar itself, so the row is one band rather than
-     a strip of controls floating in one. */
+  /* HOW A CHOICE IS MADE ON THIS BAR: Carbon's fluid select, which is the
+     style for a control that IS its container rather than one placed in it.
+     The name sits inside the field and the field fills the band, so there is
+     nothing perched on anything.
+
+     AND IT DECLARES THE LAYER IT IS ON, which is the whole reason the default
+     style looked wrong there. A field takes `field-01` by default and a
+     surface takes `layer-01`, and those two are the same colour in every one
+     of Carbon's four themes -- so the field vanished into the band and left
+     its underline behind, a rule with nothing above it. `rux--layer-two` moves
+     the control to `field-02`, which is a step off the band in all four. Any
+     control put on this band wants the same. */
   function pickField(label, names, chosen, choose) {
-    const field = el('div', 'rux--select rux--layout--size-md');
+    const id = `scheduler-print-pick-${label.toLowerCase()}`;
+    const item = el('div', 'rux--form-item rux--select--fluid rux--layer-two scheduler-print__pick');
+    const field = el('div', 'rux--select');
+    const name = el('label', 'rux--label', label);
+    name.htmlFor = id;
     const wrapper = el('div', 'rux--select-input__wrapper');
     const select = el('select', 'rux--select-input');
-    select.setAttribute('aria-label', label);
-    names.forEach((name, i) => {
-      const option = el('option', null, name);
+    select.id = id;
+    names.forEach((text, i) => {
+      const option = el('option', 'rux--select-option', text);
       option.value = String(i);
       select.appendChild(option);
     });
@@ -1194,8 +1206,12 @@
     select.addEventListener('change', e => choose(Number(e.target.value) || 0));
     wrapper.appendChild(select);
     wrapper.appendChild(arrow());
-    field.appendChild(wrapper);
-    return field;
+    // Carbon renders one on every fluid control; it shows only on an invalid
+    // or warning field, and the markup carries it either way.
+    wrapper.appendChild(el('hr', 'rux--select__divider'));
+    field.append(name, wrapper);
+    item.appendChild(field);
+    return item;
   }
 
   function buildControls() {
@@ -1217,7 +1233,7 @@
        is already a select; this row makes its choices one way. */
     if (form.layouts?.length > 1) {
       nodes.push(pickField(
-        `Which layout of this ${form.name.toLowerCase()}`,
+        'Layout',
         form.layouts.map(option => option.name),
         form.layouts.findIndex(option => option.id === layout),
         i => chooseLayout(form.layouts[i].id),
@@ -1268,7 +1284,7 @@
       );
     } else if (every.length > 1) {
       nodes.push(pickField(
-        `Which ${form.name.toLowerCase()} on this trip`,
+        'Copy',
         every.map(copy => form.copyName(copy)),
         current.chosen,
         i => { current.chosen = i; draw(); },
@@ -1316,9 +1332,7 @@
        exactly as it prints a stored file; standing alone the page carries it. */
     const actions = [];
     if (!host) {
-      // Carbon's own toolbar action: no size class, because the band's height
-      // is the button's and a square of it is what fills the end of the bar.
-      const print = el('button', 'rux--toolbar-action rux--btn rux--btn--ghost rux--btn--icon-only');
+      const print = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only');
       print.type = 'button';
       print.title = 'Print';
       print.setAttribute('aria-label', 'Print');

@@ -154,7 +154,13 @@
     .filter(seat => seat.driver_id && nameOf(seat))
     .sort((a, b) => SEAT_ORDER.indexOf(a.role || 'driver') - SEAT_ORDER.indexOf(b.role || 'driver'));
 
-  const nameOf = seat => String(seat?.drivers?.name || seat?.name || '').trim();
+  /* The short name first, the way the board's bars and the Fleet tab name a
+     driver: it is the name the office says out loud, and it holds one line in
+     a cell an envelope has only so much of. The full name is what the record
+     is under, so it stands in for a driver the office never gave a short one. */
+  const nameOf = seat => String(
+    seat?.drivers?.short_name || seat?.drivers?.name || seat?.name || '',
+  ).trim();
 
   /* What the trip needs, from `trip_reqs` where it is set and the older
      booleans where it is not, which is the pair rux-ui reads.
@@ -798,7 +804,7 @@
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number)',
-    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name))',
+    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name,short_name))',
   ].join(',');
 
   /* Outbound before return, then along the trip: the order the hub lists a

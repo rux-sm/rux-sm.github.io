@@ -613,12 +613,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   font: inherit;
 }
 
-/* A RULE DIVIDES TWO THINGS. Framed in the board's panel the form's controls
-   start the toolbar row, so the leading rule of the first one landed on the
-   panel's own edge -- two lines in the same place, and nothing between them.
-   On the page the band begins with the sheet count, so the same rule is the
-   boundary between what the band says and what it offers, and it stays. */
-.scheduler-viewer__toolbar > .scheduler-print__cell:first-child {
+/* NO RULES IN THE PANEL'S TOOLBAR. On the page these cells ARE the band, and
+   the rule down each leading edge is what makes the row read as one divided
+   thing rather than controls standing in a strip. Framed in the board's panel
+   they are guests in a row of Carbon's ghost buttons, which carry no rules and
+   stand apart by a gap. One vertical line among them divided nothing: it boxed
+   the step arrows, which are not a box, and where a trip has a single copy to
+   print it landed on the panel's own edge. The hover below says how far a cell
+   reaches, which is what the buttons beside it do. */
+.scheduler-viewer__toolbar > .scheduler-print__cell {
   border-inline-start: 0;
 }
 

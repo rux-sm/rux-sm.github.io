@@ -1,10 +1,12 @@
 /* The forms this app fills in and prints: the hub that lists them, and the
    paper each one is drawn on.
 
-   THE PAGE IS SERVED LIGHT. print.html carries data-theme="white", so every
-   --rux-* token already resolves to ink on paper and no second palette is
-   needed. rux-ui keeps a parallel --print-* set only because it prints out of
-   a g100 page; nothing here has a dark theme to escape.
+   THE SHEET IS SERVED LIGHT, AND ONLY THE SHEET. print.js puts g10 on the form
+   itself, so every --rux-* token on it resolves to ink on paper while the page
+   round it -- the trail, the band, the desk -- follows the theme the person
+   keeps. That is why no second palette is needed here: rux-ui keeps a parallel
+   --print-* set because it prints out of a g100 page, and what prints here is
+   already light.
 
    NO BACKGROUND FILLS. Chrome's print dialog leaves Background graphics off
    and nobody ticks it, so a header band or a tinted row prints as nothing.

@@ -194,24 +194,20 @@
         <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
       </div>
       <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
-      <!-- WHERE THE FORM IS DRAWN, and how depends on the paper it names.
+      <!-- WHERE THE FORM IS DRAWN. Every form is a page of this app, in the
+           theme the person keeps: a sheet of white standing in a dark app
+           reads as the app having broken rather than as paper, and the board
+           beside it is the same ink on the same background. @media print pins
+           g10's values for the tokens a form reads, so the printout is black
+           on white whatever theme it was drawn in.
 
-           A form printed on one particular stock -- the envelope -- is shown
-           as that stock, on a desk, light whatever theme the page is in, so
-           what is on screen is what comes out. It says g10 and not white
-           because white is Carbon's default rather than a theme it writes a
-           rule for: `data-theme="white"` matches nothing, so a sheet asking
-           for it kept the dark theme of the page around it and the ink came
-           out white on the paper. g10 is the lightest theme Carbon does write,
-           and its ink is the same #161616.
-
-           A form printed on whatever is in the tray is shown as a page of this
-           app instead, in the theme the person keeps, because a long sheet of
-           white standing in a dark app reads as the app having broken rather
-           than as paper. print.js sets `data-paper` from the form's own entry
-           and takes the theme off for that one; @media print pins the ink, so
-           the printout is black on white either way. -->
-      <div class="scheduler-print__sheet" id="scheduler-print-sheet" data-theme="g10"></div>
+           What still parts one form from another is the paper it names. A form
+           on named stock -- the envelope, on its own 6 by 9 -- has to come out
+           on exactly that much of it, so it keeps that stock's shape and a
+           visible edge, and print.js scales it to the room. A form on whatever
+           is in the tray takes the column it is in and runs as long as it
+           needs. print.js sets `data-paper` from the form's own entry. -->
+      <div class="scheduler-print__sheet" id="scheduler-print-sheet"></div>
     </div>
   </div>
 </main>

@@ -892,16 +892,13 @@
     const paper = form?.page;
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: 0; }`;
 
-    /* AND HOW IT IS SHOWN. A form on named stock is that stock on a desk,
-       light whatever theme the page is in, so what is on screen is what comes
-       out; a form on whatever is in the tray is a page of this app, in the
-       theme the person keeps, because a long sheet of white standing in a dark
-       app reads as the app having broken rather than as paper. print.html says
-       it at length, print.css answers both, and @media print pins the ink so
-       the printout is black on white either way. */
+    /* AND WHETHER IT HAS A SHEET TO FIT. A form on named stock has to come out
+       on exactly that much paper, so print.css gives it a visible edge and
+       print.js scales it to the room; a form on whatever is in the tray runs
+       as long as it needs and has no edge to show. Neither is drawn as paper:
+       every form is a page of this app in the theme the person keeps, and
+       @media print pins the ink so the printout is black on white. */
     sheet.dataset.paper = paper ? 'named' : 'any';
-    if (paper) sheet.setAttribute('data-theme', 'g10');
-    else sheet.removeAttribute('data-theme');
 
     const root = document.documentElement.style;
     for (const [prop, value] of [

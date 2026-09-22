@@ -143,56 +143,32 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   max-inline-size: none;
 }
 
-.scheduler-print__sheet {
-  flex: 1;
-  background: var(--rux-layer-01);
-  padding: var(--rux-spacing-05);
-}
+/* NO DESK UNDER ANYTHING. Every form is a page of this app, so there is no
+   surface to lie a sheet on and nothing to tell apart from the page. */
+.scheduler-print__sheet { flex: 1; }
 
-/* A FORM ON WHATEVER IS IN THE TRAY IS A PAGE OF THIS APP, not paper on a
-   desk: no desk under it, and it takes the column it is in. print.html says
-   why, and print.js sets the attribute from the form's own entry. */
-.scheduler-print__sheet[data-paper="any"] {
-  background: none;
-  padding: 0;
-}
-
-@media screen {
-  .scheduler-print__sheet[data-paper="any"] .scheduler-form {
-    inline-size: 100%;
-    background: none;
-    padding: 0;
-  }
-}
-
-/* No form drawn, so no desk: the hub is a page, not a sheet. */
+/* No form drawn, so nothing here: the hub is a page, not a sheet. */
 .scheduler-print__sheet:empty { display: none; }
 
 /* ── The paper ────────────────────────────────────────────────────────────
-   Fluid on screen: a form fills whatever box it is in, whether that is the
-   30rem viewer beside the board or a whole tab. rux-ui instead draws a
-   fixed-width card and scales it with a transform, a ResizeObserver and a
-   fit pass whose own comments record several rounds of clipping bugs. A form
-   that simply lays out to its container needs none of that.
+   A form is not drawn as paper. It is a page of this app in the theme the
+   person keeps, and @media print below pins the ink so it comes out black on
+   white whatever theme that was.
 
-   On paper it takes its page size from @page and its margins from the box
-   model, because a print driver does not reliably honour an @page margin.
+   What the paper still decides is the shape. A form that names its stock keeps
+   that stock's width, its ink margin and its height, here and on screen, so
+   what wraps here is what wraps on the envelope; `zoom` takes the whole thing
+   down to the room it has, and print.js measures that room. A form that names
+   none takes the column it is in and runs as long as it needs.
 
-   The width and the margin are the form's own, written onto the root by
-   print.js from the paper that form names, so a form printed on one
-   particular stock draws at that stock's width on screen too. The fallbacks
-   are Letter, for a form that names no paper. */
-
-/* A form that names no paper lays out to the room it is in, up to Letter: it
-   flows onto as many sheets as it needs, so there is nothing to scale and the
-   30rem viewer shows it whole. A named paper is that paper's width, here and
-   on screen, and `zoom` below takes it down to the room. */
+   On paper the page size comes from @page and the margins from the box model,
+   because a print driver does not reliably honour an @page margin. */
 .scheduler-form {
-  inline-size: var(--scheduler-paper-width, min(100%, 8.5in));
+  inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
-  background: var(--rux-background);
+  background: none;
   color: var(--rux-text-primary);
-  padding: var(--scheduler-paper-margin, var(--rux-spacing-06));
+  padding: var(--scheduler-paper-margin, 0);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -215,14 +191,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
-/* THE STOCK, ON SCREEN AND NOT ON PAPER. The standard envelope is printed on
-   the yellow envelope itself, so the preview shows that paper rather than
-   white and what is on screen is what comes out. The yellow never reaches the
-   printer: it is the stock, already there. Multi-stop is printed on white and
-   stays white. */
+/* WHERE THE STOCK ENDS. A form on named stock has to come out on exactly that
+   much paper, and an edge you cannot see is a second envelope you find out
+   about at the printer. It is a hairline and not a card: the form is a page of
+   this app, not a sheet lying on one. A form on no named paper has no edge to
+   draw. */
 @media screen {
-  .scheduler-form[data-layout="standard"] {
-    background: var(--scheduler-envelope-paper);
+  .scheduler-print__sheet[data-paper="named"] .scheduler-form {
+    outline: 1px solid var(--rux-border-subtle-01);
   }
 }
 
@@ -230,7 +206,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   /* Nothing on this page is chrome except the toolbar, so the blanket hide
      rux-ui needs over the board is one rule here. */
   .scheduler-print__bar { display: none; }
-  .scheduler-print__sheet { padding: 0; }
 
   .scheduler-print__grid {
     display: block;
@@ -238,12 +213,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     max-inline-size: none;
   }
 
-  /* INK, WHATEVER THEME THE PAGE IS IN. A form on named stock carries g10 on
-     the sheet and needs none of this. A form shown as a page of this app is in
-     the theme the person keeps, and a dark one prints as white ink on white
-     paper. These are g10's own values for the tokens a form reads, which is
-     the same palette that attribute would have set. */
-  .scheduler-print__sheet[data-paper="any"] {
+  /* INK, WHATEVER THEME THE PAGE IS IN. Every form is drawn in the theme the
+     person keeps, and a dark one prints as white ink on white paper. These are
+     g10's own values for the tokens a form reads -- the lightest theme Carbon
+     writes a rule for, and the one the sheet used to carry as an attribute. */
+  .scheduler-print__sheet {
     --rux-background: #ffffff;
     --rux-layer-01: #ffffff;
     --rux-text-primary: #161616;

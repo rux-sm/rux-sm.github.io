@@ -21,9 +21,24 @@ decides it again.
   eight**, both centred, over `sm:col-span-4` and `md:col-span-8`. Carbon calls
   this the editorial style model and allows it for low-density product screens;
   the board and the print sheet are not those and stay outside this plan.
-- **The table's parts, in order:** the title with its page actions, notice,
-  filter, then the table container holding its toolbar and the table. A row opens
-  the record.
+- **The table's parts, in order:** the title with its page actions, notice, then
+  the table box, which holds the filter, the toolbar band and the table. A row
+  opens the record.
+- **The filter sits inside the table box, flush on the band,** because a switcher
+  floating above the container reads as separate from the table it filters. The
+  strip it sits on is the box's width and the switcher keeps Carbon's own size
+  within it.
+- **The box takes no outline of its own.** Carbon paints the band and the rows
+  one `layer` fill, a step off the page in all four themes and in ant-dark and
+  spotify-dark, so the box already parts from the page and a rule round it would
+  be a second answer. The forms page's frame is not the precedent it looked
+  like: its desk is paper-coloured whatever the theme, which is the case a fill
+  cannot cover.
+- **The band keeps a slot at its start for what the table has to say,** in the
+  quiet label the forms band says its sheet count in; a search matching three of
+  eleven says so there, since an emptied table does not.
+- **The title is spaced off the box, and nothing inside the box is spaced.**
+  Three equal gaps down a page group nothing; one gap does.
 - **The record's parts, in order:** breadcrumb, title, notice, tabs, then the
   form with its sections and its Cancel and Save.
 - **A button's place says what it acts on.** An action on the table's contents,
@@ -73,6 +88,10 @@ None open.
 
 ## Tasks
 
+- [ ] Give the data table a header fill in `geist-dark`. `.rux--data-table th`
+      computes transparent there while `--rux-layer-accent` resolves to #1a1a1a,
+      so the header row is the same tone as the rows and the table has no head;
+      every other theme paints it. Found while measuring the box.
 - [ ] Give `builder/guide.json` its reading. Both templates and their three
       variant groups are entered `reviewed: false`, which is the file's own mark
       for "not yet read by rux", and the purpose lines are placeholders.
@@ -80,6 +99,10 @@ None open.
       `scheduler/app.css` already carries the rule on their own page classes,
       which is the right shape, but only below md; above it they still take the
       board's flat 16px from `scheduler/overrides.css`.
-- [ ] Move `scheduler/drivers.html`'s notice inside the column and give its
-      title row a wrapper, once the side-nav work in flight across the
-      scheduler's pages has landed and the file is free.
+- [ ] Put the notice and the list in ONE grid, column and stack on
+      `scheduler/drivers.html` and `scheduler/buses.html`, hiding the parts
+      rather than the grid. Moving the notice into the list's own column, which
+      this task used to ask for, hides it exactly when it fires: both pages
+      reveal the list only after a successful read, so a no-log-in or failed-read
+      notice inside it would never be seen. The record view keeps its own grid,
+      because it spans eight columns and not twelve.

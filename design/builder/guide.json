@@ -2,14 +2,14 @@
   "_": "HAND-WRITTEN. `reviewed: true` is rux's record of a reading (2026-09-06 for the first pass, from a sheet that composed every suggestion into its slot); false means not yet read. Holds only what cannot be derived: the purpose line, which slot is recommended, and the prose. Placement EVIDENCE is derived by builder/placement.mjs and is never written here. tools/check-blocks.mjs validates every block, slot and variant key against builder/blocks.json, and requires `evidence` on any suggestion whose recorded layout does not match the slot's. Purpose lines are docs/choices.md's own \"Use it when\" column, not new prose.",
   "templates": {
     "app-shell": {
-      "purpose": "Nav and header, nothing else yet — the shell a page starts from before it knows what it holds.",
+      "purpose": "Nav and header, nothing else yet \u2014 the shell a page starts from before it knows what it holds.",
       "reviewed": true,
       "suggestions": [
         {
           "block": "templates/detail-page/page-header",
           "slot": "body",
           "reason": "A shell with nothing in it needs a heading before it needs anything else, and this one carries its own actions.",
-          "unless": "The page has a page title already — the two are alternatives, not a pair.",
+          "unless": "The page has a page title already \u2014 the two are alternatives, not a pair.",
           "evidence": null,
           "reviewed": true
         },
@@ -25,7 +25,7 @@
           "block": "templates/detail-page/tabs",
           "slot": "body",
           "reason": "Tabs give a shell somewhere to put a second view without a second page.",
-          "unless": "There is only one view — tabs holding one panel read as a mistake.",
+          "unless": "There is only one view \u2014 tabs holding one panel read as a mistake.",
           "evidence": null,
           "reviewed": true
         },
@@ -34,7 +34,7 @@
           "slot": "body",
           "reason": "A shell deep in a hierarchy wants a way back up.",
           "unless": null,
-          "evidence": "No template places a breadcrumb, and the fragment carries no grid ancestry: the spacing above the first block is unverified. docs/composing-pages.md §3.10.",
+          "evidence": "No template places a breadcrumb, and the fragment carries no grid ancestry: the spacing above the first block is unverified. docs/composing-pages.md \u00a73.10.",
           "reviewed": true
         }
       ]
@@ -47,7 +47,7 @@
           "block": "sink/tile/basic",
           "slot": "body",
           "reason": "A single tile carries one figure that does not belong in the metric row.",
-          "unless": "It would sit inside anything painting layer — §3.1: a tile on layer-two is invisible on a plain page.",
+          "unless": "It would sit inside anything painting layer \u2014 \u00a73.1: a tile on layer-two is invisible on a plain page.",
           "evidence": "The dashboard grid is its own layout and no block outside this template matches it. Placement here is unverified in both directions.",
           "reviewed": false
         }
@@ -68,7 +68,7 @@
         {
           "block": "templates/error-state/inline-error",
           "slot": "body",
-          "reason": "The load failed but the page did not — the error belongs above the table, not instead of it.",
+          "reason": "The load failed but the page did not \u2014 the error belongs above the table, not instead of it.",
           "unless": null,
           "evidence": null,
           "reviewed": true
@@ -83,7 +83,7 @@
           "block": "templates/settings-page/form",
           "slot": "body",
           "reason": "A second form, for a record that saves in two independent parts.",
-          "unless": "The two parts save together — one form with a fieldset each is the honest shape.",
+          "unless": "The two parts save together \u2014 one form with a fieldset each is the honest shape.",
           "evidence": null,
           "reviewed": true
         },
@@ -92,7 +92,7 @@
           "slot": "body",
           "reason": "A validation summary above the fields, where a per-field message is not enough.",
           "unless": null,
-          "evidence": "No template places an inline notification in a form body: its spacing against the form below is unverified. §3.10.",
+          "evidence": "No template places an inline notification in a form body: its spacing against the form below is unverified. \u00a73.10.",
           "reviewed": true
         }
       ]
@@ -105,7 +105,7 @@
           "block": "templates/app-shell/page-title",
           "slot": "body",
           "reason": "A plain title, where the page header's actions are not wanted.",
-          "unless": "The page header is already there — they are alternatives.",
+          "unless": "The page header is already there \u2014 they are alternatives.",
           "evidence": null,
           "reviewed": true
         }
@@ -128,7 +128,7 @@
           "slot": "body",
           "reason": "Settings nobody changes belong behind a disclosure rather than on the page.",
           "unless": null,
-          "evidence": "No template places an accordion in a page body. Its own margins against a stack are unverified. §3.10.",
+          "evidence": "No template places an accordion in a page body. Its own margins against a stack are unverified. \u00a73.10.",
           "reviewed": false
         }
       ]
@@ -162,7 +162,7 @@
         {
           "block": "templates/form-page/form",
           "slot": "body",
-          "reason": "The details that go with the dates — who, what, and why — in the shape the form page attests.",
+          "reason": "The details that go with the dates \u2014 who, what, and why \u2014 in the shape the form page attests.",
           "unless": null,
           "evidence": null,
           "reviewed": true
@@ -227,18 +227,18 @@
           "slot": "body",
           "reason": "A search that returns nothing still has to say so and offer a way on. IBM's search pattern calls it avoiding a dead end, and the count line is the only part of this page that survives zero results.",
           "unless": "The page already handles the empty case inside the results column.",
-          "evidence": "The empty state was measured in a col-span-100 body; this page has three columns and no block of its own spans them. Whether it lands in the results column or replaces all three is unverified, and so is its spacing against the filter column beside it. §3.10.",
+          "evidence": "The empty state was measured in a col-span-100 body; this page has three columns and no block of its own spans them. Whether it lands in the results column or replaces all three is unverified, and so is its spacing against the filter column beside it. \u00a73.10.",
           "reviewed": false
         }
       ]
     },
     "list-page": {
-      "purpose": "A list of records where a row opens one — the table half of the pair, centred.",
+      "purpose": "A list of records where a row opens one \u2014 the table half of the pair, centred.",
       "reviewed": false,
       "suggestions": []
     },
     "record-page": {
-      "purpose": "One record, opened from a list and saved back to it — the record half of the pair, centred.",
+      "purpose": "One record, opened from a list and saved back to it \u2014 the record half of the pair, centred.",
       "reviewed": false,
       "suggestions": []
     }
@@ -331,37 +331,37 @@
     },
     "templates/document-page/at-a-glance#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/section-plain#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/section-note#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/section-warning#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/run-record#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/troubleshooting#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/document-page/downstream#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block’s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
       "reviewed": false
     },
     "templates/search-results-page/filters#0": {
@@ -375,6 +375,11 @@
       "reviewed": false
     },
     "templates/list-page/table#0": {
+      "recommended": "as-attested",
+      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
+      "reviewed": false
+    },
+    "templates/list-page/table#1": {
       "recommended": "as-attested",
       "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
       "reviewed": false

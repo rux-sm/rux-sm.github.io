@@ -67,6 +67,49 @@
    load-bearing: at full width there is usually nothing left to overflow, which
    is why templates/table-page.html needs no such rule and this one does. */
 .list-page .rux--css-grid-column { min-inline-size: 0; }
+
+/* THE FILTER'S STRIP, the first thing inside the table box and flush on the
+   toolbar band under it. It carries the band's own `layer` fill so the two read
+   as one head to the table, and the switcher inside keeps Carbon's own size —
+   `layout-constraint--size__default-md` and its min and max — rather than being
+   stretched to the box. The inset is the start, the end and the top; there is
+   none at the foot, which is what puts the switcher against the band.
+
+   NO OUTLINE ROUND THE BOX, deliberately. Carbon paints `.rux--table-toolbar`
+   and `.rux--data-table tbody` the same `layer`, a step off the page in all four
+   themes, so the box already parts from the page and a rule round it would say
+   the same thing twice. docs/plans/site-page-pair.md carries the measurement.
+
+   RENAME WITH THE PAGE CLASS when you copy this file, as the inset rule above
+   says: the prefix is the app's, not `list-page`. */
+.list-page__filter {
+  background-color: var(--rux-layer);
+  padding: var(--rux-spacing-05) var(--rux-spacing-05) 0;
+}
+
+/* WHAT THE TABLE HAS TO SAY, at the start of the band and away from the
+   controls at its end, in the quiet label the forms page's band says its sheet
+   count in. It sits inside `toolbar-content`, before the actions, because the
+   search holds the start of this band; empty, it takes no room and the actions
+   do not move.
+
+   `role="status"` BELONGS ON IT IN AN APP, not here: a template ships the slot,
+   and a page that fills it from a search announces the change. */
+.list-page__note {
+  align-self: center;
+  white-space: nowrap;
+  margin-inline: 0 var(--rux-spacing-05);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+
+/* NOT ON A PHONE. The band at that width is the search and the primary action
+   and nothing else fits: the count crushed the field to its magnifier and
+   pushed the button past the end of the box. */
+@media (max-width: 41.98rem) {
+  .list-page__note { display: none; }
+}
 </style>
 </head>
 <body>
@@ -101,6 +144,20 @@
      THE SHELL half is unchanged from templates/table-page.html and carries its
      reading: https://carbondesignsystem.com/elements/2x-grid/usage/ at 1280 and
      900 on 2026-08-28, as recorded in templates/app-shell.html.
+
+     THE BAND'S ANATOMY is `rendered-dom`, from data/carbon-react-dom.json read
+     on 2026-09-22: components-datatable-toolbar--persistent-toolbar,
+     --small-persistent-toolbar and components-datatable-pagination--default all
+     nest the persistent search inside `toolbar-content` and put the next
+     control after it in the same wrapper, which is where the count sits here.
+     A sibling arrangement was tried first, reasoned from css/rux.css alone, and
+     check-ancestry refused it against those three captures.
+
+     NOT COVERED AT ALL: where a content switcher sits against a data table.
+     The filter inside the table box, on a strip flush against the band, is this
+     repository's choice, recorded in docs/plans/site-page-pair.md;
+     carbon-website's filtering pattern names no place for it, and no capture
+     carries one. The same weight as the twelve-of-sixteen span above.
 
      NOT VERIFIED LIVE: the table's own behaviour. Sorting was exercised in this
      page and behaves, but no running Carbon table was opened to compare it
@@ -703,7 +760,9 @@
            WHICH ACTIONS BELONG HERE. The ones that act on the PAGE — Save, Edit
            rates, Export. An action on the table's contents — the search, New —
            belongs in the toolbar inside the table block instead, where the thing
-           it acts on is. A page with no page-level action keeps the h1 and drops
+           it acts on is, and that is where this template's New document is: it
+           shipped here too in an earlier draft, against the rule in this very
+           comment. A page with no page-level action keeps the h1 and drops
            the button set; keep the block so adding one later fills a slot rather
            than restructuring the page.
 
@@ -714,7 +773,6 @@
       <h1 id="list-page-heading">Documents</h1>
       <div class="rux--btn-set">
         <button type="button" class="rux--btn rux--btn--secondary">Export</button>
-        <button type="button" class="rux--btn rux--btn--primary">New document</button>
       </div>
       <!-- BLOCK:END title -->
 
@@ -739,30 +797,7 @@
       </div>
       <!-- BLOCK:END notice -->
 
-      <!-- BLOCK:BEGIN name=filter label="Content switcher filter" follows=notice -->
-      <!-- REPLACE, or delete the block. The switcher parts the list into the
-           views people actually ask for, with a count on each, and it sits OUTSIDE
-           the table container: it changes which rows the table holds, so it is not
-           one of the table's own toolbar actions.
-
-           IT IS A TABLIST AND THE ROVING TABINDEX IS NOT DECORATION. The selected
-           button is `tabindex="0"` and the rest are `-1`, so the group is one tab
-           stop and the arrow keys move inside it. Ship the selected state on the
-           view the page opens in, and put the rows in that view. -->
-      <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Which documents">
-        <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0">
-          <span class="rux--content-switcher__label">Open 3</span>
-        </button>
-        <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
-          <span class="rux--content-switcher__label">Archived 12</span>
-        </button>
-        <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
-          <span class="rux--content-switcher__label">All 15</span>
-        </button>
-      </div>
-      <!-- BLOCK:END filter -->
-
-      <!-- BLOCK:BEGIN name=table label="Data table, a row opens the record" follows=filter -->
+      <!-- BLOCK:BEGIN name=table label="Data table with its filter and toolbar" follows=notice -->
       <!-- REPLACE: the table. A row opens the record page, which is what parts
            this from templates/table-page.html.
 
@@ -794,6 +829,47 @@
            presumes the markup is in the order it claims. Both arrows stay in the
            DOM at all times and CSS reveals one. -->
       <section class="rux--data-table-container" aria-labelledby="list-page-heading">
+        <!-- THE FILTER, INSIDE THE BOX AND FLUSH ON THE BAND. It changes which
+             rows the table holds, so it belongs to the table rather than to the
+             page; standing above the container it read as a control for
+             something else. The strip is the box's width and carries the band's
+             own `layer` fill, so the two are one head to the table; the switcher
+             keeps Carbon's own size inside it and is inset from the box's edge.
+             Delete the strip with the switcher if the list has no views.
+
+             IT IS A TABLIST AND THE ROVING TABINDEX IS NOT DECORATION. The
+             selected button is `tabindex="0"` and the rest are `-1`, so the group
+             is one tab stop and the arrow keys move inside it. Ship the selected
+             state on the view the page opens in, and put the rows in that view. -->
+        <div class="list-page__filter">
+          <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Which documents">
+            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0">
+              <span class="rux--content-switcher__label">Open 3</span>
+            </button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
+              <span class="rux--content-switcher__label">Archived 12</span>
+            </button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
+              <span class="rux--content-switcher__label">All 15</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- THE BAND. THE PERSISTENT SEARCH IS NESTED IN `toolbar-content` AND
+             EVERYTHING ELSE FOLLOWS IT THERE, which is Carbon's own arrangement
+             in all three captures that render this variant —
+             components-datatable-toolbar--persistent-toolbar and
+             --small-persistent-toolbar, and components-datatable-pagination
+             --default — each putting the overflow menu after the search inside
+             the same `toolbar-content`. The search carries `inline-size: 100%`
+             and flexes down; what follows it lands at the end of the band.
+
+             DO NOT MAKE IT A SIBLING of `toolbar-content` on the strength of the
+             rule `.rux--toolbar-search-container-persistent + .rux--toolbar-
+             content { inline-size: auto }`. That was tried here and
+             check-ancestry refused it: the stylesheet gives a mechanism for an
+             arrangement Carbon never ships, which is the exact failure
+             docs/verifying-templates.md was written about. -->
         <section class="rux--table-toolbar" role="group" aria-label="Table actions">
           <div class="rux--toolbar-content">
             <div class="rux--search rux--layout--size-lg rux--toolbar-search-container-persistent" role="search">
@@ -804,6 +880,15 @@
                 <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
               </button>
             </div>
+            <!-- WHAT THE TABLE HAS TO SAY, after the search and before the
+                 actions — the place Carbon's captures give the overflow menu.
+                 The forms page's band says its sheet count at the very start;
+                 here the search holds that end, so the count sits beside the
+                 thing that changes it. An app fills it from the search and puts
+                 `role="status"` on it so the change is announced; empty, it
+                 takes no room and the actions do not move. -->
+            <span class="list-page__note">3 of 15 match</span>
+            <button type="button" class="rux--btn rux--btn--primary">New document</button>
           </div>
         </section>
 

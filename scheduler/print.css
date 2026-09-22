@@ -191,14 +191,23 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
-/* WHERE THE STOCK ENDS. A form on named stock has to come out on exactly that
-   much paper, and an edge you cannot see is a second envelope you find out
-   about at the printer. It is a hairline and not a card: the form is a page of
-   this app, not a sheet lying on one. A form on no named paper has no edge to
-   draw. */
+/* THE STOCK, ON SCREEN AND NOT ON PAPER. A form on named stock is shown as
+   that stock: the standard envelope in the kraft it is really printed on, and
+   the multi-stop layout on the white sheet that one takes. It is the whole of
+   the preview's job -- what comes out of the printer lands on this, and where
+   the colour stops is where the envelope stops. The sheet carries the light
+   theme with it, so the ink on that stock is the ink that prints.
+
+   None of it reaches the printer. The kraft is already there, in the tray, and
+   @media print whitens the form. A form on no named stock has none of this and
+   is a page of this app. */
 @media screen {
   .scheduler-print__sheet[data-paper="named"] .scheduler-form {
-    outline: 1px solid var(--rux-border-subtle-01);
+    background: var(--rux-background);
+  }
+
+  .scheduler-print__sheet[data-paper="named"] .scheduler-form[data-layout="standard"] {
+    background: var(--scheduler-envelope-paper);
   }
 }
 
@@ -213,10 +222,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     max-inline-size: none;
   }
 
-  /* INK, WHATEVER THEME THE PAGE IS IN. Every form is drawn in the theme the
+  /* INK, WHATEVER THEME THE PAGE IS IN. A form on named stock already carries
+     g10 on the sheet; a form shown as a page of this app is in the theme the
      person keeps, and a dark one prints as white ink on white paper. These are
-     g10's own values for the tokens a form reads -- the lightest theme Carbon
-     writes a rule for, and the one the sheet used to carry as an attribute. */
+     g10's own values for the tokens a form reads, so the two agree and the
+     sheet can be pinned without asking which it is holding. */
   .scheduler-print__sheet {
     --rux-background: #ffffff;
     --rux-layer-01: #ffffff;

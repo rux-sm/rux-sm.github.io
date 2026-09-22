@@ -194,19 +194,23 @@
         <span class="scheduler-print__bar-note" id="scheduler-print-note" role="status"></span>
       </div>
       <div class="scheduler-print__hub" id="scheduler-print-hub" hidden></div>
-      <!-- WHERE THE FORM IS DRAWN. Every form is a page of this app, in the
-           theme the person keeps: a sheet of white standing in a dark app
-           reads as the app having broken rather than as paper, and the board
-           beside it is the same ink on the same background. @media print pins
-           g10's values for the tokens a form reads, so the printout is black
-           on white whatever theme it was drawn in.
+      <!-- WHERE THE FORM IS DRAWN, and how depends on the stock it names.
 
-           What still parts one form from another is the paper it names. A form
-           on named stock -- the envelope, on its own 6 by 9 -- has to come out
-           on exactly that much of it, so it keeps that stock's shape and a
-           visible edge, and print.js scales it to the room. A form on whatever
-           is in the tray takes the column it is in and runs as long as it
-           needs. print.js sets `data-paper` from the form's own entry. -->
+           The envelope names its own: 6 by 9, in kraft, and the preview is
+           that envelope, because what comes out of the printer lands on it and
+           this is where anyone sees whether it fits. The sheet carries g10
+           with it, so the ink on that stock is the ink that prints; it says
+           g10 and not white because white is Carbon's default rather than a
+           theme it writes a rule for, and `data-theme="white"` matches nothing.
+
+           A form printed on whatever is in the tray has no stock to show, so it
+           is a page of this app in the theme the person keeps: a long sheet of
+           white standing in a dark app reads as the app having broken rather
+           than as paper.
+
+           There is no desk under either. @media print pins g10's ink and
+           whitens the stock, because the kraft is already in the tray.
+           print.js sets `data-paper` and the theme from the form's entry. -->
       <div class="scheduler-print__sheet" id="scheduler-print-sheet"></div>
     </div>
   </div>

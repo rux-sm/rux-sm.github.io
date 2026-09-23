@@ -36,9 +36,10 @@ decides how the pair looks; this plan decides only where its behaviour lives.
   row,** chosen by the page, as `contacts` and `buses` differ today.
 - **Nothing a person sees changes.** Every page keeps its words, ids and
   layout, so the change is judged by the pages working as they do now.
-- **Pages move one at a time,** Customers first, since it is the smallest.
-  Each move is its own commit, tested signed in before the next. Buses and
-  Drivers move last, since they carry the modals the others lack.
+- **Pages move one at a time,** each its own commit, checked by a trace of
+  what the page does, run on fake data before and after the move and
+  compared, then tried signed in. Buses and Drivers move last, since they
+  carry the modals the others lack.
 
 ## Questions
 
@@ -48,7 +49,5 @@ None open.
 
 - [ ] rux saves a bus with a day out, a driver with time off, and a new
       contact, customer and location, signed in.
-- [ ] Move Customers' shared helpers, banners, sort, search, leave guard,
-      conflict modal and sign-in gate into `scheduler/pair.js`.
-- [ ] Move Locations, then Contacts, onto them, each tested signed in.
+- [ ] Move Locations, then Contacts, onto `pair.page`, as Customers is.
 - [ ] Move Buses, then Drivers, onto them, each tested signed in.

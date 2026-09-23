@@ -261,15 +261,16 @@
    The end is the end of what is SHOWN: filtering marks an option `hidden` and
    leaves it in the list, so `:first-child` is often a row nobody can see.
    Every shown option is curved, and the curve is taken back from any that has
-   a shown option before it, above, or after it, below. */
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]) {
+   a shown option before it, above, or after it, below. Geist-dark's options sit
+   inside the menu's padding as pills of their own, so this is ant-dark's. */
+[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]) {
   border-radius: 8px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
+[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]) ~ .rux--list-box__menu-item:not([hidden]) {
   border-start-start-radius: 0;
   border-start-end-radius: 0;
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
+[data-theme="ant-dark"] .rux--list-box__menu-item:not([hidden]):has(~ .rux--list-box__menu-item:not([hidden])) {
   border-end-start-radius: 0;
   border-end-end-radius: 0;
 }
@@ -477,6 +478,20 @@
 }
 [data-theme="geist-dark"] .rux--menu-item {
   border-radius: 6px;
+}
+/* A dropdown's or combo box's list is the same surface and takes the same
+   answer. Its options also carry Carbon's rule between them, which Geist's
+   lists do not draw; the pill a hovered or chosen option takes is what parts
+   them. */
+[data-theme="geist-dark"] .rux--list-box__menu {
+  padding: 6px;
+  border-radius: 12px;
+}
+[data-theme="geist-dark"] .rux--list-box__menu-item {
+  border-radius: 6px;
+}
+[data-theme="geist-dark"] .rux--list-box__menu-item__option {
+  border-block-start-color: transparent;
 }
 /* The side panel takes a real border rather than that ring, because its own
    header and action row paint opaque fills over its top and bottom edges and

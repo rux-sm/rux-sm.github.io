@@ -38,10 +38,13 @@ the quote prints the customer's address without anyone typing it.
   rux-ui's `settings` row `locations-v1`, which a customer cannot link to
   reliably and two apps cannot write at once without losing each other's
   changes.
-- **rux-ui switches to the table in the same step,** in its one module,
-  `js/data/locations-db.js`, after reading its own `CLAUDE.md`. rux-ui adds a
-  trip's stops to saved locations on every trip save, so a table only the
-  scheduler wrote would miss them from the first day.
+- **rux-ui switches to the table in the same step, and stops saving stops.**
+  Its one module, `js/data/locations-db.js`, reads and writes the table, so
+  its itinerary search and its settings list see what the scheduler adds; its
+  trip save no longer adds every stop, so only the scheduler's modal and the
+  Locations page grow the list. The change is made after reading rux-ui's own
+  `CLAUDE.md`, and rux-ui gets nothing more, since it is retired once the
+  scheduler is complete.
 - **The copy can run twice.** It inserts a location only when no row has the
   same name and address, so it runs once before rux-ui switches and once after
   to catch anything added in between. The `settings` row is left as it is until
@@ -131,8 +134,8 @@ None open.
 - [ ] rux settles the organization names spelled two ways, from a list shown
       in chat.
 - [ ] Migration: the `locations` table, and the first copy of the 141.
-- [ ] rux-ui's `js/data/locations-db.js` reads and writes the table; then the
-      second copy.
+- [ ] rux-ui reads and writes the table and its trip save stops adding stops;
+      then the second copy.
 - [ ] `scheduler/locations.html` and `scheduler/locations.js`.
 - [ ] Migration: the `customers` table, `contacts.customer_id` and
       `trips.customer_id`, the customers and the contacts' links from the

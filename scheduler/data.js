@@ -3539,50 +3539,141 @@
   // `ilike` with nothing wild in it: an exact match, case aside.
   const likeExact = v => String(v).trim().replace(/[\\%_]/g, m => `\\${m}`);
 
-  /* A new contact's id is made before its insert and kept for that person until
-     the insert is confirmed, so a save pressed again after a timeout sends the
-     same id. The database refuses a second row with it, and that refusal means
-     the first insert landed. */
-  const pendingContactIds = new Map();
-  const personKey = p => [folded(p.name), phoneDigits(p.phone), folded(p.email)].join('|');
-
-  async function matchOrAddContact(p) {
-    const cols = 'id,name,phone,email,client';
-    const key = personKey(p);
+  /* The contact a person typed on the trip already is, by the rule above:
+     the same phone, then the same email, then the same name. `byName` says
+     the name was all that matched. Nobody is added here; a person who matches
+     no one is offered to the list after the trip saves. */
+  async function matchContact(p) {
+    const cols = 'id,name,phone,email,client,customer_id';
     const first = async query => {
       const { data, error } = await withTimeout(query.limit(1).then(r => r));
       if (error) throw new Error(error.message);
       return data?.[0] ?? null;
     };
-    const hit = (p.phone && await first(client.from('contacts').select(cols).eq('phone', p.phone)))
-      || (p.email && await first(client.from('contacts').select(cols).ilike('email', likeExact(p.email))))
-      || await first(client.from('contacts').select(cols).ilike('name', likeExact(p.name)));
-    if (hit) { pendingContactIds.delete(key); return hit; }
-    const newId = pendingContactIds.get(key) ?? crypto.randomUUID();
-    pendingContactIds.set(key, newId);
-    const row = { id: newId, name: p.name, phone: p.phone, email: p.email, client: p.client };
-    const { data, error } = await withTimeout(client.from('contacts').insert(row).select(cols).single().then(r => r));
-    if (error && !(error.code === '23505' && /contacts_pkey/.test(error.message))) throw new Error(error.message);
-    pendingContactIds.delete(key);
-    return error ? row : data;
+    const byPhone = p.phone && await first(client.from('contacts').select(cols).eq('phone', p.phone));
+    if (byPhone) return { hit: byPhone, byName: false };
+    const byEmail = p.email && await first(client.from('contacts').select(cols).ilike('email', likeExact(p.email)));
+    if (byEmail) return { hit: byEmail, byName: false };
+    const byName = await first(client.from('contacts').select(cols).ilike('name', likeExact(p.name)));
+    return byName ? { hit: byName, byName: true } : null;
   }
 
-  /* A contact picked from the suggestions takes the trip's phone or email
-     where it has none. A value already on the contact is never replaced, and
-     the write is guarded so one saved elsewhere since is not either. A contact
-     found by `matchOrAddContact` is not filled: it may have matched on the name
-     alone, and two people can share a name. A failure here never stops the
-     trip's save. */
-  async function fillContactBlanks(known, p) {
-    for (const key of ['phone', 'email']) {
-      if (!p[key] || String(known[key] ?? '').trim()) continue;
-      try {
-        const { error } = await withTimeout(client.from('contacts').update({ [key]: p[key] })
-          .eq('id', known.id).or(`${key}.is.null,${key}.eq.`).then(r => r));
-        if (!error) known[key] = p[key];
-      } catch { /* the trip still saves */ }
+  /* ══ Update your lists ════════════════════════════════════════════════════
+     After a trip saves, what the edit brought that the lists do not have: a
+     person who is no one's contact yet, a contact's missing or different
+     phone or email, and a pickup or drop-off no saved location holds. Nothing
+     is written unless ticked; Not now writes none of it, and the trip is
+     saved either way. A missing detail and a new person or place come ticked;
+     a different detail does not, since it is often one for that day. */
+  let listOffers = null;    // { tripId, customerId, rows }
+
+  // The pickup and drop-off picked or changed in this edit, if unsaved.
+  function placeOffers() {
+    const r = editing?.route;
+    if (!r) return [];
+    const yard = folded(yardPlace?.address);
+    const out = [];
+    for (const [place, open] of [[r.pickupPlace, r.pickupOpen], [r.dropPlace, r.dropOpen]]) {
+      if (!place || place === open || place.lat == null || !place.address) continue;
+      if (yard && folded(place.address) === yard) continue;
+      const saved = (panelIndex.locations || []).some(l =>
+        (place.mapbox_id && l.mapbox_id === place.mapbox_id) || folded(l.address) === folded(place.address));
+      if (saved || out.some(o => samePlace(o.place, place))) continue;
+      out.push({ kind: 'place', place: { ...place } });
     }
+    return out;
   }
+
+  const WHAT = { phone: 'phone', email: 'email' };
+  function offerListUpdates(tripId, customerId, offers) {
+    const body = document.getElementById('scheduler-lists-body');
+    if (!body || !offers.length) return;
+    listOffers = { tripId, customerId, rows: offers };
+    body.replaceChildren();
+    const groups = [
+      ['New contacts', offers.filter(o => o.kind === 'contact')],
+      ['Contact details', offers.filter(o => o.kind === 'missing' || o.kind === 'different')],
+      ['New locations', offers.filter(o => o.kind === 'place')],
+    ];
+    let n = 0;
+    for (const [title, rows] of groups) {
+      if (!rows.length) continue;
+      const section = el('section', 'rux--stack-vertical rux--stack-scale-4');
+      section.appendChild(el('h3', 'rux--type-heading-compact-01', title));
+      for (const o of rows) {
+        const i = n++;
+        const id = `scheduler-lists-${i}`;
+        const row = el('div', 'rux--stack-vertical rux--stack-scale-3');
+        if (o.kind === 'contact') {
+          row.appendChild(checkField(id, `Add ${o.person.name} to Contacts`, true));
+          row.appendChild(textField(`${id}-name`, 'Name', o.person.name));
+          row.appendChild(textField(`${id}-phone`, 'Phone', o.person.phone));
+          if ('email' in o.slot.copy) row.appendChild(textField(`${id}-email`, 'Email', o.person.email));
+        } else if (o.kind === 'missing') {
+          row.appendChild(checkField(id, `Add ${o.value} as ${o.contact.name}'s ${WHAT[o.key]}`, true));
+        } else if (o.kind === 'different') {
+          row.appendChild(checkField(id, `Change ${o.contact.name}'s ${WHAT[o.key]} from ${o.onFile} to ${o.value}`, false));
+          if (o.byName) row.appendChild(el('p', 'rux--form__helper-text',
+            `Matched by the name alone. On file: ${[o.contact.phone, o.contact.email].filter(Boolean).join(' · ') || 'no phone or email'}.`));
+        } else {
+          row.appendChild(checkField(id, `Save ${o.place.name || o.place.address} to Locations`, true));
+          row.appendChild(textField(`${id}-name`, 'Name', o.place.name));
+          row.appendChild(placeSearch(`${id}-address`, 'Address', o.place, picked => {
+            if (picked) o.place = { ...picked, name: o.place.name };
+          }, 'address'));
+        }
+        o.check = id;
+        section.appendChild(row);
+      }
+      body.appendChild(section);
+    }
+    window.Rux?.modal?.open?.('scheduler-lists-modal');
+  }
+
+  document.getElementById('scheduler-lists-save')?.addEventListener('click', async e => {
+    const button = e.currentTarget;
+    const job = listOffers;
+    if (!job) return;
+    const ticked = job.rows.filter(o => document.getElementById(o.check)?.checked);
+    const val = id => document.getElementById(id)?.value.trim() || null;
+    const customerName = (panelIndex.customers || []).find(c => c.id === job.customerId)?.name ?? null;
+    button.disabled = true;
+    let done = 0;
+    const failed = [];
+    for (const o of ticked) {
+      try {
+        if (o.kind === 'contact') {
+          const person = { id: crypto.randomUUID(), name: val(`${o.check}-name`) || o.person.name,
+            phone: val(`${o.check}-phone`), email: 'email' in o.slot.copy ? val(`${o.check}-email`) : null,
+            customer_id: job.customerId ?? null, client: customerName };
+          const add = await withTimeout(client.from('contacts').insert(person).then(r => r));
+          if (add.error) throw new Error(add.error.message);
+          panelIndex.contacts = [...(panelIndex.contacts || []), person];
+          // The trip links to the person now on the list.
+          const link = await withTimeout(client.from('trips').update({ [o.slot.idKey]: person.id }).eq('id', job.tripId).then(r => r));
+          if (link.error) throw new Error(link.error.message);
+        } else if (o.kind === 'missing' || o.kind === 'different') {
+          const up = await withTimeout(client.from('contacts').update({ [o.key]: o.value }).eq('id', o.contact.id).then(r => r));
+          if (up.error) throw new Error(up.error.message);
+          o.contact[o.key] = o.value;
+        } else {
+          const place = { name: val(`${o.check}-name`) || o.place.name || o.place.address, address: o.place.address,
+            lat: o.place.lat, lng: o.place.lng, mapbox_id: o.place.mapbox_id ?? null };
+          const add = await withTimeout(client.from('locations').insert(place).select('id,name,address,lat,lng,mapbox_id').single().then(r => r));
+          if (add.error) throw new Error(add.error.message);
+          panelIndex.locations = [...(panelIndex.locations || []), add.data];
+        }
+        done++;
+      } catch {
+        failed.push(o.kind === 'contact' ? o.person.name : o.kind === 'place' ? (o.place.name || o.place.address) : o.contact.name);
+      }
+    }
+    button.disabled = false;
+    listOffers = null;
+    window.Rux?.modal?.close?.('scheduler-lists-modal');
+    if (failed.length) toast('warning', 'Some of the lists were not updated.', `${failed.join(', ')} could not be saved. Try again from the contact or location page.`);
+    else if (done) toast('success', 'Lists updated.');
+  });
 
   /* The customer the Customer field names, settled into `row`: the one
      picked, else the one of that name, else a new one made now, as a new
@@ -3641,10 +3732,13 @@
     } catch { /* the trip still saves */ }
   }
 
-  // Settles every on-screen contact id into `row`, which is the insert or the
-  // patch. Returns the names that could not be linked; each keeps the link the
-  // trip already had.
-  async function linkContacts(row, creating) {
+  /* Settles every on-screen contact id into `row`, which is the insert or the
+     patch, and puts in `offers` what the list lacks: a person who is no one's
+     contact yet, and a contact's missing or different phone or email. Only
+     what was typed in this edit is offered, so a declined offer is not made
+     again until the field is typed again. Returns the names that could not
+     be linked; each keeps the link the trip already had. */
+  async function linkContacts(row, creating, offers) {
     const failed = [];
     const val = id => (id && document.getElementById(id)?.value.trim()) || null;
     for (const s of CONTACT_SLOTS) {
@@ -3652,18 +3746,32 @@
       if (!box) continue;
       const p = { name: box.value.trim() || null, phone: val(s.phone), email: val(s.email), client: val(s.client) };
       const before = creating ? null : (editing.before[s.idKey] ?? null);
+      const typedNow = field => creating || !same(p[field] ?? null, editing.before[s.copy[field]] ?? null);
       let id = null;
       if (p.name) {
         try {
           const picked = box.dataset.contactId;
           const known = picked && (panelIndex.contacts || []).find(c => String(c.id) === picked);
-          if (known && samePerson(known, p)) {
-            id = known.id;
-            await fillContactBlanks(known, p);
+          let hit = null;
+          let byName = false;
+          if (known && samePerson(known, p)) hit = known;
+          else if (known || !picked) ({ hit, byName } = (await matchContact(p)) ?? { hit: null, byName: false });
+          else hit = { id: picked };
+          if (hit) {
+            id = hit.id;
+            box.dataset.contactId = id;
+            for (const key of ['phone', 'email']) {
+              if (!(key in s.copy) || !p[key] || !typedNow(key) || !('name' in hit)) continue;
+              const onFile = String(hit[key] ?? '').trim();
+              const differs = key === 'phone' ? phoneDigits(onFile) !== phoneDigits(p[key]) : folded(onFile) !== folded(p[key]);
+              if (!onFile) offers.push({ kind: 'missing', contact: hit, key, value: p[key] });
+              else if (differs) offers.push({ kind: 'different', contact: hit, key, value: p[key], onFile, byName });
+            }
           } else {
-            id = known ? (await matchOrAddContact(p)).id : picked || (await matchOrAddContact(p)).id;
+            // No one yet: the trip keeps the typed name and phone, unlinked.
+            delete box.dataset.contactId;
+            if (typedNow('name') || typedNow('phone')) offers.push({ kind: 'contact', slot: s, person: p });
           }
-          box.dataset.contactId = id;
         } catch {
           failed.push(p.name);
           id = before;
@@ -3679,6 +3787,7 @@
     }
     return failed;
   }
+
 
   // A toggle's state lives on `aria-checked`, which is what Carbon's own
   // markup carries -- there is no `.checked` to read.
@@ -6490,8 +6599,11 @@
       // The customer and the contacts are linked, and added to their lists,
       // before the trip is written.
       await linkCustomer(row, creating);
-      const unlinked = await linkContacts(row, creating);
+      const offers = [];
+      const unlinked = await linkContacts(row, creating, offers);
       await fillContactCustomer(row);
+      offers.push(...placeOffers());
+      const savedCustomerId = 'customer_id' in row ? row.customer_id : editing.before.customer_id;
       /* The fleet is written last, because its rows need the trip to exist. If
          that write fails the trip stands, in the Unassigned row, and the
          message says so. */
@@ -6567,6 +6679,7 @@
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
+      offerListUpdates(tripId, savedCustomerId, offers);
       return true;
     } catch (e) {
       const why = String(e && e.message ? e.message : e);

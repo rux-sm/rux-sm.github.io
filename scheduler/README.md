@@ -25,8 +25,7 @@ driver's list opens on the board through `./?trip=<id>&date=<day>`.
 `contacts.html` lists every contact, the people who book and travel, with
 their customer, phone, email and trips, and edits one at
 `contacts.html?id=`. A contact on any trip is never deleted, and editing one
-never changes a trip, which keeps the phone it was saved with. Saving a trip
-fills in the phone or email its contact is missing, never replacing one.
+never changes a trip, which keeps the phone it was saved with.
 
 `locations.html` lists the saved places a bus goes, which rux-ui's itinerary
 search reads too, and edits one at `locations.html?id=`. An address is picked
@@ -45,6 +44,11 @@ a name not in it becomes a new customer on Save. Picking the booking contact
 fills an empty customer, a customer fills an empty pickup and drop-off from
 its usual pickup, and the address search offers saved locations first. The
 quote's bill-to is drawn from the trip's customer.
+
+After a trip saves, Update your lists offers what the edit brought that the
+lists lack: a person who is no one's contact yet, a contact's missing or
+different phone or email, and a pickup or drop-off no location holds. Nothing
+is added to a list unless ticked, and the trip is saved either way.
 
 On the compact board, a swipe moves one week of trip cells while the date and
 bus headers stay fixed. Stationary cell viewports clip the moving bars at the

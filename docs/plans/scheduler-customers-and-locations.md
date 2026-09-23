@@ -38,25 +38,6 @@ the quote prints the customer's address without anyone typing it.
   links to it.
 - **A trip keeps its own copy of every stop,** as `trip_stops` does today, so
   editing or deleting a location never changes a trip already saved.
-- **Nothing joins a list unless someone says so.** After a trip saves, one
-  modal, Update your lists, offers what the edit brought that the lists do not
-  have, and shows nothing when there is none. Not now adds none of it, and the
-  trip is saved either way. An offer declined is not made again until the
-  field is typed again. Three kinds of row:
-  - **A new contact**, ticked, with the name, phone and email to correct.
-    Declined, the trip keeps the typed name and phone and links no contact,
-    as 457 trips already do. A person the trip editor's rule matches by phone,
-    email or name is not new and links at once, as today.
-  - **A contact's missing phone or email**, ticked. This replaces the silent
-    fill `scheduler/data.js` makes on Save today.
-  - **A contact's different phone or email**, beside the one on file and not
-    ticked, since a different number is often one for that day. A contact
-    matched by the name alone is offered too, with their details shown, since
-    a person now decides.
-  - **A new location**: a stop picked or changed in the edit that no location
-    has by its map id or address, ticked, with the name and the address search
-    to correct. Saving every stop unasked, as rux-ui does, fills the list with
-    one-off stops.
 - **A customer or location is deleted only when nothing uses it:** no contact
   or trip for a customer, no customer for a location.
 - **Locations and customers are tables that carry `updated_at`,** set by the
@@ -73,6 +54,5 @@ None open.
 
 ## Tasks
 
-- [ ] The Update your lists modal, in place of the silent contact fill.
 - [ ] rux picks the usual pickups the copy left blank.
 - [ ] Delete the `locations-v1` settings row once both apps read the table.

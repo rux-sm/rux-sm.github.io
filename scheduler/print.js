@@ -1112,15 +1112,12 @@
          you there. */
       blank: true,
       marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat' },
-      /* The one form here that names its paper, because it is printed on a
-         particular stock rather than on whatever is in the tray. A form that
-         leaves this out fits the paper the dialog is set to.
-
-         6 by 9 inches is the envelope itself, the size the office printer
-         offers as Trip Envelope. The ink margin is the form's own, because
-         the stock's own margins are zero and a laser printer still cannot
-         reach its edges. */
-      page: { size: '6in 9in', width: '6in', height: '9in', margin: '0.3in', exact: true },
+      /* A particular stock rather than whatever is in the tray: 6 by 9
+         inches is the envelope itself, and the name is the one the office
+         printer offers it as, which the bar shows beside the count. The ink
+         margin is the form's own, because the stock's own margins are zero
+         and a laser printer still cannot reach its edges. */
+      page: { name: 'Trip Envelope, 6 × 9 in', size: '6in 9in', width: '6in', height: '9in', margin: '0.3in', exact: true },
       layouts: [
         { id: 'standard', name: 'Standard' },
         { id: 'multi-stop', name: 'Multi-stop' },
@@ -1170,7 +1167,7 @@
          this runs onto as many sheets as the stops need, and the height is
          the paper's rather than a limit -- a short itinerary still draws a
          whole page of it, because that is what comes out of the printer. */
-      page: { size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
       copies: subject => legsOf(subject.trip).map(leg => ({
         ...subject,
         leg,
@@ -1205,7 +1202,7 @@
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
       // record that a driver has their paperwork; a quote is sent, and whether
       // it was is the Billing tab's business, not a form's.
-      page: { size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
       copies: subject => [subject],
       /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
          it sends it -- a price agreed on the phone, a contact the trip has
@@ -1527,7 +1524,10 @@
     // in the form, so nothing moves under them once they are laid. What it
     // counted is what the band says.
     const sheets = cards.reduce((n, card) => n + showPageBreaks(card), 0);
-    count.textContent = sheets === 1 ? '1 page' : `${sheets} pages`;
+    /* The paper beside the count, by the name the print dialog gives it, so
+       what to load and what to pick are read where Print is pressed. */
+    count.textContent = [sheets === 1 ? '1 page' : `${sheets} pages`, current.form.page?.name]
+      .filter(Boolean).join(' · ');
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
        after the room is already its final size. */

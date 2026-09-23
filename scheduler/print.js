@@ -1749,12 +1749,15 @@
       },
     } : null;
 
+    /* A form with one copy to a subject, like the quote, names no copy, and
+       the head names the form. */
+    const nameOf = copy => form.copyName?.(copy) ?? form.name;
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
-        current.blank ? `${form.name} — blank` : form.copyName(chosen),
+        current.blank ? `${form.name} — blank` : nameOf(chosen),
         every.length > 1 ? every.map((copy, i) => ({
-          label: form.copyName(copy),
+          label: nameOf(copy),
           checked: i === current.chosen,
           choose: () => { current.chosen = i; buildControls(); draw(); },
         })) : [],
@@ -1762,7 +1765,7 @@
     } else if (every.length > 1) {
       nodes.push(pickCell(
         'Copy',
-        every.map(copy => form.copyName(copy)),
+        every.map(nameOf),
         current.chosen,
         i => { current.chosen = i; draw(); },
       ));

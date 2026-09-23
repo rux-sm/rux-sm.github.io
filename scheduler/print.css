@@ -1143,8 +1143,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   position: relative;
   display: flex;
   justify-content: flex-end;
-  /* Close under the table it adds up: 8px, as boxes that belong together. */
-  margin-block-start: var(--rux-spacing-03);
+  /* The table's last row: its top rule is the table's bottom one. */
+  margin-block-start: -1px;
 }
 
 .scheduler-customer-quote__add {
@@ -1154,11 +1154,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   transform: translateY(-50%);
 }
 
-/* The total, in two boxes of its own under the Cost and Total columns: the
-   word in a ruled box and the figure in a grey one beside it. */
+/* The total, under the Cost and Total columns and on their lines: the word
+   in a ruled box under Cost and the figure in a grey one under Total. The two
+   shares are the columns' own, 11% and 14% of the table. */
 .scheduler-customer-quote__total {
   display: grid;
-  grid-template-columns: 1in 1.5in;
+  inline-size: 25%;
+  grid-template-columns: 11fr 14fr;
 }
 
 .scheduler-customer-quote__total-label,

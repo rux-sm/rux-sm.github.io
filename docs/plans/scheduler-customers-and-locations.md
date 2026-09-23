@@ -38,17 +38,12 @@ the quote prints the customer's address without anyone typing it.
   links to it.
 - **A trip keeps its own copy of every stop,** as `trip_stops` does today, so
   editing or deleting a location never changes a trip already saved.
-- **Two new pages, each a page pair** as `docs/plans/site-page-pair.md` shapes
-  them and on the `scheduler-pair-*` classes, as Contacts is:
-  `customers.html` and `locations.html`, both in the side nav after Contacts.
-- **Neither page has a filter strip,** for the reason Contacts has none:
-  neither has a status.
 - **The old text columns keep being written.** `contacts.client` and
   `trips.customer` take the customer's name on every save, so rux-ui goes on
   showing it. A name rux-ui types there later changes only the text, not the
   link.
-- **The trip editor's Organization field becomes Customer,** the same combo
-  box, and writes `trips.customer_id` beside the name. A name that is not a
+- **The trip editor's Organization field becomes Customer,** a combo box over
+  the customers as the Contacts page has, and writes `trips.customer_id` beside the name. A name that is not a
   customer yet makes one on Save, as a new contact is made today, so booking a
   new customer takes no detour.
 - **Three fills, each only into an empty field:** picking the booking contact
@@ -103,7 +98,5 @@ None open.
       locations first in the address search.
 - [ ] The Update your lists modal, in place of the silent contact fill.
 - [ ] The quote's Name/address box.
-- [ ] The two links in the side nav of every scheduler page, and the screen
-      inventory's Settings row, which still puts locations there.
 - [ ] rux picks the usual pickups the copy left blank.
 - [ ] Delete the `locations-v1` settings row once both apps read the table.

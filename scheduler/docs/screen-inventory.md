@@ -23,7 +23,7 @@ of Design's `js/*.js` behaviours; an *app component* is this app's own.
 | Customers | keep | `contacts.html`, the Contacts list, and one contact at `contacts.html?id=` (§7). |
 | Requests | keep | `table-page` with a content switcher for status. Detail opens in the panel. |
 | Itineraries | later | Needs the itinerary editor, an app component, and the AI intake. |
-| Settings (`Options`) | keep, trimmed | `settings-page`. Yard, locations, requirements, billing defaults. Mapbox and Extract keys move with intake. |
+| Settings (`Options`) | keep, trimmed | `settings-page`. Yard, requirements, billing defaults. Saved locations have their own page, `locations.html`. Mapbox and Extract keys move with intake. |
 
 The side nav lists only pages that exist; each view is added when its page is.
 Dropped: Documents, Game, the Samsara and Gallery links.
@@ -110,10 +110,11 @@ Three homes, and one rule for choosing.
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
 - **Trip and request detail go in the panel.** One editing surface beats
-  two. A driver, a bus and a contact are each edited on their own page,
-  `drivers.html?id=`, `buses.html?id=` and `contacts.html?id=`, because each
-  is a list you go to and its record opens from that list;
-  `docs/plans/site-page-pair.md` decides the shape all three take.
+  two. A driver, a bus, a contact, a customer and a location are each edited
+  on their own page, `drivers.html?id=`, `buses.html?id=`,
+  `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because
+  each is a list you go to and its record opens from that list;
+  `docs/plans/site-page-pair.md` decides the shape they all take.
 - **Tasks and History are pages.** Neither is the detail of anything, and as
   panels they would hold the panel open. History sits below Settings in the nav:
   it is consulted, not worked in.

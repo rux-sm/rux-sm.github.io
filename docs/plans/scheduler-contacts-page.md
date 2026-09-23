@@ -75,8 +75,9 @@ three.
   answers. A second, optional Office phone is a column added later only if
   it is missed; splitting now changes the matching rule, rux-ui and every
   trip's copy for a number nobody has asked to store.
-- **A trip save fills a contact's blanks.** When a contact picked from the
-  trip editor's suggestions has no phone or no email and the trip has one,
+- **A trip save fills a contact's blanks.** When the contact a trip names, or
+  one picked from the trip editor's suggestions, has no phone or no email and
+  the trip has one,
   saving the trip writes it to the contact. It never replaces a value already
   there, and a contact matched by name alone is left untouched, since two
   people can share a name. 70 contacts have no phone and 73 no email.
@@ -96,10 +97,4 @@ None open.
 
 ## Tasks
 
-- [ ] `scheduler/contacts.html` and `scheduler/contacts.js`: the list, the
-      editor, the Trips tab, delete and the duplicate warning.
-- [ ] The trip editor's save fills a picked contact's missing phone and email.
-- [ ] The Contacts link in the side nav of all seven pages.
-- [ ] The screen inventory's §1, §2 and §7 changed to say a contact is edited
-      on its page.
 - [ ] rux saves one real contact edit and opens both views on a phone.

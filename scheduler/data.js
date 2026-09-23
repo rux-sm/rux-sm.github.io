@@ -3498,6 +3498,23 @@
     return error ? row : data;
   }
 
+  /* A contact picked from the suggestions takes the trip's phone or email
+     where it has none. A value already on the contact is never replaced, and
+     the write is guarded so one saved elsewhere since is not either. A contact
+     found by `matchOrAddContact` is not filled: it may have matched on the name
+     alone, and two people can share a name. A failure here never stops the
+     trip's save. */
+  async function fillContactBlanks(known, p) {
+    for (const key of ['phone', 'email']) {
+      if (!p[key] || String(known[key] ?? '').trim()) continue;
+      try {
+        const { error } = await withTimeout(client.from('contacts').update({ [key]: p[key] })
+          .eq('id', known.id).or(`${key}.is.null,${key}.eq.`).then(r => r));
+        if (!error) known[key] = p[key];
+      } catch { /* the trip still saves */ }
+    }
+  }
+
   // Settles every on-screen contact id into `row`, which is the insert or the
   // patch. Returns the names that could not be linked; each keeps the link the
   // trip already had.
@@ -3514,8 +3531,12 @@
         try {
           const picked = box.dataset.contactId;
           const known = picked && (panelIndex.contacts || []).find(c => String(c.id) === picked);
-          id = known ? (samePerson(known, p) ? known.id : (await matchOrAddContact(p)).id)
-            : picked || (await matchOrAddContact(p)).id;
+          if (known && samePerson(known, p)) {
+            id = known.id;
+            await fillContactBlanks(known, p);
+          } else {
+            id = known ? (await matchOrAddContact(p)).id : picked || (await matchOrAddContact(p)).id;
+          }
           box.dataset.contactId = id;
         } catch {
           failed.push(p.name);

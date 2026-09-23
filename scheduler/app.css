@@ -2445,8 +2445,8 @@ html:has(.scheduler-page[data-takeover]) {
 }
 
 /* ── The page pairs ──────────────────────────────────────────────────────
-   Drivers and Buses: a list, then one record's form, each laid out as
-   docs/plans/site-page-pair.md decides. Every rule here is shared, so the
+   Drivers, Buses and Contacts: a list, then one record's form, each laid out
+   as docs/plans/site-page-pair.md decides. Every rule here is shared, so the
    pages cannot drift; what one page has and the others do not follows
    under its own heading. Views, notices and buttons are shown and hidden with
    `hidden`, which a Carbon class's own `display` would otherwise beat. */
@@ -2691,6 +2691,16 @@ html:has(.scheduler-page[data-takeover]) {
   outline-offset: -2px;
 }
 .scheduler-oos-error { color: var(--rux-text-error); }
+
+/* ── Contacts only ── */
+@media (max-width: 41.98rem) {
+  #scheduler-contacts-list th:nth-child(2),
+  #scheduler-contacts-list th:nth-child(3),
+  #scheduler-contacts-list th:nth-child(4),
+  #scheduler-contacts-rows td:nth-child(2),
+  #scheduler-contacts-rows td:nth-child(3),
+  #scheduler-contacts-rows td:nth-child(4) { display: none; }
+}
 
 /* The Route tab's note under its timeline, 8px below it, as the PO coverage
    line sits under the POs it speaks to; the timeline's rows are 8px apart. */

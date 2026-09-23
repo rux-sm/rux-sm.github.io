@@ -1,0 +1,681 @@
+/* ==========================================================================
+   contacts.js — THE CONTACTS PAGE
+   --------------------------------------------------------------------------
+   contacts.html lists every contact. contacts.html?id=<contact id> edits one
+   and contacts.html?new makes one. Both read and write `contacts`, the table
+   rux-ui's Customers view writes, so both apps show the same people.
+
+   A contact is a person. The school or business they book for is their typed
+   `client`, shown as Organization, until organizations are records of their
+   own.
+
+   A trip names its contacts in six columns, the booking contact and five
+   day-of ones, and keeps its own copy of each name and phone. Editing a
+   contact here changes the contact only: a trip keeps what it was saved with,
+   which is what its driver was given.
+
+   A contact on any trip is never deleted, because the database would clear
+   the trip's link and leave only its typed copy.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const svgUse = (href, size, viewBox, cls) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    if (cls) svg.setAttribute('class', cls);
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('viewBox', viewBox);
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', href);
+    svg.appendChild(use);
+    return svg;
+  };
+
+  const params = new URLSearchParams(location.search);
+  const contactId = params.get('id');
+  const editing = !!contactId || params.has('new');
+  // The record view shows the list's column only for its notice.
+  if (editing) $('scheduler-contacts-h').hidden = true;
+
+  const CONTACT_COLUMNS = 'id,name,phone,email,client';
+  // The six places a trip names a contact; the first is who booked it.
+  const SLOTS = ['booking_contact_id', 'trip_contact_1_id', 'trip_contact_2_id',
+    'trip_contact_3_id', 'trip_contact_4_id', 'trip_contact_5_id'];
+  const PAGE = 1000;
+
+  let client = null;
+
+  // ── dates, all local ────────────────────────────────────────────────────
+  const ISO = /^\d{4}-\d{2}-\d{2}$/;
+  const day = v => (ISO.test(String(v ?? '').slice(0, 10)) ? String(v).slice(0, 10) : null);
+  const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const todayISO = () => iso(new Date());
+  const dateFormat = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  const shortFormat = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+  const longDate = s => dateFormat.format(parseISO(s));
+  const rangeText = (a, b) => {
+    if (!b || a === b) return dateFormat.format(parseISO(a));
+    const x = parseISO(a), y = parseISO(b);
+    return x.getFullYear() === y.getFullYear()
+      ? `${shortFormat.format(x)} – ${dateFormat.format(y)}`
+      : `${dateFormat.format(x)} – ${dateFormat.format(y)}`;
+  };
+
+  // ── people ──────────────────────────────────────────────────────────────
+  /* The trip editor's rule for one person, from data.js: the same phone
+     digits, the same email or the same name, case and spacing aside. A US
+     number's leading 1 is dropped, so +1 and no prefix match. */
+  const phoneDigits = v => String(v ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+  const folded = v => String(v ?? '').trim().toLowerCase();
+  const samePerson = (c, p) => [
+    [phoneDigits(c.phone), phoneDigits(p.phone)],
+    [folded(c.email), folded(p.email)],
+    [folded(c.name), folded(p.name)],
+  ].some(([a, b]) => a && a === b);
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const initials = name => String(name || '').trim().split(/\s+/).filter(Boolean)
+    .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
+
+  // ── the notice ──────────────────────────────────────────────────────────
+  // Every class is written out in full: the class sweep reads the source.
+  const NOTE = {
+    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
+    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
+    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#m-check_circle-fill' },
+  };
+  const say = (kind, title, text) => {
+    $('scheduler-contacts-notice').hidden = !kind;
+    if (!kind) return;
+    $('scheduler-contacts-notice-box').className = NOTE[kind].cls;
+    $('scheduler-contacts-notice-icon').setAttribute('href', NOTE[kind].icon);
+    $('scheduler-contacts-notice-title').textContent = title;
+    $('scheduler-contacts-notice-text').textContent = text || '';
+  };
+  const result = (kind, text) => {
+    $('scheduler-contact-result').hidden = !kind;
+    if (!kind) return;
+    $('scheduler-contact-result-box').className = NOTE[kind].cls;
+    $('scheduler-contact-result-icon').setAttribute('href', NOTE[kind].icon);
+    $('scheduler-contact-result-text').textContent = text;
+  };
+
+  // ── reading ─────────────────────────────────────────────────────────────
+  /* Every row, a page at a time, because the API hands back at most a
+     thousand. `build` makes a fresh query for each page. */
+  async function readAll(build) {
+    const rows = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await build().range(from, from + PAGE - 1);
+      if (error) throw error;
+      rows.push(...(data || []));
+      if (!data || data.length < PAGE) return rows;
+    }
+  }
+  const readContacts = () => readAll(() => client.from('contacts').select(CONTACT_COLUMNS).order('id'));
+  const anyContact = SLOTS.map(s => `${s}.not.is.null`).join(',');
+  const readTripLinks = () => readAll(() => client.from('trips')
+    .select(`id,start_date,end_date,cancelled_at,${SLOTS.join(',')}`)
+    .or(anyContact).order('id'));
+
+  /* Each contact's trips: how many, the next to start or still running, and
+     the last. A trip naming someone twice counts once, and a cancelled trip
+     does not count. */
+  function indexTrips(trips) {
+    const map = new Map();
+    const now = todayISO();
+    for (const t of trips) {
+      if (t.cancelled_at) continue;
+      const from = day(t.start_date);
+      if (!from) continue;
+      const to = day(t.end_date) || from;
+      for (const id of new Set(SLOTS.map(s => t[s]).filter(Boolean))) {
+        if (!map.has(id)) map.set(id, { n: 0, next: null, last: null });
+        const m = map.get(id);
+        m.n++;
+        if (to >= now) { if (!m.next || from < m.next) m.next = from; }
+        else if (!m.last || from > m.last) m.last = from;
+      }
+    }
+    return map;
+  }
+
+  /* ══ The list ═══════════════════════════════════════════════════════════ */
+  let contacts = [];
+  let tripsBy = new Map();
+  let query = '';
+  let sortKey = 'name';
+  let sortDir = 'ascending';
+
+  const tripsOf = c => tripsBy.get(c.id) || { n: 0, next: null, last: null };
+  const byName = (a, b) => folded(a.name).localeCompare(folded(b.name)) || String(a.id).localeCompare(String(b.id));
+  // A blank phone or email sorts after every filled one, A to Z.
+  const blankLast = (x, y, cmp) => (!x && !y ? 0 : !x ? 1 : !y ? -1 : cmp(x, y));
+
+  /* Next trip, soonest first; then those with none coming, the most recent
+     last trip first; then those who have never travelled. */
+  const nextRank = c => {
+    const t = tripsOf(c);
+    if (t.next) return [0, t.next];
+    if (t.last) return [1, String(99999999 - Number(t.last.replace(/-/g, '')))];
+    return [2, ''];
+  };
+  const SORTS = {
+    name: byName,
+    phone: (a, b) => blankLast(phoneDigits(a.phone), phoneDigits(b.phone), (x, y) => x.localeCompare(y)),
+    email: (a, b) => blankLast(folded(a.email), folded(b.email), (x, y) => x.localeCompare(y)),
+    trips: (a, b) => tripsOf(a).n - tripsOf(b).n,
+    next: (a, b) => { const x = nextRank(a), y = nextRank(b); return x[0] - y[0] || x[1].localeCompare(y[1]); },
+  };
+
+  const matches = (c, q) => {
+    if (!q) return true;
+    const words = [c.name, c.client, c.email].filter(Boolean).join(' ').toLowerCase();
+    if (words.includes(q.toLowerCase())) return true;
+    // A phone matches by its digits, however either side was typed.
+    const digits = q.replace(/\D/g, '');
+    return digits.length >= 3 && phoneDigits(c.phone).includes(digits.replace(/^1(?=\d{10}$)/, ''));
+  };
+
+  function nextCell(c) {
+    const t = tripsOf(c);
+    if (t.next) return el('span', null, t.next === todayISO() ? 'Today' : longDate(t.next));
+    if (t.last) return el('span', 'scheduler-pair-note', `Last ${longDate(t.last)}`);
+    return el('span', 'scheduler-pair-note', 'None');
+  }
+
+  function drawList() {
+    const shown = contacts
+      .filter(c => matches(c, query))
+      .sort((a, b) => {
+        if (sortDir === 'none') return byName(a, b);
+        const r = SORTS[sortKey](a, b);
+        if (r) return sortDir === 'descending' ? -r : r;
+        return byName(a, b);
+      });
+
+    // What the search came to, in the band beside it.
+    const note = $('scheduler-contacts-count');
+    if (note) note.textContent = query ? `${shown.length} of ${contacts.length} match` : '';
+
+    const body = $('scheduler-contacts-rows');
+    body.replaceChildren();
+    if (!shown.length) {
+      const tr = el('tr');
+      const td = el('td', null, query ? `No contacts match “${query}”.` : 'No contacts yet.');
+      td.colSpan = 5;
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }
+    for (const c of shown) {
+      const tr = el('tr', 'scheduler-pair-row');
+      tr.dataset.id = c.id;
+
+      const who = el('td');
+      const cell = el('div', 'scheduler-pair-cell');
+      const avatar = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm', initials(c.name));
+      avatar.setAttribute('aria-hidden', 'true');
+      const lines = el('div', 'scheduler-pair-cell__lines');
+      const link = el('a', 'scheduler-pair-cell__name', c.name || 'Unnamed contact');
+      link.href = `contacts.html?id=${encodeURIComponent(c.id)}`;
+      lines.appendChild(link);
+      if (c.client) lines.appendChild(el('span', 'scheduler-pair-cell__detail', c.client));
+      cell.append(avatar, lines);
+      who.appendChild(cell);
+
+      const phone = el('td', null, c.phone || '—');
+      const email = el('td', null, c.email || '—');
+      const n = tripsOf(c).n;
+      const count = el('td', null, n ? String(n) : '—');
+      const next = el('td');
+      next.appendChild(nextCell(c));
+
+      tr.append(who, phone, email, count, next);
+      body.appendChild(tr);
+    }
+  }
+
+  // A click anywhere on a row opens its contact; the name is the link a
+  // keyboard reaches.
+  $('scheduler-contacts-rows')?.addEventListener('click', e => {
+    const tr = e.target.closest('tr[data-id]');
+    if (!tr || e.target.closest('a')) return;
+    location.href = `contacts.html?id=${encodeURIComponent(tr.dataset.id)}`;
+  });
+
+  // Carbon's three-step sort: ascending, descending, then back to A to Z.
+  const NEXT = { none: 'ascending', ascending: 'descending', descending: 'none' };
+  document.querySelector('#scheduler-contacts-list thead')?.addEventListener('click', e => {
+    const th = e.target.closest('th[data-sort]');
+    if (!th) return;
+    const dir = sortKey === th.dataset.sort ? NEXT[sortDir] : 'ascending';
+    sortKey = th.dataset.sort;
+    sortDir = dir;
+    for (const other of document.querySelectorAll('#scheduler-contacts-list th[data-sort]')) {
+      const on = other === th && dir !== 'none';
+      other.setAttribute('aria-sort', on ? dir : 'none');
+      const button = other.querySelector('.rux--table-sort');
+      button.classList.toggle('rux--table-sort--active', on);
+      button.classList.toggle('rux--table-sort--descending', on && dir === 'descending');
+    }
+    drawList();
+  });
+
+  const searchInput = $('scheduler-contacts-search');
+  const searchClear = $('scheduler-contacts-search-clear');
+  searchInput?.addEventListener('input', () => {
+    query = searchInput.value.trim();
+    searchClear.classList.toggle('rux--search-close--hidden', !searchInput.value);
+    drawList();
+  });
+  searchClear?.addEventListener('click', () => {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.focus();
+  });
+  searchInput?.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && searchInput.value) { e.preventDefault(); searchClear.click(); }
+  });
+
+  async function loadList() {
+    const [rows, trips] = await Promise.all([readContacts(), readTripLinks().catch(() => null)]);
+    contacts = rows;
+    // Trips that would not load leave the list readable, with no counts.
+    tripsBy = indexTrips(trips || []);
+    $('scheduler-contacts-h').hidden = false;
+    $('scheduler-contacts-table').hidden = false;
+    drawList();
+  }
+
+  /* ══ One contact ════════════════════════════════════════════════════════ */
+  const form = $('scheduler-contact-form');
+  const field = id => $(`scheduler-c-${id}`);
+  const text = id => field(id).value.trim() || null;
+
+  // Cancel and Save stack on a phone, as Carbon's stacked button set does.
+  const narrow = matchMedia('(max-width: 41.98rem)');
+  const stackButtons = () => document.querySelector('.scheduler-pair-buttons')
+    ?.classList.toggle('rux--btn-set--stacked', narrow.matches);
+  stackButtons();
+  narrow.addEventListener('change', stackButtons);
+
+  let loaded = null;        // the contact row as the page read it
+  let trips = [];           // its trips, as read
+  let tripsRead = false;    // whether they have been, since the last load
+  let tripsFailed = false;
+  let baseline = '';        // the form as loaded, to tell whether it changed
+
+  // The columns Save writes, read off the form. A blank field saves as null.
+  const readForm = () => ({ name: text('name'), client: text('client'), phone: text('phone'), email: text('email') });
+  const WRITTEN = ['name', 'client', 'phone', 'email'];
+  // A row reduced to what Save writes, so a read-back compares like with like.
+  const comparable = row => JSON.stringify(WRITTEN.map(k => (row?.[k] === '' || row?.[k] == null ? null : row[k])));
+  const snapshot = () => comparable(readForm());
+  const dirty = () => baseline !== '' && snapshot() !== baseline;
+
+  function fillForm(c) {
+    for (const k of WRITTEN) field(k).value = c[k] ?? '';
+    clearErrors();
+  }
+
+  function drawTitle() {
+    const name = loaded?.name || null;
+    $('scheduler-contact-h').textContent = name || 'New contact';
+    document.title = `${name || 'New contact'} — Scheduler`;
+    // A contact not yet saved has no trips, so no Trips tab and no Delete.
+    $('scheduler-contact-tabs').hidden = !loaded;
+    drawDelete();
+  }
+
+  // ── validation ──
+  const ERRORS = ['name', 'email'];
+  function clearErrors() {
+    for (const id of ERRORS) showError(id, '');
+  }
+  function showError(id, message) {
+    const input = field(id);
+    const wrap = input.closest('.rux--text-input__field-wrapper');
+    const on = !!message;
+    input.classList.toggle('rux--text-input--invalid', on);
+    input.toggleAttribute('data-invalid', on);
+    wrap.toggleAttribute('data-invalid', on);
+    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    input.setAttribute('aria-describedby', `scheduler-c-${id}-error`);
+    let icon = wrap.querySelector('.rux--text-input__invalid-icon');
+    if (on && !icon) {
+      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--text-input__invalid-icon');
+      wrap.prepend(icon);
+    }
+    if (!on) icon?.remove();
+    $(`scheduler-c-${id}-error`).textContent = message;
+  }
+  function validate() {
+    clearErrors();
+    let first = null;
+    if (!text('name')) { showError('name', 'Enter a name.'); first ??= field('name'); }
+    const email = text('email');
+    if (email && !EMAIL.test(email)) {
+      showError('email', 'Use an email address, such as name@example.com.');
+      first ??= field('email');
+    }
+    first?.focus();
+    return !first;
+  }
+
+  // ── trips, read only ──
+  async function loadTrips() {
+    const id = loaded.id;
+    const { data, error } = await client.from('trips')
+      .select(`id,trip_ref,destination,customer,start_date,end_date,cancelled_at,${SLOTS.join(',')}`)
+      .or(SLOTS.map(s => `${s}.eq.${id}`).join(','))
+      .order('start_date', { ascending: false });
+    tripsFailed = !!error;
+    tripsRead = true;
+    trips = error ? [] : (data || []).filter(t => day(t.start_date));
+    drawTrips();
+    drawDelete();
+  }
+  function drawTrips() {
+    const list = $('scheduler-contact-trips');
+    list.replaceChildren();
+    if (tripsFailed || !trips.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note',
+        tripsFailed ? "The trips didn't load." : 'No trips yet.'));
+      list.appendChild(li);
+      return;
+    }
+    const now = todayISO();
+    for (const t of trips) {
+      const from = day(t.start_date);
+      const to = day(t.end_date) || from;
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `./?trip=${encodeURIComponent(t.id)}&date=${from}`;
+      // Carbon lays a clickable item's content out itself, so the two lines
+      // stack in a box of their own.
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', `${rangeText(from, to)} · ${t.destination || 'No destination'}`));
+      const booked = t.booking_contact_id === loaded.id;
+      const dayOf = SLOTS.slice(1).some(s => t[s] === loaded.id);
+      const detail = [
+        t.trip_ref,
+        t.customer,
+        [booked ? 'Booked it' : null, dayOf ? 'Day-of contact' : null].filter(Boolean).join(' and '),
+        t.cancelled_at ? 'Cancelled' : to >= now ? 'Upcoming' : null,
+      ].filter(Boolean).join(' · ');
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  }
+
+  // ── delete ──
+  function drawDelete() {
+    const section = $('scheduler-contact-delete-section');
+    section.hidden = !loaded;
+    if (!loaded) return;
+    const button = $('scheduler-contact-delete');
+    // Until the trips are read, nothing says the contact is on none.
+    const n = trips.length;
+    button.disabled = !tripsRead || tripsFailed || n > 0;
+    $('scheduler-contact-delete-text').textContent = !tripsRead
+      ? 'Checking the trips…'
+      : tripsFailed
+      ? "The trips didn't load, so this contact can't be deleted now."
+      : n > 0
+        ? "A trip names this contact, so it can't be deleted."
+        : 'This contact is on no trip.';
+  }
+  $('scheduler-contact-delete')?.addEventListener('click', () => {
+    window.Rux?.modal?.open?.('scheduler-contact-delete-modal');
+  });
+  $('scheduler-contact-delete-confirm')?.addEventListener('click', async () => {
+    const button = $('scheduler-contact-delete-confirm');
+    button.disabled = true;
+    try {
+      // Asked again at the moment of deleting, since a trip may have named
+      // this contact since the page loaded.
+      const id = loaded.id;
+      const { data, error } = await client.from('trips').select('id')
+        .or(SLOTS.map(s => `${s}.eq.${id}`).join(',')).limit(1);
+      if (error) throw error;
+      window.Rux?.modal?.close?.('scheduler-contact-delete-modal');
+      if (data?.length) {
+        await loadTrips();
+        result('error', 'A trip names this contact now, so it stays.');
+        return;
+      }
+      const gone = await client.from('contacts').delete().eq('id', id);
+      if (gone.error) throw gone.error;
+      leaving = true;
+      location.href = 'contacts.html';
+    } catch {
+      window.Rux?.modal?.close?.('scheduler-contact-delete-modal');
+      result('error', "The contact wasn't deleted. Try again.");
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  // ── load, save ──
+  async function loadContact() {
+    result(null);
+    // Every contact is read either way: a new one is checked against them all
+    // for someone already here.
+    contacts = await readContacts();
+    if (!contactId) {
+      loaded = null;
+      trips = [];
+      fillForm({});
+    } else {
+      loaded = contacts.find(c => String(c.id) === contactId) || null;
+      if (!loaded) return false;
+      fillForm(loaded);
+    }
+    tripsRead = false;
+    drawTitle();
+    baseline = snapshot();
+    $('scheduler-contact').hidden = false;
+    if (loaded) loadTrips();
+    return true;
+  }
+
+  // The people a new contact may already be, by the trip editor's rule.
+  function drawMatches(found) {
+    const list = $('scheduler-contact-matches');
+    list.replaceChildren();
+    for (const c of found) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `contacts.html?id=${encodeURIComponent(c.id)}`;
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', c.name || 'Unnamed contact'));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail',
+        [c.client, c.phone, c.email].filter(Boolean).join(' · ') || 'No details'));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  }
+
+  let savingAnyway = false;
+  async function save(force = false) {
+    if (!validate()) return false;
+    const row = readForm();
+    if (!loaded && !savingAnyway) {
+      const found = contacts.filter(c => samePerson(c, row));
+      if (found.length) {
+        drawMatches(found);
+        window.Rux?.modal?.open?.('scheduler-contact-match-modal');
+        return false;
+      }
+    }
+    const saveBtn = $('scheduler-contact-save');
+    saveBtn.disabled = true;
+    try {
+      let id = loaded?.id;
+      if (id && !force) {
+        const now = await client.from('contacts').select(CONTACT_COLUMNS).eq('id', id).maybeSingle();
+        if (now.error) throw now.error;
+        if (!now.data || comparable(now.data) !== comparable(loaded)) {
+          window.Rux?.modal?.open?.('scheduler-contact-conflict-modal');
+          return false;
+        }
+      }
+      if (id) {
+        const { error } = await client.from('contacts').update(row).eq('id', id);
+        if (error) throw error;
+      } else {
+        // The id is made here, as the trip editor makes one, so the insert
+        // does not depend on a database default.
+        id = crypto.randomUUID();
+        const { error } = await client.from('contacts').insert({ id, ...row });
+        if (error) throw error;
+        // Held at once, so a retry after a failed read-back updates this row
+        // rather than inserting the person a second time.
+        loaded = { id, ...row };
+        drawTitle();
+      }
+      history.replaceState(null, '', `contacts.html?id=${encodeURIComponent(id)}`);
+      currentId = id;
+      await reload(id);
+      result('success', 'Saved.');
+      return true;
+    } catch {
+      result('error', "The contact wasn't saved. Try again.");
+      return false;
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  let currentId = contactId;
+  async function reload(id = currentId) {
+    const { data, error } = await client.from('contacts').select(CONTACT_COLUMNS).eq('id', id).maybeSingle();
+    if (error) throw error;
+    if (!data) throw new Error('Contact not found');
+    loaded = data;
+    contacts = [...contacts.filter(c => c.id !== id), data];
+    tripsRead = false;
+    fillForm(loaded);
+    drawTitle();
+    baseline = snapshot();
+    loadTrips();
+  }
+
+  form?.addEventListener('submit', e => {
+    e.preventDefault();
+    save();
+  });
+
+  $('scheduler-contact-match-save')?.addEventListener('click', async () => {
+    const next = afterSave;
+    keepAfter = true;
+    window.Rux?.modal?.close?.('scheduler-contact-match-modal');
+    keepAfter = false;
+    afterSave = null;
+    savingAnyway = true;
+    try { if (await save()) next?.(); } finally { savingAnyway = false; }
+  });
+  $('scheduler-contact-match-modal')?.addEventListener('rux:modal-closed', () => {
+    if (!keepAfter) afterSave = null;
+  });
+
+  $('scheduler-contact-conflict-save')?.addEventListener('click', async () => {
+    const next = afterSave;
+    keepAfter = true;
+    window.Rux?.modal?.close?.('scheduler-contact-conflict-modal');
+    keepAfter = false;
+    afterSave = null;
+    if (await save(true)) next?.();
+  });
+  $('scheduler-contact-conflict-modal')?.addEventListener('rux:modal-closed', () => {
+    if (!keepAfter) afterSave = null;
+  });
+  $('scheduler-contact-conflict-reload')?.addEventListener('click', async () => {
+    window.Rux?.modal?.close?.('scheduler-contact-conflict-modal');
+    afterSave = null;
+    try { await reload(); result('info', 'Showing the contact as it is now.'); } catch { result('error', "The contact didn't reload. Reload the page."); }
+  });
+
+  // ── leaving with unsaved changes ──
+  let afterSave = null;
+  let leaving = false;
+  const unsavedModal = $('scheduler-contact-unsaved-modal');
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a || !editing || leaving || !dirty()) return;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
+    e.preventDefault();
+    afterSave = () => { leaving = true; location.href = a.href; };
+    // A link inside another dialog closes that one first.
+    for (const id of ['scheduler-contact-match-modal']) window.Rux?.modal?.close?.(id);
+    window.Rux?.modal?.open?.(unsavedModal);
+  });
+  $('scheduler-contact-unsaved-discard')?.addEventListener('click', () => {
+    const next = afterSave;
+    afterSave = null;
+    window.Rux?.modal?.close?.(unsavedModal);
+    next?.();
+  });
+  // Save keeps the leaving action through the close, so a conflict found by
+  // the save can still finish it; any other close drops it.
+  let keepAfter = false;
+  $('scheduler-contact-unsaved-save')?.addEventListener('click', async () => {
+    const next = afterSave;
+    keepAfter = true;
+    window.Rux?.modal?.close?.(unsavedModal);
+    keepAfter = false;
+    afterSave = next;
+    if (await save()) { afterSave = null; next?.(); }
+  });
+  unsavedModal?.addEventListener('rux:modal-closed', () => { if (!keepAfter) afterSave = null; });
+  window.addEventListener('beforeunload', e => {
+    if (editing && !leaving && dirty()) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  /* ══ Start ══════════════════════════════════════════════════════════════
+     The same staff gate as the schedule: the page waits for the staff
+     profile, and an account without one, a profile that would not load, or a
+     local preview other than the cloud preview gets a notice instead. */
+  (async () => {
+    const account = window.Rux?.account;
+    if (!account?.staffProfile) {
+      say('info', 'This preview has no log-in', 'Open http://localhost:8641/, the cloud preview, to load the contacts.');
+      return;
+    }
+    let staff;
+    try { staff = await account.staffProfile(); } catch {
+      say('error', "The contacts didn't load", 'Reload the page to try again.');
+      return;
+    }
+    if (!staff) {
+      say('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
+      return;
+    }
+    client = account.client;
+    try {
+      if (!editing) { await loadList(); return; }
+      if (!(await loadContact())) {
+        say('info', 'That contact is not in the list', 'Pick a contact from the list below.');
+        history.replaceState(null, '', 'contacts.html');
+        await loadList();
+      }
+    } catch {
+      say('error', "The contacts didn't load", 'Reload the page to try again.');
+    }
+  })();
+})();

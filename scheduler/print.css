@@ -382,7 +382,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-form { background: #fff; }
   .scheduler-form {
     margin: 0;
-    padding: var(--scheduler-paper-margin, 0.4in);
+    padding: var(--scheduler-paper-margin, 0.375in);
   }
 
   /* A FORM THAT FLOWS KEEPS NO PADDING ON PAPER. Padding is at a block's start
@@ -910,13 +910,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
+/* No row is cut in half by the fold. It holds on screen too, where it moves
+   nothing, because the preview reads it to put its folds where the printer's
+   are. */
+.scheduler-driver-itinerary__table tr { break-inside: avoid; }
+
 @media print {
   .scheduler-driver-itinerary__add { display: none; }
 
-  /* The columns are named again at the top of every sheet, and no row is cut
-     in half by the fold. */
+  /* The columns are named again at the top of every sheet. */
   .scheduler-driver-itinerary__table thead { display: table-header-group; }
-  .scheduler-driver-itinerary__table tr { break-inside: avoid; }
 }
 
 /* ── The customer quote ──────────────────────────────────────────────────
@@ -1260,13 +1263,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-inline-end: 1px solid var(--rux-text-primary);
 }
 
-/* Both answers keep to one line. The date is whole; a destination longer
-   than its box is cut with an ellipsis, which says there is more. */
-.scheduler-customer-quote__trip-value {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* The date keeps to one line and is always whole. A destination longer than
+   its box wraps onto a second line, and a word longer than the box breaks,
+   because the customer signs under it and every word of it is printed. */
+.scheduler-customer-quote__trip-value:last-child { white-space: nowrap; }
+
+.scheduler-customer-quote__trip-value { overflow-wrap: anywhere; }
 
 .scheduler-customer-quote__agreement-intro {
   margin: var(--rux-spacing-05) 0 var(--rux-spacing-05);
@@ -1330,13 +1332,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   }
 }
 
+/* NOTHING IS CUT IN HALF BY A FOLD: the table goes over whole, and the terms
+   and the policies break between paragraphs, never inside one. It holds on
+   screen too, where it moves nothing, because the preview reads it to put its
+   folds where the printer's are. */
+.scheduler-customer-quote__term,
+.scheduler-customer-quote__policy,
+.scheduler-customer-quote__table { break-inside: avoid; }
+
 @media print {
   .scheduler-customer-quote__add { display: none; }
-
-  /* Each sheet is one sheet, and nothing on it is cut in half by a fold. */
-  .scheduler-customer-quote__term,
-  .scheduler-customer-quote__policy { break-inside: avoid; }
-  .scheduler-customer-quote__table { break-inside: avoid; }
 }
 
 /* ── A BLANK ONE ──────────────────────────────────────────────────────────

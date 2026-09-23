@@ -990,8 +990,18 @@
     const typed = String(customer.bill_to || '').split('\n').map(s => s.trim()).filter(Boolean);
     if (typed.length) return [customer.name, ...typed];
     const parts = String(customer.usual?.address || '').split(',').map(s => s.trim()).filter(Boolean);
-    if (/^(united states|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
-    return parts.length ? [customer.name, parts[0], parts.slice(1).join(', ')] : [customer.name];
+    if (/^(united states( of america)?|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
+    if (!parts.length) return [customer.name];
+    /* The city line is the last "City, ST 12345" in it, so a suite or a
+       second street line stays with the street; an address that has none
+       splits at its first comma. */
+    const state = /^([A-Za-z]{2}\s+\d{5}(-\d{4})?|[A-Z]{2})$/;
+    let city = -1;
+    for (let i = parts.length - 1; i >= 1 && city < 0; i -= 1) {
+      if (state.test(parts[i])) city = i - 1;
+    }
+    if (city < 1) return [customer.name, parts[0], parts.slice(1).join(', ')];
+    return [customer.name, parts.slice(0, city).join(', '), parts.slice(city).join(', ')];
   }
 
   /* THE FIRST SHEET, THE QUOTE. The field stays open, because a quote is
@@ -1182,7 +1192,7 @@
          this runs onto as many sheets as the stops need, and the height is
          the paper's rather than a limit -- a short itinerary still draws a
          whole page of it, because that is what comes out of the printer. */
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
       copies: subject => legsOf(subject.trip).map(leg => ({
         ...subject,
         leg,
@@ -1220,7 +1230,7 @@
       // record that a driver has their paperwork; a quote is sent, and whether
       // it was is the Billing tab's business, not a form's.
       // Its folio is in its own face, the office's Helvetica.
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in',
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in',
         font: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
       copies: subject => [subject],
       /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
@@ -1383,7 +1393,13 @@
        A form held to one sheet keeps the margin in the box model, because it
        has no middle pages to lose and because a print driver does not
        reliably honour an @page margin -- which is what the envelope's own
-       stock, 6 by 9 with zero margins of its own, was measured against. */
+       stock, 6 by 9 with zero margins of its own, was measured against.
+
+       AN @page MARGIN IS A WHOLE NUMBER OF POINTS. Chrome sends a printer its
+       printable box in whole points and drops the fraction, while the form is
+       laid out to the exact width: a 0.4in margin is 28.8pt, and the box
+       ended 1.2pt short of the form and cut every rule down its right side.
+       0.375in is 27pt, and 36 CSS pixels, so nothing is rounded. */
     const pageMargin = paper && !paper.exact && paper.margin ? paper.margin : '0';
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: ${pageMargin}; }`;
 
@@ -1496,16 +1512,25 @@
     const usable = page - margin * 2;
     if (!Number.isFinite(usable) || usable <= 0) return 1;
 
-    /* WHAT A PRINTER MOVES WHOLE. A table that may break is its rows, a
-       table or block that may not is itself, and everything on the sheet is
-       one of the two: counting only rows missed the quote's signature, which
-       sits under its table. */
+    /* WHAT A PRINTER MOVES WHOLE. A table or block print.css keeps together
+       (`break-inside: avoid`, which it sets on screen too so this reads it) is
+       itself; a table that may break is its rows; a block holding kept parts
+       breaks between them, so it is its children; anything else is itself.
+       Counting only rows missed the quote's signature under its table, and
+       counting the terms as one block missed the folds between them. */
     const whole = e => getComputedStyle(e).breakInside === 'avoid';
-    const units = [...card.children].flatMap(child => {
-      const rows = whole(child) ? [] : [...child.querySelectorAll('tbody > tr')];
-      return rows.length ? rows : [child];
-    // A button is the screen's, and print.css takes it off the paper.
-    }).filter(e => e.offsetHeight && !e.matches('button, .scheduler-driver-itinerary__break'));
+    const holdsKept = e => [...e.children].some(c => whole(c) || c.matches('table') || holdsKept(c));
+    const pieces = e => {
+      if (whole(e)) return [e];
+      if (e.matches('table')) {
+        const rows = [...e.querySelectorAll(':scope > tbody > tr')];
+        return rows.length ? rows : [e];
+      }
+      return holdsKept(e) ? [...e.children].flatMap(pieces) : [e];
+    };
+    const units = [...card.children].flatMap(pieces)
+      // A button is the screen's, and print.css takes it off the paper.
+      .filter(e => e.offsetHeight && !e.matches('button, .scheduler-driver-itinerary__break'));
     // From the sheet's own top, through every positioned box between.
     const topIn = e => {
       let top = 0;

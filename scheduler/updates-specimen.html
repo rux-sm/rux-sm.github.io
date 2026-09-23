@@ -73,9 +73,11 @@
        is open. It starts closed, as Carbon's captures do. -->
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-menu"/></svg></button>
 
-  <!-- The company's logo is brand/logo.png: replace the file, not this markup.
-       It is sized by height, so the file's own aspect sets the width. -->
-  <a class="rux--header__name" href="./"><img src="brand/logo.png" alt="Escamilla Tour Buses" style="height:1.5rem;width:auto;flex:none"></a>
+  <!-- The company's wordmark, brand/logo-header.png: ESCAMILLA cut from
+       brand/logo.png without TOUR BUSES, which is unreadable at a bar's size.
+       It is the icons' 20px, so it sits on their centre line; replace the
+       file, not this markup, and the file's own aspect sets the width. -->
+  <a class="rux--header__name" href="./"><img src="brand/logo-header.png" alt="Escamilla Tour Buses" style="height:1.25rem;width:auto;flex:none"></a>
 
   <!-- Global actions, in Carbon's order from the right: the switcher, then
        account. Icon-only, so each has an aria-label. The theme control is in

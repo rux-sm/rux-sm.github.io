@@ -20,26 +20,9 @@
 (() => {
   'use strict';
 
-  const $ = id => document.getElementById(id);
-  const el = (tag, cls, text) => {
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  };
-  const svgUse = (href, size, viewBox, cls) => {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    if (cls) svg.setAttribute('class', cls);
-    svg.setAttribute('width', size);
-    svg.setAttribute('height', size);
-    svg.setAttribute('viewBox', viewBox);
-    svg.setAttribute('fill', 'currentColor');
-    svg.setAttribute('aria-hidden', 'true');
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', href);
-    svg.appendChild(use);
-    return svg;
-  };
+  const { $, el, svgUse } = window.SchedulerPair;
+  const pair = window.SchedulerPair.page({ list: 'contacts', one: 'contact' });
+  const { say, result } = pair;
 
   const params = new URLSearchParams(location.search);
   const contactId = params.get('id');
@@ -86,29 +69,6 @@
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const initials = name => String(name || '').trim().split(/\s+/).filter(Boolean)
     .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
-
-  // ── the notice ──────────────────────────────────────────────────────────
-  // Every class is written out in full: the class sweep reads the source.
-  const NOTE = {
-    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
-    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
-    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#m-check_circle-fill' },
-  };
-  const say = (kind, title, text) => {
-    $('scheduler-contacts-notice').hidden = !kind;
-    if (!kind) return;
-    $('scheduler-contacts-notice-box').className = NOTE[kind].cls;
-    $('scheduler-contacts-notice-icon').setAttribute('href', NOTE[kind].icon);
-    $('scheduler-contacts-notice-title').textContent = title;
-    $('scheduler-contacts-notice-text').textContent = text || '';
-  };
-  const result = (kind, text) => {
-    $('scheduler-contact-result').hidden = !kind;
-    if (!kind) return;
-    $('scheduler-contact-result-box').className = NOTE[kind].cls;
-    $('scheduler-contact-result-icon').setAttribute('href', NOTE[kind].icon);
-    $('scheduler-contact-result-text').textContent = text;
-  };
 
   // ── reading ─────────────────────────────────────────────────────────────
   /* Every row, a page at a time, because the API hands back at most a
@@ -159,9 +119,6 @@
   let contacts = [];
   let customers = new Map();  // customer id → customer
   let tripsBy = new Map();
-  let query = '';
-  let sortKey = 'name';
-  let sortDir = 'ascending';
 
   const tripsOf = c => tripsBy.get(c.id) || { n: 0, next: null, last: null };
   // The customer's name, or the old typed organization of a contact not linked.
@@ -203,6 +160,7 @@
   }
 
   function drawList() {
+    const { query, sortKey, sortDir } = view;
     const shown = contacts
       .filter(c => matches(c, query))
       .sort((a, b) => {
@@ -212,9 +170,7 @@
         return byName(a, b);
       });
 
-    // What the search came to, in the band beside it.
-    const note = $('scheduler-contacts-count');
-    if (note) note.textContent = query ? `${shown.length} of ${contacts.length} match` : '';
+    view.count(shown.length, contacts.length);
 
     const body = $('scheduler-contacts-rows');
     body.replaceChildren();
@@ -254,47 +210,8 @@
     }
   }
 
-  // A click anywhere on a row opens its contact; the name is the link a
-  // keyboard reaches.
-  $('scheduler-contacts-rows')?.addEventListener('click', e => {
-    const tr = e.target.closest('tr[data-id]');
-    if (!tr || e.target.closest('a')) return;
-    location.href = `contacts.html?id=${encodeURIComponent(tr.dataset.id)}`;
-  });
-
-  // Carbon's three-step sort: ascending, descending, then back to A to Z.
-  const NEXT = { none: 'ascending', ascending: 'descending', descending: 'none' };
-  document.querySelector('#scheduler-contacts-list thead')?.addEventListener('click', e => {
-    const th = e.target.closest('th[data-sort]');
-    if (!th) return;
-    const dir = sortKey === th.dataset.sort ? NEXT[sortDir] : 'ascending';
-    sortKey = th.dataset.sort;
-    sortDir = dir;
-    for (const other of document.querySelectorAll('#scheduler-contacts-list th[data-sort]')) {
-      const on = other === th && dir !== 'none';
-      other.setAttribute('aria-sort', on ? dir : 'none');
-      const button = other.querySelector('.rux--table-sort');
-      button.classList.toggle('rux--table-sort--active', on);
-      button.classList.toggle('rux--table-sort--descending', on && dir === 'descending');
-    }
-    drawList();
-  });
-
-  const searchInput = $('scheduler-contacts-search');
-  const searchClear = $('scheduler-contacts-search-clear');
-  searchInput?.addEventListener('input', () => {
-    query = searchInput.value.trim();
-    searchClear.classList.toggle('rux--search-close--hidden', !searchInput.value);
-    drawList();
-  });
-  searchClear?.addEventListener('click', () => {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-    searchInput.focus();
-  });
-  searchInput?.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && searchInput.value) { e.preventDefault(); searchClear.click(); }
-  });
+  // Search, sort and a row's click, which opens its contact.
+  const view = pair.table({ sortKey: 'name', draw: drawList });
 
   async function loadList() {
     const [rows, trips, who] = await Promise.all([
@@ -314,16 +231,9 @@
   const field = id => $(`scheduler-c-${id}`);
   const text = id => field(id).value.trim() || null;
 
-  // Cancel and Save stack on a phone, as Carbon's stacked button set does.
-  const narrow = matchMedia('(max-width: 41.98rem)');
-  const stackButtons = () => document.querySelector('.scheduler-pair-buttons')
-    ?.classList.toggle('rux--btn-set--stacked', narrow.matches);
-  stackButtons();
-  narrow.addEventListener('change', stackButtons);
-
-  let loaded = null;
+  let loaded = null;        // the contact row as the page read it
   // A new contact's id, made once, so a Save sent again cannot insert it twice.
-  const newId = crypto.randomUUID();        // the contact row as the page read it
+  const newId = crypto.randomUUID();
   let trips = [];           // its trips, as read
   let tripsRead = false;    // whether they have been, since the last load
   let tripsFailed = false;
@@ -410,24 +320,7 @@
     // Design's list-box.js listens on the document, so a field built now works.
     slot.replaceChildren(wrap);
   }
-  function showCustomerError(message) {
-    const input = $('scheduler-c-customer');
-    const root = input?.closest('.rux--list-box');
-    const req = $('scheduler-c-customer-error');
-    if (!root || !req) return;
-    const on = !!message;
-    root.toggleAttribute('data-invalid', on);
-    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
-    input.setAttribute('aria-describedby', req.id);
-    let icon = root.querySelector('.rux--list-box__invalid-icon');
-    if (on && !icon) {
-      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--list-box__invalid-icon');
-      root.querySelector('.rux--list-box__field').appendChild(icon);
-    }
-    if (!on) icon?.remove();
-    req.textContent = message;
-  }
-
+  const showCustomerError = message => pair.comboError($('scheduler-c-customer'), 'scheduler-c-customer-error', message);
   function drawTitle() {
     const name = loaded?.name || null;
     $('scheduler-contact-h').textContent = name || 'New contact';
@@ -442,23 +335,7 @@
   function clearErrors() {
     for (const id of ERRORS) showError(id, '');
   }
-  function showError(id, message) {
-    const input = field(id);
-    const wrap = input.closest('.rux--text-input__field-wrapper');
-    const on = !!message;
-    input.classList.toggle('rux--text-input--invalid', on);
-    input.toggleAttribute('data-invalid', on);
-    wrap.toggleAttribute('data-invalid', on);
-    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
-    input.setAttribute('aria-describedby', `scheduler-c-${id}-error`);
-    let icon = wrap.querySelector('.rux--text-input__invalid-icon');
-    if (on && !icon) {
-      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--text-input__invalid-icon');
-      wrap.prepend(icon);
-    }
-    if (!on) icon?.remove();
-    $(`scheduler-c-${id}-error`).textContent = message;
-  }
+  const showError = (id, message) => pair.textError(field(id), `scheduler-c-${id}-error`, message);
   function validate() {
     clearErrors();
     let first = null;
@@ -562,8 +439,7 @@
       }
       const gone = await client.from('contacts').delete().eq('id', id);
       if (gone.error) throw gone.error;
-      leaving = true;
-      location.href = 'contacts.html';
+      guard.leave('contacts.html');
     } catch {
       window.Rux?.modal?.close?.('scheduler-contact-delete-modal');
       result('error', "The contact wasn't deleted. Try again.");
@@ -634,7 +510,7 @@
         const now = await client.from('contacts').select(CONTACT_COLUMNS).eq('id', id).maybeSingle();
         if (now.error) throw now.error;
         if (!now.data || comparable(now.data) !== comparable(loaded)) {
-          window.Rux?.modal?.open?.('scheduler-contact-conflict-modal');
+          guard.conflict();
           return false;
         }
       }
@@ -685,101 +561,23 @@
     save();
   });
 
-  $('scheduler-contact-match-save')?.addEventListener('click', async () => {
-    const next = afterSave;
-    keepAfter = true;
-    window.Rux?.modal?.close?.('scheduler-contact-match-modal');
-    keepAfter = false;
-    afterSave = null;
+  // Leaving with unsaved changes, and a conflict found by Save. A link in the
+  // match modal closes it before asking.
+  const guard = pair.guard({ editing, dirty, save, reload, others: ['scheduler-contact-match-modal'] });
+  // Save anyway, past the people the new contact may already be.
+  guard.hold('scheduler-contact-match-modal', 'scheduler-contact-match-save', async () => {
     savingAnyway = true;
-    try { if (await save()) next?.(); } finally { savingAnyway = false; }
-  });
-  $('scheduler-contact-match-modal')?.addEventListener('rux:modal-closed', () => {
-    if (!keepAfter) afterSave = null;
+    try { return await save(); } finally { savingAnyway = false; }
   });
 
-  $('scheduler-contact-conflict-save')?.addEventListener('click', async () => {
-    const next = afterSave;
-    keepAfter = true;
-    window.Rux?.modal?.close?.('scheduler-contact-conflict-modal');
-    keepAfter = false;
-    afterSave = null;
-    if (await save(true)) next?.();
-  });
-  $('scheduler-contact-conflict-modal')?.addEventListener('rux:modal-closed', () => {
-    if (!keepAfter) afterSave = null;
-  });
-  $('scheduler-contact-conflict-reload')?.addEventListener('click', async () => {
-    window.Rux?.modal?.close?.('scheduler-contact-conflict-modal');
-    afterSave = null;
-    try { await reload(); result('info', 'Showing the contact as it is now.'); } catch { result('error', "The contact didn't reload. Reload the page."); }
-  });
-
-  // ── leaving with unsaved changes ──
-  let afterSave = null;
-  let leaving = false;
-  const unsavedModal = $('scheduler-contact-unsaved-modal');
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[href]');
-    if (!a || !editing || leaving || !dirty()) return;
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
-    e.preventDefault();
-    afterSave = () => { leaving = true; location.href = a.href; };
-    // A link inside another dialog closes that one first.
-    for (const id of ['scheduler-contact-match-modal']) window.Rux?.modal?.close?.(id);
-    window.Rux?.modal?.open?.(unsavedModal);
-  });
-  $('scheduler-contact-unsaved-discard')?.addEventListener('click', () => {
-    const next = afterSave;
-    afterSave = null;
-    window.Rux?.modal?.close?.(unsavedModal);
-    next?.();
-  });
-  // Save keeps the leaving action through the close, so a conflict found by
-  // the save can still finish it; any other close drops it.
-  let keepAfter = false;
-  $('scheduler-contact-unsaved-save')?.addEventListener('click', async () => {
-    const next = afterSave;
-    keepAfter = true;
-    window.Rux?.modal?.close?.(unsavedModal);
-    keepAfter = false;
-    afterSave = next;
-    if (await save()) { afterSave = null; next?.(); }
-  });
-  unsavedModal?.addEventListener('rux:modal-closed', () => { if (!keepAfter) afterSave = null; });
-  window.addEventListener('beforeunload', e => {
-    if (editing && !leaving && dirty()) { e.preventDefault(); e.returnValue = ''; }
-  });
-
-  /* ══ Start ══════════════════════════════════════════════════════════════
-     The same staff gate as the schedule: the page waits for the staff
-     profile, and an account without one, a profile that would not load, or a
-     local preview other than the cloud preview gets a notice instead. */
-  (async () => {
-    const account = window.Rux?.account;
-    if (!account?.staffProfile) {
-      say('info', 'This preview has no log-in', 'Open http://localhost:8641/, the cloud preview, to load the contacts.');
-      return;
+  /* ══ Start ══════════════════════════════════════════════════════════════ */
+  pair.start(async signedIn => {
+    client = signedIn;
+    if (!editing) { await loadList(); return; }
+    if (!(await loadContact())) {
+      say('info', 'That contact is not in the list', 'Pick a contact from the list below.');
+      history.replaceState(null, '', 'contacts.html');
+      await loadList();
     }
-    let staff;
-    try { staff = await account.staffProfile(); } catch {
-      say('error', "The contacts didn't load", 'Reload the page to try again.');
-      return;
-    }
-    if (!staff) {
-      say('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
-      return;
-    }
-    client = account.client;
-    try {
-      if (!editing) { await loadList(); return; }
-      if (!(await loadContact())) {
-        say('info', 'That contact is not in the list', 'Pick a contact from the list below.');
-        history.replaceState(null, '', 'contacts.html');
-        await loadList();
-      }
-    } catch {
-      say('error', "The contacts didn't load", 'Reload the page to try again.');
-    }
-  })();
+  });
 })();

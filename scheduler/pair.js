@@ -250,26 +250,32 @@
     /* Leaving with unsaved changes, and a conflict found by Save. A link
        away asks first; its Save keeps the leaving action through the close,
        so a conflict found by that save can still finish it, and any other
-       close drops it. `leave()` is a departure nothing should stop, such as
-       after a delete. */
-    function guard({ editing, dirty, save, reload }) {
+       close drops it. `others` are the page's other modals with links in
+       them, closed before a link in one asks, so their closing does not drop
+       the action just asked for. `hold()` gives another modal's Save the same
+       carry as the conflict modal's; `leave()` is a departure nothing should
+       stop, such as after a delete. */
+    function guard({ editing, dirty, save, reload, others = [] }) {
       let afterSave = null;
       let keepAfter = false;
       let leaving = false;
       const conflictModal = $(id(`${one}-conflict-modal`));
       const unsavedModal = $(id(`${one}-unsaved-modal`));
 
-      $(id(`${one}-conflict-save`))?.addEventListener('click', async () => {
-        const next = afterSave;
-        keepAfter = true;
-        window.Rux?.modal?.close?.(conflictModal);
-        keepAfter = false;
-        afterSave = null;
-        if (await save(true)) next?.();
-      });
-      conflictModal?.addEventListener('rux:modal-closed', () => {
-        if (!keepAfter) afterSave = null;
-      });
+      function hold(modal, button, run) {
+        $(button)?.addEventListener('click', async () => {
+          const next = afterSave;
+          keepAfter = true;
+          window.Rux?.modal?.close?.(modal);
+          keepAfter = false;
+          afterSave = null;
+          if (await run()) next?.();
+        });
+        $(modal)?.addEventListener('rux:modal-closed', () => {
+          if (!keepAfter) afterSave = null;
+        });
+      }
+      hold(id(`${one}-conflict-modal`), id(`${one}-conflict-save`), () => save(true));
       $(id(`${one}-conflict-reload`))?.addEventListener('click', async () => {
         window.Rux?.modal?.close?.(conflictModal);
         afterSave = null;
@@ -281,6 +287,7 @@
         if (!a || !editing || leaving || !dirty()) return;
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
         e.preventDefault();
+        for (const other of others) window.Rux?.modal?.close?.(other);
         afterSave = () => { leaving = true; location.href = a.href; };
         window.Rux?.modal?.open?.(unsavedModal);
       });
@@ -305,6 +312,7 @@
 
       return {
         conflict: () => window.Rux?.modal?.open?.(conflictModal),
+        hold,
         leave: href => { leaving = true; location.href = href; },
       };
     }

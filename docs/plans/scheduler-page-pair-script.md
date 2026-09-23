@@ -49,5 +49,4 @@ None open.
 
 - [ ] rux saves a bus with a day out, a driver with time off, and a new
       contact, customer and location, signed in.
-- [ ] Move Locations, then Contacts, onto `pair.page`, as Customers is.
 - [ ] Move Buses, then Drivers, onto them, each tested signed in.

@@ -105,6 +105,19 @@
   --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
   --scheduler-amber-hover-ring: none;
 }
+/* The selected trip's floating shortcuts are a Geist menu rather than Carbon's
+   inverse slab: a raised dark surface inside a hairline, with light icons, so
+   the brightest thing on the board is the ring on the trip it belongs to. */
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
+  background: var(--rux-layer-02);
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 4px 12px rgb(0 0 0 / .5);
+}
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--rux-layer-02); }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--rux-layer-02); }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
 [data-theme="geist-dark"] .scheduler-bar--red {
   --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(31% 0.1084 19.02);
   --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);

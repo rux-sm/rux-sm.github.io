@@ -7,9 +7,9 @@
    in the other is a fault nobody sees until it is in a driver's hand.
 
    THE SIX BELOW CARRY A NAME THIS APP KNOWS. The office's own list, in
-   Settings, names anything it adds and overrides these; what it adds has no
-   drawing, because Carbon has none for a Wi-Fi or an outlet that survives
-   12px, and both apps show its initial in the same square instead.
+   Settings, names anything it adds and overrides these. What it adds is drawn
+   from `SchedulerRequirementIcons` by the Material name the list gives it, and
+   one this app carries no drawing for shows its initial in the same square.
    ========================================================================== */
 (() => {
   'use strict';
@@ -22,5 +22,11 @@
     fuelCard: { label: 'Fuel card', icon: '#m-credit_card-fill' },
     // A leg that does not come back. No drawing, and nothing to write in.
     oneWay: { label: 'One-way' },
+  };
+  /* The drawings for what the office adds, keyed by the Material name its list
+     stores in `icon`. Written out in full, because a page carries only the
+     symbols its scripts name. */
+  window.SchedulerRequirementIcons = {
+    wifi: '#m-wifi-fill',
   };
 })();

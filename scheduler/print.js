@@ -191,11 +191,14 @@
   /* The table is `requirements.js`, which the board loads too, so a
      requirement is one drawing and one name on a bar and on paper alike. */
   const NEEDS = window.SchedulerRequirements || {};
+  const NEED_ICONS = window.SchedulerRequirementIcons || {};
   const NEED_ORDER = ['pax56', 'oneWay', 'sleeper', 'adaLift', 'fuelCard', 'hotel'];
 
   /* The requirements the office keeps, id to label, read once a form opens.
      Empty until then, and empty if the read failed. */
   let requirementNames = new Map();
+  // And the Material name the list gives each, id to name.
+  let requirementIconNames = new Map();
 
   function needsOf(trip) {
     const reqs = trip.trip_reqs;
@@ -214,7 +217,7 @@
       // The office's own list names it first, as it does on the board: what
       // Settings calls a requirement is what it is called.
       label: requirementNames.get(id) || NEEDS[id]?.label || id,
-      icon: NEEDS[id]?.icon || null,
+      icon: NEEDS[id]?.icon || NEED_ICONS[requirementIconNames.get(id)] || null,
     }));
   }
 
@@ -226,9 +229,9 @@
     const { data } = await client
       .from('settings').select('value').eq('key', REQUIREMENTS_KEY).maybeSingle();
     if (!Array.isArray(data?.value)) return;
-    requirementNames = new Map(data.value
-      .filter(r => r && typeof r.id === 'string' && r.label)
-      .map(r => [r.id, String(r.label)]));
+    const rows = data.value.filter(r => r && typeof r.id === 'string');
+    requirementNames = new Map(rows.filter(r => r.label).map(r => [r.id, String(r.label)]));
+    requirementIconNames = new Map(rows.filter(r => r.icon).map(r => [r.id, String(r.icon)]));
   }
 
   // The leg's pickup, where the Route tab keeps the address and the spot time.

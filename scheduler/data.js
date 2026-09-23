@@ -578,6 +578,10 @@
   }
   const requirementLabel = id =>
     requirementList.find(r => r.id === id)?.label || REQUIREMENTS[id]?.label || id;
+  // The drawing, from this app's table or else by the name the office's list gives it.
+  const REQUIREMENT_ICONS = window.SchedulerRequirementIcons || {};
+  const requirementIcon = id => REQUIREMENTS[id]?.icon
+    || REQUIREMENT_ICONS[requirementList.find(r => r.id === id)?.icon] || null;
 
   /* The needs the editor offers: the office's active list, vehicle before
      driver and each in its own order, which is how rux-ui's trip panel groups
@@ -935,8 +939,8 @@
       }
       return {
         id,
-        href: REQUIREMENTS[id]?.icon || null,
-        letter: REQUIREMENTS[id]?.icon ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
+        href: requirementIcon(id),
+        letter: requirementIcon(id) ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
         label: missing || requirementLabel(id),
         done: !missing,
       };

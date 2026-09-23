@@ -1319,43 +1319,60 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* ── The hub ──────────────────────────────────────────────────────────────
-   Design compiles no type classes -- a Carbon page sets its type from the
-   tokens in its own stylesheet -- so the tiles' type is this page's own. */
+   A heading per group of forms, and a tile per form under it: the form's
+   icon, its short name and one line that sets it apart. */
 
-.scheduler-print__tile-name {
-  font-size: var(--rux-productive-heading-01-font-size);
-  font-weight: var(--rux-productive-heading-01-font-weight);
-  line-height: var(--rux-productive-heading-01-line-height);
-  margin: 0;
+/* [hidden] is a UA rule of the lowest weight, so any display here outranks it
+   and the hub would stay on screen behind a form. */
+.scheduler-print__hub[hidden] { display: none; }
+
+.scheduler-print__hub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-07);
+  padding: var(--rux-spacing-05);
+}
+
+/* Standing alone the page already has its inset, so the tiles line up with
+   the title and the column's edges; framed, the panel has none. The title
+   stands as far off the first group as the groups stand apart. */
+[data-rux-standalone] .scheduler-print__hub {
+  padding: 0;
+  margin-block-start: var(--rux-spacing-05);
+}
+
+.scheduler-print__group-name { margin: 0 0 var(--rux-spacing-05); }
+
+/* As many tiles as fit, the same width in every group, so a group of one is
+   not a tile the width of the page beside a group of three. Tiles in a row
+   share the tallest one's height. */
+.scheduler-print__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--rux-spacing-05);
+}
+
+.scheduler-print__hub .rux--tile { text-decoration: none; }
+
+.scheduler-print__tile-icon {
+  display: block;
+  color: var(--rux-icon-primary);
+  margin-block-end: var(--rux-spacing-05);
+}
+
+.scheduler-print__tile-name { margin: 0; }
+
+.scheduler-print__tile-blurb {
+  color: var(--rux-text-secondary);
+  margin: var(--rux-spacing-02) 0 0;
 }
 
 .scheduler-print__tile-need {
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
   color: var(--rux-text-helper);
-  margin: var(--rux-spacing-02) 0 0;
+  margin: var(--rux-spacing-03) 0 0;
 }
-
-/* As many tiles as fit, each wide enough for a form's name and its links,
-   sharing the row between them, so the last one ends at the column's edge
-   rather than beside an empty slot. */
-/* [hidden] is a UA rule of the lowest weight, so any display here outranks it
-   and the hub would stay on screen behind a form. */
-.scheduler-print__hub[hidden] { display: none; }
-
-.scheduler-print__hub {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: var(--rux-spacing-05);
-  padding: var(--rux-spacing-05);
-  align-items: start;
-}
-
-/* Standing alone the page already has its inset, so the tiles line up with
-   the title and the column's edges; framed, the panel has none. */
-[data-rux-standalone] .scheduler-print__hub { padding: 0; }
-
-.scheduler-print__hub .rux--tile { text-decoration: none; }
 
 /* One link per bus the trip has, inside the form's tile. A tile that offers a
    choice cannot itself be the link. */

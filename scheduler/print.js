@@ -1102,6 +1102,10 @@
     {
       id: 'envelope',
       name: 'Driver trip envelope',
+      group: 'Drivers',
+      short: 'Envelope',
+      blurb: 'One per driver, per bus',
+      icon: '#m-mail',
       binds: 'assignment+seat',
       /* It can also be opened on nothing: a blank envelope to fill in by hand
          or type into, which is what the Forms page is for when no trip sent
@@ -1149,6 +1153,10 @@
     {
       id: 'driver-itinerary',
       name: 'Driver trip itinerary',
+      group: 'Drivers',
+      short: 'Itinerary',
+      blurb: "The day's stops and times",
+      icon: '#m-route',
       /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
          because it is personal, one name and one seat; the plan for the day is
          the same for every driver and every bus on the leg, and `trip_stops`
@@ -1178,6 +1186,10 @@
     {
       id: 'customer-quote',
       name: 'Customer quote',
+      group: 'Customers',
+      short: 'Quote',
+      blurb: 'Price and terms to sign',
+      icon: '#m-request_quote',
       /* IT BINDS THE TRIP AND NOT A LEG. A quote is one price for the whole
          journey, where the itinerary is one sheet per leg and the envelope one
          per seat -- a round trip is quoted once. */
@@ -1907,50 +1919,82 @@
       host?.setViewerHead(`Forms — ${found.destination}`);
     }
 
-    const list = document.createDocumentFragment();
+    /* A tile is the form's icon, its short name and what sets it apart, under
+       the heading of who the form is for, which the short name leaves out. */
+    const face = form => {
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('class', 'scheduler-print__tile-icon');
+      icon.setAttribute('width', '32');
+      icon.setAttribute('height', '32');
+      icon.setAttribute('fill', 'currentColor');
+      icon.setAttribute('aria-hidden', 'true');
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', form.icon);
+      icon.appendChild(use);
+      return [icon,
+        el('h3', 'rux--type-productive-heading-02 scheduler-print__tile-name', form.short),
+        el('p', 'rux--type-body-compact-01 scheduler-print__tile-blurb', form.blurb)];
+    };
+
+    const groups = new Map();
     for (const form of FORMS) {
-      const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
-      const legQuery = leg =>
-        `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&leg=${leg}`;
-      const blankHref = `print.html?form=${form.id}&blank=1`;
+      if (!groups.has(form.group)) groups.set(form.group, []);
+      groups.get(form.group).push(form);
+    }
 
-      /* A form with one way in is that link, the whole tile. One that offers
-         a choice holds a link per choice, because a tile that is a link
-         cannot hold links; one that cannot open says what it still wants. */
-      let only = null;
-      let choices = null;
-      let need = null;
-      if (form.binds === null) only = `print.html?form=${form.id}`;
-      else if (!trip) {
-        if (form.blank) only = blankHref;
-        else need = 'Open it from a trip on the board.';
-      } else if (found.why) need = found.why;
-      else if (form.binds === 'trip+leg') {
-        // One link per leg, because that is what this form is a copy of.
-        choices = found.legs.map(leg => [legQuery(leg), legName(leg)]);
-      } else if (form.binds === 'trip') {
-        // The whole trip is one copy, so there is one way in and no list.
-        choices = [[`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it']];
-      } else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
-      else choices = found.buses.map(a => [query(a.id), busLabel(a)]);
-      if (choices && form.blank) choices.push([blankHref, 'Open a blank one']);
+    const list = document.createDocumentFragment();
+    for (const [group, forms] of groups) {
+      const section = el('section', 'scheduler-print__group');
+      const heading = el('h2', 'rux--type-productive-heading-03 scheduler-print__group-name', group);
+      heading.id = `scheduler-print-group-${group.toLowerCase()}`;
+      section.setAttribute('aria-labelledby', heading.id);
+      const tiles = el('div', 'scheduler-print__tiles');
+      section.append(heading, tiles);
+      list.appendChild(section);
+      for (const form of forms) {
+        const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
+        const legQuery = leg =>
+          `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&leg=${leg}`;
+        const blankHref = `print.html?form=${form.id}&blank=1`;
 
-      if (only) {
-        const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
-        tile.href = only;
-        tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
-        list.appendChild(tile);
-        continue;
+        /* A form with one way in is that link, the whole tile. One that offers
+           a choice holds a link per choice, because a tile that is a link
+           cannot hold links; one that cannot open says what it still wants. */
+        let only = null;
+        let choices = null;
+        let need = null;
+        if (form.binds === null) only = `print.html?form=${form.id}`;
+        else if (!trip) {
+          if (form.blank) only = blankHref;
+          else need = 'Open it from a trip on the board.';
+        } else if (found.why) need = found.why;
+        else if (form.binds === 'trip+leg') {
+          // One link per leg, because that is what this form is a copy of.
+          choices = found.legs.map(leg => [legQuery(leg), legName(leg)]);
+        } else if (form.binds === 'trip') {
+          // The whole trip is one copy, so there is one way in and no list.
+          choices = [[`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it']];
+        } else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
+        else choices = found.buses.map(a => [query(a.id), busLabel(a)]);
+        if (choices && form.blank) choices.push([blankHref, 'Open a blank one']);
+
+        if (only) {
+          const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
+          tile.href = only;
+          tile.append(...face(form));
+          tiles.appendChild(tile);
+          continue;
+        }
+        const tile = el('div', 'rux--tile');
+        tile.append(...face(form));
+        if (need) tile.appendChild(el('p', 'scheduler-print__tile-need', need));
+        else {
+          const links = el('div', 'scheduler-print__tile-links');
+          for (const [href, text] of choices) links.appendChild(tileLink(href, text));
+          tile.appendChild(links);
+        }
+        tiles.appendChild(tile);
       }
-      const tile = el('div', 'rux--tile');
-      tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
-      if (need) tile.appendChild(el('p', 'scheduler-print__tile-need', need));
-      else {
-        const links = el('div', 'scheduler-print__tile-links');
-        for (const [href, text] of choices) links.appendChild(tileLink(href, text));
-        tile.appendChild(links);
-      }
-      list.appendChild(tile);
     }
     hub.replaceChildren(list);
   }

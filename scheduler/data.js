@@ -306,7 +306,7 @@
 
   // -- reading --------------------------------------------------------------
   const TRIP_COLUMNS = [
-    'id', 'destination', 'customer', 'start_date', 'end_date',
+    'id', 'destination', 'customer', 'customer_id', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
@@ -394,7 +394,7 @@
     const hi = iso(to);
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
-    const [buses, trips, drivers, contacts, oos, timeOff] = await withTimeout(Promise.all([
+    const [buses, trips, drivers, contacts, customers, locations, oos, timeOff] = await withTimeout(Promise.all([
       client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,year,make,model,color,vin').order('sort_order').then(unwrap),
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
@@ -404,7 +404,11 @@
       client.from('drivers').select('id,name,short_name,status,priority').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
-      client.from('contacts').select('id,name,phone,email,client').order('name').then(unwrap),
+      client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
+      // The customers and the saved places, for the Customer field, the fill
+      // it makes into an empty pickup, and the Route tab's address search.
+      client.from('customers').select('id,name,usual_location_id').order('name').then(unwrap),
+      client.from('locations').select('id,name,address,lat,lng,mapbox_id').order('name').then(unwrap),
       client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(from)).then(unwrap),
       // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
@@ -433,7 +437,7 @@
     const statusRows = trips.length ? await withTimeout(
       client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
     const statuses = new Map(statusRows.map(r => [statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
-    return { buses, trips, drivers, contacts, oos, timeOff, statuses, weekStart, weekEnd };
+    return { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd };
   }
 
   function setRange(weekStart, weekEnd) {
@@ -1062,14 +1066,15 @@
      scroll all still belong to the week on screen. Without one it draws into
      the board's own grid and everything that follows a week change follows. */
   function render(data, target) {
-    const { buses, trips, drivers, contacts, oos, timeOff, statuses, weekStart, weekEnd } = data;
+    const { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd } = data;
     const driversById = new Map(drivers.map(d => [d.id, d]));
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
     // for nothing.
     const busesById = new Map(buses.map(b => [b.id, b]));
     const into = target || gridEl;
-    if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses, contacts: contacts || [] };
+    if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
+                                contacts: contacts || [], customers: customers || [], locations: locations || [] };
 
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
@@ -1522,7 +1527,7 @@
   // The most trips a search lists. One more is fetched, so the count can say
   // "More than 50 trips match" without claiming a total it did not count.
   const SEARCH_CAP = 50;
-  let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), statuses: new Map(), contacts: [] };
+  let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), statuses: new Map(), contacts: [], customers: [], locations: [] };
   let panelOpener = null;
   const panelDetails = document.getElementById('scheduler-panel-details');
   const panelFleet = document.getElementById('scheduler-panel-fleet');
@@ -2910,6 +2915,63 @@
     return wrap;
   }
 
+  /* A search over the customers, as Carbon's combo box. A pick writes the
+     name into the field and the input's `data-customer-id` says which
+     customer it is for the save; a name typed by hand unlinks it, and Save
+     links it to the customer of that name or makes one. */
+  function customerSearch(id, label, customers, current, text) {
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const field = el('div', 'rux--list-box__field');
+    const value = current?.name ?? text ?? '';
+    const input = el('input', value ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
+    input.type = 'text';
+    input.id = id;
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = NO_AUTOFILL;
+    input.placeholder = 'Search customers';
+    input.value = value;
+    if (current?.id) input.dataset.customerId = current.id;
+    field.append(input);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    for (const c of customers) {
+      const on = !!current?.id && String(c.id) === String(current.id);
+      const option = el('li', on
+        ? 'rux--list-box__menu-item rux--list-box__menu-item--active'
+        : 'rux--list-box__menu-item');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.customerId = c.id;
+      option.dataset.ruxText = c.name ?? '';
+      const body = el('div', 'rux--list-box__menu-item__option', c.name ?? '');
+      const tick = svgUse('#m-check', '16', '0 0 20 20');
+      tick.classList.add('rux--list-box__menu-item__selected-icon');
+      body.appendChild(tick);
+      option.appendChild(body);
+      menu.appendChild(option);
+    }
+    root.append(field, menu);
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root);
+    return wrap;
+  }
+
+  // The saved locations holding every word typed, up to five, as places.
+  function savedPlaceMatches(text) {
+    const words = folded(text).split(/\s+/).filter(Boolean);
+    if (!words.length || text.trim().length < 2) return [];
+    return (panelIndex.locations || [])
+      .filter(l => words.every(w => folded(`${l.name} ${l.address}`).includes(w)))
+      .slice(0, 5)
+      .map(l => ({ name: l.name, address: l.address, lat: l.lat, lng: l.lng, mapbox_id: l.mapbox_id ?? null }));
+  }
+
   /* A search over places, as Carbon's combo box, for the Route tab. Its
      options are Mapbox's answers to what is typed, drawn when they arrive, as
      two lines like a contact's: the place's name over its address. `onPick`
@@ -2958,17 +3020,24 @@
       // `list-box.js` shows the list only if it had options when it opened.
       menu.hidden = !found.length || !root.classList.contains('rux--list-box--expanded');
     };
-    // Mapbox is asked a quarter second after typing stops, and only the
-    // latest answer is drawn.
+    /* The saved locations that hold every word typed come first, at once;
+       Mapbox is asked a quarter second after typing stops, and its answers
+       follow, less any place already saved. Only the latest answer is drawn. */
     input.addEventListener('input', () => {
       clearTimeout(timer);
       const text = input.value;
+      const saved = savedPlaceMatches(text);
+      found = saved;
+      draw();
       timer = setTimeout(async () => {
         const n = ++asked;
         try {
           const got = await searchPlaces(text);
-          if (n === asked) { found = got; draw(); }
-        } catch { if (n === asked) { found = []; draw(); } }
+          if (n === asked) {
+            found = [...saved, ...got.filter(g => !saved.some(p => samePlace(p, g)))];
+            draw();
+          }
+        } catch { /* the saved ones stand */ }
       }, 250);
     });
     root.addEventListener('rux:listbox-selected', e => {
@@ -3513,6 +3582,63 @@
         if (!error) known[key] = p[key];
       } catch { /* the trip still saves */ }
     }
+  }
+
+  /* The customer the Customer field names, settled into `row`: the one
+     picked, else the one of that name, else a new one made now, as a new
+     contact is. A new customer's id is kept for its name until the insert is
+     confirmed, so a save pressed again after a timeout sends the same id. */
+  const pendingCustomerIds = new Map();
+  async function addCustomer(name) {
+    const key = folded(name);
+    const cols = 'id,name,usual_location_id';
+    const newId = pendingCustomerIds.get(key) ?? crypto.randomUUID();
+    pendingCustomerIds.set(key, newId);
+    const { data, error } = await withTimeout(client.from('customers').insert({ id: newId, name })
+      .select(cols).single().then(r => r));
+    if (!error) {
+      pendingCustomerIds.delete(key);
+      panelIndex.customers = [...(panelIndex.customers || []), data];
+      return data.id;
+    }
+    // The first insert landed after all.
+    if (error.code === '23505' && /customers_pkey/.test(error.message)) { pendingCustomerIds.delete(key); return newId; }
+    // Someone made a customer of that name since the week was read.
+    if (error.code === '23505') {
+      const hit = await withTimeout(client.from('customers').select(cols).ilike('name', likeExact(name)).limit(1).then(r => r));
+      if (hit.data?.[0]) { panelIndex.customers = [...(panelIndex.customers || []), hit.data[0]]; return hit.data[0].id; }
+    }
+    throw new Error(error.message);
+  }
+  async function linkCustomer(row, creating) {
+    const input = document.getElementById('scheduler-f-customer');
+    if (!input) return;
+    const name = input.value.trim();
+    const before = creating ? null : (editing.before.customer_id ?? null);
+    let id = null;
+    if (name) {
+      id = input.dataset.customerId
+        || (panelIndex.customers || []).find(c => folded(c.name) === folded(name))?.id
+        || await addCustomer(name);
+      input.dataset.customerId = id;
+    }
+    if (creating || id !== before) row.customer_id = id; else delete row.customer_id;
+  }
+  /* The booking contact takes the trip's customer when they have none, as a
+     picked contact takes a missing phone. Guarded, so a customer set
+     elsewhere since is never replaced, and never in the way of the save. */
+  async function fillContactCustomer(row) {
+    const contactId = 'booking_contact_id' in row ? row.booking_contact_id : editing.before.booking_contact_id;
+    const customerId = 'customer_id' in row ? row.customer_id : editing.before.customer_id;
+    if (!contactId || !customerId) return;
+    const known = (panelIndex.contacts || []).find(c => String(c.id) === String(contactId));
+    if (known?.customer_id) return;
+    const name = (panelIndex.customers || []).find(c => c.id === customerId)?.name ?? null;
+    try {
+      const { error } = await withTimeout(client.from('contacts').update({ customer_id: customerId, client: name })
+        .eq('id', contactId).is('customer_id', null).then(r => r));
+      if (!error && known) { known.customer_id = customerId; known.client = name; }
+    } catch { /* the trip still saves */ }
   }
 
   // Settles every on-screen contact id into `row`, which is the insert or the
@@ -4378,6 +4504,7 @@
       before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
+      customer_id: trip.customer_id ?? null,
       trip_type: trip.trip_type ?? null,
       vehicle_type: trip.vehicle_type ?? null,
       // The name it paints as, so a trip still storing `cyan` opens on Teal
@@ -4590,8 +4717,14 @@
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
       returnDates,
       textField('scheduler-f-destination', 'Destination', trip.destination),
-      // The organization is `trips.customer`; the contact's own `client` is not shown.
-      textField('scheduler-f-customer', 'Organization', trip.customer),
+      /* The customer is `trips.customer_id`, with its name in `trips.customer`
+         for rux-ui. A trip not linked yet offers the customer whose name its
+         typed one matches exactly, and Save keeps it. */
+      customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
+        (panelIndex.customers || []).find(c => c.id === trip.customer_id)
+          || (!trip.customer_id && trip.customer
+            ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
+        trip.customer),
       pair(
         selectField('scheduler-f-type', 'Type', trip.trip_type, [
           ['', '—'],
@@ -4866,6 +4999,17 @@
           drawTimeline();
           return;
         }
+        await pickPickup(place);
+      }, 'address');
+      /* A customer's usual pickup fills the pickup only when both of its
+         fields are empty, the way a pick from the search would. */
+      r.fillPickup = place => {
+        if (val('scheduler-f-pickup') || val('scheduler-f-pickupname')) return;
+        setVal('scheduler-f-pickup', place.address ?? '');
+        pickPickup({ name: place.name, address: place.address, lat: place.lat, lng: place.lng,
+                     mapbox_id: place.mapbox_id ?? null });
+      };
+      async function pickPickup(place) {
         if (!val('scheduler-f-pickupname')) setVal('scheduler-f-pickupname', place.name ?? '');
         r.pickupPlace = named(place, val('scheduler-f-pickupname') || place.name || null);
         // A drop-off nobody has changed follows the pickup, round trip or not.
@@ -4882,7 +5026,7 @@
         }
         drawTimeline();
         refreshDirty();
-      }, 'address');
+      }
 
       const dropField = placeSearch('scheduler-f-dropoff', 'Drop-off address', r.dropPlace, async (place, typed) => {
         if (!place) {
@@ -6162,7 +6306,23 @@
     && (t.id === 'scheduler-f-cfind' || /^scheduler-f-d\d$/.test(t.id));
   panelDetails?.addEventListener('input', e => {
     if (isContactField(e.target)) delete e.target.dataset.contactId;
+    if (e.target.id === 'scheduler-f-customer') delete e.target.dataset.customerId;
   });
+  /* A customer picked says which it is, and fills an empty pickup and
+     drop-off from its usual pickup. */
+  panelDetails?.addEventListener('rux:listbox-selected', e => {
+    const t = e.target.querySelector?.('input[role="combobox"]');
+    if (t?.id !== 'scheduler-f-customer') return;
+    const id = e.detail?.option?.dataset.customerId;
+    if (!id) { delete t.dataset.customerId; return; }
+    t.dataset.customerId = id;
+    fillPickupFrom((panelIndex.customers || []).find(c => c.id === id));
+  });
+  // The Route tab's own fill, when it is open and its pickup is empty.
+  function fillPickupFrom(customer) {
+    const place = (panelIndex.locations || []).find(l => l.id === customer?.usual_location_id);
+    if (place) editing?.route?.fillPickup?.(place);
+  }
   panelDetails?.addEventListener('rux:listbox-selected', e => {
     const t = e.target.querySelector?.('input[role="combobox"]');
     if (!isContactField(t)) return;
@@ -6175,12 +6335,18 @@
       const put = (id, v) => { const e2 = document.getElementById(id); if (e2) e2.value = v ?? ''; };
       const suggest = (id, v) => { const e2 = document.getElementById(id); if (e2 && !e2.value) e2.value = v ?? ''; };
       /* Phone and email belong to the person, so a new pick replaces them.
-         Organization is a trip column that can differ from the contact's
-         client, as when an agency books for a school, so it fills only when
-         empty. */
+         The customer is the trip's and can differ from the contact's, as when
+         an agency books for a school, so it fills only when empty, and a
+         customer filled that way fills an empty pickup in turn. */
       put('scheduler-f-cphone', hit.phone);
       put('scheduler-f-cemail', hit.email);
-      suggest('scheduler-f-customer', hit.client);
+      const theirs = (panelIndex.customers || []).find(c => c.id === hit.customer_id);
+      const cust = document.getElementById('scheduler-f-customer');
+      if (theirs && cust && !cust.value.trim()) {
+        cust.value = theirs.name;
+        cust.dataset.customerId = theirs.id;
+        fillPickupFrom(theirs);
+      } else suggest('scheduler-f-customer', hit.client);
     } else {
       const ph = document.getElementById(`scheduler-f-dphone${t.id.slice(-1)}`);
       if (ph && !ph.value) ph.value = hit.phone ?? '';
@@ -6321,8 +6487,11 @@
           || posPatch()?.work || invoicesPatch()?.work) {
         Object.assign(row, derivedBilling());
       }
-      // Contacts are linked, and added to the list, before the trip is written.
+      // The customer and the contacts are linked, and added to their lists,
+      // before the trip is written.
+      await linkCustomer(row, creating);
       const unlinked = await linkContacts(row, creating);
+      await fillContactCustomer(row);
       /* The fleet is written last, because its rows need the trip to exist. If
          that write fails the trip stands, in the Unassigned row, and the
          message says so. */

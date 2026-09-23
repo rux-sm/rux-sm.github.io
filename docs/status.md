@@ -33,8 +33,6 @@ done and how.
 - The forms page draws the driver envelope, the driver itinerary and the
   customer quote. The printed schedule, an hours-of-service form and a
   passenger roster are still named for it; which comes next is undecided.
-- **The customer quote types its bill-to address.** The trip knows the
-  customer's name and nobody's address until a customer is a record.
 
 ## The database
 

@@ -40,6 +40,12 @@ one at `customers.html?id=`. Two customers never share a name, since
 QuickBooks matches on it; renaming one renames the organization text its
 contacts carry, which rux-ui shows.
 
+In the trip editor, Customer is picked from that list and saved with the trip;
+a name not in it becomes a new customer on Save. Picking the booking contact
+fills an empty customer, a customer fills an empty pickup and drop-off from
+its usual pickup, and the address search offers saved locations first. The
+quote's bill-to is drawn from the trip's customer.
+
 On the compact board, a swipe moves one week of trip cells while the date and
 bus headers stay fixed. Stationary cell viewports clip the moving bars at the
 bus-column boundary during both dragging and settling. Further swipes during a slide are ignored. Cached weeks

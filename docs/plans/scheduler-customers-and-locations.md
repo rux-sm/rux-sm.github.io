@@ -38,22 +38,6 @@ the quote prints the customer's address without anyone typing it.
   links to it.
 - **A trip keeps its own copy of every stop,** as `trip_stops` does today, so
   editing or deleting a location never changes a trip already saved.
-- **The old text columns keep being written.** `contacts.client` and
-  `trips.customer` take the customer's name on every save, so rux-ui goes on
-  showing it. A name rux-ui types there later changes only the text, not the
-  link.
-- **The trip editor's Organization field becomes Customer,** a combo box over
-  the customers as the Contacts page has, and writes `trips.customer_id` beside
-  the name, which is what the quote's bill-to reads. A name that is not a
-  customer yet makes one on Save, as a new contact is made today, so booking a
-  new customer takes no detour.
-- **Three fills, each only into an empty field:** picking the booking contact
-  fills the customer; picking the customer fills the pickup and the drop-off
-  from its usual pickup, with the drive time looked up; saving the trip gives a
-  booking contact with no customer the trip's one, as it fills a missing phone.
-- **The Route tab's address search offers saved locations first,** by name or
-  address, then the map search, as rux-ui's itinerary does. It moves onto `scheduler/places.js`,
-  which the Locations page already uses, so the two searches are one.
 - **Nothing joins a list unless someone says so.** After a trip saves, one
   modal, Update your lists, offers what the edit brought that the lists do not
   have, and shows nothing when there is none. Not now adds none of it, and the
@@ -73,8 +57,6 @@ the quote prints the customer's address without anyone typing it.
     has by its map id or address, ticked, with the name and the address search
     to correct. Saving every stop unasked, as rux-ui does, fills the list with
     one-off stops.
-- **Old trips are not linked in bulk.** Opening an unlinked trip preselects the
-  customer whose name matches its typed one exactly, and Save keeps it.
 - **A customer or location is deleted only when nothing uses it:** no contact
   or trip for a customer, no customer for a location.
 - **Locations and customers are tables that carry `updated_at`,** set by the
@@ -91,8 +73,6 @@ None open.
 
 ## Tasks
 
-- [ ] The trip editor: the Customer field, the three fills, and saved
-      locations first in the address search.
 - [ ] The Update your lists modal, in place of the silent contact fill.
 - [ ] rux picks the usual pickups the copy left blank.
 - [ ] Delete the `locations-v1` settings row once both apps read the table.

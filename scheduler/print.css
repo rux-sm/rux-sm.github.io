@@ -382,8 +382,18 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   /* A FORM THAT FLOWS KEEPS NO PADDING ON PAPER. Padding is at a block's start
      and its end, so on the second sheet of three there would be none and the
      ink would run to the edge; print.js names the margin in @page instead,
-     which is the only one that repeats. */
-  .scheduler-print__sheet[data-sheet="flows"] .scheduler-form { padding: 0; }
+     which is the only one that repeats.
+
+     AND IT PRINTS AT NINE TENTHS. It is laid out at the paper's own width,
+     which is wider than the margin leaves, and a printer left to shrink it
+     puts the right-hand rule exactly on the page's edge and rounds it off.
+     At 0.9 it is 7.65in inside the 7.7in, so nothing is shrunk or cut, and
+     the quote's terms still fit their one sheet, which at full size they do
+     not. */
+  .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
+    padding: 0;
+    zoom: 0.9;
+  }
 
   /* A FORM THAT NAMES A HEIGHT IS EXACTLY ONE SHEET, and its last block takes
      whatever room the rest of it leaves. The envelope's log at a fixed eight

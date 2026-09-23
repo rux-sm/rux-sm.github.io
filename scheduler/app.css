@@ -452,15 +452,22 @@ button.scheduler-row-head__num::after {
    the amount a border could not. */
 /* A continuing edge takes no gap, since the trip runs off the week there. Only
    the gap at its other end is subtracted, so the bar ends where every other
-   bar in that day ends. */
+   bar in that day ends.
+
+   The edge is a column of 3px squares 3px apart, drawn as a border image
+   because a `dotted` border draws round dots, which blur at 3px. */
+.scheduler-bar--from-prev,
+.scheduler-bar--to-next {
+  border-image: repeating-linear-gradient(to bottom, var(--scheduler-border) 0 3px, transparent 3px 6px) 1;
+}
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
-  border-inline-start: 3px dotted var(--scheduler-border);
+  border-inline-start: 3px solid transparent;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
-.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px dotted var(--scheduler-border); border-start-end-radius: 0; border-end-end-radius: 0; }
+.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px solid transparent; border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
 /* The rows the view menu can turn off. `display: none` rather than

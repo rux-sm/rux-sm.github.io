@@ -96,7 +96,7 @@
    the hue's 200 step (300 for pink and teal) at 27% lightness with its chroma
    raised by 30%, under the hue's 900 step, read from Geist's own badge. Geist
    has no hover for a badge, so a hovered bar lifts four points of lightness,
-   and the dotted edge of a bar that runs on takes the text colour. Magenta is
+   and the edge of a bar that runs on takes the text colour. Magenta is
    Geist's pink and the greys its grey. */
 [data-theme="geist-dark"] {
   --scheduler-amber-bg: oklch(27% 0.0835 64.78);

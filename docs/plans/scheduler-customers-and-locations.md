@@ -80,13 +80,25 @@ the quote prints the customer's address without anyone typing it.
   booking contact with no customer the trip's one, as it fills a missing phone.
 - **The Route tab's address search offers saved locations first,** by name or
   address, then the map search, as rux-ui's itinerary does.
-- **A new place is saved only when someone says so.** After a trip saves, a
-  modal lists each stop picked or changed in that edit that is not a location
-  yet, matched by its map id or its address. Each row has the name and the
-  address search to correct, and a checkbox, ticked; Save locations adds the
-  ticked ones and Not now adds none. The trip is saved either way, and a stop
-  not picked again is not asked about again. Saving every stop unasked, as
-  rux-ui does, fills the list with one-off stops.
+- **Nothing joins a list unless someone says so.** After a trip saves, one
+  modal, Update your lists, offers what the edit brought that the lists do not
+  have, and shows nothing when there is none. Not now adds none of it, and the
+  trip is saved either way. An offer declined is not made again until the
+  field is typed again. Three kinds of row:
+  - **A new contact**, ticked, with the name, phone and email to correct.
+    Declined, the trip keeps the typed name and phone and links no contact,
+    as 457 trips already do. A person the trip editor's rule matches by phone,
+    email or name is not new and links at once, as today.
+  - **A contact's missing phone or email**, ticked. This replaces the silent
+    fill `scheduler/data.js` makes on Save today.
+  - **A contact's different phone or email**, beside the one on file and not
+    ticked, since a different number is often one for that day. A contact
+    matched by the name alone is offered too, with their details shown, since
+    a person now decides.
+  - **A new location**: a stop picked or changed in the edit that no location
+    has by its map id or address, ticked, with the name and the address search
+    to correct. Saving every stop unasked, as rux-ui does, fills the list with
+    one-off stops.
 - **The quote's Name/address box fills from the customer:** its name, then the
   bill-to if there is one, otherwise the usual pickup's address. The box stays
   editable, because a quote is corrected before it is sent. A trip with no
@@ -127,8 +139,9 @@ None open.
       settled names, and the 13 exact usual pickups.
 - [ ] `scheduler/customers.html` and `scheduler/customers.js`.
 - [ ] The Contacts page's Customer field.
-- [ ] The trip editor: the Customer field, the three fills, saved locations
-      first in the address search, and the modal that offers new ones.
+- [ ] The trip editor: the Customer field, the three fills, and saved
+      locations first in the address search.
+- [ ] The Update your lists modal, in place of the silent contact fill.
 - [ ] The quote's Name/address box.
 - [ ] The two links in the side nav of every scheduler page, and the screen
       inventory's Settings row, which still puts locations there.

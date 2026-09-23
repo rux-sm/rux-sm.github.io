@@ -75,12 +75,6 @@ three.
   answers. A second, optional Office phone is a column added later only if
   it is missed; splitting now changes the matching rule, rux-ui and every
   trip's copy for a number nobody has asked to store.
-- **A trip save fills a contact's blanks.** When the contact a trip names, or
-  one picked from the trip editor's suggestions, has no phone or no email and
-  the trip has one,
-  saving the trip writes it to the contact. It never replaces a value already
-  there, and a contact matched by name alone is left untouched, since two
-  people can share a name. 70 contacts have no phone and 73 no email.
 - **Editing a contact never changes a trip.** Each trip keeps the name and
   phone it was saved with, which is what its driver was given.
 - **Save compares before it writes.** `contacts` has no `updated_at`, so Save

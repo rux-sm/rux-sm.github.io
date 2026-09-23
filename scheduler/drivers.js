@@ -191,8 +191,8 @@
     const isActive = d => d.status === 'active';
     const counts = { active: 0, inactive: 0, all: drivers.length };
     for (const d of drivers) counts[isActive(d) ? 'active' : 'inactive']++;
-    for (const span of document.querySelectorAll('#scheduler-drivers-filter [data-count]')) {
-      span.textContent = `(${counts[span.dataset.count]})`;
+    for (const option of $('scheduler-drivers-filter')?.options ?? []) {
+      option.textContent = `${option.dataset.label} (${counts[option.value]})`;
     }
 
     // The view's own rows, which is what a search narrows and what the band
@@ -208,7 +208,7 @@
 
     /* What the search came to, in the band beside it. Only a search narrows
        the list to something a count can explain — a filter already carries its
-       own count on the switcher — so the band says nothing without one, and
+       own count in the Show choice — so the band says nothing without one, and
        the New button does not move. */
     const note = $('scheduler-drivers-count');
     if (note) note.textContent = query ? `${shown.length} of ${pool.length} match` : '';
@@ -278,31 +278,10 @@
     drawList();
   });
 
-  // The content switcher: a click or the arrow keys pick, as Carbon's does.
-  const switcher = $('scheduler-drivers-filter');
-  const pick = btn => {
-    for (const b of switcher.querySelectorAll('.rux--content-switcher-btn')) {
-      const on = b === btn;
-      b.classList.toggle('rux--content-switcher--selected', on);
-      b.setAttribute('aria-selected', String(on));
-      b.tabIndex = on ? 0 : -1;
-    }
-    filter = btn.dataset.filter;
+  // The Show choice picks which drivers the table holds.
+  $('scheduler-drivers-filter')?.addEventListener('change', e => {
+    filter = e.target.value;
     drawList();
-  };
-  switcher?.addEventListener('click', e => {
-    const btn = e.target.closest('.rux--content-switcher-btn');
-    if (btn) pick(btn);
-  });
-  switcher?.addEventListener('keydown', e => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const all = [...switcher.querySelectorAll('.rux--content-switcher-btn')];
-    const at = all.indexOf(document.activeElement);
-    if (at < 0) return;
-    e.preventDefault();
-    const next = all[(at + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
-    pick(next);
-    next.focus();
   });
 
   const searchInput = $('scheduler-drivers-search');

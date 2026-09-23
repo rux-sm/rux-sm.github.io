@@ -22,12 +22,11 @@ decides it again.
   this the editorial style model and allows it for low-density product screens;
   the board and the print sheet are not those and stay outside this plan.
 - **The table's parts, in order:** the title with its page actions, notice, then
-  the table box, which holds the filter, the toolbar band and the table. A row
-  opens the record.
-- **The filter sits inside the table box, flush on the band,** because a switcher
-  floating above the container reads as separate from the table it filters. The
-  strip it sits on is the box's width and the switcher keeps Carbon's own size
-  within it.
+  the table box, which holds the toolbar band and the table. A row opens the
+  record.
+- **The filter is a select in the band, after the count and before the action,**
+  because rux wants the box's head to be one clean line of search and New; a row
+  of tabs over the table was a second head.
 - **The box takes no outline of its own.** Carbon paints the band and the rows
   one `layer` fill, a step off the page in all four themes and in ant-dark and
   spotify-dark, so the box already parts from the page and a rule round it would
@@ -88,10 +87,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give the data table a header fill in `geist-dark`. `.rux--data-table th`
-      computes transparent there while `--rux-layer-accent` resolves to #1a1a1a,
-      so the header row is the same tone as the rows and the table has no head;
-      every other theme paints it. Found while measuring the box.
 - [ ] Give `builder/guide.json` its reading. Both templates and their three
       variant groups are entered `reviewed: false`, which is the file's own mark
       for "not yet read by rux", and the purpose lines are placeholders.

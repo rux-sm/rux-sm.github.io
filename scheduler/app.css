@@ -2530,21 +2530,9 @@ html:has(.scheduler-page[data-takeover]) {
     white-space: nowrap;
   }
 }
-/* THE FILTER'S STRIP, the first thing inside the table box and flush on the
-   toolbar band under it. It carries the band's own `layer` fill so the two read
-   as one head to the table, and the switcher keeps Carbon's own size inside it
-   rather than being stretched to the box. The inset is the start, the end and
-   the top; there is none at the foot, which is what puts the switcher against
-   the band. `design/templates/list-page.html` carries the same rule as
-   `list-page__filter`, and docs/plans/site-page-pair.md decides it for both.
-
-   No outline round the box: Carbon paints the band and the rows one `layer`,
-   a step off the page in every theme the app ships, so the box already parts
-   from the page. */
-.scheduler-table-filter {
-  background-color: var(--rux-layer);
-  padding: var(--rux-spacing-05) var(--rux-spacing-05) 0;
-}
+/* The Show choice in the band: its own width, so the search keeps the room
+   that is left, and the New button stays at the end. */
+.scheduler-table-show { flex: none; inline-size: 12rem; }
 
 /* What a search came to, in the band after the search and before New, which is
    where Carbon's own captures put the control that follows a persistent search.
@@ -2559,11 +2547,12 @@ html:has(.scheduler-page[data-takeover]) {
   color: var(--rux-text-secondary);
 }
 .scheduler-table-note:empty { margin-inline-end: 0; }
-/* Not on a phone. The band there is the search and New bus and nothing else
-   fits: the count crushed the field to a magnifier and pushed the button off
-   the end. It goes for the same reason the switcher's counts do at this width. */
+/* Not on a phone. The band there is the search, the Show choice and New and
+   nothing else fits: the count crushed the field to a magnifier and pushed the
+   button off the end. The choice narrows to what its first word needs. */
 @media (max-width: 41.98rem) {
   .scheduler-table-note { display: none; }
+  .scheduler-table-show { inline-size: 8rem; }
 }
 
 .scheduler-pair-title {
@@ -2630,7 +2619,6 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-drivers-rows td:nth-child(3),
   #scheduler-drivers-rows td:nth-child(4) { display: none; }
 }
-.scheduler-drivers-switcher { max-inline-size: 24rem; }
 .scheduler-driver-photo {
   display: flex;
   align-items: center;
@@ -2654,16 +2642,6 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-buses-rows td:nth-child(3),
   #scheduler-buses-rows td:nth-child(4),
   #scheduler-buses-rows td:nth-child(5) { display: none; }
-}
-/* Four filters, and the longest is "Out of service" with its count: Carbon
-   gives every button the same width, so the widest label sets the row. A
-   phone has no room for four of that width, so there the counts come off and
-   Out of service is just Out, which reads as a status between Active and
-   Inactive. Four short words fit; the counts and the words together do not. */
-.scheduler-buses-switcher { max-inline-size: 40rem; }
-@media (max-width: 41.98rem) {
-  .scheduler-buses-switcher [data-count],
-  .scheduler-buses-switcher [data-long] { display: none; }
 }
 /* The bus's own colour as a disc, the size Carbon's small avatar is, so the
    list reads down the same edge the Drivers page does. The colour is the

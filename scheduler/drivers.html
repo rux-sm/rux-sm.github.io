@@ -218,25 +218,6 @@
         </div>
 
         <section class="rux--data-table-container" id="scheduler-drivers-table" aria-labelledby="scheduler-drivers-h" hidden>
-          <!-- The filter, inside the box and flush on the band under it. It
-               changes which rows the table holds, so it belongs to the table
-               rather than to the page; above the container it read as a
-               control for something else. The strip carries the band's own
-               `layer` fill, so the two are one head to the table. -->
-          <div class="scheduler-table-filter">
-            <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg scheduler-drivers-switcher" role="tablist" aria-label="Which drivers" id="scheduler-drivers-filter">
-              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-filter="active">
-                <span class="rux--content-switcher__label">Active <span data-count="active"></span></span>
-              </button>
-              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="inactive">
-                <span class="rux--content-switcher__label">Inactive <span data-count="inactive"></span></span>
-              </button>
-              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-filter="all">
-                <span class="rux--content-switcher__label">All <span data-count="all"></span></span>
-              </button>
-            </div>
-          </div>
-
           <section class="rux--table-toolbar" role="group" aria-label="Table actions">
             <div class="rux--toolbar-content">
               <div class="rux--search rux--layout--size-lg rux--toolbar-search-container-persistent" role="search">
@@ -250,6 +231,22 @@
               <!-- What a search came to, beside the thing that changes it.
                    Empty it takes no room, so the button does not move. -->
               <span class="scheduler-table-note" id="scheduler-drivers-count" role="status"></span>
+              <!-- Which drivers the table holds, a choice beside New rather than a
+                   row of tabs over the table: the band stays one line, and the
+                   choice still reads at rest. Each option carries its count. -->
+              <div class="rux--form-item scheduler-table-show">
+                <div class="rux--select rux--layout--size-lg">
+                  <label class="rux--label rux--visually-hidden" for="scheduler-drivers-filter">Show</label>
+                  <div class="rux--select-input__wrapper">
+                    <select id="scheduler-drivers-filter" class="rux--select-input">
+                      <option value="active" data-label="Active">Active</option>
+                      <option value="inactive" data-label="Inactive">Inactive</option>
+                      <option value="all" data-label="All">All</option>
+                    </select>
+                    <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                  </div>
+                </div>
+              </div>
               <a class="rux--btn rux--btn--primary" href="drivers.html?new">New driver
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
               </a>

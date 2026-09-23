@@ -215,11 +215,12 @@
     --rux-layout-size-height-sm: var(--rux-layout-size-height-lg);
   }
 }
-/* The document panel's head carries the file's type in Carbon's label line,
-   stacked over the destination as slide-in draws it; the two lines fit the
-   same 40px band, and both end where Carbon's close button, in its corner,
-   begins. */
-#scheduler-viewer-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+/* THE DOCUMENT PANEL'S HEAD, scoped by `.scheduler-viewer`, the app's box
+   around the panel: each rule below is Carbon's own selector with that one
+   class before it, so it wins by that class and the order this file loads in
+   rather than by an id. The head's title ends where Carbon's close button, in
+   its corner, begins. */
+.scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
@@ -228,22 +229,16 @@
   padding-block: 0;
   padding-inline-end: var(--rux-layout-size-height-md);
 }
-#scheduler-viewer-panel .rux--side-panel__label-text {
-  overflow: hidden;
-  color: var(--rux-text-secondary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 /* Carbon lays its collapsed title over the real one and fades it in as the
    title beneath shrinks. Neither panel animates its title -- index.html says
    why on the trip panel's head -- so this one never shows, but it was still
    taking the press meant for the title beneath it, which is what stopped the
    head's list from opening. Invisible, it takes nothing. */
-#scheduler-viewer-title-collapsed { pointer-events: none; }
+.scheduler-viewer .rux--side-panel .rux--side-panel__collapsed-title-text { pointer-events: none; }
 
 /* The title fills the head's height and centres its heading in it, so a
    title that lists can light the whole band as the week button does. */
-#scheduler-viewer-panel .rux--side-panel__title {
+.scheduler-viewer .rux--side-panel .rux--side-panel__title {
   flex: 1 1 auto;
   display: flex;
   align-items: center;
@@ -258,7 +253,7 @@
    close button's size and flush with the head's start as the close button is
    with its end. A button's display beats the browser's `[hidden]`, so the
    hidden one is hidden here. */
-#scheduler-viewer-panel .rux--side-panel__header.rux--side-panel__header--on-detail-step {
+.scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--on-detail-step {
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
@@ -266,7 +261,7 @@
 /* Beside the arrow the title gives up room, not the arrow, and a long one
    still ends in its ellipsis short of the close button. Its name stands 16px
    off the arrow, as it stands 16px off the head's edge without one. */
-#scheduler-viewer-panel .rux--side-panel__header--on-detail-step .rux--side-panel__title {
+.scheduler-viewer .rux--side-panel .rux--side-panel__header--on-detail-step .rux--side-panel__title {
   flex: 0 1 auto;
   padding-inline-start: var(--rux-spacing-05);
 }
@@ -274,16 +269,16 @@
    lit from whatever is before it -- the head's edge or the arrow -- so its
    name stays where a plain title's is. Carbon's 64px at the title's end is
    room for a close button this head keeps elsewhere. */
-#scheduler-viewer-panel .scheduler-viewer__pick {
+.scheduler-viewer .scheduler-viewer__pick {
   margin-inline-start: calc(-1 * var(--rux-spacing-05));
   padding-inline: var(--rux-spacing-05);
 }
-#scheduler-viewer-panel .rux--btn.rux--side-panel__navigation-back-button {
+.scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
   position: static;
   flex: none;
   margin-inline-start: calc(-1 * var(--rux-spacing-05));
 }
-#scheduler-viewer-panel .rux--side-panel__navigation-back-button[hidden] { display: none; }
+.scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button[hidden] { display: none; }
 
 /* The title is `heading-compact-02` in place of Carbon's `heading-03`: the
    style of the toolbar's week name and the roster's title, so the three
@@ -470,6 +465,27 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding: var(--rux-spacing-05);
   padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
   padding-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+}
+/* A page pair's page, from md up, takes the template's 2rem inset on every
+   side, as design/templates/list-page.html sets on its own page class. The
+   pair's class beside Carbon's beats the flat 16px above; a phone keeps that
+   narrower gutter, and a landscape phone's cutout still wins. */
+@media (min-width: 42rem) {
+  .rux--content.scheduler-pair-page {
+    padding: var(--rux-spacing-07);
+    padding-inline: max(var(--rux-spacing-07), var(--scheduler-safe-left)) max(var(--rux-spacing-07), var(--scheduler-safe-right));
+    padding-block-end: calc(var(--rux-spacing-07) + var(--scheduler-safe-bottom));
+  }
+}
+/* A page pair's grid column may shrink below its content, so a wide table
+   scrolls inside its own box rather than widening the page: a grid item's
+   `min-width: auto` would otherwise hold it at the table's width. */
+.scheduler-pair-page .rux--css-grid-column { min-inline-size: 0; }
+/* On a phone a page pair's Show choice is held to 8rem, what its first word
+   needs rather than its longest option, so the search and New keep the band;
+   app.css holds its box to the same width. */
+@media (max-width: 41.98rem) {
+  .scheduler-table-show .rux--select-input { inline-size: 8rem; }
 }
 
 /* A phone in landscape has its camera cutout beside the page, so the header

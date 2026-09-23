@@ -23,9 +23,7 @@ three.
   puts the customer editor in the panel, in §1, §2 and §7; it becomes a page
   like a driver's and a bus's, and the inventory changes with this page.
 - **The page is called Contacts, and a contact is a person.** The school or
-  business they book for gets its own page later, from
-  `docs/plans/scheduler-customers-and-locations.md`; until then it is the
-  contact's typed `client` text, shown as Organization.
+  business they book for is their customer, picked from the Customers page.
 - **The shared shape has one home:** the `scheduler-pair-*` classes in
   `scheduler/app.css`, which Contacts carries as Drivers and Buses do, adding
   only what a contact has and they do not.
@@ -37,7 +35,7 @@ three.
   actions or pagination, as on the other two: search finds any of the 253
   contacts in a few letters, and a pager would be a control only this page has.
 - **Five fixed columns, with no column picker:** Contact (the name, with the
-  organization beneath, as a driver's short name sits beneath the name),
+  customer beneath, as a driver's short name sits beneath the name),
   Phone, Email, Trips (how many), Next trip (its date, or the last one's in
   the quiet colour when none is coming). A whole row opens the contact. A phone
   shows the contact and the next trip only.
@@ -46,10 +44,10 @@ three.
 - **No filter strip.** A contact has no status, and a filter hiding the ones
   with no trip coming would hide them from the search too; sorting by Next
   trip gives the same view without hiding anyone.
-- **Search reads the name, organization, phone and email,** and a phone
+- **Search reads the name, customer, phone and email,** and a phone
   number matches by its digits, however it was typed.
 - **The editor has two line tabs, Details and Trips,** as a bus's does.
-  Details is one form: Name, Organization, Phone and Email on the one
+  Details is one form: Name, Customer, Phone and Email on the one
   three-column grid, then Cancel and Save. A new contact shows no tabs.
 - **Name is required and says so** under the field in Carbon's error state,
   and an email that is not an email blocks Save the same way. rux-ui only

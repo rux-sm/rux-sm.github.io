@@ -5,9 +5,9 @@
    and contacts.html?new makes one. Both read and write `contacts`, the table
    rux-ui's Customers view writes, so both apps show the same people.
 
-   A contact is a person. The school or business they book for is their typed
-   `client`, shown as Organization, until organizations are records of their
-   own.
+   A contact is a person. The school or business they book for is their
+   customer, picked from the Customers list; `client` keeps the customer's
+   name as text, which rux-ui shows.
 
    A trip names its contacts in six columns, the booking contact and five
    day-of ones, and keeps its own copy of each name and phone. Editing a
@@ -47,7 +47,7 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-contacts-h').hidden = true;
 
-  const CONTACT_COLUMNS = 'id,name,phone,email,client';
+  const CONTACT_COLUMNS = 'id,name,phone,email,client,customer_id';
   // The six places a trip names a contact; the first is who booked it.
   const SLOTS = ['booking_contact_id', 'trip_contact_1_id', 'trip_contact_2_id',
     'trip_contact_3_id', 'trip_contact_4_id', 'trip_contact_5_id'];
@@ -123,6 +123,11 @@
     }
   }
   const readContacts = () => readAll(() => client.from('contacts').select(CONTACT_COLUMNS).order('id'));
+  const readCustomers = async () => {
+    const { data, error } = await client.from('customers').select('id,name').order('name');
+    if (error) throw error;
+    return new Map((data || []).map(c => [c.id, c]));
+  };
   const anyContact = SLOTS.map(s => `${s}.not.is.null`).join(',');
   const readTripLinks = () => readAll(() => client.from('trips')
     .select(`id,start_date,end_date,cancelled_at,${SLOTS.join(',')}`)
@@ -152,12 +157,15 @@
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
   let contacts = [];
+  let customers = new Map();  // customer id → customer
   let tripsBy = new Map();
   let query = '';
   let sortKey = 'name';
   let sortDir = 'ascending';
 
   const tripsOf = c => tripsBy.get(c.id) || { n: 0, next: null, last: null };
+  // The customer's name, or the old typed organization of a contact not linked.
+  const customerName = c => customers.get(c.customer_id)?.name ?? c.client ?? null;
   const byName = (a, b) => folded(a.name).localeCompare(folded(b.name)) || String(a.id).localeCompare(String(b.id));
   // A blank phone or email sorts after every filled one, A to Z.
   const blankLast = (x, y, cmp) => (!x && !y ? 0 : !x ? 1 : !y ? -1 : cmp(x, y));
@@ -180,7 +188,7 @@
 
   const matches = (c, q) => {
     if (!q) return true;
-    const words = [c.name, c.client, c.email].filter(Boolean).join(' ').toLowerCase();
+    const words = [c.name, customerName(c), c.email].filter(Boolean).join(' ').toLowerCase();
     if (words.includes(q.toLowerCase())) return true;
     // A phone matches by its digits, however either side was typed.
     const digits = q.replace(/\D/g, '');
@@ -230,7 +238,7 @@
       const link = el('a', 'scheduler-pair-cell__name', c.name || 'Unnamed contact');
       link.href = `contacts.html?id=${encodeURIComponent(c.id)}`;
       lines.appendChild(link);
-      if (c.client) lines.appendChild(el('span', 'scheduler-pair-cell__detail', c.client));
+      if (customerName(c)) lines.appendChild(el('span', 'scheduler-pair-cell__detail', customerName(c)));
       cell.append(avatar, lines);
       who.appendChild(cell);
 
@@ -289,8 +297,11 @@
   });
 
   async function loadList() {
-    const [rows, trips] = await Promise.all([readContacts(), readTripLinks().catch(() => null)]);
+    const [rows, trips, who] = await Promise.all([
+      readContacts(), readTripLinks().catch(() => null), readCustomers().catch(() => new Map()),
+    ]);
     contacts = rows;
+    customers = who;
     // Trips that would not load leave the list readable, with no counts.
     tripsBy = indexTrips(trips || []);
     $('scheduler-contacts-h').hidden = false;
@@ -316,17 +327,103 @@
   let tripsFailed = false;
   let baseline = '';        // the form as loaded, to tell whether it changed
 
-  // The columns Save writes, read off the form. A blank field saves as null.
-  const readForm = () => ({ name: text('name'), client: text('client'), phone: text('phone'), email: text('email') });
-  const WRITTEN = ['name', 'client', 'phone', 'email'];
+  let customerId = null;    // the customer picked
+  let customerText = '';    // the customer field's text
+
+  /* The columns Save writes, read off the form. A blank field saves as null.
+     `client` is the customer's name as text, for rux-ui. */
+  const readForm = () => ({
+    name: text('name'),
+    customer_id: customerId,
+    client: customers.get(customerId)?.name ?? null,
+    phone: text('phone'),
+    email: text('email'),
+  });
+  const WRITTEN = ['name', 'customer_id', 'client', 'phone', 'email'];
   // A row reduced to what Save writes, so a read-back compares like with like.
   const comparable = row => JSON.stringify(WRITTEN.map(k => (row?.[k] === '' || row?.[k] == null ? null : row[k])));
-  const snapshot = () => comparable(readForm());
+  const snapshot = () => comparable(readForm()) + (customerId ? '' : customerText);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
   function fillForm(c) {
-    for (const k of WRITTEN) field(k).value = c[k] ?? '';
+    for (const k of ['name', 'phone', 'email']) field(k).value = c[k] ?? '';
+    customerId = c.customer_id && customers.has(c.customer_id) ? c.customer_id : null;
+    // A contact not linked yet shows its old typed organization, to be picked.
+    customerText = customers.get(customerId)?.name ?? c.client ?? '';
+    drawCustomer();
     clearErrors();
+  }
+
+  /* The customer: Carbon's combo box over every customer. Design's
+     list-box.js filters the options as the field is typed in and says which
+     was picked, or none. */
+  function drawCustomer() {
+    const slot = $('scheduler-c-customer-slot');
+    const lab = el('label', 'rux--label', 'Customer');
+    lab.setAttribute('for', 'scheduler-c-customer');
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const box = el('div', 'rux--list-box__field');
+    const input = el('input', customerText ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
+    input.type = 'text';
+    input.id = 'scheduler-c-customer';
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = 'off';
+    input.placeholder = 'Search customers';
+    input.value = customerText;
+    box.appendChild(input);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    for (const c of [...customers.values()].sort((a, b) => folded(a.name).localeCompare(folded(b.name)))) {
+      const on = c.id === customerId;
+      const option = el('li', on
+        ? 'rux--list-box__menu-item rux--list-box__menu-item--active'
+        : 'rux--list-box__menu-item');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.customerId = c.id;
+      option.dataset.ruxText = c.name;
+      option.appendChild(el('div', 'rux--list-box__menu-item__option', c.name));
+      menu.appendChild(option);
+    }
+    root.append(box, menu);
+    const req = el('div', 'rux--form-requirement');
+    req.id = 'scheduler-c-customer-error';
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root, req);
+    // Typing drops the pick; choosing an option sets the field without an
+    // input event, then says which it was.
+    input.addEventListener('input', () => {
+      customerId = null;
+      customerText = input.value.trim();
+    });
+    root.addEventListener('rux:listbox-selected', e => {
+      customerId = e.detail?.option?.dataset.customerId ?? null;
+      customerText = input.value.trim();
+      showCustomerError('');
+    });
+    // Design's list-box.js listens on the document, so a field built now works.
+    slot.replaceChildren(wrap);
+  }
+  function showCustomerError(message) {
+    const input = $('scheduler-c-customer');
+    const root = input?.closest('.rux--list-box');
+    const req = $('scheduler-c-customer-error');
+    if (!root || !req) return;
+    const on = !!message;
+    root.toggleAttribute('data-invalid', on);
+    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    input.setAttribute('aria-describedby', req.id);
+    let icon = root.querySelector('.rux--list-box__invalid-icon');
+    if (on && !icon) {
+      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--list-box__invalid-icon');
+      root.querySelector('.rux--list-box__field').appendChild(icon);
+    }
+    if (!on) icon?.remove();
+    req.textContent = message;
   }
 
   function drawTitle() {
@@ -368,6 +465,11 @@
     if (email && !EMAIL.test(email)) {
       showError('email', 'Use an email address, such as name@example.com.');
       first ??= field('email');
+    }
+    showCustomerError('');
+    if (!customerId && customerText) {
+      showCustomerError('Pick a customer from the list, or clear the field.');
+      first ??= $('scheduler-c-customer');
     }
     first?.focus();
     return !first;
@@ -475,7 +577,7 @@
     result(null);
     // Every contact is read either way: a new one is checked against them all
     // for someone already here.
-    contacts = await readContacts();
+    [contacts, customers] = await Promise.all([readContacts(), readCustomers()]);
     if (!contactId) {
       loaded = null;
       trips = [];

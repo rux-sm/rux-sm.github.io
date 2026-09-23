@@ -357,12 +357,9 @@
                     <div class="rux--form-requirement" id="scheduler-c-name-error"></div>
                   </div>
                 </div>
-                <div class="rux--form-item rux--text-input-wrapper scheduler-pair-grid__wide">
-                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-c-client">Organization</label></div>
-                  <div class="rux--text-input__field-outer-wrapper">
-                    <div class="rux--text-input__field-wrapper"><input id="scheduler-c-client" class="rux--text-input" type="text" autocomplete="off"></div>
-                  </div>
-                </div>
+                <!-- The customer, a combo box over the customers, drawn by
+                     contacts.js. -->
+                <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-c-customer-slot"></div>
               </div>
               <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
@@ -379,7 +376,7 @@
                   </div>
                 </div>
               </div>
-              <p class="rux--form__helper-text scheduler-pair-note">A trip already booked keeps the phone it was saved with.</p>
+              <p class="rux--form__helper-text scheduler-pair-note">Customer not in the list? Add it on the <a class="rux--link" href="customers.html?new">Customers</a> page first. A trip already booked keeps the phone it was saved with.</p>
             </div>
           </fieldset>
 
@@ -511,6 +508,7 @@
 </main>
 
 <script src="/design/js/overlay.js"></script>
+<script src="/design/js/list-box.js"></script>
 <script src="/design/js/tabs.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/date-picker.js"></script>

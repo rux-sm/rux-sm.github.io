@@ -43,8 +43,6 @@ the quote prints the customer's address without anyone typing it.
   `customers.html` and `locations.html`, both in the side nav after Contacts.
 - **Neither page has a filter strip,** for the reason Contacts has none:
   neither has a status.
-- **The Contacts page's Organization field becomes Customer,** a combo box over
-  the customers, with the customer's name beneath the contact on the list.
 - **The old text columns keep being written.** `contacts.client` and
   `trips.customer` take the customer's name on every save, so rux-ui goes on
   showing it. A name rux-ui types there later changes only the text, not the
@@ -101,7 +99,6 @@ None open.
 
 ## Tasks
 
-- [ ] The Contacts page's Customer field.
 - [ ] The trip editor: the Customer field, the three fills, and saved
       locations first in the address search.
 - [ ] The Update your lists modal, in place of the silent contact fill.

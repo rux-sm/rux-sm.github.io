@@ -23,7 +23,7 @@ driver's schedule link is shown there but still made in rux-ui. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
 `contacts.html` lists every contact, the people who book and travel, with
-their organization, phone, email and trips, and edits one at
+their customer, phone, email and trips, and edits one at
 `contacts.html?id=`. A contact on any trip is never deleted, and editing one
 never changes a trip, which keeps the phone it was saved with. Saving a trip
 fills in the phone or email its contact is missing, never replacing one.

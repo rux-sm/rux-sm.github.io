@@ -382,6 +382,70 @@
 [data-theme="geist-dark"] .rux--data-table tbody th {
   border-block-end-color: var(--rux-border-subtle-00);
 }
+/* A sortable header is a button, and Carbon fills the button rather than the
+   cell, so the transparent header above still drew a grey block behind every
+   sortable column and a lighter one behind the sorted column, beside plain
+   columns in the box's own surface. The buttons take no fill either; a hovered
+   one lifts to the hover layer, and the arrow alone says which column sorts. */
+[data-theme="geist-dark"] .rux--table-sort,
+[data-theme="geist-dark"] .rux--table-sort.rux--table-sort--active {
+  background: transparent;
+}
+[data-theme="geist-dark"] .rux--table-sort:hover {
+  background: var(--rux-layer-hover-01);
+}
+/* THE TOOLBAR SITS INSIDE THE BOX, as Geist's own controls sit inside a card:
+   16px from its edges and 8px apart, so the search field's ring and the
+   button's corners no longer lie on the box's outline, doubling its line and
+   meeting its 8px corners with their 6px ones. The toolbar takes the box's
+   surface rather than a fill of its own. */
+[data-theme="geist-dark"] .rux--data-table-container .rux--table-toolbar {
+  block-size: auto;
+  padding: var(--rux-spacing-05);
+  background-color: transparent;
+}
+[data-theme="geist-dark"] .rux--data-table-container .rux--toolbar-content {
+  gap: var(--rux-spacing-03);
+}
+/* GEIST'S SEGMENTED CONTROL, measured on its Switch page: a box on the
+   surface inside a 1px ring, 6px corners and 4px of padding, holding 28px
+   options with 12px sides and no dividers. An option is secondary text, and
+   the chosen one is primary text on a 4px pill one grey step up. Carbon's
+   switcher instead draws an inverse outline round the group and fills the
+   chosen option with the inverse colour, which in this theme is a white frame
+   with a white slab in it. */
+[data-theme="geist-dark"] .rux--content-switcher {
+  block-size: auto;
+  padding: var(--rux-spacing-02);
+  border-radius: 6px;
+  outline: 0;
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
+}
+[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
+  block-size: 28px;
+  padding-block: 0;
+  padding-inline: var(--rux-spacing-04);
+  border-block: 0;
+  border-radius: 4px;
+  box-shadow: none;
+  color: var(--rux-text-secondary);
+}
+[data-theme="geist-dark"] .rux--content-switcher-btn::before {
+  display: none;
+}
+[data-theme="geist-dark"] .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected) {
+  background-color: transparent;
+  color: var(--rux-text-primary);
+}
+[data-theme="geist-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected {
+  color: var(--rux-text-primary);
+}
+[data-theme="geist-dark"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
+  border-radius: 4px;
+  background-color: var(--rux-layer-hover-01);
+}
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart
    by its border, not its fill. The theme already does this for the modal, which

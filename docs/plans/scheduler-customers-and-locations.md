@@ -43,7 +43,8 @@ the quote prints the customer's address without anyone typing it.
   showing it. A name rux-ui types there later changes only the text, not the
   link.
 - **The trip editor's Organization field becomes Customer,** a combo box over
-  the customers as the Contacts page has, and writes `trips.customer_id` beside the name. A name that is not a
+  the customers as the Contacts page has, and writes `trips.customer_id` beside
+  the name, which is what the quote's bill-to reads. A name that is not a
   customer yet makes one on Save, as a new contact is made today, so booking a
   new customer takes no detour.
 - **Three fills, each only into an empty field:** picking the booking contact
@@ -72,10 +73,6 @@ the quote prints the customer's address without anyone typing it.
     has by its map id or address, ticked, with the name and the address search
     to correct. Saving every stop unasked, as rux-ui does, fills the list with
     one-off stops.
-- **The quote's Name/address box fills from the customer:** its name, then the
-  bill-to if there is one, otherwise the usual pickup's address. The box stays
-  editable, because a quote is corrected before it is sent. A trip with no
-  customer linked prints the typed name, as today.
 - **Old trips are not linked in bulk.** Opening an unlinked trip preselects the
   customer whose name matches its typed one exactly, and Save keeps it.
 - **A customer or location is deleted only when nothing uses it:** no contact
@@ -97,6 +94,5 @@ None open.
 - [ ] The trip editor: the Customer field, the three fills, and saved
       locations first in the address search.
 - [ ] The Update your lists modal, in place of the silent contact fill.
-- [ ] The quote's Name/address box.
 - [ ] rux picks the usual pickups the copy left blank.
 - [ ] Delete the `locations-v1` settings row once both apps read the table.

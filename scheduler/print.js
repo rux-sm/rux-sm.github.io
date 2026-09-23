@@ -980,12 +980,22 @@
     return rule;
   }
 
-  /* THE FIRST SHEET, THE QUOTE. The bill-to address is typed, for now: a
-     customer is not a record yet --
-     `docs/plans/scheduler-customers-and-locations.md` makes it one -- so the
-     trip knows the customer's name and nobody's address, and the office writes
-     the lines under it as it writes them into QuickBooks today. The field stays open when that lands, because a quote
-     is corrected before it is sent. */
+  /* THE BILL-TO, from the trip's customer: its name, then its bill-to address
+     as typed, or else its usual pickup's address, the street over the city.
+     A trip with no customer linked has only the name it was typed with, and
+     the office writes the lines under it. */
+  function billToLines(trip) {
+    const customer = trip.customers;
+    if (!customer) return [trip.customer || ''];
+    const typed = String(customer.bill_to || '').split('\n').map(s => s.trim()).filter(Boolean);
+    if (typed.length) return [customer.name, ...typed];
+    const parts = String(customer.usual?.address || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (/^(united states|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
+    return parts.length ? [customer.name, parts[0], parts.slice(1).join(', ')] : [customer.name];
+  }
+
+  /* THE FIRST SHEET, THE QUOTE. The field stays open, because a quote is
+     corrected before it is sent. */
   function quoteSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote');
     card.appendChild(quoteHead(QUOTE_LETTERHEAD));
@@ -1001,7 +1011,7 @@
     card.appendChild(meta);
 
     const parties = el('div', 'scheduler-customer-quote__parties');
-    parties.appendChild(quoteBox('Name/address', [blank ? '' : trip.customer || ''], 'bill-to'));
+    parties.appendChild(quoteBox('Name/address', blank ? [''] : billToLines(trip), 'bill-to'));
     const who = el('div', 'scheduler-customer-quote__who');
     who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
     who.appendChild(quoteBox('Phone', [blank ? '' : trip.booking_contact_phone || '']));
@@ -1197,11 +1207,13 @@
       binds: 'trip',
       blank: true,
       // What the shared list does not already carry: the price and its
-      // quantity, the office's own contact for the customer, and the seats
-      // the description names, which are the outbound bus's.
+      // quantity, the office's own contact for the customer, the seats the
+      // description names, which are the outbound bus's, and the customer the
+      // bill-to is drawn from.
       columns: [
         'quoted_price', 'bus_count', 'pickup_address', 'booking_contact_email',
         'trip_assignments(leg,buses:bus_id(capacity))',
+        'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
       ],
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
       // record that a driver has their paperwork; a quote is sent, and whether

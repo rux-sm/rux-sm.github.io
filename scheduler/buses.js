@@ -22,26 +22,9 @@
 (() => {
   'use strict';
 
-  const $ = id => document.getElementById(id);
-  const el = (tag, cls, text) => {
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  };
-  const svgUse = (href, size, viewBox, cls) => {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    if (cls) svg.setAttribute('class', cls);
-    svg.setAttribute('width', size);
-    svg.setAttribute('height', size);
-    svg.setAttribute('viewBox', viewBox);
-    svg.setAttribute('fill', 'currentColor');
-    svg.setAttribute('aria-hidden', 'true');
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', href);
-    svg.appendChild(use);
-    return svg;
-  };
+  const { $, el, svgUse } = window.SchedulerPair;
+  const pair = window.SchedulerPair.page({ list: 'buses', one: 'bus' });
+  const { say, result } = pair;
 
   const params = new URLSearchParams(location.search);
   const busId = params.get('id');
@@ -162,28 +145,6 @@
     inactive: { label: 'Inactive', tag: 'rux--tag rux--tag--gray' },
   };
 
-  // ── the notice ──────────────────────────────────────────────────────────
-  // Every class is written out in full: the class sweep reads the source.
-  const NOTE = {
-    info: { cls: 'rux--inline-notification rux--inline-notification--info', icon: '#m-info-fill' },
-    error: { cls: 'rux--inline-notification rux--inline-notification--error', icon: '#m-error-fill' },
-    success: { cls: 'rux--inline-notification rux--inline-notification--success', icon: '#m-check_circle-fill' },
-  };
-  const say = (kind, title, text) => {
-    $('scheduler-buses-notice').hidden = !kind;
-    if (!kind) return;
-    $('scheduler-buses-notice-box').className = NOTE[kind].cls;
-    $('scheduler-buses-notice-icon').setAttribute('href', NOTE[kind].icon);
-    $('scheduler-buses-notice-title').textContent = title;
-    $('scheduler-buses-notice-text').textContent = text || '';
-  };
-  const result = (kind, text) => {
-    $('scheduler-bus-result').hidden = !kind;
-    if (!kind) return;
-    $('scheduler-bus-result-box').className = NOTE[kind].cls;
-    $('scheduler-bus-result-icon').setAttribute('href', NOTE[kind].icon);
-    $('scheduler-bus-result-text').textContent = text;
-  };
 
   /* ══ The fleet's order ══════════════════════════════════════════════════
      One comparator, used by the list, by the renumbering and by the board
@@ -203,9 +164,6 @@
   let outByBus = new Map();
   // Read from the Show choice, so the list agrees with the menu it sits under.
   let filter = $('scheduler-buses-filter')?.value || 'active';
-  let query = '';
-  let sortKey = null;
-  let sortDir = 'none';
 
   const matches = (b, q) => {
     if (!q) return true;
@@ -259,6 +217,7 @@
   }
 
   function drawList() {
+    const { query, sortKey, sortDir } = view;
     const counts = { active: 0, out: 0, inactive: 0, all: buses.length };
     for (const b of buses) counts[state(b, outByBus.get(b.id))]++;
     for (const option of $('scheduler-buses-filter')?.options ?? []) {
@@ -280,8 +239,7 @@
        the list to something a count can explain — a filter already carries its
        own count in the Show choice — so the band says nothing without one, and
        the New button does not move. */
-    const note = $('scheduler-buses-count');
-    if (note) note.textContent = query ? `${shown.length} of ${pool.length} match` : '';
+    view.count(shown.length, pool.length);
 
     const body = $('scheduler-buses-rows');
     body.replaceChildren();
@@ -332,53 +290,14 @@
     }
   }
 
-  // A click anywhere on a row opens its bus; the number is the link a
-  // keyboard reaches.
-  $('scheduler-buses-rows')?.addEventListener('click', e => {
-    const tr = e.target.closest('tr[data-id]');
-    if (!tr || e.target.closest('a')) return;
-    location.href = `buses.html?id=${encodeURIComponent(tr.dataset.id)}`;
-  });
-
-  // Carbon's three-step sort: ascending, descending, then back to the fleet's
-  // own order.
-  const NEXT = { none: 'ascending', ascending: 'descending', descending: 'none' };
-  document.querySelector('#scheduler-buses-list thead')?.addEventListener('click', e => {
-    const th = e.target.closest('th[data-sort]');
-    if (!th) return;
-    const dir = sortKey === th.dataset.sort ? NEXT[sortDir] : 'ascending';
-    sortKey = th.dataset.sort;
-    sortDir = dir;
-    for (const other of document.querySelectorAll('#scheduler-buses-list th[data-sort]')) {
-      const on = other === th && dir !== 'none';
-      other.setAttribute('aria-sort', on ? dir : 'none');
-      const button = other.querySelector('.rux--table-sort');
-      button.classList.toggle('rux--table-sort--active', on);
-      button.classList.toggle('rux--table-sort--descending', on && dir === 'descending');
-    }
-    drawList();
-  });
+  // Search, sort and a row's click, which opens its bus. The list opens in
+  // the fleet's own order, which a third press of a column returns to.
+  const view = pair.table({ sortKey: null, sortDir: 'none', draw: drawList });
 
   // The Show choice picks which buses the table holds.
   $('scheduler-buses-filter')?.addEventListener('change', e => {
     filter = e.target.value;
     drawList();
-  });
-
-  const searchInput = $('scheduler-buses-search');
-  const searchClear = $('scheduler-buses-search-clear');
-  searchInput?.addEventListener('input', () => {
-    query = searchInput.value.trim();
-    searchClear.classList.toggle('rux--search-close--hidden', !searchInput.value);
-    drawList();
-  });
-  searchClear?.addEventListener('click', () => {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-    searchInput.focus();
-  });
-  searchInput?.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && searchInput.value) { e.preventDefault(); searchClear.click(); }
   });
 
   const indexOut = rows => {
@@ -418,13 +337,6 @@
     const n = Number(v.replace(/[^0-9]/g, ''));
     return Number.isFinite(n) && v.replace(/[^0-9]/g, '') !== '' ? n : null;
   };
-
-  // Cancel and Save stack on a phone, as Carbon's stacked button set does.
-  const narrow = matchMedia('(max-width: 41.98rem)');
-  const stackButtons = () => document.querySelector('.scheduler-pair-buttons')
-    ?.classList.toggle('rux--btn-set--stacked', narrow.matches);
-  stackButtons();
-  narrow.addEventListener('change', stackButtons);
 
   let loaded = null;        // the bus row as the page read it
   let loadedOut = [];       // its out-of-service rows, as the database holds them
@@ -566,23 +478,7 @@
   function clearErrors() {
     for (const id of ERRORS) showError(id, '');
   }
-  function showError(id, message) {
-    const input = field(id);
-    const wrap = input.closest('.rux--text-input__field-wrapper');
-    const on = !!message;
-    input.classList.toggle('rux--text-input--invalid', on);
-    input.toggleAttribute('data-invalid', on);
-    wrap.toggleAttribute('data-invalid', on);
-    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
-    input.setAttribute('aria-describedby', `scheduler-b-${id}-error`);
-    let icon = wrap.querySelector('.rux--text-input__invalid-icon');
-    if (on && !icon) {
-      icon = svgUse('#m-report-fill', '16', '0 0 32 32', 'rux--text-input__invalid-icon');
-      wrap.prepend(icon);
-    }
-    if (!on) icon?.remove();
-    $(`scheduler-b-${id}-error`).textContent = message;
-  }
+  const showError = (id, message) => pair.textError(field(id), `scheduler-b-${id}-error`, message);
   function validate() {
     clearErrors();
     let first = null;
@@ -901,7 +797,7 @@
         if (now.error || windows.error) throw now.error || windows.error;
         const theirs = (windows.data || []).map(r => ({ ...r, start_date: day(r.start_date), end_date: day(r.end_date) }));
         if (!now.data || comparable(now.data) !== comparable(loaded) || outHeld(theirs) !== outHeld(loadedOut)) {
-          window.Rux?.modal?.open?.('scheduler-bus-conflict-modal');
+          guard.conflict();
           return false;
         }
       }
@@ -975,88 +871,19 @@
     save();
   });
 
-  $('scheduler-bus-conflict-save')?.addEventListener('click', async () => {
-    const next = afterSave;
-    keepAfter = true;
-    window.Rux?.modal?.close?.('scheduler-bus-conflict-modal');
-    keepAfter = false;
-    afterSave = null;
-    if (await save(true)) next?.();
-  });
-  $('scheduler-bus-conflict-modal')?.addEventListener('rux:modal-closed', () => {
-    if (!keepAfter) afterSave = null;
-  });
-  $('scheduler-bus-conflict-reload')?.addEventListener('click', async () => {
-    window.Rux?.modal?.close?.('scheduler-bus-conflict-modal');
-    afterSave = null;
-    try { await reload(); result('info', 'Showing the bus as it is now.'); } catch { result('error', "The bus didn't reload. Reload the page."); }
-  });
+  // Leaving with unsaved changes, and a conflict found by Save.
+  const guard = pair.guard({ editing, dirty, save, reload });
 
-  // ── leaving with unsaved changes ──
-  let afterSave = null;
-  let leaving = false;
-  const unsavedModal = $('scheduler-bus-unsaved-modal');
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[href]');
-    if (!a || !editing || leaving || !dirty()) return;
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
-    e.preventDefault();
-    afterSave = () => { leaving = true; location.href = a.href; };
-    window.Rux?.modal?.open?.(unsavedModal);
-  });
-  $('scheduler-bus-unsaved-discard')?.addEventListener('click', () => {
-    const next = afterSave;
-    afterSave = null;
-    window.Rux?.modal?.close?.(unsavedModal);
-    next?.();
-  });
-  // Save keeps the leaving action through the close, so a conflict found by
-  // the save can still finish it; any other close drops it.
-  let keepAfter = false;
-  $('scheduler-bus-unsaved-save')?.addEventListener('click', async () => {
-    const next = afterSave;
-    keepAfter = true;
-    window.Rux?.modal?.close?.(unsavedModal);
-    keepAfter = false;
-    afterSave = next;
-    if (await save()) { afterSave = null; next?.(); }
-  });
-  unsavedModal?.addEventListener('rux:modal-closed', () => { if (!keepAfter) afterSave = null; });
-  window.addEventListener('beforeunload', e => {
-    if (editing && !leaving && dirty()) { e.preventDefault(); e.returnValue = ''; }
-  });
-
-  /* ══ Start ══════════════════════════════════════════════════════════════
-     The same staff gate as the schedule: the page waits for the staff
-     profile, and an account without one, a profile that would not load, or a
-     local preview other than the cloud preview gets a notice instead. */
-  (async () => {
-    const account = window.Rux?.account;
-    if (!account?.staffProfile) {
-      say('info', 'This preview has no log-in', 'Open http://localhost:8641/, the cloud preview, to load the buses.');
-      return;
+  /* ══ Start ══════════════════════════════════════════════════════════════ */
+  pair.start(async signedIn => {
+    client = signedIn;
+    if (!editing) { await loadList(); return; }
+    if (!(await loadBus())) {
+      say('info', 'That bus is not in the list', 'Pick a bus from the list below.');
+      history.replaceState(null, '', 'buses.html');
+      $('scheduler-buses-h').hidden = false;
+      $('scheduler-buses-table').hidden = false;
+      drawList();
     }
-    let staff;
-    try { staff = await account.staffProfile(); } catch {
-      say('error', "The buses didn't load", 'Reload the page to try again.');
-      return;
-    }
-    if (!staff) {
-      say('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
-      return;
-    }
-    client = account.client;
-    try {
-      if (!editing) { await loadList(); return; }
-      if (!(await loadBus())) {
-        say('info', 'That bus is not in the list', 'Pick a bus from the list below.');
-        history.replaceState(null, '', 'buses.html');
-        $('scheduler-buses-h').hidden = false;
-        $('scheduler-buses-table').hidden = false;
-        drawList();
-      }
-    } catch {
-      say('error', "The buses didn't load", 'Reload the page to try again.');
-    }
-  })();
+  });
 })();

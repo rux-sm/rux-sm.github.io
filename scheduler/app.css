@@ -455,10 +455,15 @@ button.scheduler-row-head__num::after {
    bar in that day ends.
 
    The edge is a column of 3px squares 3px apart, drawn as a border image
-   because a `dotted` border draws round dots, which blur at 3px. */
+   because a `dotted` border draws round dots, which blur at 3px. One square
+   sits on the bar's middle, so the two ends are cut by the same amount. The
+   slice takes nothing from the top and bottom, which keeps the image
+   unstretched and every square the same 3px. */
 .scheduler-bar--from-prev,
 .scheduler-bar--to-next {
-  border-image: repeating-linear-gradient(to bottom, var(--scheduler-border) 0 3px, transparent 3px 6px) 1;
+  border-image: repeating-linear-gradient(to bottom,
+    var(--scheduler-border) calc(50% - 1.5px) calc(50% + 1.5px),
+    transparent calc(50% + 1.5px) calc(50% + 4.5px)) 0 1;
 }
 .scheduler-bar--from-prev {
   inset-inline-start: 0;

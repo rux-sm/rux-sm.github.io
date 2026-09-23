@@ -1009,8 +1009,8 @@
     const table = quoteTable(trip, blank);
     card.appendChild(table);
 
-    /* Screen only, and under the table because that is where the line it adds
-       goes. print.css takes it off the paper. */
+    /* Screen only, on the Total's line under the table, which is where the
+       line it adds goes. print.css takes it off the paper. */
     const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
     add.type = 'button';
     add.addEventListener('click', () => {
@@ -1019,8 +1019,9 @@
       letThemType(row, QUOTE_FIELDS);
       row.cells[0].focus();
     });
-    card.appendChild(add);
-    card.appendChild(quoteTotal(blank ? {} : trip));
+    const totalRow = el('div', 'scheduler-customer-quote__total-row');
+    totalRow.append(add, quoteTotal(blank ? {} : trip));
+    card.appendChild(totalRow);
 
     const terms = el('div', 'scheduler-customer-quote__terms');
     for (const text of QUOTE_TERMS) {
@@ -1477,18 +1478,32 @@
     const usable = page - margin * 2;
     if (!Number.isFinite(usable) || usable <= 0) return 1;
 
-    const rows = [...card.querySelectorAll('tbody > tr')];
-    const origin = card.firstElementChild?.offsetTop;
-    if (!rows.length || !Number.isFinite(origin)) return 1;
+    /* WHAT A PRINTER MOVES WHOLE. A table that may break is its rows, a
+       table or block that may not is itself, and everything on the sheet is
+       one of the two: counting only rows missed the quote's signature, which
+       sits under its table. */
+    const whole = e => getComputedStyle(e).breakInside === 'avoid';
+    const units = [...card.children].flatMap(child => {
+      const rows = whole(child) ? [] : [...child.querySelectorAll('tbody > tr')];
+      return rows.length ? rows : [child];
+    // A button is the screen's, and print.css takes it off the paper.
+    }).filter(e => e.offsetHeight && !e.matches('button, .scheduler-driver-itinerary__break'));
+    // From the sheet's own top, through every positioned box between.
+    const topIn = e => {
+      let top = 0;
+      for (let n = e; n && n !== card; n = n.offsetParent) top += n.offsetTop;
+      return top;
+    };
+    const start = parseFloat(getComputedStyle(card).paddingBlockStart) || 0;
 
     // Measured first and marked after, because a mark laid over the form does
     // not move a row but reading one row at a time while inserting would.
     const breaks = [];
     let ends = usable;
-    for (const row of rows) {
-      const top = row.offsetTop - origin;
-      if (top + row.offsetHeight <= ends) continue;
-      breaks.push(row.offsetTop);
+    for (const unit of units) {
+      const top = topIn(unit) - start;
+      if (top + unit.offsetHeight <= ends) continue;
+      breaks.push(top + start);
       ends = top + usable;
     }
     for (const [i, top] of breaks.entries()) {
@@ -1498,6 +1513,28 @@
       card.appendChild(mark);
     }
     return breaks.length + 1;
+  }
+
+  /* THE COUNT AND THE FOLDS, measured off the sheet as it stands. The rows
+     have to be on screen to be measured, and the marks take no room in the
+     form, so nothing moves under them once they are laid. What it counted is
+     what the band says, with the paper beside it by the name the print dialog
+     gives it, so what to load and what to pick are read where Print is
+     pressed. */
+  function countSheets() {
+    const cards = [...sheet.querySelectorAll(':scope > .scheduler-form')];
+    if (!current || !cards.length) return;
+    for (const mark of sheet.querySelectorAll('.scheduler-driver-itinerary__break')) mark.remove();
+    const sheets = cards.reduce((n, card) => n + showPageBreaks(card), 0);
+    count.textContent = [sheets === 1 ? '1 page' : `${sheets} pages`, current.form.page?.name]
+      .filter(Boolean).join(' · ');
+  }
+
+  /* Counted again after anything typed or added, because a line added or a
+     field typed past its width moves everything under it. After the form's
+     own handler, which is what adds the line. */
+  for (const type of ['input', 'click']) {
+    sheet.addEventListener(type, () => setTimeout(countSheets));
   }
 
   const draw = () => {
@@ -1520,14 +1557,7 @@
       if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     }
     sheet.replaceChildren(...cards);
-    // The rows have to be on screen to be measured, and the marks take no room
-    // in the form, so nothing moves under them once they are laid. What it
-    // counted is what the band says.
-    const sheets = cards.reduce((n, card) => n + showPageBreaks(card), 0);
-    /* The paper beside the count, by the name the print dialog gives it, so
-       what to load and what to pick are read where Print is pressed. */
-    count.textContent = [sheets === 1 ? '1 page' : `${sheets} pages`, current.form.page?.name]
-      .filter(Boolean).join(' · ');
+    countSheets();
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
        after the room is already its final size. */

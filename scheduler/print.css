@@ -1118,17 +1118,31 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__table th:nth-child(4) { inline-size: 11%; }
 .scheduler-customer-quote__table th:nth-child(5) { inline-size: 14%; }
 
-/* THE HAND'S DEPTH UNDER THE LINES. The office's sheet leaves room under its
-   items, and that is where a second line goes when one is added; the row
-   is empty paper with the columns ruled down through it. `height` and not
-   `min-block-size`, which a table row ignores. */
-.scheduler-customer-quote__room { height: 1.4in; }
+/* THE ITEMS BOX IS ONE DEPTH, as on the office's sheet, blank or filled: the
+   lines fill it from the top and the room under them is empty paper with the
+   columns ruled down through it, so an added line takes the room's space
+   rather than pushing the signature off the sheet. A table's height is a
+   floor, so lines past its depth still grow it. The room is the row a
+   percentage height hands the spare to, which keeps the lines together. */
+.scheduler-customer-quote__table { height: 2.8in; }
+.scheduler-customer-quote__room { height: 100%; }
 
 /* Lines are added before printing, so the button that adds them lives with
-   the form and comes off the paper. */
+   the form and comes off the paper. It is laid over the Total's line at the
+   sheet's leading edge and takes no room, so the sheet under it is the
+   paper's height and breaks where the paper does. */
+.scheduler-customer-quote__total-row {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: var(--rux-spacing-02);
+}
+
 .scheduler-customer-quote__add {
-  align-self: start;
-  margin-block-start: var(--rux-spacing-03);
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
 }
 
 /* The total, in two boxes of its own under the Cost and Total columns: the
@@ -1136,8 +1150,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__total {
   display: grid;
   grid-template-columns: 1in 1.5in;
-  align-self: end;
-  margin-block-start: var(--rux-spacing-02);
 }
 
 .scheduler-customer-quote__total-label,
@@ -1159,7 +1171,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 .scheduler-customer-quote__term {
-  margin: 0 0 1.15em;
+  margin: 0 0 0.6em;
 }
 
 /* THE SIGNATURE LINE IS A RULE, NOT A ROW OF UNDERSCORES. A typed underscore

@@ -33,22 +33,38 @@
   --scheduler-mark-blank: var(--rux-text-primary);
 }
 
-/* The colour of a mark on a trip bar that says something is still to be done.
+/* THE MARKS ON A TRIP BAR, ONE PALETTE: warning while something is still to be
+   done, error for a problem, success for what is settled, and done for a met
+   requirement or a driver not yet sent. Each is the theme's own colour at the
+   step that clears 3 to 1 on every bar fill it draws; a theme that sets no
+   done colour draws it in the bar's own text colour.
+
    The warning colour is a fill, and as a glyph on a light tag tint it reaches
-   only 1.3 to 1, so a light theme draws the mark in Carbon's orange 60, which
-   clears 3.8 against every tint; a dark theme's tints are dark and keep the
-   warning colour. */
+   only 1.3 to 1, so a light theme draws it in Carbon's orange 60, which clears
+   3.8 against every tint. */
 :root,
 [data-theme="white"],
 [data-theme="g10"] {
   --scheduler-mark-warning: #ba4e00;
+  --scheduler-mark-error: var(--rux-support-error);
+  --scheduler-mark-success: var(--rux-support-success);
 }
 [data-theme="g90"],
 [data-theme="g100"],
-[data-theme="geist-dark"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"] {
   --scheduler-mark-warning: var(--rux-support-warning);
+  --scheduler-mark-error: var(--rux-support-error);
+  --scheduler-mark-success: var(--rux-support-success);
+}
+/* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
+   its subtle badges, so the marks take the 900 steps of amber, red and green,
+   and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
+[data-theme="geist-dark"] {
+  --scheduler-mark-warning: oklch(77.21% 0.1991 64.28);
+  --scheduler-mark-error: oklch(69.96% 0.2136 22.03);
+  --scheduler-mark-success: oklch(73.1% 0.2158 148.29);
+  --scheduler-mark-done: var(--rux-text-primary);
 }
 
 /* The amber trip bar. A light theme tints it like the other tags: a fill at
@@ -67,7 +83,6 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
-[data-theme="geist-dark"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"] {
   --scheduler-amber-bg: var(--rux-support-warning);
@@ -75,6 +90,50 @@
   --scheduler-amber-hover: var(--rux-support-warning);
   --scheduler-amber-border: var(--scheduler-on-warning);
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
+}
+
+/* GEIST'S BARS ARE ITS SUBTLE BADGE, which Geist asks for on a dense surface:
+   the hue's 200 step (300 for pink and teal) at 27% lightness with its chroma
+   raised by 30%, under the hue's 900 step, read from Geist's own badge. Geist
+   has no hover for a badge, so a hovered bar lifts four points of lightness,
+   and the dotted edge of a bar that runs on takes the text colour. Magenta is
+   Geist's pink and the greys its grey. */
+[data-theme="geist-dark"] {
+  --scheduler-amber-bg: oklch(27% 0.0835 64.78);
+  --scheduler-amber-fg: oklch(77.21% 0.1991 64.28);
+  --scheduler-amber-hover: oklch(31% 0.0835 64.78);
+  --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
+  --scheduler-amber-hover-ring: none;
+}
+[data-theme="geist-dark"] .scheduler-bar--red {
+  --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(31% 0.1084 19.02);
+  --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);
+}
+[data-theme="geist-dark"] .scheduler-bar--blue,
+[data-theme="geist-dark"] .scheduler-bar--cyan {
+  --scheduler-bg: oklch(27% 0.1054 255.8); --scheduler-hover: oklch(31% 0.1054 255.8);
+  --scheduler-fg: oklch(71.7% 0.1648 250.794); --scheduler-border: oklch(71.7% 0.1648 250.794);
+}
+[data-theme="geist-dark"] .scheduler-bar--teal {
+  --scheduler-bg: oklch(27% 0.0997 180.99); --scheduler-hover: oklch(31% 0.0997 180.99);
+  --scheduler-fg: oklch(74.56% 0.1765 182.8); --scheduler-border: oklch(74.56% 0.1765 182.8);
+}
+[data-theme="geist-dark"] .scheduler-bar--green {
+  --scheduler-bg: oklch(27% 0.1164 150.09); --scheduler-hover: oklch(31% 0.1164 150.09);
+  --scheduler-fg: oklch(73.1% 0.2158 148.29); --scheduler-border: oklch(73.1% 0.2158 148.29);
+}
+[data-theme="geist-dark"] .scheduler-bar--purple {
+  --scheduler-bg: oklch(27% 0.1197 314.41); --scheduler-hover: oklch(31% 0.1197 314.41);
+  --scheduler-fg: oklch(69.87% 0.2037 309.51); --scheduler-border: oklch(69.87% 0.2037 309.51);
+}
+[data-theme="geist-dark"] .scheduler-bar--magenta {
+  --scheduler-bg: oklch(27% 0.1387 355.93); --scheduler-hover: oklch(31% 0.1387 355.93);
+  --scheduler-fg: oklch(69.36% 0.2223 3.91); --scheduler-border: oklch(69.36% 0.2223 3.91);
+}
+[data-theme="geist-dark"] .scheduler-bar--gray,
+[data-theme="geist-dark"] .scheduler-bar--cool-gray {
+  --scheduler-bg: oklch(27% 0 0); --scheduler-hover: oklch(31% 0 0);
+  --scheduler-fg: #ededed; --scheduler-border: #ededed;
 }
 
 /* The roster's column header and its priority headings are one band drawn

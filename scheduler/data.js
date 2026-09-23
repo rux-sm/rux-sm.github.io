@@ -66,8 +66,9 @@
   // -- the palette ----------------------------------------------------------
   /* The trip colours, read by the board, the editor and the bar menu. `value`
      is what `trips.trip_bar_color` stores and `hue` is the `scheduler-bar--*`
-     class that paints it. Carbon's tag palette has no amber, so app.css paints
-     `scheduler-bar--amber` with the warning colour.
+     class that paints it. Amber is the office's placeholder, a trip not yet
+     quoted: app.css paints it with the warning colour, and its bar draws no
+     marks.
 
      Retired names are mapped on read and never rewritten, as rux-ui does:
      orange and yellow paint as amber, cyan as teal. */
@@ -75,7 +76,7 @@
     { value: 'teal', label: 'Teal', hue: 'teal' },
     { value: 'green', label: 'Green', hue: 'green' },
     { value: 'purple', label: 'Purple', hue: 'purple' },
-    { value: 'amber', label: 'Amber', hue: 'amber' },
+    { value: 'amber', label: 'Placeholder', hue: 'amber' },
     { value: 'pink', label: 'Pink', hue: 'magenta' },
   ];
   const RETIRED_COLORS = { orange: 'amber', cyan: 'teal', yellow: 'amber' };
@@ -883,6 +884,11 @@
     bar.style.setProperty('--scheduler-span', place.span);
     bar.style.setProperty('--scheduler-lane', b.lane);
 
+    /* A PLACEHOLDER IS NOT A TRIP YET: the office paints amber on a trip that
+       has not been quoted. Nothing is due on it, so its bar draws no marks, no
+       empty seat and no missing bus; a driver someone has named still shows. */
+    const placeholder = tripColorOf(trip) === 'amber';
+
     const count = leg.count || 1;
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
@@ -936,7 +942,7 @@
         done: !missing,
       };
     });
-    const marks = [
+    const marks = placeholder ? [] : [
       ...pending,
       ...(wrong ? [{ href: '#m-directions_bus-fill', label: wrong }] : []),
       ...needs,
@@ -1026,8 +1032,8 @@
     addRow(bar, 'scheduler-bar__notes', warn('notes'), note);
 
     // The crew in role order, or what the bar needs before it can have one.
-    const crew = assign ? crewOf(trip, assign, driversById, statuses) : [];
-    const crewBox = el('span', 'scheduler-bar__crew', assign ? null : 'Needs a bus');
+    const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
+    const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
     addRow(bar, 'scheduler-bar__drivers', crewBox);
 

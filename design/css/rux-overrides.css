@@ -466,6 +466,18 @@
 [data-theme="geist-dark"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
+/* GEIST'S MENU HOLDS ITS ITEMS OFF ITS EDGE, measured on its Menu page: 6px of
+   padding inside a 12px corner, and each item a 6px pill, so the corners nest.
+   Carbon runs its items to the menu's edge, which in this theme laid a hovered
+   item's fill over the ring on both sides and squared the focus outline against
+   the rounded box. The outline follows the item's corner. */
+[data-theme="geist-dark"] .rux--menu {
+  padding: 6px;
+  border-radius: 12px;
+}
+[data-theme="geist-dark"] .rux--menu-item {
+  border-radius: 6px;
+}
 /* The side panel takes a real border rather than that ring, because its own
    header and action row paint opaque fills over its top and bottom edges and
    would cover one. Carbon sizes every box from its border, so the 1px comes

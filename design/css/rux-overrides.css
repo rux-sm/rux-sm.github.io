@@ -398,13 +398,14 @@
 [data-theme="geist-dark"] .rux--side-panel {
   border: 1px solid var(--rux-border-subtle-01);
 }
-/* And a rule under its title. Carbon separates a panel's header from what
-   follows with spacing alone -- the header is the panel's own surface in every
-   theme, with no line -- which is right where nothing else is ruled. In geist-dark
-   every other band carries one, so the absence reads as the one thing someone
-   forgot. */
-[data-theme="geist-dark"] .rux--side-panel__header {
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+/* And a rule under its title. Carbon draws its header's divider only as the
+   panel scrolls, or always on a header whose title does not animate, and
+   separates a resting one by spacing alone. In geist-dark every other band
+   carries a line, so the absence reads as the one thing someone forgot. The
+   line is Carbon's own divider, shown at rest: a border as well drew two where
+   Carbon already draws one. */
+[data-theme="geist-dark"] .rux--side-panel .rux--side-panel__header::before {
+  opacity: 1;
 }
 /* A BREADCRUMB UNDER 42rem. Carbon lays the list out as a wrapping row only
    from 42rem up, and gives every item a box of its own at every width; below

@@ -320,9 +320,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    the colour of the page and the paper the colour of the bar, and the sheet
    had no boundary at all. A line does not care which way the greys run. It is
    drawn in the paper's own theme, so it is g10's, which reads on a pale desk
-   and on a dark one alike. */
+   and on a dark one alike. It is drawn outside the sheet, so it takes nothing
+   from the width the text wraps in, which is the paper's. */
 @media screen {
-  .scheduler-form { border: 1px solid var(--rux-border-strong-01); }
+  .scheduler-form { box-shadow: 0 0 0 1px var(--rux-border-strong-01); }
 }
 
 /* THE ONE STOCK THAT IS NOT WHITE, on screen and not on paper. The standard
@@ -384,15 +385,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
      ink would run to the edge; print.js names the margin in @page instead,
      which is the only one that repeats.
 
-     AND IT PRINTS AT NINE TENTHS. It is laid out at the paper's own width,
-     which is wider than the margin leaves, and a printer left to shrink it
-     puts the right-hand rule exactly on the page's edge and rounds it off.
-     At 0.9 it is 7.65in inside the 7.7in, so nothing is shrunk or cut, and
-     the quote's terms still fit their one sheet, which at full size they do
-     not. */
+     AND IT TAKES THE WIDTH THE MARGIN LEAVES, at full size. On screen the
+     sheet is the paper with the margin as padding, so the text inside it is
+     the same width here and wraps and breaks where the preview shows. Held at
+     the paper's own width it was wider than the page, and the printer shrank
+     it and cut the right-hand rule. */
   .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
     padding: 0;
-    zoom: 0.9;
+    inline-size: auto;
   }
 
   /* A FORM THAT NAMES A HEIGHT IS EXACTLY ONE SHEET, and its last block takes
@@ -1191,7 +1191,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    their headings underlined into the text. */
 .scheduler-customer-quote--agreement {
   font-size: 8.5pt;
-  line-height: 1.4;
+  /* Word's single spacing, near enough, which is what holds the policies to
+     one sheet at the office's own size. */
+  line-height: 1.2;
 }
 
 .scheduler-customer-quote__agreement-title {
@@ -1233,7 +1235,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 .scheduler-customer-quote__policy {
-  margin: 0 0 1.1em;
+  margin: 0 0 0.8em;
 }
 
 .scheduler-customer-quote__policy-heading {

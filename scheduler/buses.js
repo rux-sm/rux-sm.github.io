@@ -245,7 +245,7 @@
     body.replaceChildren();
     if (!shown.length) {
       const tr = el('tr');
-      const td = el('td', null, query ? `No buses match “${query}”.` : 'No buses here.');
+      const td = el('td', null, query ? `No units match “${query}”.` : 'No units here.');
       td.colSpan = 6;
       tr.appendChild(td);
       body.appendChild(tr);
@@ -258,7 +258,7 @@
       const which = el('td');
       const cell = el('div', 'scheduler-pair-cell');
       const lines = el('div', 'scheduler-pair-cell__lines');
-      const link = el('a', 'scheduler-pair-cell__name', b.number ? `Bus ${b.number}` : 'Unnumbered bus');
+      const link = el('a', 'scheduler-pair-cell__name', b.number ? `Unit ${b.number}` : 'Unnumbered unit');
       link.href = `buses.html?id=${encodeURIComponent(b.id)}`;
       lines.appendChild(link);
       // The year is what the fleet is ordered by, so the row shows it.
@@ -419,9 +419,9 @@
   }
 
   function drawTitle() {
-    const name = loaded?.number ? `Bus ${loaded.number}` : null;
-    $('scheduler-bus-h').textContent = name || 'New bus';
-    document.title = `${name || 'New bus'} — Scheduler`;
+    const name = loaded?.number ? `Unit ${loaded.number}` : null;
+    $('scheduler-bus-h').textContent = name || 'New unit';
+    document.title = `${name || 'New unit'} — Scheduler`;
     const tag = $('scheduler-bus-status-tag');
     tag.hidden = !loaded;
     if (loaded) {
@@ -482,11 +482,11 @@
   function validate() {
     clearErrors();
     let first = null;
-    if (!text('number')) { showError('number', 'Enter a bus number.'); first ??= field('number'); }
+    if (!text('number')) { showError('number', 'Enter a unit number.'); first ??= field('number'); }
     // A bus number is what the board's row is called, so two buses may not
     // share one.
     else if (buses.some(b => b.id !== loaded?.id && String(b.number).toLowerCase() === text('number').toLowerCase())) {
-      showError('number', 'Another bus already has this number.');
+      showError('number', 'Another unit already has this number.');
       first ??= field('number');
     }
     const year = text('year');
@@ -714,7 +714,7 @@
         l.t.return_start_date ? LEG[l.leg] || null : null,
         // The one thing this page can say that the board cannot: the trip
         // runs while the bus is booked out.
-        overlaps(out, l.from, l.to) ? 'Bus is out of service then' : null,
+        overlaps(out, l.from, l.to) ? 'Unit is out of service then' : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
       a.appendChild(lines);
@@ -786,7 +786,7 @@
     const row = readForm();
     const saveBtn = $('scheduler-bus-save');
     saveBtn.disabled = true;
-    let part = 'the bus';     // what was being written or read when it stopped
+    let part = 'the unit';     // what was being written or read when it stopped
     try {
       let id = loaded?.id ?? newId;
       if (loaded && !force) {
@@ -833,11 +833,11 @@
       if (part === 'the read-back') {
         // Everything was written; only the read-back failed.
         baseline = snapshot();
-        result('error', "The bus saved, but the page didn't read it back. Reload the page to see it.");
+        result('error', "The unit saved, but the page didn't read it back. Reload the page to see it.");
         return true;
       }
-      if (part === 'the bus') result('error', "The bus wasn't saved. Try again.");
-      else result('error', `The bus saved, but ${part} didn't. Save again to finish.`);
+      if (part === 'the unit') result('error', "The unit wasn't saved. Try again.");
+      else result('error', `The unit saved, but ${part} didn't. Save again to finish.`);
       return false;
     } finally {
       saveBtn.disabled = false;
@@ -855,7 +855,7 @@
     buses = rows.data || [];
     outByBus = indexOut(windows.error ? [] : windows.data);
     const row = buses.find(b => b.id === id);
-    if (!row) throw new Error('Bus not found');
+    if (!row) throw new Error('Unit not found');
     loaded = row;
     loadedOut = (mine.data || []).map(r => ({ ...r, start_date: day(r.start_date), end_date: day(r.end_date) }));
     out = loadedOut.map(r => ({ ...r }));
@@ -879,7 +879,7 @@
     client = signedIn;
     if (!editing) { await loadList(); return; }
     if (!(await loadBus())) {
-      say('info', 'That bus is not in the list', 'Pick a bus from the list below.');
+      say('info', 'That unit is not in the list', 'Pick a unit from the list below.');
       history.replaceState(null, '', 'buses.html');
       $('scheduler-buses-h').hidden = false;
       $('scheduler-buses-table').hidden = false;

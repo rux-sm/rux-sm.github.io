@@ -289,7 +289,7 @@
       : { label: roleName(relief?.role || 'co-driver'), name: nameOf(relief) };
 
     frag.appendChild(row(
-      cell('Bus', assignment.buses?.number != null ? String(assignment.buses.number) : ''),
+      cell('Unit', assignment.buses?.number != null ? String(assignment.buses.number) : ''),
       cell(mine.label, mine.name),
       cell(other.label, other.name),
     ));

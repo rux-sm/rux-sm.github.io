@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Buses — Scheduler</title>
+<title>Fleet — Scheduler</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -141,7 +141,7 @@
       <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
         <a class="rux--side-nav__link rux--side-nav__link--current" href="buses.html" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
-          <span class="rux--side-nav__link-text">Buses</span>
+          <span class="rux--side-nav__link-text">Fleet</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
@@ -199,7 +199,7 @@
   <div class="rux--css-grid" id="scheduler-buses-list">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
       <div class="rux--stack-vertical rux--stack-scale-5">
-        <h1 class="rux--type-productive-heading-04" id="scheduler-buses-h">Buses</h1>
+        <h1 class="rux--type-productive-heading-04" id="scheduler-buses-h">Fleet</h1>
 
         <!-- The page's notice: no log-in, not staff, or a read that failed.
              It sits under the title in the list's own column, and the list
@@ -222,8 +222,8 @@
             <div class="rux--toolbar-content">
               <div class="rux--search rux--layout--size-md rux--toolbar-search-container-persistent" role="search">
                 <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></div>
-                <label class="rux--label" for="scheduler-buses-search">Search buses</label>
-                <input id="scheduler-buses-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search buses" autocomplete="off">
+                <label class="rux--label" for="scheduler-buses-search">Search the fleet</label>
+                <input id="scheduler-buses-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search the fleet" autocomplete="off">
                 <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear search input" id="scheduler-buses-search-clear">
                   <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
                 </button>
@@ -263,7 +263,7 @@
                   <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="bus">
                     <button type="button" class="rux--table-sort">
                       <span class="rux--table-sort__flex">
-                        <div class="rux--table-header-label">Bus</div>
+                        <div class="rux--table-header-label">Unit</div>
                         <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
                         <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
                       </span>
@@ -341,11 +341,11 @@
         <div class="rux--stack-vertical rux--stack-scale-3">
           <nav aria-label="Breadcrumb">
             <ol class="rux--breadcrumb">
-              <li class="rux--breadcrumb-item"><a class="rux--link" href="buses.html" id="scheduler-bus-back">Buses</a></li>
+              <li class="rux--breadcrumb-item"><a class="rux--link" href="buses.html" id="scheduler-bus-back">Fleet</a></li>
             </ol>
           </nav>
           <div class="scheduler-pair-title">
-            <h1 class="rux--type-productive-heading-04" id="scheduler-bus-h">New bus</h1>
+            <h1 class="rux--type-productive-heading-04" id="scheduler-bus-h">New unit</h1>
             <div class="rux--tag rux--tag--green" id="scheduler-bus-status-tag" hidden><span class="rux--tag__label"></span></div>
           </div>
         </div>
@@ -368,7 +368,7 @@
         <div>
         <div class="rux--tabs" id="scheduler-bus-tabs" hidden>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
-          <div class="rux--tab--list" role="tablist" aria-label="Bus">
+          <div class="rux--tab--list" role="tablist" aria-label="Unit">
             <button id="scheduler-bus-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-bus-panel-details" tabindex="0">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
             </button>
@@ -383,13 +383,13 @@
         <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-bus-form" novalidate autocomplete="off">
 
           <fieldset class="scheduler-pair-group">
-            <legend class="rux--type-heading-compact-02">Bus</legend>
+            <legend class="rux--type-heading-compact-02">Unit</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
               <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
-                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-number">Bus number</label></div>
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-number">Unit number</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
-                    <div class="rux--text-input__field-wrapper"><input id="scheduler-b-number" class="rux--text-input" type="text" autocomplete="off" data-scheduler-invalid-text="Enter a bus number"></div>
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-b-number" class="rux--text-input" type="text" autocomplete="off" data-scheduler-invalid-text="Enter a unit number"></div>
                     <div class="rux--form-requirement" id="scheduler-b-number-error"></div>
                   </div>
                 </div>
@@ -433,7 +433,7 @@
                   </div>
                 </div>
               </div>
-              <p class="rux--form__helper-text scheduler-pair-note">The model year sets where this bus sits on the board: newest at the top, and buses of one year by their number.</p>
+              <p class="rux--form__helper-text scheduler-pair-note">The model year sets where this unit sits on the board: newest at the top, and units of one year by their number.</p>
               <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-vin">VIN</label></div>
@@ -448,7 +448,7 @@
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-color">Colour</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
                     <div class="scheduler-bus-colour">
-                      <input id="scheduler-b-colour-pick" class="scheduler-bus-colour__pick" type="color" aria-label="Pick the bus colour" value="#8d8d8d">
+                      <input id="scheduler-b-colour-pick" class="scheduler-bus-colour__pick" type="color" aria-label="Pick the unit colour" value="#8d8d8d">
                       <div class="rux--text-input__field-wrapper"><input id="scheduler-b-color" class="rux--text-input" type="text" maxlength="7" autocomplete="off" placeholder="#8d8d8d" spellcheck="false"></div>
                     </div>
                     <div class="rux--form-requirement" id="scheduler-b-color-error"></div>
@@ -473,7 +473,7 @@
           <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Equipment</legend>
             <fieldset class="rux--checkbox-group scheduler-pair-checks" id="scheduler-b-equipment">
-              <legend class="rux--label">What this bus carries</legend>
+              <legend class="rux--label">What this unit carries</legend>
               <div class="rux--form-item rux--checkbox-wrapper">
                 <input id="scheduler-b-ada" class="rux--checkbox" type="checkbox">
                 <label for="scheduler-b-ada" class="rux--checkbox-label"><div class="rux--checkbox-label-text">ADA lift</div></label>
@@ -556,7 +556,7 @@
                dialog below and kept here until Save. -->
           <section class="rux--stack-vertical rux--stack-scale-5 scheduler-pair-group" aria-labelledby="scheduler-bus-oos-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-bus-oos-h">Out of service</h2>
-            <p class="rux--type-body-compact-01 scheduler-pair-note">The bus stays on the board and can still be assigned. These days are striped, and a trip across them warns.</p>
+            <p class="rux--type-body-compact-01 scheduler-pair-note">The unit stays on the board and can still be assigned. These days are striped, and a trip across them warns.</p>
             <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
               <ul role="list" id="scheduler-bus-oos"></ul>
             </div>
@@ -645,7 +645,7 @@
   <div class="rux--layer-one rux--modal" id="scheduler-bus-conflict-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-bus-conflict-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="scheduler-bus-conflict-h">Someone else changed this bus</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-bus-conflict-h">Someone else changed this unit</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
@@ -656,7 +656,7 @@
         <p>Their changes were saved after you opened this page. Saving now replaces them.</p>
       </div>
       <div class="rux--modal-footer">
-        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-bus-conflict-reload">Reload bus</button>
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-bus-conflict-reload">Reload unit</button>
         <button type="button" class="rux--btn rux--btn--danger" id="scheduler-bus-conflict-save">Save anyway</button>
       </div>
     </div>

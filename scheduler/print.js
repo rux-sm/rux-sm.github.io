@@ -1054,8 +1054,8 @@
       tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-label', label));
       tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-value scheduler-customer-quote__typed', value));
     };
-    pair('TRIP DESTINATION:', blank ? '' : trip.destination || '');
-    pair('TRIP DATE:', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
+    pair('DESTINATION:', blank ? '' : trip.destination || '');
+    pair('DATE:', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
     card.appendChild(tripBox);
 
     card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',

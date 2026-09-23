@@ -1204,9 +1204,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* The trip, as the Word form sets it: one ruled band, a bold label and its
-   answer, twice. The date is as wide as it is, on one line, and never less
-   than a date's width, so a blank one has room to be typed into; the
-   destination takes what is left. */
+   answer, twice. The date is as wide as it is, and never less than a
+   date's width, so a blank one has room to be typed into; the destination
+   takes what is left. */
 .scheduler-customer-quote__trip {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content);
@@ -1231,7 +1231,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-inline-end: 1px solid var(--rux-text-primary);
 }
 
-.scheduler-customer-quote__trip-value:last-child { white-space: nowrap; }
+/* Both answers keep to one line. The date is whole; a destination longer
+   than its box is cut with an ellipsis, which says there is more. */
+.scheduler-customer-quote__trip-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .scheduler-customer-quote__agreement-intro {
   margin: var(--rux-spacing-05) 0 var(--rux-spacing-05);

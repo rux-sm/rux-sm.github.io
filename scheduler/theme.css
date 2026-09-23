@@ -229,3 +229,12 @@
      short at both ends. */
   --scheduler-last-rule: 0;
 }
+
+/* THE TRIP'S SHORTCUTS HOLD THEIR SLOTS OFF THE EDGE in geist-dark, as
+   Geist's own Menu does and Design's menus do in this theme: 6px inside the
+   12px corner, each slot a 6px tile, so the corners nest and every slot's
+   hover is the same shape. */
+[data-theme="geist-dark"] {
+  --scheduler-shortcut-pad: 6px;
+  --scheduler-shortcut-radius: 6px;
+}

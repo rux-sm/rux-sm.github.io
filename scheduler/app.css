@@ -536,8 +536,10 @@ button.scheduler-row-head__num::after {
   background: var(--rux-layer-selected-inverse);
   box-shadow: 0 2px 8px rgb(0 0 0 / .4);
   /* Rounded like the theme's surfaces, and square where it has none. The
-     arrow stays at least 8px from either end, clear of the curve. */
+     arrow stays at least 8px from either end, clear of the curve. A theme
+     that holds the slots off the edge says by how much. */
   border-radius: var(--scheduler-surface-radius, 0);
+  padding: var(--scheduler-shortcut-pad, 0);
 }
 /* The row's display rule beats the browser's own `[hidden]`. */
 .scheduler-bar-shortcuts[hidden] { display: none; }
@@ -569,12 +571,14 @@ button.scheduler-row-head__num::after {
   background: transparent;
 }
 .scheduler-bar-shortcut:hover { background: var(--rux-background-inverse-hover); }
-/* The end slots fill the bar's rounded corners, so their hover follows the
-   curve. Only while it floats: docked, the bar is square across the screen's
-   foot and its last child is a slot, which would otherwise curve inside a
-   square corner. */
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-surface-radius, 0); border-end-start-radius: var(--scheduler-surface-radius, 0); }
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); border-end-end-radius: var(--scheduler-surface-radius, 0); }
+/* A slot is a tile of the theme's own corner where the bar holds its slots
+   off the edge. Where the slots run to the edge instead, the end ones fill the
+   bar's rounded corners, so their hover follows the curve. Only while it
+   floats: docked, the bar is square across the screen's foot, and its slots
+   are square in it. */
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut { border-radius: var(--scheduler-shortcut-radius, 0); }
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
 .scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 /* An empty slot's dashed circle, and an action that cannot act on this trip,
    are drawn faint in the bar's own icon colour, so they read on every theme. */
@@ -1793,6 +1797,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] {
   position: fixed;
   inset: auto 0 0 0;
+  padding: 0;
   z-index: 997;
   /* Docked, it is a sheet across the foot of the screen rather than a chip
      floating over one trip, so it takes the page's own raised surface in place

@@ -201,7 +201,8 @@
   /* ══ The list ═══════════════════════════════════════════════════════════ */
   let buses = [];
   let outByBus = new Map();
-  let filter = 'active';
+  // Read from the Show choice, so the list agrees with the menu it sits under.
+  let filter = $('scheduler-buses-filter')?.value || 'active';
   let query = '';
   let sortKey = null;
   let sortDir = 'none';
@@ -621,7 +622,7 @@
       const edit = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Edit');
       edit.type = 'button';
       edit.setAttribute('aria-label', `Edit days out ${rangeText(r.start_date, r.end_date)}`);
-      edit.addEventListener('click', () => openOut(i));
+      edit.addEventListener('click', () => openOut(i, edit));
       const remove = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Remove');
       remove.type = 'button';
       remove.setAttribute('aria-label', `Remove days out ${rangeText(r.start_date, r.end_date)}`);
@@ -694,7 +695,7 @@
   }
 
   let outEditing = null;
-  function openOut(index) {
+  function openOut(index, trigger) {
     outEditing = index;
     const r = index === null ? {} : out[index];
     $('scheduler-oos-h').textContent = index === null ? 'Add days out' : 'Edit days out';
@@ -731,10 +732,10 @@
     stack.append(rangeItem, error, reasonItem);
     host.replaceChildren(stack);
     window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-oos-modal');
+    window.Rux?.modal?.open?.('scheduler-oos-modal', trigger);
   }
 
-  $('scheduler-bus-oos-add')?.addEventListener('click', () => openOut(null));
+  $('scheduler-bus-oos-add')?.addEventListener('click', e => openOut(null, e.currentTarget));
   $('scheduler-oos-done')?.addEventListener('click', () => {
     const start = fieldDay($('scheduler-oos-start').value);
     // A blank last day is the first day: the picker clears it on a first pick.

@@ -245,13 +245,20 @@
       } else {
         place = null;
       }
-      showAddressError('');
+      noteAddress();
     });
     const req = el('div', 'rux--form-requirement');
     req.id = 'scheduler-l-address-error';
     wrap.appendChild(req);
     // Design's list-box.js listens on the document, so a field built now works.
     slot.replaceChildren(wrap);
+    noteAddress();
+  }
+
+  // An address with no map point cannot be saved, so when the search cannot
+  // run the field says why at once, rather than after Save.
+  function noteAddress() {
+    showAddressError(place?.lat == null ? window.SchedulerPlaces.unavailable() ?? '' : '');
   }
 
   function fillForm(p) {
@@ -310,9 +317,9 @@
     let first = null;
     if (!nameField.value.trim()) { showNameError('Enter a name.'); first ??= nameField; }
     if (!place || place.lat == null) {
-      showAddressError(typed
+      showAddressError(window.SchedulerPlaces.unavailable() ?? (typed
         ? 'Pick the address from the list, so it has a place on the map.'
-        : 'Search for the address and pick it from the list.');
+        : 'Search for the address and pick it from the list.'));
       first ??= $('scheduler-l-address');
     } else {
       // The same place twice would offer two answers for one stop.
@@ -338,9 +345,7 @@
       ? `The usual pickup for ${used.map(c => c.name).join(', ')}, so it can't be deleted.`
       : 'No customer takes this location as their usual pickup.';
   }
-  $('scheduler-location-delete')?.addEventListener('click', () => {
-    window.Rux?.modal?.open?.('scheduler-location-delete-modal');
-  });
+  // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-location-delete-confirm')?.addEventListener('click', async () => {
     const button = $('scheduler-location-delete-confirm');
     button.disabled = true;
@@ -394,6 +399,7 @@
     const row = readForm();
     const saveBtn = $('scheduler-location-save');
     saveBtn.disabled = true;
+    let wrote = false;
     try {
       let id = loaded?.id;
       if (id && !force) {
@@ -404,23 +410,29 @@
           return false;
         }
       }
-      if (id) {
-        const { error } = await client.from('locations').update(row).eq('id', id);
-        if (error) throw error;
-      } else {
-        // The id is made here, so a retry after a failed read-back updates
-        // this row rather than saving the place twice.
-        id = crypto.randomUUID();
-        const { error } = await client.from('locations').insert({ id, ...row });
-        if (error) throw error;
-        loaded = { id, ...row, updated_at: null };
-      }
+      // The write hands back the row as saved, so `loaded` holds its real
+      // updated_at even when the read-back below fails, and a second Save
+      // updates this row rather than finding a conflict or saving it twice.
+      const written = id
+        ? await client.from('locations').update(row).eq('id', id).select(COLUMNS).single()
+        : await client.from('locations').insert({ id: crypto.randomUUID(), ...row }).select(COLUMNS).single();
+      if (written.error) throw written.error;
+      loaded = written.data;
+      id = loaded.id;
+      wrote = true;
       history.replaceState(null, '', `locations.html?id=${encodeURIComponent(id)}`);
       currentId = id;
       await reload(id);
       result('success', 'Saved.');
       return true;
     } catch {
+      if (wrote) {
+        // What the form holds is what was saved, so leaving asks nothing.
+        baseline = snapshot();
+        drawTitle();
+        result('error', "The location saved, but the page didn't read it back. Reload the page to see it.");
+        return true;
+      }
       result('error', "The location wasn't saved. Try again.");
       return false;
     } finally {

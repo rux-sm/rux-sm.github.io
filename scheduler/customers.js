@@ -250,6 +250,7 @@
   narrow.addEventListener('change', stackButtons);
 
   let loaded = null;
+  let contactsBehind = false; // a rename its contacts' organization text missed
   let pickupId = null;      // the usual pickup picked
   let pickupText = '';      // the pickup field's text
   let baseline = '';
@@ -442,9 +443,7 @@
           ? "A contact or a trip names this customer, so it can't be deleted."
           : 'No contact or trip names this customer.';
   }
-  $('scheduler-customer-delete')?.addEventListener('click', () => {
-    window.Rux?.modal?.open?.('scheduler-customer-delete-modal');
-  });
+  // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-customer-delete-confirm')?.addEventListener('click', async () => {
     const button = $('scheduler-customer-delete-confirm');
     button.disabled = true;
@@ -502,6 +501,7 @@
     const row = readForm();
     const saveBtn = $('scheduler-customer-save');
     saveBtn.disabled = true;
+    let wrote = false;
     try {
       let id = loaded?.id;
       if (id && !force) {
@@ -512,27 +512,43 @@
           return false;
         }
       }
-      const renamed = loaded && loaded.name !== row.name;
-      if (id) {
-        const { error } = await client.from('customers').update(row).eq('id', id);
-        if (error) throw error;
-      } else {
-        // The id is made here, so a retry after a failed read-back updates
-        // this row rather than making the customer twice.
-        id = crypto.randomUUID();
-        const { error } = await client.from('customers').insert({ id, ...row });
-        if (error) throw error;
-        loaded = { id, ...row, updated_at: null };
-      }
+      const renamed = !!loaded && (loaded.name !== row.name || contactsBehind);
+      // The write hands back the row as saved, so `loaded` holds its real
+      // updated_at even when the read-back below fails, and a second Save
+      // updates this row rather than finding a conflict or saving it twice.
+      const written = id
+        ? await client.from('customers').update(row).eq('id', id).select(COLUMNS).single()
+        : await client.from('customers').insert({ id: crypto.randomUUID(), ...row }).select(COLUMNS).single();
+      if (written.error) throw written.error;
+      loaded = written.data;
+      id = loaded.id;
+      wrote = true;
       // rux-ui shows a contact's organization as text, so its contacts take
-      // the new spelling with it.
-      if (renamed) await client.from('contacts').update({ client: row.name }).eq('customer_id', id);
+      // the new spelling with it. An update that fails is tried again on the
+      // next Save, which would otherwise see no rename.
+      if (renamed) {
+        const moved = await client.from('contacts').update({ client: row.name }).eq('customer_id', id);
+        contactsBehind = !!moved.error;
+      }
       history.replaceState(null, '', `customers.html?id=${encodeURIComponent(id)}`);
       currentId = id;
       await reload(id);
+      // A Save that was leaving the page stays, so the missed contacts are said.
+      if (contactsBehind) {
+        result('error', "The customer saved, but its contacts still show the old name as their organization. Save again to update them.");
+        return false;
+      }
       result('success', 'Saved.');
       return true;
     } catch {
+      if (wrote) {
+        // What the form holds is what was saved, so leaving asks nothing.
+        baseline = snapshot();
+        drawTitle();
+        readTripCount();
+        result('error', "The customer saved, but the page didn't read it back. Reload the page to see it.");
+        return true;
+      }
       result('error', "The customer wasn't saved. Try again.");
       return false;
     } finally {

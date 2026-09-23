@@ -541,9 +541,7 @@
         ? "A trip names this contact, so it can't be deleted."
         : 'This contact is on no trip.';
   }
-  $('scheduler-contact-delete')?.addEventListener('click', () => {
-    window.Rux?.modal?.open?.('scheduler-contact-delete-modal');
-  });
+  // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-contact-delete-confirm')?.addEventListener('click', async () => {
     const button = $('scheduler-contact-delete-confirm');
     button.disabled = true;

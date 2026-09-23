@@ -9,8 +9,9 @@
 
    `window.SchedulerPlaces.init(client)` reads them; `.field(id, label, place,
    onPick)` returns the field, and `onPick` gets the place picked, or null and
-   the text when the field is typed in. Design's `js/list-box.js` opens and
-   closes the menu.
+   the text when the field is typed in. `.unavailable()` says why the search
+   cannot run, a settings read that failed or no token, or null when it can.
+   Design's `js/list-box.js` opens and closes the menu.
    ========================================================================== */
 (() => {
   'use strict';
@@ -25,19 +26,26 @@
   let token = null;
   let yard = null;
   let reading = null;
+  let why = null;         // why the search cannot run, once the settings are read
 
   function init(client) {
     reading ??= client.from('settings').select('key,value')
       .in('key', ['mapbox-token-v1', 'yard-location-v1'])
       .then(({ data, error }) => {
-        if (error) return;
+        if (error) throw error;
         const byKey = new Map((data || []).map(row => [row.key, row.value]));
         if (typeof byKey.get('mapbox-token-v1') === 'string') token = byKey.get('mapbox-token-v1');
         const y = byKey.get('yard-location-v1');
         if (y?.lat != null && y?.lng != null) yard = y;
+        if (!token) why = 'The address search has no Mapbox token in Settings, so no address can be looked up.';
+      })
+      .catch(() => {
+        why = "The address search didn't load, so no address can be looked up. Reload the page to try again.";
       });
     return reading;
   }
+
+  const unavailable = () => why;
 
   async function search(text) {
     if (!token || text.trim().length < 3) return [];
@@ -119,5 +127,5 @@
     return wrap;
   }
 
-  window.SchedulerPlaces = { init, search, field };
+  window.SchedulerPlaces = { init, search, field, unavailable };
 })();

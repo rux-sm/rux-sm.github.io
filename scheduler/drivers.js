@@ -161,7 +161,8 @@
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
   let drivers = [];
-  let filter = 'active';
+  // Read from the Show choice, so the list agrees with the menu it sits under.
+  let filter = $('scheduler-drivers-filter')?.value || 'active';
   let query = '';
   let sortKey = 'compliance';
   let sortDir = 'ascending';
@@ -510,7 +511,7 @@
       const edit = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Edit');
       edit.type = 'button';
       edit.setAttribute('aria-label', `Edit time off ${rangeText(r.start_date, r.end_date)}`);
-      edit.addEventListener('click', () => openOff(i));
+      edit.addEventListener('click', () => openOff(i, edit));
       const remove = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Remove');
       remove.type = 'button';
       remove.setAttribute('aria-label', `Remove time off ${rangeText(r.start_date, r.end_date)}`);
@@ -600,7 +601,7 @@
   }
 
   let offEditing = null;
-  function openOff(index) {
+  function openOff(index, trigger) {
     offEditing = index;
     const r = index === null ? { reason: 'vacation' } : off[index];
     $('scheduler-off-h').textContent = index === null ? 'Add time off' : 'Edit time off';
@@ -635,10 +636,10 @@
     stack.append(rangeItem, error, selectField('scheduler-off-reason', 'Reason', r.reason || 'other', REASONS), notesItem);
     host.replaceChildren(stack);
     window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-off-modal');
+    window.Rux?.modal?.open?.('scheduler-off-modal', trigger);
   }
 
-  $('scheduler-driver-off-add')?.addEventListener('click', () => openOff(null));
+  $('scheduler-driver-off-add')?.addEventListener('click', e => openOff(null, e.currentTarget));
   $('scheduler-off-done')?.addEventListener('click', () => {
     const start = fieldDay($('scheduler-off-start').value);
     // A blank last day is the first day: the picker clears it on a first pick.

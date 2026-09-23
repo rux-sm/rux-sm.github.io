@@ -2531,10 +2531,13 @@ html:has(.scheduler-page[data-takeover]) {
   }
 }
 /* The Show choice in the band: Carbon's inline select, as its table
-   pagination uses, flat on the band with no field line, its label beside it.
-   It takes the width of its longest option, so the search keeps the room that
-   is left and the New button stays at the end. */
+   pagination uses, flat on the band with no field line. Its label is for a
+   screen reader, since the options say what they are. It takes the width of
+   its longest option, so the search keeps the room that is left and the New
+   button stays at the end, and its text starts 16px in, as the magnifier and
+   New's label do, where Carbon's inline select starts at 8px. */
 .scheduler-table-show { flex: none; }
+.scheduler-table-show .rux--select-input { padding-inline-start: var(--rux-spacing-05); }
 
 /* What a search came to, in the band after the search and before New, which is
    where Carbon's own captures put the control that follows a persistent search.
@@ -2551,21 +2554,12 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-table-note:empty { margin-inline-end: 0; }
 /* Not on a phone. The band there is the search, the Show choice and New and
    nothing else fits: the count crushed the field to a magnifier and pushed the
-   button off the end. The Show label goes too, left for a screen reader,
-   because beside it the choice was cut to its first three letters, and the
-   choice is held to what its first word needs, not its longest option. */
+   button off the end. The choice is held to what its first word needs, not
+   its longest option. */
 @media (max-width: 41.98rem) {
   .scheduler-table-note { display: none; }
   .scheduler-table-show { inline-size: 8rem; }
   .scheduler-table-show .rux--select-input { inline-size: 8rem; }
-  .scheduler-table-show .rux--label {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
 }
 
 .scheduler-pair-title {

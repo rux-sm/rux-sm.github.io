@@ -85,6 +85,13 @@
   color: var(--rux-text-secondary);
 }
 
+/* THE FILTER'S TEXT STARTS 16px IN, as the search's magnifier and the
+   action's label do, so the band keeps one inset; Carbon's inline select
+   starts at 8px, which suits the pagination bar it was drawn for and read as
+   crowded against the search here. Its label is for a screen reader: the
+   options say what they are. */
+.list-page__show .rux--select-input { padding-inline-start: var(--rux-spacing-05); }
+
 /* NOT ON A PHONE. The band at that width is the search and the primary action
    and nothing else fits: the count crushed the field to its magnifier and
    pushed the button past the end of the box. */
@@ -861,9 +868,9 @@
                  rest, which a row of tabs over the table did at the cost of a
                  second head. Each option carries its count. Delete it if the
                  list has no views. -->
-            <div class="rux--form-item">
+            <div class="rux--form-item list-page__show">
               <div class="rux--select rux--select--inline rux--layout--size-lg">
-                <label class="rux--label" for="list-filter">Show</label>
+                <label class="rux--label rux--visually-hidden" for="list-filter">Show</label>
                 <div class="rux--select-input--inline__wrapper">
                   <div class="rux--select-input__wrapper">
                     <select id="list-filter" class="rux--select-input">

@@ -663,9 +663,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* THE CHOICE HOVERS LIKE THE REST. It is as pressable as they are, and where
    the rule above takes its edge away the hover is the only thing left saying
    how far the control reaches -- which is what the panel's ghost buttons
-   beside it do too. */
+   beside it do too. In the panel it is their hover exactly, Carbon's
+   background hover, so the row lifts the same under every control in it. */
 .scheduler-print__cell--action:hover,
 .scheduler-print__pick:hover { background: var(--rux-layer-hover); }
+.scheduler-viewer__toolbar > .scheduler-print__cell--action:hover,
+.scheduler-viewer__toolbar > .scheduler-print__pick:hover { background: var(--rux-background-hover); }
 
 .scheduler-print__cell:focus-within {
   outline: 2px solid var(--rux-focus);
@@ -704,8 +707,6 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 
 .scheduler-print__cell-select:focus { outline: none; }
-
-.scheduler-print__pick:hover { background: var(--rux-layer-hover); }
 
 /* Over the select's trailing room, and deaf to the pointer so a press there
    lands on the select under it. */

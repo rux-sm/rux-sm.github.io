@@ -1139,13 +1139,14 @@
       // Print all covers the bus's whole crew, one sheet each.
       copies: subject => seatsOf(subject.assignment)
         .map(seat => ({ ...subject, seat })),
-      /* The bus and the leg first, because they are what tells two copies
-         apart in a list that covers the whole trip; the seat's name follows. */
+      /* The bus, the leg where it is the way back, the seat and the driver's
+         full name: what tells two copies apart in a list that covers the whole
+         trip, in the order they are told apart by. */
       copyName: subject => [
-        subject.assignment?.buses?.number != null
-          ? `Bus ${subject.assignment.buses.number}${subject.leg === 'return' ? ' return' : ''}`
-          : null,
-        `${nameOf(subject.seat)} — ${roleName(subject.seat?.role)}`,
+        subject.assignment?.buses?.number != null ? String(subject.assignment.buses.number) : null,
+        subject.leg === 'return' ? 'Return' : null,
+        roleName(subject.seat?.role),
+        String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null,
       ].filter(Boolean).join(' · '),
       /* Only what dispatch would have filled in, and only on a blank one: a
          filled envelope prints what dispatch knows and dispatch is right. The
@@ -1819,13 +1820,13 @@
 
     /* A form with one copy to a subject, like the quote, names no copy, and
        the head names the form. */
-    const nameOf = copy => form.copyName?.(copy) ?? form.name;
+    const labelOf = copy => form.copyName?.(copy) ?? form.name;
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
-        current.blank ? `${form.name} — blank` : nameOf(chosen),
+        current.blank ? `${form.name} — blank` : labelOf(chosen),
         every.length > 1 ? every.map((copy, i) => ({
-          label: nameOf(copy),
+          label: labelOf(copy),
           checked: i === current.chosen,
           choose: () => { current.chosen = i; buildControls(); draw(); },
         })) : [],
@@ -1833,7 +1834,7 @@
     } else if (every.length > 1) {
       nodes.push(pickCell(
         'Copy',
-        every.map(nameOf),
+        every.map(labelOf),
         current.chosen,
         i => { current.chosen = i; draw(); },
       ));

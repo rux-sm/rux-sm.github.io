@@ -86,7 +86,9 @@ Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
 cannot disagree. `print.js` holds the registry every form is an entry in; a
 new form names its group, its short name for the tile, one line under it, a
 Material icon from Design's sprite, what it binds to and its paper, and the
-page gives it the same tile, frame and fit as the rest. The page follows the theme the
+page gives it the same tile, frame and fit as the rest. Download PDF, beside
+Print, saves the form as it prints, drawn as a picture, using html2canvas-pro
+and jsPDF loaded from jsDelivr on the first press. The page follows the theme the
 person keeps and the sheet on it carries the light one, so the ink drawn there
 is the ink that prints.
 

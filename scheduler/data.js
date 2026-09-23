@@ -7456,6 +7456,7 @@
   const viewerMenu = document.getElementById('scheduler-viewer-menu');
   const viewerDownload = document.getElementById('scheduler-viewer-download');
   const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
+  const viewerPdf = document.getElementById('scheduler-viewer-pdf');
   const viewerClose = document.getElementById('scheduler-viewer-close');
   const viewerHead = document.getElementById('scheduler-viewer-head');
   const viewerBack = document.getElementById('scheduler-viewer-back');
@@ -7569,6 +7570,7 @@
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
+    setFormPdf(null);
     if (!form) setFormControls([], []);
 
     /* A FORM OPENS IN THIS TAB, a stored file in another. The forms page is a
@@ -7809,7 +7811,27 @@
   }
   viewerBack?.addEventListener('click', () => viewerGoBack?.());
 
-  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack };
+  /* A FORM'S DOWNLOAD PDF. The form makes the file in its own frame and says
+     how by handing up the maker; a page with no form on it hands up none. */
+  let formPdf = null;
+  function setFormPdf(make) {
+    formPdf = typeof make === 'function' ? make : null;
+    if (viewerPdf) viewerPdf.hidden = !formPdf;
+  }
+  viewerPdf?.addEventListener('click', async () => {
+    if (!formPdf) return;
+    viewerPdf.disabled = true;
+    try { await formPdf(); } finally { viewerPdf.disabled = false; }
+  });
+
+  /* WHERE OPEN AS A PAGE GOES: the page the frame is on now. The Forms list
+     moves the frame to a form by itself, so the address the panel opened is
+     not always the one showing. */
+  function setFormLink(url) {
+    if (url) viewerNewTab.href = url;
+  }
+
+  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormPdf, setFormLink };
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is

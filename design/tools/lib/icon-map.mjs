@@ -64,6 +64,7 @@ export const ICONS = {
   'accessibility': { material: 'accessible', rux: null },
   'add': { material: 'add', rux: null },
   'arrow--down': { material: 'arrow_downward', rux: null },
+  'arrow--left': { material: 'arrow_back', rux: null },
   'arrow--right': { material: 'arrow_forward', rux: null },
   'arrow--up': { material: 'arrow_upward', rux: null },
   'arrows--vertical': { material: 'swap_vert', rux: null },

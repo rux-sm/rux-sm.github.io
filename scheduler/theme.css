@@ -33,6 +33,24 @@
   --scheduler-mark-blank: var(--rux-text-primary);
 }
 
+/* The colour of a mark on a trip bar that says something is still to be done.
+   The warning colour is a fill, and as a glyph on a light tag tint it reaches
+   only 1.3 to 1, so a light theme draws the mark in Carbon's orange 60, which
+   clears 3.8 against every tint; a dark theme's tints are dark and keep the
+   warning colour. */
+:root,
+[data-theme="white"],
+[data-theme="g10"] {
+  --scheduler-mark-warning: #ba4e00;
+}
+[data-theme="g90"],
+[data-theme="g100"],
+[data-theme="geist-dark"],
+[data-theme="ant-dark"],
+[data-theme="spotify-dark"] {
+  --scheduler-mark-warning: var(--rux-support-warning);
+}
+
 /* The amber trip bar. A light theme tints it like the other tags: a fill at
    the red, blue and purple tints' lightness and strength, a hover step three
    points darker, and Carbon's yellow 70 ink and yellow 40 edge, the steps its

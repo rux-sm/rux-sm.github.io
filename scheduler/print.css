@@ -486,8 +486,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 
 /* Capitals, the way the form in use prints what dispatch filled in: a name and
@@ -548,10 +547,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-envelope__tally-line:not(:nth-last-child(-n+2)) {
   border-block-end: 1px solid var(--rux-border-strong-01);
 }
-
-/* Capitals here too: this is the same form and the table above it is capitals,
-   and a block that follows the rule only where it had to reads as a mistake. */
-.scheduler-envelope__tally-line { text-transform: uppercase; }
 
 /* A label wraps rather than pushing its line past the edge of the paper: the
    30rem viewer draws the envelope narrower than the envelope is, and a column
@@ -683,7 +678,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-weight: var(--rux-label-01-font-weight);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
-  text-transform: uppercase;
 }
 
 .scheduler-envelope__log tbody { height: 100%; }
@@ -741,13 +735,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    is not, and never boxed. */
 .scheduler-driver-itinerary__meta {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--rux-spacing-05);
   margin: 0;
-}
-
-@media screen and (max-width: 42rem) {
-  .scheduler-driver-itinerary__meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .scheduler-driver-itinerary__field { min-inline-size: 0; }

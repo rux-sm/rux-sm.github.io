@@ -63,6 +63,12 @@
     return m ? `${m[2]}/${m[3]}/${m[1]}` : (d || '');
   };
 
+  /* One day, or the first and the last, in the one short form every box on
+     every form takes. A sentence, like the quote's description, keeps the
+     long form. */
+  const dayRange = (from, to) => [mdy(from), to && to !== from ? mdy(to) : '']
+    .filter(Boolean).join(' – ');
+
   const weekdayOf = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     if (!m) return '';
@@ -270,14 +276,14 @@
     const relief = seats.find(s => isRelief(s.role)) || seats.find(s => s.role === 'co-driver');
 
     const mine = seat && (seat.role || 'driver') !== 'driver'
-      ? { label: `${roleName(seat.role)}:`, name: nameOf(seat) }
-      : { label: 'Driver:', name: nameOf(driver) };
+      ? { label: roleName(seat.role), name: nameOf(seat) }
+      : { label: 'Driver', name: nameOf(driver) };
     const other = seat && (seat.role || 'driver') !== 'driver'
-      ? { label: 'Driver:', name: nameOf(driver) }
-      : { label: `${roleName(relief?.role || 'co-driver')}:`, name: nameOf(relief) };
+      ? { label: 'Driver', name: nameOf(driver) }
+      : { label: roleName(relief?.role || 'co-driver'), name: nameOf(relief) };
 
     frag.appendChild(row(
-      cell('Bus:', assignment.buses?.number != null ? String(assignment.buses.number) : ''),
+      cell('Bus', assignment.buses?.number != null ? String(assignment.buses.number) : ''),
       cell(mine.label, mine.name),
       cell(other.label, other.name),
     ));
@@ -289,14 +295,14 @@
     const multiDay = start && end && start !== end;
 
     frag.appendChild(row(
-      cell('Trip date:', mdy(start)),
-      ...(multiDay ? [cell('Return:', mdy(end))] : []),
+      cell('Trip date', mdy(start)),
+      ...(multiDay ? [cell('Return', mdy(end))] : []),
       relieving
-        ? cell('Swap time:', clock(seat.report_time))
-        : cell('Spot time:', clock(stop?.spot || trip.spot_time || trip.departure_time)),
+        ? cell('Swap time', clock(seat.report_time))
+        : cell('Spot time', clock(stop?.spot || trip.spot_time || trip.departure_time)),
     ));
 
-    frag.appendChild(row(cell('Pick up address:', shortAddress(stop?.address))));
+    frag.appendChild(row(cell('Pick up address', shortAddress(stop?.address))));
     return frag;
   }
 
@@ -306,7 +312,7 @@
     { label: 'ELD verified', choices: ['DRV', 'OFC'] },
     { label: 'Hotel', money: true },
     { label: 'ELD backup used', choices: ['Yes', 'No'] },
-    { label: 'Diesel/Blue Def', money: true },
+    { label: 'Diesel/blue DEF', money: true },
     /* Which card, written in. A number here is the yes, so the pair of boxes
        that used to ask it went: a card written down and a card ticked for are
        the same fact asked twice. It is named as the requirement below it is
@@ -363,7 +369,7 @@
     // "requirements" reads as a form that ran out, and the hand that writes
     // in it is writing a note. A driver holds one envelope, never both.
     box.appendChild(el('span', 'scheduler-envelope__label',
-      needs.length ? 'Requirements:' : 'Notes:'));
+      needs.length ? 'Requirements' : 'Notes'));
 
     if (needs.length) {
       const list = el('div', 'scheduler-envelope__needs');
@@ -439,8 +445,8 @@
 
     if (card.dataset.layout === 'multi-stop') {
       table.appendChild(row(
-        cell('Contact:', contact.name),
-        cell('Phone:', contact.phone),
+        cell('Contact', contact.name),
+        cell('Phone', contact.phone),
       ));
       card.appendChild(table);
       card.appendChild(envelopeLog());
@@ -449,15 +455,15 @@
       return card;
     }
 
-    table.appendChild(row(cell('Destination:', trip.destination || '')));
+    table.appendChild(row(cell('Destination', trip.destination || '')));
     table.appendChild(row(
-      cell('Contact:', contact.name),
-      cell('Phone:', contact.phone),
+      cell('Contact', contact.name),
+      cell('Phone', contact.phone),
     ));
     // Last in the table, because it is the one row filled in after the trip.
     table.appendChild(row(
-      cell('Starting odometer:', '', true),
-      cell('Ending odometer:', '', true),
+      cell('Starting odometer', '', true),
+      cell('Ending odometer', '', true),
     ));
     card.appendChild(table);
     card.appendChild(envelopeTally());
@@ -608,7 +614,7 @@
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.phones));
-    head.appendChild(el('h1', 'scheduler-driver-itinerary__title', 'Driver itinerary'));
+    head.appendChild(el('h1', 'scheduler-driver-itinerary__title', 'Itinerary'));
     return head;
   }
 
@@ -620,24 +626,18 @@
     return node;
   };
 
-  /* WHAT THE HEAD NAMES: the leg, the day, the client, where they are going
-     and who to call on the day. No crew, because the envelope beside this
-     sheet names the seat it is for and naming a driver twice is one fact with
-     two homes. The bus is the one exception, and it is blank unless the form
-     was opened on one: the sheet goes in that bus's envelope. */
+  /* WHAT THE HEAD NAMES: the day, the client, where they are going and who
+     to call on the day. No crew, no bus and no leg, because the envelope this
+     sheet goes in names all three, and naming them twice is one fact with two
+     homes. */
   function itineraryMeta(subject) {
-    const { trip, leg, assignment } = subject;
+    const { trip, leg } = subject;
     const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
-    const day = [weekdayOf(start), mdy(start)].filter(Boolean).join(' ');
     const contact = contactOf(trip);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
-    meta.appendChild(headField('Leg', trip.start_date ? legName(leg) : ''));
-    meta.appendChild(headField('Date',
-      [day, end && end !== start ? `– ${mdy(end)}` : ''].filter(Boolean).join(' ')));
+    meta.appendChild(headField('Date', dayRange(start, end)));
     meta.appendChild(headField('Client', trip.customer || ''));
-    meta.appendChild(headField('Bus',
-      assignment?.buses?.number != null ? String(assignment.buses.number) : ''));
     meta.appendChild(headField('Destination', trip.destination || ''));
     meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
@@ -778,7 +778,7 @@
   const today = () => {
     const now = new Date();
     const two = n => String(n).padStart(2, '0');
-    return `${two(now.getMonth() + 1)}/${two(now.getDate())}/${two(now.getFullYear() % 100)}`;
+    return `${two(now.getMonth() + 1)}/${two(now.getDate())}/${now.getFullYear()}`;
   };
 
   // Money as a quote prints it, cents and all, and negative for a deduction:
@@ -993,12 +993,12 @@
        it is typed into like every other field for one sent a day later. */
     const meta = el('div', 'scheduler-customer-quote__meta');
     meta.appendChild(quoteBox('Date', [today()], 'date'));
-    meta.appendChild(quoteBox('Estimate No.', [], 'date'));
+    meta.appendChild(quoteBox('Estimate no.', [], 'date'));
     meta.appendChild(el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
     card.appendChild(meta);
 
     const parties = el('div', 'scheduler-customer-quote__parties');
-    parties.appendChild(quoteBox('Name/Address', [blank ? '' : trip.customer || ''], 'bill-to'));
+    parties.appendChild(quoteBox('Name/address', [blank ? '' : trip.customer || ''], 'bill-to'));
     const who = el('div', 'scheduler-customer-quote__who');
     who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
     who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
@@ -1055,8 +1055,8 @@
       tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-label', label));
       tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-value scheduler-customer-quote__typed', value));
     };
-    pair('DESTINATION:', blank ? '' : trip.destination || '');
-    pair('DATE:', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
+    pair('Destination', blank ? '' : trip.destination || '');
+    pair('Date', blank ? '' : dayRange(trip.start_date, lastDay(trip)));
     card.appendChild(tripBox);
 
     card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',
@@ -1075,7 +1075,7 @@
     card.appendChild(policies);
 
     const sign = el('div', 'scheduler-customer-quote__agreement-sign');
-    for (const label of ['Customer Signature', 'Date']) {
+    for (const label of ['Customer signature', 'Date']) {
       const cell = el('div', 'scheduler-customer-quote__agreement-cell');
       cell.appendChild(el('span', 'scheduler-customer-quote__agreement-rule'));
       cell.appendChild(el('p', 'scheduler-customer-quote__agreement-label', label));
@@ -1203,7 +1203,9 @@
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
       // record that a driver has their paperwork; a quote is sent, and whether
       // it was is the Billing tab's business, not a form's.
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in' },
+      // Its folio is in its own face, the office's Helvetica.
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.4in',
+        font: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
       copies: subject => [subject],
       /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
          it sends it -- a price agreed on the phone, a contact the trip has
@@ -1528,6 +1530,27 @@
     const sheets = cards.reduce((n, card) => n + showPageBreaks(card), 0);
     count.textContent = [sheets === 1 ? '1 page' : `${sheets} pages`, current.form.page?.name]
       .filter(Boolean).join(' · ');
+    numberPages(sheets);
+  }
+
+  /* PAGE 1 OF 2 at the foot of every sheet of a form that runs to more than
+     one, so a stack that is dropped goes back in order. It is printed in the
+     margin, which is the page's and not the form's, so it moves nothing on
+     the sheet; a form of one sheet has nothing to number, and one held to its
+     stock has no margin to print it in. It sits at the top of the margin,
+     against the text, and clear of the edge a printer cannot reach. */
+  function numberPages(sheets) {
+    let style = document.getElementById('scheduler-print-folio');
+    if (!style) {
+      style = el('style');
+      style.id = 'scheduler-print-folio';
+      document.head.appendChild(style);
+    }
+    const font = current.form.page?.font || "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif";
+    style.textContent = sheets > 1 && sheet.dataset.sheet === 'flows'
+      ? `@page { @bottom-center { content: "Page " counter(page) " of " counter(pages);
+          vertical-align: top; padding-top: 0.08in; font-family: ${font}; font-size: 8pt; color: #525252; } }`
+      : '';
   }
 
   /* Counted again after anything typed or added, because a line added or a

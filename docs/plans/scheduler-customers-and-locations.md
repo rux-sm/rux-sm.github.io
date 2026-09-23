@@ -34,21 +34,6 @@ the quote prints the customer's address without anyone typing it.
 - **A location is a name, an address and a map point,** found through the same
   address search the Route tab uses, so a pickup filled from it has its drive
   time at once. An address the search cannot place is not saved.
-- **Locations become a table, `locations`.** Today they are one list inside
-  rux-ui's `settings` row `locations-v1`, which a customer cannot link to
-  reliably and two apps cannot write at once without losing each other's
-  changes.
-- **rux-ui switches to the table in the same step, and stops saving stops.**
-  Its one module, `js/data/locations-db.js`, reads and writes the table, so
-  its itinerary search and its settings list see what the scheduler adds; its
-  trip save no longer adds every stop, so only the scheduler's modal and the
-  Locations page grow the list. The change is made after reading rux-ui's own
-  `CLAUDE.md`, and rux-ui gets nothing more, since it is retired once the
-  scheduler is complete.
-- **The copy can run twice.** It inserts a location only when no row has the
-  same name and address, so it runs once before rux-ui switches and once after
-  to catch anything added in between. The `settings` row is left as it is until
-  both apps read the table, then deleted.
 - **The yard stays a setting.** It is one place with its own row, and nothing
   links to it.
 - **A trip keeps its own copy of every stop,** as `trip_stops` does today, so
@@ -106,40 +91,25 @@ the quote prints the customer's address without anyone typing it.
   bill-to if there is one, otherwise the usual pickup's address. The box stays
   editable, because a quote is corrected before it is sent. A trip with no
   customer linked prints the typed name, as today.
-- **Customers come from the contacts' organization names,** 139 of them once
-  case is set aside. rux settles the names spelled two ways from a list shown
-  in chat before anything is copied; each contact then links to the customer
-  its name became.
-- **A usual pickup is filled only where the names match exactly,** 13 of the
-  139; the rest are picked on the Customers page. A guessed link would put the
-  wrong address on a quote.
 - **Old trips are not linked in bulk.** Opening an unlinked trip preselects the
   customer whose name matches its typed one exactly, and Save keeps it.
 - **A customer or location is deleted only when nothing uses it:** no contact
   or trip for a customer, no customer for a location.
-- **The new tables carry `updated_at`,** set by the database, and Save compares
-  it rather than the whole row, as `contacts` and `buses` cannot.
-- **Database changes are named migrations shown to rux and applied on a yes:**
-  the two tables, `customer_id` on `contacts` and `trips`, staff-only row
-  security as every table has, and no grant to `anon`, revoked in the same
-  migration. The links clear to nothing when their target is deleted.
-
+- **Locations and customers are tables that carry `updated_at`,** set by the
+  database, and Save compares it rather than the whole row, as `contacts` and
+  `buses` cannot. Both are staff-only. `contacts.customer_id` and
+  `trips.customer_id` link to a customer, and 204 contacts were linked from
+  their organization names as rux settled them.
+- **A usual pickup was filled only where one saved place had the customer's
+  name,** 10 of the 119; the rest are picked on the Customers page, since a
+  guessed link would put the wrong address on a quote.
 ## Questions
 
 None open.
 
 ## Tasks
 
-- [ ] rux says go.
-- [ ] rux settles the organization names spelled two ways, from a list shown
-      in chat.
-- [ ] Migration: the `locations` table, and the first copy of the 141.
-- [ ] rux-ui reads and writes the table and its trip save stops adding stops;
-      then the second copy.
 - [ ] `scheduler/locations.html` and `scheduler/locations.js`.
-- [ ] Migration: the `customers` table, `contacts.customer_id` and
-      `trips.customer_id`, the customers and the contacts' links from the
-      settled names, and the 13 exact usual pickups.
 - [ ] `scheduler/customers.html` and `scheduler/customers.js`.
 - [ ] The Contacts page's Customer field.
 - [ ] The trip editor: the Customer field, the three fills, and saved

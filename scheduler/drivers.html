@@ -169,7 +169,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content scheduler-drivers-page">
+<main id="main-content" class="rux--content scheduler-pair-page">
   <!-- The page's notice: no log-in, not staff, or a read that failed. -->
   <div class="rux--css-grid" id="scheduler-drivers-notice" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
@@ -299,7 +299,7 @@
               <li class="rux--breadcrumb-item"><a class="rux--link" href="drivers.html" id="scheduler-driver-back">Drivers</a></li>
             </ol>
           </nav>
-          <div class="scheduler-driver-title">
+          <div class="scheduler-pair-title">
             <h1 class="rux--type-productive-heading-04" id="scheduler-driver-h">New driver</h1>
             <div class="rux--tag rux--tag--green" id="scheduler-driver-status" hidden><span class="rux--tag__label"></span></div>
           </div>
@@ -337,7 +337,7 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-details" aria-labelledby="scheduler-driver-tab-details" tabindex="0">
         <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-driver-form" novalidate autocomplete="off">
 
-          <fieldset class="scheduler-driver-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Profile</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
               <!-- The photo writes at once, not with Save, and needs a saved
@@ -353,7 +353,7 @@
                   <p class="rux--form__helper-text" id="scheduler-driver-photo-help" hidden>Save the driver before adding a photo.</p>
                 </div>
               </div>
-              <div class="scheduler-driver-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-first">First name</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -410,7 +410,7 @@
                   <div class="rux--text-input__field-wrapper"><input id="scheduler-d-address" class="rux--text-input" type="text" autocomplete="off"></div>
                 </div>
               </div>
-              <div class="scheduler-driver-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-city">City</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -433,10 +433,10 @@
             </div>
           </fieldset>
 
-          <fieldset class="scheduler-driver-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Emergency contact</legend>
-            <div class="scheduler-driver-grid">
-              <div class="rux--form-item rux--text-input-wrapper scheduler-driver-grid__wide">
+            <div class="scheduler-pair-grid">
+              <div class="rux--form-item rux--text-input-wrapper scheduler-pair-grid__wide">
                 <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-ename">Name</label></div>
                 <div class="rux--text-input__field-outer-wrapper">
                   <div class="rux--text-input__field-wrapper"><input id="scheduler-d-ename" class="rux--text-input" type="text" autocomplete="off"></div>
@@ -451,10 +451,10 @@
             </div>
           </fieldset>
 
-          <fieldset class="scheduler-driver-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Licence</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
-              <div class="scheduler-driver-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item">
                   <div class="rux--select">
                     <label class="rux--label" for="scheduler-d-cdl">CDL class</label>
@@ -482,7 +482,7 @@
                   </div>
                 </div>
               </div>
-              <div class="scheduler-driver-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item">
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
@@ -504,7 +504,7 @@
                   </div>
                 </div>
               </div>
-              <fieldset class="rux--checkbox-group scheduler-driver-endorsements" id="scheduler-d-endorsements">
+              <fieldset class="rux--checkbox-group scheduler-pair-checks" id="scheduler-d-endorsements">
                 <legend class="rux--label">Endorsements</legend>
                 <div class="rux--form-item rux--checkbox-wrapper">
                   <input id="scheduler-d-end-p" class="rux--checkbox" type="checkbox" value="P">
@@ -534,7 +534,7 @@
             </div>
           </fieldset>
 
-          <fieldset class="scheduler-driver-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Employment</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
               <fieldset class="rux--radio-button-group rux--radio-button-group--label-right" id="scheduler-d-status">
@@ -548,7 +548,7 @@
                   <label for="scheduler-d-status-inactive" class="rux--radio-button__label"><span class="rux--radio-button__appearance"></span><span class="rux--radio-button__label-text">Inactive</span></label>
                 </div>
               </fieldset>
-              <div class="scheduler-driver-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item">
                   <div class="rux--select">
                     <label class="rux--label" for="scheduler-d-type">Employment type</label>
@@ -588,7 +588,7 @@
                   </div>
                 </div>
               </div>
-              <div class="rux--form-item scheduler-driver-notes">
+              <div class="rux--form-item scheduler-pair-notes">
                 <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-d-notes">Notes</label></div>
                 <div class="rux--text-area__wrapper">
                   <textarea id="scheduler-d-notes" class="rux--text-area" rows="4"></textarea>
@@ -599,9 +599,9 @@
 
           <!-- Time off saves with the form. Each range is edited in the dialog
                below and kept here until Save. -->
-          <section class="rux--stack-vertical rux--stack-scale-5 scheduler-driver-group" aria-labelledby="scheduler-driver-off-h">
+          <section class="rux--stack-vertical rux--stack-scale-5 scheduler-pair-group" aria-labelledby="scheduler-driver-off-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-driver-off-h">Time off</h2>
-            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-driver-list">
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
               <ul role="list" id="scheduler-driver-off"></ul>
             </div>
             <div>
@@ -612,7 +612,7 @@
           </section>
 
           <!-- The button set and its order are form-page.html's. -->
-          <div class="rux--btn-set scheduler-driver-buttons">
+          <div class="rux--btn-set scheduler-pair-buttons">
             <a class="rux--btn rux--btn--secondary" href="drivers.html" id="scheduler-driver-cancel">Cancel</a>
             <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-driver-save">Save</button>
           </div>
@@ -623,9 +623,9 @@
              links, and trips are assigned on the board. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-schedule" aria-labelledby="scheduler-driver-tab-schedule" tabindex="0" hidden>
           <div class="rux--stack-vertical rux--stack-scale-7">
-            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-driver-group" aria-labelledby="scheduler-driver-link-h" id="scheduler-driver-link-section" hidden>
+            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-driver-link-h" id="scheduler-driver-link-section" hidden>
               <h2 class="rux--type-heading-compact-02" id="scheduler-driver-link-h">Schedule link</h2>
-              <p class="rux--type-body-compact-01 scheduler-driver-note" id="scheduler-driver-link-text"></p>
+              <p class="rux--type-body-compact-01 scheduler-pair-note" id="scheduler-driver-link-text"></p>
               <div id="scheduler-driver-link-copy" hidden>
                 <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-driver-link-button">Copy link
                   <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg>
@@ -633,9 +633,9 @@
               </div>
             </section>
 
-            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-driver-group" aria-labelledby="scheduler-driver-trips-h" id="scheduler-driver-trips-section" hidden>
+            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-driver-trips-h" id="scheduler-driver-trips-section" hidden>
               <h2 class="rux--type-heading-compact-02" id="scheduler-driver-trips-h">Upcoming trips</h2>
-              <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-driver-list">
+              <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
                 <ul role="list" id="scheduler-driver-trips"></ul>
               </div>
             </section>

@@ -12,9 +12,9 @@
    already pads 1rem, so the fields line up with the panel's title. */
 .rux--side-panel .rux--tab-content { padding-inline: 0; }
 
-/* The Drivers page's tab panels line up with the page title rather than
-   inset 16px from it, and open 32px under the tab strip. */
-.scheduler-drivers-page .rux--tab-content {
+/* A page pair's tab panels line up with the page title rather than inset
+   16px from it, and open 32px under the tab strip. */
+.scheduler-pair-page .rux--tab-content {
   padding-inline: 0;
   padding-block: var(--rux-spacing-07) 0;
 }
@@ -372,16 +372,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
 .scheduler-dialog-grid .rux--date-picker--single .rux--date-picker__input,
-.scheduler-driver-grid .rux--date-picker--single,
-.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-container,
-.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
-.scheduler-driver-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
-.scheduler-driver-grid .rux--date-picker--single .rux--date-picker__input,
-.scheduler-bus-grid .rux--date-picker--single,
-.scheduler-bus-grid .rux--date-picker--single .rux--date-picker-container,
-.scheduler-bus-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
-.scheduler-bus-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
-.scheduler-bus-grid .rux--date-picker--single .rux--date-picker__input {
+.scheduler-pair-grid .rux--date-picker--single,
+.scheduler-pair-grid .rux--date-picker--single .rux--date-picker-container,
+.scheduler-pair-grid .rux--date-picker--single .rux--date-picker-input__wrapper,
+.scheduler-pair-grid .rux--date-picker--single .rux--date-picker-input__wrapper > span,
+.scheduler-pair-grid .rux--date-picker--single .rux--date-picker__input {
   inline-size: 100%;
   max-inline-size: none;
 }
@@ -482,8 +477,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 
 /* A record's notes take the form's width, as the side panel's do above. */
-.scheduler-driver-notes .rux--text-area,
-.scheduler-bus-notes .rux--text-area { flex: 1 1 auto; }
+.scheduler-pair-notes .rux--text-area { flex: 1 1 auto; }
 
 /* A status icon keeps its size when the words beside it wrap onto a second
    line, as a licence warning does in a narrow table column. */
@@ -492,8 +486,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* On a phone the record pages stack Cancel and Save with Carbon's stacked
    button set, and each takes the form's full width. */
 @media (max-width: 41.98rem) {
-  .scheduler-driver-buttons .rux--btn,
-  .scheduler-bus-buttons .rux--btn { max-inline-size: none; }
+  .scheduler-pair-buttons .rux--btn { max-inline-size: none; }
 }
 
 /* A switch's label in a section heading is a flex box, so the inline switch's
@@ -551,9 +544,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .rux--file-container:empty { display: none; }
 
 /* Carbon spaces a checkbox for a single column: the first after a label
-   rises 2px and the rest hang 6px margins. In the Drivers page's
-   three-column endorsements every box sits on the grid's rows instead. */
-.scheduler-driver-endorsements > .rux--form-item.rux--checkbox-wrapper { margin: 0; }
+   rises 2px and the rest hang 6px margins. In a record page's three-column
+   group of checkboxes every box sits on the grid's rows instead. */
+.scheduler-pair-checks > .rux--form-item.rux--checkbox-wrapper { margin: 0; }
 
 /* The colour field and its options hold a 16px swatch beside their text.
    Carbon lays those rows out as inline text, where `vertical-align: middle`

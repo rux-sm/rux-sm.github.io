@@ -169,7 +169,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content scheduler-buses-page">
+<main id="main-content" class="rux--content scheduler-pair-page">
   <!-- The page's notice: no log-in, not staff, or a read that failed. -->
   <div class="rux--css-grid" id="scheduler-buses-notice" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
@@ -325,7 +325,7 @@
               <li class="rux--breadcrumb-item"><a class="rux--link" href="buses.html" id="scheduler-bus-back">Buses</a></li>
             </ol>
           </nav>
-          <div class="scheduler-bus-title">
+          <div class="scheduler-pair-title">
             <h1 class="rux--type-productive-heading-04" id="scheduler-bus-h">New bus</h1>
             <div class="rux--tag rux--tag--green" id="scheduler-bus-status-tag" hidden><span class="rux--tag__label"></span></div>
           </div>
@@ -363,10 +363,10 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-bus-panel-details" aria-labelledby="scheduler-bus-tab-details" tabindex="0">
         <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-bus-form" novalidate autocomplete="off">
 
-          <fieldset class="scheduler-bus-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Bus</legend>
             <div class="rux--stack-vertical rux--stack-scale-6">
-              <div class="scheduler-bus-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-number">Bus number</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -393,7 +393,7 @@
                   </div>
                 </div>
               </div>
-              <div class="scheduler-bus-grid">
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-year">Model year</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -414,8 +414,8 @@
                   </div>
                 </div>
               </div>
-              <p class="rux--form__helper-text scheduler-bus-note">The model year sets where this bus sits on the board: newest at the top, and buses of one year by their number.</p>
-              <div class="scheduler-bus-grid">
+              <p class="rux--form__helper-text scheduler-pair-note">The model year sets where this bus sits on the board: newest at the top, and buses of one year by their number.</p>
+              <div class="scheduler-pair-grid">
                 <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-vin">VIN</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -447,13 +447,13 @@
                   <label for="scheduler-b-status-inactive" class="rux--radio-button__label"><span class="rux--radio-button__appearance"></span><span class="rux--radio-button__label-text">Inactive</span></label>
                 </div>
               </fieldset>
-              <p class="rux--form__helper-text scheduler-bus-note">Out for a known stretch? Leave this Active and add the dates under Out of service.</p>
+              <p class="rux--form__helper-text scheduler-pair-note">Out for a known stretch? Leave this Active and add the dates under Out of service.</p>
             </div>
           </fieldset>
 
-          <fieldset class="scheduler-bus-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Equipment</legend>
-            <fieldset class="rux--checkbox-group scheduler-bus-equipment" id="scheduler-b-equipment">
+            <fieldset class="rux--checkbox-group scheduler-pair-checks" id="scheduler-b-equipment">
               <legend class="rux--label">What this bus carries</legend>
               <div class="rux--form-item rux--checkbox-wrapper">
                 <input id="scheduler-b-ada" class="rux--checkbox" type="checkbox">
@@ -466,9 +466,9 @@
             </fieldset>
           </fieldset>
 
-          <fieldset class="scheduler-bus-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Service</legend>
-            <div class="scheduler-bus-grid">
+            <div class="scheduler-pair-grid">
               <div class="rux--form-item rux--text-input-wrapper">
                   <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-b-mileage">Odometer, miles</label></div>
                   <div class="rux--text-input__field-outer-wrapper">
@@ -497,9 +497,9 @@
             </div>
           </fieldset>
 
-          <fieldset class="scheduler-bus-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Compliance</legend>
-            <div class="scheduler-bus-grid">
+            <div class="scheduler-pair-grid">
               <div class="rux--form-item">
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
@@ -535,10 +535,10 @@
 
           <!-- Out of service saves with the form. Each range is edited in the
                dialog below and kept here until Save. -->
-          <section class="rux--stack-vertical rux--stack-scale-5 scheduler-bus-group" aria-labelledby="scheduler-bus-oos-h">
+          <section class="rux--stack-vertical rux--stack-scale-5 scheduler-pair-group" aria-labelledby="scheduler-bus-oos-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-bus-oos-h">Out of service</h2>
-            <p class="rux--type-body-compact-01 scheduler-bus-note">The bus stays on the board and can still be assigned. These days are striped, and a trip across them warns.</p>
-            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-bus-list">
+            <p class="rux--type-body-compact-01 scheduler-pair-note">The bus stays on the board and can still be assigned. These days are striped, and a trip across them warns.</p>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
               <ul role="list" id="scheduler-bus-oos"></ul>
             </div>
             <div>
@@ -548,9 +548,9 @@
             </div>
           </section>
 
-          <fieldset class="scheduler-bus-group">
+          <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">Notes</legend>
-            <div class="rux--form-item scheduler-bus-notes">
+            <div class="rux--form-item scheduler-pair-notes">
               <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-b-notes">Notes</label></div>
               <div class="rux--text-area__wrapper">
                 <textarea id="scheduler-b-notes" class="rux--text-area" rows="4"></textarea>
@@ -559,7 +559,7 @@
           </fieldset>
 
           <!-- The button set and its order are form-page.html's. -->
-          <div class="rux--btn-set scheduler-bus-buttons">
+          <div class="rux--btn-set scheduler-pair-buttons">
             <a class="rux--btn rux--btn--secondary" href="buses.html" id="scheduler-bus-cancel">Cancel</a>
             <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-bus-save">Save</button>
           </div>
@@ -569,9 +569,9 @@
         <!-- Read only, so no Save: trips are assigned on the board and in the
              trip editor's Fleet tab. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-bus-panel-trips" aria-labelledby="scheduler-bus-tab-trips" tabindex="0" hidden>
-          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-bus-group" aria-labelledby="scheduler-bus-trips-h">
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-bus-trips-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-bus-trips-h">Upcoming trips</h2>
-            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page scheduler-bus-list">
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
               <ul role="list" id="scheduler-bus-trips"></ul>
             </div>
           </section>

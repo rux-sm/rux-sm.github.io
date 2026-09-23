@@ -26,11 +26,9 @@ three.
   business they book for gets its own page later, from
   `docs/plans/scheduler-organizations.md`; until then it is the contact's
   typed `client` text, shown as Organization.
-- **The shared shape has one home.** `scheduler/app.css` names each pair page
-  in its selectors (`scheduler-drivers-page`, `scheduler-buses-page`,
-  `scheduler-driver-title`, `scheduler-bus-title`). They become one page class
-  and one title class that all three pages carry, so a fourth page adds no
-  selector and the three cannot drift.
+- **The shared shape has one home:** the `scheduler-pair-*` classes in
+  `scheduler/app.css`, which Contacts carries as Drivers and Buses do, adding
+  only what a contact has and they do not.
 - **The page pair's two open tasks land first, on all three pages**: the notice
   and list in one grid, and the template's inset at every width. Contacts is
   built to the corrected shape, never copied from the old one.
@@ -97,14 +95,10 @@ three.
 
 ## Questions
 
-- Three decisions are recommendations rux has not yet agreed to: no filter
-  strip, one phone, and a trip save filling a contact's blanks. Agreed?
+None open.
 
 ## Tasks
 
-- [ ] rux answers the question above.
-- [ ] One page class and one title class for the pair pages, on Drivers and
-      Buses, with a before-and-after screenshot of both in every theme.
 - [ ] The page pair plan's two open layout tasks, on Drivers and Buses.
 - [ ] `scheduler/contacts.html` and `scheduler/contacts.js`: the list, the
       editor, the Trips tab, delete and the duplicate warning.

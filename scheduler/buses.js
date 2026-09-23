@@ -291,19 +291,19 @@
       return;
     }
     for (const b of shown) {
-      const tr = el('tr', 'scheduler-buses-row');
+      const tr = el('tr', 'scheduler-pair-row');
       tr.dataset.id = b.id;
 
       const which = el('td');
-      const cell = el('div', 'scheduler-bus-cell');
-      const lines = el('div', 'scheduler-bus-cell__lines');
-      const link = el('a', 'scheduler-bus-cell__number', b.number ? `Bus ${b.number}` : 'Unnumbered bus');
+      const cell = el('div', 'scheduler-pair-cell');
+      const lines = el('div', 'scheduler-pair-cell__lines');
+      const link = el('a', 'scheduler-pair-cell__name', b.number ? `Bus ${b.number}` : 'Unnumbered bus');
       link.href = `buses.html?id=${encodeURIComponent(b.id)}`;
       lines.appendChild(link);
       // The year is what the fleet is ordered by, so the row shows it.
       const detail = [b.year || 'No year', [b.make, b.model].filter(Boolean).join(' ') || null, b.type]
         .filter(Boolean).join(' · ');
-      lines.appendChild(el('span', 'scheduler-bus-cell__detail', detail));
+      lines.appendChild(el('span', 'scheduler-pair-cell__detail', detail));
       cell.append(disc(b.color), lines);
       which.appendChild(cell);
 
@@ -438,7 +438,7 @@
 
   // Cancel and Save stack on a phone, as Carbon's stacked button set does.
   const narrow = matchMedia('(max-width: 41.98rem)');
-  const stackButtons = () => document.querySelector('.scheduler-bus-buttons')
+  const stackButtons = () => document.querySelector('.scheduler-pair-buttons')
     ?.classList.toggle('rux--btn-set--stacked', narrow.matches);
   stackButtons();
   narrow.addEventListener('change', stackButtons);
@@ -623,17 +623,17 @@
     list.replaceChildren();
     if (!out.length) {
       const li = el('li', 'rux--contained-list-item');
-      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-bus-note', 'In service every day.'));
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'In service every day.'));
       list.appendChild(li);
       return;
     }
     const now = iso(today());
     out.forEach((r, i) => {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action');
-      const body = el('div', 'rux--contained-list-item__content scheduler-bus-item');
-      body.appendChild(el('span', 'scheduler-bus-item__main', rangeText(r.start_date, r.end_date)));
+      const body = el('div', 'rux--contained-list-item__content scheduler-pair-item');
+      body.appendChild(el('span', 'scheduler-pair-item__main', rangeText(r.start_date, r.end_date)));
       const now_out = r.start_date <= now && r.end_date >= now;
-      body.appendChild(el('span', 'scheduler-bus-item__detail',
+      body.appendChild(el('span', 'scheduler-pair-item__detail',
         [now_out ? 'Out now' : null, r.reason].filter(Boolean).join(' · ') || 'No reason given'));
       const actions = el('div', 'rux--contained-list-item__action');
       const edit = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Edit');
@@ -810,19 +810,19 @@
 
     if (error || !legs.length) {
       const li = el('li', 'rux--contained-list-item');
-      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-bus-note',
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note',
         error ? "The trips didn't load." : 'No upcoming trips.'));
       list.appendChild(li);
       return;
     }
     for (const l of legs) {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
-      const a = el('a', 'rux--contained-list-item__content scheduler-bus-trip');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
       a.href = `./?trip=${encodeURIComponent(l.t.id)}&date=${l.from}`;
       // Carbon lays a clickable item's content out itself, so the two lines
       // stack in a box of their own.
-      const lines = el('span', 'scheduler-bus-item');
-      lines.appendChild(el('span', 'scheduler-bus-item__main', `${rangeText(l.from, l.to)} · ${l.t.destination || 'No destination'}`));
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', `${rangeText(l.from, l.to)} · ${l.t.destination || 'No destination'}`));
       const detail = [
         l.t.customer,
         l.t.return_start_date ? LEG[l.leg] || null : null,
@@ -830,7 +830,7 @@
         // runs while the bus is booked out.
         overlaps(out, l.from, l.to) ? 'Bus is out of service then' : null,
       ].filter(Boolean).join(' · ');
-      lines.appendChild(el('span', 'scheduler-bus-item__detail', detail));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

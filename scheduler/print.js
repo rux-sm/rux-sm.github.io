@@ -995,9 +995,9 @@
        The date is today's, because a quote is dated the day it is written, and
        it is typed into like every other field for one sent a day later. */
     const meta = el('div', 'scheduler-customer-quote__meta');
-    meta.appendChild(quoteBox('Date', [today()], 'date'));
-    meta.appendChild(quoteBox('Estimate no.', [], 'date'));
-    meta.appendChild(el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
+    const dated = el('div', 'scheduler-customer-quote__meta-boxes');
+    dated.append(quoteBox('Date', [today()]), quoteBox('Estimate no.', []));
+    meta.append(dated, el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
     card.appendChild(meta);
 
     const parties = el('div', 'scheduler-customer-quote__parties');

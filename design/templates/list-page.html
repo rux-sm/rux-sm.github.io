@@ -92,6 +92,20 @@
    options say what they are. */
 .list-page__show .rux--select-input { padding-inline-start: var(--rux-spacing-05); }
 
+/* EMPTY, THE NOTE LEAVES THE ROW, kept for a screen reader so a count it gains
+   is still announced. A theme that parts the band's controls with a gap, as
+   geist-dark does with 8px, would otherwise put that gap on both sides of
+   nothing; and there the note needs no margin of its own. */
+.list-page__note:empty {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  margin: 0;
+}
+[data-theme="geist-dark"] .list-page__note { margin-inline-end: 0; }
+
 /* NOT ON A PHONE. The band at that width is the search and the primary action
    and nothing else fits: the count crushed the field to its magnifier and
    pushed the button past the end of the box. */

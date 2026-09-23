@@ -942,7 +942,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 742,
+      "line": 756,
       "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; select from sink/select.html; inline notification from sink/notification.html, 2026-08-28",
       "grid": "rux--css-grid",
       "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
@@ -961,7 +961,7 @@
       "follows": "title",
       "deps": [],
       "frameDeps": [],
-      "line": 779,
+      "line": 793,
       "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; select from sink/select.html; inline notification from sink/notification.html, 2026-08-28",
       "grid": "rux--css-grid",
       "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
@@ -982,7 +982,7 @@
         "title"
       ],
       "frameDeps": [],
-      "line": 800,
+      "line": 814,
       "provenance": "PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav; table, toolbar and search from components-datatable-batch-actions--batch-batch-actions and --with-sorting, all by way of templates/table-page.html; select from sink/select.html; inline notification from sink/notification.html, 2026-08-28",
       "grid": "rux--css-grid",
       "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",
@@ -1543,9 +1543,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 740,
-          "start": 101259,
-          "end": 114810,
+          "line": 754,
+          "start": 101769,
+          "end": 115320,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--css-grid-column rux--lg:col-span-12 rux--lg:col-start-3 rux--md:col-span-8 rux--sm:col-span-4",

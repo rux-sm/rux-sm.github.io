@@ -2551,7 +2551,21 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: var(--rux-label-01-line-height);
   color: var(--rux-text-secondary);
 }
-.scheduler-table-note:empty { margin-inline-end: 0; }
+/* Empty, it leaves the row, kept for a screen reader so a count it gains is
+   still announced: a theme that parts the band's controls with a gap, as
+   geist-dark does, would otherwise put that gap on both sides of nothing and
+   show 16px between the search and Show where 8px parts the rest. */
+.scheduler-table-note:empty {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  margin: 0;
+}
+/* Geist-dark parts the band's controls 8px apart, so the note keeps no margin
+   of its own there, where the other themes' band has no gap and needs it. */
+[data-theme="geist-dark"] .scheduler-table-note { margin-inline-end: 0; }
 /* Not on a phone. The band there is the search, the Show choice and New and
    nothing else fits: the count crushed the field to a magnifier and pushed the
    button off the end. The choice is held to what its first word needs, not

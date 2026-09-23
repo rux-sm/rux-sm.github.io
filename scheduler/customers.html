@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Quote rates — Scheduler</title>
+<title>Customers — Scheduler</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -21,8 +21,8 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The quote calculator's rates, shared by every staff account, read from and
-     saved to the database by quote.js. The shell is quote.html's. -->
+<!-- Every customer, and one customer's details, read from and saved to the
+     database by customers.js. The shell is the Contacts page's. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -36,11 +36,16 @@
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z"/><path d="M2 9H14V10H2z"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-document" viewBox="0 0 32 32"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></symbol>
 <symbol id="m-add" viewBox="0 -960 960 960"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
+<symbol id="m-arrow_upward" viewBox="0 -960 960 960"><path d="M450-160v-526L202-438l-42-42 320-320 320 320-42 42-248-248v526h-60Z"/></symbol>
+<symbol id="m-swap_vert" viewBox="0 -960 960 960"><path d="M323-450v-316L202-645l-42-42 193-193 193 193-42 42-121-121v316h-60ZM607-80 414-273l42-42 121 121v-316h60v316l121-121 42 42L607-80Z"/></symbol>
 <symbol id="m-apartment" viewBox="0 -960 960 960"><path d="M120-120v-555h165v-165h390v330h165v390H533v-165H427v165H120Zm60-60h105v-105H180v105Zm0-165h105v-105H180v105Zm0-165h105v-105H180v105Zm165 165h105v-105H345v105Zm0-165h105v-105H345v105Zm0-165h105v-105H345v105Zm165 330h105v-105H510v105Zm0-165h105v-105H510v105Zm0-165h105v-105H510v105Zm165 495h105v-105H675v105Zm0-165h105v-105H675v105Z"/></symbol>
 <symbol id="m-directions_bus" viewBox="0 -960 960 960"><path d="M216-120v-111q-29-16-42.5-46T160-341v-397q0-74 76.5-108T481-880q166 0 242.5 34T800-738v397q0 34-13.5 64T744-231v111h-86v-82H302v82h-86Zm265-644h259-520 261Zm177 293H220h520-82Zm-438-60h520v-173H220v173Zm145 203q16-16 16-39t-16-39q-16-16-39-16t-39 16q-16 16-16 39t16 39q16 16 39 16t39-16Zm308 0q16-16 16-39t-16-39q-16-16-39-16t-39 16q-16 16-16 39t16 39q16 16 39 16t39-16ZM220-764h520q-24-26-92-41t-167-15q-118 0-181 13.5T220-764Zm82 502h356q35 0 58.5-27t23.5-62v-120H220v120q0 35 23.5 62t58.5 27Z"/></symbol>
 <symbol id="m-calculate" viewBox="0 -960 960 960"><path d="M314-228h50v-88h88v-50h-88v-88h-50v88h-88v50h88v88Zm215-35h201v-49H529v49Zm0-107h201v-50H529v50ZM241-605h196v-50H241v50ZM120-120v-720h720v720H120Zm60-60h600v-600H180v600Zm0 0v-600 600Zm386-353 61-61 61 61 36-36-61-61 61-61-36-36-61 61-61-61-36 36 61 61-61 61 36 36Z"/></symbol>
 <symbol id="m-calendar_month" viewBox="0 -960 960 960"><path d="M440-400v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM440-240v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
 <symbol id="m-check_circle-fill" viewBox="0 -960 960 960"><path d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></symbol>
+<symbol id="m-keyboard_arrow_left" viewBox="0 -960 960 960"><path d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"/></symbol>
+<symbol id="m-keyboard_arrow_right" viewBox="0 -960 960 960"><path d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"/></symbol>
+<symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
 <symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-info-fill" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -48,10 +53,12 @@
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 <symbol id="m-call" viewBox="0 -960 960 960"><path d="M780-120q-108 0-225-56.5T336-335Q233-437 176.5-554T120-780v-60h215l40 189-117 119q28 45 57.5 83.5T377-378q36 36 77 67.5t88 57.5l117-121 181 39v215h-60ZM229-588l81-82-23-110H180q0 38 11.5 85T229-588Zm369 363q41 19 89 31t93 14v-107l-103-21-79 83ZM229-588Zm369 363Z"/></symbol>
 <symbol id="m-print" viewBox="0 -960 960 960"><path d="M658-648v-132H302v132h-60v-192h476v192h-60Zm-518 60h680-680Zm599 95q12 0 21-9t9-21q0-12-9-21t-21-9q-12 0-21 9t-9 21q0 12 9 21t21 9Zm-81 313v-192H302v192h356Zm60 60H242v-176H80v-352h800v352H718v176Zm102-236v-232H140v232h102v-76h476v76h102Z"/></symbol>
+<symbol id="m-search" viewBox="0 -960 960 960"><path d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"/></symbol>
 <symbol id="m-delete" viewBox="0 -960 960 960"><path d="M201-120v-630h-41v-60h188v-30h264v30h188v60h-41v630H201Zm60-60h438v-570H261v570Zm106-86h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/></symbol>
 <symbol id="m-account_circle" viewBox="0 -960 960 960"><path d="M222-255q63-44 125-67.5T480-346q71 0 133.5 23.5T739-255q44-54 62.5-109T820-480q0-145-97.5-242.5T480-820q-145 0-242.5 97.5T140-480q0 61 19 116t63 109Zm160.5-234.5Q343-529 343-587t39.5-97.5Q422-724 480-724t97.5 39.5Q617-645 617-587t-39.5 97.5Q538-450 480-450t-97.5-39.5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm107.5-76Q640-172 691-212q-51-36-104-55t-107-19q-54 0-107 19t-104 55q51 40 103.5 56T480-140q55 0 107.5-16Zm-52-375.5Q557-553 557-587t-21.5-55.5Q514-664 480-664t-55.5 21.5Q403-621 403-587t21.5 55.5Q446-510 480-510t55.5-21.5ZM480-587Zm0 374Z"/></symbol>
 <symbol id="m-groups" viewBox="0 -960 960 960"><path d="M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z"/></symbol>
 <symbol id="m-visibility" viewBox="0 -960 960 960"><path d="M600.5-379.5Q650-429 650-500t-49.5-120.5Q551-670 480-670t-120.5 49.5Q310-571 310-500t49.5 120.5Q409-330 480-330t120.5-49.5Zm-200-41Q368-453 368-500t32.5-79.5Q433-612 480-612t79.5 32.5Q592-547 592-500t-32.5 79.5Q527-388 480-388t-79.5-32.5ZM216-283Q98-366 40-500q58-134 176-217t264-83q146 0 264 83t176 217q-58 134-176 217t-264 83q-146 0-264-83Zm264-217Zm222.5 174.5Q804-391 857-500q-53-109-154.5-174.5T480-740q-121 0-222.5 65.5T102-500q54 109 155.5 174.5T480-260q121 0 222.5-65.5Z"/></symbol>
+<symbol id="m-report-fill" viewBox="0 -960 960 960"><path d="M480-281q14 0 24.5-10.5T515-316q0-14-10.5-24.5T480-351q-14 0-24.5 10.5T445-316q0 14 10.5 24.5T480-281Zm-30-144h60v-263h-60v263ZM330-120 120-330v-300l210-210h300l210 210v300L630-120H330Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
 
@@ -119,8 +126,6 @@
     </div>
   </div>
   <div class="rux--side-nav__overlay"></div>
-  <!-- The rates belong to the quote calculator, so its item stays marked,
-       without aria-current: this page is not the calculator. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--large">
@@ -147,8 +152,8 @@
           <span class="rux--side-nav__link-text">Contacts</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="customers.html">
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
+        <a class="rux--side-nav__link rux--side-nav__link--current" href="customers.html" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg></div>
           <span class="rux--side-nav__link-text">Customers</span>
         </a>
@@ -159,8 +164,8 @@
           <span class="rux--side-nav__link-text">Locations</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="quote.html">
+      <li class="rux--side-nav__item rux--side-nav__item--large">
+        <a class="rux--side-nav__link" href="quote.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
           <span class="rux--side-nav__link-text">Quote calculator</span>
         </a>
@@ -181,100 +186,285 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content scheduler-quote-page">
-  <div class="rux--css-grid">
-    <!-- The calculator's columns: centred in twelve of the sixteen at lg. -->
+<main id="main-content" class="rux--content scheduler-pair-page">
+  <!-- ── The list ─────────────────────────────────────────────────────────
+       Centred in twelve of the sixteen columns at lg, as the other page pairs
+       are. No filter strip: a customer has no status. customers.js draws the
+       rows and owns the sort. -->
+  <div class="rux--css-grid" id="scheduler-customers-list">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
+      <div class="rux--stack-vertical rux--stack-scale-5">
+        <h1 class="rux--type-productive-heading-04" id="scheduler-customers-h">Customers</h1>
+
+        <!-- The page's notice: no log-in, not staff, or a read that failed.
+             It sits under the title in the list's own column, and the list
+             hides its parts rather than its grid, so a notice is seen
+             whichever view the page was opened on. -->
+        <div id="scheduler-customers-notice" hidden>
+          <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-customers-notice-box">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-customers-notice-icon" href="#m-info-fill"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__title" id="scheduler-customers-notice-title"></div>
+                <div class="rux--inline-notification__subtitle" id="scheduler-customers-notice-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="rux--data-table-container" id="scheduler-customers-table" aria-labelledby="scheduler-customers-h" hidden>
+          <section class="rux--table-toolbar" role="group" aria-label="Table actions">
+            <div class="rux--toolbar-content">
+              <div class="rux--search rux--layout--size-lg rux--toolbar-search-container-persistent" role="search">
+                <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></div>
+                <label class="rux--label" for="scheduler-customers-search">Search customers</label>
+                <input id="scheduler-customers-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search customers" autocomplete="off">
+                <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear search input" id="scheduler-customers-search-clear">
+                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+                </button>
+              </div>
+              <!-- What a search came to, beside the thing that changes it.
+                   Empty it takes no room, so the button does not move. -->
+              <span class="scheduler-table-note" id="scheduler-customers-count" role="status"></span>
+              <a class="rux--btn rux--btn--primary" href="customers.html?new">New customer
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+              </a>
+            </div>
+          </section>
+
+          <div class="rux--data-table-content">
+            <table class="rux--data-table rux--data-table--lg rux--data-table--sort" aria-labelledby="scheduler-customers-h">
+              <thead>
+                <tr>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="ascending" data-sort="name">
+                    <button type="button" class="rux--table-sort rux--table-sort--active">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">Customer</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="pickup">
+                    <button type="button" class="rux--table-sort">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">Usual pickup</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="contacts">
+                    <button type="button" class="rux--table-sort">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">Contacts</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="scheduler-customers-rows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── One customer ─────────────────────────────────────────────────────
+       customers.html?id=<customer id> edits a customer and
+       customers.html?new makes one. Centred in eight of the sixteen columns
+       at lg: one form on its Details tab; the Contacts tab holds what is only
+       read, and has nothing to save. -->
+  <div class="rux--css-grid" id="scheduler-customer" hidden>
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-3">
           <nav aria-label="Breadcrumb">
             <ol class="rux--breadcrumb">
-              <li class="rux--breadcrumb-item"><a class="rux--link" href="quote.html">Quote calculator</a></li>
+              <li class="rux--breadcrumb-item"><a class="rux--link" href="customers.html" id="scheduler-customer-back">Customers</a></li>
             </ol>
           </nav>
-          <!-- The page's actions sit in its title row, as the calculator's do.
-               They are outside the form, so Save rates names the form it
-               submits, and quote.js shows them with the form. -->
-          <div class="scheduler-quote-title">
-            <h1 class="rux--type-productive-heading-04">Rates</h1>
-            <div class="scheduler-quote-title__actions" id="scheduler-quote-rates-actions" hidden>
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-rates-revert">Discard changes</button>
-              <button type="submit" form="scheduler-quote-rates-form" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="scheduler-quote-rates-save">Save rates</button>
-            </div>
+          <div class="scheduler-pair-title">
+            <h1 class="rux--type-productive-heading-04" id="scheduler-customer-h">New customer</h1>
           </div>
         </div>
 
-        <!-- The same notice as the calculator's. -->
-        <div id="scheduler-quote-notice" hidden>
-          <div class="rux--inline-notification rux--inline-notification--info" role="status">
+        <!-- What a save did. -->
+        <div id="scheduler-customer-result" role="status" hidden>
+          <div class="rux--inline-notification" id="scheduler-customer-result-box">
             <div class="rux--inline-notification__details">
-              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-info-fill"/></svg>
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-customer-result-icon" href="#m-check_circle-fill"/></svg>
               <div class="rux--inline-notification__text-wrapper">
-                <div class="rux--inline-notification__subtitle"><span id="scheduler-quote-notice-text"></span></div>
+                <div class="rux--inline-notification__subtitle" id="scheduler-customer-result-text"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- What a save did, under the title where its buttons are. -->
-        <div id="scheduler-quote-rates-result" role="status" hidden>
-          <div class="rux--inline-notification" id="scheduler-quote-rates-result-box">
-            <div class="rux--inline-notification__details">
-              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-quote-rates-result-icon" href="#m-check_circle-fill"/></svg>
-              <div class="rux--inline-notification__text-wrapper">
-                <div class="rux--inline-notification__subtitle" id="scheduler-quote-rates-result-text"></div>
-              </div>
-            </div>
+        <!-- The tab strip and its panels are one stack child, as the other
+             page pairs have them. A new customer has no contacts, so no
+             strip. -->
+        <div>
+        <div class="rux--tabs" id="scheduler-customer-tabs" hidden>
+          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
+          <div class="rux--tab--list" role="tablist" aria-label="Customer">
+            <button id="scheduler-customer-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-customer-panel-details" tabindex="0">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
+            </button>
+            <button id="scheduler-customer-tab-contacts" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-customer-panel-contacts" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Contacts</span></div>
+            </button>
           </div>
+          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
         </div>
 
-        <!-- Three tiles, as the calculator's: the trip rates, the mileage
-             rates and the driver pay. A tile paints layer, so the fields
-             inside it step up to layer-two. quote.js draws the fields. -->
-        <form class="scheduler-quote-rates" id="scheduler-quote-rates-form" novalidate hidden>
-          <div class="rux--tile scheduler-quote-rates__trip">
-            <div class="rux--layer-two scheduler-quote__body">
-              <fieldset class="scheduler-quote__group">
-                <legend class="rux--type-heading-compact-02">Trip</legend>
-                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-quote-rates-trip"></div>
-              </fieldset>
-            </div>
-          </div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-customer-panel-details" aria-labelledby="scheduler-customer-tab-details" tabindex="0">
+        <div class="rux--stack-vertical rux--stack-scale-7">
+        <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-customer-form" novalidate autocomplete="off">
 
-          <div class="rux--tile scheduler-quote-rates__mileage">
-            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
-              <fieldset class="scheduler-quote__group">
-                <legend class="rux--type-heading-compact-02">Mileage rates</legend>
-                <div class="scheduler-quote-mileage__head" aria-hidden="true"><span>Rate ($/mi)</span><span>Note</span><span>Default</span><span></span></div>
-                <div class="scheduler-quote-mileage__rows" id="scheduler-quote-mileage-rows"></div>
-              </fieldset>
-              <div>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-rate">Add rate<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
+          <fieldset class="scheduler-pair-group">
+            <legend class="rux--type-heading-compact-02">Customer</legend>
+            <div class="rux--stack-vertical rux--stack-scale-6">
+              <div class="scheduler-pair-grid">
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-cu-name">Name</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-cu-name" class="rux--text-input" type="text" autocomplete="off"></div>
+                    <div class="rux--form-requirement" id="scheduler-cu-name-error"></div>
+                  </div>
+                </div>
+                <!-- The usual pickup, a combo box over the saved locations,
+                     drawn by customers.js. -->
+                <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-cu-pickup-slot"></div>
+              </div>
+              <p class="rux--form__helper-text scheduler-pair-note">Not in the list? Add it on the <a class="rux--link" href="locations.html?new">Locations</a> page first.</p>
+              <div class="rux--form-item scheduler-pair-notes">
+                <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-cu-bill">Bill-to address</label></div>
+                <div class="rux--text-area__wrapper">
+                  <textarea id="scheduler-cu-bill" class="rux--text-area" rows="3" aria-describedby="scheduler-cu-bill-help"></textarea>
+                </div>
+                <div class="rux--form__helper-text" id="scheduler-cu-bill-help">Only when bills go somewhere other than the usual pickup, such as a district office. The quote prints the pickup's address otherwise.</div>
               </div>
             </div>
-          </div>
+          </fieldset>
 
-          <div class="rux--tile scheduler-quote-rates__driver">
-            <div class="rux--layer-two scheduler-quote__body">
-              <fieldset class="scheduler-quote__group">
-                <legend class="rux--type-heading-compact-02">Driver pay</legend>
-                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-quote-rates-driver"></div>
-              </fieldset>
-            </div>
+          <!-- The button set and its order are form-page.html's. -->
+          <div class="rux--btn-set scheduler-pair-buttons">
+            <a class="rux--btn rux--btn--secondary" href="customers.html" id="scheduler-customer-cancel">Cancel</a>
+            <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-customer-save">Save</button>
           </div>
         </form>
+
+        <!-- Outside the form: deleting is not an edit Save writes. A customer
+             a contact or a trip names stays, so the link is never lost. -->
+        <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-customer-delete-h" id="scheduler-customer-delete-section" hidden>
+          <h2 class="rux--type-heading-compact-02" id="scheduler-customer-delete-h">Delete</h2>
+          <p class="rux--type-body-compact-01 scheduler-pair-note" id="scheduler-customer-delete-text"></p>
+          <div>
+            <button type="button" class="rux--btn rux--btn--danger--tertiary" id="scheduler-customer-delete">Delete customer
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg>
+            </button>
+          </div>
+        </section>
+        </div>
+        </div>
+
+        <!-- Read only, so no Save: a contact's customer is picked on the
+             contact's own page. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-customer-panel-contacts" aria-labelledby="scheduler-customer-tab-contacts" tabindex="0" hidden>
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-customer-contacts-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-customer-contacts-h">People who book for this customer</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-customer-contacts"></ul>
+            </div>
+          </section>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked before a customer is deleted. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-customer-delete-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-customer-delete-modal-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-customer-delete-modal-h">Delete this customer?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>It is removed from the list. It cannot be undone.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-customer-delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked before leaving the customer with unsaved changes. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-customer-unsaved-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-customer-unsaved-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-customer-unsaved-h">Save changes?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>If you discard them, they are lost.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-customer-unsaved-discard">Discard</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-customer-unsaved-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked when Save finds the customer was changed elsewhere after the page
+       loaded it. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-customer-conflict-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-customer-conflict-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-customer-conflict-h">Someone else changed this customer</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>Their changes were saved after you opened this page. Saving now replaces them.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-customer-conflict-reload">Reload customer</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-customer-conflict-save">Save anyway</button>
       </div>
     </div>
   </div>
 </main>
 
 <script src="/design/js/overlay.js"></script>
+<script src="/design/js/list-box.js"></script>
+<script src="/design/js/tabs.js"></script>
+<script src="/design/js/popover.js"></script>
+<script src="/design/js/date-picker.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
+<script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
-<script src="quote.js"></script>
+<script src="customers.js"></script>
 </body>
 </html>
+

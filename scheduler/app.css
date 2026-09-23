@@ -655,8 +655,8 @@ button.scheduler-row-head__num::after {
    glyph is what makes it liveable -- a filled silhouette carries at a contrast
    that would lose an outline's strokes -- and no mark on this bar is a block
    any more. */
-.scheduler-bar__warn-chip--error { color: var(--rux-support-error); }
-.scheduler-bar__warn-chip--success { color: var(--rux-support-success); }
+.scheduler-bar__warn-chip--error { color: var(--scheduler-mark-error); }
+.scheduler-bar__warn-chip--success { color: var(--scheduler-mark-success); }
 /* The count standing in for the marks a narrow bar has no room for, in the
    place of the last that fits. It is a chip like the others and the same
    square, so `fitMarks` can count what fits from one measurement. `hidden`
@@ -681,11 +681,12 @@ button.scheduler-row-head__num::after {
   letter-spacing: 0;
 }
 
-/* A mark this bus already answers for takes the bar's own text colour: the
-   trip has a sleeper, or a hotel, and nothing is left to do about it. The
-   glyph is the same either way and only its colour changes, so a requirement
-   reads as one thing whether it is met or not. */
-.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done { color: inherit; }
+/* A mark this bus already answers for takes `--scheduler-mark-done`, or the
+   bar's own text colour in a theme that sets none: the trip has a sleeper, or
+   a hotel, and nothing is left to do about it. The glyph is the same either
+   way and only its colour changes, so a requirement reads as one thing
+   whether it is met or not. */
+.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done { color: var(--scheduler-mark-done, currentColor); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time. */
@@ -776,13 +777,13 @@ button.scheduler-row-head__num::after {
   inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
 }
-.scheduler-crew__mark--success { color: var(--rux-support-success); }
-.scheduler-crew__mark--error { color: var(--rux-support-error); }
+.scheduler-crew__mark--success { color: var(--scheduler-mark-success); }
+.scheduler-crew__mark--error { color: var(--scheduler-mark-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
-/* Not sent takes the bar's own colour: nothing has happened to this driver
-   yet, so it holds no colour of its own and reads as the empty first step
-   rather than as a state. */
-.scheduler-crew__mark--off { color: inherit; }
+/* Not sent takes the done colour, as a met requirement does: nothing has
+   happened to this driver yet, so it holds no colour of its own and reads as
+   the empty first step rather than as a state. */
+.scheduler-crew__mark--off { color: var(--scheduler-mark-done, currentColor); }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 
@@ -2449,9 +2450,9 @@ html:has(.scheduler-page[data-takeover]) {
 }
 
 /* ── The page pairs ──────────────────────────────────────────────────────
-   Drivers, Buses and Contacts: a list, then one record's form, each laid out
-   as docs/plans/site-page-pair.md decides. Every rule here is shared, so the
-   pages cannot drift; what one page has and the others do not follows
+   Drivers, Buses, Contacts, Customers and Locations: a list, then one
+   record's form, each laid out as docs/plans/site-page-pair.md decides. Every
+   rule here is shared, so the pages cannot drift; what one page has and the others do not follows
    under its own heading. Views, notices and buttons are shown and hidden with
    `hidden`, which a Carbon class's own `display` would otherwise beat. */
 .scheduler-pair-page [hidden] { display: none; }
@@ -2704,6 +2705,12 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-contacts-rows td:nth-child(2),
   #scheduler-contacts-rows td:nth-child(3),
   #scheduler-contacts-rows td:nth-child(4) { display: none; }
+}
+
+/* ── Customers only ── */
+@media (max-width: 41.98rem) {
+  #scheduler-customers-list th:nth-child(2),
+  #scheduler-customers-rows td:nth-child(2) { display: none; }
 }
 
 /* The Route tab's note under its timeline, 8px below it, as the PO coverage

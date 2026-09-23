@@ -34,6 +34,12 @@ from the map search in `places.js`, so every place has its map point. A trip
 keeps its own copy of each stop, and a location a customer uses as their usual
 pickup is never deleted.
 
+`customers.html` lists who pays, each with a usual pickup picked from
+Locations and a bill-to address only when bills go somewhere else, and edits
+one at `customers.html?id=`. Two customers never share a name, since
+QuickBooks matches on it; renaming one renames the organization text its
+contacts carry, which rux-ui shows.
+
 On the compact board, a swipe moves one week of trip cells while the date and
 bus headers stay fixed. Stationary cell viewports clip the moving bars at the
 bus-column boundary during both dragging and settling. Further swipes during a slide are ignored. Cached weeks

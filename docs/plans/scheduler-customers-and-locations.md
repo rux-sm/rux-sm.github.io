@@ -41,11 +41,6 @@ the quote prints the customer's address without anyone typing it.
 - **Two new pages, each a page pair** as `docs/plans/site-page-pair.md` shapes
   them and on the `scheduler-pair-*` classes, as Contacts is:
   `customers.html` and `locations.html`, both in the side nav after Contacts.
-- **The Customers list:** Customer (the name, with the bill-to or "Bills to the
-  pickup" beneath), Usual pickup (the location's name, with its address
-  beneath), Contacts (how many). The record has Details (name, usual pickup as
-  Carbon's combo box over the locations, bill-to as a text area) and a Contacts
-  tab listing its people, each opening their contact page.
 - **Neither page has a filter strip,** for the reason Contacts has none:
   neither has a status.
 - **The Contacts page's Organization field becomes Customer,** a combo box over
@@ -106,7 +101,6 @@ None open.
 
 ## Tasks
 
-- [ ] `scheduler/customers.html` and `scheduler/customers.js`.
 - [ ] The Contacts page's Customer field.
 - [ ] The trip editor: the Customer field, the three fills, and saved
       locations first in the address search.

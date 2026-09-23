@@ -1954,6 +1954,7 @@
 
   async function showHub() {
     host?.setToolbarShown?.(false);
+    host?.setViewerBack?.(null);
     setPaper(null);
     setCrumbs(null);
     fitPaper();
@@ -2012,7 +2013,7 @@
            says what it still wants instead. */
         let href = null;
         let need = null;
-        const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`;
+        const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&from=forms`;
         if (form.binds === null) href = `print.html?form=${form.id}`;
         else if (!trip) {
           if (form.blank) href = `print.html?form=${form.id}&blank=1`;
@@ -2021,7 +2022,7 @@
         else if (form.binds === 'trip+leg') href = `${tripHref}&leg=${found.legs[0] || 'outbound'}`;
         else if (form.binds === 'trip') href = tripHref;
         else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
-        else href = `print.html?form=${form.id}&assignment=${encodeURIComponent(found.buses[0].id)}`;
+        else href = `print.html?form=${form.id}&assignment=${encodeURIComponent(found.buses[0].id)}&trip=${encodeURIComponent(trip)}&from=forms`;
 
         if (href) {
           const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
@@ -2202,6 +2203,13 @@
 
   async function showForm(form) {
     host?.setToolbarShown?.(true);
+    /* Reached from a trip's list in the panel, it goes back to that list. It
+       loads the list by address rather than stepping back, because a frame's
+       history is the whole page's, and the board may have moved since. */
+    const fromTrip = params.get('from') === 'forms' && params.get('trip');
+    host?.setViewerBack?.(fromTrip
+      ? () => location.replace(`print.html?trip=${encodeURIComponent(fromTrip)}`)
+      : null);
     title.textContent = form.name;
     // Named from the address first, so a form that cannot be drawn still has a
     // way back; `show` names it again from the trip once that has answered.

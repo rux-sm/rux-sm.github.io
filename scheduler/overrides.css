@@ -239,6 +239,31 @@
 
 #scheduler-viewer-panel .rux--side-panel__title { flex: none; }
 
+/* THE WAY BACK, IN THE HEAD'S ONE LINE. Carbon pins its side panel's back
+   button to the panel's corner with position: fixed and moves the title a row
+   down, which suits its panel floating over a page; this one sits in the page,
+   where fixed means the window's corner, and its head is one line by choice.
+   So the arrow stands in the line, before the title, flush with the head's
+   inset as the close button is with its end. A button's display beats the
+   browser's `[hidden]`, so the hidden one is hidden here. */
+#scheduler-viewer-panel .rux--side-panel__header.rux--side-panel__header--on-detail-step {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--rux-spacing-02);
+}
+/* Beside the arrow the title gives up room, not the arrow, and a long one
+   still ends in its ellipsis short of the close button. */
+#scheduler-viewer-panel .rux--side-panel__header--on-detail-step .rux--side-panel__title {
+  flex: 0 1 auto;
+}
+#scheduler-viewer-panel .rux--btn.rux--side-panel__navigation-back-button {
+  position: static;
+  flex: none;
+  margin-inline-start: calc(-1 * var(--rux-spacing-03));
+}
+#scheduler-viewer-panel .rux--side-panel__navigation-back-button[hidden] { display: none; }
+
 /* The title is `heading-compact-02` in place of Carbon's `heading-03`: the
    style of the toolbar's week name and the roster's title, so the three
    section heads read as one set. Carbon's collapsed title already uses it. */

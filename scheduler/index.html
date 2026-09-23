@@ -58,6 +58,7 @@
 <symbol id="i-document" viewBox="0 0 32 32"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></symbol>
 <symbol id="m-accessible-fill" viewBox="0 -960 960 960"><path d="M430.5-755.5Q409-777 409-807t21.5-51.5Q452-880 482-880t51.5 21.5Q555-837 555-807t-21.5 51.5Q512-734 482-734t-51.5-21.5ZM696-80v-209H410v-319q0-30 21-51t51-21q23 0 39 9t38 35q42 49 92 82t109 35v60q-51 0-105-25t-104-67v183h205v288h-60Zm-300 0q-83 0-139.5-56.5T200-276q0-68 49.5-125.5T380-468v61q-54 5-86.5 44.5T261-276q0 58 38.5 97t96.5 39q47 0 87-32.5t44-86.5h61q-8 80-66 129.5T396-80Z"/></symbol>
 <symbol id="m-add" viewBox="0 -960 960 960"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
+<symbol id="m-arrow_back" viewBox="0 -960 960 960"><path d="m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z"/></symbol>
 <symbol id="m-attachment" viewBox="0 -960 960 960"><path d="M326-243q-103 0-174.5-72.18-71.5-72.17-71.5-175Q80-593 151.5-665.5T326-738h380q72.5 0 123.25 51.5T880-563q0 72-50.75 123.5T706-388H346q-42 0-72-30t-30-72.5q0-42.5 29.67-72.5 29.68-30 72.33-30h370v60H346q-17 0-29.5 12.5T304-489.86q0 18.14 12.5 30T346-448h360q48 0 81-33.5t33-81.71q0-48.21-33.06-81.5T706-678H326q-78 0-132 54.97T140-490q0 77.92 54 132.46Q248-303 326-303h390v60H326Z"/></symbol>
 <symbol id="m-attachment-fill" viewBox="0 -960 960 960"><path d="M326-243q-103 0-174.5-72.18-71.5-72.17-71.5-175Q80-593 151.5-665.5T326-738h380q72.5 0 123.25 51.5T880-563q0 72-50.75 123.5T706-388H346q-42 0-72-30t-30-72.5q0-42.5 29.67-72.5 29.68-30 72.33-30h370v60H346q-17 0-29.5 12.5T304-489.86q0 18.14 12.5 30T346-448h360q48 0 81-33.5t33-81.71q0-48.21-33.06-81.5T706-678H326q-78 0-132 54.97T140-490q0 77.92 54 132.46Q248-303 326-303h390v60H326Z"/></symbol>
 <symbol id="m-apartment" viewBox="0 -960 960 960"><path d="M120-120v-555h165v-165h390v330h165v390H533v-165H427v165H120Zm60-60h105v-105H180v105Zm0-165h105v-105H180v105Zm0-165h105v-105H180v105Zm165 165h105v-105H345v105Zm0-165h105v-105H345v105Zm0-165h105v-105H345v105Zm165 330h105v-105H510v105Zm0-165h105v-105H510v105Zm0-165h105v-105H510v105Zm165 495h105v-105H675v105Zm0-165h105v-105H675v105Z"/></symbol>
@@ -563,7 +564,13 @@
            type, and a form's was chosen by name a moment ago. A second line
            for it made three rows of a panel that holds a sheet of paper. -->
       <!-- The title does not animate; see the trip panel above. -->
-      <div class="rux--side-panel__header rux--side-panel__header--has-title rux--side-panel__header--no-title-animation">
+      <div class="rux--side-panel__header rux--side-panel__header--has-title rux--side-panel__header--no-title-animation" id="scheduler-viewer-head">
+        <!-- BACK TO THE TRIP'S FORMS, Carbon's side-panel back button, shown
+             only on a form reached from that list. data.js shows it and marks
+             the head as on its detail step, as Carbon does. -->
+        <button type="button" class="rux--side-panel__navigation-back-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" id="scheduler-viewer-back" aria-label="Back to forms" title="Back to forms" hidden>
+          <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>
+        </button>
         <div class="rux--side-panel__title rux--side-panel__title--no-label">
           <h2 class="rux--side-panel__title-text" id="scheduler-viewer-title">Document</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>

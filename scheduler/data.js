@@ -6813,6 +6813,8 @@
   const viewerDownload = document.getElementById('scheduler-viewer-download');
   const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
   const viewerClose = document.getElementById('scheduler-viewer-close');
+  const viewerHead = document.getElementById('scheduler-viewer-head');
+  const viewerBack = document.getElementById('scheduler-viewer-back');
   const viewerZooms = [...document.querySelectorAll('[data-viewer-zoom]')];
   /* Safari's PDF view, which every browser on an iPad uses too, ignores the
      zoom an address asks for and draws its own zoom controls over the page, so
@@ -6920,6 +6922,7 @@
   function setViewerMode(mode) {
     const form = mode === 'form';
     setToolbarShown(true);
+    setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
     if (!form) setFormControls([], []);
@@ -7151,7 +7154,18 @@
     if (viewerToolbar) viewerToolbar.hidden = !shown;
   }
 
-  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown };
+  /* THE WAY BACK TO THE LIST a form was chosen from. The form says how to go
+     back, since the list is its frame's page and not this one's; anything
+     opened from the board has nowhere to go back to, and passes nothing. */
+  let viewerGoBack = null;
+  function setViewerBack(go) {
+    viewerGoBack = typeof go === 'function' ? go : null;
+    if (viewerBack) viewerBack.hidden = !viewerGoBack;
+    viewerHead?.classList.toggle('rux--side-panel__header--on-detail-step', Boolean(viewerGoBack));
+  }
+  viewerBack?.addEventListener('click', () => viewerGoBack?.());
+
+  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack };
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is

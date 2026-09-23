@@ -731,3 +731,14 @@
 [data-theme="geist-dark"] .rux--modal-footer:has(> :nth-child(3)) > :first-child {
   justify-self: start;
 }
+
+/* A TABLE TOOLBAR IS 40px. Carbon draws it at 48 -- its default is large,
+   and it redefines md inside the bar as 3rem, so the bar comes in 32 and 48
+   and nothing between -- while every other control's default is 40px, and a
+   page whose own bars are 40px had its table's bar alone at 48. Here md means
+   md and is the bar's default; its search and select take md to match. A
+   layout class above the bar still picks another size. */
+.rux--table-toolbar {
+  --rux-layout-size-height-md: 2.5rem;
+  --rux-layout-size-height-local: clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)));
+}

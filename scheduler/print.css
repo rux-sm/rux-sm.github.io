@@ -43,7 +43,13 @@
     min-height: 0;
   }
 
-  [data-rux-standalone] .scheduler-print__sheet { min-block-size: 0; }
+  /* The desk scrolls when a form is taller than the room -- a second page,
+     or a sheet held at its smallest -- so the paper never runs out of the
+     frame. */
+  [data-rux-standalone] .scheduler-print__sheet {
+    min-block-size: 0;
+    overflow: auto;
+  }
 }
 
 @media print { .scheduler-print__shell { display: none; } }

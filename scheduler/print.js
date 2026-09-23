@@ -1424,11 +1424,16 @@
        under the paper at every size.
 
        Framed in the panel only the width is fitted: the panel scrolls, and a
-       short one would take the envelope down to nothing. */
+       short one would take the envelope down to nothing.
+
+       THE HEIGHT FIT STOPS AT SEVEN TENTHS. Below that a form's smallest
+       type is under 8px on screen, so a short window keeps the sheet there
+       and the desk scrolls. The width still takes it lower, because a phone
+       has no room to scroll a sheet sideways. */
     const standing = sheet.clientHeight
       - parseFloat(style.paddingBlockStart) - parseFloat(style.paddingBlockEnd);
     const height = framed || !Number.isFinite(tall) || !(standing > 0)
-      ? Infinity : standing / tall;
+      ? Infinity : Math.max(0.7, standing / tall);
     const fit = Math.min(1, room / wide, height);
     if (fit > 0) root.setProperty('--scheduler-fit', String(Math.round(fit * 1000) / 1000));
   }

@@ -80,6 +80,13 @@ the quote prints the customer's address without anyone typing it.
   booking contact with no customer the trip's one, as it fills a missing phone.
 - **The Route tab's address search offers saved locations first,** by name or
   address, then the map search, as rux-ui's itinerary does.
+- **A new place is saved only when someone says so.** After a trip saves, a
+  modal lists each stop picked or changed in that edit that is not a location
+  yet, matched by its map id or its address. Each row has the name and the
+  address search to correct, and a checkbox, ticked; Save locations adds the
+  ticked ones and Not now adds none. The trip is saved either way, and a stop
+  not picked again is not asked about again. Saving every stop unasked, as
+  rux-ui does, fills the list with one-off stops.
 - **The quote's Name/address box fills from the customer:** its name, then the
   bill-to if there is one, otherwise the usual pickup's address. The box stays
   editable, because a quote is corrected before it is sent. A trip with no
@@ -104,14 +111,11 @@ the quote prints the customer's address without anyone typing it.
 
 ## Questions
 
-- rux-ui saves every named stop of a trip as a location. Should the scheduler
-  do the same, or should a location be added only on the Locations page? The
-  first is how the 141 were built without anyone thinking about it; the second
-  keeps one-off stops out of the list.
+None open.
 
 ## Tasks
 
-- [ ] rux answers the question above and says go.
+- [ ] rux says go.
 - [ ] rux settles the organization names spelled two ways, from a list shown
       in chat.
 - [ ] Migration: the `locations` table, and the first copy of the 141.
@@ -123,8 +127,8 @@ the quote prints the customer's address without anyone typing it.
       settled names, and the 13 exact usual pickups.
 - [ ] `scheduler/customers.html` and `scheduler/customers.js`.
 - [ ] The Contacts page's Customer field.
-- [ ] The trip editor: the Customer field, the three fills, and saved
-      locations first in the address search.
+- [ ] The trip editor: the Customer field, the three fills, saved locations
+      first in the address search, and the modal that offers new ones.
 - [ ] The quote's Name/address box.
 - [ ] The two links in the side nav of every scheduler page, and the screen
       inventory's Settings row, which still puts locations there.

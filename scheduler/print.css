@@ -1042,13 +1042,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: grid;
   /* The phone keeps a number on one line; the email takes the rest. */
   grid-template-columns: minmax(0, 1fr) 1.4in;
-  gap: 0 var(--rux-spacing-02);
+  /* The same gap down as across, so the three are three whole boxes, as the
+     date and the estimate number are. */
+  gap: var(--rux-spacing-02);
 }
 
 /* The name spans both, because an email is long and a phone is not. */
 .scheduler-customer-quote__who > .scheduler-customer-quote__box:first-child {
   grid-column: 1 / -1;
-  border-block-end: 0;
 }
 
 .scheduler-customer-quote__table {

@@ -137,14 +137,19 @@
 }
 /* The roster's busy and day-off squares are the same badges as the bars, blue
    and red, with a 1px edge in the badge's text colour so a run of busy days
-   still reads at a glance on the black grid. The square is drawn on the cell's
-   content box by a pseudo-element, which can take the mark radius and an edge
-   where the cell's own clipped background can take neither. */
+   still reads at a glance on the black grid. A free day of the selected trip is
+   Geist's grey subtle badge, with no edge, so it stays quieter than a booked
+   one. Each square is drawn on the cell's content box by a pseudo-element,
+   which can take the mark radius and an edge where the cell's own clipped
+   background can take neither. The busy and day-off rules come after the
+   selected one, so a booked day keeps its colour. */
+[data-theme="geist-dark"] .scheduler-avail__cell--on-day,
 [data-theme="geist-dark"] .scheduler-avail__cell--busy,
 [data-theme="geist-dark"] .scheduler-avail__cell--off {
   position: relative;
   background-color: transparent;
 }
+[data-theme="geist-dark"] .scheduler-avail__cell--on-day::after,
 [data-theme="geist-dark"] .scheduler-avail__cell--busy::after,
 [data-theme="geist-dark"] .scheduler-avail__cell--off::after {
   content: '';
@@ -153,6 +158,10 @@
   border-radius: var(--scheduler-mark-radius);
   background: var(--scheduler-avail-fill);
   box-shadow: inset 0 0 0 1px var(--scheduler-avail-edge);
+}
+[data-theme="geist-dark"] .scheduler-avail__cell--on-day {
+  --scheduler-avail-fill: oklch(27% 0 0);
+  --scheduler-avail-edge: transparent;
 }
 [data-theme="geist-dark"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: oklch(27% 0.1054 255.8);

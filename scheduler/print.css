@@ -1101,12 +1101,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   text-align: center;
 }
 
-.scheduler-customer-quote__table tbody tr:last-child td {
+.scheduler-customer-quote__room td {
   border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
 /* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box, the column
-   names, and the Total's figure. Gray 20 is Carbon's own, the token the
+   names, and the word Total. A label is grey and what it names is white, the
+   Total's figure too. Gray 20 is Carbon's own, the token the
    paper's g10 theme resolves, so the sheet is not carrying a colour of its
    own; it sits where the office's sheet has grey and nowhere else.
 
@@ -1115,7 +1116,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    combination on this page that would not carry. */
 .scheduler-customer-quote__label,
 .scheduler-customer-quote__table th,
-.scheduler-customer-quote__total-value {
+.scheduler-customer-quote__total-label {
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   /* The prefix is for the Chrome the office runs, which took it before the
@@ -1140,21 +1141,31 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    rather than pushing the signature off the sheet. A table's height is a
    floor, so lines past its depth still grow it. The room is the row a
    percentage height hands the spare to, which keeps the lines together. */
-.scheduler-customer-quote__table { height: 2.8in; }
+/* The Total's row is the table's too, so the table is the items box and that
+   one line: its text, its padding and its rule. */
+.scheduler-customer-quote__table { height: calc(2.8in + 1lh + 2 * var(--rux-spacing-01) + 1px); }
 .scheduler-customer-quote__room { height: 100%; }
 
-/* Lines are added before printing, so the button that adds them lives with
-   the form and comes off the paper. It is laid over the Total's line at the
-   sheet's leading edge and takes no room, so the sheet under it is the
-   paper's height and breaks where the paper does. */
-.scheduler-customer-quote__total-row {
+/* THE TOTAL'S ROW, the table's last: the word under Cost and the figure
+   under Total, ruled as the table is, so no line is drawn twice. The cell
+   under the first three columns is bare paper, and on screen it holds the
+   button that adds a line. It is a body row and not a footer, because a
+   table shares its spare depth between its sections and a footer took half
+   of the room's. */
+
+/* Its own line's height, and no more: the spare depth is the room's. A row's
+   height is a floor, so this is the least it can be. */
+.scheduler-customer-quote__total-row { height: 1px; }
+
+.scheduler-customer-quote__table .scheduler-customer-quote__total-gap {
+  border-inline-start: 0;
+  border-block-end: 0;
+  padding: 0;
   position: relative;
-  display: flex;
-  justify-content: flex-end;
-  /* The table's last row: its top rule is the table's bottom one. */
-  margin-block-start: -1px;
 }
 
+/* Laid over the bare cell and taking no room, so the row is the height the
+   paper's is and the sheet breaks where the paper does. */
 .scheduler-customer-quote__add {
   position: absolute;
   inset-inline-start: 0;
@@ -1162,25 +1173,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   transform: translateY(-50%);
 }
 
-/* The total, under the Cost and Total columns and on their lines: the word
-   in a ruled box under Cost and the figure in a grey one under Total. The two
-   shares are the columns' own, 11% and 14% of the table. */
-.scheduler-customer-quote__total {
-  display: grid;
-  inline-size: 25%;
-  grid-template-columns: 11fr 14fr;
-}
-
 .scheduler-customer-quote__total-label,
 .scheduler-customer-quote__total-value {
-  margin: 0;
-  padding: var(--rux-spacing-01) var(--rux-spacing-02);
-  border: 1px solid var(--rux-border-strong-01);
+  border-block: 1px solid var(--rux-border-strong-01);
 }
-
-.scheduler-customer-quote__total-label { border-inline-end: 0; }
-
-.scheduler-customer-quote__total-value { text-align: end; }
 
 /* Small, and close-set: nine paragraphs have to leave the signature line on
    the same sheet as the price. */
@@ -1321,7 +1317,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-customer-quote__value[data-typed],
   .scheduler-customer-quote__trip-value[data-typed] { border-block-end: 0; }
 
-  .scheduler-customer-quote__total-value[data-typed] {
+  .scheduler-customer-quote__table .scheduler-customer-quote__total-value[data-typed] {
     border-block-end: 1px solid var(--rux-border-strong-01);
   }
 

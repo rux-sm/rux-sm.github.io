@@ -1004,11 +1004,37 @@
     else for (const l of quoteLines(trip)) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total));
     /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
        office's sheet leaves room under its items and rules only the columns
-       down through it. It is the last row, so an added line goes above it. */
+       down through it. It is the last row before the Total's, so an added line
+       goes above it. */
     const room = el('tr', 'scheduler-customer-quote__room');
     for (let i = 0; i < QUOTE_COLUMNS.length; i += 1) room.appendChild(el('td'));
     body.appendChild(room);
     table.appendChild(body);
+
+    /* THE TOTAL IS THE TABLE'S LAST ROW, under Cost and Total, so the two
+       share the table's rules rather than drawing a second set against them.
+       The cell under the first three columns has no rules of its own and holds
+       the button that adds a line, which print.css takes off the paper. */
+    const sum = el('tr', 'scheduler-customer-quote__total-row');
+    const gap = el('td', 'scheduler-customer-quote__total-gap');
+    gap.colSpan = 3;
+    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
+    add.type = 'button';
+    add.addEventListener('click', () => {
+      const row = lineRow('', '', '', '', '');
+      body.insertBefore(row, room);
+      letThemType(row, QUOTE_FIELDS);
+      row.cells[0].focus();
+    });
+    gap.appendChild(add);
+    const total = Number(trip.quoted_price);
+    sum.append(
+      gap,
+      el('td', 'scheduler-customer-quote__total-label', 'Total'),
+      el('td', 'scheduler-customer-quote__total-value scheduler-customer-quote__num scheduler-customer-quote__typed',
+        !blank && Number.isFinite(total) && total !== 0 ? `$${money(total)}` : ''),
+    );
+    body.appendChild(sum);
     table.addEventListener('input', onLineTyped);
     /* A price typed as "1900" is set as "1,900.00" once the cell is left, so
        a typed line reads like a computed one. */
@@ -1019,19 +1045,6 @@
       if (Number.isFinite(n) && n !== 0) cell.textContent = money(n);
     });
     return table;
-  }
-
-  /* THE TOTAL STANDS UNDER THE TABLE, in two boxes of its own at the trailing
-     edge, which is where the office's sheet puts it: a figure under Total, not
-     a row of the table. */
-  function quoteTotal(trip) {
-    const total = Number(trip.quoted_price);
-    const box = el('div', 'scheduler-customer-quote__total');
-    box.appendChild(el('p', 'scheduler-customer-quote__total-label', 'Total'));
-    box.appendChild(el('p',
-      'scheduler-customer-quote__total-value scheduler-customer-quote__typed',
-      Number.isFinite(total) && total !== 0 ? `$${money(total)}` : ''));
-    return box;
   }
 
   // A line to sign on and a shorter one to date, as rules and not underscores.
@@ -1092,22 +1105,7 @@
     parties.appendChild(who);
     card.appendChild(parties);
 
-    const table = quoteTable(trip, blank);
-    card.appendChild(table);
-
-    /* Screen only, on the Total's line under the table, which is where the
-       line it adds goes. print.css takes it off the paper. */
-    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
-    add.type = 'button';
-    add.addEventListener('click', () => {
-      const row = lineRow('', '', '', '', '');
-      table.tBodies[0].insertBefore(row, table.querySelector('.scheduler-customer-quote__room'));
-      letThemType(row, QUOTE_FIELDS);
-      row.cells[0].focus();
-    });
-    const totalRow = el('div', 'scheduler-customer-quote__total-row');
-    totalRow.append(add, quoteTotal(blank ? {} : trip));
-    card.appendChild(totalRow);
+    card.appendChild(quoteTable(trip, blank));
 
     const terms = el('div', 'scheduler-customer-quote__terms');
     for (const text of QUOTE_TERMS) {

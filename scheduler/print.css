@@ -1042,7 +1042,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__parties {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--rux-spacing-07);
+  /* Two parts of the sheet, so the 16px the parts stand apart by down it. */
+  gap: var(--rux-spacing-05);
 }
 
 .scheduler-customer-quote__who {

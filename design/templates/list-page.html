@@ -85,13 +85,6 @@
   color: var(--rux-text-secondary);
 }
 
-/* THE FILTER'S TEXT STARTS 16px IN, as the search's magnifier and the
-   action's label do, so the band keeps one inset; Carbon's inline select
-   starts at 8px, which suits the pagination bar it was drawn for and read as
-   crowded against the search here. Its label is for a screen reader: the
-   options say what they are. */
-.list-page__show .rux--select-input { padding-inline-start: var(--rux-spacing-05); }
-
 /* EMPTY, THE NOTE LEAVES THE ROW, kept for a screen reader so a count it gains
    is still announced. A theme that parts the band's controls with a gap, as
    geist-dark does with 8px, would otherwise put that gap on both sides of
@@ -880,9 +873,11 @@
                  which rows the table holds, so it sits with the table's other
                  controls; the band stays one line and the choice still reads at
                  rest, which a row of tabs over the table did at the cost of a
-                 second head. Each option carries its count. Delete it if the
-                 list has no views. -->
-            <div class="rux--form-item list-page__show">
+                 second head. Each option carries its count, and its label is
+                 for a screen reader, since the options say what they are. Its
+                 16px text inset is css/rux-overrides.css's, for any inline
+                 select in a table toolbar. Delete it if the list has no views. -->
+            <div class="rux--form-item">
               <div class="rux--select rux--select--inline rux--layout--size-md">
                 <label class="rux--label rux--visually-hidden" for="list-filter">Show</label>
                 <div class="rux--select-input--inline__wrapper">

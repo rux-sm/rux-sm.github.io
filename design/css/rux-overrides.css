@@ -223,7 +223,8 @@
    button, which Geist draws as the page behind a ring and labels in the page's
    own text, and the danger button -- and a danger menu item, which fills with
    the same red on hover -- whose red Geist labels in pure white, 4.8:1
-   where the page's #ededed would reach only 4.1. Each is named here rather
+   where the page's #ededed would reach only 4.1; rux-theme.css darkens the
+   hover and active fills so the white holds 4.5:1 in every state. Each is named here rather
    than the token moving, because moving it would blacken nothing and whiten
    four things that are right. */
 [data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
@@ -741,4 +742,19 @@
 .rux--table-toolbar {
   --rux-layout-size-height-md: 2.5rem;
   --rux-layout-size-height-local: clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)));
+}
+
+/* AN INLINE SELECT IN A TABLE TOOLBAR STARTS ITS TEXT 16px IN, as the
+   persistent search's magnifier and a button's label do, so the band keeps one
+   inset. Carbon's inline select starts at 8px, which suits the pagination bar
+   it was drawn for -- and there Carbon itself moves it to 16px with this same
+   three-class selector -- but reads as crowded against the search in a band. */
+.rux--table-toolbar .rux--select--inline .rux--select-input {
+  padding-inline-start: var(--rux-spacing-05);
+}
+/* Its form item keeps the select's own width. A form item grows and shrinks
+   by default, and in the band the search beside it takes the room first, so
+   the select would narrow to its first letter. */
+.rux--table-toolbar .rux--form-item:has(> .rux--select--inline) {
+  flex: none;
 }

@@ -8,8 +8,8 @@ Every colour `[data-theme="geist-dark"]` sets, against the Geist token that
 best matches it. Geist's values are read from its own published Colors page
 in dark mode and converted to sRGB; ours are read from `css/rux-theme.css`.
 
-**201 colours. 70 land on a Geist token exactly, 52 sit within a
-shade of one, and 79 have no Geist colour near them** -- the third column
+**201 colours. 68 land on a Geist token exactly, 52 sit within a
+shade of one, and 81 have no Geist colour near them** -- the third column
 then names the closest there is, which is a starting point and not a match.
 
 A transparent value is only ever matched against a transparent Geist token, so
@@ -139,8 +139,8 @@ Nothing in these apps draws them.
 | `--rux-button-secondary-active` | `#2e2e2e` | `--ds-gray-400 #2e2e2e` | exact |
 | `--rux-button-danger-primary` | `#e2162a` | `--ds-red-800 #e2162a` | exact |
 | `--rux-button-danger-secondary` | `#ff565f` | `--ds-red-900 #ff565f` | exact |
-| `--rux-button-danger-hover` | `#ff565f` | `--ds-red-900 #ff565f` | exact |
-| `--rux-button-danger-active` | `#f13342` | `--ds-red-700 #f13342` | exact |
+| `--rux-button-danger-hover` | `#cd2b31` | `--ds-red-800 #e2162a` | nearest |
+| `--rux-button-danger-active` | `#b81d26` | `--ds-red-800 #e2162a` | nearest |
 | `--rux-button-separator` | `#000000` | `--ds-background-200 #000000` | exact |
 | `--rux-button-disabled` | `#1a1a1a` | `--ds-gray-100 #1a1a1a` | exact |
 | `--rux-content-switcher-background` | `rgba(0, 0, 0, 0)` | `--ds-gray-alpha-100 #ffffff/0.06` | nearest |

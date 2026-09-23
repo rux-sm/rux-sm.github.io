@@ -108,10 +108,14 @@
       hover → #525252 active) — Carbon's own g90/g100
       secondary buttons darken on hover/active the same direction.
     - button-danger-primary: Geist's error button, read from its own
-      button page: red-800 #e2162a under white text, 4.8:1. hover
-      lightens to red-900 #ff565f, as Geist's does, and active settles on
-      red-700 #f13342, between the two. button-danger-secondary is red
-      text on the page, so it takes red-900, the step Geist writes red in.
+      button page: red-800 #e2162a under white text, 4.8:1. Geist
+      lightens it on hover, but its lighter reds under that white fall
+      below 4.5:1 (red-900 3.1, red-700 4.0), so hover and active darken
+      instead: hover to support-error-inverse (#cd2b31, already given),
+      5.3:1, and active a step further to #b81d26, 6.5:1, which still
+      parts from the #0a0a0a surface at 3:1. button-danger-secondary is
+      red text on the page, so it takes red-900, the step Geist writes
+      red in.
     - button-separator: background (#000000) — Carbon's own g90/g100
       pick the darkest surface for this, same move here.
     - button-disabled: the same rgba(237, 237, 237, 0.25) already used
@@ -384,8 +388,8 @@
   --rux-button-secondary-active: #2e2e2e;
   --rux-button-danger-primary: #e2162a;
   --rux-button-danger-secondary: #ff565f;
-  --rux-button-danger-hover: #ff565f;
-  --rux-button-danger-active: #f13342;
+  --rux-button-danger-hover: #cd2b31;
+  --rux-button-danger-active: #b81d26;
   --rux-button-separator: #000000;
   /* One disabled look for every kind, Geist's: a #1a1a1a block with a grey
      label. Carbon's translucent light fill turns a dark button into a pale

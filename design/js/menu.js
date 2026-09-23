@@ -180,9 +180,13 @@
   const SURFACES = '.rux--menu, .rux--overflow-menu-options';
   const ownSurface = el => el.closest(SURFACES);
   const isDisabled = el => el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true';
-  // A hidden item is not in the menu, so the arrow keys pass it by.
+  // A hidden item is not in the menu, so the arrow keys pass it by: one with no
+  // box at all, whether its own `hidden`, a hidden group around it or a CSS
+  // rule took it away, cannot take focus. Every caller reads an open surface,
+  // so the surface's own box is there to measure.
+  const shown = el => el.getClientRects().length > 0;
   const items = surface => [...surface.querySelectorAll(ITEMS)]
-    .filter(el => ownSurface(el) === surface && !isDisabled(el) && !el.hidden);
+    .filter(el => ownSurface(el) === surface && !isDisabled(el) && shown(el));
   // An item's submenu is the `.rux--menu` it holds, as Carbon renders it.
   const submenuOf = item => (item?.getAttribute('aria-haspopup') === 'true'
     ? item.querySelector(':scope > .rux--menu') : null);

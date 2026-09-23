@@ -1106,8 +1106,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box, the column
-   names, and the word Total. A label is grey and what it names is white, the
-   Total's figure too. Gray 20 is Carbon's own, the token the
+   names, the word Total, and the agreement's Destination and Date. A label
+   is grey and what it names is white, on both sheets. Gray 20 is Carbon's own, the token the
    paper's g10 theme resolves, so the sheet is not carrying a colour of its
    own; it sits where the office's sheet has grey and nowhere else.
 
@@ -1116,7 +1116,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    combination on this page that would not carry. */
 .scheduler-customer-quote__label,
 .scheduler-customer-quote__table th,
-.scheduler-customer-quote__total-label {
+.scheduler-customer-quote__total-label,
+.scheduler-customer-quote__trip-label {
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   /* The prefix is for the Chrome the office runs, which took it before the
@@ -1232,7 +1233,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* The trip, as the Word form sets it: one ruled band, a bold label and its
-   answer, twice. The date is as wide as it is, and never less than a
+   answer, twice, the label grey as the quote's are. The date is as wide as it is, and never less than a
    date's width, so a blank one has room to be typed into; the destination
    takes what is left. */
 .scheduler-customer-quote__trip {

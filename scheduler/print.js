@@ -1939,12 +1939,6 @@
   const TRIP_BUSES_QUERY = 'id,destination,trip_stops(leg),'
     + 'trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id))';
 
-  const busLabel = a => {
-    const number = a.buses?.number;
-    return [number != null ? `Bus ${number}` : 'No bus yet',
-      a.leg === 'return' ? 'Return' : ''].filter(Boolean).join(' · ');
-  };
-
   async function tripBuses(tripId) {
     const client = window.Rux?.account?.client;
     if (!client) return { why: 'Not connected, so this trip could not be read.' };
@@ -1957,12 +1951,6 @@
       .sort(byLegThenPosition);
     return { destination: data.destination, buses, legs: legsOf(data) };
   }
-
-  const tileLink = (href, text) => {
-    const link = el('a', 'rux--link scheduler-print__tile-link', text);
-    link.href = href;
-    return link;
-  };
 
   async function showHub() {
     setPaper(null);
@@ -2016,47 +2004,33 @@
       section.append(heading, tiles);
       list.appendChild(section);
       for (const form of forms) {
-        const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
-        const legQuery = leg =>
-          `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&leg=${leg}`;
-        const blankHref = `print.html?form=${form.id}&blank=1`;
-
-        /* A form with one way in is that link, the whole tile. One that offers
-           a choice holds a link per choice, because a tile that is a link
-           cannot hold links; one that cannot open says what it still wants. */
-        let only = null;
-        let choices = null;
+        /* EVERY FORM IS ONE TILE, AND THE TILE IS THE LINK. From a trip it
+           opens that trip's copy -- the first bus, the way out -- and the
+           form's own list moves to the trip's other buses and legs. A blank
+           one is the Forms page's, opened on no trip. A form that cannot open
+           says what it still wants instead. */
+        let href = null;
         let need = null;
-        if (form.binds === null) only = `print.html?form=${form.id}`;
+        const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`;
+        if (form.binds === null) href = `print.html?form=${form.id}`;
         else if (!trip) {
-          if (form.blank) only = blankHref;
+          if (form.blank) href = `print.html?form=${form.id}&blank=1`;
           else need = 'Open it from a trip on the board.';
         } else if (found.why) need = found.why;
-        else if (form.binds === 'trip+leg') {
-          // One link per leg, because that is what this form is a copy of.
-          choices = found.legs.map(leg => [legQuery(leg), legName(leg)]);
-        } else if (form.binds === 'trip') {
-          // The whole trip is one copy, so there is one way in and no list.
-          choices = [[`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it']];
-        } else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
-        else choices = found.buses.map(a => [query(a.id), busLabel(a)]);
-        if (choices && form.blank) choices.push([blankHref, 'Open a blank one']);
+        else if (form.binds === 'trip+leg') href = `${tripHref}&leg=${found.legs[0] || 'outbound'}`;
+        else if (form.binds === 'trip') href = tripHref;
+        else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
+        else href = `print.html?form=${form.id}&assignment=${encodeURIComponent(found.buses[0].id)}`;
 
-        if (only) {
+        if (href) {
           const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
-          tile.href = only;
+          tile.href = href;
           tile.append(...face(form));
           tiles.appendChild(tile);
           continue;
         }
         const tile = el('div', 'rux--tile');
-        tile.append(...face(form));
-        if (need) tile.appendChild(el('p', 'scheduler-print__tile-need', need));
-        else {
-          const links = el('div', 'scheduler-print__tile-links');
-          for (const [href, text] of choices) links.appendChild(tileLink(href, text));
-          tile.appendChild(links);
-        }
+        tile.append(...face(form), el('p', 'scheduler-print__tile-need', need));
         tiles.appendChild(tile);
       }
     }

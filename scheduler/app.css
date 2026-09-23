@@ -909,14 +909,12 @@ button.scheduler-row-head__num::after {
    on the baseline beside the name. It is Carbon's title still: only what it
    does is added, and what it adds is the week button's feedback, since the two
    are the same kind of control -- a heading that opens a list. It runs the
-   head's height, from whatever is before it, with its name where it was. */
+   head's height; overrides.css sets its inset against Carbon's title. */
 .scheduler-viewer__pick {
   display: flex;
   align-self: stretch;
   align-items: center;
   gap: var(--rux-spacing-02);
-  margin-inline-start: calc(-1 * var(--rux-spacing-05));
-  padding-inline: var(--rux-spacing-05);
   cursor: pointer;
   user-select: none;
 }

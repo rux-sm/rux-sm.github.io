@@ -1048,15 +1048,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__who {
   display: grid;
-  /* The phone keeps a number on one line; the email takes the rest. */
+  /* The name and the phone on one line, the phone kept to a number's width;
+     the email under them. */
   grid-template-columns: minmax(0, 1fr) 1.4in;
   /* The same gap down as across, and the date and the estimate number's, so
      boxes that belong together are 8px apart on the whole sheet. */
   gap: var(--rux-spacing-03);
 }
 
-/* The name spans both, because an email is long and a phone is not. */
-.scheduler-customer-quote__who > .scheduler-customer-quote__box:first-child {
+/* The email spans both, because an email is long and a phone is not. */
+.scheduler-customer-quote__who > .scheduler-customer-quote__box:last-child {
   grid-column: 1 / -1;
 }
 

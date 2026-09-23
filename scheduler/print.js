@@ -1004,8 +1004,8 @@
     parties.appendChild(quoteBox('Name/address', [blank ? '' : trip.customer || ''], 'bill-to'));
     const who = el('div', 'scheduler-customer-quote__who');
     who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
-    who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
     who.appendChild(quoteBox('Phone', [blank ? '' : trip.booking_contact_phone || '']));
+    who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
     parties.appendChild(who);
     card.appendChild(parties);
 

@@ -34,8 +34,7 @@ done and how.
   customer quote. The printed schedule, an hours-of-service form and a
   passenger roster are still named for it; which comes next is undecided.
 - **The customer quote types its bill-to address.** The trip knows the
-  customer's name and nobody's address until
-  `docs/plans/scheduler-organizations.md` makes an organization a record.
+  customer's name and nobody's address until a customer is a record.
 
 ## The database
 

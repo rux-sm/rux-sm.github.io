@@ -24,8 +24,8 @@ three.
   like a driver's and a bus's, and the inventory changes with this page.
 - **The page is called Contacts, and a contact is a person.** The school or
   business they book for gets its own page later, from
-  `docs/plans/scheduler-organizations.md`; until then it is the contact's
-  typed `client` text, shown as Organization.
+  `docs/plans/scheduler-customers-and-locations.md`; until then it is the
+  contact's typed `client` text, shown as Organization.
 - **The shared shape has one home:** the `scheduler-pair-*` classes in
   `scheduler/app.css`, which Contacts carries as Drivers and Buses do, adding
   only what a contact has and they do not.

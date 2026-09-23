@@ -980,11 +980,11 @@
     return rule;
   }
 
-  /* THE FIRST SHEET, THE QUOTE. The bill-to address is typed, for now: an
-     organization is not a record yet -- `docs/plans/scheduler-organizations.md`
-     makes it one -- so the trip knows the customer's name and nobody's
-     address, and the office writes the lines under it as it writes them into
-     QuickBooks today. The field stays open when that lands, because a quote
+  /* THE FIRST SHEET, THE QUOTE. The bill-to address is typed, for now: a
+     customer is not a record yet --
+     `docs/plans/scheduler-customers-and-locations.md` makes it one -- so the
+     trip knows the customer's name and nobody's address, and the office writes
+     the lines under it as it writes them into QuickBooks today. The field stays open when that lands, because a quote
      is corrected before it is sent. */
   function quoteSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote');

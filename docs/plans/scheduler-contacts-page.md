@@ -22,9 +22,10 @@ three.
 - **This corrects the screen inventory.** `scheduler/docs/screen-inventory.md`
   puts the customer editor in the panel, in §1, §2 and §7; it becomes a page
   like a driver's and a bus's, and the inventory changes with this page.
-- **A contact is a person, not an organization.** The table is `contacts`, and
-  `docs/plans/scheduler-organizations.md` makes the organization its own record
-  later. Until then the organization is the contact's typed `client` text.
+- **The page is called Contacts, and a contact is a person.** The school or
+  business they book for gets its own page later, from
+  `docs/plans/scheduler-organizations.md`; until then it is the contact's
+  typed `client` text, shown as Organization.
 - **The shared shape has one home.** `scheduler/app.css` names each pair page
   in its selectors (`scheduler-drivers-page`, `scheduler-buses-page`,
   `scheduler-driver-title`, `scheduler-bus-title`). They become one page class
@@ -47,6 +48,9 @@ three.
   shows the contact and the next trip only.
 - **The list opens sorted by name, A to Z,** as rux-ui's does. Every column
   sorts.
+- **No filter strip.** A contact has no status, and a filter hiding the ones
+  with no trip coming would hide them from the search too; sorting by Next
+  trip gives the same view without hiding anyone.
 - **Search reads the name, organization, phone and email,** and a phone
   number matches by its digits, however it was typed.
 - **The editor has two line tabs, Details and Trips,** as a bus's does.
@@ -71,6 +75,18 @@ three.
   and joining them needs the trips moved as well.
 - **Fields are rux-ui's**, so both apps edit the same row: `name`, `client`,
   `phone` and `email`. rux-ui's Customers view stays as it is.
+- **One phone, the number to reach them on.** The trip copies it for the
+  driver and the autofill offers it, and both need the one number that
+  answers. A second, optional Office phone is a column added later only if
+  it is missed; splitting now changes the matching rule, rux-ui and every
+  trip's copy for a number nobody has asked to store.
+- **A trip save fills a contact's blanks.** When a contact picked from the
+  trip editor's suggestions has no phone or no email and the trip has one,
+  saving the trip writes it to the contact. It never replaces a value already
+  there, and a contact matched by name alone is left untouched, since two
+  people can share a name. 70 contacts have no phone and 73 no email.
+- **Editing a contact never changes a trip.** Each trip keeps the name and
+  phone it was saved with, which is what its driver was given.
 - **Save compares before it writes.** `contacts` has no `updated_at`, so Save
   first checks the row against what the page loaded and asks before it
   replaces a change saved elsewhere, as the Buses page does.
@@ -81,24 +97,18 @@ three.
 
 ## Questions
 
-- The page is called Contacts, because the table is and because Customers will
-  mean organizations once those are records. rux-ui calls it Customers. Which
-  word goes in the nav and the title?
-- Drivers and Buses have a filter above the table (Active, Inactive, All).
-  Contacts have no status. Leave the filter strip out, or filter by
-  "Upcoming trips" and "All"? 180 of the 253 have a trip coming.
-- A trip keeps its own copy of the contact's name and phone, and shows that
-  copy. When a phone number is changed here, should the upcoming trips that
-  name this person take the new number too, or keep what was typed on them?
+- Three decisions are recommendations rux has not yet agreed to: no filter
+  strip, one phone, and a trip save filling a contact's blanks. Agreed?
 
 ## Tasks
 
-- [ ] rux answers the questions above.
+- [ ] rux answers the question above.
 - [ ] One page class and one title class for the pair pages, on Drivers and
       Buses, with a before-and-after screenshot of both in every theme.
 - [ ] The page pair plan's two open layout tasks, on Drivers and Buses.
 - [ ] `scheduler/contacts.html` and `scheduler/contacts.js`: the list, the
       editor, the Trips tab, delete and the duplicate warning.
+- [ ] The trip editor's save fills a picked contact's missing phone and email.
 - [ ] The Contacts link in the side nav of all seven pages.
 - [ ] The screen inventory's §1, §2 and §7 changed to say a contact is edited
       on its page.

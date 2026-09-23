@@ -39,11 +39,14 @@ names it, and its address prints on a quote without being typed again.
   that name a different campus or district altogether. No rule separates the
   last kind from the first, so each is settled when its trip is next opened.
 - **Both apps edit it.** rux-ui's customers dialog first, because it exists
-  and addresses can be entered before anything else is built; the scheduler's
-  Customers page when that page arrives.
+  and addresses can be entered before anything else is built; then a page of its
+  own in the scheduler, beside the Contacts page, which lists the people.
 
 ## Questions
 
+- What is the record called: Organizations, or Customers? Customers is the
+  word staff and QuickBooks use, and it still fits a family booking with no
+  school behind it; the table and the page take the same word.
 - 457 trips name a customer with no contact linked at all — more than half of
   them. Link each to the organization whose name matches the typed text
   exactly, and leave the rest blank? Or leave all 457 blank until someone

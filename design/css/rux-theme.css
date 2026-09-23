@@ -107,17 +107,11 @@
     - button-secondary: the layer-active ladder (#333333 → #3f3f3f
       hover → #525252 active) — Carbon's own g90/g100
       secondary buttons darken on hover/active the same direction.
-    - button-danger-primary / -secondary: #e5484d, a red of its own and
-      not support-error, which is Geist's red-700. The two are a shade
-      apart and the button is the only place the older red is left; it
-      stands because a danger button is a large fill on the page while a
-      mark is a 16px glyph on a coloured bar, and only the glyph is
-      measured. hover steps to support-error-inverse (#cd2b31,
-      already given); active is computed at the same ~0.49 darkening
-      ratio Carbon's own white theme uses between button-danger-primary
-      and button-danger-active (da1e28 → 750e13) — #702326. Worth eyeing
-      against the real page rather than trusted on the strength of the
-      arithmetic alone.
+    - button-danger-primary: Geist's error button, read from its own
+      button page: red-800 #e2162a under white text, 4.8:1. hover
+      lightens to red-900 #ff565f, as Geist's does, and active settles on
+      red-700 #f13342, between the two. button-danger-secondary is red
+      text on the page, so it takes red-900, the step Geist writes red in.
     - button-separator: background (#000000) — Carbon's own g90/g100
       pick the darkest surface for this, same move here.
     - button-disabled: the same rgba(237, 237, 237, 0.25) already used
@@ -388,10 +382,10 @@
   --rux-button-secondary: #0a0a0a;
   --rux-button-secondary-hover: #1a1a1a;
   --rux-button-secondary-active: #2e2e2e;
-  --rux-button-danger-primary: #e5484d;
-  --rux-button-danger-secondary: #e5484d;
-  --rux-button-danger-hover: #cd2b31;
-  --rux-button-danger-active: #702326;
+  --rux-button-danger-primary: #e2162a;
+  --rux-button-danger-secondary: #ff565f;
+  --rux-button-danger-hover: #ff565f;
+  --rux-button-danger-active: #f13342;
   --rux-button-separator: #000000;
   /* One disabled look for every kind, Geist's: a #1a1a1a block with a grey
      label. Carbon's translucent light fill turns a dark button into a pale

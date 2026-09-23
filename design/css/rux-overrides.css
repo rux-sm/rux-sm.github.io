@@ -211,16 +211,19 @@
    gives every filled button `text-on-color`, which this theme sets to black
    because its brand colour -- the primary button, the badge, the batch bar,
    the picked date -- is a light one. The two fills that are not: the secondary
-   button, which Geist draws as the page behind a ring, and the danger button,
-   whose red Geist labels in white. Each takes the theme's own light text here
-   rather than the token moving, because moving it would blacken nothing and
-   whiten four things that are right. */
+   button, which Geist draws as the page behind a ring and labels in the page's
+   own text, and the danger button, whose red Geist labels in pure white, 4.8:1
+   where the page's #ededed would reach only 4.1. Each is named here rather
+   than the token moving, because moving it would blacken nothing and whiten
+   four things that are right. */
 [data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
 [data-theme="geist-dark"] .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
-[data-theme="geist-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled),
+[data-theme="geist-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary, #161616);
+}
 [data-theme="geist-dark"] .rux--btn--danger:not(:disabled):not(.rux--btn--disabled),
 [data-theme="geist-dark"] .rux--btn--danger:hover:not(:disabled):not(.rux--btn--disabled) {
-  color: var(--rux-text-primary, #161616);
+  color: #ffffff;
 }
 /* The ring that makes the outline. Carbon already draws a 1px border on the
    secondary button and leaves it transparent, so only its colour is named.

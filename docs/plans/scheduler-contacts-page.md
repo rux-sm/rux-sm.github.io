@@ -1,0 +1,105 @@
+---
+type: plan
+---
+
+# Plan: a Contacts page in the scheduler
+
+## Goal
+
+Staff see every customer contact on one page and edit one from the scheduler,
+as rux-ui's Customers view and its editor do today, so nobody opens rux-ui to
+fix a phone number or an email. The page looks and works like the Drivers and
+Buses pages, and anything it changes in their shared shape changes on all
+three.
+
+## Decisions
+
+- **Two views in one file.** `scheduler/contacts.html` lists the contacts,
+  `contacts.html?id=<contact id>` edits one, and `contacts.html?new` makes one,
+  as the page pair plan names it.
+- **Both take the page pair's layout**, which `docs/plans/site-page-pair.md`
+  decides and this plan does not restate.
+- **This corrects the screen inventory.** `scheduler/docs/screen-inventory.md`
+  puts the customer editor in the panel, in §1, §2 and §7; it becomes a page
+  like a driver's and a bus's, and the inventory changes with this page.
+- **A contact is a person, not an organization.** The table is `contacts`, and
+  `docs/plans/scheduler-organizations.md` makes the organization its own record
+  later. Until then the organization is the contact's typed `client` text.
+- **The shared shape has one home.** `scheduler/app.css` names each pair page
+  in its selectors (`scheduler-drivers-page`, `scheduler-buses-page`,
+  `scheduler-driver-title`, `scheduler-bus-title`). They become one page class
+  and one title class that all three pages carry, so a fourth page adds no
+  selector and the three cannot drift.
+- **The page pair's two open tasks land first, on all three pages**: the notice
+  and list in one grid, and the template's inset at every width. Contacts is
+  built to the corrected shape, never copied from the old one.
+- **Any shared part Contacts changes changes on Drivers and Buses in the same
+  commit**: the table box, filter strip, toolbar, count note, title, tabs,
+  button set, notices and the leave guard.
+- **The list is Carbon's data table at large density, sortable**, with the
+  toolbar's search and a primary New contact button. No checkboxes, batch
+  actions or pagination, as on the other two: search finds any of the 253
+  contacts in a few letters, and a pager would be a control only this page has.
+- **Five fixed columns, with no column picker:** Contact (the name, with the
+  organization beneath, as a driver's short name sits beneath the name),
+  Phone, Email, Trips (how many), Next trip (its date, or the last one's in
+  the quiet colour when none is coming). A whole row opens the contact. A phone
+  shows the contact and the next trip only.
+- **The list opens sorted by name, A to Z,** as rux-ui's does. Every column
+  sorts.
+- **Search reads the name, organization, phone and email,** and a phone
+  number matches by its digits, however it was typed.
+- **The editor has two line tabs, Details and Trips,** as a bus's does.
+  Details is one form: Name, Organization, Phone and Email on the one
+  three-column grid, then Cancel and Save. A new contact shows no tabs.
+- **Name is required and says so** under the field in Carbon's error state,
+  and an email that is not an email blocks Save the same way. rux-ui only
+  moves the cursor, which says nothing.
+- **A new contact warns when it matches one already there** by phone, email
+  or name, the same rule the trip editor's save uses to find a person, with a
+  link to that contact and a button to save anyway. A second row for the same
+  person splits their trips between two contacts.
+- **Trips lists every trip the contact is on, newest first,** in any of the
+  six slots, each saying the date, trip number, destination and whether they
+  booked it or are the day-of contact, and opening it on the board through
+  `./?trip=<id>&date=<day>`. A customer's past trips are what staff look up,
+  unlike a bus's.
+- **Delete is offered only for a contact with no trips.** The database clears
+  a trip's link when its contact goes, so deleting one with trips would
+  quietly unlink them; 13 contacts have none, and they are the mistakes.
+- **Merging two duplicates is not in this plan.** Four names appear twice,
+  and joining them needs the trips moved as well.
+- **Fields are rux-ui's**, so both apps edit the same row: `name`, `client`,
+  `phone` and `email`. rux-ui's Customers view stays as it is.
+- **Save compares before it writes.** `contacts` has no `updated_at`, so Save
+  first checks the row against what the page loaded and asks before it
+  replaces a change saved elsewhere, as the Buses page does.
+- **Leaving with unsaved changes asks first**, as the other pages do.
+- **No database change.** Signed-in staff already read and write `contacts`.
+- **A Contacts link joins the side nav after Drivers.** The nav is copied into
+  seven pages, which all change together.
+
+## Questions
+
+- The page is called Contacts, because the table is and because Customers will
+  mean organizations once those are records. rux-ui calls it Customers. Which
+  word goes in the nav and the title?
+- Drivers and Buses have a filter above the table (Active, Inactive, All).
+  Contacts have no status. Leave the filter strip out, or filter by
+  "Upcoming trips" and "All"? 180 of the 253 have a trip coming.
+- A trip keeps its own copy of the contact's name and phone, and shows that
+  copy. When a phone number is changed here, should the upcoming trips that
+  name this person take the new number too, or keep what was typed on them?
+
+## Tasks
+
+- [ ] rux answers the questions above.
+- [ ] One page class and one title class for the pair pages, on Drivers and
+      Buses, with a before-and-after screenshot of both in every theme.
+- [ ] The page pair plan's two open layout tasks, on Drivers and Buses.
+- [ ] `scheduler/contacts.html` and `scheduler/contacts.js`: the list, the
+      editor, the Trips tab, delete and the duplicate warning.
+- [ ] The Contacts link in the side nav of all seven pages.
+- [ ] The screen inventory's §1, §2 and §7 changed to say a contact is edited
+      on its page.
+- [ ] rux saves one real contact edit and opens both views on a phone.

@@ -17,6 +17,7 @@
   'use strict';
 
   const { $, el, svgUse } = window.SchedulerPair;
+  const showPhone = window.SchedulerPhone.format;
   const pair = window.SchedulerPair.page({ list: 'drivers', one: 'driver' });
   const { say, result } = pair;
 
@@ -199,7 +200,7 @@
       cell.append(avatar, names);
       who.appendChild(cell);
 
-      const phone = el('td', null, d.phone || '—');
+      const phone = el('td', null, showPhone(d.phone) || '—');
       const cdl = el('td', null, d.cdl_class || '—');
       const job = el('td', null, [EMPLOYMENT[d.employment_type] || 'Not set', d.priority ? `Priority ${d.priority}` : null]
         .filter(Boolean).join(' · '));

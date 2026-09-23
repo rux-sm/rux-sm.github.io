@@ -21,6 +21,7 @@
   'use strict';
 
   const { $, el, svgUse } = window.SchedulerPair;
+  const showPhone = window.SchedulerPhone.format;
   const pair = window.SchedulerPair.page({ list: 'contacts', one: 'contact' });
   const { say, result } = pair;
 
@@ -198,7 +199,7 @@
       cell.append(avatar, lines);
       who.appendChild(cell);
 
-      const phone = el('td', null, c.phone || '—');
+      const phone = el('td', null, showPhone(c.phone) || '—');
       const email = el('td', null, c.email || '—');
       const n = tripsOf(c).n;
       const count = el('td', null, n ? String(n) : '—');
@@ -482,7 +483,7 @@
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', c.name || 'Unnamed contact'));
       lines.appendChild(el('span', 'scheduler-pair-item__detail',
-        [c.client, c.phone, c.email].filter(Boolean).join(' · ') || 'No details'));
+        [c.client, showPhone(c.phone), c.email].filter(Boolean).join(' · ') || 'No details'));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

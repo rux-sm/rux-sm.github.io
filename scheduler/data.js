@@ -116,6 +116,9 @@
   const client = window.Rux?.account?.client
     ?? (window.supabase ? window.supabase.createClient(PROJECT, PUBLISHABLE, { auth: { persistSession: false } }) : null);
 
+  // A phone number as it is shown, from phone.js; a field keeps it as typed.
+  const showPhone = window.SchedulerPhone.format;
+
   // -- status ---------------------------------------------------------------
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -999,8 +1002,8 @@
     // phone drops out and the name stays; app.css does that.
     const contact = tripContact(trip, 0);
     const who = el('span', null, contact?.name || '');
-    if (contact) who.title = [contact.name, contact.phone].filter(Boolean).join(' · ');
-    addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', contact.phone) : null);
+    if (contact) who.title = [contact.name, showPhone(contact.phone)].filter(Boolean).join(' · ');
+    addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', showPhone(contact.phone)) : null);
 
     // Departure and return on one line, an en dash between them. A leg with
     // neither says so, so an empty row never reads as a rendering fault. The
@@ -2904,7 +2907,7 @@
       option.dataset.ruxText = c.name ?? '';
       const body = el('div', 'rux--list-box__menu-item__option scheduler-contact-option__body');
       body.appendChild(el('span', 'scheduler-contact-option__name', c.name ?? ''));
-      const detail = [c.client, c.phone].filter(Boolean).join(' · ');
+      const detail = [c.client, showPhone(c.phone)].filter(Boolean).join(' · ');
       if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
       const tick = svgUse('#m-check', '16', '0 0 20 20');
       tick.classList.add('rux--list-box__menu-item__selected-icon');
@@ -3624,7 +3627,7 @@
             ? checkField(id, `Add ${o.value} as ${o.contact.name}'s ${WHAT[o.key]}`, !o.byName)
             : checkField(id, `Change ${o.contact.name}'s ${WHAT[o.key]} from ${o.onFile} to ${o.value}`, false));
           if (o.byName) row.appendChild(el('p', 'rux--form__helper-text',
-            `Matched by the name alone. On file: ${[o.contact.phone, o.contact.email].filter(Boolean).join(' · ') || 'no phone or email'}.`));
+            `Matched by the name alone. On file: ${[showPhone(o.contact.phone), o.contact.email].filter(Boolean).join(' · ') || 'no phone or email'}.`));
         } else {
           row.appendChild(checkField(id, `Save ${o.place.name || o.place.address} to Locations`, true));
           row.appendChild(textField(`${id}-name`, 'Name', o.place.name));

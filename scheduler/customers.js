@@ -14,6 +14,7 @@
   'use strict';
 
   const { $, el, svgUse } = window.SchedulerPair;
+  const showPhone = window.SchedulerPhone.format;
   const pair = window.SchedulerPair.page({ list: 'customers', one: 'customer' });
   const { say, result } = pair;
 
@@ -290,7 +291,7 @@
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', c.name || 'Unnamed contact'));
       lines.appendChild(el('span', 'scheduler-pair-item__detail',
-        [c.phone, c.email].filter(Boolean).join(' · ') || 'No phone or email'));
+        [showPhone(c.phone), c.email].filter(Boolean).join(' · ') || 'No phone or email'));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

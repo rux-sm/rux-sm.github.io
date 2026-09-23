@@ -48,6 +48,9 @@
     return svg;
   };
 
+  // A phone number as the forms print it, from phone.js.
+  const showPhone = window.SchedulerPhone.format;
+
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -122,11 +125,11 @@
     for (let n = 1; n <= 5; n++) {
       const name = trip[`trip_contact_${n}_name`] || trip[`c${n}`]?.name;
       const phone = trip[`trip_contact_${n}_phone`] || trip[`c${n}`]?.phone;
-      if (name || phone) return { name: name || '', phone: phone || '' };
+      if (name || phone) return { name: name || '', phone: showPhone(phone) };
     }
     return {
       name: trip.booking_contact_name || trip.contacts?.name || '',
-      phone: trip.booking_contact_phone || trip.contacts?.phone || '',
+      phone: showPhone(trip.booking_contact_phone || trip.contacts?.phone),
     };
   }
 
@@ -1100,7 +1103,7 @@
     parties.appendChild(quoteBox('Name/address', blank ? [''] : billToLines(trip), 'bill-to'));
     const who = el('div', 'scheduler-customer-quote__who');
     who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
-    who.appendChild(quoteBox('Phone', [blank ? '' : trip.booking_contact_phone || '']));
+    who.appendChild(quoteBox('Phone', [blank ? '' : showPhone(trip.booking_contact_phone)]));
     who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
     parties.appendChild(who);
     card.appendChild(parties);

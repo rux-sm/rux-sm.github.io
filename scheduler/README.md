@@ -45,6 +45,8 @@ conflict modals and the staff gate. A new record's id is made before its
 insert, and each write that lands is kept as the page's saved state, so a Save
 that stops partway says what did not save, and Save again sends only the rest:
 never a second bus, a doubled day out or a conflict with the page's own write.
+A phone number is shown through `phone.js`, on those pages, the board and the
+forms, a ten-digit US number as (956) 994-1169; what is stored stays as typed.
 
 In the trip editor, Customer is picked from that list and saved with the trip;
 a name not in it becomes a new customer on Save. Picking the booking contact

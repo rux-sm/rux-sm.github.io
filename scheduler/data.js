@@ -2374,10 +2374,11 @@
     return tile;
   }
 
-  // Carbon's small number input, the steppers `js/form-controls.js` drives.
+  // Carbon's number input at its default 40px, as every field in the editor
+  // is, with the steppers `js/form-controls.js` drives.
   function busCountField(leg, count) {
     const id = `scheduler-fleet-${leg}-count`;
-    const root = el('div', 'rux--number rux--number--sm');
+    const root = el('div', 'rux--number');
     const lab = el('label', 'rux--label', 'Buses needed');
     lab.setAttribute('for', id);
     const wrap = el('div', 'rux--number__input-wrapper');
@@ -3308,22 +3309,16 @@
     to: 'rux--date-picker-container rux--date-picker-container--to',
   };
 
-  /* The date picker's own size modifiers, because its input takes a class
-     rather than reading the height every other control inherits from
-     `rux--layout--size-*` on a container. Written out whole, not built from
-     the size, so the class sweep can resolve them. */
-  const DP_INPUT = {
-    sm: 'rux--date-picker__input rux--date-picker__input--sm',
-    lg: 'rux--date-picker__input rux--date-picker__input--lg',
-  };
-
-  const dpContainer = (which, id, labelText, value, size) => {
+  /* The date picker's input takes no size from `rux--layout--size-*` on a
+     container, and at its own default it is the 40px every other field in the
+     editor inherits, so it names none. */
+  const dpContainer = (which, id, labelText, value) => {
     const c = el('div', DP_CONTAINER[which]);
     const lab = el('label', 'rux--label', labelText);
     lab.setAttribute('for', id);
     const wrap = el('div', 'rux--date-picker-input__wrapper');
     const span = el('span');
-    const input = el('input', DP_INPUT[size] ?? 'rux--date-picker__input');
+    const input = el('input', 'rux--date-picker__input');
     input.type = 'text';
     input.id = id;
     input.placeholder = 'mm/dd/yyyy';
@@ -3378,8 +3373,8 @@
   function dateRange(fromId, toId, fromLabel, toLabel, fromVal, toVal) {
     const root = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--range');
     root.append(
-      dpContainer('from', fromId, fromLabel, fromVal, 'sm'),
-      dpContainer('to', toId, toLabel, toVal, 'sm'),
+      dpContainer('from', fromId, fromLabel, fromVal),
+      dpContainer('to', toId, toLabel, toVal),
     );
     root.appendChild(calendarBody());
     const item = el('div', 'rux--form-item');

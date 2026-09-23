@@ -1406,7 +1406,7 @@ button.scheduler-row-head__num::after {
 /* A field beside a checkbox, as a hotel's confirmation number and Booked are.
    The checkbox takes only its own width, so the field keeps the rest and its
    label stays on one line; bottoms align, and the checkbox is centred on the
-   field's 32px, the height the panel's size-sm sets. Carbon's margin under the
+   field's 40px, the height the panel's size-md sets. Carbon's margin under the
    checkbox comes off in overrides.css. */
 .scheduler-pair--end {
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1414,7 +1414,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-pair--end > .rux--checkbox-wrapper {
   justify-content: center;
-  min-block-size: var(--rux-layout-size-height-sm);
+  min-block-size: var(--rux-layout-size-height-md);
 }
 /* A hotel's rows show only while Hotel is ticked, and the pick-up row only on a
    drop-off and pick-up trip. Stacks and pairs are grids, which beat the

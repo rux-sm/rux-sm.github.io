@@ -33,6 +33,32 @@
   --scheduler-mark-blank: var(--rux-text-primary);
 }
 
+/* The amber trip bar. Carbon's tags have no yellow, so a light theme builds one
+   the way Carbon builds every light tag -- a 20 fill, 70 ink, the 20's hover
+   step and a 40 edge -- from Carbon's yellow ramp; the warning colour itself was
+   a slab beside the other tags' tints. A dark theme keeps the warning fill, with
+   no hover step, so a hovered bar there shows an inner ring instead. */
+:root,
+[data-theme="white"],
+[data-theme="g10"] {
+  --scheduler-amber-bg: #fddc69;
+  --scheduler-amber-fg: #684e00;
+  --scheduler-amber-hover: #fccd27;
+  --scheduler-amber-border: #d2a106;
+  --scheduler-amber-hover-ring: none;
+}
+[data-theme="g90"],
+[data-theme="g100"],
+[data-theme="geist-dark"],
+[data-theme="ant-dark"],
+[data-theme="spotify-dark"] {
+  --scheduler-amber-bg: var(--rux-support-warning);
+  --scheduler-amber-fg: var(--scheduler-on-warning);
+  --scheduler-amber-hover: var(--rux-support-warning);
+  --scheduler-amber-border: var(--scheduler-on-warning);
+  --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
+}
+
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so
    the band is filled and carries no rule. Geist separates with a line instead

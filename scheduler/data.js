@@ -7265,7 +7265,7 @@
     if (!id) return;
     openGenerated({
       url: `print.html?form=envelope&assignment=${encodeURIComponent(id)}`,
-      kind: 'Driver envelope',
+      kind: 'Driver trip envelope',
       note: bar.dataset.leg === 'return' ? 'Return' : '',
       opener: bar,
     });

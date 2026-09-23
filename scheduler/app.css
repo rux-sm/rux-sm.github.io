@@ -391,12 +391,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--magenta   { --scheduler-bg: var(--rux-tag-background-magenta);   --scheduler-fg: var(--rux-tag-color-magenta);   --scheduler-hover: var(--rux-tag-hover-magenta);   --scheduler-border: var(--rux-tag-border-magenta); }
 .scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
-/* Amber is the one hue Carbon's tags lack, so it takes the warning colour, and
-   its text is whichever of text-primary or text-inverse is dark in the theme
-   (`--scheduler-on-warning`, set in theme.css). The warning colour has no hover
-   step, so a hovered amber bar shows an inner outline instead. */
-.scheduler-bar--amber     { --scheduler-bg: var(--rux-support-warning);          --scheduler-fg: var(--scheduler-on-warning);      --scheduler-hover: var(--rux-support-warning);     --scheduler-border: var(--scheduler-on-warning); }
-.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--scheduler-on-warning); }
+/* Amber is the one hue Carbon's tags lack, so theme.css sets its four colours
+   per theme, and the inner ring a dark theme shows on hover in place of a
+   hover step. */
+.scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
+.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
 
 /* A trip colour chip, in the editor's colour field and the bar menu. It wears
    a `scheduler-bar--*` hue class for its custom properties, so it shows the
@@ -624,8 +623,9 @@ button.scheduler-row-head__num::after {
    It keeps a row-high box, though nothing is drawn on it, so the glyphs sit
    evenly apart and `fitMarks` still counts what fits from one measurement.
 
-   THE AMBER BAR LOSES ITS PENDING MARKS, which rux accepted: the warning
-   colour is that bar's own fill, so a glyph in it cannot be seen. On the other
+   THE AMBER BAR LOSES ITS PENDING MARKS, which rux accepted: that bar's fill
+   is the warning colour or, in a light theme, a yellow tint of it, so a glyph
+   in it cannot be seen. On the other
    eight hues it clears 4.5 to 1. */
 .scheduler-bar__warn-chip {
   display: flex;

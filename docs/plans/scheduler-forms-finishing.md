@@ -21,7 +21,7 @@ field can be used by ear as well as by eye.
   the fault already taken out of the panel's row.
 - **The Printed tick's whole cell is the target.** The cell is what looks like
   the control, so it is what a press should land on.
-- **The page is named after the form it is showing,** `Driver envelope —
+- **The page is named after the form it is showing,** `Driver trip envelope —
   Scheduler`, because that is the repository's own rule for a page title.
 - **One top heading per page: the page's own name.** The form's title drops a
   level, and the envelope's day line stops being a heading at all — it names

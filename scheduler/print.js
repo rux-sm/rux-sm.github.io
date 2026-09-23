@@ -1101,8 +1101,7 @@
   const FORMS = [
     {
       id: 'envelope',
-      name: 'Driver envelope',
-      blurb: 'What dispatch knows, printed; the day-of fields blank for the driver.',
+      name: 'Driver trip envelope',
       binds: 'assignment+seat',
       /* It can also be opened on nothing: a blank envelope to fill in by hand
          or type into, which is what the Forms page is for when no trip sent
@@ -1149,8 +1148,7 @@
     },
     {
       id: 'driver-itinerary',
-      name: 'Driver itinerary',
-      blurb: 'The plan for the day, from the route already entered; every line typed into.',
+      name: 'Driver trip itinerary',
       /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
          because it is personal, one name and one seat; the plan for the day is
          the same for every driver and every bus on the leg, and `trip_stops`
@@ -1180,7 +1178,6 @@
     {
       id: 'customer-quote',
       name: 'Customer quote',
-      blurb: 'The quote the office sends and the terms agreement behind it, priced and worded from the trip; every field typed into.',
       /* IT BINDS THE TRIP AND NOT A LEG. A quote is one price for the whole
          journey, where the itinerary is one sheet per leg and the envelope one
          per seat -- a round trip is quoted once. */
@@ -1912,45 +1909,45 @@
 
     const list = document.createDocumentFragment();
     for (const form of FORMS) {
-      const tile = el('div', 'rux--tile');
-      tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
-      tile.appendChild(el('p', 'scheduler-print__tile-blurb', form.blurb));
-
       const query = id => `print.html?form=${form.id}${id ? `&assignment=${encodeURIComponent(id)}` : ''}`;
       const legQuery = leg =>
         `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&leg=${leg}`;
+      const blankHref = `print.html?form=${form.id}&blank=1`;
 
-      const blankLink = () =>
-        tileLink(`print.html?form=${form.id}&blank=1`, 'Open a blank one');
-
-      if (form.binds === null) {
-        tile.appendChild(tileLink(`print.html?form=${form.id}`, 'Open a blank one'));
-      } else if (!trip) {
-        /* No trip sent us here. A form that can be opened on nothing offers
-           that; one that cannot says what it still wants rather than opening
-           on nothing. */
-        if (form.blank) tile.appendChild(blankLink());
-        else tile.appendChild(el('p', 'scheduler-print__tile-need', 'Open it from a trip on the board.'));
-      } else if (found.why) {
-        tile.appendChild(el('p', 'scheduler-print__tile-need', found.why));
-      } else if (form.binds === 'trip+leg') {
+      /* A form with one way in is that link, the whole tile. One that offers
+         a choice holds a link per choice, because a tile that is a link
+         cannot hold links; one that cannot open says what it still wants. */
+      let only = null;
+      let choices = null;
+      let need = null;
+      if (form.binds === null) only = `print.html?form=${form.id}`;
+      else if (!trip) {
+        if (form.blank) only = blankHref;
+        else need = 'Open it from a trip on the board.';
+      } else if (found.why) need = found.why;
+      else if (form.binds === 'trip+leg') {
         // One link per leg, because that is what this form is a copy of.
-        const links = el('div', 'scheduler-print__tile-links');
-        for (const leg of found.legs) links.appendChild(tileLink(legQuery(leg), legName(leg)));
-        if (form.blank) links.appendChild(blankLink());
-        tile.appendChild(links);
+        choices = found.legs.map(leg => [legQuery(leg), legName(leg)]);
       } else if (form.binds === 'trip') {
         // The whole trip is one copy, so there is one way in and no list.
+        choices = [[`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it']];
+      } else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
+      else choices = found.buses.map(a => [query(a.id), busLabel(a)]);
+      if (choices && form.blank) choices.push([blankHref, 'Open a blank one']);
+
+      if (only) {
+        const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
+        tile.href = only;
+        tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
+        list.appendChild(tile);
+        continue;
+      }
+      const tile = el('div', 'rux--tile');
+      tile.appendChild(el('h2', 'scheduler-print__tile-name', form.name));
+      if (need) tile.appendChild(el('p', 'scheduler-print__tile-need', need));
+      else {
         const links = el('div', 'scheduler-print__tile-links');
-        links.appendChild(tileLink(`print.html?form=${form.id}&trip=${encodeURIComponent(trip)}`, 'Open it'));
-        if (form.blank) links.appendChild(blankLink());
-        tile.appendChild(links);
-      } else if (!found.buses.length) {
-        tile.appendChild(el('p', 'scheduler-print__tile-need', 'No bus on this trip has a driver yet.'));
-      } else {
-        const links = el('div', 'scheduler-print__tile-links');
-        for (const a of found.buses) links.appendChild(tileLink(query(a.id), busLabel(a)));
-        if (form.blank) links.appendChild(blankLink());
+        for (const [href, text] of choices) links.appendChild(tileLink(href, text));
         tile.appendChild(links);
       }
       list.appendChild(tile);

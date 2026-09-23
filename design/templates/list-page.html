@@ -68,25 +68,6 @@
    is why templates/table-page.html needs no such rule and this one does. */
 .list-page .rux--css-grid-column { min-inline-size: 0; }
 
-/* THE FILTER'S STRIP, the first thing inside the table box and flush on the
-   toolbar band under it. It carries the band's own `layer` fill so the two read
-   as one head to the table, and the switcher inside keeps Carbon's own size —
-   `layout-constraint--size__default-md` and its min and max — rather than being
-   stretched to the box. The inset is the start, the end and the top; there is
-   none at the foot, which is what puts the switcher against the band.
-
-   NO OUTLINE ROUND THE BOX, deliberately. Carbon paints `.rux--table-toolbar`
-   and `.rux--data-table tbody` the same `layer`, a step off the page in all four
-   themes, so the box already parts from the page and a rule round it would say
-   the same thing twice. docs/plans/site-page-pair.md carries the measurement.
-
-   RENAME WITH THE PAGE CLASS when you copy this file, as the inset rule above
-   says: the prefix is the app's, not `list-page`. */
-.list-page__filter {
-  background-color: var(--rux-layer);
-  padding: var(--rux-spacing-05) var(--rux-spacing-05) 0;
-}
-
 /* WHAT THE TABLE HAS TO SAY, at the start of the band and away from the
    controls at its end, in the quiet label the forms page's band says its sheet
    count in. It sits inside `toolbar-content`, before the actions, because the
@@ -115,8 +96,8 @@
 <body>
 <!-- PROVENANCE: rendered-dom · shell from components-ui-shell-header--header-w-navigation-actions-and-side-nav;
      table, toolbar and search from components-datatable-batch-actions--batch-batch-actions
-     and --with-sorting, all by way of templates/table-page.html; content switcher
-     from sink/content-switcher.html; inline notification from
+     and --with-sorting, all by way of templates/table-page.html; select
+     from sink/select.html; inline notification from
      sink/notification.html, 2026-08-28 -->
 <!-- BEHAVIOUR: verified-live · https://carbondesignsystem.com/elements/2x-grid/usage/
      read on 2026-09-21 for the CENTRING, which is the only thing this template
@@ -153,8 +134,8 @@
      A sibling arrangement was tried first, reasoned from css/rux.css alone, and
      check-ancestry refused it against those three captures.
 
-     NOT COVERED AT ALL: where a content switcher sits against a data table.
-     The filter inside the table box, on a strip flush against the band, is this
+     NOT COVERED AT ALL: where a view filter sits against a data table. The
+     select in the band, after the count and before the action, is this
      repository's choice, recorded in docs/plans/site-page-pair.md;
      carbon-website's filtering pattern names no place for it, and no capture
      carries one. The same weight as the twelve-of-sixteen span above.
@@ -809,7 +790,7 @@
       </div>
       <!-- BLOCK:END notice -->
 
-      <!-- BLOCK:BEGIN name=table label="Data table with its filter and toolbar" follows=notice -->
+      <!-- BLOCK:BEGIN name=table label="Data table with its toolbar and filter" follows=notice -->
       <!-- REPLACE: the table. A row opens the record page, which is what parts
            this from templates/table-page.html.
 
@@ -841,32 +822,6 @@
            presumes the markup is in the order it claims. Both arrows stay in the
            DOM at all times and CSS reveals one. -->
       <section class="rux--data-table-container" aria-labelledby="list-page-heading">
-        <!-- THE FILTER, INSIDE THE BOX AND FLUSH ON THE BAND. It changes which
-             rows the table holds, so it belongs to the table rather than to the
-             page; standing above the container it read as a control for
-             something else. The strip is the box's width and carries the band's
-             own `layer` fill, so the two are one head to the table; the switcher
-             keeps Carbon's own size inside it and is inset from the box's edge.
-             Delete the strip with the switcher if the list has no views.
-
-             IT IS A TABLIST AND THE ROVING TABINDEX IS NOT DECORATION. The
-             selected button is `tabindex="0"` and the rest are `-1`, so the group
-             is one tab stop and the arrow keys move inside it. Ship the selected
-             state on the view the page opens in, and put the rows in that view. -->
-        <div class="list-page__filter">
-          <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Which documents">
-            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0">
-              <span class="rux--content-switcher__label">Open 3</span>
-            </button>
-            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
-              <span class="rux--content-switcher__label">Archived 12</span>
-            </button>
-            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1">
-              <span class="rux--content-switcher__label">All 15</span>
-            </button>
-          </div>
-        </div>
-
         <!-- THE BAND. THE PERSISTENT SEARCH IS NESTED IN `toolbar-content` AND
              EVERYTHING ELSE FOLLOWS IT THERE, which is Carbon's own arrangement
              in all three captures that render this variant —
@@ -900,6 +855,25 @@
                  `role="status"` on it so the change is announced; empty, it
                  takes no room and the actions do not move. -->
             <span class="list-page__note">3 of 15 match</span>
+            <!-- THE FILTER, A CHOICE IN THE BAND BEFORE THE ACTION. It changes
+                 which rows the table holds, so it sits with the table's other
+                 controls; the band stays one line and the choice still reads at
+                 rest, which a row of tabs over the table did at the cost of a
+                 second head. Each option carries its count. Delete it if the
+                 list has no views. -->
+            <div class="rux--form-item">
+              <div class="rux--select rux--layout--size-lg">
+                <label class="rux--label rux--visually-hidden" for="list-filter">Show</label>
+                <div class="rux--select-input__wrapper">
+                  <select id="list-filter" class="rux--select-input">
+                    <option>Open (3)</option>
+                    <option>Archived (12)</option>
+                    <option>All (15)</option>
+                  </select>
+                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </div>
+              </div>
+            </div>
             <button type="button" class="rux--btn rux--btn--primary">New document</button>
           </div>
         </section>

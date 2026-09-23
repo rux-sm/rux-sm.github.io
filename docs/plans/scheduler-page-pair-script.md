@@ -16,7 +16,11 @@ decides how the pair looks; this plan decides only where its behaviour lives.
 - **One file, `scheduler/pair.js`,** loaded before each page's own script, as
   `places.js` is before `locations.js`. Each page's script keeps only what its
   record has and the others do not.
-- **The shared part is what the five copies hold today:**
+- **Saving is its first part, on all five pages,** because it is where data
+  goes wrong: `saveRecord` writes a record under an id made before its insert
+  and hands back the row as saved, and `syncRows` brings a record's child rows,
+  a bus's days out and a driver's time off, to what the page holds.
+- **The rest of the shared part is what the five copies still hold:**
   - the helpers `$`, `el` and `svgUse`;
   - the notice and result banners;
   - the three-step sort header;
@@ -28,27 +32,23 @@ decides how the pair looks; this plan decides only where its behaviour lives.
 - **A page hands the script its parts:** its table name, its element-id
   prefix, its columns, and functions to read the form, fill it and check it.
   The script calls them and never reads a page's own fields.
-- **Save has one shape for every page:** compare, write with `.select()`, load
-  the returned row, then read back. A read-back that fails says the record
-  saved and asks for a reload. The Customers and Locations pages already
-  save this way.
 - **A table with `updated_at` compares it, and one without compares the whole
   row,** chosen by the page, as `contacts` and `buses` differ today.
 - **Nothing a person sees changes.** Every page keeps its words, ids and
   layout, so the change is judged by the pages working as they do now.
-- **Pages move one at a time,** Customers first, since it is the smallest and
-  compares `updated_at`. Each move is its own commit, tested signed in before
-  the next.
+- **Pages move one at a time,** Customers first, since it is the smallest.
+  Each move is its own commit, tested signed in before the next. Buses and
+  Drivers move last, since they carry the modals the others lack.
 
 ## Questions
 
-- Should Buses and Drivers move in this plan? They are the two largest pages
-  and carry modals the others lack: days out, time off and the photo.
+None open.
 
 ## Tasks
 
-- [ ] rux answers the question above and says go.
-- [ ] Write `scheduler/pair.js` and move Customers onto it.
-- [ ] Move Locations, then Contacts, onto it, each tested signed in.
-- [ ] Move Buses and Drivers onto it, if the answer says so.
-- [ ] Say in `scheduler/README.md` what `pair.js` holds.
+- [ ] rux saves a bus with a day out, a driver with time off, and a new
+      contact, customer and location, signed in.
+- [ ] Move Customers' shared helpers, banners, sort, search, leave guard,
+      conflict modal and sign-in gate into `scheduler/pair.js`.
+- [ ] Move Locations, then Contacts, onto them, each tested signed in.
+- [ ] Move Buses, then Drivers, onto them, each tested signed in.

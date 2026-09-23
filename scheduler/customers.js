@@ -250,6 +250,8 @@
   narrow.addEventListener('change', stackButtons);
 
   let loaded = null;
+  // A new record's id, made once, so a Save sent again cannot insert it twice.
+  const newId = crypto.randomUUID();
   let contactsBehind = false; // a rename its contacts' organization text missed
   let pickupId = null;      // the usual pickup picked
   let pickupText = '';      // the pickup field's text
@@ -516,11 +518,8 @@
       // The write hands back the row as saved, so `loaded` holds its real
       // updated_at even when the read-back below fails, and a second Save
       // updates this row rather than finding a conflict or saving it twice.
-      const written = id
-        ? await client.from('customers').update(row).eq('id', id).select(COLUMNS).single()
-        : await client.from('customers').insert({ id: crypto.randomUUID(), ...row }).select(COLUMNS).single();
-      if (written.error) throw written.error;
-      loaded = written.data;
+      loaded = await window.SchedulerPair.saveRecord(client, 'customers',
+        { id: id ?? newId, creating: !id, row, columns: COLUMNS });
       id = loaded.id;
       wrote = true;
       // rux-ui shows a contact's organization as text, so its contacts take

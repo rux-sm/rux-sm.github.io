@@ -326,8 +326,10 @@
   narrow.addEventListener('change', stackButtons);
 
   let loaded = null;        // the driver row as the page read it
-  let loadedOff = [];       // its time off, as read
+  let loadedOff = [];       // its time off, as the database holds it
   let off = [];             // the time off on the page, saved with the form
+  // A new driver's id, made once, so a Save sent again cannot insert it twice.
+  const newId = crypto.randomUUID();
   let baseline = '';        // the form as loaded, to tell whether it changed
 
   /* The columns Save writes, read off the form. A blank field saves as null.
@@ -376,7 +378,12 @@
     if (k.endsWith('_exp') || k.endsWith('_expiry') || k.endsWith('_date') || k === 'date_of_birth') return v ? String(v).slice(0, 10) : null;
     return v;
   }));
-  const offKey = list => JSON.stringify(list.map(r => [r.start_date, r.end_date, r.reason || null, r.notes || null]));
+  const offRow = r => [r.start_date, r.end_date, r.reason || null, r.notes || null];
+  const offKey = list => JSON.stringify(list.map(offRow));
+  /* The time off with its places, in one order whatever order it was read or
+     written in, so the conflict check compares what is held. */
+  const offHeld = list => JSON.stringify(list.map(r => [r.position ?? null, ...offRow(r)]).sort((a, b) =>
+    JSON.stringify(a).localeCompare(JSON.stringify(b))));
   const snapshot = () => comparable(readForm()) + offKey(off);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
@@ -781,56 +788,58 @@
   form?.addEventListener('input', changed);
   form?.addEventListener('change', changed);
 
-  // Writes the driver, then its time off if it changed: the new rows go in
-  // before the old ones come out, so a failure part way never loses a range.
+  /* Writes the driver, then their time off if it changed. Each write that
+     lands is kept as the page's saved state, so a Save that stops partway
+     says what did not save, and the next Save sends only that, with no false
+     conflict and no second copy of anything. */
   async function save(force = false) {
     if (!validate()) return false;
     const row = readForm();
     const saveBtn = $('scheduler-driver-save');
     saveBtn.disabled = true;
+    let part = 'the driver';  // what was being written or read when it stopped
     try {
-      let id = loaded?.id;
-      if (id && !force) {
+      const id = loaded?.id ?? newId;
+      if (loaded && !force) {
         const [now, times] = await Promise.all([
           client.from('drivers').select(DRIVER_COLUMNS).eq('id', id).maybeSingle(),
-          client.from('driver_time_off').select('start_date,end_date,reason,notes,position').eq('driver_id', id).order('position'),
+          client.from('driver_time_off').select('start_date,end_date,reason,notes,position').eq('driver_id', id),
         ]);
         if (now.error || times.error) throw now.error || times.error;
         const theirs = (times.data || []).map(r => ({ ...r, start_date: String(r.start_date).slice(0, 10), end_date: String(r.end_date).slice(0, 10) }));
-        if (!now.data || comparable(now.data) !== comparable(loaded) || offKey(theirs) !== offKey(loadedOff)) {
+        if (!now.data || comparable(now.data) !== comparable(loaded) || offHeld(theirs) !== offHeld(loadedOff)) {
           window.Rux?.modal?.open?.('scheduler-driver-conflict-modal');
           return false;
         }
       }
-      if (id) {
-        const { error } = await client.from('drivers').update(row).eq('id', id);
-        if (error) throw error;
-      } else {
-        const { data, error } = await client.from('drivers').insert(row).select('id').single();
-        if (error) throw error;
-        id = data.id;
-      }
-      if (offKey(off) !== offKey(loadedOff)) {
-        const fresh = off.map((r, position) => ({
-          driver_id: id, position, start_date: r.start_date, end_date: r.end_date, reason: r.reason, notes: r.notes,
-        }));
-        if (fresh.length) {
-          const { error } = await client.from('driver_time_off').insert(fresh);
-          if (error) throw error;
-        }
-        const gone = loadedOff.map(r => r.id).filter(Boolean);
-        if (gone.length) {
-          const { error } = await client.from('driver_time_off').delete().in('id', gone);
-          if (error) throw error;
-        }
-      }
+      const saved = await window.SchedulerPair.saveRecord(client, 'drivers',
+        { id, creating: !loaded, row, columns: DRIVER_COLUMNS });
       if (!loaded) history.replaceState(null, '', `drivers.html?id=${encodeURIComponent(id)}`);
+      loaded = saved;
       currentId = id;
+
+      // Each range keeps its place on the page, which is the order rux-ui lists.
+      part = 'their time off';
+      await window.SchedulerPair.syncRows(client, 'driver_time_off', {
+        have: loadedOff, want: off, key: r => JSON.stringify(offRow(r)), order: 'position',
+        rowOf: (r, position) => ({ driver_id: id, position, start_date: r.start_date, end_date: r.end_date,
+                                   reason: r.reason || null, notes: r.notes || null }),
+        landed: rows => { loadedOff = rows; },
+      });
+
+      part = 'the read-back';
       await reload(id);
       result('success', 'Saved.');
       return true;
     } catch {
-      result('error', "The driver wasn't saved. Try again.");
+      if (part === 'the read-back') {
+        // Everything was written; only the read-back failed.
+        baseline = snapshot();
+        result('error', "The driver saved, but the page didn't read it back. Reload the page to see it.");
+        return true;
+      }
+      if (part === 'the driver') result('error', "The driver wasn't saved. Try again.");
+      else result('error', `The driver saved, but ${part} didn't. Save again to finish.`);
       return false;
     } finally {
       saveBtn.disabled = false;

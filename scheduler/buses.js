@@ -427,8 +427,10 @@
   narrow.addEventListener('change', stackButtons);
 
   let loaded = null;        // the bus row as the page read it
-  let loadedOut = [];       // its out-of-service rows, as read
+  let loadedOut = [];       // its out-of-service rows, as the database holds them
   let out = [];             // the rows on the page, saved with the form
+  // A new bus's id, made once, so a Save sent again cannot insert it twice.
+  const newId = crypto.randomUUID();
   let baseline = '';        // the form as loaded, to tell whether it changed
 
   /* The columns Save writes, read off the form. A blank field saves as null.
@@ -470,7 +472,12 @@
     if (k === 'ada_lift' || k === 'sleeper') return !!v;
     return v;
   }));
-  const outKey = list => JSON.stringify(list.map(r => [r.start_date, r.end_date, r.reason || null]));
+  const outRow = r => [r.start_date, r.end_date, r.reason || null];
+  const outKey = list => JSON.stringify(list.map(outRow));
+  /* The days out in one order whatever order they were read or written in,
+     so the conflict check compares what is held, not how it was listed. */
+  const outHeld = list => JSON.stringify(list.map(outRow).sort((a, b) =>
+    JSON.stringify(a).localeCompare(JSON.stringify(b))));
   const snapshot = () => comparable(readForm()) + outKey(out);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
@@ -874,60 +881,67 @@
       .filter(r => r.sort_order !== r.was);
   }
 
-  // Writes the bus, then its days out if they changed, then the fleet's
-  // order: the new rows go in before the old ones come out, so a failure part
-  // way never loses a range.
+  /* Writes the bus, then its days out if they changed, then the fleet's
+     order. Each write that lands is kept as the page's saved state, so a
+     Save that stops partway says what did not save, and the next Save sends
+     only that, with no false conflict and no second copy of anything. */
   async function save(force = false) {
     if (!validate()) return false;
     const row = readForm();
     const saveBtn = $('scheduler-bus-save');
     saveBtn.disabled = true;
+    let part = 'the bus';     // what was being written or read when it stopped
     try {
-      let id = loaded?.id;
-      if (id && !force) {
+      let id = loaded?.id ?? newId;
+      if (loaded && !force) {
         const [now, windows] = await Promise.all([
           client.from('buses').select(BUS_COLUMNS).eq('id', id).maybeSingle(),
-          client.from('bus_out_of_service').select('start_date,end_date,reason').eq('bus_id', id).order('start_date'),
+          client.from('bus_out_of_service').select('start_date,end_date,reason').eq('bus_id', id),
         ]);
         if (now.error || windows.error) throw now.error || windows.error;
         const theirs = (windows.data || []).map(r => ({ ...r, start_date: day(r.start_date), end_date: day(r.end_date) }));
-        if (!now.data || comparable(now.data) !== comparable(loaded) || outKey(theirs) !== outKey(loadedOut)) {
+        if (!now.data || comparable(now.data) !== comparable(loaded) || outHeld(theirs) !== outHeld(loadedOut)) {
           window.Rux?.modal?.open?.('scheduler-bus-conflict-modal');
           return false;
         }
       }
-      if (id) {
-        const { error } = await client.from('buses').update(row).eq('id', id);
-        if (error) throw error;
-      } else {
-        const { data, error } = await client.from('buses').insert(row).select('id').single();
-        if (error) throw error;
-        id = data.id;
-      }
-      if (outKey(out) !== outKey(loadedOut)) {
-        const fresh = out.map(r => ({ bus_id: id, start_date: r.start_date, end_date: r.end_date, reason: r.reason }));
-        if (fresh.length) {
-          const { error } = await client.from('bus_out_of_service').insert(fresh);
-          if (error) throw error;
-        }
-        const gone = loadedOut.map(r => r.id).filter(Boolean);
-        if (gone.length) {
-          const { error } = await client.from('bus_out_of_service').delete().in('id', gone);
-          if (error) throw error;
-        }
-      }
-      const fleet = [...buses.filter(b => b.id !== id), { ...(loaded || {}), ...row, id }];
-      for (const r of renumbering(fleet)) {
+      const saved = await window.SchedulerPair.saveRecord(client, 'buses',
+        { id, creating: !loaded, row, columns: BUS_COLUMNS });
+      if (!loaded) history.replaceState(null, '', `buses.html?id=${encodeURIComponent(id)}`);
+      loaded = saved;
+      currentId = id;
+      buses = [...buses.filter(b => b.id !== id), saved];
+
+      part = 'its days out';
+      await window.SchedulerPair.syncRows(client, 'bus_out_of_service', {
+        have: loadedOut, want: out, key: r => JSON.stringify(outRow(r)),
+        rowOf: r => ({ bus_id: id, start_date: r.start_date, end_date: r.end_date, reason: r.reason || null }),
+        landed: rows => { loadedOut = rows; },
+      });
+
+      // Each number that lands is kept, so a retry writes only the rest.
+      part = "the fleet's order";
+      for (const r of renumbering(buses)) {
         const { error } = await client.from('buses').update({ sort_order: r.sort_order }).eq('id', r.id);
         if (error) throw error;
+        const bus = buses.find(b => b.id === r.id);
+        if (bus) bus.sort_order = r.sort_order;
+        if (r.id === id) loaded = { ...loaded, sort_order: r.sort_order };
       }
-      if (!loaded) history.replaceState(null, '', `buses.html?id=${encodeURIComponent(id)}`);
-      currentId = id;
+
+      part = 'the read-back';
       await reload(id);
       result('success', 'Saved.');
       return true;
     } catch {
-      result('error', "The bus wasn't saved. Try again.");
+      if (part === 'the read-back') {
+        // Everything was written; only the read-back failed.
+        baseline = snapshot();
+        result('error', "The bus saved, but the page didn't read it back. Reload the page to see it.");
+        return true;
+      }
+      if (part === 'the bus') result('error', "The bus wasn't saved. Try again.");
+      else result('error', `The bus saved, but ${part} didn't. Save again to finish.`);
       return false;
     } finally {
       saveBtn.disabled = false;

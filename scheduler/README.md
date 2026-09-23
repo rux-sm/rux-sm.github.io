@@ -39,6 +39,11 @@ one at `customers.html?id=`. Two customers never share a name, since
 QuickBooks matches on it; renaming one renames the organization text its
 contacts carry, which rux-ui shows.
 
+Those five pages save through `pair.js`. A new record's id is made before its
+insert, and each write that lands is kept as the page's saved state, so a Save
+that stops partway says what did not save, and Save again sends only the rest:
+never a second bus, a doubled day out or a conflict with the page's own write.
+
 In the trip editor, Customer is picked from that list and saved with the trip;
 a name not in it becomes a new customer on Save. Picking the booking contact
 fills an empty customer, a customer fills an empty pickup and drop-off from

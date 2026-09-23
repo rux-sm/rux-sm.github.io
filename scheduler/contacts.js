@@ -321,7 +321,9 @@
   stackButtons();
   narrow.addEventListener('change', stackButtons);
 
-  let loaded = null;        // the contact row as the page read it
+  let loaded = null;
+  // A new contact's id, made once, so a Save sent again cannot insert it twice.
+  const newId = crypto.randomUUID();        // the contact row as the page read it
   let trips = [];           // its trips, as read
   let tripsRead = false;    // whether they have been, since the last load
   let tripsFailed = false;
@@ -625,6 +627,7 @@
     }
     const saveBtn = $('scheduler-contact-save');
     saveBtn.disabled = true;
+    let wrote = false;
     try {
       let id = loaded?.id;
       if (id && !force) {
@@ -635,26 +638,27 @@
           return false;
         }
       }
-      if (id) {
-        const { error } = await client.from('contacts').update(row).eq('id', id);
-        if (error) throw error;
-      } else {
-        // The id is made here, as the trip editor makes one, so the insert
-        // does not depend on a database default.
-        id = crypto.randomUUID();
-        const { error } = await client.from('contacts').insert({ id, ...row });
-        if (error) throw error;
-        // Held at once, so a retry after a failed read-back updates this row
-        // rather than inserting the person a second time.
-        loaded = { id, ...row };
-        drawTitle();
-      }
+      // The write hands back the row as saved and it is held at once, so a
+      // Save after a failed read-back neither finds a false conflict nor
+      // inserts the person a second time.
+      loaded = await window.SchedulerPair.saveRecord(client, 'contacts',
+        { id: id ?? newId, creating: !id, row, columns: CONTACT_COLUMNS });
+      id = loaded.id;
+      wrote = true;
+      contacts = [...contacts.filter(c => c.id !== id), loaded];
+      drawTitle();
       history.replaceState(null, '', `contacts.html?id=${encodeURIComponent(id)}`);
       currentId = id;
       await reload(id);
       result('success', 'Saved.');
       return true;
     } catch {
+      if (wrote) {
+        // What the form holds is what was saved, so leaving asks nothing.
+        baseline = snapshot();
+        result('error', "The contact saved, but the page didn't read it back. Reload the page to see it.");
+        return true;
+      }
       result('error', "The contact wasn't saved. Try again.");
       return false;
     } finally {

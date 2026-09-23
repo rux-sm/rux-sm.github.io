@@ -213,7 +213,9 @@
   stackButtons();
   narrow.addEventListener('change', stackButtons);
 
-  let loaded = null;      // the row as the page read it
+  let loaded = null;
+  // A new record's id, made once, so a Save sent again cannot insert it twice.
+  const newId = crypto.randomUUID();      // the row as the page read it
   let place = null;       // the address picked: { address, lat, lng, mapbox_id }
   let typed = '';         // the address field's text
   let autoName = null;    // the name the last pick filled in, until one is typed
@@ -413,11 +415,8 @@
       // The write hands back the row as saved, so `loaded` holds its real
       // updated_at even when the read-back below fails, and a second Save
       // updates this row rather than finding a conflict or saving it twice.
-      const written = id
-        ? await client.from('locations').update(row).eq('id', id).select(COLUMNS).single()
-        : await client.from('locations').insert({ id: crypto.randomUUID(), ...row }).select(COLUMNS).single();
-      if (written.error) throw written.error;
-      loaded = written.data;
+      loaded = await window.SchedulerPair.saveRecord(client, 'locations',
+        { id: id ?? newId, creating: !id, row, columns: COLUMNS });
       id = loaded.id;
       wrote = true;
       history.replaceState(null, '', `locations.html?id=${encodeURIComponent(id)}`);

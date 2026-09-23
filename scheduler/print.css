@@ -1131,17 +1131,22 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* Item and Description are read, the three money columns are compared, so
    the numbers go to the trailing edge and under one another. */
 /* A figure is never broken across lines, because 12,500.0 over a 0 is a
-   different price; Cost is wide enough for five figures and cents. */
+   different price. */
 .scheduler-customer-quote__table .scheduler-customer-quote__num {
   text-align: end;
   white-space: nowrap;
 }
 
-.scheduler-customer-quote__table th:nth-child(1) { inline-size: 13%; }
-.scheduler-customer-quote__table th:nth-child(2) { inline-size: 52%; }
-.scheduler-customer-quote__table th:nth-child(3) { inline-size: 9%; }
-.scheduler-customer-quote__table th:nth-child(4) { inline-size: 12%; }
-.scheduler-customer-quote__table th:nth-child(5) { inline-size: 14%; }
+/* EACH COLUMN IS WHAT ITS WIDEST CONTENT NEEDS, and Description the rest.
+   Item holds "Driver Hotel" on one line; Quantity holds its own heading;
+   Cost and Total hold the same kind of figure, so they are one width, which
+   sets the Total's two boxes side by side as equals, and $125,000.00 fits
+   either. Description keeps half again its longest line. */
+.scheduler-customer-quote__table th:nth-child(1) { inline-size: 14%; }
+.scheduler-customer-quote__table th:nth-child(2) { inline-size: 46%; }
+.scheduler-customer-quote__table th:nth-child(3) { inline-size: 11%; }
+.scheduler-customer-quote__table th:nth-child(4) { inline-size: 14.5%; }
+.scheduler-customer-quote__table th:nth-child(5) { inline-size: 14.5%; }
 
 /* THE ITEMS BOX IS ONE DEPTH, as on the office's sheet, blank or filled: the
    lines fill it from the top and the room under them is empty paper with the

@@ -1285,6 +1285,10 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-05);
 }
 
+/* A field that takes the dialog's whole width, such as a quote line's item
+   and its description. */
+.scheduler-dialog-grid__wide { grid-column: 1 / -1; }
+
 /* A milestone's fields, shown only while its switch is on. The block is also a
    `rux--stack-vertical`, which is `display: grid` and beats the browser's own
    `[hidden]`, so hidden is restated, scoped to this app's class. */

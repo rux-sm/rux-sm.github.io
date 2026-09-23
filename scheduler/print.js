@@ -845,6 +845,69 @@
     });
   }
 
+  /* ONE LEG'S DESCRIPTION, for a drop-off and pickup trip, which is quoted
+     as two rentals. Each names its own buses, seats, days and the time the
+     group leaves on that leg, and neither says when it arrives: to the
+     customer each leg is a departure. Both name the trip's own pickup and
+     destination, so the two lines read as one journey. */
+  function legDescription(trip, leg) {
+    const out = leg === 'return' ? 'return' : 'outbound';
+    const stops = stopsOf(trip, out);
+    const seats = (trip.trip_assignments || [])
+      .filter(a => (a.leg || 'outbound') === out)
+      .map(a => a.buses?.capacity).find(c => c != null) ?? null;
+    return window.SchedulerQuoteText.description({
+      type: trip.trip_type,
+      buses: out === 'return' ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count,
+      seats,
+      pickup: stopsOf(trip, 'outbound').find(s => s.type === 'pickup')?.address
+        || trip.pickup_address || '',
+      destination: trip.destination,
+      from: out === 'return' ? trip.return_start_date : trip.start_date,
+      to: out === 'return' ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
+      leave: stops.find(s => s.type === 'stop')?.depart_prev || null,
+      oneLeg: true,
+    });
+  }
+
+  /* THE LINES THE QUOTE PRINTS: the trip's saved quote lines, in order, as the
+     Billing tab keeps them. A rental line left without words takes the trip's
+     own, a leg's on a drop-off and pickup trip. A trip with no lines is its
+     quoted price as the rental, and a drop-off and pickup is two rentals, one
+     per leg, the price shared between them to the cent. */
+  function quoteLines(trip) {
+    const split = trip.trip_type === 'dropoff_pickup';
+    const count = n => (n == null || !Number.isFinite(Number(n)) ? '' : String(Number(n)));
+    const saved = (trip.trip_quote_lines || []).slice()
+      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    if (saved.length) {
+      return saved.map(l => ({
+        item: l.item || '',
+        desc: l.description
+          || (l.kind === 'rental' ? (split ? legDescription(trip, l.leg) : quoteDescription(trip)) : ''),
+        qty: count(l.quantity),
+        cost: l.cost == null ? '' : money(l.cost),
+        total: l.amount == null ? '' : money(l.amount),
+      }));
+    }
+    const total = Number(trip.quoted_price);
+    const priced = Number.isFinite(total) && total !== 0;
+    const legs = split ? ['outbound', 'return'] : [null];
+    const share = Math.round((total / legs.length) * 100) / 100;
+    return legs.map((leg, i) => {
+      const buses = leg === 'return' ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count;
+      const n = Math.max(Number(buses) || 0, 1);
+      const legTotal = i < legs.length - 1 ? share : Math.round((total - share * (legs.length - 1)) * 100) / 100;
+      return {
+        item: 'Bus Rental',
+        desc: split ? legDescription(trip, leg) : quoteDescription(trip),
+        qty: buses ? String(n) : '',
+        cost: priced ? money(legTotal / n) : '',
+        total: priced ? money(legTotal) : '',
+      };
+    });
+  }
+
   /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and
      divided once, with the label shaded as the office's own sheet shades it.
      print.css names the fill and what carries it onto paper. */
@@ -895,14 +958,14 @@
     return row;
   }
 
-  /* WHAT IS TYPED IS ADDED UP, and only that. The first line comes from the
-     trip -- its buses, and the quoted price divided between them -- and its
-     Total is the quoted price itself, so a price that will not divide evenly
-     still totals to what was quoted. A Quantity or Cost typed on any line
-     makes that line's Total their product, and the Total box is the sum of the
-     lines, so a deduction typed under the bus rental takes the total down with
-     it. The trip's quoted price is not changed by any of it: that is the
-     Billing tab's, and a price agreed on the sheet is saved there. */
+  /* WHAT IS TYPED IS ADDED UP, and only that. The lines come from the trip
+     (`quoteLines`), each Total as it was saved, so a price that will not
+     divide evenly still totals to what was quoted. A Quantity or Cost typed
+     on any line makes that line's Total their product, and the Total box is
+     the sum of the lines, so a deduction typed under the bus rental takes the
+     total down with it. The trip's quoted price is not changed by any of it:
+     that is the Billing tab's, and a price agreed on the sheet is saved
+     there. */
   function addUp(card) {
     const rows = [...card.querySelectorAll('.scheduler-customer-quote__line-item')];
     let sum = 0;
@@ -936,17 +999,9 @@
     head.appendChild(headRow);
     table.appendChild(head);
 
-    const buses = Math.max(Number(trip.bus_count) || 0, 1);
-    const total = Number(trip.quoted_price);
-    const priced = Number.isFinite(total) && total !== 0;
-
     const body = el('tbody');
-    body.appendChild(blank ? lineRow('', '', '', '', '') : lineRow(
-      'Bus Rental',
-      quoteDescription(trip),
-      trip.bus_count ? String(buses) : '',
-      priced ? money(total / buses) : '',
-      priced ? money(total) : ''));
+    if (blank) body.appendChild(lineRow('', '', '', '', ''));
+    else for (const l of quoteLines(trip)) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total));
     /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
        office's sheet leaves room under its items and rules only the columns
        down through it. It is the last row, so an added line goes above it. */
@@ -955,6 +1010,14 @@
     body.appendChild(room);
     table.appendChild(body);
     table.addEventListener('input', onLineTyped);
+    /* A price typed as "1900" is set as "1,900.00" once the cell is left, so
+       a typed line reads like a computed one. */
+    table.addEventListener('focusout', event => {
+      const cell = event.target.closest?.('td');
+      if (!cell?.closest('.scheduler-customer-quote__line-item') || (cell.cellIndex !== 3 && cell.cellIndex !== 4)) return;
+      const n = typedNumber(cell.textContent);
+      if (Number.isFinite(n) && n !== 0) cell.textContent = money(n);
+    });
     return table;
   }
 
@@ -1217,12 +1280,12 @@
          per seat -- a round trip is quoted once. */
       binds: 'trip',
       blank: true,
-      // What the shared list does not already carry: the price and its
-      // quantity, the office's own contact for the customer, the seats the
-      // description names, which are the outbound bus's, and the customer the
-      // bill-to is drawn from.
+      // What the shared list does not already carry: the price, its lines and
+      // each leg's buses, the office's own contact for the customer, the seats
+      // the description names, and the customer the bill-to is drawn from.
       columns: [
-        'quoted_price', 'bus_count', 'pickup_address', 'booking_contact_email',
+        'quoted_price', 'bus_count', 'return_bus_count', 'pickup_address', 'booking_contact_email',
+        'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount)',
         'trip_assignments(leg,buses:bus_id(capacity))',
         'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
       ],

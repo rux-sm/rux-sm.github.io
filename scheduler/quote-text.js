@@ -73,7 +73,9 @@
   }
 
   /* The block itself. A line the trip cannot answer yet is dropped, except the
-     two times, which the office writes as TBD and settles with the customer. */
+     two times, which the office writes as TBD and settles with the customer.
+     One leg of a drop-off and pickup trip (`oneLeg`) says only when it
+     departs, because to the customer each leg is a departure. */
   function description(trip) {
     const from = trip.from || null;
     const pickup = place(trip.pickup || '');
@@ -83,7 +85,7 @@
       [pickup ? `from ${pickup}` : null, drop ? `to ${drop}` : null].filter(Boolean).join(' '),
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,
-      `arriving at ${clock(trip.back) || 'TBD'}`,
+      trip.oneLeg ? null : `arriving at ${clock(trip.back) || 'TBD'}`,
     ].filter(Boolean).join('\n');
   }
 

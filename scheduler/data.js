@@ -354,6 +354,8 @@
     // POs and invoices, one row each, written by id like the payments.
     'trip_pos(id,position,ref,amount,date)',
     'trip_invoices(id,position,number,amount,date)',
+    // The quote's lines, which the Billing tab edits and the quote prints.
+    'trip_quote_lines(id,position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
     // `miles` sums to the estimate a trip without its own shows. The rest are
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
@@ -2434,6 +2436,8 @@
       panelFleet.appendChild(sec);
     }
     if (focusId) document.getElementById(focusId)?.focus();
+    // A bus added or taken off changes a rental line's quantity.
+    if (linesLive) redrawLines();
   }
 
   const fleetBus = node => {
@@ -4189,6 +4193,175 @@
     refreshDirty();
   });
 
+  /* ── The quote's lines ──
+     A line is a quantity at a cost. A bus rental is one leg's buses at the
+     price of one bus, so its quantity is always the Fleet tab's count; a
+     second driver is the extra drivers at one driver's pay; a discount is a
+     negative cost. Pending rows like the POs, kept with their
+     `trip_quote_lines` ids, and drawn on the Billing tab under Quoted price,
+     which is their sum.
+
+     The item names and descriptions are the office's QuickBooks items, so a
+     line reads the same on the printed quote and in the estimate. */
+  const LINE_KINDS = [
+    { kind: 'rental', label: 'Bus rental', item: 'Bus Rental', description: '' },
+    { kind: 'second_driver', label: 'Second driver', item: "Addt'l Driver",
+      description: 'Additional driver required by law after exceeding 10 driving hrs or 15 on-duty hrs.' },
+    { kind: 'discount', label: 'Discount', item: 'Deductions', description: 'Discount approved by manager.' },
+    { kind: 'other', label: 'Other', item: '', description: '' },
+  ];
+  const lineKind = kind => LINE_KINDS.find(k => k.kind === kind) ?? LINE_KINDS.at(-1);
+  let linePending = [];
+  let redrawLines = () => {};
+  let lineEditing = null;
+  // Set once the Fleet tab has drawn, so a line's bus count reads this trip's.
+  let linesLive = false;
+
+  const round2 = n => Math.round(n * 100) / 100;
+  // Money to the cent, as a quote prints it, with a true minus for a discount.
+  const usdCents = n => `${n < 0 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US',
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const splitNow = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
+  // A leg's buses on the Fleet tab. A trip that is not split has one rental,
+  // on the outbound leg's count.
+  const legBuses = leg => Math.max(editing?.fleet?.[leg === 'return' ? 'return' : 'outbound']?.length || 0, 1);
+  const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg) : money(String(l.quantity ?? '')));
+  const lineAmount = l => {
+    const cost = money(String(l.cost ?? ''));
+    return cost === null ? null : round2((lineQty(l) ?? 1) * cost);
+  };
+  const linesTotal = () => round2(linePending.reduce((n, l) => n + (lineAmount(l) ?? 0), 0));
+
+  /* The dialog: what the line is, which leg on a split trip, the words the
+     quote prints and the price. A bus rental's quantity is the leg's buses and
+     cannot be typed, and its description left blank is written from the trip
+     when the quote is printed, so it follows the trip's dates and times. */
+  function openLineDialog(index) {
+    const host = document.getElementById('scheduler-line-fields');
+    if (!host) return;
+    lineEditing = index;
+    const l = index === null ? { kind: 'other' } : linePending[index];
+    document.getElementById('scheduler-line-h').textContent =
+      index === null ? 'Add quote line' : 'Edit quote line';
+    const grid = el('div', 'scheduler-dialog-grid');
+    const kind = selectField('scheduler-f-lkind', 'Kind', l.kind, LINE_KINDS.map(k => [k.kind, k.label]));
+    const leg = splitNow()
+      ? selectField('scheduler-f-lleg', 'Leg', l.leg ?? 'outbound', [['outbound', 'Drop-off'], ['return', 'Pickup']])
+      : null;
+    const item = textField('scheduler-f-litem', 'Item', l.item ?? lineKind(l.kind).item);
+    item.classList.add('scheduler-dialog-grid__wide');
+
+    const descItem = el('div', 'rux--form-item scheduler-dialog-grid__wide');
+    const descLabel = el('div', 'rux--text-area__label-wrapper');
+    const descLab = el('label', 'rux--label', 'Description');
+    descLab.setAttribute('for', 'scheduler-f-ldesc');
+    descLabel.appendChild(descLab);
+    const descWrap = el('div', 'rux--text-area__wrapper');
+    const desc = el('textarea', 'rux--text-area');
+    desc.id = 'scheduler-f-ldesc';
+    desc.rows = 3;
+    desc.value = l.description ?? (index === null ? lineKind(l.kind).description : '');
+    descWrap.appendChild(desc);
+    const descHelp = el('div', 'rux--form__helper-text', 'Left blank, a bus rental is described from the trip.');
+    descItem.append(descLabel, descWrap, descHelp);
+
+    const cost = money(String(l.cost ?? ''));
+    const qty = moneyField('scheduler-f-lqty', 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
+    const costField = moneyField('scheduler-f-lcost', l.kind === 'discount' ? 'Amount off' : 'Cost',
+      cost === null ? null : Math.abs(cost));
+    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField);
+    host.replaceChildren(grid);
+
+    // The kind decides the item's usual name and words, whether the quantity
+    // is the leg's buses, and what the price is called.
+    const sync = () => {
+      const k = document.getElementById('scheduler-f-lkind').value;
+      const qtyInput = document.getElementById('scheduler-f-lqty');
+      const legNow = document.getElementById('scheduler-f-lleg')?.value ?? null;
+      qtyInput.disabled = k === 'rental';
+      if (k === 'rental') qtyInput.value = String(legBuses(legNow));
+      descHelp.hidden = k !== 'rental';
+      costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
+    };
+    let kindBefore = l.kind;
+    document.getElementById('scheduler-f-lkind').addEventListener('change', e => {
+      const itemInput = document.getElementById('scheduler-f-litem');
+      const descInput = document.getElementById('scheduler-f-ldesc');
+      // A name or description still the old kind's usual one follows the new
+      // kind; one typed over stays.
+      if (!itemInput.value.trim() || itemInput.value === lineKind(kindBefore).item) {
+        itemInput.value = lineKind(e.target.value).item;
+      }
+      if (!descInput.value.trim() || descInput.value === lineKind(kindBefore).description) {
+        descInput.value = lineKind(e.target.value).description;
+      }
+      kindBefore = e.target.value;
+      sync();
+    });
+    document.getElementById('scheduler-f-lleg')?.addEventListener('change', sync);
+    sync();
+    window.Rux?.modal?.open?.('scheduler-line-modal');
+  }
+
+  document.getElementById('scheduler-line-done')?.addEventListener('click', () => {
+    const val = id => document.getElementById(id)?.value.trim() ?? '';
+    const kind = val('scheduler-f-lkind') || 'other';
+    const typed = money(val('scheduler-f-lcost'));
+    const row = {
+      kind,
+      leg: splitNow() ? (val('scheduler-f-lleg') || 'outbound') : null,
+      item: val('scheduler-f-litem') || null,
+      description: val('scheduler-f-ldesc') || null,
+      quantity: kind === 'rental' ? null : money(val('scheduler-f-lqty')),
+      // A discount is typed as the amount off and kept as a negative cost.
+      cost: typed === null ? null : (kind === 'discount' ? -Math.abs(typed) : typed),
+      cost_typed: typed !== null,
+    };
+    // An empty dialog adds nothing, as in the other dialogs.
+    if (!row.item && !row.description && row.cost === null) {
+      window.Rux?.modal?.close?.('scheduler-line-modal');
+      return;
+    }
+    if (lineEditing === null) linePending.push({ miles: null, dead_miles: null, rate: null, ...row });
+    else Object.assign(linePending[lineEditing], row);
+    window.Rux?.modal?.close?.('scheduler-line-modal');
+    redrawLines();
+    refreshDirty();
+  });
+
+  /* The lines Save writes, in order, each with the quantity and amount it has
+     now: a rental's quantity is read from the Fleet tab at the moment of the
+     save. */
+  const linesToSave = () => linePending.map((l, position) => ({
+    id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null,
+    item: l.item ?? null, description: l.description ?? null,
+    quantity: lineQty(l), cost: money(String(l.cost ?? '')), amount: lineAmount(l),
+    cost_typed: !!l.cost_typed,
+    miles: l.miles ?? null, dead_miles: l.dead_miles ?? null, rate: l.rate ?? null,
+  }));
+
+  /* The lines as writes, by id like `listPatch`. A trip opened without its
+     lines writes none. */
+  function linesPatch() {
+    if (!editing || editing.linesLoaded === false) return null;
+    const was = editing.lines || [];
+    const NUMBERS = ['quantity', 'cost', 'amount', 'miles', 'dead_miles', 'rate'];
+    const keys = ['position', 'kind', 'leg', 'item', 'description', 'cost_typed', ...NUMBERS];
+    const seen = new Set();
+    const inserts = [];
+    const updates = [];
+    linesToSave().forEach(({ id, ...row }) => {
+      const before = id ? was.find(w => String(w.id) === String(id)) : null;
+      if (!before) { inserts.push(row); return; }
+      seen.add(String(id));
+      const moved = keys.some(k => !same(row[k],
+        NUMBERS.includes(k) ? money(String(before[k] ?? '')) : (before[k] ?? null)));
+      if (moved) updates.push({ id: String(id), patch: row });
+    });
+    const deletes = was.filter(w => !seen.has(String(w.id))).map(w => String(w.id));
+    return { inserts, updates, deletes, work: !!(inserts.length || updates.length || deletes.length) };
+  }
+
   /* The rows Save writes for one list. Off means none. On means the pending
      rows in order, and at least one: a PO expected with nothing typed is one
      empty row, so `po_received` always agrees with whether rows exist, the
@@ -4545,7 +4718,7 @@
     if (!editing) return false;
     const patch = patchOf();
     return routePlan().work || !!paymentsPatch()?.work
-      || !!posPatch()?.work || !!invoicesPatch()?.work || fleetChanged()
+      || !!posPatch()?.work || !!invoicesPatch()?.work || !!linesPatch()?.work || fleetChanged()
       || (!!patch && Object.keys(patch).length > 0);
   }
 
@@ -4723,6 +4896,9 @@
     const byPosition = rows => (rows || []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     editing.pos = creating ? [] : byPosition(trip.trip_pos);
     editing.invoices = creating ? [] : byPosition(trip.trip_invoices);
+    // The quote's lines, diffed by `linesPatch` as the POs are by `listPatch`.
+    editing.linesLoaded = creating || Array.isArray(trip.trip_quote_lines);
+    editing.lines = creating ? [] : byPosition(trip.trip_quote_lines);
 
     /* The route's rows are kept apart from `editing.before`: they are
        `trip_stops` rows, not `trips` columns, so they diff and write
@@ -5609,6 +5785,96 @@
       panelBilling.appendChild(section(null,
         moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price)));
 
+      /* THE QUOTE'S LINES, under the price they add up to. With any line the
+         price is their total and is not typed; with none it is typed as it
+         always was, and the quote prints it as one line. The price is written
+         only when the total moves, so opening a trip whose price rux-ui
+         changed shows the difference instead of arming Save to undo it. */
+      linePending = editing.linesLoaded && !editing.creating
+        ? editing.lines.map(l => ({
+          id: String(l.id), kind: l.kind || 'other', leg: l.leg ?? null,
+          item: l.item ?? null, description: l.description ?? null,
+          quantity: l.quantity ?? null, cost: l.cost ?? null, cost_typed: !!l.cost_typed,
+          miles: l.miles ?? null, dead_miles: l.dead_miles ?? null, rate: l.rate ?? null,
+        }))
+        : [];
+      linesLive = false;
+      const lineList = rowList();
+      const linesNote = el('p', 'rux--form__helper-text');
+      const quotedInput = panelBilling.querySelector('#scheduler-f-quoted');
+      // The total at the last draw; the first draw, as the trip opens, only
+      // records it.
+      let totalBefore = null;
+      /* A split trip starts with a rental per leg, anything else with one,
+         sharing the typed price between them to the cent. */
+      const startFromTrip = () => {
+        const legs = splitNow() ? ['outbound', 'return'] : [null];
+        const quoted = money(quotedInput.value);
+        const share = quoted === null ? null : round2(quoted / legs.length);
+        legs.forEach((leg, i) => {
+          const legTotal = quoted === null ? null
+            : (i < legs.length - 1 ? share : round2(quoted - share * (legs.length - 1)));
+          const cost = legTotal === null ? null : round2(legTotal / legBuses(leg));
+          linePending.push({ kind: 'rental', leg, item: 'Bus Rental', description: null,
+            quantity: null, cost, cost_typed: cost !== null, miles: null, dead_miles: null, rate: null });
+        });
+        drawLines();
+        refreshDirty();
+      };
+      const drawLines = () => {
+        lineList.body.replaceChildren();
+        const split = splitNow();
+        linePending.forEach((l, i) => {
+          const cost = money(String(l.cost ?? ''));
+          const amount = lineAmount(l);
+          const name = l.item || lineKind(l.kind).label;
+          const meta = [
+            split && l.kind === 'rental' ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
+            cost === null ? 'No cost yet' : `${lineQty(l) ?? 1} × ${usdCents(cost)}`,
+          ].filter(Boolean).join(' · ');
+          const much = amount === null ? '' : usdCents(amount);
+          lineList.body.appendChild(listRow({
+            name, meta, much,
+            title: [name, meta, much].filter(Boolean).join(' · '),
+            edit: () => openLineDialog(i),
+            removeLabel: `Remove ${name}`,
+            remove: () => { linePending.splice(i, 1); drawLines(); refreshDirty(); },
+          }));
+        });
+        // With no lines yet, the trip's own rental comes first.
+        if (!linePending.length) {
+          lineList.body.appendChild(listAddRow({
+            label: split ? 'Add the drop-off and pickup' : 'Add the bus rental',
+            id: 'scheduler-f-linestart', onClick: startFromTrip,
+          }).li);
+        }
+        lineList.body.appendChild(listAddRow({
+          label: 'Add line', id: 'scheduler-f-lineadd',
+          onClick: () => openLineDialog(null),
+        }).li);
+
+        const total = linesTotal();
+        if (linePending.length && totalBefore !== null && total !== totalBefore) {
+          quotedInput.value = String(total);
+          drawSummary();
+        }
+        totalBefore = total;
+        // Carbon's read-only field, so the price does not look typeable.
+        quotedInput.readOnly = linePending.length > 0;
+        quotedInput.closest('.rux--text-input-wrapper')
+          ?.classList.toggle('rux--text-input-wrapper--readonly', linePending.length > 0);
+        const quoted = money(quotedInput.value);
+        linesNote.textContent = !linePending.length ? ''
+          : quoted !== null && quoted !== total
+            ? `The lines add up to ${usdCents(total)}. Change a line and the quoted price becomes their total.`
+            : 'The quoted price is the total of these lines.';
+        linesNote.hidden = !linesNote.textContent;
+      };
+      redrawLines = drawLines;
+      const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      linesBody.append(lineList.list, linesNote);
+      panelBilling.appendChild(section('Quote lines', linesBody));
+
       /* The description the office pastes into its QuickBooks estimate. It
          sits under the price because the two are the halves of one line item
          there, and it carries the block alone for the reason `qbDescription`
@@ -5739,6 +6005,10 @@
     fleetClashes = null;
     fleetClashKey = '';
     drawFleet();
+    // The quote's lines count the Fleet tab's buses, so they draw after it,
+    // and from here follow it.
+    redrawLines();
+    linesLive = true;
 
     /* Files holds the Itinerary not needed switch, which Save writes like any
        field, then the uploader and the trip's files, which write at once. A
@@ -6649,7 +6919,7 @@
          and the paid fields the billing now gives, as rux-ui's save does. A
          save that touches no billing leaves them as they are. */
       if (creating || BILLING_KEYS.some(k => k in patch) || paymentsPatch()?.work
-          || posPatch()?.work || invoicesPatch()?.work) {
+          || posPatch()?.work || invoicesPatch()?.work || linesPatch()?.work) {
         Object.assign(row, derivedBilling());
       }
       /* The customer and the contacts are linked, and added to their lists,
@@ -6716,10 +6986,12 @@
           client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', tripId));
       }
 
-      /* Purchase orders and invoices, by id like the payments. Their summary
-         columns on the trip went out with the trip patch (`EDITS`). */
+      /* Purchase orders, invoices and quote lines, by id like the payments.
+         Their summary columns on the trip, and `quoted_price`, which is the
+         lines' sum, went out with the trip patch (`EDITS`). */
       for (const [table, what, listWork] of [['trip_pos', 'its purchase orders', posPatch()],
-                                             ['trip_invoices', 'its invoices', invoicesPatch()]]) {
+                                             ['trip_invoices', 'its invoices', invoicesPatch()],
+                                             ['trip_quote_lines', 'its quote lines', linesPatch()]]) {
         if (!listWork?.work) continue;
         for (const item of listWork.inserts) {
           await write(what, client.from(table).insert({ trip_id: tripId, ...item }));
@@ -8965,11 +9237,11 @@
      arrives as the row's id and nothing else, so a bar that vanished could not
      be found without reading the week anyway.
 
-     All twelve the week is drawn from broadcast their changes; `contacts` is
+     All thirteen the week is drawn from broadcast their changes; `contacts` is
      the one left out, because a booking contact is read far more often than it
      is edited and it is the table of customers' own details. */
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops',
-    'trip_payments', 'trip_pos', 'trip_invoices', 'buses', 'drivers',
+    'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings'];
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;

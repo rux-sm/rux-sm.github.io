@@ -989,6 +989,26 @@
     </div>
   </div>
 
+  <!-- A quote line, entered like a PO: its fields in a dialog, and Done,
+       because the editor's Save is what writes trip_quote_lines. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-line-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-line-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-line-h">Add quote line</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content" id="scheduler-line-fields"></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-line-done">Done</button>
+      </div>
+    </div>
+  </div>
+
   <div class="rux--layer-one rux--modal" id="scheduler-inv-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-inv-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">

@@ -52,11 +52,13 @@
   padding-block: calc((var(--rux-layout-size-height-sm) - 1px - 1lh) / 2);
 }
 
-/* A dropdown's or contact search's label sits straight in the list box's
-   wrapper, where Carbon's inline-block label opens a line box 1.5px taller
-   than itself, so the field stood 66px against a text input's 64px. As a
-   block the label is its own 16px. */
-.rux--side-panel .rux--list-box__wrapper > .rux--label { display: block; }
+/* A dropdown's or a search's label sits straight in the list box's wrapper,
+   where Carbon's inline-block label opens a line box 1.5px taller than
+   itself, so the field stood 66px against a text input's 64px and sat 2px
+   low beside one. As a block the label is its own 16px. The trip panel and
+   the page pairs both set a combo box beside text fields. */
+.rux--side-panel .rux--list-box__wrapper > .rux--label,
+.scheduler-pair-page .rux--list-box__wrapper > .rux--label { display: block; }
 
 /* A checkbox beside a field sits on the field's middle. Carbon's
    `.rux--form-item.rux--checkbox-wrapper:last-of-type` puts 3px under a
@@ -431,7 +433,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* A dropdown fills its row. Carbon's form item is a flex box, where the list
    box's wrapper shrinks to its longest line, the helper text, and the field
    with it. */
-.rux--side-panel .rux--form-item > .rux--list-box__wrapper {
+.rux--side-panel .rux--form-item > .rux--list-box__wrapper,
+.scheduler-pair-page .rux--form-item > .rux--list-box__wrapper {
   inline-size: 100%;
 }
 

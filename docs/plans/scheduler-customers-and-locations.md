@@ -46,10 +46,6 @@ the quote prints the customer's address without anyone typing it.
   beneath), Contacts (how many). The record has Details (name, usual pickup as
   Carbon's combo box over the locations, bill-to as a text area) and a Contacts
   tab listing its people, each opening their contact page.
-- **The Locations list:** Location (the name, with the address beneath), Pickup
-  for (how many customers use it). The record is Details alone: name, and the
-  address search. A location with no customer on it can be deleted; one in use
-  says which customers use it.
 - **Neither page has a filter strip,** for the reason Contacts has none:
   neither has a status.
 - **The Contacts page's Organization field becomes Customer,** a combo box over
@@ -67,7 +63,8 @@ the quote prints the customer's address without anyone typing it.
   from its usual pickup, with the drive time looked up; saving the trip gives a
   booking contact with no customer the trip's one, as it fills a missing phone.
 - **The Route tab's address search offers saved locations first,** by name or
-  address, then the map search, as rux-ui's itinerary does.
+  address, then the map search, as rux-ui's itinerary does. It moves onto `scheduler/places.js`,
+  which the Locations page already uses, so the two searches are one.
 - **Nothing joins a list unless someone says so.** After a trip saves, one
   modal, Update your lists, offers what the edit brought that the lists do not
   have, and shows nothing when there is none. Not now adds none of it, and the
@@ -109,7 +106,6 @@ None open.
 
 ## Tasks
 
-- [ ] `scheduler/locations.html` and `scheduler/locations.js`.
 - [ ] `scheduler/customers.html` and `scheduler/customers.js`.
 - [ ] The Contacts page's Customer field.
 - [ ] The trip editor: the Customer field, the three fills, and saved

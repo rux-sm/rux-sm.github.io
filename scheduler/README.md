@@ -28,6 +28,12 @@ their organization, phone, email and trips, and edits one at
 never changes a trip, which keeps the phone it was saved with. Saving a trip
 fills in the phone or email its contact is missing, never replacing one.
 
+`locations.html` lists the saved places a bus goes, which rux-ui's itinerary
+search reads too, and edits one at `locations.html?id=`. An address is picked
+from the map search in `places.js`, so every place has its map point. A trip
+keeps its own copy of each stop, and a location a customer uses as their usual
+pickup is never deleted.
+
 On the compact board, a swipe moves one week of trip cells while the date and
 bus headers stay fixed. Stationary cell viewports clip the moving bars at the
 bus-column boundary during both dragging and settling. Further swipes during a slide are ignored. Cached weeks

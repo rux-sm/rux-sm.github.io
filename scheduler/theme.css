@@ -34,16 +34,17 @@
 }
 
 /* The amber trip bar. Carbon's tags have no yellow, so a light theme builds one
-   the way Carbon builds every light tag -- a 20 fill, 70 ink, the 20's hover
-   step and a 40 edge -- from Carbon's yellow ramp; the warning colour itself was
-   a slab beside the other tags' tints. A dark theme keeps the warning fill, with
-   no hover step, so a hovered bar there shows an inner ring instead. */
+   beside them: a fill at the red, blue and purple tints' lightness and
+   strength, a hover step three points darker, and Carbon's yellow 70 ink and
+   yellow 40 edge, the steps its own light tags use. A dark theme keeps the
+   warning fill, with no hover step, so a hovered bar there shows an inner ring
+   instead. */
 :root,
 [data-theme="white"],
 [data-theme="g10"] {
-  --scheduler-amber-bg: #fddc69;
+  --scheduler-amber-bg: oklch(92% 0.07 95);
   --scheduler-amber-fg: #684e00;
-  --scheduler-amber-hover: #fccd27;
+  --scheduler-amber-hover: oklch(89% 0.09 95);
   --scheduler-amber-border: #d2a106;
   --scheduler-amber-hover-ring: none;
 }

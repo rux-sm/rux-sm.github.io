@@ -136,7 +136,6 @@ export const ICONS = {
   'upload': { material: 'upload', rux: null },
   'user': { material: 'person', rux: null },
   'user--avatar': { material: 'account_circle', rux: null },
-  'user--identification': { material: 'assignment_ind', rux: null },
   'user--multiple': { material: 'groups', rux: null },
   'view': { material: 'visibility', rux: null },
   'view--off': { material: 'visibility_off', rux: null },

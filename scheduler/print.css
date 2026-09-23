@@ -1084,10 +1084,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin-block-start: var(--rux-spacing-05);
 }
 
+/* The same 8px in from the rule as every box's label and answer, so an item
+   stands off its column's rule as a name stands off its box's. */
 .scheduler-customer-quote__table th,
 .scheduler-customer-quote__table td {
   border-inline: 1px solid var(--rux-border-strong-01);
-  padding: var(--rux-spacing-01) var(--rux-spacing-02);
+  padding: var(--rux-spacing-01) var(--rux-spacing-03);
   text-align: start;
   vertical-align: top;
   font-weight: 400;
@@ -1128,12 +1130,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* Item and Description are read, the three money columns are compared, so
    the numbers go to the trailing edge and under one another. */
-.scheduler-customer-quote__table .scheduler-customer-quote__num { text-align: end; }
+/* A figure is never broken across lines, because 12,500.0 over a 0 is a
+   different price; Cost is wide enough for five figures and cents. */
+.scheduler-customer-quote__table .scheduler-customer-quote__num {
+  text-align: end;
+  white-space: nowrap;
+}
 
 .scheduler-customer-quote__table th:nth-child(1) { inline-size: 13%; }
-.scheduler-customer-quote__table th:nth-child(2) { inline-size: 53%; }
+.scheduler-customer-quote__table th:nth-child(2) { inline-size: 52%; }
 .scheduler-customer-quote__table th:nth-child(3) { inline-size: 9%; }
-.scheduler-customer-quote__table th:nth-child(4) { inline-size: 11%; }
+.scheduler-customer-quote__table th:nth-child(4) { inline-size: 12%; }
 .scheduler-customer-quote__table th:nth-child(5) { inline-size: 14%; }
 
 /* THE ITEMS BOX IS ONE DEPTH, as on the office's sheet, blank or filled: the
@@ -1217,47 +1224,48 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* ── The agreement ────────────────────────────────────────────────────────
    The second sheet, the terms the customer signs with the quote: the logo, the
    form's name, the trip in two boxes, and the policies in small type with
-   their headings underlined into the text. */
+   their headings underlined into the text.
+
+   THE QUOTE IS THE PATTERN, because it has to match what QuickBooks prints
+   and this sheet does not. Its title, its boxes, its rules and its labels
+   are the quote's; only the policies' size is this sheet's own. */
 .scheduler-customer-quote--agreement {
   font-size: 8.5pt;
-  /* Word's single spacing, near enough, which is what holds the policies to
-     one sheet at the office's own size. */
+}
+
+/* The quote's own title, so the two sheets are named in one voice. */
+.scheduler-customer-quote__agreement-title {
+  margin: var(--rux-spacing-05) 0;
+  text-align: center;
+  font-size: 20pt;
+  font-weight: 400;
   line-height: 1.2;
 }
 
-.scheduler-customer-quote__agreement-title {
-  margin: var(--rux-spacing-04) 0 var(--rux-spacing-04);
-  text-align: center;
-  font-size: 10.5pt;
-  font-weight: 700;
-}
-
-/* The trip, as the Word form sets it: one ruled band, a bold label and its
-   answer, twice, the label grey as the quote's are. The date is as wide as it is, and never less than a
-   date's width, so a blank one has room to be typed into; the destination
-   takes what is left. */
+/* The trip, as one ruled band: a label and its answer, twice, each label
+   grey and regular as the quote's are and in the quote's type and rules. The
+   date is as wide as it is, and never less than a date's width, so a blank
+   one has room to be typed into; the destination takes what is left. */
 .scheduler-customer-quote__trip {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content);
-  border: 1px solid var(--rux-text-primary);
+  border: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-customer-quote__trip-label,
 .scheduler-customer-quote__trip-value {
   margin: 0;
   padding: var(--rux-spacing-01) var(--rux-spacing-03);
-  font-size: 11pt;
+  font-size: 12pt;
+  line-height: 1.3;
 }
 
-.scheduler-customer-quote__trip-label { font-weight: 700; }
-
 .scheduler-customer-quote__trip-value {
-  border-inline-start: 1px solid var(--rux-text-primary);
-  font-size: 12pt;
+  border-inline-start: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-customer-quote__trip-value:not(:last-child) {
-  border-inline-end: 1px solid var(--rux-text-primary);
+  border-inline-end: 1px solid var(--rux-border-strong-01);
 }
 
 /* The date keeps to one line and is always whole. A destination longer than
@@ -1272,8 +1280,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   text-align: center;
 }
 
+/* The quote's terms' spacing, at this sheet's smaller size. */
 .scheduler-customer-quote__policy {
-  margin: 0 0 0.8em;
+  margin: 0 0 0.6em;
 }
 
 .scheduler-customer-quote__policy-heading {
@@ -1289,13 +1298,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   text-decoration: none;
 }
 
-/* The signature and the date, far apart on one line, each over its label. */
+/* The signature and the date, far apart on one line, each over its label,
+   which is regular as every label on both sheets is. */
 .scheduler-customer-quote__agreement-sign {
   display: flex;
   justify-content: space-between;
   margin-block-start: var(--rux-spacing-06);
   font-size: 10.5pt;
-  font-weight: 700;
 }
 
 .scheduler-customer-quote__agreement-rule {

@@ -79,12 +79,14 @@
    declaration the attribute loses to. */
 .rux--list-box__selection[hidden] { display: none; }
 
-/* A HIDDEN MENU ITEM MUST NOT RENDER, the same rule again. An app hides the
-   items that cannot act on what the menu was opened on, and Carbon's
-   `.rux--menu-item { display: grid }` is an author declaration the attribute
-   loses to, so every one of them was drawn. js/menu.js skips them when the
-   arrow keys move. */
-.rux--menu-item[hidden] { display: none; }
+/* A HIDDEN MENU ITEM OR RULE MUST NOT RENDER, the same rule again. An app
+   hides the items that cannot act on what the menu was opened on, and the
+   rule left between two empty groups, and Carbon's `.rux--menu-item
+   { display: grid }` and `.rux--menu-item-divider { display: block }` are
+   author declarations the attribute loses to. js/menu.js skips hidden items
+   when the arrow keys move. */
+.rux--menu-item[hidden],
+.rux--menu-item-divider[hidden] { display: none; }
 
 /* A CONTAINED LIST'S LABEL TAKES ITS HEADER'S TYPE. This repair is of this
    system's own divergence, not Carbon's: Carbon renders `__label` on a `<div>`

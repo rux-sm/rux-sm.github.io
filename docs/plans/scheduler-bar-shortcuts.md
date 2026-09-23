@@ -92,11 +92,13 @@ stops costing that trip anything.
   would move `updated_at` under the panel and turn its next Save into a
   conflict.
 
-### What does not change
+### The menu and the choices
 
-- **The right-click menu is untouched,** and still carries every action.
-- **Customize shortcuts is untouched** but for the two actions added to its
-  dropdowns.
+- **The right-click menu carries every action,** in five groups, each item
+  with the icon its shortcut has.
+- **Customize shortcuts offers every action but a driver's status,** which
+  belongs to one person: the itinerary, each form and the list of them, Color,
+  Mark hotel booked, Take off this bus and Cancel trip.
 
 ## Questions
 

@@ -65,7 +65,8 @@ Design account panel replaces it).
 | Placeholder bar | keep | Amber is the office's placeholder, a trip not yet quoted, named Placeholder in the colour menu. Its bar is a yellow tint beside the others in a light theme and the warning colour in a dark one, and draws no marks, no empty seat and no Needs a bus; a driver someone has named still shows. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
 | Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour, one step of the run each: grey Not sent, amber pending response, green confirmed, red pending assignment or declined. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. The tooltip names the role, the status, who set it and when. |
-| Driver status menu | keep | One item per driver on the bar's right-click menu, after Color, whose submenu sets that driver's status at once. |
+| Driver status menu | keep | One item per driver on the bar's right-click menu, after Mark hotel booked, whose submenu sets that driver's status at once. |
+| Bar menu | keep | Every action on the bar, in five groups parted by rules: open the trip and its itinerary; Forms, a submenu of each form and All forms; the trip's colour, hotel and drivers' statuses; Take off this bus and Cancel trip; Customize shortcuts. Each item carries the icon its shortcut carries, and what cannot act on the bar is hidden. |
 | Open email thread | later | Waits for the Missive decision. |
 | Realtime refresh | later | |
 | Compact board | keep | Where the board itself cannot show three readable days, which is a phone, it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying two lines and no icons, the destination and the departure, the same on every block however long; a double booking is a band across its foot; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on from the board's own width, never from what the panels leave. |
@@ -168,16 +169,18 @@ trip, placed the way a tooltip is: above it where there is room, below it where
 the day band is in the way, and slid back inside the board at either edge with
 its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. It holds Open trip,
-then the person's own choices in the order they set them — Open itinerary, Mark
-hotel booked, Color, Take off this bus or Cancel trip — set from the
-right-click menu's Customize shortcuts and saved on their profile. An empty
+then the person's own choices in the order they set them — the itinerary,
+opened or uploaded, the driver envelope, the driver itinerary, the customer
+quote, all forms, Color, Mark hotel booked, Take off this bus or Cancel trip —
+set from the right-click menu's Customize shortcuts and saved on their
+profile. An empty
 choice is left out, and an empty slot only pads the row up to three, the
 fewest it ever shows: three slots at 40px come to 120px, which is exactly what
 a one-day trip bar is at the narrowest day column, because that column is
 sized from this bar. A padding slot
 shows a dashed circle and opens Customize shortcuts; a fourth action and
 beyond are added from the right-click menu. A shortcut
-that cannot act on the trip, such as Open itinerary without one, shows faint
+that cannot act on the trip, such as the envelope on a bus with no driver, shows faint
 with the reason as its label. Escape clears the selection and takes the bar
 with it. The
 panel keeps its trip through week changes and other selections, so a call

@@ -6838,12 +6838,22 @@
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-envelope') {
+    if (item.id === 'scheduler-bar-menu-form-envelope') {
       openEnvelope(bar);
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-forms') {
+    if (item.id === 'scheduler-bar-menu-form-itinerary') {
+      openDriverItinerary(bar);
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-form-quote') {
+      openQuote(bar);
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-form-all') {
       openForms(bar);
       return;
     }
@@ -6925,7 +6935,7 @@
     fillCrewItems(bar);
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     // Hidden where it cannot act: a slot with no bus, or a bus with no driver.
-    document.getElementById('scheduler-bar-menu-envelope').hidden =
+    document.getElementById('scheduler-bar-menu-form-envelope').hidden =
       !bar.dataset.assignmentId || !barHasCrew(bar);
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
@@ -6934,6 +6944,24 @@
     hotelItem.hidden = !bar.dataset.needHotel || locked;
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
+    tidyRules(barMenu);
+  }
+
+  /* A rule parts two groups, so one with nothing shown before it, after it,
+     or before the next rule is hidden: the trip in the editor, with no hotel
+     and no crew, would otherwise show two rules together. */
+  function tidyRules(menu) {
+    const kids = [...menu.children];
+    const shown = el => !el.hidden && !el.matches('.rux--menu-item-divider');
+    for (const [i, rule] of kids.entries()) {
+      if (!rule.matches('.rux--menu-item-divider')) continue;
+      rule.hidden = false;
+      const before = kids.slice(0, i).reverse();
+      const after = kids.slice(i + 1);
+      const lastBefore = before.find(k => !k.hidden);
+      rule.hidden = !before.some(shown) || !after.some(shown)
+        || !!lastBefore?.matches('.rux--menu-item-divider');
+    }
   }
 
   // The bar's crew, read again from the trip the board holds.
@@ -6943,13 +6971,13 @@
     return assign ? { trip, crew: crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses) } : null;
   }
 
-  /* One status item per driver on the bar, after Color: the driver's role
+  /* One status item per driver on the bar, after Mark hotel booked: the driver's role
      icon in their status's tone, their name and status, and a submenu of the
      five statuses with theirs checked. A role nobody fills has no status. */
   function fillCrewItems(bar) {
     for (const old of barMenu.querySelectorAll('[data-crew-part]')) old.remove();
     const found = barCrew(bar);
-    const anchor = document.getElementById('scheduler-bar-menu-color');
+    const anchor = document.getElementById('scheduler-bar-menu-hotel');
     const items = (found?.crew ?? []).filter(c => !c.needed).map(c => {
       const name = crewName(c);
       const item = el('li', 'rux--menu-item');
@@ -7618,6 +7646,30 @@
     });
   }
 
+  /* The driver's itinerary for this bar's leg, and the customer's quote for
+     its trip, straight from the bar rather than through the Forms list. */
+  function openDriverItinerary(bar) {
+    const id = bar.dataset.tripId;
+    if (!id) return;
+    const leg = bar.dataset.leg === 'return' ? 'return' : 'outbound';
+    openGenerated({
+      url: `print.html?form=driver-itinerary&trip=${encodeURIComponent(id)}&leg=${leg}`,
+      kind: 'Driver trip itinerary',
+      note: leg === 'return' ? 'Return' : '',
+      opener: bar,
+    });
+  }
+  function openQuote(bar) {
+    const id = bar.dataset.tripId;
+    if (!id) return;
+    openGenerated({
+      url: `print.html?form=customer-quote&trip=${encodeURIComponent(id)}`,
+      kind: 'Customer quote',
+      note: '',
+      opener: bar,
+    });
+  }
+
   function openItinerary(bar) {
     const id = bar.dataset.itineraryId;
     if (!id) return;
@@ -8145,19 +8197,31 @@
       icon_for: bar => (isEditorBar(bar) ? '#m-close' : '#m-open_in_new'),
       blocked: () => null,
       run: bar => (isEditorBar(bar) ? whenSafe(() => closePanel()) : openSelected()) },
-    { id: 'itinerary', label: 'Open itinerary', icon: '#m-attachment',
-      blocked: bar => (bar.dataset.itineraryId ? null : 'No itinerary yet'),
-      run: bar => openItinerary(bar) },
+    // Opens the itinerary, or uploads one on a trip that has none, as the
+    // right-click menu swaps the two.
+    { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment',
+      label_for: bar => (bar.dataset.itineraryId ? 'Open itinerary' : 'Upload itinerary'),
+      icon_for: bar => (bar.dataset.itineraryId ? '#m-attachment' : '#m-upload'),
+      blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
+      run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
+        : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file))) },
+    // The forms, each with the Forms page's own icon, and the list of them all.
+    { id: 'envelope', label: 'Driver envelope', icon: '#m-mail',
+      blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
+        : !barHasCrew(bar) ? 'No driver on this bus' : null),
+      run: bar => openEnvelope(bar) },
+    { id: 'driver_itinerary', label: 'Driver itinerary', icon: '#m-route',
+      blocked: () => null, run: bar => openDriverItinerary(bar) },
+    { id: 'quote', label: 'Customer quote', icon: '#m-request_quote',
+      blocked: () => null, run: bar => openQuote(bar) },
+    { id: 'forms', label: 'All forms', icon: '#m-description',
+      blocked: () => null, run: bar => openForms(bar) },
+    { id: 'color', label: 'Color', icon: '#m-palette',
+      blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
     { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment',
       label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
       blocked: bar => (!bar.dataset.needHotel ? 'No hotel on this trip' : EDITOR_HAS.hotel(bar)),
       run: bar => markHotel(bar) },
-    { id: 'color', label: 'Color', icon: '#m-palette',
-      blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
-    { id: 'envelope', label: 'Print envelope', icon: '#m-print',
-      blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
-        : !barHasCrew(bar) ? 'No driver on this bus' : null),
-      run: bar => openEnvelope(bar) },
     { id: 'unassign', label: 'Take off this bus', icon: '#m-remove',
       blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
       run: bar => takeOffBus(bar) },

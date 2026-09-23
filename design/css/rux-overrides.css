@@ -507,9 +507,10 @@
 }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's
-   curve: the header's actions, the side panel's close and action row, and a
-   modal's close and footer. */
+   curve: the header's actions, the side panel's back and close buttons and
+   action row, and a modal's close and footer. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--header__action,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__navigation-back-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set__action-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-close-button,
@@ -517,12 +518,16 @@
   border-radius: 0;
 }
 /* A close button in a rounded corner takes that corner's curve, so neither its
-   hover fill nor its inset focus ring draws a square inside the curve. A
+   hover fill nor its inset focus ring draws a square inside the curve, and a
+   side panel's back button, in the corner opposite, takes that one. A
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-close-button {
   border-start-end-radius: 12px;
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel__navigation-back-button {
+  border-start-start-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__close-button {

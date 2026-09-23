@@ -46,6 +46,8 @@
   const params = new URLSearchParams(location.search);
   const busId = params.get('id');
   const editing = !!busId || params.has('new');
+  // The record view shows the list's column only for its notice.
+  if (editing) $('scheduler-buses-h').hidden = true;
 
   // An expiry this close shows as a warning, as the Drivers page warns.
   const WARN_DAYS = 45;
@@ -420,7 +422,8 @@
     // A window that would not load leaves the list readable: every bus then
     // reads by its stored status alone, which is what it is.
     outByBus = indexOut(windows.error ? [] : windows.data);
-    $('scheduler-buses-list').hidden = false;
+    $('scheduler-buses-h').hidden = false;
+    $('scheduler-buses-table').hidden = false;
     drawList();
   }
 
@@ -1054,7 +1057,8 @@
       if (!(await loadBus())) {
         say('info', 'That bus is not in the list', 'Pick a bus from the list below.');
         history.replaceState(null, '', 'buses.html');
-        $('scheduler-buses-list').hidden = false;
+        $('scheduler-buses-h').hidden = false;
+        $('scheduler-buses-table').hidden = false;
         drawList();
       }
     } catch {

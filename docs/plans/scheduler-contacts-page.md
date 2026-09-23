@@ -29,9 +29,6 @@ three.
 - **The shared shape has one home:** the `scheduler-pair-*` classes in
   `scheduler/app.css`, which Contacts carries as Drivers and Buses do, adding
   only what a contact has and they do not.
-- **The page pair's two open tasks land first, on all three pages**: the notice
-  and list in one grid, and the template's inset at every width. Contacts is
-  built to the corrected shape, never copied from the old one.
 - **Any shared part Contacts changes changes on Drivers and Buses in the same
   commit**: the table box, filter strip, toolbar, count note, title, tabs,
   button set, notices and the leave guard.
@@ -99,7 +96,6 @@ None open.
 
 ## Tasks
 
-- [ ] The page pair plan's two open layout tasks, on Drivers and Buses.
 - [ ] `scheduler/contacts.html` and `scheduler/contacts.js`: the list, the
       editor, the Trips tab, delete and the duplicate warning.
 - [ ] The trip editor's save fills a picked contact's missing phone and email.

@@ -170,32 +170,33 @@
 </header>
 
 <main id="main-content" class="rux--content scheduler-pair-page">
-  <!-- The page's notice: no log-in, not staff, or a read that failed. -->
-  <div class="rux--css-grid" id="scheduler-drivers-notice" hidden>
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
-      <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-drivers-notice-box">
-        <div class="rux--inline-notification__details">
-          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-drivers-notice-icon" href="#m-info-fill"/></svg>
-          <div class="rux--inline-notification__text-wrapper">
-            <div class="rux--inline-notification__title" id="scheduler-drivers-notice-title"></div>
-            <div class="rux--inline-notification__subtitle" id="scheduler-drivers-notice-text"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ── The list ─────────────────────────────────────────────────────────
        Centred in twelve of the sixteen columns at lg, as the quote pages are.
        The table has no header block: the page's h1 names it, and a second
        heading would repeat the word. drivers.js draws the rows and owns the
        sort, because the Compliance column sorts by date, not by its text. -->
-  <div class="rux--css-grid" id="scheduler-drivers-list" hidden>
+  <div class="rux--css-grid" id="scheduler-drivers-list">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
       <div class="rux--stack-vertical rux--stack-scale-5">
         <h1 class="rux--type-productive-heading-04" id="scheduler-drivers-h">Drivers</h1>
 
-        <section class="rux--data-table-container" aria-labelledby="scheduler-drivers-h">
+        <!-- The page's notice: no log-in, not staff, or a read that failed.
+             It sits under the title in the list's own column, and the list
+             hides its parts rather than its grid, so a notice is seen
+             whichever view the page was opened on. -->
+        <div id="scheduler-drivers-notice" hidden>
+          <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-drivers-notice-box">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-drivers-notice-icon" href="#m-info-fill"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__title" id="scheduler-drivers-notice-title"></div>
+                <div class="rux--inline-notification__subtitle" id="scheduler-drivers-notice-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="rux--data-table-container" id="scheduler-drivers-table" aria-labelledby="scheduler-drivers-h" hidden>
           <!-- The filter, inside the box and flush on the band under it. It
                changes which rows the table holds, so it belongs to the table
                rather than to the page; above the container it read as a

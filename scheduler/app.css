@@ -2453,6 +2453,17 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-pair-page [hidden] { display: none; }
 /* The table scrolls inside its own box rather than widening the page. */
 .scheduler-pair-page .rux--css-grid-column { min-inline-size: 0; }
+/* From md up, the template's 2rem inset on every side, as
+   design/templates/list-page.html sets on its own page class. Two classes beat
+   the flat 16px overrides.css gives the board; a phone keeps its narrower
+   gutter, set with the quote pages'. A landscape phone's cutout still wins. */
+@media (min-width: 42rem) {
+  .rux--content.scheduler-pair-page {
+    padding: var(--rux-spacing-07);
+    padding-inline: max(var(--rux-spacing-07), var(--scheduler-safe-left)) max(var(--rux-spacing-07), var(--scheduler-safe-right));
+    padding-block-end: calc(var(--rux-spacing-07) + var(--scheduler-safe-bottom));
+  }
+}
 
 /* A row's first cell: a mark, then the name over a quieter line. */
 .scheduler-pair-cell {

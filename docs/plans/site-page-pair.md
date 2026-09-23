@@ -95,14 +95,3 @@ None open.
 - [ ] Give `builder/guide.json` its reading. Both templates and their three
       variant groups are entered `reviewed: false`, which is the file's own mark
       for "not yet read by rux", and the purpose lines are placeholders.
-- [ ] Give the scheduler's editorial pages the template's inset at every width.
-      `scheduler/app.css` already carries the rule on their own page classes,
-      which is the right shape, but only below md; above it they still take the
-      board's flat 16px from `scheduler/overrides.css`.
-- [ ] Put the notice and the list in ONE grid, column and stack on
-      `scheduler/drivers.html` and `scheduler/buses.html`, hiding the parts
-      rather than the grid. Moving the notice into the list's own column, which
-      this task used to ask for, hides it exactly when it fires: both pages
-      reveal the list only after a successful read, so a no-log-in or failed-read
-      notice inside it would never be seen. The record view keeps its own grid,
-      because it spans eight columns and not twelve.

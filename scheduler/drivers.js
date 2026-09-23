@@ -40,6 +40,8 @@
   const params = new URLSearchParams(location.search);
   const driverId = params.get('id');
   const editing = !!driverId || params.has('new');
+  // The record view shows the list's column only for its notice.
+  if (editing) $('scheduler-drivers-h').hidden = true;
 
   // rux-ui's driver page, which is the one a driver's link opens today.
   const DRIVER_LINK = 'https://rux-sm.github.io/rux-ui/driver.html?s=';
@@ -324,7 +326,8 @@
       .select('id,name,short_name,phone,license_number,license_exp,med_card_expiry,cdl_class,employment_type,priority,status,photo_path,driver_ref');
     if (error) throw error;
     drivers = data || [];
-    $('scheduler-drivers-list').hidden = false;
+    $('scheduler-drivers-h').hidden = false;
+    $('scheduler-drivers-table').hidden = false;
     drawList();
   }
 

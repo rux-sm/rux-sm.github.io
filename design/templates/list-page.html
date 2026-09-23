@@ -862,15 +862,17 @@
                  second head. Each option carries its count. Delete it if the
                  list has no views. -->
             <div class="rux--form-item">
-              <div class="rux--select rux--layout--size-lg">
-                <label class="rux--label rux--visually-hidden" for="list-filter">Show</label>
-                <div class="rux--select-input__wrapper">
-                  <select id="list-filter" class="rux--select-input">
-                    <option>Open (3)</option>
-                    <option>Archived (12)</option>
-                    <option>All (15)</option>
-                  </select>
-                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              <div class="rux--select rux--select--inline rux--layout--size-lg">
+                <label class="rux--label" for="list-filter">Show</label>
+                <div class="rux--select-input--inline__wrapper">
+                  <div class="rux--select-input__wrapper">
+                    <select id="list-filter" class="rux--select-input">
+                      <option>Open (3)</option>
+                      <option>Archived (12)</option>
+                      <option>All (15)</option>
+                    </select>
+                    <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                  </div>
                 </div>
               </div>
             </div>

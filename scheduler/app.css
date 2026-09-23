@@ -2530,9 +2530,11 @@ html:has(.scheduler-page[data-takeover]) {
     white-space: nowrap;
   }
 }
-/* The Show choice in the band: its own width, so the search keeps the room
-   that is left, and the New button stays at the end. */
-.scheduler-table-show { flex: none; inline-size: 12rem; }
+/* The Show choice in the band: Carbon's inline select, as its table
+   pagination uses, flat on the band with no field line, its label beside it.
+   It takes the width of its longest option, so the search keeps the room that
+   is left and the New button stays at the end. */
+.scheduler-table-show { flex: none; }
 
 /* What a search came to, in the band after the search and before New, which is
    where Carbon's own captures put the control that follows a persistent search.
@@ -2549,10 +2551,21 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-table-note:empty { margin-inline-end: 0; }
 /* Not on a phone. The band there is the search, the Show choice and New and
    nothing else fits: the count crushed the field to a magnifier and pushed the
-   button off the end. The choice narrows to what its first word needs. */
+   button off the end. The Show label goes too, left for a screen reader,
+   because beside it the choice was cut to its first three letters, and the
+   choice is held to what its first word needs, not its longest option. */
 @media (max-width: 41.98rem) {
   .scheduler-table-note { display: none; }
   .scheduler-table-show { inline-size: 8rem; }
+  .scheduler-table-show .rux--select-input { inline-size: 8rem; }
+  .scheduler-table-show .rux--label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 
 .scheduler-pair-title {

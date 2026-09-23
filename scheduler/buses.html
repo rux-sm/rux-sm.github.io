@@ -235,16 +235,18 @@
                    row of tabs over the table: the band stays one line, and the
                    choice still reads at rest. Each option carries its count. -->
               <div class="rux--form-item scheduler-table-show">
-                <div class="rux--select rux--layout--size-lg">
-                  <label class="rux--label rux--visually-hidden" for="scheduler-buses-filter">Show</label>
-                  <div class="rux--select-input__wrapper">
-                    <select id="scheduler-buses-filter" class="rux--select-input">
-                      <option value="active" data-label="Active">Active</option>
-                      <option value="out" data-label="Out of service">Out of service</option>
-                      <option value="inactive" data-label="Inactive">Inactive</option>
-                      <option value="all" data-label="All">All</option>
-                    </select>
-                    <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                <div class="rux--select rux--select--inline rux--layout--size-lg">
+                  <label class="rux--label" for="scheduler-buses-filter">Show</label>
+                  <div class="rux--select-input--inline__wrapper">
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-buses-filter" class="rux--select-input">
+                        <option value="active" data-label="Active">Active</option>
+                        <option value="out" data-label="Out of service">Out of service</option>
+                        <option value="inactive" data-label="Inactive">Inactive</option>
+                        <option value="all" data-label="All">All</option>
+                      </select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
                   </div>
                 </div>
               </div>

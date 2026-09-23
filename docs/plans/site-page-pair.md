@@ -27,6 +27,9 @@ decides it again.
 - **The filter is a select in the band, after the count and before the action,**
   because rux wants the box's head to be one clean line of search and New; a row
   of tabs over the table was a second head.
+- **It is Carbon's inline select,** labelled Show, as Carbon's table pagination
+  draws its page size: a field's underline in the band read as a form field
+  dropped into the table's head.
 - **The box takes no outline of its own.** Carbon paints the band and the rows
   one `layer` fill, a step off the page in all four themes and in ant-dark and
   spotify-dark, so the box already parts from the page and a rule round it would

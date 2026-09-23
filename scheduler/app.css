@@ -931,6 +931,10 @@ button.scheduler-row-head__num::after {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
+/* The list of a trip's forms is a page to choose from, with nothing on it to
+   print or open, so the row goes while the frame shows it. */
+.scheduler-viewer__toolbar[hidden] { display: none; }
+
 /* WHAT A GENERATED FORM HANDS UP, which data.js marks as it puts it in. They
    are the row's own children rather than a group inside it, so the whole
    toolbar breaks as one line and the buttons every document gets join the

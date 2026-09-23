@@ -1953,6 +1953,7 @@
   }
 
   async function showHub() {
+    host?.setToolbarShown?.(false);
     setPaper(null);
     setCrumbs(null);
     fitPaper();
@@ -2200,6 +2201,7 @@
   }
 
   async function showForm(form) {
+    host?.setToolbarShown?.(true);
     title.textContent = form.name;
     // Named from the address first, so a form that cannot be drawn still has a
     // way back; `show` names it again from the trip once that has answered.

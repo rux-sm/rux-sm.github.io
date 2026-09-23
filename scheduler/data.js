@@ -6919,6 +6919,7 @@
      controls ahead of them. */
   function setViewerMode(mode) {
     const form = mode === 'form';
+    setToolbarShown(true);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
     if (!form) setFormControls([], []);
@@ -7144,7 +7145,13 @@
   viewerCopies?.addEventListener('rux:menu-closed', () => { viewerCopies.hidden = true; });
 
   window.Rux = window.Rux || {};
-  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead };
+  /* Whether the frame holds something to act on. The Forms list does not, and
+     says so; opening anything else brings the row back. */
+  function setToolbarShown(shown) {
+    if (viewerToolbar) viewerToolbar.hidden = !shown;
+  }
+
+  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown };
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is

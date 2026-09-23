@@ -1049,9 +1049,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: grid;
   /* The phone keeps a number on one line; the email takes the rest. */
   grid-template-columns: minmax(0, 1fr) 1.4in;
-  /* The same gap down as across, so the three are three whole boxes, as the
-     date and the estimate number are. */
-  gap: var(--rux-spacing-02);
+  /* The same gap down as across, and the date and the estimate number's, so
+     boxes that belong together are 8px apart on the whole sheet. */
+  gap: var(--rux-spacing-03);
 }
 
 /* The name spans both, because an email is long and a phone is not. */
@@ -1133,7 +1133,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   position: relative;
   display: flex;
   justify-content: flex-end;
-  margin-block-start: var(--rux-spacing-02);
+  /* Close under the table it adds up: 8px, as boxes that belong together. */
+  margin-block-start: var(--rux-spacing-03);
 }
 
 .scheduler-customer-quote__add {
@@ -1164,7 +1165,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* Small, and close-set: nine paragraphs have to leave the signature line on
    the same sheet as the price. */
 .scheduler-customer-quote__terms {
-  margin-block-start: var(--rux-spacing-02);
+  /* A part of its own, so the 16px every part of the sheet stands apart by. */
+  margin-block-start: var(--rux-spacing-05);
   font-size: 9.5pt;
 }
 

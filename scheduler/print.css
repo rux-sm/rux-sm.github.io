@@ -1024,8 +1024,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: block;
 }
 
+/* Three lines -- the name, the street, the city -- and whatever more the
+   column beside it takes, so the two end on one line. */
+.scheduler-customer-quote__box--bill-to {
+  display: flex;
+  flex-direction: column;
+}
+
 .scheduler-customer-quote__box--bill-to .scheduler-customer-quote__value {
-  min-block-size: 5.2em;
+  flex: 1;
+  min-block-size: 3.9em;
 }
 
 /* Who it is for, and who to answer: the bill-to on the leading edge and the
@@ -1035,7 +1043,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: var(--rux-spacing-07);
-  align-items: start;
 }
 
 .scheduler-customer-quote__who {

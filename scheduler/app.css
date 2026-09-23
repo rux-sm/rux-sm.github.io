@@ -907,20 +907,27 @@ button.scheduler-row-head__num::after {
 /* A TITLE THAT LISTS. Where a document is one of several the head's title is
    the button that names the others, so it takes a pointer and the chevron sits
    on the baseline beside the name. It is Carbon's title still: only what it
-   does is added. */
+   does is added, and what it adds is the week button's feedback, since the two
+   are the same kind of control -- a heading that opens a list. It runs the
+   head's height, from whatever is before it, with its name where it was. */
 .scheduler-viewer__pick {
   display: flex;
+  align-self: stretch;
   align-items: center;
   gap: var(--rux-spacing-02);
+  margin-inline-start: calc(-1 * var(--rux-spacing-05));
+  padding-inline: var(--rux-spacing-05);
   cursor: pointer;
   user-select: none;
 }
 
 .scheduler-viewer__pick svg { flex: none; }
 
+.scheduler-viewer__pick:hover { background: var(--rux-background-hover); }
+
 .scheduler-viewer__pick:focus-visible {
   outline: 2px solid var(--rux-focus);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
 /* The panel's middle row: the toolbar, and the frame taking what it leaves. */

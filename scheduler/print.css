@@ -1336,20 +1336,24 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin: var(--rux-spacing-02) 0 0;
 }
 
-/* As many tiles as fit, each wide enough for a form's name and its links.
-   The list is short and grows one entry at a time, so it wants the room
-   rather than a fixed column count. */
+/* As many tiles as fit, each wide enough for a form's name and its links,
+   sharing the row between them, so the last one ends at the column's edge
+   rather than beside an empty slot. */
 /* [hidden] is a UA rule of the lowest weight, so any display here outranks it
    and the hub would stay on screen behind a form. */
 .scheduler-print__hub[hidden] { display: none; }
 
 .scheduler-print__hub {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: var(--rux-spacing-05);
   padding: var(--rux-spacing-05);
   align-items: start;
 }
+
+/* Standing alone the page already has its inset, so the tiles line up with
+   the title and the column's edges; framed, the panel has none. */
+[data-rux-standalone] .scheduler-print__hub { padding: 0; }
 
 .scheduler-print__hub .rux--tile { text-decoration: none; }
 

@@ -1953,6 +1953,9 @@
   }
 
   async function showHub() {
+    // On the panel's surface the tiles are the next layer up, as Carbon puts
+    // what is inside a side panel.
+    hub.classList.toggle('rux--layer-two', framed);
     host?.setToolbarShown?.(false);
     host?.setViewerBack?.(null);
     setPaper(null);

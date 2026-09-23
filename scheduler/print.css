@@ -24,6 +24,11 @@
   flex-direction: column;
 }
 
+/* FRAMED IN THE BOARD'S PANEL THE PAGE IS THE PANEL'S SURFACE, the layer its
+   head is drawn on, so the list of a trip's forms reads as the panel's body
+   rather than a hole in it. print.js lifts the hub's tiles a layer onto it. */
+html:not([data-rux-standalone]) .scheduler-print { background: var(--rux-layer-01); }
+
 /* Carbon's header is fixed, so the page clears it and then keeps the inset
    `rux--content` gives every other page in this app. Neither applies while the
    page is framed, where there is no header and the panel is the room. */

@@ -135,6 +135,33 @@
   --scheduler-bg: oklch(27% 0 0); --scheduler-hover: oklch(31% 0 0);
   --scheduler-fg: #ededed; --scheduler-border: #ededed;
 }
+/* The roster's busy and day-off squares are the same badges as the bars, blue
+   and red, with a 1px edge in the badge's text colour so a run of busy days
+   still reads at a glance on the black grid. The square is drawn on the cell's
+   content box by a pseudo-element, which can take the mark radius and an edge
+   where the cell's own clipped background can take neither. */
+[data-theme="geist-dark"] .scheduler-avail__cell--busy,
+[data-theme="geist-dark"] .scheduler-avail__cell--off {
+  position: relative;
+  background-color: transparent;
+}
+[data-theme="geist-dark"] .scheduler-avail__cell--busy::after,
+[data-theme="geist-dark"] .scheduler-avail__cell--off::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: var(--scheduler-mark-radius);
+  background: var(--scheduler-avail-fill);
+  box-shadow: inset 0 0 0 1px var(--scheduler-avail-edge);
+}
+[data-theme="geist-dark"] .scheduler-avail__cell--busy {
+  --scheduler-avail-fill: oklch(27% 0.1054 255.8);
+  --scheduler-avail-edge: oklch(71.7% 0.1648 250.794);
+}
+[data-theme="geist-dark"] .scheduler-avail__cell--off {
+  --scheduler-avail-fill: oklch(27% 0.1084 19.02);
+  --scheduler-avail-edge: oklch(69.96% 0.2136 22.03);
+}
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

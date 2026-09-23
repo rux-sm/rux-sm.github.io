@@ -27,8 +27,9 @@ const SIZES = ['16', '20', '32', ''];   // preference order; '' is the unsized r
    `r-<name>`. An app draws from one family; see tools/lib/icon-map.mjs.
 
    Material's settings are pinned there too and there is nothing to choose
-   here: sharp, weight 400, and the fill the sheet names. */
-const MATERIAL_SRC = 'node_modules/@material-symbols/svg-400/sharp';
+   here: weight 400, the fill the sheet names, and sharp unless the row names
+   another style. */
+const MATERIAL_SRC = style => `node_modules/@material-symbols/svg-400/${style ?? 'sharp'}`;
 const RUX_SRC = 'assets/icons-rux';
 
 const ICONS = [
@@ -175,7 +176,7 @@ const matMissing = [];
 let matCount = 0;
 for (const [carbon, row] of Object.entries(SHEET)) {
   if (!row.material) continue;
-  const at = `${MATERIAL_SRC}/${row.material}.svg`;
+  const at = `${MATERIAL_SRC(row.style)}/${row.material}.svg`;
   if (!existsSync(at)) { matMissing.push(`${carbon} -> ${row.material}`); continue; }
   symbols.push(symbolFrom(readFileSync(at, 'utf8'), `${PREFIX.material}${row.material}`, '0 -960 960 960'));
   matCount++;
@@ -184,7 +185,7 @@ for (const [carbon, row] of Object.entries(SHEET)) {
      filled pair, and emitting one from the other would write the id twice. */
   if (row.material.endsWith('-fill')) continue;
   if (Object.values(SHEET).some(r => r.material === `${row.material}-fill`)) continue;
-  const solid = `${MATERIAL_SRC}/${row.material}-fill.svg`;
+  const solid = `${MATERIAL_SRC(row.style)}/${row.material}-fill.svg`;
   if (!existsSync(solid)) continue;
   symbols.push(symbolFrom(readFileSync(solid, 'utf8'), `${PREFIX.material}${row.material}-fill`, '0 -960 960 960'));
   matCount++;

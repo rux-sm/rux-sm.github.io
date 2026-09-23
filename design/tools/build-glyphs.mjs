@@ -35,10 +35,11 @@
 //
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { ICONS as SHEET } from './lib/icon-map.mjs';
 
 const SPRITE = 'assets/icons.svg';
 /* ONE SNAPSHOT PER PUBLISHED FAMILY. The sprite holds three -- Carbon's, from
-   @carbon/icons; Material's, from @material-symbols/svg-400/sharp; and the
+   @carbon/icons; Material's, from @material-symbols/svg-400; and the
    drawings in assets/icons-rux/, which have no publisher to be faithful to and
    so have no snapshot and no gate. A family added here without a snapshot
    would be a family nothing checks, which this file's own header calls the
@@ -55,8 +56,12 @@ const PUBLISHED = {
   material: {
     out: 'data/material-glyphs.json',
     pkg: 'node_modules/@material-symbols/svg-400',
-    // One drawing per name, at the style and weight icon-map.mjs pins.
-    find: (pkg, name) => [`${pkg}/sharp/${name}.svg`],
+    // One drawing per name, at the style and weight icon-map.mjs pins: sharp,
+    // or the style the name's row asks for. A solid twin takes its row's.
+    find: (pkg, name) => {
+      const row = Object.values(SHEET).find(r => r.material === name || `${r.material}-fill` === name);
+      return [`${pkg}/${row?.style ?? 'sharp'}/${name}.svg`];
+    },
   },
 };
 

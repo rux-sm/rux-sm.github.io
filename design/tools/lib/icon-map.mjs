@@ -41,7 +41,8 @@
 //   weight  400       @material-symbols/svg-400
 //   fill    the sheet Carbon's own fill, which a small surface may override
 //
-// and nothing else is left to pin. An icon is that one drawing at whatever size
+// and nothing else is left to pin. A row may name `style: 'outlined'` where
+// sharp draws the idea as a different shape, and says why beside it. An icon is that one drawing at whatever size
 // it is asked for.
 //
 // SCALING ONE DRAWING IS FINE HERE, measured rather than assumed. Carbon draws
@@ -141,6 +142,7 @@ export const ICONS = {
   'warning--alt-inverted--filled': { material: 'do_not_disturb_on-fill', rux: null },  // The inverted triangle, kept distinct from the upright.
   'warning--filled': { material: 'report-fill', rux: null },  // The filled octagon; `error` is taken.
   'warning-square--filled': { material: 'gpp_maybe-fill', rux: null },  // The filled square badge; `report` is taken.
+  'wifi': { material: 'wifi', style: 'outlined', rux: null },  // Sharp draws Wi-Fi as a fan ending in a wedge; outlined keeps the arcs and the dot everyone knows.
   'zoom--in': { material: 'zoom_in', rux: null },
   'zoom--out': { material: 'zoom_out', rux: null },
 };

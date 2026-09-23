@@ -12,10 +12,8 @@ capacity, a service date or the days a bus is out.
 
 ## Decisions
 
-- **The word is bus, not vehicle or fleet.** The table is `buses`, the page
-  pair plan already names the file, and a page named for a word the database
-  does not use ages badly. The old app's Fleet, Vehicle and Unit number become
-  Buses, Bus and Bus number.
+- **The page's name, words and types** are decided in
+  `docs/plans/scheduler-fleet-page.md`.
 - **Two views in one file.** `scheduler/buses.html` lists the buses,
   `buses.html?id=<bus id>` edits one, and `buses.html?new` makes one.
 - **Both take the page pair's layout**, which `docs/plans/site-page-pair.md`
@@ -82,10 +80,8 @@ capacity, a service date or the days a bus is out.
 - **A bus is never deleted, only set Inactive,** so past trips keep the bus's
   number. Deleting the row leaves a finished trip pointing at nothing, and
   nothing needs it; rux-ui's Delete button is left for removal there.
-- **Buses are ordered by model year, newest first,** on this page and on the
-  board's rows. Two buses of one year are parted by the bus number, lowest
-  first and read as a number so 9 comes before 10, and a bus with no year goes
-  last. Dragging rows into a hand-made order goes; a fleet in year order is
+- **The fleet's order** is decided in `docs/plans/scheduler-fleet-page.md`.
+  Dragging rows into a hand-made order goes; a fleet in a fixed order is
   the same answer every time and nobody has to remember it.
 - **That order is written into `buses.sort_order`,** rather than each app
   sorting for itself, because rux-ui draws its rows from that column and two

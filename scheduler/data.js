@@ -67,8 +67,7 @@
   /* The trip colours, read by the board, the editor and the bar menu. `value`
      is what `trips.trip_bar_color` stores and `hue` is the `scheduler-bar--*`
      class that paints it. Amber is the office's placeholder, a trip not yet
-     quoted: app.css paints it with the warning colour, and its bar draws no
-     marks.
+     quoted, and its bar draws no marks.
 
      Retired names are mapped on read and never rewritten, as rux-ui does:
      orange and yellow paint as amber, cyan as teal. */

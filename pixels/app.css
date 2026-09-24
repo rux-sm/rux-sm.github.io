@@ -80,7 +80,7 @@
 /* THE PUZZLE LIST, a level at a time. */
 .pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1rem; }
-.pixels-list .rux--tile { display: grid; gap: .75rem; align-content: start; }
+.pixels-list .rux--tile { display: grid; gap: .75rem; align-content: start; justify-items: center; text-align: center; }
 .pixels-blank {
   display: grid;
   place-items: center;

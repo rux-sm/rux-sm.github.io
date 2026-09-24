@@ -143,6 +143,46 @@
     return svg;
   };
 
+  /* What a bus number's toggletip says, laid out as the trip card is: a head
+     with the bus in its own colour, a disc wearing its type's drawing beside
+     its name and make, then a ruled row each for its equipment, VIN and any
+     status but active. Every value with textContent: a bus's details are data,
+     never markup. */
+  function busTip(bus) {
+    const tip = el('div', 'rux--toggletip-content scheduler-bus-tip');
+    const head = el('div', 'scheduler-bus-tip__head');
+    const disc = el('div', 'scheduler-bus-disc');
+    disc.setAttribute('aria-hidden', 'true');
+    const ink = window.SchedulerVehicles?.inkOn(bus.color);
+    if (ink) { disc.style.background = bus.color; disc.style.color = ink; }
+    const icon = window.SchedulerVehicles?.iconOf(bus.type);
+    disc.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
+      : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
+    const said = el('div', 'scheduler-bus-tip__said');
+    said.appendChild(el('strong', 'scheduler-bus-tip__name', vehicleName(bus)));
+    const spec = [bus.capacity ? `${bus.capacity} pax` : null,
+      [bus.year, bus.make, bus.model].filter(Boolean).join(' ') || null].filter(Boolean).join(' · ');
+    if (spec) said.appendChild(el('span', null, spec));
+    head.append(disc, said);
+    tip.appendChild(head);
+
+    const marks = [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'], bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
+    if (marks.length) {
+      const row = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__kit');
+      for (const [href, label] of marks) {
+        const mark = el('span', 'scheduler-bus-tip__mark');
+        mark.append(svgUse(href, '16', '0 0 32 32'), el('span', null, label));
+        row.appendChild(mark);
+      }
+      tip.appendChild(row);
+    }
+    if (bus.vin) tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__vin', `VIN ${bus.vin}`));
+    if (bus.status && bus.status !== 'active') {
+      tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', bus.status.charAt(0).toUpperCase() + bus.status.slice(1)));
+    }
+    return tip;
+  }
+
   // Carbon's small loading spinner, the inline loading's and the file item's.
   function loadingSpinner(extra = '') {
     const spin = el('div', `rux--loading rux--loading--small${extra}`);
@@ -1209,7 +1249,9 @@
          alone. `right-start`, because this column is the board's left edge and
          any other placement covers the week the tip describes. */
       if (r.bus) {
-        const tip = el('span', 'rux--popover-container rux--popover--caret rux--popover--drop-shadow rux--popover--right-start rux--toggletip');
+        // High contrast, Carbon's own toggletip surface: the inverse chip the
+        // trip card is, so its caret shows against the board.
+        const tip = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--right-start rux--toggletip');
         const trigger = el('button', 'rux--toggletip-button scheduler-row-head__num');
         trigger.type = 'button';
         trigger.setAttribute('aria-expanded', 'false');
@@ -1217,23 +1259,10 @@
         trigger.textContent = String(r.bus.number);
         const pop = el('span', 'rux--popover');
         const content = el('span', 'rux--popover-content');
-        const inner = el('div', 'rux--toggletip-content scheduler-bus-tip');
-        inner.appendChild(el('p', 'rux--toggletip-label', vehicleName(r.bus)));
-        const spec = [
-          [r.bus.capacity ? `${r.bus.capacity} pax` : null, r.bus.type].filter(Boolean).join(' · '),
-          [r.bus.year, r.bus.make, r.bus.model].filter(Boolean).join(' '),
-          r.bus.color,
-          [r.bus.ada_lift ? 'ADA lift' : null, r.bus.sleeper ? 'Sleeper' : null].filter(Boolean).join(' · '),
-          r.bus.vin ? `VIN ${r.bus.vin}` : null,
-          r.bus.status && r.bus.status !== 'active' ? `Status: ${r.bus.status}` : null,
-        ].filter(Boolean);
-        // Every value with textContent, as everywhere here: a bus colour is data,
-        // never markup.
-        for (const line of spec) inner.appendChild(el('p', null, line));
-        if (!spec.length) inner.appendChild(el('p', null, 'Nothing recorded for this bus.'));
-        content.appendChild(inner);
-        pop.appendChild(content);
-        tip.append(trigger, pop, el('span', 'rux--popover-caret'));
+        content.appendChild(busTip(r.bus));
+        // The caret is the popover's own last child, where Carbon draws it.
+        pop.append(content, el('span', 'rux--popover-caret'));
+        tip.append(trigger, pop);
         head.appendChild(tip);
       } else {
         head.append(el('div', 'scheduler-row-head__num', 'No\nbus'));

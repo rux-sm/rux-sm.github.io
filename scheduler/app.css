@@ -235,8 +235,48 @@ button.scheduler-row-head__num::after {
   position: absolute;
   inset: 0;
 }
-/* Carbon's toggletip content is prose; these are one-line facts. */
-.scheduler-bus-tip p { margin: 0; }
+/* A bus number's toggletip reads as the trip card does: 12px type, compact
+   rows with a rule between, in the high-contrast surface's own ink. Start
+   aligned, where the bus column centres its number. overrides.css takes
+   Carbon's prose padding off the content. */
+.scheduler-bus-tip {
+  --bus-tip-rule: color-mix(in srgb, var(--rux-text-inverse) 25%, transparent);
+  min-inline-size: 14rem;
+  text-align: start;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-bus-tip__head {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-03) var(--rux-spacing-04);
+}
+.scheduler-bus-tip__said { display: flex; flex-direction: column; min-inline-size: 0; }
+.scheduler-bus-tip__said > span { opacity: .75; }
+.scheduler-bus-tip__name {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+/* On the inverse surface the disc of a bus with no colour takes the inverse
+   hover, so it still shows as a disc. */
+.scheduler-bus-tip .scheduler-bus-disc:not([style]) {
+  background: var(--rux-background-inverse-hover);
+  color: var(--rux-icon-inverse);
+}
+.scheduler-bus-tip__row {
+  padding: var(--rux-spacing-02) var(--rux-spacing-04);
+  border-block-start: 1px solid var(--bus-tip-rule);
+}
+/* Equipment is an icon with its word, so the tip needs no legend. */
+.scheduler-bus-tip__kit { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
+.scheduler-bus-tip__mark { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-bus-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
+.scheduler-bus-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
+.scheduler-bus-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-row-head__num {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);

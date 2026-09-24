@@ -50,6 +50,15 @@
   // The drawing for a type, or null where it has none.
   const iconOf = name => ICONS[typeOf(name)?.icon]?.href ?? null;
 
+  /* The ink that reads on a vehicle's colour, black or white, or null where
+     the colour is not a six-digit hex and so draws nothing. */
+  function inkOn(colour) {
+    const hex = String(colour || '');
+    if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return null;
+    const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+    return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#000000' : '#ffffff';
+  }
+
   // Reads the office's list; a refused read keeps the one there is.
   async function read(client) {
     if (!client) return types;
@@ -68,7 +77,7 @@
   }
 
   window.SchedulerVehicles = {
-    ICONS, label, iconOf, typeOf, read, save,
+    ICONS, label, iconOf, inkOn, typeOf, read, save,
     get types() { return types.map(t => ({ ...t })); },
     set: list => { if (Array.isArray(list) && list.length) types = clean(list); },
   };

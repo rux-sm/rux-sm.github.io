@@ -197,12 +197,8 @@
   function disc(colour, type) {
     const box = el('div', 'scheduler-bus-disc');
     box.setAttribute('aria-hidden', 'true');
-    if (HEX.test(String(colour || ''))) {
-      const hex = String(colour);
-      const [r, g, bl] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
-      box.style.background = hex;
-      box.style.color = (0.299 * r + 0.587 * g + 0.114 * bl) > 150 ? '#000000' : '#ffffff';
-    }
+    const ink = Vehicles.inkOn(colour);
+    if (ink) { box.style.background = colour; box.style.color = ink; }
     const icon = Vehicles.iconOf(type);
     box.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
       : el('span', 'scheduler-bus-disc__letter', String(type || 'U').trim().charAt(0).toUpperCase()));

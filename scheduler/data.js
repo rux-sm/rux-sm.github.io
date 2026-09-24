@@ -8553,6 +8553,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-assign-remove') {
+      removeDriver(bar);
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-assign-more') {
       openOnFleet(bar);
       return;
@@ -8815,8 +8820,13 @@
     more.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'),
       el('div', 'rux--menu-item__label', 'More drivers…'));
     const rule = () => { const r = el('li', 'rux--menu-item-divider'); r.setAttribute('role', 'separator'); return r; };
+    const remove = () => {
+      const item = assignItem('Remove driver', { icon: '#m-remove' });
+      item.id = 'scheduler-bar-menu-assign-remove';
+      return item;
+    };
     const current = seat?.driver_id != null
-      ? [assignItem(histDriverName(seat.driver_id), { checked: true, disabled: true, title: 'On this bus now' }), rule()] : [];
+      ? [assignItem(histDriverName(seat.driver_id), { checked: true, disabled: true, title: 'On this bus now' }), remove(), rule()] : [];
     const seq = ++assignSeq;
     list.replaceChildren(...current, assignItem('Finding free drivers…', { disabled: true }), rule(), more);
 
@@ -8850,7 +8860,8 @@
   }
 
   /* Puts drivers in Driver seats of one trip: each pick is a bus row and a
-     driver. Each seat's row is changed, or added on a bus with none; a saved
+     driver, or null to empty the seat, which deletes its row, as the Fleet
+     tab's save does. Each seat's row is changed, or added on a bus with none; a saved
      `driver:state` in the bus's roles goes back to plain `driver`, as the
      Fleet tab's save leaves it; and the crew's statuses are sent once for the
      whole trip, which drops the old drivers' and starts the new ones at Not
@@ -8865,26 +8876,29 @@
     const statuses = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
         const mine = byAssign.has(a) && c.role === 'driver';
+        if (mine && !byAssign.get(a)) return null;
         return { driverId: mine ? byAssign.get(a).id : c.driverId, leg: c.leg, role: c.role,
           status: mine ? 'off' : c.status.value, dirty: false };
-      }));
+      }).filter(Boolean));
     const changes = [];
     for (const { assign, driver } of picks) {
       const leg = assign.leg || 'outbound';
       const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
-      if (seat?.id) await run(client.from('trip_drivers').update({ driver_id: driver.id }).eq('id', seat.id));
+      if (!driver) {
+        if (seat?.id) await run(client.from('trip_drivers').delete().eq('id', seat.id));
+      } else if (seat?.id) await run(client.from('trip_drivers').update({ driver_id: driver.id }).eq('id', seat.id));
       else await run(client.from('trip_drivers').insert({ assignment_id: assign.id, driver_id: driver.id, role: 'driver' }));
       const saved = Array.isArray(assign.active_roles) ? assign.active_roles.map(String) : null;
       const roles = saved?.map(r => (r.split(':')[0] === 'driver' ? 'driver' : r)) ?? null;
       if (roles && JSON.stringify(roles) !== JSON.stringify(saved)) {
         await run(client.from('trip_assignments').update({ active_roles: roles }).eq('id', assign.id));
       }
-      if (seat?.driver_id == null) statuses.push({ driverId: driver.id, leg, role: 'driver', status: 'off', dirty: false });
+      if (driver && seat?.driver_id == null) statuses.push({ driverId: driver.id, leg, role: 'driver', status: 'off', dirty: false });
       const who = `${leg === 'return' ? 'Inbound' : 'Outbound'} driver`;
       changes.push({
         field: 'driver', label: 'Driver',
         before: seat?.driver_id != null ? `${who}: ${histDriverName(seat.driver_id)}` : null,
-        after: `${who}: ${driver.name}`,
+        after: driver ? `${who}: ${driver.name}` : null,
       });
     }
     await run(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: statuses }));
@@ -9116,6 +9130,45 @@
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     openSuggest();
   });
+
+  /* Takes the driver off the bar's bus, saved at once. A driver who has been
+     sent the trip or has confirmed it is asked about first, because removing
+     them here tells them nothing. */
+  const unassignModal = document.getElementById('scheduler-unassign-modal');
+  let unassignAfter = null;
+  async function removeDriver(bar, asked) {
+    const found = barSeat(bar);
+    if (!found?.seat?.driver_id) return;
+    const name = histDriverName(found.seat.driver_id);
+    const state = crewOf(found.trip, found.assign, panelIndex.driversById, panelIndex.statuses)
+      .find(c => c.role === 'driver' && !c.needed)?.status.value;
+    const told = state === 'confirmed' || state === 'pending-response';
+    if (told && !asked && unassignModal) {
+      document.getElementById('scheduler-unassign-h').textContent = `Remove ${name}?`;
+      document.getElementById('scheduler-unassign-text').textContent = state === 'confirmed'
+        ? `${name} has confirmed this trip. Removing them here does not tell them, so let them know yourself.`
+        : `${name} has been sent this trip. Removing them here does not tell them, so let them know yourself.`;
+      unassignAfter = () => removeDriver(bar, true);
+      window.Rux?.modal?.open?.(unassignModal);
+      return;
+    }
+    toast('info', 'Removing the driver…');
+    try {
+      await saveSeats(found.trip, [{ assign: found.assign, driver: null }]);
+      assignRead = null;
+      await show();
+      toast('success', `${name} is off this bus.`, told ? 'Remember to let them know.' : undefined);
+    } catch (err) {
+      toast('error', `The driver was not removed. ${err.message}`);
+    }
+  }
+  document.getElementById('scheduler-unassign-ok')?.addEventListener('click', () => {
+    const run = unassignAfter;
+    unassignAfter = null;
+    window.Rux?.modal?.close?.(unassignModal);
+    run?.();
+  });
+  unassignModal?.addEventListener('rux:modal-closed', () => { unassignAfter = null; });
 
   // Opens the bar's trip on its Fleet tab, for every driver and every seat.
   function openOnFleet(bar) {

@@ -1196,6 +1196,28 @@
     </div>
   </div>
 
+  <!-- Remove driver asks first when the driver has been sent the trip or has
+       confirmed it; data.js names them and says which. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-unassign-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-unassign-h" aria-describedby="scheduler-unassign-text" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-unassign-h">Remove the driver?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Keep driver" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="scheduler-unassign-text"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep driver</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-unassign-ok">Remove</button>
+      </div>
+    </div>
+  </div>
+
   <div class="rux--layer-one rux--modal" id="scheduler-cancel-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-cancel-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">

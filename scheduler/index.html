@@ -1232,6 +1232,38 @@
     </div>
   </div>
 
+  <!-- The booking's email thread, opened from the Booking contact menu. Done
+       sets the trip's hidden field, which Save writes; data.js fills it. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-thread-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-thread-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-thread-h">Add email thread</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper">
+            <label class="rux--label" for="scheduler-thread-url">Web address</label>
+          </div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper">
+              <input id="scheduler-thread-url" class="rux--text-input" type="url" inputmode="url" autocomplete="off" placeholder="https://" aria-describedby="scheduler-thread-error">
+            </div>
+          </div>
+          <p class="rux--form-requirement scheduler-thread-error" id="scheduler-thread-error" role="alert"></p>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-thread-done">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Asked when Save changes something the customer would ask about. data.js
        names the change and fills the line; Save with update writes it to the
        trip's updates, Save, no update saves without one, and closing the box

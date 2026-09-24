@@ -1556,6 +1556,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
 .scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
+/* The title takes the line, so a second trigger, as the booking's open-thread
+   icon, sits against the menu at the end rather than between. */
+.scheduler-group__head > .scheduler-panel-section__title { flex: 1; min-inline-size: 0; }
+.scheduler-group__head > .rux--btn + .rux--btn { margin-inline-start: calc(-1 * var(--rux-spacing-05)); }
 /* A Fleet seat's status button sits over the end of its field, where Carbon
    keeps room for a combo box's own buttons, so the field's text never runs
    under it and a warning icon stays clear of it, 2.5rem in. The combo box's
@@ -2901,6 +2905,8 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-types__error:empty { display: none; }
 /* The Follow-ups box's error, hidden while it has nothing to say. */
 .scheduler-follow-error:empty { display: none; }
+/* The Email thread box's error, the same way. */
+.scheduler-thread-error:empty { display: none; }
 /* A follow-up in the Trips list reads in the warning's own words, not its colour. */
 .scheduler-trips-follow { font-weight: var(--rux-heading-compact-01-font-weight); }
 

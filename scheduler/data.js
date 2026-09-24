@@ -5557,14 +5557,14 @@
          contact in full. */
       // The name and phone share a row, a contact read at a glance; half the
       // 30rem panel leaves each about 180px beside its copy button.
-      /* The booking's conversation, a link its button opens, is shown only
-         where the trip has one, and the title line's menu adds it or takes it
-         away, as Day-of contacts adds and removes a contact. Hidden, the field
-         stays in the page, empty, for Save to read. */
+      /* The booking's conversation is a link, never a field on show: the
+         title line's menu adds, changes or takes it away through the Email
+         thread box, and once there is one an open icon beside the menu opens
+         it. The field stays in the page, hidden, for Save to read. */
       const thread = el('div');
-      thread.appendChild(withCopy(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url),
-        'scheduler-f-cthread', 'Email thread', true));
-      thread.hidden = !trip.booking_contact_missive_url;
+      thread.appendChild(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url));
+      thread.hidden = true;
+      const threadField = thread.querySelector('#scheduler-f-cthread');
       const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-6');
       bookingStack.append(
         pair(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
@@ -5584,18 +5584,30 @@
       bookingMenu.title = 'Booking contact actions';
       bookingMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       bookingMenu.lastChild.setAttribute('class', 'rux--btn__icon');
+      // One named window, as rux-ui opens it, so each thread reuses the tab.
+      const openThread = el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+      openThread.target = 'missive';
+      openThread.rel = 'noopener';
+      openThread.setAttribute('aria-label', 'Open email thread');
+      openThread.title = 'Open email thread';
+      openThread.appendChild(svgUse('#m-open_in_new', '16', '0 0 32 32'));
+      openThread.lastChild.setAttribute('class', 'rux--btn__icon');
+      // Only a web address opens, so anything else leaves the icon off.
+      const setThread = value => {
+        threadField.value = value;
+        const link = /^https?:\/\//i.test(value) ? value : '';
+        if (link) { openThread.href = link; bookingMenu.before(openThread); } else openThread.remove();
+      };
       bookingMenu.addEventListener('click', () => openRowMenu(bookingMenu, {
-        editText: 'Add email thread', editDisabled: !thread.hidden,
-        edit: () => {
-          thread.hidden = false;
-          document.getElementById('scheduler-f-cthread')?.focus();
-        },
-        removeText: 'Remove email thread', removeDisabled: thread.hidden,
+        editText: threadField.value.trim() ? 'Change email thread' : 'Add email thread',
+        edit: () => askThread(threadField.value.trim(), value => {
+          setThread(value);
+          refreshDirty();
+          bookingMenu.focus();
+        }),
+        removeText: 'Remove email thread', removeDisabled: !threadField.value.trim(),
         remove: () => {
-          const input = document.getElementById('scheduler-f-cthread');
-          if (input) input.value = '';
-          thread.hidden = true;
-          syncCopy();
+          setThread('');
           refreshDirty();
           bookingMenu.focus();
         },
@@ -5607,6 +5619,7 @@
       bookingTitle.id = 'scheduler-f-cgroup';
       const bookingHead = el('div', 'scheduler-group__head');
       bookingHead.append(bookingTitle, bookingMenu);
+      setThread(threadField.value.trim());
       const bookingGroup = el('div');
       bookingGroup.setAttribute('role', 'group');
       bookingGroup.setAttribute('aria-labelledby', bookingTitle.id);
@@ -7125,6 +7138,40 @@
     // What this tab is on has changed, so everyone else's board says so.
     presenceTell();
   }
+
+  /* The Email thread box, which the Booking contact menu opens to add or
+     change the thread's web address. Its Done sets the hidden field, which
+     the trip's Save writes; an empty box takes the thread away. */
+  const threadModal = document.getElementById('scheduler-thread-modal');
+  const threadInput = document.getElementById('scheduler-thread-url');
+  const threadError = document.getElementById('scheduler-thread-error');
+  let threadDone = null;
+  function askThread(current, done) {
+    if (!threadModal || !threadInput) return;
+    threadDone = done;
+    threadInput.value = current;
+    threadError.textContent = '';
+    threadInput.removeAttribute('aria-invalid');
+    document.getElementById('scheduler-thread-h').textContent = current ? 'Change email thread' : 'Add email thread';
+    window.Rux?.modal?.open?.(threadModal);
+    threadInput.focus();
+  }
+  const finishThread = () => {
+    const value = threadInput.value.trim();
+    if (value && !/^https?:\/\//i.test(value)) {
+      threadError.textContent = 'Paste the web address of the email thread, starting with https://.';
+      threadInput.setAttribute('aria-invalid', 'true');
+      threadInput.focus();
+      return;
+    }
+    const done = threadDone;
+    threadDone = null;
+    window.Rux?.modal?.close?.(threadModal);
+    done?.(value);
+  };
+  document.getElementById('scheduler-thread-done')?.addEventListener('click', finishThread);
+  threadInput?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finishThread(); } });
+  threadModal?.addEventListener('rux:modal-closed', () => { threadDone = null; });
 
   /* ── The update prompt ── A save that changes something the customer would
      ask about asks for a line for the trip's updates first: the dates, the

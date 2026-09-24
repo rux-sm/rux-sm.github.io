@@ -3256,6 +3256,19 @@
     wrap.append(lab, root);
     const item = el('div', 'rux--form-item');
     item.appendChild(wrap);
+    /* The Trip heading's menu picks the colour while this field is hidden, so
+       the field offers its choices and takes one by value. */
+    item.choices = choices;
+    item.chip = chip;
+    item.current = () => menu.querySelector('.rux--list-box__menu-item--active')?.dataset.color ?? '';
+    item.setColor = value => {
+      for (const option of menu.children) {
+        const on = option.dataset.color === value;
+        option.classList.toggle('rux--list-box__menu-item--active', on);
+        option.setAttribute('aria-selected', String(on));
+      }
+      paint(choices.find(c => c.value === value) ?? choices[0]);
+    };
     return item;
   }
 
@@ -5318,9 +5331,32 @@
 
     /* The trip's own fields are one stack, 24px apart. Type and Vehicle share a
        row, so the split type is named "Split" there, which half the panel
-       fits; the date labels still say Drop-off and Pick-up. Trip bar color
-       takes a row, because half the panel cuts off "Standard"; it is a
-       property of the trip, not a section of its own. */
+       fits; the date labels still say Drop-off and Pick-up. The trip bar's
+       colour is picked from the Trip heading's menu, as from the bar's own:
+       it is seldom changed and the bar itself shows it, so its field stays in
+       the page, hidden, for Save to read. */
+    const colorItem = colorField('scheduler-f-color', trip);
+    const colorBox = el('div');
+    colorBox.hidden = true;
+    colorBox.appendChild(colorItem);
+    const tripMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+    tripMenu.type = 'button';
+    tripMenu.id = 'scheduler-f-tripmenu';
+    tripMenu.setAttribute('aria-haspopup', 'true');
+    tripMenu.setAttribute('aria-expanded', 'false');
+    tripMenu.setAttribute('aria-label', 'Trip actions');
+    tripMenu.title = 'Trip actions';
+    tripMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
+    tripMenu.lastChild.setAttribute('class', 'rux--btn__icon');
+    tripMenu.addEventListener('click', () => {
+      const now = colorItem.current();
+      openItemsMenu(tripMenu, colorItem.choices.map(c => ({
+        label: c.label,
+        checked: c.value === now,
+        icon: colorItem.chip(c.hue),
+        run: () => { colorItem.setColor(c.value); refreshDirty(); tripMenu.focus(); },
+      })), 'Trip bar color');
+    });
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-6');
     topFields.append(
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
@@ -5344,12 +5380,12 @@
         selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
           [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
       ),
-      full(colorField('scheduler-f-color', trip)),
+      colorBox,
       notesField('scheduler-f-notes', 'Notes', trip.notes),
       flags,
       hotelBox,
     );
-    panelDetails.appendChild(section('Trip', topFields));
+    panelDetails.appendChild(section('Trip', topFields, tripMenu));
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone

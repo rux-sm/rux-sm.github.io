@@ -32,8 +32,9 @@ standing facts about the trip. No note in the table contains a newline.
   such as "Follow-up email sent", spell the common ones one way.
 - **The app writes the stamp,** the moment and the person, and no one types
   it.
-- **Declining is a line of its own.** "Nothing to tell the customer" writes an
-  entry under the same stamp, so a save that says nothing is visible.
+- **The prompt can be skipped.** Its No update button saves the trip and adds
+  nothing to the list, and the bar's icon keeps its age from the last real
+  update, so a skipped prompt never makes a trip look freshly followed up.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
 - **The bar's notes row goes;** that row holds the pending and requirement
@@ -64,7 +65,7 @@ standing facts about the trip. No note in the table contains a newline.
 - [ ] Add the Updates list to the editor, newest first, with a box to add one
   without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
-  filled in, the quick reasons and the recorded decline.
+  filled in, the quick reasons and No update.
 - [ ] Replace the bar's notes row with the icon row and the update icon, and
   add the hover and tap bubble.
 - [ ] Make rux-ui read the log and prompt on its own saves.

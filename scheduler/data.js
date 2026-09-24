@@ -1556,6 +1556,7 @@
   let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), statuses: new Map(), contacts: [], customers: [], locations: [] };
   let panelOpener = null;
   const panelDetails = document.getElementById('scheduler-panel-details');
+  const panelUpdates = document.getElementById('scheduler-panel-updates');
   const panelFleet = document.getElementById('scheduler-panel-fleet');
   const panelBilling = document.getElementById('scheduler-panel-billing');
   const panelRoute = document.getElementById('scheduler-panel-route');
@@ -3349,12 +3350,16 @@
     return `${at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' })} · ${u.actor_name || 'Someone'}`;
   }
 
-  function updatesSection(trip, creating) {
+  /* The Updates tab: Add an update, then the list. Its name carries how many
+     there are, so the count is read without opening it. */
+  const updatesLabel = document.getElementById('scheduler-tab-updates-label');
+  function updatesTab(trip, creating) {
     const wrap = el('div');
     const list = el('ol', 'scheduler-updates');
     list.setAttribute('aria-label', 'Updates, newest first');
     const status = el('p', 'rux--type-body-compact-01 scheduler-updates-empty');
     let rows = [];
+    if (updatesLabel) updatesLabel.textContent = 'Updates';
     const draw = () => {
       list.replaceChildren(...rows.filter(u => u.kind !== 'nothing').map(u => {
         const li = el('li', 'scheduler-updates__item');
@@ -3364,11 +3369,12 @@
       }));
       status.hidden = list.childElementCount > 0;
       status.textContent = 'No updates yet.';
+      if (updatesLabel) updatesLabel.textContent = `Updates (${list.childElementCount})`;
     };
     if (creating) {
       status.textContent = 'Updates can be added once the trip is saved.';
       wrap.append(status);
-      return section('Updates', wrap);
+      return [section('Updates', wrap)];
     }
 
     const field = el('div', 'rux--form-item');
@@ -3425,7 +3431,7 @@
     });
 
     status.textContent = 'Reading updates…';
-    wrap.append(adder, list, status);
+    wrap.append(list, status);
     (async () => {
       try {
         const { data, error: failed } = await withTimeout(client.from('trip_updates')
@@ -3439,7 +3445,7 @@
         status.textContent = 'The updates could not be read.';
       }
     })();
-    return section('Updates', wrap);
+    return [section('Add an update', adder), section('Updates', wrap)];
   }
 
   /* A Carbon range date picker, from the capture
@@ -5458,7 +5464,7 @@
       hotelBox,
     );
     panelDetails.appendChild(section('Trip', topFields, tripMenu));
-    panelDetails.appendChild(updatesSection(trip, creating));
+    panelUpdates?.replaceChildren(...updatesTab(trip, creating));
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone
@@ -7792,7 +7798,7 @@
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the Updates section on the Details tab.');
+      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Updates tab.');
       else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
@@ -9467,16 +9473,15 @@
     barShortcuts.toggleAttribute('data-card', !!trip);
   }
 
-  /* Add update opens the trip with its Updates box in hand; on the trip the
-     editor already holds it goes straight to the box. It is not one of the
+  /* Add update opens the trip on its Updates tab with the box in hand; on the
+     trip the editor already holds it goes straight to the tab. It is not one of the
      choices, because every trip has it. */
   const ADD_UPDATE = { id: 'add_update', label: 'Add update', icon: '#m-add_comment', blocked: () => null,
     run: bar => {
       const toBox = () => {
-        const box = document.getElementById('scheduler-f-update');
-        if (!box) return;
-        box.scrollIntoView({ block: 'center' });
-        box.focus();
+        const tab = document.getElementById('scheduler-tab-updates');
+        if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+        document.getElementById('scheduler-f-update')?.focus();
       };
       if (isEditorBar(bar)) { toBox(); return; }
       const ref = barRef(bar);

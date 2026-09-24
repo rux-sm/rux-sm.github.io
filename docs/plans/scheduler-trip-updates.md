@@ -76,9 +76,11 @@ standing facts about the trip. No note in the table contains a newline.
   and grows from 94% over 240ms on Carbon's expressive entrance curve, each
   update following 40ms after the one above, and leaves at once; docked, and
   under reduced motion, it only fades in.
-- **The editor lists every update** with a box to add one without changing
-  anything else. Its Add update button is the outlined kind, so Save stays
-  the panel's one main button.
+- **The editor lists every update on an Updates tab of its own,** after
+  Details and named with the count, as "Updates (5)", because the log only
+  grows and Notes stays on Details. The tab has a box to add one without
+  changing anything else, and its Add update button is the outlined kind, so
+  Save stays the panel's one main button.
 - **The log is a `trip_updates` table of its own,** staff only, with the 203
   dated lines already in `notes` copied in as `imported` entries with no
   author; those notes are blanked once both apps read the log.

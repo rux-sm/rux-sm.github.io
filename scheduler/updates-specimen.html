@@ -205,8 +205,8 @@
 <main id="main-content" class="rux--content">
 <!-- A static trial of Updates on the board: invented trips on an invented
   week, Mon 7 to Sun 13 September 2026, today drawn on Wednesday. The notes row
-  carries only marks: the warnings at the bar's start and the Updates icon at
-  its end. The icon asks for a follow-up, in the warning colour, when a trip
+  carries only the warning marks, and the Updates icon sits at the drivers
+  row's end, the bar's bottom corner. The icon asks for a follow-up, in the warning colour, when a trip
   waits on the customer and its newest update is older than the follow-up
   wait. Hovering a bar opens its card, in the shortcut bar's own style, with the
   standing note, what the trip waits on with its dismiss at the row's end,
@@ -215,7 +215,8 @@
   panel's Save shows the prompt. The rules and the script are this page's
   own, so trying it changes nothing on the live board. -->
 <style>
-/* The Updates icon: the last mark on the notes row, pushed to its end. A real
+/* The Updates icon: at the drivers row's end, pushed there, so it keeps the
+   bar's bottom corner whatever the row holds; the names give way to it. A real
    button, a step wider than a mark and as tall as the row. */
 .scheduler-bar__msg {
   appearance: none;
@@ -406,7 +407,7 @@
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
         <h1 class="rux--visually-hidden">Trip updates specimen</h1>
-        <p>A trial of Updates, on invented trips and no network; today is Wednesday. The speech bubble at the end of each bar's icon row turns amber when the trip is waiting on the customer and nobody has written an update for longer than the follow-up wait. Hover a bar for its card; click it to select it, and the shortcut icons join the card's top row. The ✕ on a reminder dismisses it until the snooze runs out. The first icon opens the trip, and its Save shows the prompt; the last adds an update. Nothing here is saved.</p>
+        <p>A trial of Updates, on invented trips and no network; today is Wednesday. The speech bubble in each bar's bottom corner turns amber when the trip is waiting on the customer and nobody has written an update for longer than the follow-up wait. Hover a bar for its card; click it to select it, and the shortcut icons join the card's top row. The ✕ on a reminder dismisses it until the snooze runs out. The first icon opens the trip, and its Save shows the prompt; the last adds an update. Nothing here is saved.</p>
 
         <div class="scheduler-trial-controls">
           <div class="rux--form-item">
@@ -719,7 +720,10 @@
     b.dataset.trip = id;
     b.setAttribute('aria-label', s === 'asks' ? 'Updates, needs a follow-up' : 'Updates');
     b.appendChild(svg(t.updates.length ? '#m-chat-fill' : '#m-chat'));
-    notes.replaceChildren(warn, b);
+    notes.replaceChildren(warn);
+    const drivers = bar.querySelector('.scheduler-bar__drivers');
+    drivers.querySelector('.scheduler-bar__msg')?.remove();
+    drivers.appendChild(b);
   }
   const drawAll = () => Object.keys(TRIPS).forEach(drawBar);
 

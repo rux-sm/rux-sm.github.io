@@ -38,7 +38,9 @@ standing facts about the trip. No note in the table contains a newline.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
 - **The bar's notes row goes;** that row holds the pending and requirement
-  icons. The bar carries a small speech-bubble icon instead.
+  icons. The bar carries a small speech-bubble icon at the drivers row's end,
+  its bottom corner, and the names give way to it. With the drivers row
+  hidden from the view menu, the icon moves up as the warning marks do.
 - **The icon says who needs a follow-up.** A trip is waiting on the customer
   while it is not confirmed, its PO or deposit is pending, its itinerary is
   missing, or its balance is unpaid near departure. Once the newest update on
@@ -85,9 +87,10 @@ None open.
   without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
   filled in, the quick reasons and No update.
-- [ ] Replace the bar's notes row with the icon row and the update icon, and
-  make the shortcut bar the one card, updates below its icons, Dismiss an
-  icon at the reminder row's end and Add update the last shortcut icon.
+- [ ] Replace the bar's notes row with the icon row, put the update icon at
+  the drivers row's end, and make the shortcut bar the one card, updates
+  below its icons, Dismiss an icon at the reminder row's end and Add update
+  the last shortcut icon.
 - [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
   Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.

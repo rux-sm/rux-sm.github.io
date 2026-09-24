@@ -4,7 +4,7 @@
   "kind": "review",
   "id": "sales-order-warehouse-allocation-training_2026-08-04",
   "title": "Sales Order and Warehouse Allocation Training — Review",
-  "updated": "2026-09-03",
+  "updated": "2026-09-17",
   "status": "draft",
   "sources": [
     "cprrp0520m000",
@@ -567,70 +567,39 @@
           "tokens": [
             {
               "t": "strong",
-              "v": "Updated 2026-08-13 — the ATP calculation itself is now sourced."
+              "v": "The ATP figure on that screen is a forward minimum over the planning horizon"
             },
             {
               "t": "text",
-              "v": " In "
-            },
-            {
-              "t": "strong",
-              "v": "Item Order Plan"
-            },
-            {
-              "t": "text",
-              "v": ", "
-            },
-            {
-              "t": "strong",
-              "v": "Available-to-Promise"
-            },
-            {
-              "t": "text",
-              "v": " for a given period is the "
-            },
-            {
-              "t": "em",
-              "v": "minimum"
-            },
-            {
-              "t": "text",
-              "v": " of "
-            },
-            {
-              "t": "strong",
-              "v": "Planned Available"
-            },
-            {
-              "t": "text",
-              "v": " and "
-            },
-            {
-              "t": "strong",
-              "v": "Total Demand"
-            },
-            {
-              "t": "text",
-              "v": " across that period and every period after it — a shortage anywhere in the future horizon pulls today's ATP down, not just a shortage today. This session's own help is explicit that its ATP figure will not always match the live check run at sales-order entry (different session, "
+              "v": ", so a shortage anywhere later pulls today's value down — which is why the recording's ATP column sits flat while the planning balance moves beside it. The help is also explicit that this figure will not always match the live check at sales-order entry, run from "
             },
             {
               "t": "session",
-              "code": "cprrp4800m000"
+              "code": "cprrp4800m000",
+              "name": "ATP Handling"
             },
             {
               "t": "text",
-              "v": " "
+              "v": ", a session this recording never opened. "
             },
             {
               "t": "strong",
-              "v": "ATP Handling"
+              "v": "So the Item Order Plan screen is directionally right and is not a promise."
             },
             {
               "t": "text",
-              "v": ", not opened in this recording) — the two use different time buckets, and the order-entry check can include CTP options this planning view does not. So the Item Order Plan screen is directionally correct but not guaranteed to match the number a sales order entry would actually get blocked or allowed on. "
+              "v": " The derivation, the contradiction in its help about the minimum's second operand, and where the live check actually lives are all in "
+            },
+            {
+              "t": "literal",
+              "v": "the source on file"
+            },
+            {
+              "t": "text",
+              "v": " §2.1 rather than restated here. "
             }
           ],
-          "text": "Updated 2026-08-13 — the ATP calculation itself is now sourced. In Item Order Plan, Available-to-Promise for a given period is the minimum of Planned Available and Total Demand across that period and every period after it — a shortage anywhere in the future horizon pulls today's ATP down, not just a shortage today. This session's own help is explicit that its ATP figure will not always match the live check run at sales-order entry (different session, cprrp4800m000 ATP Handling, not opened in this recording) — the two use different time buckets, and the order-entry check can include CTP options this planning view does not. So the Item Order Plan screen is directionally correct but not guaranteed to match the number a sales order entry would actually get blocked or allowed on."
+          "text": "The ATP figure on that screen is a forward minimum over the planning horizon, so a shortage anywhere later pulls today's value down — which is why the recording's ATP column sits flat while the planning balance moves beside it. The help is also explicit that this figure will not always match the live check at sales-order entry, run from ATP Handling (cprrp4800m000), a session this recording never opened. So the Item Order Plan screen is directionally right and is not a promise. The derivation, the contradiction in its help about the minimum's second operand, and where the live check actually lives are all in the source on file §2.1 rather than restated here."
         },
         {
           "kind": "prose",

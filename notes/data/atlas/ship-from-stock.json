@@ -8,7 +8,7 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-09-02",
+  "updated": "2026-09-17",
   "status": "approved",
   "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
   "order": 6,
@@ -4289,5 +4289,5 @@
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
-  "openIssues": 7
+  "openIssues": 6
 }

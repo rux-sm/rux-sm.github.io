@@ -1116,7 +1116,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="sales-order-warehouse-allocation-training_2026-08-04" data-notes-commit="0ec7f729e624dfa768cf88adcaf6dd74c8c93f92">
+<main id="main-content" class="rux--content" data-notes-page="sales-order-warehouse-allocation-training_2026-08-04" data-notes-commit="86a690aad78e65506899f4ac396fee2b593d1db9">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1125,7 +1125,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="notes-tag-row">
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Review</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-03</span></span>
+            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-17</span></span>
           </div>
           <p class="rux--type-body-01"><a class="rux--link" href="sales-order-warehouse-allocation-training_2026-08-04_summary.html">Read the summary</a></p>
         </div>
@@ -1172,7 +1172,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <h3 id="t-3.3">3.3 Item Order Plan and warehouse inventory are different views</h3>
             <p class="notes-prose-measure"><span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> showed item <span class="notes-t-exact">100200</span>, inventory on hand, demand/supply transactions, Planned Available, and ATP. Later, <span class="notes-t-named">Warehouse - Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span> showed the same item distributed across warehouse rows with separate on-hand, on-order, allocated, blocked, and economic-stock quantities.</p>
             <p class="notes-prose-measure">Infor help confirms that Planned Available is a planning calculation and that Warehouse - Item Inventory maintains inventory values by warehouse. Therefore a positive planning balance and a usable quantity in the sales order&#39;s ship-from warehouse are not the same question.</p>
-            <p class="notes-prose-measure"><strong>Updated 2026-08-13 — the ATP calculation itself is now sourced.</strong> In <strong>Item Order Plan</strong>, <strong>Available-to-Promise</strong> for a given period is the <em>minimum</em> of <strong>Planned Available</strong> and <strong>Total Demand</strong> across that period and every period after it — a shortage anywhere in the future horizon pulls today&#39;s ATP down, not just a shortage today. This session&#39;s own help is explicit that its ATP figure will not always match the live check run at sales-order entry (different session, <span class="notes-t-exact">cprrp4800m000</span> <strong>ATP Handling</strong>, not opened in this recording) — the two use different time buckets, and the order-entry check can include CTP options this planning view does not. So the Item Order Plan screen is directionally correct but not guaranteed to match the number a sales order entry would actually get blocked or allowed on. </p>
+            <p class="notes-prose-measure"><strong>The ATP figure on that screen is a forward minimum over the planning horizon</strong>, so a shortage anywhere later pulls today&#39;s value down — which is why the recording&#39;s ATP column sits flat while the planning balance moves beside it. The help is also explicit that this figure will not always match the live check at sales-order entry, run from <span class="notes-t-named">ATP Handling</span> <span class="notes-t-exact">cprrp4800m000</span>, a session this recording never opened. <strong>So the Item Order Plan screen is directionally right and is not a promise.</strong> The derivation, the contradiction in its help about the minimum&#39;s second operand, and where the live check actually lives are all in <span class="notes-t-exact">the source on file</span> §2.1 rather than restated here. </p>
             <p class="notes-prose-measure">Sources: Infor LN help for <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span>, Field Information (Planned Available, ATP); Infor LN help for <span class="notes-t-named">Warehouse Item Inventory</span> <span class="notes-t-exact">whwmd2515m000</span>, Field Information; screenshots dated 2026-08-04.</p>
           </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-3.4">
@@ -1305,7 +1305,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 0ec7f72 · contract 13</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 86a690a · contract 13</p>
       </div>
     </div>
   </div>

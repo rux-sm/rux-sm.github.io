@@ -7,7 +7,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-09-13",
+  "updated": "2026-09-17",
   "status": "draft",
   "summary": "find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it.",
   "order": 2,
@@ -828,5 +828,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 3
+  "openIssues": 2
 }

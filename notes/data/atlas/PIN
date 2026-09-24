@@ -1,9 +1,9 @@
-commit   0ec7f729e624dfa768cf88adcaf6dd74c8c93f92
-date     2026-09-17T05:27:59Z
-subject  feat(tools): Emit step references, screen routes
+commit   86a690aad78e65506899f4ac396fee2b593d1db9
+date     2026-09-24T15:49:54Z
+subject  docs(atp): Explain the flat ATP by its period
 contract 13 
 tier     export
-sha256   5d75f3afafe497b934932ef73c658d6117dfa470d6ffacd6c8cbc1687346406a
+sha256   623a0d69e6d2af0969249885f585f119cfe50ea5437822fd7ca8fc5f0d2a9d7a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

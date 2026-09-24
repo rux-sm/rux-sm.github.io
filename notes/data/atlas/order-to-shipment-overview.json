@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "order-to-shipment-overview",
   "title": "Demand to shipment",
-  "updated": "2026-09-12",
+  "updated": "2026-09-17",
   "status": "draft",
   "sources": [
     "cppat1210m000",
@@ -1077,14 +1077,30 @@
                 },
                 {
                   "t": "text",
-                  "v": " — decide silently how much of on-hand is free for this order. "
+                  "v": " — decide silently how much of on-hand is free for this order. The figure decision 2 really tests is "
+                },
+                {
+                  "t": "strong",
+                  "v": "projected inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ", time-phased, not the on-hand total — "
+                },
+                {
+                  "t": "text",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " §2.1. "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Does — decide silently how much of on-hand is free for this order. Not documented for this release."
+              "text": "Does — decide silently how much of on-hand is free for this order. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
             }
           ]
         },
@@ -4144,14 +4160,30 @@
           "tokens": [
             {
               "t": "text",
-              "v": "decide silently how much of on-hand is free for this order. "
+              "v": "decide silently how much of on-hand is free for this order. The figure decision 2 really tests is "
+            },
+            {
+              "t": "strong",
+              "v": "projected inventory"
+            },
+            {
+              "t": "text",
+              "v": ", time-phased, not the on-hand total — "
+            },
+            {
+              "t": "text",
+              "v": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": " §2.1. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "decide silently how much of on-hand is free for this order. Not documented for this release."
+          "text": "decide silently how much of on-hand is free for this order. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
         }
       },
       {

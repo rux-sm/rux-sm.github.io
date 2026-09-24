@@ -9564,6 +9564,8 @@
       recordHistory(id, 'cancelled', [{
         field: 'trip', label: 'Trip', before: 'Active', after: `Cancelled — ${reason}`,
       }]);
+      // The reason is what the customer was told, so it is the trip's update too.
+      writeUpdate(id, { kind: 'update', body: `Cancelled: ${reason}`, keys: ['cancellation'] });
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);

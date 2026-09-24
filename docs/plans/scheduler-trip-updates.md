@@ -89,7 +89,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the cancel dialog's reason to the trip's updates.
 - [ ] Replace the bar's notes row with the icon row, put the update icon at
   the drivers row's end, and make the shortcut bar the one card, updates
   below its icons, Dismiss an icon at the reminder row's end and Add update

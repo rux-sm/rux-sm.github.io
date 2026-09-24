@@ -700,6 +700,7 @@ button.scheduler-row-head__num::after {
   --card-icon: var(--rux-icon-inverse);
   --card-hover: var(--rux-background-inverse-hover);
   --card-rule: color-mix(in srgb, var(--card-ink) 35%, transparent);
+  --card-focus: var(--rux-focus-inverse);
   transform-origin: var(--scheduler-open-tip, 2rem) 100%;
 }
 .scheduler-bar-shortcuts[data-card][data-side="below"] { transform-origin: var(--scheduler-open-tip, 2rem) 0; }
@@ -714,6 +715,7 @@ button.scheduler-row-head__num::after {
   --card-surface: var(--rux-layer-02);
   --card-icon: var(--rux-icon-primary);
   --card-hover: var(--rux-layer-hover-02);
+  --card-focus: var(--rux-focus);
 }
 .scheduler-bar-shortcuts[data-peek] > .scheduler-bar-shortcut { display: none; }
 .scheduler-card {
@@ -761,7 +763,7 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-card__dismiss:hover { background: var(--card-hover); }
-.scheduler-card__dismiss:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+.scheduler-card__dismiss:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* The standing note wears a pin and reads quieter than the updates. */
 .scheduler-card__note { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-card__note > svg { flex: none; inline-size: 1rem; block-size: 1rem; opacity: .7; }

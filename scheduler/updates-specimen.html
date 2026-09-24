@@ -239,8 +239,9 @@
 }
 .scheduler-bar__msg:hover { background: var(--rux-background-inverse-hover); }
 .scheduler-bar__msg:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-/* Asking for a follow-up: the warning colour every other mark wears. */
-.scheduler-bar__msg--asks { color: var(--rux-support-warning); }
+/* Asking for a follow-up: the warning colour every other mark wears, set per
+   theme so it clears 3 to 1 on a pale bar as on a dark one. */
+.scheduler-bar__msg--asks { color: var(--scheduler-mark-warning); }
 /* No update yet and nothing waiting: the outline, quieter than the text. */
 .scheduler-bar__msg--none { opacity: .7; }
 
@@ -382,7 +383,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.scheduler-card__meta, .scheduler-card__empty { opacity: .7; }
+.scheduler-card__empty { opacity: .7; }
 
 /* The trial's own controls over the board. */
 .scheduler-trial-controls { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); align-items: flex-end; }
@@ -671,14 +672,10 @@
 
   const DAY = 864e5;
   const fmt = iso => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-  const ago = iso => {
-    const d = Math.floor((TODAY - new Date(iso)) / DAY);
-    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`;
-  };
-  // "7d", the way a chat says how long ago, and "now" for today.
+  // "7d", the way a chat says how long ago, and "today" for today.
   const short = iso => {
     const d = Math.floor((TODAY - new Date(iso)) / DAY);
-    return d <= 0 ? 'now' : `${d}d`;
+    return d <= 0 ? 'today' : `${d}d`;
   };
   const newest = t => t.updates[t.updates.length - 1];
   const since = t => newest(t)?.at ?? t.booked;
@@ -774,10 +771,10 @@
     if (asks(id)) {
       const line = el('div', 'scheduler-card__row scheduler-card__asks scheduler-card__item');
       line.style.setProperty('--i', i++);
+      // One line, what the trip waits on: how long it has waited is the
+      // newest update's own time, on the row below.
       const said = el('span', 'scheduler-card__asks-text');
-      const head = el('div');
-      head.append(el('strong', null, 'Follow up'), ` · waiting on ${t.waits.map(w => SHORT[w]).join(', ')}`);
-      said.append(head, el('div', 'scheduler-card__meta', `quiet for ${ago(since(t)).replace(' ago', '')}`));
+      said.append(el('strong', null, `Waiting on ${t.waits.map(w => SHORT[w]).join(', ')}`));
       // Dismiss is the reminder's own, so it sits on the reminder's row.
       const snooze = document.getElementById('trial-snooze').value === '4h' ? '4 hours' : '1 day';
       const dismiss = el('button', 'scheduler-card__row-icon');

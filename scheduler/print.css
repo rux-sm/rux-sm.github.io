@@ -136,11 +136,12 @@ html:not([data-rux-standalone]) .scheduler-print { background: var(--rux-layer-0
 
 .scheduler-print__controls > * { flex: none; }
 
-/* Print and Print all, kept side by side wherever the row breaks. */
+/* Print and Print all, kept side by side wherever the row breaks, flush and
+   the band's height as every cell is. */
 .scheduler-print__prints {
   display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-03);
+  align-items: stretch;
+  gap: 0;
 }
 
 /* THE HEAD, and the one gap on this page that is a layout decision rather than
@@ -801,11 +802,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* Time and Location are what a glance lands on and they are short, so they
-   keep a width; the address and the activity share what is left. */
-.scheduler-driver-itinerary__table th:nth-child(1) { inline-size: 14%; }
-.scheduler-driver-itinerary__table th:nth-child(2) { inline-size: 26%; }
-.scheduler-driver-itinerary__table th:nth-child(3) { inline-size: 34%; }
-.scheduler-driver-itinerary__table th:nth-child(4) { inline-size: 26%; }
+   keep a width; the address takes what is left. */
+.scheduler-driver-itinerary__table th:nth-child(1) { inline-size: 16%; }
+.scheduler-driver-itinerary__table th:nth-child(2) { inline-size: 34%; }
+.scheduler-driver-itinerary__table th:nth-child(3) { inline-size: 50%; }
 
 /* One time to a line, its label in a column of its own so the times stand
    under one another however the rows are labelled. */
@@ -900,11 +900,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     border-block-end: 1px dotted var(--rux-border-strong-01);
   }
 
-  /* IN THE TABLE, ONLY ON A FORM OPENED BLANK. A filled itinerary has nothing
-     under Activity against most of its stops, and a rule under each of them is
-     a column of dots down the page saying nothing; there the cell answers the
-     pointer instead. A blank form is empty everywhere and has to show where
-     the writing goes. */
+  /* IN THE TABLE, ONLY ON A FORM OPENED BLANK. A filled itinerary's empty
+     cells are few, and a rule under each is a scatter of dots saying nothing;
+     there the cell answers the pointer instead. A blank form is empty
+     everywhere and has to show where the writing goes. */
   .scheduler-form[data-blank] .scheduler-driver-itinerary__table td[data-typed]:empty {
     border-block-end: 1px dotted var(--rux-border-strong-01);
   }

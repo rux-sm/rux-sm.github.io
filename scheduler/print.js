@@ -262,7 +262,8 @@
     const start = leg === 'return'
       ? (trip.return_start_date || trip.end_date)
       : trip.start_date;
-    head.appendChild(el('h1', 'scheduler-envelope__day', weekdayOf(start)));
+    // The day, not a section, so it is no heading.
+    head.appendChild(el('p', 'scheduler-envelope__day', weekdayOf(start)));
     const logo = el('img', 'scheduler-envelope__logo');
     logo.src = 'brand/logo.png';
     logo.alt = '';
@@ -577,14 +578,12 @@
     return td;
   }
 
-  /* One line of the table. `activity` rides in `label` on every type but a
-     pickup, where "origin:yard" already owns that column. */
+  // One line of the table: when, where and the address.
   function itineraryRow(stop, next) {
     const tr = el('tr');
     tr.appendChild(timeCell(itineraryTimes(stop, next)));
     tr.appendChild(locationCell(stop));
     tr.appendChild(textCell('addr', shortAddress(stop.address)));
-    tr.appendChild(textCell('act', stop.type === 'pickup' ? '' : stop.label || ''));
     return tr;
   }
 
@@ -620,7 +619,7 @@
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.phones));
-    head.appendChild(el('h1', 'scheduler-driver-itinerary__title', 'Itinerary'));
+    head.appendChild(el('h2', 'scheduler-driver-itinerary__title', 'Itinerary'));
     return head;
   }
 
@@ -650,17 +649,16 @@
     return meta;
   }
 
-  const COLUMNS = ['Time', 'Location', 'Address', 'Activity'];
+  const COLUMNS = ['Time', 'Location', 'Address'];
 
   /* Everything on this form can be typed into, so one class marks it and the
      registry entry hands this list to `letThemType`. */
   const ITINERARY_FIELDS = ['.scheduler-driver-itinerary__typed'];
 
-  /* NO BLANK RULED ROWS. A printed grid of empty lines reads as a form nobody
-     filled in, which is the impression this form exists to get away from, so
-     the table holds the stops and nothing more and a row is added on screen
-     when one is wanted. A form opened on no trip starts with one, because a
-     header over an empty table reads as broken. */
+  /* A FILLED FORM HOLDS ITS STOPS AND NOTHING MORE, and a row is added on
+     screen when one is wanted. A BLANK ONE IS RULED TO THE FOOT OF THE SHEET,
+     because a blank form is handed over and written on by hand; `ruleToFoot`
+     adds its rows once the sheet is drawn and can be measured. */
   function itinerary(subject) {
     const { trip, leg } = subject;
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
@@ -668,9 +666,14 @@
     card.appendChild(itineraryMeta(subject));
 
     const table = el('table', 'scheduler-driver-itinerary__table');
+    table.appendChild(el('caption', 'rux--visually-hidden', 'Stops'));
     const head = el('thead');
     const headRow = el('tr');
-    for (const label of COLUMNS) headRow.appendChild(el('th', null, label));
+    for (const label of COLUMNS) {
+      const th = el('th', null, label);
+      th.scope = 'col';
+      headRow.appendChild(th);
+    }
     head.appendChild(headRow);
     table.appendChild(head);
 
@@ -710,6 +713,21 @@
     });
     card.appendChild(add);
     return card;
+  }
+
+  /* Blank rows down to the foot of the sheet's first page: rows are added
+     while the form still fits the paper's height, and the one that does not
+     is taken off again. */
+  function ruleToFoot(card) {
+    const body = card.querySelector('.scheduler-driver-itinerary__table tbody');
+    const page = parseFloat(getComputedStyle(card).minBlockSize);
+    if (!body || !(page > 0)) return;
+    const used = () => card.querySelector('.scheduler-driver-itinerary__add').getBoundingClientRect().top
+      - card.getBoundingClientRect().top;
+    const zoom = parseFloat(getComputedStyle(card).zoom) || 1;
+    const room = page * zoom - parseFloat(getComputedStyle(card).paddingBlockEnd) * zoom;
+    for (let i = 0; i < 60 && used() < room; i += 1) body.appendChild(blankRow());
+    if (used() > room && body.rows.length > 1) body.lastElementChild.remove();
   }
 
   /* ── The customer quote ───────────────────────────────────────────────
@@ -1098,7 +1116,7 @@
     const meta = el('div', 'scheduler-customer-quote__meta');
     const dated = el('div', 'scheduler-customer-quote__meta-boxes');
     dated.append(quoteBox('Date', [today()]), quoteBox('Estimate no.', []));
-    meta.append(dated, el('h1', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
+    meta.append(dated, el('h2', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
     card.appendChild(meta);
 
     const parties = el('div', 'scheduler-customer-quote__parties');
@@ -1270,6 +1288,7 @@
       copyName: subject => legName(subject.leg),
       typed: { always: true, fields: ITINERARY_FIELDS },
       render: itinerary,
+      drawn: (card, blank) => { if (blank) ruleToFoot(card); },
     },
     {
       id: 'customer-quote',
@@ -1406,11 +1425,16 @@
   /* THE WAY BACK TO THE LIST, and only where this page stands alone: framed in
      the panel the panel's own head is the way back. Forms keeps the trip, so
      it returns to that trip's forms rather than to the bare list. */
+  /* The page is named after the form it shows. The trail's way up names the
+     trip's list when it goes there, so it is told apart from the side nav's
+     Forms, which is every form on no trip. */
   function setCrumbs(form, trip) {
+    document.title = `${form ? form.name : 'Forms'} — Scheduler`;
     if (!form) return void (crumbs.hidden = true);
     crumbUp.href = trip?.id
       ? `print.html?trip=${encodeURIComponent(trip.id)}`
       : 'print.html';
+    crumbUp.textContent = trip?.id && trip.destination ? `Forms — ${trip.destination}` : 'Forms';
     crumbHere.textContent = form.name;
     crumbs.hidden = Boolean(host);
   }
@@ -1680,8 +1704,25 @@
     sheet.addEventListener(type, () => setTimeout(countSheets));
   }
 
+  /* WHAT IS TYPED SURVIVES A CHANGE OF LAYOUT OR COPY. Each copy and layout
+     keeps the sheets it was drawn as, typing and added rows included, for as
+     long as the page is open, and switching back puts those same sheets back.
+     Nothing is stored, so a reload starts clean. */
+  const drawnSheets = new Map();
+
   const draw = () => {
     if (!current) return;
+    // By what the copy is rather than where it sits, because the list grows
+    // when the trip's other buses answer.
+    const copy = current.every[current.chosen];
+    const key = [copy?.assignment?.id, copy?.seat?.id, copy?.leg, current.layout].join('|');
+    const kept = drawnSheets.get(key);
+    if (kept) {
+      sheet.replaceChildren(...kept);
+      countSheets();
+      fitPaper();
+      return;
+    }
     // A form draws one sheet or, like the quote and its agreement, several.
     const cards = [current.form.render(current.every[current.chosen], current.layout)].flat();
     /* THE PAPER CARRIES THE PAPER'S THEME, and only the paper: every --rux-*
@@ -1700,6 +1741,8 @@
       if (current.blank || current.form.typed?.always) letThemType(card, current.form.typed?.fields);
     }
     sheet.replaceChildren(...cards);
+    drawnSheets.set(key, cards);
+    for (const card of cards) current.form.drawn?.(card, current.blank);
     countSheets();
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
@@ -1713,9 +1756,27 @@
      a blank one is typed into, where the itinerary is tidying what the
      customer sent and every line of it is open.
 
-     What is typed is on the page and nowhere else. It prints, and it is gone
-     when the page is closed or the layout is switched, which is what a spare
-     form in a drawer does too. */
+     What is typed is on the page and nowhere else. It prints, it is kept
+     while the page is open, and it is gone when the page is closed, which is
+     what a spare form in a drawer does too.
+
+     EVERY FIELD IS NAMED FOR ITS LABEL, so a field heard rather than seen is
+     not a blank: the label beside it, or in a table its column and row. */
+  function fieldName(field) {
+    const before = field.previousElementSibling;
+    if (before && (before.tagName === 'DT' || /__(trip-|total-)?label\b/.test(before.className))) {
+      return before.textContent.trim();
+    }
+    const td = field.closest('td');
+    const th = td?.closest('table')?.tHead?.rows[0]?.cells[td.cellIndex];
+    if (th && td.colSpan === 1) {
+      const tr = td.parentElement;
+      return `${th.textContent.trim()}, row ${[...tr.parentElement.rows].indexOf(tr) + 1}`;
+    }
+    if (field.matches('[class*="__day"], [class*="__day"] td')) return 'Day';
+    return field.querySelector(':scope > [class$="__label"]')?.textContent.trim() || null;
+  }
+
   function letThemType(root, selectors) {
     const fields = (selectors || []).flatMap(sel => [...root.querySelectorAll(sel)]);
     for (const field of fields) {
@@ -1725,6 +1786,9 @@
       if (field.contentEditable !== 'plaintext-only') field.contentEditable = 'true';
       field.spellcheck = false;
       field.dataset.typed = '';
+      field.setAttribute('role', 'textbox');
+      const name = fieldName(field);
+      if (name) field.setAttribute('aria-label', name);
     }
   }
 
@@ -2123,6 +2187,10 @@
         () => { input.checked = Boolean(printed.row[printed.column]); }));
       box.append(input, label);
       cell.appendChild(box);
+      // The cell is what looks like the control, so a press anywhere in it
+      // ticks the box.
+      cell.classList.add('scheduler-print__cell--check');
+      cell.addEventListener('click', e => { if (!e.target.closest('label, input')) input.click(); });
       nodes.push(cell);
     }
 
@@ -2187,11 +2255,10 @@
         },
       });
     } else if (stack) {
-      /* Ghost and labelled, where Print beside it is a bare icon: the count is
-         the whole of what this button has to say, and an icon cannot say six.
-         It is the rarer of the two and the quieter, which is what ghost is
-         for. */
-      const all = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md', `Print all ${every.length}`);
+      /* A cell like the others, flush and the band's height, labelled where
+         Print beside it is a bare icon: the count is the whole of what this
+         button has to say, and an icon cannot say six. */
+      const all = el('button', 'scheduler-print__cell scheduler-print__cell--action scheduler-print__cell--label', `Print all ${every.length}`);
       all.type = 'button';
       all.title = 'Every envelope on this trip';
       all.setAttribute('aria-label', `Print every envelope on this trip, ${every.length} in all`);
@@ -2357,6 +2424,7 @@
   // The form on the sheet, once its subject has answered.
   function show(form, subject, copies, chosen, blank) {
     setCrumbs(form, subject.trip);
+    drawnSheets.clear();
     current = {
       form,
       subject,

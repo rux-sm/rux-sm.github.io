@@ -701,6 +701,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-viewer__toolbar > .scheduler-print__cell--action:hover,
 .scheduler-viewer__toolbar > .scheduler-print__pick:hover { background: var(--rux-background-hover); }
 
+/* A labelled action, Print all, is as wide as its words with the cell's own
+   inset either side, where an icon cell is square. */
+.scheduler-print__cell--label {
+  inline-size: auto;
+  padding-inline: var(--rux-spacing-05);
+}
+
+/* The Printed tick's cell is its target: a press anywhere in it ticks. */
+.scheduler-print__cell--check { cursor: pointer; }
+.scheduler-print__cell--check:hover { background: var(--rux-layer-hover); }
+
 .scheduler-print__cell:focus-within {
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;

@@ -1441,8 +1441,9 @@
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
 
     schEl.hidden = false;
-    // The roster has room for one week, so it reads the first of two.
-    drawAvailability(availabilityRows({ ...data, weekEnd: addDays(weekStart, 6) }), weekStart);
+    // The roster reads the board's whole range and draws the part it shows.
+    availAll = { rows: availabilityRows(data), weekStart, days };
+    drawRoster(true);
     placeAvailability();
     syncSelection();
     // Every bar is new, so the faces on them are drawn again.
@@ -6941,9 +6942,55 @@
     ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
-  let availRows = [];
+  /* The board's whole range, one week or two, and which of its days the roster
+     last drew, as `first:count`, so a new selection redraws only when it moves
+     the roster to the other week. */
+  let availAll = null;
+  let availSlice = '';
+
+  /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
+     selected trip starts in, or with nothing selected the week holding today,
+     else the first. A trip crossing into the second week shows its first, and
+     the days button shows both, each day half as wide, in the same width. The
+     choice is this browser's, as the editor's size is. */
+  const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
+  const availDaysBtn = document.getElementById('scheduler-avail-days');
+  const availRange = document.getElementById('scheduler-avail-range');
+  let rosterBoth = false;
+  try { rosterBoth = localStorage.getItem(ROSTER_DAYS_KEY) === '14'; } catch { /* one week */ }
+
+  function rosterSlice() {
+    const { weekStart, days } = availAll;
+    if (days <= 7 || rosterBoth) return { first: 0, count: days };
+    const on = currentTripDay();
+    const midnight = new Date();
+    midnight.setHours(0, 0, 0, 0);
+    const at = on ? on.start : daysBetween(weekStart, midnight);
+    return { first: at >= 7 && at < days ? 7 : 0, count: 7 };
+  }
+
+  // Draws the roster when the days it shows have changed, or when `force`
+  // says the rows have, then lights the selected trip's days.
+  function drawRoster(force) {
+    if (!availAll) return;
+    const { first, count } = rosterSlice();
+    const slice = `${first}:${count}`;
+    if (force || slice !== availSlice) {
+      availSlice = slice;
+      drawAvailability(availAll.rows, availAll.weekStart, first, count, availAll.days);
+    }
+    const on = currentTripDay();
+    markAvailDays(on ? on.start : null, on ? on.span : 1);
+  }
+
+  availDaysBtn?.addEventListener('click', () => {
+    rosterBoth = !rosterBoth;
+    try { localStorage.setItem(ROSTER_DAYS_KEY, rosterBoth ? '14' : '7'); } catch { /* kept for this visit */ }
+    drawRoster();
+  });
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
+    const length = daysBetween(weekStart, weekEnd) + 1;
     const rows = (drivers || [])
       /* Active drivers only. The roster answers who can take a trip, and an
          inactive driver cannot, so their week is noise. A driver with no
@@ -6954,7 +7001,7 @@
          5, and names settle a tie. */
       .sort((a, b) => ((a.priority ?? 9) - (b.priority ?? 9))
         || (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
-      .map(d => ({ driver: d, days: Array.from({ length: 7 }, () => ({ off: null, trips: [] })) }));
+      .map(d => ({ driver: d, days: Array.from({ length }, () => ({ off: null, trips: [] })) }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
     for (const trip of trips || []) {
@@ -6989,9 +7036,31 @@
     return rows;
   }
 
-  function drawAvailability(rows, weekStart) {
-    availRows = rows;
+  /* Draws `count` of the board's `days`, from its day `first`. Every day cell
+     keeps the board's own day number, so the selected trip's days light the
+     same columns whichever week is shown. */
+  function drawAvailability(rows, weekStart, first, count, days) {
     availGrid.textContent = '';
+    availEl.style.setProperty('--scheduler-days', String(count));
+    availEl.classList.toggle('scheduler-week--avail-both', count > 7);
+
+    // The head names the dates shown and offers the other count, only while the
+    // board shows two weeks; with one, the toolbar's own week label says it.
+    const two = days > 7;
+    availRange.hidden = !two;
+    availDaysBtn.hidden = !two;
+    if (two) {
+      const fmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+      const from = addDays(weekStart, first);
+      const to = addDays(weekStart, first + count - 1);
+      availRange.textContent = typeof fmt.formatRange === 'function'
+        ? fmt.formatRange(from, to) : `${fmt.format(from)} - ${fmt.format(to)}`;
+      const words = rosterBoth ? 'Show one week' : 'Show both weeks';
+      availDaysBtn.setAttribute('aria-pressed', String(rosterBoth));
+      availDaysBtn.setAttribute('aria-label', words);
+      availDaysBtn.title = words;
+      availDaysBtn.querySelector('use')?.setAttribute('href', rosterBoth ? '#m-close_fullscreen' : '#m-open_in_full');
+    }
 
     /* The first band's name heads the whole roster, in the column header where
        "Driver" used to sit: a band heading is the header band again, so one
@@ -7003,16 +7072,17 @@
     const head = el('div', 'scheduler-avail__days');
     head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head',
       rows.length ? bandName(firstBand) : 'Driver'));
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(weekStart.getTime() + i * DAY);
+    for (let i = first; i < first + count; i++) {
+      const d = addDays(weekStart, i);
       /* One letter, taken from the locale's own `short` weekday, for the
          quietest header the seven columns can carry. It repeats -- T and T, S
          and S -- so the day's full name goes on `title`, as a driver's does on
-         the name beside it. Spread rather than `slice`, so the unit is a code
-         point. */
+         the name beside it, with its date when two weeks are on the board.
+         Spread rather than `slice`, so the unit is a code point. */
       const short = d.toLocaleDateString(undefined, { weekday: 'short' });
       const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 1).join(''));
-      cell.title = d.toLocaleDateString(undefined, { weekday: 'long' });
+      cell.title = d.toLocaleDateString(undefined, two
+        ? { weekday: 'long', month: 'short', day: 'numeric' } : { weekday: 'long' });
       // Weekend letters dim, as the board's day header does; the day rules are
       // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
@@ -7042,7 +7112,8 @@
       const nameEl = el('div', 'scheduler-avail__name', shown);
       if (row.driver.name) nameEl.title = row.driver.name;
       r.appendChild(nameEl);
-      row.days.forEach((day, i) => {
+      row.days.slice(first, first + count).forEach((day, j) => {
+        const i = first + j;
         const busy = day.trips.length > 0;
         const cls = day.off ? 'scheduler-avail__cell scheduler-avail__cell--off'
           : busy ? 'scheduler-avail__cell scheduler-avail__cell--busy'
@@ -7076,9 +7147,6 @@
       if (corner.textContent !== name) corner.textContent = name;
     };
     nameAvailBand();
-
-    const on = currentTripDay();
-    markAvailDays(on ? on.start : null, on ? on.span : 1);
   }
 
   /* Tints the selected trip's days down the roster, so "who is free then" needs
@@ -7089,8 +7157,10 @@
       c.classList.remove('scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day');
     }
     if (start == null) return;
+    // A day the roster is not showing matches no cell, so the days of a trip
+    // that runs on into the other week are simply not there to light.
     const end = start + Math.max(1, span || 1) - 1;
-    for (let i = start; i <= end && i < 7; i++) {
+    for (let i = start; i <= end; i++) {
       for (const d of availGrid.querySelectorAll(`.scheduler-avail__day[data-day="${i}"]`)) d.classList.add('scheduler-avail__day--on-day');
       for (const c of availGrid.querySelectorAll(`.scheduler-avail__cell[data-day="${i}"]`)) c.classList.add('scheduler-avail__cell--on-day');
     }
@@ -7295,8 +7365,8 @@
     peekBar = null;
     placeBarOpen(bar);
     markEditorBars();
-    const on = currentTripDay();
-    markAvailDays(on ? on.start : null, on ? on.span : 1);
+    // The roster moves to the selected trip's week, and lights its days.
+    drawRoster();
     // What this tab is on has changed, so everyone else's board says so.
     presenceTell();
   }

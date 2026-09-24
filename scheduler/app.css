@@ -1121,6 +1121,24 @@ button.scheduler-row-head__num::after {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* The title and, under it with two weeks on the board, the dates the roster
+   shows. It takes the head's free width, so the buttons sit together at the
+   end. */
+.scheduler-aside__titles {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+/* `helper-text-01`, 12px, the size Carbon gives the line under a label, in
+   the secondary colour, so the pair fits the head's 40px. */
+.scheduler-aside__range {
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  letter-spacing: var(--rux-helper-text-01-letter-spacing);
+  color: var(--rux-text-secondary);
+  white-space: nowrap;
+}
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
    undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
@@ -1765,6 +1783,15 @@ button.scheduler-row-head__num::after {
   flex: 1 1 auto;
   min-block-size: 0;
   max-block-size: none;
+}
+/* Both weeks at once: each day is half a square, so fourteen fit the width
+   seven do and the names keep their room. The second week's first day rules
+   its edge in the strong border, so the two weeks count apart. */
+.scheduler-aside .scheduler-week--avail-both {
+  --scheduler-day-track: calc(var(--rux-layout-size-height-sm) / 2);
+}
+.scheduler-week--avail-both .scheduler-avail__cell[data-day="7"] {
+  border-inline-start-color: var(--rux-border-strong-01);
 }
 /* Pinned to the pane's width. `.scheduler-grid` is `max-content` so the board
    can overflow and scroll; here that would stop the name column shrinking and

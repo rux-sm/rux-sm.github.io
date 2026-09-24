@@ -235,6 +235,7 @@
                     <div class="rux--select-input__wrapper">
                       <select id="scheduler-trips-filter" class="rux--select-input" autocomplete="off">
                         <option value="upcoming" data-label="Upcoming">Upcoming</option>
+                        <option value="followup" data-label="Needs follow-up">Needs follow-up</option>
                         <option value="past" data-label="Past">Past</option>
                         <option value="cancelled" data-label="Cancelled">Cancelled</option>
                         <option value="all" data-label="All">All</option>
@@ -244,6 +245,7 @@
                   </div>
                 </div>
               </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="scheduler-follow-open">Follow-ups</button>
             </div>
           </section>
 
@@ -325,16 +327,74 @@
       </div>
     </div>
   </div>
+
+  <!-- The office's follow-up wait and snooze, the `follow-up-v1` settings
+       row. trips.js fills and saves it. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-follow-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-follow-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-follow-h">Follow-ups</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--stack-vertical rux--stack-scale-6">
+          <p class="rux--type-body-compact-01">A trip waiting on the customer asks for a follow-up once nobody has written an update for this long.</p>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="scheduler-follow-wait">Follow up after</label>
+              <div class="rux--select-input__wrapper">
+                <select id="scheduler-follow-wait" class="rux--select-input">
+                  <option value="1">1 day</option>
+                  <option value="2">2 days</option>
+                  <option value="3">3 days</option>
+                  <option value="5">5 days</option>
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="scheduler-follow-snooze">Dismiss a reminder for</label>
+              <div class="rux--select-input__wrapper">
+                <select id="scheduler-follow-snooze" class="rux--select-input">
+                  <option value="4">4 hours</option>
+                  <option value="24">1 day</option>
+                  <option value="48">2 days</option>
+                  <option value="168">1 week</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+              </div>
+            </div>
+          </div>
+          <p class="rux--form-requirement scheduler-follow-error" id="scheduler-follow-error" role="alert"></p>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-follow-save">Save</button>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
+<script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="pair.js"></script>
+<script src="billing.js"></script>
+<script src="follow-up.js"></script>
 <script src="trips.js"></script>
 </body>
 </html>

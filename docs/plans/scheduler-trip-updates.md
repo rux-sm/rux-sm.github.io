@@ -92,8 +92,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
-  Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.
 - [ ] Blank the 203 dated notes the log copied, where a note is still the
   text it copied, once both apps read the log. SQL shown to rux.

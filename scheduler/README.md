@@ -17,9 +17,12 @@ That database is production and shared with `rux-ui`, so nothing here is
 ever tried with a test record.
 
 `trips.html` lists every trip, cancelled ones with their reason, searched,
-sorted, filtered to upcoming, past or cancelled, and paged fifty at a time. A
-row opens the trip on the board through `./?trip=<id>&date=<day>`, and a
-cancelled one opens its cancelled dialog there.
+sorted, filtered to upcoming, needs follow-up, past or cancelled, and paged
+fifty at a time. A row opens the trip on the board through
+`./?trip=<id>&date=<day>`, and a cancelled one opens its cancelled dialog
+there. Its Follow-ups dialog sets the office's follow-up wait and snooze;
+`follow-up.js` holds the rules the list and the board share, on the billing
+rules in `billing.js`.
 
 `fleet.html` lists every unit, a coach, van or any vehicle, by its type and
 then its model year, and edits one at `fleet.html?id=`. Its Vehicle types

@@ -2883,6 +2883,10 @@ html:has(.scheduler-page[data-takeover]) {
   font-size: var(--rux-label-01-font-size);
 }
 .scheduler-types__error:empty { display: none; }
+/* The Follow-ups box's error, hidden while it has nothing to say. */
+.scheduler-follow-error:empty { display: none; }
+/* A follow-up in the Trips list reads in the warning's own words, not its colour. */
+.scheduler-trips-follow { font-weight: var(--rux-heading-compact-01-font-weight); }
 
 /* The bus's own colour as a disc, the size Carbon's small avatar is, so the
    list reads down the same edge the Drivers page does. The colour is the

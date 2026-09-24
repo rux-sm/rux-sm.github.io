@@ -4002,51 +4002,10 @@
     return Number.isFinite(n) ? n : null;
   };
 
-  /* The billing workflow rux-ui keeps in the `billing-workflow-v1` settings
-     row: which milestones are in use, and which billing statuses confirm a
-     trip. `read` fills it with the week; these are rux-ui's defaults for a
-     missing row or a missing part of one. */
-  const CONFIRMING = ['contract_signed', 'po_partial', 'po_received', 'deposit_received', 'paid_full', 'overpaid'];
-  const BILLING_DEFAULT = { steps: { contractSigned: true, poReceived: true, invoiced: true },
-                            confirmWhen: ['contract_signed', 'po_received', 'deposit_received', 'paid_full'] };
-  let billingWorkflow = BILLING_DEFAULT;
-  function setBillingWorkflow(value) {
-    const steps = { ...BILLING_DEFAULT.steps };
-    for (const key of Object.keys(steps)) {
-      if (value?.workflow?.[key]?.active === false) steps[key] = false;
-    }
-    const listed = Array.isArray(value?.confirmWhen) ? value.confirmWhen.filter(k => CONFIRMING.includes(k)) : [];
-    billingWorkflow = { steps, confirmWhen: listed.length ? [...new Set(listed)] : BILLING_DEFAULT.confirmWhen };
-  }
-  // Whether a milestone is in use. One that is not counts as off.
-  const stepOn = key => billingWorkflow.steps[key] !== false;
-
-  /* The billing status ladder, rux-ui's `deriveStatus` in its
-     `js/core/billing-config.js`; first match wins:
-
-       overpaid          price > 0 && balance < 0
-       paid_full         price > 0 && paid > 0 && balance <= 0
-       po_partial        poReceived && price > 0 && poAmount < remaining
-       po_received       poReceived
-       deposit_received  paid > 0 && (balance > 0 || price <= 0)
-       contract_signed   contractSigned
-       pending           -- everything else
-
-     The invoice milestone moves neither the status nor the confirmation. */
-  function billingStatus({ contractSigned, poReceived, poAmount, price, paid }) {
-    const balance = price - paid;
-    const remaining = Math.max(0, balance);
-    if (price > 0 && balance < 0) return 'overpaid';
-    if (price > 0 && paid > 0 && balance <= 0) return 'paid_full';
-    if (poReceived && price > 0 && poAmount < remaining) return 'po_partial';
-    if (poReceived) return 'po_received';
-    if (paid > 0 && (balance > 0 || price <= 0)) return 'deposit_received';
-    if (contractSigned) return 'contract_signed';
-    return 'pending';
-  }
-  // A partial PO confirms whenever a PO does, as in rux-ui.
-  const confirmRungOf = rung => (rung === 'po_partial' ? 'po_received' : rung);
-  const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung));
+  /* The billing rules, `billing.js`: the workflow the `billing-workflow-v1`
+     row sets, the status ladder, and where a saved trip's money stands. */
+  const { setWorkflow: setBillingWorkflow, stepOn, status: billingStatus, confirmRungOf, confirmsTrip,
+    contractSignedOf, poReceivedOf, invoicedOf, of: billingOf } = window.SchedulerBilling;
 
   /* The open editor's billing as it stands: the status, whether it confirms
      the trip, and whether the payments reach the quote, with the latest
@@ -4077,34 +4036,6 @@
     return { confirmed: b.confirmed, balance_paid: b.fullyPaid, date_paid: b.datePaid };
   }
 
-  /* A trip's milestones as rux-ui opens them. A confirmed trip with no
-     contract status predates the column and counts as signed; a PO reference
-     or an invoice number turns its milestone on. */
-  const contractSignedOf = trip => stepOn('contractSigned')
-    && (trip.contract_status === 'Signed' || (trip.contract_status == null && !!trip.confirmed));
-  const poReceivedOf = trip => stepOn('poReceived') && !!(trip.po_received || trip.po_ref);
-  const invoicedOf = trip => !!(trip.invoiced || trip.invoice_number || trip.invoice_status === 'Invoiced');
-
-  /* A saved trip's money, read from its rows the way `billingNow` reads the
-     open editor's, so the bar and the Billing tab put the trip on the same
-     rung. The row lists are the live ones; the `deposit_amount` and `po_amount`
-     aggregates are what rux-ui filled before those lists existed. A trip rux-ui
-     marked paid with no payment rows carries the whole quote as paid, as
-     rux-ui's own `normalizeRecord` does, so it is not read as owing it. */
-  function billingOf(trip) {
-    const sum = rows => (rows || []).reduce((n, r) => n + (Number(r.amount) || 0), 0);
-    const price = Number(trip.quoted_price) || 0;
-    const rows = trip.trip_payments?.length ? sum(trip.trip_payments) : Number(trip.deposit_amount) || 0;
-    const paid = rows <= 0 && (trip.date_paid || trip.balance_paid) ? price : rows;
-    const poAmount = trip.trip_pos?.length ? sum(trip.trip_pos) : Number(trip.po_amount) || 0;
-    const poReceived = poReceivedOf(trip);
-    const rung = billingStatus({ contractSigned: contractSignedOf(trip), poReceived, poAmount, price, paid });
-    // The day the last payment landed. `date_paid` is the column both apps
-    // derive on save; the rows are what a trip saved before it carries.
-    const dates = (trip.trip_payments || []).filter(p => Number(p.amount) > 0 && p.date).map(p => p.date).sort();
-    return { price, paid, poAmount, poReceived, rung,
-             remaining: Math.max(0, price - paid), datePaid: trip.date_paid || dates.pop() || null };
-  }
 
   /* The bar's payment mark, rux-ui's billing marks in one glyph the colour
      carries: red while nothing stands against the quote, amber while what does
@@ -4133,69 +4064,10 @@
     return null;
   }
 
-  /* ── Follow-ups ── A trip is waiting on the customer while it is not
-     confirmed, its PO or deposit is not in, its itinerary is missing, or its
-     balance is unpaid within two weeks of leaving. Once its newest real update,
-     or its booking where it has none, is older than the office's follow-up
-     wait, its bar asks for a follow-up. A trip waiting on nothing never asks,
-     however old its updates, and a placeholder waits on nothing. Once the trip
-     has left, only its balance can still be waited on. A skipped prompt's
-     `nothing` row is not an update, so it never makes a trip look followed
-     up. The wait and the snooze are the office's `follow-up-v1` row. */
-  const FOLLOW_UP = { waitDays: 3, snoozeHours: 24 };
-  let followUp = { ...FOLLOW_UP };
-  function setFollowUp(value) {
-    const num = (v, d) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);
-    followUp = { waitDays: num(value?.wait_days, FOLLOW_UP.waitDays), snoozeHours: num(value?.snooze_hours, FOLLOW_UP.snoozeHours) };
-  }
-  const BALANCE_DAYS = 14;
-  const WAIT_WORDS = { confirmation: 'confirmation', po: 'PO', itinerary: 'itinerary', balance: 'balance' };
-  function waitsOf(trip) {
-    if (tripColorOf(trip) === 'amber') return [];
-    const today = iso(new Date());
-    const left = !!trip.start_date && trip.start_date <= today;
-    const waits = [];
-    const { price, remaining, rung } = billingOf(trip);
-    if (!left) {
-      if (trip.confirmed === false) waits.push('confirmation');
-      else if (price > 0 && (rung === 'pending' || rung === 'contract_signed')) waits.push('po');
-      if (!latestItinerary(trip) && !trip.itinerary_not_needed) waits.push('itinerary');
-    }
-    const soon = !!trip.start_date && daysBetween(parseISO(today), parseISO(trip.start_date)) <= BALANCE_DAYS;
-    if (trip.confirmed !== false && remaining > 0 && soon && (rung === 'po_partial' || rung === 'deposit_received')) {
-      waits.push('balance');
-    }
-    return waits;
-  }
-  // The updates newest first, without the skipped prompts' rows.
-  const updatesOf = trip => (trip.trip_updates || []).filter(u => u.kind !== 'nothing')
-    .sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at));
-  const quietSince = trip => updatesOf(trip)[0]?.created_at ?? trip.created_at ?? null;
-  /* A dismissed reminder is each person's own, kept in this browser until the
-     snooze runs out, so one person's dismissal never hides a trip from
-     another. A real update ends the wait itself. */
-  const DISMISS_KEY = 'scheduler.follow-up-dismissed';
-  function dismissals() {
-    try { return JSON.parse(localStorage.getItem(DISMISS_KEY) || '{}') || {}; } catch { return {}; }
-  }
-  function dismissFollowUp(tripId) {
-    const all = dismissals();
-    const now = Date.now();
-    for (const [id, until] of Object.entries(all)) if (until <= now) delete all[id];
-    all[tripId] = now + followUp.snoozeHours * 36e5;
-    try { localStorage.setItem(DISMISS_KEY, JSON.stringify(all)); } catch { /* kept for this page only */ }
-  }
-  function asksFollowUp(trip) {
-    if (!waitsOf(trip).length) return false;
-    const since = quietSince(trip);
-    if (since && Date.now() - Date.parse(since) <= followUp.waitDays * 864e5) return false;
-    return !(dismissals()[trip.id] > Date.now());
-  }
-  // "7d" for how long ago, the way a chat says it, and "today" for today.
-  const agoShort = at => {
-    const d = Math.floor((Date.now() - Date.parse(at)) / 864e5);
-    return d <= 0 ? 'today' : `${d}d`;
-  };
+  /* The follow-up rules, `follow-up.js`: what a trip waits on, how long it
+     has been quiet, whether it asks, and the reminders dismissed here. */
+  const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, dismiss: dismissFollowUp,
+    agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
 
   let editing = null;   // { id, before: {...} }
 
@@ -6408,7 +6280,7 @@
         ['contract_signed', 'a signed contract'],
         ['po_received', 'a PO'],
         ['deposit_received', 'any payment'],
-      ].filter(([rung]) => billingWorkflow.confirmWhen.includes(rung)
+      ].filter(([rung]) => window.SchedulerBilling.confirmWhen.includes(rung)
         && (rung !== 'contract_signed' || stepOn('contractSigned'))
         && (rung !== 'po_received' || stepOn('poReceived')))
         .map(([, words]) => words);
@@ -9639,7 +9511,7 @@
     };
     if (asksFollowUp(trip)) {
       const band = row('scheduler-card__asks');
-      const hours = followUp.snoozeHours;
+      const hours = window.SchedulerFollowUp.setting.snoozeHours;
       const snooze = hours % 24 ? `${hours} hour${hours === 1 ? '' : 's'}` : `${hours / 24} day${hours === 24 ? '' : 's'}`;
       const dismiss = el('button', 'scheduler-card__dismiss');
       dismiss.type = 'button';

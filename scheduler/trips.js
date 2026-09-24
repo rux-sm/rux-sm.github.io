@@ -5,11 +5,15 @@
    once and searched, sorted, filtered and paged here, in the browser. A row
    opens its trip on the schedule, where a trip is edited; a cancelled one
    opens the schedule's cancelled-trip dialog, with its reason and Bring back.
+   Needs follow-up lists the trips waiting on the customer that have gone
+   quiet longer than the office's wait, longest first, by follow-up.js's
+   rules; the Follow-ups button sets the wait and the snooze.
    ========================================================================== */
 (() => {
   'use strict';
 
   const { $, el } = window.SchedulerPair;
+  const FollowUp = window.SchedulerFollowUp;
   const pair = window.SchedulerPair.page({ list: 'trips', one: 'trip' });
 
   const PAGE_SIZE = 50;
@@ -19,6 +23,10 @@
     'bus_count', 'return_bus_count', 'quoted_price', 'po_ref', 'invoice_number',
     'confirmed', 'invoiced', 'balance_paid', 'cancelled_at', 'cancellation_reason',
     'trip_assignments(leg,buses:bus_id(number))',
+    // What the follow-up rules read: the money, the itinerary and the updates.
+    'created_at', 'trip_bar_color', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_amount',
+    'deposit_amount', 'date_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
+    'trip_updates(created_at,kind)',
   ].join(',');
 
   // ── dates, all local ────────────────────────────────────────────────────
@@ -63,6 +71,7 @@
 
   const WHICH = {
     upcoming: t => !t.cancelled_at && (lastDay(t) || '9999') >= today,
+    followup: t => FollowUp.asks(t),
     past: t => !t.cancelled_at && (lastDay(t) || '9999') < today,
     cancelled: t => !!t.cancelled_at,
     all: () => true,
@@ -75,9 +84,11 @@
     price: (a, b) => (Number(a.quoted_price) || 0) - (Number(b.quoted_price) || 0),
     status: (a, b) => STATUS.indexOf(statusOf(a)) - STATUS.indexOf(statusOf(b)),
   };
-  // With no column sorted, upcoming trips run soonest first and every other
-  // view newest first, so the trip most likely wanted is at the top.
-  const standing = () => (filter === 'upcoming' ? byDate : (a, b) => byDate(b, a));
+  // With no column sorted, upcoming trips run soonest first, the follow-ups
+  // longest quiet first, and every other view newest first, so the trip most
+  // likely wanted is at the top.
+  const quietFirst = (a, b) => Date.parse(FollowUp.quietSince(a) || 0) - Date.parse(FollowUp.quietSince(b) || 0);
+  const standing = () => (filter === 'upcoming' ? byDate : filter === 'followup' ? quietFirst : (a, b) => byDate(b, a));
 
   let trips = [];
   let filter = $('scheduler-trips-filter')?.value || 'upcoming';
@@ -143,6 +154,12 @@
       if (t.cancelled_at && t.cancellation_reason) {
         tagLines.appendChild(el('span', 'scheduler-pair-cell__detail', t.cancellation_reason));
       }
+      // A trip that asks for a follow-up says what it waits on and how long.
+      if (FollowUp.asks(t)) {
+        const since = FollowUp.quietSince(t);
+        tagLines.appendChild(el('span', 'scheduler-pair-cell__detail scheduler-trips-follow',
+          `Waiting on ${FollowUp.waitsOf(t).map(w => FollowUp.WORDS[w]).join(', ')}${since ? ` · ${FollowUp.agoShort(since)}` : ''}`));
+      }
       state.appendChild(tagLines);
 
       tr.append(when, trip, dest, bus, price, state);
@@ -182,8 +199,45 @@
   $('scheduler-trips-prev')?.addEventListener('click', () => { pageAt -= 1; drawList(); });
   $('scheduler-trips-next')?.addEventListener('click', () => { pageAt += 1; drawList(); });
 
+  /* ── Follow-ups ── The office's wait and snooze, one settings row the
+     board reads too. Saving redraws the list, whose Needs follow-up count
+     follows the new wait at once. */
+  let db = null;
+  const waitSelect = $('scheduler-follow-wait');
+  const snoozeSelect = $('scheduler-follow-snooze');
+  $('scheduler-follow-open')?.addEventListener('click', () => {
+    const { waitDays, snoozeHours } = FollowUp.setting;
+    for (const [select, value] of [[waitSelect, waitDays], [snoozeSelect, snoozeHours]]) {
+      if (![...select.options].some(o => Number(o.value) === value)) select.appendChild(el('option', null, String(value))).value = String(value);
+      select.value = String(value);
+    }
+    $('scheduler-follow-error').textContent = '';
+    window.Rux?.modal?.open?.('scheduler-follow-modal');
+  });
+  $('scheduler-follow-save')?.addEventListener('click', async () => {
+    const save = $('scheduler-follow-save');
+    save.disabled = true;
+    try {
+      await FollowUp.save(db, { waitDays: Number(waitSelect.value), snoozeHours: Number(snoozeSelect.value) });
+      window.Rux?.modal?.close?.('scheduler-follow-modal');
+      drawList();
+      pair.say('success', 'Follow-ups saved.', '');
+    } catch (e) {
+      $('scheduler-follow-error').textContent = `The follow-ups did not save. ${e.message}`;
+    } finally {
+      save.disabled = false;
+    }
+  });
+
   // Every trip, a thousand rows a read, which is the most one read returns.
   async function loadList(client) {
+    db = client;
+    // The rules the follow-ups follow, read before the list is drawn.
+    const [{ data: flow }] = await Promise.all([
+      client.from('settings').select('value').eq('key', 'billing-workflow-v1').maybeSingle(),
+      FollowUp.read(client),
+    ]);
+    window.SchedulerBilling.setWorkflow(flow?.value);
     const all = [];
     for (let from = 0; ; from += 1000) {
       const { data, error } = await client.from('trips').select(COLUMNS)

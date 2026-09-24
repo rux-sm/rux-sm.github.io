@@ -16,6 +16,10 @@ table needs finer grain it says so in the name: `staff_read`, `staff_add`,
 `staff_remove`, `staff_update_own`, `staff_own`, `staff_join_lobby`,
 `staff_leave_lobby`.
 `trip_drafts` has `author_all`, because a draft belongs to whoever wrote it.
+The Sevens tables ask `sevens_is_player()` instead, in `player_read` and
+`player_chat`, because a game is its players' and a friend given only Sevens
+is not staff; a waiting table is also readable by anyone `can_open_app('sevens')`
+allows, so they can join it.
 
 **No rule may name `anon` or `public`.** The publishable key in `account.js`
 and `data.js` is not a secret and belongs to the `anon` role, so a rule naming

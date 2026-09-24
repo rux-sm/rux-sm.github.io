@@ -10,6 +10,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
 | `notes/` | `/notes/` | Infor LN walkthroughs, rendered from the private `atlas` |
 | `pixels/` | `/pixels/` | picture logic puzzles and a maker to draw them |
+| `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
 | `tools/` | — | the commands below |
 | `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, and `docs/plans/`, changes being decided or built |
 

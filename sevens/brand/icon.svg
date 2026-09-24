@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app tile icon, the same drawing as brand/favicon.svg: a card with a
+     seven cut out of it, one run of squares per row on the 16 grid the other
+     apps' marks use. It is a CSS mask over the tile's text colour, so this
+     file's own colours are discarded and only its alpha is read; that is why
+     it carries no fill and no title. -->
+<path d="M2 1L14 1L14 2L2 2ZM2 2L14 2L14 3L2 3ZM2 3L14 3L14 4L2 4ZM2 4L5 4L5 5L2 5ZM11 4L14 4L14 5L11 5ZM2 5L5 5L5 6L2 6ZM11 5L14 5L14 6L11 6ZM2 6L9 6L9 7L2 7ZM11 6L14 6L14 7L11 7ZM2 7L9 7L9 8L2 8ZM11 7L14 7L14 8L11 8ZM2 8L8 8L8 9L2 9ZM10 8L14 8L14 9L10 9ZM2 9L8 9L8 10L2 10ZM10 9L14 9L14 10L10 10ZM2 10L7 10L7 11L2 11ZM9 10L14 10L14 11L9 11ZM2 11L7 11L7 12L2 12ZM9 11L14 11L14 12L9 12ZM2 12L7 12L7 13L2 13ZM9 12L14 12L14 13L9 13ZM2 13L14 13L14 14L2 14ZM2 14L14 14L14 15L2 15Z"/>
+</svg>

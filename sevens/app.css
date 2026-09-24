@@ -1,0 +1,91 @@
+/* app.css -- Sevens' own components, under the sevens- prefix. Interface
+   colours are --rux-* tokens; a card's own colour is the card's, from
+   theme.css. Design's components are used as they are and never restyled. */
+
+/* One column, as wide as a phone, centred on anything wider. */
+.sevens-page { display: grid; gap: 1rem; inline-size: 100%; max-inline-size: 30rem; margin-inline: auto; }
+
+/* A CARD: one solid colour, its number or name on it. */
+.sevens-card {
+  --card-bg: var(--rux-layer-02); --card-fg: var(--rux-text-primary);
+  display: inline-grid; place-items: center; inline-size: 3.5rem; block-size: 4.9rem; flex: none;
+  background: var(--card-bg); color: var(--card-fg);
+  font-size: 1.75rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; text-align: center;
+}
+.sevens-card--word { font-size: .75rem; line-height: 1.15; padding: .125rem; }
+.sevens-card--sm { inline-size: 1.75rem; block-size: 2.45rem; font-size: .9375rem; }
+.sevens-card--sm.sevens-card--word { font-size: .5rem; padding: .0625rem; }
+/* The card just drawn, and a repeated number, ringed outside the card so the
+   ring shows on every face. */
+.sevens-card--new { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.sevens-card--dup { outline: 2px solid var(--rux-support-error); outline-offset: 2px; }
+.sevens-deck { background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.125rem; }
+.sevens-card[data-card="0"] { --card-bg: var(--sevens-card-0); --card-fg: var(--sevens-ink-0); }
+.sevens-card[data-card="1"] { --card-bg: var(--sevens-card-1); --card-fg: var(--sevens-ink-1); }
+.sevens-card[data-card="2"] { --card-bg: var(--sevens-card-2); --card-fg: var(--sevens-ink-2); }
+.sevens-card[data-card="3"] { --card-bg: var(--sevens-card-3); --card-fg: var(--sevens-ink-3); }
+.sevens-card[data-card="4"] { --card-bg: var(--sevens-card-4); --card-fg: var(--sevens-ink-4); }
+.sevens-card[data-card="5"] { --card-bg: var(--sevens-card-5); --card-fg: var(--sevens-ink-5); }
+.sevens-card[data-card="6"] { --card-bg: var(--sevens-card-6); --card-fg: var(--sevens-ink-6); }
+.sevens-card[data-card="7"] { --card-bg: var(--sevens-card-7); --card-fg: var(--sevens-ink-7); }
+.sevens-card[data-card="8"] { --card-bg: var(--sevens-card-8); --card-fg: var(--sevens-ink-8); }
+.sevens-card[data-card="9"] { --card-bg: var(--sevens-card-9); --card-fg: var(--sevens-ink-9); }
+.sevens-card[data-card="10"] { --card-bg: var(--sevens-card-10); --card-fg: var(--sevens-ink-10); }
+.sevens-card[data-card="11"] { --card-bg: var(--sevens-card-11); --card-fg: var(--sevens-ink-11); }
+.sevens-card[data-card="12"] { --card-bg: var(--sevens-card-12); --card-fg: var(--sevens-ink-12); }
+.sevens-card[data-card="bonus"] { --card-bg: var(--sevens-card-bonus); --card-fg: var(--sevens-ink-bonus); }
+.sevens-card[data-card="freeze"] { --card-bg: var(--sevens-card-freeze); --card-fg: var(--sevens-ink-freeze); }
+.sevens-card[data-card="three"] { --card-bg: var(--sevens-card-three); --card-fg: var(--sevens-ink-three); }
+.sevens-card[data-card="second"] { --card-bg: var(--sevens-card-second); --card-fg: var(--sevens-ink-second); }
+
+.sevens-status { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; color: var(--rux-text-secondary); }
+.sevens-status strong { color: var(--rux-text-primary); font-weight: 600; }
+
+/* THE OTHER PLAYERS, a compact row each. */
+.sevens-players { display: grid; gap: .5rem; }
+.sevens-player { display: grid; grid-template-columns: 1fr auto; gap: .5rem .75rem; padding: .75rem; background: var(--rux-layer-01); border-inline-start: 3px solid transparent; }
+.sevens-player[data-turn] { border-inline-start-color: var(--rux-interactive); }
+.sevens-player[data-out] .sevens-hand { opacity: .6; }
+.sevens-who { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; min-inline-size: 0; }
+.sevens-who strong { font-weight: 600; }
+.sevens-total { font-variant-numeric: tabular-nums; color: var(--rux-text-secondary); }
+.sevens-hand { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .25rem; min-block-size: 2.45rem; }
+
+.sevens-center { display: flex; gap: 1rem; align-items: center; justify-content: center; padding-block: .25rem; }
+.sevens-feed { color: var(--rux-text-secondary); min-block-size: 2.5rem; display: flex; align-items: center; }
+
+/* YOU: large cards, the round's sum, and Flip and Stay under the thumb.
+   Seven cards fit one row across the phone; more wrap under them. */
+.sevens-you { display: grid; gap: .75rem; padding: 1rem; background: var(--rux-layer-01); border-inline-start: 3px solid transparent; }
+.sevens-you[data-turn] { border-inline-start-color: var(--rux-interactive); }
+.sevens-you .sevens-hand { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .375rem; min-block-size: 0; }
+.sevens-you .sevens-card { inline-size: auto; block-size: auto; aspect-ratio: 5 / 7; font-size: clamp(1.125rem, 5.5vw, 1.75rem); }
+.sevens-you .sevens-card--word { font-size: clamp(.5rem, 2.2vw, .75rem); padding: 0; }
+/* The action card waiting to be played, full size beside its question. */
+.sevens-you .sevens-drawn .sevens-card { inline-size: 3.5rem; block-size: 4.9rem; font-size: .75rem; padding: .125rem; }
+.sevens-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.sevens-sum .rux--type-productive-heading-04 { font-variant-numeric: tabular-nums; }
+.sevens-math { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+.sevens-go { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
+.sevens-go .rux--btn, .sevens-wide .rux--btn { max-inline-size: none; inline-size: 100%; }
+.sevens-wide { display: grid; gap: .5rem; }
+
+.sevens-scores { display: grid; }
+.sevens-score { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; padding: .75rem 0; border-block-end: 1px solid var(--rux-border-subtle-01); font-variant-numeric: tabular-nums; }
+.sevens-score span:nth-child(2) { color: var(--rux-text-secondary); }
+
+/* THE TABLES PAGE. */
+.sevens-tables { display: grid; gap: .5rem; }
+.sevens-open { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; padding: .75rem 1rem; background: var(--rux-layer-01); }
+.sevens-open small { display: block; color: var(--rux-text-secondary); margin-block-start: .25rem; }
+
+/* THE CHAT. */
+.sevens-chat { display: grid; gap: .75rem; }
+.sevens-messages { display: grid; gap: .5rem; max-block-size: 18rem; overflow-y: auto; }
+.sevens-msg { display: grid; gap: .125rem; max-inline-size: 85%; padding: .5rem .75rem; background: var(--rux-layer-01); overflow-wrap: anywhere; }
+.sevens-msg small { color: var(--rux-text-secondary); }
+.sevens-msg[data-mine] { justify-self: end; background: var(--rux-layer-selected-01); }
+.sevens-say { display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: end; }
+
+/* Each view's display would outrank the hidden attribute. */
+.sevens-page [hidden] { display: none; }

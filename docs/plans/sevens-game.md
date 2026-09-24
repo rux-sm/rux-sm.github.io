@@ -52,8 +52,8 @@ retired with its tables.
 - **Only accounts with Sevens ticked can play.** The database checks the
   ticked app itself, not only that the account is staff, so a friend given
   Sevens alone can play and reads nothing else.
-- **Live by Supabase's realtime channel, private,** as the scheduler's is,
-  with a fresh read when a phone wakes.
+- **Live by Supabase's table changes,** which reach a listener only for rows
+  its rules let it read, with a fresh read when a phone wakes.
 - **Phone first.** Your own cards large at the bottom with Flip and Stay
   under your thumb, the other players as compact rows with their cards and
   scores, the deck and whose turn it is in the middle.
@@ -63,17 +63,12 @@ retired with its tables.
 
 ## Questions
 
-- Is it right that whoever started a table can skip a player who left, with
-  no turn timer?
+- None open.
 
 ## Tasks
 
-- [ ] rux reads and approves the database change: the tables, the access
-      check and every move as a function, tested with rounds played in SQL
-      and rolled back.
 - [ ] rux starts a table on the Mac, a second account joins from the phone,
       and they play a round to the end with a Freeze, a Flip Three and a
       Second Chance in it.
-- [ ] rux sees a Sevens tile on Home, and a game to 200 names its winner.
 - [ ] rux says yes, and the Flip 7 panel leaves rux-ui with its `game_*`
       tables and `*flip_seven*` functions.

@@ -1034,7 +1034,8 @@
     </div>
   </div>
 
-  <!-- Cancelling asks for an optional reason. The structure follows
+  <!-- Cancelling asks for a reason, and Cancel trip stays disabled until one
+       is typed. The structure follows
        design/templates/wizard-page.html's cancel dialog, and modal.js supplies
        the focus trap, Escape and data-rux-close. Danger, because the trip
        leaves the board, though it can be brought back. -->
@@ -1094,20 +1095,45 @@
       </div>
       <div class="rux--modal-content">
         <p id="scheduler-cancel-what"></p>
-        <p>It comes off the schedule and stays on the trips list, where it can be brought back.</p>
+        <p>It comes off the schedule. Search still finds it, and it can be brought back from there.</p>
         <div class="rux--form-item">
           <div class="rux--text-area__label-wrapper">
             <label class="rux--label" for="scheduler-cancel-reason">Reason</label>
           </div>
           <div class="rux--text-area__wrapper">
-            <textarea id="scheduler-cancel-reason" class="rux--text-area" rows="3" placeholder="Why is it cancelled?"></textarea>
+            <textarea id="scheduler-cancel-reason" class="rux--text-area" rows="3" placeholder="Why is it cancelled?" required></textarea>
             <span class="rux--text-area__counter-alert" role="alert"></span>
           </div>
         </div>
       </div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep it</button>
-        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-cancel-confirm">Cancel trip</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-cancel-confirm" disabled>Cancel trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- A cancelled trip, opened from search: what it was, when it was
+       cancelled and why. data.js fills it; Bring back puts the trip on the
+       schedule again. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-cancelled-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-cancelled-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-cancelled-h">Cancelled trip</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="scheduler-cancelled-what"></p>
+        <p><strong id="scheduler-cancelled-when"></strong></p>
+        <p id="scheduler-cancelled-reason"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Close</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-cancelled-reinstate">Bring back</button>
       </div>
     </div>
   </div>

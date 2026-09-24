@@ -40,10 +40,6 @@ None open.
 
 ## Tasks
 
-- [ ] Make the reason required in the scheduler's cancel dialog, and drop the
-  `if (reason)` that lets a blank one through.
 - [ ] Make the reason required in rux-ui's cancel modal, where
   `promptCancelReason` resolves on an empty box today.
-- [ ] Let the trip search return cancelled trips behind a Cancelled tag, and
-  show the reason in a banner on the trip it opens.
 - [ ] Replace rux-ui's finder tooltip with something a phone can show.

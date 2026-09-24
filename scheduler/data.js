@@ -8756,8 +8756,9 @@
 
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
      row stays, so a cancelled trip can still be looked up. The reason is
-     optional and stored when given. The bar menu and the Details tab's Cancel
-     trip button both open the dialog through here. */
+     required: Cancel trip stays disabled until the box holds some text. The
+     bar menu and the Details tab's Cancel trip button both open the dialog
+     through here. */
   function openCancelModal(tripId) {
     // The editor's own trip may be on another week than the one on screen.
     const trip = panelIndex.trips.get(tripId) ?? (panelArgs?.trip?.id === tripId ? panelArgs.trip : null);
@@ -8765,32 +8766,77 @@
     document.getElementById('scheduler-cancel-what').textContent =
       `${trip?.destination || 'This trip'}${trip?.customer ? ` for ${trip.customer}` : ''}.`;
     document.getElementById('scheduler-cancel-reason').value = '';
+    document.getElementById('scheduler-cancel-confirm').disabled = true;
     window.Rux?.modal?.open?.('scheduler-cancel-modal');
   }
 
   let cancelling = null;
 
+  document.getElementById('scheduler-cancel-reason')?.addEventListener('input', e => {
+    document.getElementById('scheduler-cancel-confirm').disabled = !e.target.value.trim();
+  });
+
   document.getElementById('scheduler-cancel-confirm')?.addEventListener('click', async () => {
     const id = cancelling;
     if (!id) return;
     const reason = document.getElementById('scheduler-cancel-reason').value.trim();
+    if (!reason) return;
     window.Rux?.modal?.close?.('scheduler-cancel-modal');
     cancelling = null;
     toast('info', 'Cancelling the trip…');
     try {
-      const patch = { cancelled_at: new Date().toISOString() };
-      if (reason) patch.cancellation_reason = reason;
+      const patch = { cancelled_at: new Date().toISOString(), cancellation_reason: reason };
       const { error } = await withTimeout(client.from('trips').update(patch).eq('id', id).then(r => r));
       if (error) throw new Error(error.message);
       recordHistory(id, 'cancelled', [{
-        field: 'trip', label: 'Trip', before: 'Active', after: reason ? `Cancelled — ${reason}` : 'Cancelled',
+        field: 'trip', label: 'Trip', before: 'Active', after: `Cancelled — ${reason}`,
       }]);
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);
-      toast('success', 'Trip cancelled. It is off the schedule and still on the trips list.');
+      toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.');
     } catch (e) {
       toast('error', `The trip was not cancelled. ${e.message}`);
+    }
+  });
+
+  /* A cancelled trip is not on the board, so search opens this dialog
+     instead: what the trip was, when it was cancelled and why. Bring back
+     clears both, as rux-ui's reinstate does, writes a `reinstated` history
+     entry and goes to the trip on its week. */
+  let reinstating = null;
+
+  function openCancelledModal(trip) {
+    reinstating = trip;
+    const on = new Date(trip.cancelled_at).toLocaleDateString(undefined,
+      { year: 'numeric', month: 'short', day: 'numeric' });
+    document.getElementById('scheduler-cancelled-what').textContent =
+      `${trip.destination || 'This trip'}${trip.customer ? ` for ${trip.customer}` : ''}.`;
+    document.getElementById('scheduler-cancelled-when').textContent = `Cancelled ${on}`;
+    document.getElementById('scheduler-cancelled-reason').textContent =
+      trip.cancellation_reason || 'No reason was written.';
+    window.Rux?.modal?.open?.('scheduler-cancelled-modal');
+  }
+
+  document.getElementById('scheduler-cancelled-reinstate')?.addEventListener('click', async () => {
+    const trip = reinstating;
+    if (!trip) return;
+    window.Rux?.modal?.close?.('scheduler-cancelled-modal');
+    reinstating = null;
+    toast('info', 'Bringing the trip back…');
+    try {
+      const { error } = await withTimeout(client.from('trips')
+        .update({ cancelled_at: null, cancellation_reason: null }).eq('id', trip.id).then(r => r));
+      if (error) throw new Error(error.message);
+      recordHistory(trip.id, 'reinstated', [{
+        field: 'trip', label: 'Trip',
+        before: trip.cancellation_reason ? `Cancelled — ${trip.cancellation_reason}` : 'Cancelled',
+        after: 'Active',
+      }]);
+      toast('success', 'Trip brought back. It is on the schedule again.');
+      await goToTrip(trip.id, trip.start_date);
+    } catch (e) {
+      toast('error', `The trip was not brought back. ${e.message}`);
     }
   });
 
@@ -8923,9 +8969,10 @@
     }, 0);
   });
 
-  /* Every trip that is not cancelled is searched, newest first, in three plain
-     columns on `trips`: `customer` (the organization), `destination` and
-     `booking_contact_name`, so no join is needed.
+  /* Every trip is searched, newest first, cancelled ones included, in three
+     plain columns on `trips`: `customer` (the organization), `destination` and
+     `booking_contact_name`, so no join is needed. A cancelled trip is tagged
+     and opens the cancelled dialog instead of the board.
 
      The query is sanitised first because PostgREST parses `or=(...)` as a
      list: a typed comma, parenthesis or backslash would re-parse into other
@@ -8939,8 +8986,7 @@
     if (safe.length < SEARCH_MIN) return { rows: [] };
     const like = `*${safe}*`;
     const { data, error } = await client.from('trips')
-      .select('id,destination,customer,booking_contact_name,start_date')
-      .is('cancelled_at', null)
+      .select('id,destination,customer,booking_contact_name,start_date,cancelled_at,cancellation_reason')
       .or(`destination.ilike.${like},customer.ilike.${like},booking_contact_name.ilike.${like}`)
       .order('start_date', { ascending: false })
       .limit(SEARCH_CAP + 1);
@@ -9095,9 +9141,15 @@
          list; then the organization and booking contact joined on one line,
          since the contact is often empty. */
       const head = el('div', 'scheduler-search__head');
+      const whenEl = el('span', 'scheduler-search__when', when);
+      if (trip.cancelled_at) {
+        const tag = el('span', 'rux--tag rux--layout--size-sm rux--tag--red rux--tag--sm');
+        tag.append(el('span', 'rux--tag__label', 'Cancelled'));
+        whenEl.prepend(tag);
+      }
       head.append(
         mark(trip.destination || 'No destination', 'scheduler-search__dest', safe),
-        el('span', 'scheduler-search__when', when),
+        whenEl,
       );
       btn.append(
         head,
@@ -9106,7 +9158,8 @@
       );
       btn.addEventListener('click', () => {
         collapseSearch();
-        goToTrip(trip.id, trip.start_date);
+        if (trip.cancelled_at) openCancelledModal(trip);
+        else goToTrip(trip.id, trip.start_date);
       });
       row.appendChild(btn);
       list.appendChild(row);

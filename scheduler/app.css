@@ -2170,10 +2170,13 @@ html:has(.scheduler-page[data-takeover]) {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* The date never shrinks, for the same reason. `tabular-nums` so dates line up
-   digit for digit. */
+/* The date never shrinks, for the same reason, and a cancelled trip's tag sits
+   before it. `tabular-nums` so dates line up digit for digit. */
 .scheduler-search__when {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);

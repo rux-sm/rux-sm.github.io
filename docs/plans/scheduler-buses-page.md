@@ -12,10 +12,9 @@ capacity, a service date or the days a bus is out.
 
 ## Decisions
 
-- **The page's name, words and types** are decided in
-  `docs/plans/scheduler-fleet-page.md`.
-- **Two views in one file.** `scheduler/buses.html` lists the buses,
-  `buses.html?id=<bus id>` edits one, and `buses.html?new` makes one.
+- **Two views in one file.** `scheduler/fleet.html` lists the units,
+  `fleet.html?id=<bus id>` edits one, and `fleet.html?new` makes one.
+  `scheduler/README.md` and `scheduler/fleet.js` say what the page is now.
 - **Both take the page pair's layout**, which `docs/plans/site-page-pair.md`
   decides for every such pair and this plan does not restate.
 - **This corrects the screen inventory.** `scheduler/docs/screen-inventory.md`
@@ -80,7 +79,7 @@ capacity, a service date or the days a bus is out.
 - **A bus is never deleted, only set Inactive,** so past trips keep the bus's
   number. Deleting the row leaves a finished trip pointing at nothing, and
   nothing needs it; rux-ui's Delete button is left for removal there.
-- **The fleet's order** is decided in `docs/plans/scheduler-fleet-page.md`.
+- **The fleet's order** is by the office's type list, then model year.
   Dragging rows into a hand-made order goes; a fleet in a fixed order is
   the same answer every time and nobody has to remember it.
 - **That order is written into `buses.sort_order`,** rather than each app
@@ -109,10 +108,8 @@ None open.
 
 ## Tasks
 
-- [ ] Renumber `buses.sort_order` from the model year once, newest first, as a
-      named migration through the Supabase connection. Only two rows move: the
-      two 2017 coaches swap so the lower number leads, and the Van, which has
-      no place at all today, takes the last one. The statement is shown to rux
-      before it runs.
+- [ ] Renumber `buses.sort_order` by type, then model year, once, as a named
+      migration through the Supabase connection; the Van, which has no place
+      today, takes the last one. The statement is shown to rux before it runs.
 - [ ] rux saves one real bus, and checks the board's rows and rux-ui's roster
       show the same order.

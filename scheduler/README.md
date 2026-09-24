@@ -21,6 +21,11 @@ sorted, filtered to upcoming, past or cancelled, and paged fifty at a time. A
 row opens the trip on the board through `./?trip=<id>&date=<day>`, and a
 cancelled one opens its cancelled dialog there.
 
+`fleet.html` lists every unit, a coach, van or any vehicle, by its type and
+then its model year, and edits one at `fleet.html?id=`. Its Vehicle types
+dialog edits the office's own list of types, and `vehicles.js` names a unit
+everywhere as its type and number. `buses.html` forwards to it.
+
 `drivers.html` lists every driver, flags a licence or medical card that has
 run out or will within 45 days, and edits one driver at `drivers.html?id=`:
 details, photo and time off. A driver is set Inactive, never deleted, and the

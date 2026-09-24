@@ -1602,6 +1602,12 @@
     row.appendChild(node);
     return row;
   };
+  // A long field with a short menu beside it, two thirds to one.
+  const wide = (...nodes) => {
+    const row = pair(...nodes);
+    row.classList.add('scheduler-pair--wide');
+    return row;
+  };
 
   /* A run of fields under one heading is a fieldset, so a screen reader names
      each field with its group, "Booking contact, Name", and the labels need not
@@ -5329,9 +5335,10 @@
     flags.querySelector(`#${needFieldId('hotel')}`)
       ?.addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
-    /* The trip's own fields are one stack, 24px apart. Type and Vehicle share a
-       row, so the split type is named "Split" there, which half the panel
-       fits; the date labels still say Drop-off and Pick-up. The trip bar's
+    /* The trip's own fields are one stack, 24px apart. Destination has Type
+       beside it and Customer has Vehicle, each short menu a third of the row
+       beside what it describes, so the split type is named "Split" there,
+       which a third fits; the date labels still say Drop-off and Pick-up. The trip bar's
        colour is picked from the Trip heading's menu, as from the bar's own:
        it is seldom changed and the bar itself shows it, so its field stays in
        the page, hidden, for Save to read. */
@@ -5361,22 +5368,24 @@
     topFields.append(
       dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
       returnDates,
-      textField('scheduler-f-destination', 'Destination', trip.destination),
-      /* The customer is `trips.customer_id`, with its name in `trips.customer`
-         for rux-ui. A trip not linked yet offers the customer whose name its
-         typed one matches exactly, and Save keeps it. */
-      customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
-        (panelIndex.customers || []).find(c => c.id === trip.customer_id)
-          || (!trip.customer_id && trip.customer
-            ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
-        trip.customer),
-      pair(
+      wide(
+        textField('scheduler-f-destination', 'Destination', trip.destination),
         selectField('scheduler-f-type', 'Type', trip.trip_type, [
           ['', '—'],
           ['round_trip', 'Round trip'],
           ['one_way', 'One way'],
           [SPLIT, 'Split'],
         ]),
+      ),
+      wide(
+        /* The customer is `trips.customer_id`, with its name in `trips.customer`
+           for rux-ui. A trip not linked yet offers the customer whose name its
+           typed one matches exactly, and Save keeps it. */
+        customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
+          (panelIndex.customers || []).find(c => c.id === trip.customer_id)
+            || (!trip.customer_id && trip.customer
+              ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
+          trip.customer),
         selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
           [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
       ),

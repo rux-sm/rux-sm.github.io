@@ -320,7 +320,7 @@
     'trip_reqs', 'need_fuel_card',
     // The vehicle the trip needs, `Coach` or `Van`; null is any.
     'vehicle_type',
-    // Each leg's hotel: the bar's hotel mark, its menu item and the Details tab.
+    // Each leg's hotel: the bar's hotel mark, its menu item and the Fleet tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
@@ -2060,7 +2060,7 @@
 
   /* ── What clashes ──
      Read when the tab is built and again when it is chosen, for the trip's
-     dates as the Details tab holds them, so a picker can say which buses and
+     dates as the Overview tab holds them, so a picker can say which buses and
      drivers are taken. A clash warns; it never stops a pick. */
   let fleetClashes = null;
   let fleetClashKey = '';
@@ -2382,7 +2382,7 @@
     busPick.dataset.fleetBus = bus.key;
     /* The bus and its drivers are one group of fields 16px apart; each relief,
        with its swap time and note, is a group of its own, 24px from the next,
-       as the Details tab spaces its contacts. ROLES lists the reliefs last. */
+       as the Overview tab spaces its contacts. ROLES lists the reliefs last. */
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const seats = el('div', 'rux--stack-vertical rux--stack-scale-5');
     seats.append(full(busPick));
@@ -2565,7 +2565,7 @@
     // Redrawn once focus has landed, so its warning and status button follow.
     setTimeout(() => drawFleet(document.activeElement?.id), 0);
   });
-  // The dates may have moved on Details, so choosing the tab reads the clashes again.
+  // The dates may have moved on Overview, so choosing the tab reads the clashes again.
   document.addEventListener('rux:tab-selected', e => {
     if (e.detail?.panel === panelFleet) loadFleetClashes();
   });
@@ -4870,7 +4870,7 @@
     return same(a.name ?? null, b.name ?? null) && same(a.address ?? null, b.address ?? null);
   };
   const routeRound = () => samePlace(editing?.route?.dropPlace, editing?.route?.pickupPlace);
-  // The leg's dates as the Details tab has them now.
+  // The leg's dates as the Overview tab has them now.
   const routeDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
     const from = leg === 'return' ? v('scheduler-f-rstart') : v('scheduler-f-start');
@@ -5488,9 +5488,8 @@
        and Pick-up. The trip bar's
        colour is picked from the panel head's Trip actions menu, as from the
        bar's own: it is seldom changed and the bar itself shows it, so its
-       field stays in the page, hidden, for Save to read. The tab has no
-       heading, because the panel's title and the tab already say whose
-       details these are. */
+       field stays in the page, hidden, for Save to read. The tab is
+       Overview, and its first section is the trip itself, then its people. */
     const colorItem = colorField('scheduler-f-color', trip);
     tripColorItem = colorItem;
     const colorBox = el('div');
@@ -5528,7 +5527,7 @@
       colorBox,
       notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
-    panelDetails.appendChild(section(null, topFields));
+    panelDetails.appendChild(section('Trip', topFields));
 
     /* WHAT THE TRIP NEEDS opens the Fleet tab, beside the buses it is asked
        of: the vehicle type, then the needs, then each leg's hotel while Hotel
@@ -6686,7 +6685,7 @@
     }
 
     /* Fleet is how many buses each leg needs, the bus on each and who fills its
-       seats; the dates are in Details and the times in Route. A new trip from a
+       seats; the dates are in Overview and the times in Route. A new trip from a
        cell starts on that cell's bus. */
     editing.fleet = fleetOf(trip, creating);
     editing.fleetBefore = cloneFleet(editing.fleet);
@@ -9818,7 +9817,7 @@
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
      row stays, so a cancelled trip can still be looked up. The reason is
      required: Cancel trip stays disabled until the box holds some text. The
-     bar menu and the Details tab's Cancel trip button both open the dialog
+     bar menu and the editor's Cancel trip button both open the dialog
      through here. */
   function openCancelModal(tripId) {
     // The editor's own trip may be on another week than the one on screen.

@@ -21,9 +21,10 @@ and reads right on real trips in every theme.
   hotel's confirmation beside Booked, Destination beside Type, where the split
   type reads "Split", and every contact's Name beside Phone; contacts stand
   24px apart.
-- **Details holds the trip and its people; Fleet opens with what the trip
-  needs,** its Vehicle, its Needs and each leg's hotel, above the buses those
-  are asked of. Details' dates share one Dates label, and a one-day trip's
+- **Overview, the first tab, holds the trip and its people; Fleet opens with
+  what the trip needs,** its Vehicle, its Needs and each leg's hotel, above
+  the buses those are asked of. Overview's sections are Trip, Booking contact
+  and Day-of contacts; its dates share one Dates label, and a one-day trip's
   end box is empty and says Same day. Notes is one line until it holds more,
   grows with its text, and its handle drags it taller.
 - **A 1px subtle rule opens every section after a tab's first,** edge to edge,

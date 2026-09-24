@@ -2,11 +2,11 @@
 type: plan
 ---
 
-# Plan: bring the trip editor's Billing tab up to the Details tab
+# Plan: bring the trip editor's Billing tab up to the Overview tab
 
 ## Goal
 
-The Billing tab reads like the finished Details tab, and a save from it
+The Billing tab reads like the finished Overview tab, and a save from it
 leaves a trip confirmed, paid and coloured exactly as a save from rux-ui
 would, so the two boards agree on every trip.
 
@@ -27,7 +27,7 @@ would, so the two boards agree on every trip.
   status is Signed, or when it is unset on a confirmed trip, which is 343
   trips; PO received on when the flag or a PO reference is set; Invoice sent on
   when the flag, the status or an invoice number says so.
-- **The tab's order follows the Details tab,** a rule above every section after
+- **The tab's order follows the Overview tab,** a rule above every section after
   the first: the summary card with the confirmation, status tag and reason;
   Price, with Quoted price over Balance and Paid; Contract signed; PO received;
   Invoice sent; Payments.

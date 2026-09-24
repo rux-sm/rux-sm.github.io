@@ -53,10 +53,16 @@ standing facts about the trip. No note in the table contains a newline.
   hides a trip from another.
 - **The Trips page's Show choice gains Needs follow-up,** with its count, the
   longest waiting first.
-- **Hovering over a bar opens a chat-style bubble:** the latest updates,
-  newest first, each with who and when, standing notes pinned at the top,
-  scrolling rather than cut short. On a phone, tapping a bar shows it above
-  the docked shortcut bar.
+- **One card per bar, in the shortcut bar's own style:** hovering a bar shows
+  its card with the standing note pinned first, what it waits on, and the
+  updates newest first with who and when, scrolling rather than cut short;
+  selecting the bar adds the shortcut icons as the card's top row, so only
+  one thing ever floats over the week. On a phone the updates sit under the
+  docked shortcut bar.
+- **The card arrives with a small pop:** it rises 6px from the arrow's side
+  and grows from 94% over 240ms on Carbon's expressive entrance curve, each
+  update following 40ms after the one above, and leaves in 110ms; reduced
+  motion keeps only a fade.
 - **The editor lists every update** with a box to add one without changing
   anything else.
 - **The log is a `trip_updates` table of its own,** staff only, with the 203
@@ -79,7 +85,7 @@ None open.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
   filled in, the quick reasons and No update.
 - [ ] Replace the bar's notes row with the icon row and the update icon, and
-  add the hover and tap bubble with Dismiss.
+  make the shortcut bar the one card, updates below its icons, with Dismiss.
 - [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
   Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.

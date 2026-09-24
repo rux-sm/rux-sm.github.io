@@ -842,6 +842,22 @@
         "path|d=M120-120v-720h720v720H120Z"
       ]
     },
+    "open_in_full@960": {
+      "name": "open_in_full",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/open_in_full.svg",
+      "geometry": [
+        "path|d=M120-120v-300h60v198l558-558H540v-60h300v300h-60v-198L222-180h198v60H120Z"
+      ]
+    },
+    "open_in_full-fill@960": {
+      "name": "open_in_full-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/open_in_full-fill.svg",
+      "geometry": [
+        "path|d=M120-120v-300h60v198l558-558H540v-60h300v300h-60v-198L222-180h198v60H120Z"
+      ]
+    },
     "menu@960": {
       "name": "menu",
       "size": "960",
@@ -856,6 +872,22 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/menu-fill.svg",
       "geometry": [
         "path|d=M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"
+      ]
+    },
+    "close_fullscreen@960": {
+      "name": "close_fullscreen",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/close_fullscreen.svg",
+      "geometry": [
+        "path|d=m122-80-42-42 298-298H160v-60h320v320h-60v-218L122-80Zm358-400v-320h60v218l298-298 42 42-298 298h218v60H480Z"
+      ]
+    },
+    "close_fullscreen-fill@960": {
+      "name": "close_fullscreen-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/close_fullscreen-fill.svg",
+      "geometry": [
+        "path|d=m122-80-42-42 298-298H160v-60h320v320h-60v-218L122-80Zm358-400v-320h60v218l298-298 42 42-298 298h218v60H480Z"
       ]
     },
     "notifications@960": {

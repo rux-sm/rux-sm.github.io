@@ -7015,8 +7015,12 @@
        the board is the week alone: the others are still open, are not drawn,
        and come back the moment the one in front closes. One panel in front of
        one week is the whole of it, at every width. */
-    const takeover = openOrder.length && (overlay || widths + gaps + WEEK_MIN * rem > board)
-      ? openOrder[openOrder.length - 1] : null;
+    /* The larger editor is always in front: it is the week set aside for one
+       trip, and beside it the week would be a sliver. */
+    const wideEditor = names.includes('editor') && pageEl.dataset.editor === 'wide';
+    const takeover = wideEditor ? 'editor'
+      : openOrder.length && (overlay || widths + gaps + WEEK_MIN * rem > board)
+        ? openOrder[openOrder.length - 1] : null;
     if (takeover) pageEl.setAttribute('data-takeover', takeover);
     else pageEl.removeAttribute('data-takeover');
 
@@ -9310,6 +9314,32 @@
     whenSafe(() => openCreate());
   });
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
+
+  /* THE EDITOR'S TWO SIZES. The size button swaps Carbon's small panel for its
+     extra-large one, whose tabs set their sections in two columns, and back.
+     The choice is this browser's, kept for the next trip opened. */
+  const EDITOR_SIZE_KEY = 'rux.scheduler.editor-size';
+  const sizeBtn = document.getElementById('scheduler-panel-size');
+  function setEditorSize(wide) {
+    if (!pageEl || !panelEl) return;
+    if (wide) pageEl.dataset.editor = 'wide'; else delete pageEl.dataset.editor;
+    panelEl.classList.toggle('rux--side-panel--sm', !wide);
+    panelEl.classList.toggle('rux--side-panel--xl', wide);
+    if (sizeBtn) {
+      const words = wide ? 'Smaller editor' : 'Larger editor';
+      sizeBtn.setAttribute('aria-pressed', String(wide));
+      sizeBtn.setAttribute('aria-label', words);
+      sizeBtn.title = words;
+      sizeBtn.querySelector('use')?.setAttribute('href', wide ? '#m-close_fullscreen' : '#m-open_in_full');
+    }
+    placeRoom();
+  }
+  sizeBtn?.addEventListener('click', () => {
+    const wide = pageEl?.dataset.editor !== 'wide';
+    try { localStorage.setItem(EDITOR_SIZE_KEY, wide ? 'wide' : 'narrow'); } catch { /* kept for this visit */ }
+    setEditorSize(wide);
+  });
+  try { if (localStorage.getItem(EDITOR_SIZE_KEY) === 'wide') setEditorSize(true); } catch { /* narrow */ }
   /* Leaving whichever panel is in front of the board, which Escape and a press
      on the scrim both do. It answers whether there was one, so Escape can go
      on to what it means with nothing in front. */

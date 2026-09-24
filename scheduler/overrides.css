@@ -132,7 +132,8 @@
    ignore the other. */
 .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel {
   inset-inline: auto var(--rux-spacing-05);
-  inline-size: min(var(--scheduler-panel-w), calc(100% - 2 * var(--rux-spacing-05)));
+  inline-size: min(var(--scheduler-editor-w, var(--scheduler-panel-w)), calc(100% - 2 * var(--rux-spacing-05)));
+  max-inline-size: none;
 }
 .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
   inset-inline: var(--rux-spacing-05) auto;

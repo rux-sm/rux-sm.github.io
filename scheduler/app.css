@@ -23,6 +23,8 @@
 :root {
   --scheduler-panel-w: 20rem;
   --scheduler-viewer-w: 30rem;
+  /* The larger trip editor, Carbon's `rux--side-panel--xl`. */
+  --scheduler-editor-wide-w: 65rem;
 }
 
 .scheduler-week {
@@ -886,8 +888,8 @@ button.scheduler-row-head__num::after {
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 var(--scheduler-panel-w);
-  min-inline-size: var(--scheduler-panel-w);
+  flex: 0 0 var(--scheduler-editor-w, var(--scheduler-panel-w));
+  min-inline-size: var(--scheduler-editor-w, var(--scheduler-panel-w));
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -2808,3 +2810,19 @@ html:has(.scheduler-page[data-takeover]) {
   justify-self: start;
 }
 .scheduler-route-open[hidden] { display: none; }
+
+/* ══ The larger trip editor ═══════════════════════════════════════════════
+   The panel's size button marks the page, and the editor takes Carbon's
+   extra-large width, always in front of the dimmed week: `placeRoom` names it
+   the panel in front whatever the board's width. Each tab's sections run down
+   two columns, a section never split between them. */
+.scheduler-page[data-editor="wide"] { --scheduler-editor-w: var(--scheduler-editor-wide-w); }
+@media (min-width: 42rem) {
+  .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content {
+    columns: 2;
+    column-gap: var(--rux-spacing-07);
+  }
+  .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content > * {
+    break-inside: avoid;
+  }
+}

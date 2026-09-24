@@ -132,7 +132,7 @@
    ignore the other. */
 .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel {
   inset-inline: auto var(--rux-spacing-05);
-  inline-size: min(var(--scheduler-editor-w, var(--scheduler-panel-w)), calc(100% - 2 * var(--rux-spacing-05)));
+  inline-size: min(var(--scheduler-editor-w, var(--scheduler-editor-narrow-w)), calc(100% - 2 * var(--rux-spacing-05)));
   max-inline-size: none;
 }
 .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
@@ -292,7 +292,7 @@
 }
 
 /* The line tabs take `spacing-03` inline padding in place of `spacing-05`, so
-   all five fit the 20rem panel without scrolling, and the list starts 8px in,
+   all five fit the panel without scrolling, and the list starts 8px in,
    so the first label lines up with the fields' 16px, as Carbon asks. The list
    fills the strip and carries the tabs' own 2px line under all of it, the
    trailing rule Carbon allows from the last tab to the content's edge. It is a

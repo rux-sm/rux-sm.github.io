@@ -15,15 +15,18 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board. A side panel is Carbon's `sm`, and the document
-   viewer is wider because its width is the document's zoom: a letter page in
-   20rem renders 11pt text at under 6px. `placeRoom` in data.js prices the
+/* The panels beside the board. The roster is Carbon's `sm`, the trip editor
+   its `md` and, made larger, its `xl`, and the document viewer is wide
+   because its width is the document's zoom: a letter page in 20rem renders
+   11pt text at under 6px. `placeRoom` in data.js prices the
    panels by reading these back off them, so the arithmetic and the layout
    cannot drift. */
 :root {
   --scheduler-panel-w: 20rem;
   --scheduler-viewer-w: 30rem;
-  /* The larger trip editor, Carbon's `rux--side-panel--xl`. */
+  /* The trip editor, Carbon's `rux--side-panel--md`, and made larger its
+     `rux--side-panel--xl`. */
+  --scheduler-editor-narrow-w: 30rem;
   --scheduler-editor-wide-w: 65rem;
 }
 
@@ -882,14 +885,13 @@ button.scheduler-row-head__num::after {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
-   `rux--side-panel--sm` class, and the two move together; the five tabs,
-   split evenly, still keep whole labels at this width. */
+   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
+   `rux--side-panel--md` class, and the two move together. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 var(--scheduler-editor-w, var(--scheduler-panel-w));
-  min-inline-size: var(--scheduler-editor-w, var(--scheduler-panel-w));
+  flex: 0 0 var(--scheduler-editor-w, var(--scheduler-editor-narrow-w));
+  min-inline-size: var(--scheduler-editor-w, var(--scheduler-editor-narrow-w));
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -1395,7 +1397,7 @@ button.scheduler-row-head__num::after {
 
 /* Two fields side by side, each half the row, tops aligned so a helper text
    under one does not move the other. The editor keeps pairs to what fits half
-   of its 20rem: a date range, and a hotel's confirmation beside Booked. */
+   of its width: a date range, and a hotel's confirmation beside Booked. */
 .scheduler-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1447,8 +1449,8 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is 20rem, Carbon's `rux--side-panel--sm` width and the trip
-   editor's, so the two columns beside the board match. It is fixed so it does
+   The roster is 20rem, Carbon's `rux--side-panel--sm` width, the narrowest
+   that holds its names beside a week of squares. It is fixed so it does
    not move when the driver list changes; the schedule gives way instead.
    `order` puts it left of the board while the markup keeps the schedule
    first. */

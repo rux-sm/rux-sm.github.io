@@ -6993,7 +6993,7 @@
        brings the same one forward. */
     const open = [
       ['roster', availOn, '--scheduler-panel-w'],
-      ['editor', !!tripEl && !tripEl.hidden, '--scheduler-panel-w'],
+      ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-narrow-w'],
       ['viewer', !!viewerEl && !viewerEl.hidden, '--scheduler-viewer-w'],
     ].filter(([, on]) => on);
     const names = open.map(([name]) => name);
@@ -9315,7 +9315,7 @@
   });
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
 
-  /* THE EDITOR'S TWO SIZES. The size button swaps Carbon's small panel for its
+  /* THE EDITOR'S TWO SIZES. The size button swaps Carbon's medium panel for its
      extra-large one, whose tabs set their sections in two columns, and back.
      The choice is this browser's, kept for the next trip opened. */
   const EDITOR_SIZE_KEY = 'rux.scheduler.editor-size';
@@ -9323,7 +9323,7 @@
   function setEditorSize(wide) {
     if (!pageEl || !panelEl) return;
     if (wide) pageEl.dataset.editor = 'wide'; else delete pageEl.dataset.editor;
-    panelEl.classList.toggle('rux--side-panel--sm', !wide);
+    panelEl.classList.toggle('rux--side-panel--md', !wide);
     panelEl.classList.toggle('rux--side-panel--xl', wide);
     if (sizeBtn) {
       const words = wide ? 'Smaller editor' : 'Larger editor';

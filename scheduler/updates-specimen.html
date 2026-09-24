@@ -216,10 +216,10 @@
   own, so trying it changes nothing on the live board. -->
 <style>
 /* The Updates icon: at the drivers row's end, pushed there, so it keeps the
-   bar's bottom corner whatever the row holds; the names give way to it. A real
-   button, a step wider than a mark and as tall as the row. */
+   bar's bottom corner whatever the row holds; the names give way to it. A mark,
+   not a button, because the bar it sits in is the button; a step wider than a
+   mark and as tall as the row. */
 .scheduler-bar__msg {
-  appearance: none;
   display: flex;
   flex: none;
   align-items: center;
@@ -227,19 +227,12 @@
   inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
   block-size: var(--scheduler-row-h);
   margin-inline-start: auto;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  cursor: pointer;
 }
 .scheduler-bar__msg svg {
   display: block;
   inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
 }
-.scheduler-bar__msg:hover { background: var(--rux-background-inverse-hover); }
-.scheduler-bar__msg:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* Asking for a follow-up: the warning colour every other mark wears, set per
    theme so it clears 3 to 1 on a pale bar as on a dark one. */
 .scheduler-bar__msg--asks { color: var(--scheduler-mark-warning); }
@@ -577,14 +570,14 @@
                       <textarea id="trial-update-text" class="rux--text-area" rows="2" cols="40" placeholder="Follow-up email sent"></textarea>
                     </div>
                   </div>
-                  <button type="button" class="rux--btn rux--btn--primary rux--btn--sm" id="trial-update-add">Add update</button>
+                  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" id="trial-update-add">Add update</button>
                 </div>
                 <ol class="scheduler-updates" id="trial-updates" aria-label="Updates, newest first"></ol>
                 </section>
                 <section class="scheduler-panel-section">
                   <h3 class="scheduler-panel-section__title">Notes</h3>
                   <p class="scheduler-standing rux--type-body-compact-01" id="trial-standing"></p>
-                  <p class="rux--type-helper-text-01 scheduler-updates-empty">Facts the trip keeps for its whole life. Never dated, never prompted.</p>
+                  <p class="rux--type-helper-text-01 scheduler-updates-empty">Things that stay true for the whole trip, like a gate code.</p>
                 </section>
               </div>
               <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden><p class="scheduler-updates-empty">Not part of this trial.</p></div>
@@ -605,7 +598,7 @@
       <div class="rux--modal-header">
         <h2 class="rux--modal-header__heading" id="trial-prompt-h">Add an update</h2>
         <div class="rux--modal-close-button">
-          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <button type="button" class="rux--modal-close" aria-label="Back to the trip, not saved" title="Back to the trip, not saved" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
           </button>
         </div>
@@ -614,13 +607,13 @@
         <p class="scheduler-prompt-changes rux--type-body-compact-01" id="trial-prompt-changes"></p>
         <div class="rux--form-item">
           <div class="rux--text-area__label-wrapper"><label class="rux--label" for="trial-prompt-text">Update</label></div>
-          <div class="rux--text-area__wrapper"><textarea id="trial-prompt-text" class="rux--text-area" rows="2"></textarea></div>
+          <div class="rux--text-area__wrapper"><textarea id="trial-prompt-text" class="rux--text-area" rows="2" cols="50"></textarea></div>
         </div>
         <div class="scheduler-prompt-reasons" id="trial-prompt-reasons" role="group" aria-label="Quick reasons"></div>
       </div>
       <div class="rux--modal-footer">
-        <button type="button" class="rux--btn rux--btn--secondary" id="trial-prompt-skip">No update</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="trial-prompt-save">Save</button>
+        <button type="button" class="rux--btn rux--btn--secondary" id="trial-prompt-skip">Save, no update</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="trial-prompt-save">Save with update</button>
       </div>
     </div>
   </div>
@@ -715,10 +708,9 @@
       warn.appendChild(chip);
     }
     const s = state(id);
-    const b = el('button', `scheduler-bar__msg scheduler-bar__msg--${s}`);
-    b.type = 'button';
-    b.dataset.trip = id;
-    b.setAttribute('aria-label', s === 'asks' ? 'Updates, needs a follow-up' : 'Updates');
+    const b = el('span', `scheduler-bar__msg scheduler-bar__msg--${s}`);
+    b.setAttribute('role', 'img');
+    b.setAttribute('aria-label', s === 'asks' ? 'Needs a follow-up' : t.updates.length ? 'Has updates' : 'No updates');
     b.appendChild(svg(t.updates.length ? '#m-chat-fill' : '#m-chat'));
     notes.replaceChildren(warn);
     const drivers = bar.querySelector('.scheduler-bar__drivers');
@@ -814,7 +806,16 @@
       li.append(who, el('span', 'scheduler-card__words', u.text), when);
       list.appendChild(li);
     });
-    if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__row scheduler-card__empty scheduler-card__item', 'No updates yet.'));
+    // With no update, the time at the row's end is the booking's, so the card
+    // still says how long the trip has gone without one.
+    if (!t.updates.length) {
+      const li = el('li', 'scheduler-card__row scheduler-card__update scheduler-card__item');
+      li.style.setProperty('--i', i++);
+      const when = el('span', 'scheduler-card__when', short(t.booked));
+      when.title = `Booked ${fmt(t.booked)}`;
+      li.append(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'), when);
+      list.appendChild(li);
+    }
     body.appendChild(list);
   }
 
@@ -911,6 +912,19 @@
     bar.setAttribute('aria-pressed', 'true');
     showCard(selected, shown === selected && !bubble.hidden);
   }, true);
+  // A bar is a button, so Enter and Space select it as a click does.
+  week.addEventListener('keydown', e => {
+    const bar = e.target.closest('.scheduler-bar');
+    if (!bar || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    bar.click();
+  });
+  // Escape lets the selected bar go, and focus stays on it.
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || bubble.hidden || document.getElementById('trial-prompt').classList.contains('is-visible')) return;
+    week.querySelectorAll('.scheduler-bar[aria-pressed="true"]').forEach(b => b.setAttribute('aria-pressed', 'false'));
+    hideCard(true);
+  });
   document.addEventListener('click', e => {
     if (!bubble.hidden && !bubble.contains(e.target) && !e.target.closest('.scheduler-week')) {
       week.querySelectorAll('.scheduler-bar[aria-pressed="true"]').forEach(b => b.setAttribute('aria-pressed', 'false'));
@@ -930,19 +944,32 @@
   });
 
   /* ── The Save prompt ── A customer-facing change asks for a line, filled
-     in with the change; a quick reason replaces it, and No update saves
-     without one. This trial pretends a PO was just added. */
+     in with the change. The change's own line is the first quick choice, so
+     picking another and changing your mind loses nothing; Save, no update
+     saves without one, and the ✕ goes back to the trip unsaved. This trial
+     pretends a PO was just added. */
   document.getElementById('trial-save').addEventListener('click', () => {
-    document.getElementById('trial-prompt-changes').textContent = 'Changed: PO received, 4512.';
-    document.getElementById('trial-prompt-text').value = 'Added PO 4512';
+    const change = 'Added PO 4512';
+    const box = document.getElementById('trial-prompt-text');
+    document.getElementById('trial-prompt-changes').textContent = 'You added PO 4512.';
+    box.value = change;
     const reasons = document.getElementById('trial-prompt-reasons');
-    reasons.replaceChildren(...REASONS.map(r => {
-      const tag = el('button', 'rux--tag rux--tag--operational rux--layout--size-md');
+    const tags = [change, ...REASONS.filter(r => r !== 'Waiting on a PO')].map(r => {
+      const tag = el('button', 'rux--tag rux--tag--selectable rux--layout--size-md');
       tag.type = 'button';
+      tag.setAttribute('aria-pressed', String(r === change));
+      if (r === change) tag.classList.add('rux--tag--selectable-selected');
       tag.appendChild(el('span', 'rux--tag__label', r));
-      tag.addEventListener('click', () => { document.getElementById('trial-prompt-text').value = r; });
+      tag.addEventListener('click', () => {
+        box.value = r;
+        for (const t of tags) {
+          t.setAttribute('aria-pressed', String(t === tag));
+          t.classList.toggle('rux--tag--selectable-selected', t === tag);
+        }
+      });
       return tag;
-    }));
+    });
+    reasons.replaceChildren(...tags);
     window.Rux?.modal?.open?.('trial-prompt');
   });
   document.getElementById('trial-prompt-save').addEventListener('click', () => {

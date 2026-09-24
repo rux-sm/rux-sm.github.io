@@ -29,10 +29,12 @@ standing facts about the trip. No note in the table contains a newline.
   colour ask nothing, because they are the office's own arrangements.
 - **The prompt's box comes filled with a line naming the change,** such as
   "Added PO 4512", which the person keeps or rewrites, and quick reasons,
-  such as "Follow-up email sent", spell the common ones one way.
+  such as "Follow-up email sent", spell the common ones one way. The change's
+  own line is the first quick reason, so picking another loses nothing.
 - **The app writes the stamp,** the moment and the person, and no one types
   it.
-- **The prompt can be skipped.** Its No update button saves the trip and adds
+- **The prompt can be skipped.** Its buttons are Save, no update and Save
+  with update, and its ✕ goes back to the trip unsaved. Save, no update adds
   nothing to the list, and the bar's icon keeps its age from the last real
   update, so a skipped prompt never makes a trip look freshly followed up.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
@@ -40,7 +42,9 @@ standing facts about the trip. No note in the table contains a newline.
 - **The bar's notes row goes;** that row holds the pending and requirement
   icons. The bar carries a small speech-bubble icon at the drivers row's end,
   its bottom corner, and the names give way to it. With the drivers row
-  hidden from the view menu, the icon moves up as the warning marks do.
+  hidden from the view menu, the icon moves up as the warning marks do. It is
+  a mark, not a button, because the bar is the button: Enter and Space select
+  a bar as a click does, and Escape lets it go.
 - **The icon says who needs a follow-up.** A trip is waiting on the customer
   while it is not confirmed, its PO or deposit is pending, its itinerary is
   missing, or its balance is unpaid near departure. Once the newest update on
@@ -58,7 +62,8 @@ standing facts about the trip. No note in the table contains a newline.
 - **One card per bar, in the shortcut bar's own style:** hovering a bar shows
   its card with what it waits on first, then the standing note pinned, then
   the updates newest first with who and when, each a compact row under a
-  full-width rule, three showing and the rest scrolling;
+  full-width rule, three showing and the rest scrolling, and with none yet
+  the booking's age at the row's end;
   selecting the bar adds the shortcut icons as the card's top row, so only
   one thing ever floats over the week. On a phone the updates sit under the
   docked shortcut bar.
@@ -67,7 +72,8 @@ standing facts about the trip. No note in the table contains a newline.
   update following 40ms after the one above, and leaves in 110ms; reduced
   motion keeps only a fade.
 - **The editor lists every update** with a box to add one without changing
-  anything else.
+  anything else. Its Add update button is the outlined kind, so Save stays
+  the panel's one main button.
 - **The log is a `trip_updates` table of its own,** staff only, with the 203
   dated lines already in `notes` copied in as `imported` entries with no
   author; those notes are blanked once both apps read the log.
@@ -81,12 +87,12 @@ None open.
 
 ## Tasks
 
-- [ ] rux tries `scheduler/updates-specimen.html` and says go, or what to
-  change, before any of the rest is built.
+- [ ] Create `trip_updates`, staff only with anon's grants revoked, and copy
+  the 203 dated lines in as `imported`. SQL shown to rux.
 - [ ] Add the Updates list to the editor, newest first, with a box to add one
   without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
-  filled in, the quick reasons and No update.
+  filled in, the quick reasons and the two Save buttons.
 - [ ] Replace the bar's notes row with the icon row, put the update icon at
   the drivers row's end, and make the shortcut bar the one card, updates
   below its icons, Dismiss an icon at the reminder row's end and Add update

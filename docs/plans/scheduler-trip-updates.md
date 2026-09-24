@@ -13,9 +13,8 @@ without adding a line to it.
 The gap is measured. Of 1,472 recorded trip updates, 376 touched the note; of
 the 234 that changed a note already written, 225 overwrote it and 9 appended,
 so the previous status line is destroyed nearly every time one is written. Of
-610 notes, 177 are dated status lines averaging 21 characters, 143 are standing
-facts about the trip, and 290 are machine text a migration left behind. No note
-in the table contains a newline.
+the notes, the dated status lines average 21 characters and the rest are
+standing facts about the trip. No note in the table contains a newline.
 
 ## Decisions
 
@@ -46,9 +45,9 @@ in the table contains a newline.
   way and make the reasons countable.
 - **The prompt names what changed,** each material field with its before and
   after, so the line is written against the change rather than from memory.
-- **The 177 dated lines already in `notes` move into the log,** one entry
-  each, dated from the line where its date reads and marked as having no
-  known author.
+- **The 203 dated lines already in `notes` are copied into the log** as
+  `imported` entries with no author, and blanked from `notes` once both apps
+  read the log.
 - **Both apps prompt,** because a prompt in one app teaches people to save
   from the other.
 - **The log is for the office only,** so its lines stay short and internal.
@@ -62,18 +61,6 @@ in the table contains a newline.
   draws, because the prompt cannot reach a trip nobody saves.
 - **rux-ui moves in the same session.** It reads and writes `notes` on the same
   database, so a column that changes meaning changes there too.
-- **The migration breadcrumb moves to the history, and is not deleted.** 290
-  trips carry `[Legacy corrected MAR26: tripKey=...; original_trip_ref=...]` in
-  the note field, and it is the only surviving record of a renumber that wrote
-  no history entry of its own.
-- **What is kept from it is the old reference.** `original_trip_ref` differs
-  from the current one on 287 of the 290 and 70 of those old references are
-  held today by a different trip, so a search on one lands on the wrong trip;
-  `tripKey` names nothing in this database and its first eight characters are
-  already in the new reference on 248 of them.
-- **It moves before anything else here, and alone.** No document, invoice or
-  purchase order on those 290 trips cites the old reference, so the move waits
-  on nothing and nothing waits on it.
 
 ## Questions
 
@@ -81,11 +68,6 @@ None open.
 
 ## Tasks
 
-- [ ] Move the breadcrumb off the 290 trips: one `trip_history` entry each,
-  `updated` with the reference before and after and the source key in the
-  metadata, then blank `notes`. SQL shown to rux, applied as its own migration.
-- [ ] Write the `trip_updates` migration, staff-only with anon granted
-  nothing, and move the 177 dated lines into it. SQL shown to rux.
 - [ ] Add the update log to the scheduler's panel: the lines newest first, the
   stamp rendered from the row, and a box to add one without saving the trip.
 - [ ] Add the prompt to Save, over the material fields, with the changes
@@ -94,3 +76,5 @@ None open.
   reachable in the panel.
 - [ ] Add the stale mark to the bar's warning chips.
 - [ ] Make rux-ui read the log and prompt on its own saves.
+- [ ] Blank the 203 dated notes the log copied, where a note is still the
+  text it copied, once both apps read the log. SQL shown to rux.

@@ -5364,17 +5364,62 @@
          contact in full. */
       // The name and phone share a row, a contact read at a glance; half the
       // 30rem panel leaves each about 180px beside its copy button.
-      panelDetails.appendChild(fieldGroup('Booking contact',
+      /* The booking's conversation, a link its button opens, is shown only
+         where the trip has one, and the title line's menu adds it or takes it
+         away, as Day-of contacts adds and removes a contact. Hidden, the field
+         stays in the page, empty, for Save to read. */
+      const thread = el('div');
+      thread.appendChild(withCopy(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url),
+        'scheduler-f-cthread', 'Email thread', true));
+      thread.hidden = !trip.booking_contact_missive_url;
+      const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      bookingStack.append(
         pair(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
           'scheduler-f-cfind', 'Booking contact name'),
         withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
           'scheduler-f-cphone', 'Booking contact phone')),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
-        // The booking's conversation, a link; its button opens it.
-        withCopy(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url),
-          'scheduler-f-cthread', 'Email thread', true),
-      ));
+        thread,
+      );
+      const bookingMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+      bookingMenu.type = 'button';
+      bookingMenu.id = 'scheduler-f-cmenu';
+      bookingMenu.setAttribute('aria-haspopup', 'true');
+      bookingMenu.setAttribute('aria-expanded', 'false');
+      bookingMenu.setAttribute('aria-label', 'Booking contact actions');
+      bookingMenu.title = 'Booking contact actions';
+      bookingMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
+      bookingMenu.lastChild.setAttribute('class', 'rux--btn__icon');
+      bookingMenu.addEventListener('click', () => openRowMenu(bookingMenu, {
+        editText: 'Add email thread', editDisabled: !thread.hidden,
+        edit: () => {
+          thread.hidden = false;
+          document.getElementById('scheduler-f-cthread')?.focus();
+        },
+        removeText: 'Remove email thread', removeDisabled: thread.hidden,
+        remove: () => {
+          const input = document.getElementById('scheduler-f-cthread');
+          if (input) input.value = '';
+          thread.hidden = true;
+          syncCopy();
+          refreshDirty();
+          bookingMenu.focus();
+        },
+      }));
+      // A group named by its title, as Day-of contacts is, so the menu can sit
+      // on the title line.
+      const booking = el('div', 'scheduler-panel-section');
+      const bookingTitle = el('div', 'scheduler-panel-section__title', 'Booking contact');
+      bookingTitle.id = 'scheduler-f-cgroup';
+      const bookingHead = el('div', 'scheduler-group__head');
+      bookingHead.append(bookingTitle, bookingMenu);
+      const bookingGroup = el('div');
+      bookingGroup.setAttribute('role', 'group');
+      bookingGroup.setAttribute('aria-labelledby', bookingTitle.id);
+      bookingGroup.append(bookingHead, bookingStack);
+      booking.appendChild(bookingGroup);
+      panelDetails.appendChild(booking);
       // Phone and email are this trip's copy; editing them never changes the
       // shared contact record. `linkContacts` keeps the link.
 

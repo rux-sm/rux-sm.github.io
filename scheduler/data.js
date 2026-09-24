@@ -5475,31 +5475,16 @@
        beside it, a short menu a third of the row, so the split type is named
        "Split" there, which a third fits; the date labels still say Drop-off
        and Pick-up. The trip bar's
-       colour is picked from the Trip heading's menu, as from the bar's own:
-       it is seldom changed and the bar itself shows it, so its field stays in
-       the page, hidden, for Save to read. */
+       colour is picked from the panel head's Trip actions menu, as from the
+       bar's own: it is seldom changed and the bar itself shows it, so its
+       field stays in the page, hidden, for Save to read. The tab has no
+       heading, because the panel's title and the tab already say whose
+       details these are. */
     const colorItem = colorField('scheduler-f-color', trip);
+    tripColorItem = colorItem;
     const colorBox = el('div');
     colorBox.hidden = true;
     colorBox.appendChild(colorItem);
-    const tripMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
-    tripMenu.type = 'button';
-    tripMenu.id = 'scheduler-f-tripmenu';
-    tripMenu.setAttribute('aria-haspopup', 'true');
-    tripMenu.setAttribute('aria-expanded', 'false');
-    tripMenu.setAttribute('aria-label', 'Trip actions');
-    tripMenu.title = 'Trip actions';
-    tripMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
-    tripMenu.lastChild.setAttribute('class', 'rux--btn__icon');
-    tripMenu.addEventListener('click', () => {
-      const now = colorItem.current();
-      openItemsMenu(tripMenu, colorItem.choices.map(c => ({
-        label: c.label,
-        checked: c.value === now,
-        icon: colorItem.chip(c.hue),
-        run: () => { colorItem.setColor(c.value); refreshDirty(); tripMenu.focus(); },
-      })), 'Trip bar color');
-    });
     /* A one-day trip leaves the end box empty, which Save reads as the start
        day, and the box says Same day. */
     const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date,
@@ -5555,7 +5540,7 @@
       notesShown,
       notesAdd,
     );
-    panelDetails.appendChild(section('Trip', topFields, tripMenu));
+    panelDetails.appendChild(section(null, topFields));
 
     /* WHAT THE TRIP NEEDS opens the Fleet tab, beside the buses it is asked
        of: the vehicle type, then the needs, then each leg's hotel while Hotel
@@ -7767,6 +7752,22 @@
      now. */
   panelCancel?.addEventListener('click', () => {
     if (editing?.id) openCancelModal(editing.id);
+  });
+
+  /* The panel head's Trip actions: the trip bar's colour, from the field the
+     open trip drew, marked and applied as the bar's own menu does. */
+  let tripColorItem = null;
+  const panelMenu = document.getElementById('scheduler-panel-menu');
+  panelMenu?.addEventListener('click', () => {
+    const colorItem = tripColorItem;
+    if (!colorItem) return;
+    const now = colorItem.current();
+    openItemsMenu(panelMenu, colorItem.choices.map(c => ({
+      label: c.label,
+      checked: c.value === now,
+      icon: colorItem.chip(c.hue),
+      run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
+    })), 'Trip bar color');
   });
 
   // Save closes the editor once the week has been read back.

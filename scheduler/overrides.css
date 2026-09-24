@@ -186,6 +186,20 @@
   min-inline-size: 0;
   border-block-end: 0;
 }
+/* The editor's head buttons, Trip actions, the size and close, sit in the
+   head's row rather than over its end, where Carbon places them, so a long
+   destination ends in its ellipsis before them however many there are.
+   Scoped to the editor, whose head is a row; the document panel stacks its
+   own. */
+/* The row runs to the head's own end, past its 16px padding, so the close
+   button keeps Carbon's corner, and is the head's full height. */
+.scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
+  position: static;
+  flex: none;
+  align-self: stretch;
+  block-size: auto;
+  margin-inline-end: calc(-1 * var(--rux-spacing-05));
+}
 /* The editor's title stays on one line and ends in an ellipsis; data.js puts
    the whole destination in the heading's `title` for hover. The panel's grid
    column takes a zero minimum, because an `auto` column grows to fit a line

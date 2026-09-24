@@ -520,6 +520,12 @@
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-panel-title-collapsed">&nbsp;</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
+          <!-- The trip's own actions, the trip bar's colour among them, which the
+               board hands to the editor while the trip is open here. data.js
+               opens its menu. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--md rux--layout--size-md rux--menu-button__trigger" id="scheduler-panel-menu" aria-haspopup="true" aria-expanded="false" aria-label="Trip actions" title="Trip actions">
+            <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
+          </button>
           <!-- The editor's two sizes: Carbon's medium panel beside the week, and
                its extra-large one, with the tabs' fields in two columns.
                data.js swaps the drawing and keeps the choice. -->

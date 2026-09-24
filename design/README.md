@@ -70,7 +70,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Markup provenance | **76 `rendered-dom` · 6 `source` · 0 `inferred`** across 82 files |
 | Icons | 249 symbols in a 74.4 KB sprite — 53 referenced, 196 nothing points at |
 | Size | 1023.9 KB raw · 920.9 KB min · **91 KB gzipped** |
-| Behaviour JS | **18** modules · **67 KB gzipped** · 221.7 KB raw, 61% of it comment · 86.7 KB of code |
+| Behaviour JS | **18** modules · **67 KB gzipped** · 222.1 KB raw, 61% of it comment · 86.8 KB of code |
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
 `tools/lib/stats.mjs`, rewritten on every `npm run verify`, and CI fails if the

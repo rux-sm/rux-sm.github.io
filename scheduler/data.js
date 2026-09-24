@@ -56,6 +56,15 @@
   // `weekStartsSunday` is set. `getDay()` is 0 for Sunday.
   let weekStartsSunday = false;
   const mondayOf = d => addDays(d, -(weekStartsSunday ? d.getDay() : (d.getDay() + 6) % 7));
+  /* How many days the board shows from its first: two weeks when the view
+     option asks for them, on a screen md or wider, and one week below md,
+     where fourteen days cannot fit and the swipe needs a week to move by. The
+     arrows and Today still move by one week, so the second week is always the
+     one after. */
+  const phoneQuery = matchMedia('(max-width: 41.98rem)');
+  let twoWeeks = false;
+  const daysShown = () => (twoWeeks && !phoneQuery.matches ? 14 : 7);
+  const lastShown = start => addDays(start, daysShown() - 1);
   // The weekend is read from the date, not the column, because a Sunday-first
   // week puts it at both ends. The board and the driver roster share it.
   const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
@@ -488,7 +497,7 @@
   ]);
 
   async function read(weekStart) {
-    const weekEnd = addDays(weekStart, 6);
+    const weekEnd = lastShown(weekStart);
     /* Four weeks either side come with the week asked for, so a run of swipes
        draws from what is in hand rather than stopping at the second one to wait
        on the network. It costs one widened window and no second query: a trip
@@ -1193,6 +1202,10 @@
      the board's own grid and everything that follows a week change follows. */
   function render(data, target) {
     const { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd } = data;
+    // One week or two, from the range asked for. The board's columns follow
+    // it; a spare week inherits the count from the pane.
+    const days = Math.round((weekEnd - weekStart) / DAY) + 1;
+    if (!target) schEl.style.setProperty('--scheduler-days', String(days));
     const driversById = new Map(drivers.map(d => [d.id, d]));
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
@@ -1251,7 +1264,7 @@
     // Today is marked on its header cell only.
     const today = iso(new Date());
     let todayCell = null;
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < days; i++) {
       const d = addDays(weekStart, i);
       const cell = el('div', 'scheduler-day');
       if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
@@ -1263,17 +1276,17 @@
       into.appendChild(cell);
     }
 
-    /* A rule at each of the six internal day boundaries, so an empty row can
+    /* A rule at each internal day boundary, so an empty row can
        be counted; the bus column and the pane draw the two outer edges. The
        stops are set on each track, which app.css draws as its background, so
        `var(--scheduler-day-rule)` resolves on the track that defines it. */
-    const ruleCols = [1, 2, 3, 4, 5, 6];
+    const ruleCols = Array.from({ length: days - 1 }, (_, i) => i + 1);
     const dayRuleStops = (() => {
       const parts = [];
       let prev = '0';
       for (const i of ruleCols) {
         // From the day's own width, not a percentage of the track: a seventh
-        // lands on Blink's 1/64px and paints the rule across two device pixels.
+        // or a fourteenth lands on Blink's 1/64px and paints the rule across two device pixels.
         const at = `calc(${i} * var(--scheduler-day-w))`;
         parts.push(`transparent ${prev} calc(${i} * var(--scheduler-day-w) - 1px)`);
         parts.push(`var(--scheduler-day-rule) calc(${i} * var(--scheduler-day-w) - 1px) ${at}`);
@@ -1428,7 +1441,8 @@
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
 
     schEl.hidden = false;
-    drawAvailability(availabilityRows(data), weekStart);
+    // The roster has room for one week, so it reads the first of two.
+    drawAvailability(availabilityRows({ ...data, weekEnd: addDays(weekStart, 6) }), weekStart);
     placeAvailability();
     syncSelection();
     // Every bar is new, so the faces on them are drawn again.
@@ -1450,7 +1464,8 @@
     setRange(weekStart, weekEnd);
 
     const barCount = [...tracks.values()].reduce((n, list) => n + list.length, 0);
-    if (!barCount) say('info', 'Nothing this week', 'No trip touches these seven days.');
+    if (!barCount) say('info', days > 7 ? 'Nothing these two weeks' : 'Nothing this week',
+      `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
     else say(null);
 
     // The notice above changes how much height is left for the grid. app.js
@@ -1491,7 +1506,7 @@
     aStart < bStart + bSpan && bStart < aStart + aSpan;
 
   // Read off the rendered week rather than the data, because the rendered
-  // week is exactly the seven days being asked about.
+  // week is exactly the days being asked about.
   function targetWarns(track, start, span) {
     if (track.dataset.unassigned) return false;
     for (const other of track.querySelectorAll('.scheduler-bar')) {
@@ -7708,8 +7723,8 @@
   });
 
   /* ── View options ─────────────────────────────────────────────────────────
-     Start on Sunday, equipment under the bus numbers, which a bus's tip
-     switches too, and the bar-row toggles. Turning a row off removes it
+     Start on Sunday, two weeks at a time, equipment under the bus numbers,
+     which a bus's tip switches too, and the bar-row toggles. Turning a row off removes it
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */
@@ -7722,13 +7737,15 @@
     notes: 'scheduler-week--no-notes',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false, equipment: false };
+  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false, equipment: false, twoWeeks: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday', 'equipment']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
+  // Set before the first read for the reason Sunday is: it sizes the range.
+  twoWeeks = view.twoWeeks;
   // Set before `cursor` is first computed below, because `mondayOf` reads it
   // and the first week drawn must honour a saved Sunday start.
   weekStartsSunday = view.sunday;
@@ -7738,6 +7755,7 @@
 
   function applyView() {
     weekStartsSunday = view.sunday;
+    twoWeeks = view.twoWeeks;
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Equipment under the bus numbers, and every open or closed tip's switch
     // saying so.
@@ -7781,11 +7799,16 @@
     if (!(key in view)) return;
     view[key] = !view[key];
     applyView();
-    // Changing the first day re-asks the server for a different seven days;
-    // the row toggles are drawing only and need no fetch.
+    // Changing the first day re-asks the server for a different range; the
+    // row toggles are drawing only and need no fetch.
     if (key === 'sunday') { cursor = mondayOf(cursor); show(); }
+    // Two weeks reads a longer range from the same first day.
+    if (key === 'twoWeeks') show();
   });
   viewMenu?.addEventListener('rux:menu-closed', () => { viewMenu.hidden = true; });
+
+  // Crossing md changes how many days two weeks shows, so the board redraws.
+  phoneQuery.addEventListener('change', () => { if (twoWeeks) show(); });
 
   // A bus tip's switch. Design's `setToggle` fires on the `.rux--toggle` box,
   // which bubbles to the pane.
@@ -10490,9 +10513,10 @@
      waiting on the network -- `render` decides the overlap per leg, so one
      payload draws nine weeks at nine different starts. */
   let cached = null;
-  // Whether a week is one of the nine the last read covers.
-  const holds = week => !!cached && iso(addDays(cached.centre, -NEAR_DAYS)) <= iso(week)
-    && iso(week) <= iso(addDays(cached.centre, NEAR_DAYS));
+  // Whether the last read covers every day shown from this first day: one of
+  // its nine weeks, and with two weeks shown, the one after too.
+  const holds = start => !!cached && iso(addDays(cached.centre, -NEAR_DAYS)) <= iso(start)
+    && iso(lastShown(start)) <= iso(addDays(cached.data.weekEnd, NEAR_DAYS));
   /* What one week would have to change for a redraw to be worth it: which trips
      it draws and when each was last written, which is what an edit moves, and
      the windows that stripe a row or a day in it. It is taken for one week and
@@ -10500,7 +10524,7 @@
      different 153-day windows and their trip lists differ even where the week
      drawn is the same one. Sorted, since the order a read returns is its own. */
   const weekPrint = (data, weekStart) => {
-    const weekEnd = addDays(weekStart, 6);
+    const weekEnd = lastShown(weekStart);
     const span = { from: iso(weekStart), to: iso(weekEnd) };
     /* The whole trip, not its id and stamp: a bar's bus, its crew, its stops
        and its money all live in tables of their own, and none of them moves
@@ -10540,7 +10564,7 @@
   function show() {
     // Cached navigation paints synchronously even while a refresh is in flight.
     if (!weekMotion && holds(cursor) && (!shown || iso(shown) !== iso(cursor))) {
-      render({ ...cached.data, weekStart: cursor, weekEnd: addDays(cursor, 6) });
+      render({ ...cached.data, weekStart: cursor, weekEnd: lastShown(cursor) });
       shown = cursor;
     }
     if (reading) { readAgain = true; return reading; }
@@ -10849,7 +10873,7 @@
     // readable.
     if (weekMotion) await weekMotion;
     const asked = cursor;
-    setRange(asked, addDays(asked, 6));
+    setRange(asked, lastShown(asked));
 
     /* A week the last read already covers is drawn at once, with no dim and no
        network. The read still follows, because every change re-read before this
@@ -10857,7 +10881,7 @@
        someone else's save go quietly missing while two people dispatch. */
     const held = holds(asked);
     if (held) {
-      render({ ...cached.data, weekStart: asked, weekEnd: addDays(asked, 6) });
+      render({ ...cached.data, weekStart: asked, weekEnd: lastShown(asked) });
       shown = asked;
     }
 
@@ -10885,7 +10909,7 @@
       if (readAgain) return;
       // A failed read keeps the last good week on screen and puts its label
       // back; only a first load, with nothing drawn yet, hides the grid.
-      if (shown) setRange(shown, addDays(shown, 6));
+      if (shown) setRange(shown, lastShown(shown));
       else schEl.hidden = true;
       const why = String(e && e.message ? e.message : e);
       say('error', 'Could not load that week', shown
@@ -11218,7 +11242,7 @@
       spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
       spare.setAttribute('aria-hidden', 'true');
       schEl.appendChild(spare);
-      render({ ...cached.data, weekStart: week, weekEnd: addDays(week, 6) }, spare);
+      render({ ...cached.data, weekStart: week, weekEnd: lastShown(week) }, spare);
       // Keep incoming buses aligned with the stationary row headers.
       const rows = [...gridEl.querySelectorAll('.scheduler-row')];
       [...spare.querySelectorAll('.scheduler-row')].forEach((row, i) => {

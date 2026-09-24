@@ -22,7 +22,7 @@
   });
 
   /* Whole-pixel day columns. Bars are placed by percentage across a track of
-     seven equal days, and a fractional column paints every bar edge and day
+     equal days, seven or fourteen, and a fractional column paints every bar edge and day
      rule across two device pixels, which blurs them. So the day width is
      floored, and the remainder goes to the bus column, because a day wider
      than the others would break the placement every bar is measured against.
@@ -137,7 +137,7 @@
     // columns sum to the pane exactly.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
 
-    /* Where the seven days fit there is no sideways scrolling to do, so the
+    /* Where the days fit there is no sideways scrolling to do, so the
        horizontal axis is handed to the week swipe in data.js and the browser
        keeps only the vertical one. Without this the browser decides which axis
        owns a touch from its first pixels, claims anything that looks like a

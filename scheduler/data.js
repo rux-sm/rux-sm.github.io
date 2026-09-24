@@ -5362,13 +5362,13 @@
          the first thing known. A field's label is its own word alone, because
          the group's heading says whose it is; the copy button still names the
          contact in full. */
-      // Each field takes a row: beside its copy button, half the panel leaves a
-      // name or a phone number about 80px, too little to read.
+      // The name and phone share a row, a contact read at a glance; half the
+      // 30rem panel leaves each about 180px beside its copy button.
       panelDetails.appendChild(fieldGroup('Booking contact',
-        full(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
-          'scheduler-f-cfind', 'Booking contact name')),
+        pair(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
+          'scheduler-f-cfind', 'Booking contact name'),
         withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
-          'scheduler-f-cphone', 'Booking contact phone'),
+          'scheduler-f-cphone', 'Booking contact phone')),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
         // The booking's conversation, a link; its button opens it.
@@ -5384,8 +5384,8 @@
          contact when it has none, and the section's menu adds one up to the
          schema's five or removes the last. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      /* A stack, 32px between contacts, a step over the 24px between one
-         contact's own fields, so each name reads with the phone under it. */
+      /* A stack, 32px between contacts, each contact one row of its name
+         beside its phone. */
       const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-7');
 
       // What the drawn contacts hold, in `tripContact`'s shape.
@@ -5396,7 +5396,7 @@
                  phone: document.getElementById(`scheduler-f-dphone${i + 1}`)?.value.trim() || null };
       });
 
-      /* Each contact is a stack, Name over Phone, as a group named
+      /* Each contact is a row, Name beside Phone, as a group named
          Contact 1 to 5, which a screen reader says before its labels, so the
          tab needs no heading between the section title and the fields. Adding
          and removing are on the overflow menu at the end of the section's title
@@ -5409,10 +5409,9 @@
         rowsHost.replaceChildren();
         list.forEach((c, i) => {
           const n = i + 1;
-          const row = el('div', 'rux--stack-vertical rux--stack-scale-6');
-          row.append(
-            full(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
-              `scheduler-f-d${n}`, `Contact ${n} name`)),
+          const row = pair(
+            withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
+              `scheduler-f-d${n}`, `Contact ${n} name`),
             withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
               `scheduler-f-dphone${n}`, `Contact ${n} phone`),
           );

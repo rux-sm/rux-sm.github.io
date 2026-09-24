@@ -1120,9 +1120,21 @@
     // Rows: every active bus, plus any bus this week actually uses, so a trip
     // on a retired bus is visible rather than silently dropped.
     const used = new Set([...tracks.keys()]);
+    /* Grouped by type in the order of the office's vehicle-types list, fleet
+       order kept within a type, so a van never reads as the next coach down.
+       The first type on the list is the primary one and heads no band; a type
+       the list lacks follows every listed one. */
+    const typeList = window.SchedulerVehicles?.types ?? [];
+    const typeKey = b => String(b.type || '').trim().toLowerCase();
+    const typeRank = b => {
+      const i = typeList.findIndex(t => t.name.toLowerCase() === typeKey(b));
+      return i < 0 ? typeList.length : i;
+    };
     const rows = buses
       .filter(b => b.status === 'active' || used.has(b.id))
-      .map(b => ({ id: b.id, bus: b }));
+      .map(b => ({ id: b.id, bus: b }))
+      .sort((a, b) => typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
+    const primaryType = typeList[0]?.name.toLowerCase() ?? '';
     // Always present, hidden when empty. A drag has to be able to drop the
     // week's first unassigned trip somewhere, and a row that is not in the
     // document has no rectangle to aim at.
@@ -1172,7 +1184,17 @@
     const oosByBus = new Map();
     for (const w of oos) { if (!oosByBus.has(w.bus_id)) oosByBus.set(w.bus_id, []); oosByBus.get(w.bus_id).push(w); }
 
+    let bandType = primaryType;
     for (const r of rows) {
+      /* A band where the type changes, naming it as the vehicle-types list
+         writes it. The No bus row has its own tint and draws none. */
+      if (r.bus && typeKey(r.bus) !== bandType) {
+        bandType = typeKey(r.bus);
+        const name = window.SchedulerVehicles?.typeOf(r.bus.type);
+        const band = el('div', 'scheduler-type-band');
+        band.appendChild(el('span', null, name ? (name.label || name.name) : (String(r.bus.type || '').trim() || 'No type')));
+        into.appendChild(band);
+      }
       const bars = tracks.get(r.id) ?? [];
       const lanes = bars.length ? assignLanes(bars) : 1;
       const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
@@ -1228,10 +1250,11 @@
         ].filter(Boolean).join(' · ');
       }
 
-      /* Out of service is the one flag in this column: it is a state that
-         changes what the row can take this week, where the lift and sleeper are
-         fixed and sit in the toggletip. Icons stacked under the number would
-         set the row's height. Each symbol keeps its own viewBox. */
+      /* Two marks in this column: the type's drawing on any vehicle that is
+         not the primary type, so a van is told from a coach at the number,
+         and out of service, a state that changes what the row can take this
+         week. The lift and sleeper are fixed and sit in the toggletip. Each
+         symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -1241,6 +1264,9 @@
         span.appendChild(svgUse(href, '16', box));
         kit.appendChild(span);
       };
+
+      const typeIcon = r.bus && typeKey(r.bus) !== primaryType ? window.SchedulerVehicles?.iconOf(r.bus.type) : null;
+      if (typeIcon) flag(typeIcon, '0 0 16 16', r.bus.type, 'scheduler-row-head__type');
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {

@@ -257,6 +257,34 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__kit svg { display: block; }
 .scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
+.scheduler-row-head__type { display: inline-flex; }
+
+/* The heading over each vehicle type after the primary one, which is the day
+   band again, lower down: the same surface, rule and type, so a van's section
+   reads as a section of the board. */
+.scheduler-type-band {
+  grid-column: 1 / -1;
+  block-size: 2rem;
+  line-height: 2rem;
+  background: var(--scheduler-band-surface);
+  border-block-end: var(--scheduler-band-rule);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+/* The name rides the left edge, so a wide week scrolled sideways keeps it in
+   view, where the bus column is. */
+.scheduler-type-band > span {
+  position: sticky;
+  inset-inline-start: 0;
+  padding-inline: var(--rux-spacing-03);
+}
+/* The row over a band takes the band's rule for its own, as the day band
+   meets the first row. */
+.scheduler-row:has(+ .scheduler-type-band) > * {
+  border-block-end: var(--scheduler-band-rule);
+}
 /* The Unassigned row's head takes its track's tint, so the one row that is not
    a bus reads as one row across the divider. The row rules' `border-subtle-01`
    reads on this tint too. */
@@ -1985,7 +2013,8 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-grid--spare .scheduler-corner,
 .scheduler-grid--spare .scheduler-day,
-.scheduler-grid--spare .scheduler-row-head { visibility: hidden; }
+.scheduler-grid--spare .scheduler-row-head,
+.scheduler-grid--spare .scheduler-type-band { visibility: hidden; }
 .scheduler-week--sliding > .scheduler-grid--next .scheduler-track {
   transform: translateX(calc(var(--scheduler-slide, 0px) + var(--scheduler-slide-w, 100%)));
 }

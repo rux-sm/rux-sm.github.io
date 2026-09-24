@@ -15,14 +15,18 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board. The roster is Carbon's `sm`, the trip editor
-   its `md` and, made larger, its `xl`, and the document viewer is wide
-   because its width is the document's zoom: a letter page in 20rem renders
-   11pt text at under 6px. `placeRoom` in data.js prices the
-   panels by reading these back off them, so the arithmetic and the layout
+/* The panels beside the board. The roster is Carbon's `sm`, and showing both
+   weeks its `lg`; the trip editor its `md` and, made larger, its `xl`; and the
+   document viewer is wide because its width is the document's zoom: a letter
+   page in 20rem renders 11pt text at under 6px. `placeRoom` in data.js prices
+   the panels by reading these back off them, so the arithmetic and the layout
    cannot drift. */
 :root {
   --scheduler-panel-w: 20rem;
+  /* The roster showing both weeks, Carbon's `rux--side-panel--lg`: the
+     smallest of its widths that holds a second week of 2rem squares and still
+     leaves the names their room. */
+  --scheduler-panel-wide-w: 40rem;
   --scheduler-viewer-w: 30rem;
   /* The trip editor, Carbon's `rux--side-panel--md`, and made larger its
      `rux--side-panel--xl`. */
@@ -767,10 +771,26 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__dismiss:hover { background: var(--card-hover); }
 .scheduler-card__dismiss:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The standing note wears a pin and reads quieter than the updates. */
-.scheduler-card__note { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; white-space: pre-wrap; overflow-wrap: anywhere; }
-.scheduler-card__note > svg { flex: none; inline-size: 1rem; block-size: 1rem; opacity: .7; }
-.scheduler-card__note > span { opacity: .8; }
+/* Each part opens with a small heading in a quieter ink, which takes the
+   part's rule, so the row under it has none. The notes' heading wears the pin
+   and the updates' carries their count. */
+.scheduler-card__head {
+  display: flex;
+  gap: var(--rux-spacing-02);
+  align-items: center;
+  padding-block: var(--rux-spacing-03) 0;
+  color: color-mix(in srgb, var(--card-ink) 70%, transparent);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+.scheduler-card__head > svg { flex: none; inline-size: .875rem; block-size: .875rem; }
+.scheduler-card__count { font-weight: var(--rux-body-compact-01-font-weight); }
+.scheduler-card__head + .scheduler-card__row,
+.scheduler-card__head + .scheduler-card__list > :first-child { border-block-start: 0; }
+/* The notes part is shaded a step darker than the card, so it never reads as
+   one of the updates. */
+.scheduler-card__head--notes,
+.scheduler-card__note { background: color-mix(in srgb, var(--card-ink) 6%, var(--card-surface)); }
+.scheduler-card__note { padding-block-end: var(--rux-spacing-03); white-space: pre-wrap; overflow-wrap: anywhere; }
 /* Three updates show and the rest scroll: each row is the 24px avatar with
    4px above and below, 2rem in all; a longer update wraps and takes more. */
 .scheduler-card__list {
@@ -1784,11 +1804,16 @@ button.scheduler-row-head__num::after {
   min-block-size: 0;
   max-block-size: none;
 }
-/* Both weeks at once: each day is half a square, so fourteen fit the width
-   seven do and the names keep their room. The second week's first day rules
-   its edge in the strong border, so the two weeks count apart. */
-.scheduler-aside .scheduler-week--avail-both {
-  --scheduler-day-track: calc(var(--rux-layout-size-height-sm) / 2);
+/* Both weeks at once: the pane widens to Carbon's `lg`, so every day stays a
+   square and the names gain room. Where the pane is in front of the board it widens too, capped at the
+   window, so on a phone each day is half a square instead and fourteen fit the
+   width seven do. The second week's first day rules its edge in the strong
+   border, so the two weeks count apart. */
+.scheduler-aside--wide { --scheduler-panel-w: var(--scheduler-panel-wide-w); }
+@media (max-width: 41.98rem) {
+  .scheduler-aside .scheduler-week--avail-both {
+    --scheduler-day-track: calc(var(--rux-layout-size-height-sm) / 2);
+  }
 }
 .scheduler-week--avail-both .scheduler-avail__cell[data-day="7"] {
   border-inline-start-color: var(--rux-border-strong-01);

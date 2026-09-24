@@ -6951,8 +6951,8 @@
   /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
      selected trip starts in, or with nothing selected the week holding today,
      else the first. A trip crossing into the second week shows its first, and
-     the days button shows both, each day half as wide, in the same width. The
-     choice is this browser's, as the editor's size is. */
+     the days button shows both, widening the pane to Carbon's lg. The choice is
+     this browser's, as the editor's size is. */
   const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
   const availDaysBtn = document.getElementById('scheduler-avail-days');
   const availRange = document.getElementById('scheduler-avail-range');
@@ -6987,6 +6987,9 @@
     rosterBoth = !rosterBoth;
     try { localStorage.setItem(ROSTER_DAYS_KEY, rosterBoth ? '14' : '7'); } catch { /* kept for this visit */ }
     drawRoster();
+    // The pane changed width, so the board lays out again around it.
+    placeRoom();
+    window.Rux?.schedule?.fit?.();
   });
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
@@ -7043,6 +7046,7 @@
     availGrid.textContent = '';
     availEl.style.setProperty('--scheduler-days', String(count));
     availEl.classList.toggle('scheduler-week--avail-both', count > 7);
+    asideSlot?.classList.toggle('scheduler-aside--wide', count > 7);
 
     // The head names the dates shown and offers the other count, only while the
     // board shows two weeks; with one, the toolbar's own week label says it.
@@ -7695,7 +7699,8 @@
        list keeps its place, so widening the window and narrowing it again
        brings the same one forward. */
     const open = [
-      ['roster', availOn, '--scheduler-panel-w'],
+      ['roster', availOn, asideSlot?.classList.contains('scheduler-aside--wide')
+        ? '--scheduler-panel-wide-w' : '--scheduler-panel-w'],
       ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-narrow-w'],
       ['viewer', !!viewerEl && !viewerEl.hidden, '--scheduler-viewer-w'],
     ].filter(([, on]) => on);
@@ -9892,9 +9897,10 @@
     } };
 
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: the
-     reminder while the trip asks for a follow-up, the standing note pinned,
-     then every update newest first with who and how long ago, three showing
-     and the rest scrolling. With none yet the row says so, and the time at
+     reminder while the trip asks for a follow-up, then two parts under their
+     own headings: the trip's notes, shaded and always there, saying so when
+     there are none, and the updates with their count, newest first with who
+     and how long ago, three showing and the rest scrolling. With none yet the row says so, and the time at
      its end is the booking's, so the card still says how long the trip has
      gone without one. Each person keeps one of Carbon's avatar colours, picked
      by their name, so a face is learnt. */
@@ -9940,14 +9946,18 @@
         el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`), dismiss);
       card.appendChild(band);
     }
-    if (trip.notes) {
-      const note = row('scheduler-card__note');
-      note.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, trip.notes));
-      card.appendChild(note);
-    }
+    const notesHead = row('scheduler-card__head scheduler-card__head--notes');
+    notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Trip notes'));
+    const note = row('scheduler-card__note');
+    note.appendChild(trip.notes ? el('span', null, trip.notes) : el('span', 'scheduler-card__empty', 'No notes'));
+    card.append(notesHead, note);
+    const updates = updatesOf(trip);
+    const updatesHead = row('scheduler-card__head');
+    updatesHead.appendChild(el('span', null, 'Updates'));
+    if (updates.length) updatesHead.appendChild(el('span', 'scheduler-card__count', `· ${updates.length}`));
+    card.appendChild(updatesHead);
     const list = el('ol', 'scheduler-card__list');
     list.setAttribute('aria-label', 'Updates, newest first');
-    const updates = updatesOf(trip);
     updates.forEach((u, n) => {
       const li = row(`scheduler-card__update${n === 0 ? ' scheduler-card__update--newest' : ''}`, 'li');
       // A line copied from the old notes with nobody named is a grey face.

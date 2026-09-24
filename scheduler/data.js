@@ -475,7 +475,7 @@
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source)',
     // What was said to the customer, for the bar's follow-up mark and its card.
-    'trip_updates(id,created_at,actor_name,body,kind,edited_at)',
+    'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -3494,7 +3494,7 @@
      saved. A `nothing` row marks a skipped prompt and is not drawn; an
      `imported` row was copied out of the old notes, so it has a date and no
      time. An update whose words were changed says so. */
-  const UPDATE_COLUMNS = 'id,created_at,actor_name,body,kind,edited_at';
+  const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at';
   function updateStamp(u) {
     const at = new Date(u.created_at);
     const opts = { month: 'short', day: 'numeric' };
@@ -9836,6 +9836,15 @@
     for (const ch of String(name)) h = (h * 31 + ch.codePointAt(0)) >>> 0;
     return AVATAR_COLOURS[h % AVATAR_COLOURS.length];
   };
+  /* The staff, by the account an update records as its author, so the card
+     draws each one as the header's own avatar draws them: their photo, or
+     their initials in their profile's colour. Read once, apart from the week,
+     because a refused read should cost the faces and not the board; until it
+     answers, or if it is refused, an update keeps its initial. */
+  let staffFaces = new Map();
+  client?.from('profiles').select('id,user_id,display_name,photo_path,avatar_color').then(r => {
+    if (!r.error) staffFaces = new Map((r.data || []).map(p => [p.user_id, p]));
+  });
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip),
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   function drawCard(trip) {
@@ -9876,6 +9885,14 @@
       const nobody = !u.actor_name;
       const face = el('div', `rux--user-avatar rux--user-avatar--sm ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
         nobody ? '' : who.charAt(0).toUpperCase());
+      /* A written update is drawn as its author's own avatar. An imported one
+         never is: its account is whoever ran the import, not the person who
+         wrote the line, so it keeps the initial of the name it carries. */
+      const author = u.kind !== 'imported' && staffFaces.get(u.actor_id);
+      if (author) {
+        window.Rux?.account?.drawAvatar?.(face,
+          { id: author.id, name: u.actor_name || author.display_name, photoPath: author.photo_path, colour: author.avatar_color }, 'sm');
+      }
       face.title = who;
       face.setAttribute('role', 'img');
       face.setAttribute('aria-label', who);

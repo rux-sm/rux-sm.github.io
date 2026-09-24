@@ -3282,16 +3282,23 @@
   }
 
   /* Notes grows to fit its text from one row, so a long note is read whole
-     rather than scrolled inside the box. The height is measured, so it is set on
-     every edit and whenever the box changes size, which covers the tab opening
-     from hidden and the text rewrapping. The panel's scroll is kept, because
-     the box collapses for a moment while it is measured. */
-  const fitNotes = ta => {
+     rather than scrolled inside the box, and its handle drags it taller, a
+     height it then keeps as its least. The height is measured, so it is set
+     on every edit and whenever the box's width changes, which covers the tab
+     opening from hidden and the text rewrapping; a drag changes only the
+     height, so it is left alone. The panel's scroll is kept, because the box
+     collapses for a moment while it is measured. */
+  const fitNotes = (ta, edited) => {
     if (!ta.clientWidth) return;
+    if (!edited && ta.dataset.fitWidth === String(ta.clientWidth)) return;
+    ta.dataset.fitWidth = String(ta.clientWidth);
     const body = ta.closest('#scheduler-panel-body');
     const top = body?.scrollTop;
     ta.style.blockSize = 'auto';
-    ta.style.blockSize = `${ta.scrollHeight + ta.offsetHeight - ta.clientHeight}px`;
+    const fit = ta.scrollHeight + ta.offsetHeight - ta.clientHeight;
+    const height = Math.max(fit, Number(ta.dataset.dragged) || 0);
+    ta.style.blockSize = `${height}px`;
+    ta.dataset.fitHeight = String(height);
     if (body) body.scrollTop = top;
   };
   // One observer for the one Notes box: a rebuilt panel's old box is let go
@@ -3309,7 +3316,11 @@
     ta.id = id;
     ta.rows = 1;
     ta.value = value ?? '';
-    ta.addEventListener('input', () => fitNotes(ta));
+    ta.addEventListener('input', () => fitNotes(ta, true));
+    // A height the handle leaves that the fitting did not set is the person's.
+    ta.addEventListener('pointerup', () => {
+      if (ta.dataset.fitHeight && ta.offsetHeight !== Number(ta.dataset.fitHeight)) ta.dataset.dragged = String(ta.offsetHeight);
+    });
     notesObserver.disconnect();
     notesObserver.observe(ta);
     wrap.append(ta, el('span', 'rux--text-area__counter-alert'));
@@ -5493,28 +5504,6 @@
     outRange.querySelector('#scheduler-f-start').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off start' : 'Start date');
     outRange.querySelector('#scheduler-f-end').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off end' : 'End date');
 
-    /* Notes shows its box once the trip has a note. An empty one shows Add a
-       note in its place, which opens the box; the box stays in the page,
-       hidden, for Save to read and a draft to fill, and a draft's note opens
-       it. */
-    const notesItem = notesField('scheduler-f-notes', 'Notes', trip.notes);
-    const notesShown = el('div');
-    notesShown.appendChild(notesItem);
-    const notesAdd = el('div');
-    const addNote = el('button', 'rux--btn rux--btn--ghost rux--btn--sm scheduler-add-note', 'Add a note');
-    addNote.type = 'button';
-    addNote.appendChild(svgUse('#m-add', '16', '0 0 32 32'));
-    addNote.lastChild.setAttribute('class', 'rux--btn__icon');
-    const notesAddItem = el('div', 'rux--form-item');
-    notesAddItem.append(el('div', 'rux--label', 'Notes'), addNote);
-    notesAdd.appendChild(notesAddItem);
-    const notesBox = notesItem.querySelector('textarea');
-    const openNotes = () => { notesShown.hidden = false; notesAdd.hidden = true; };
-    notesShown.hidden = !trip.notes?.trim();
-    notesAdd.hidden = !notesShown.hidden;
-    addNote.addEventListener('click', () => { openNotes(); notesBox.focus(); });
-    notesBox.addEventListener('input', () => { if (notesBox.value.trim()) openNotes(); });
-
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
       outRange,
@@ -5537,8 +5526,7 @@
             ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
         trip.customer),
       colorBox,
-      notesShown,
-      notesAdd,
+      notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
     panelDetails.appendChild(section(null, topFields));
 

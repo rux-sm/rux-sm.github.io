@@ -42,8 +42,8 @@
 .rux--side-panel .rux--text-area,
 .rux--modal .rux--text-area { flex: 1 1 auto; }
 
-/* Notes sizes itself to its text (data.js), so its drag handle comes off. */
-#scheduler-f-notes { resize: none; }
+/* Notes sizes itself to its text (data.js), and its handle drags it taller. */
+#scheduler-f-notes { resize: vertical; }
 /* One line of Notes is as tall as a text input, the 40px the panel's size-md
    sets, so the minimum is that height and the padding is what the line and
    the 1px border leave of it. */

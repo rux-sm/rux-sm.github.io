@@ -1528,9 +1528,6 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-02); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
-/* Add a note stands where the empty Notes box would, its text lined up with
-   the fields' left edge rather than the button's padding. */
-.scheduler-add-note { align-self: flex-start; margin-inline-start: calc(-1 * var(--rux-spacing-05)); }
 /* The update prompt: what changed, the box, then the quick reasons in a row. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 .scheduler-prompt-reasons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }

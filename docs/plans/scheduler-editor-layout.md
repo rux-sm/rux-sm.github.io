@@ -24,8 +24,8 @@ and reads right on real trips in every theme.
 - **Details holds the trip and its people; Fleet opens with what the trip
   needs,** its Vehicle, its Needs and each leg's hotel, above the buses those
   are asked of. Details' dates share one Dates label, and a one-day trip's
-  end box is empty and says Same day. An empty Notes is an Add a note link
-  that opens the box.
+  end box is empty and says Same day. Notes is one line until it holds more,
+  grows with its text, and its handle drags it taller.
 - **A 1px subtle rule opens every section after a tab's first,** edge to edge,
   24px under what precedes it and 16px over its heading. Carbon has no guidance
   on rules in forms, so this is the app's choice.

@@ -365,6 +365,8 @@
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source)',
+    // What was said to the customer, for the bar's follow-up mark and its card.
+    'trip_updates(id,created_at,actor_name,body,kind)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -424,7 +426,8 @@
          the Mapbox token the Route tab looks drives up with. A refused read
          keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1', 'vehicle-types-v1'])
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1', 'vehicle-types-v1',
+          'follow-up-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -434,6 +437,7 @@
           if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
           setRequirementList(byKey.get('requirements-v1'));
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
+          setFollowUp(byKey.get('follow-up-v1'));
         }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
@@ -1039,18 +1043,31 @@
     const when = times(false), whenShort = times(true);
     addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
 
-    // The trip's note on one line, cut with an ellipsis; the whole of it on
-    // hover. The marks lead the row and the note follows them, so they start
-    // where every other row starts and read down the week as a column.
-    const note = el('span', 'scheduler-bar__note', trip.notes || '');
-    if (trip.notes) note.title = trip.notes;
-    addRow(bar, 'scheduler-bar__notes', warn('notes'), note);
+    // The marks alone: the trip's note is read on its card, pinned first.
+    addRow(bar, 'scheduler-bar__notes', warn('notes'));
+
+    /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
+       filled bubble once the trip has updates, its outline with none, and the
+       warning colour when it asks for a follow-up. A mark, not a button,
+       because the bar is the button. A copy rides the destination row, shown
+       only while the drivers row is turned off, as the warning marks do. */
+    const asks = asksFollowUp(trip);
+    const talked = updatesOf(trip).length > 0;
+    const msg = where => {
+      const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${where} scheduler-bar__msg--${asks ? 'asks' : talked ? 'quiet' : 'none'}`);
+      m.setAttribute('role', 'img');
+      m.setAttribute('aria-label', asks ? 'Needs a follow-up' : talked ? 'Has updates' : 'No updates');
+      m.title = asks ? 'Needs a follow-up' : talked ? 'Updates' : 'No updates yet';
+      m.appendChild(svgUse(talked ? '#m-chat-fill' : '#m-chat', '16', '0 0 32 32'));
+      return m;
+    };
+    bar.querySelector('.scheduler-bar__dest')?.appendChild(msg('dest'));
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
-    addRow(bar, 'scheduler-bar__drivers', crewBox);
+    addRow(bar, 'scheduler-bar__drivers', crewBox, msg('drivers'));
 
     /* The compact board's label. Not a row, so the full board never draws it
        and neither does the docked sheet, which draws every row. */
@@ -1064,6 +1081,7 @@
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
       ...marks.map(w => w.label),
+      asks ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return bar;
   }
@@ -3396,6 +3414,8 @@
         rows = [data, ...rows];
         box.value = '';
         draw();
+        // The bar's mark and card read the updates too.
+        show();
       } catch (err) {
         console.warn('The update was not added:', err);
         error.textContent = 'The update was not added. Try again.';
@@ -4112,6 +4132,70 @@
     if (rung === 'paid_full') return mark(datePaid ? `Paid in full ${mdy(datePaid)}` : 'Paid in full', 'success');
     return null;
   }
+
+  /* ── Follow-ups ── A trip is waiting on the customer while it is not
+     confirmed, its PO or deposit is not in, its itinerary is missing, or its
+     balance is unpaid within two weeks of leaving. Once its newest real update,
+     or its booking where it has none, is older than the office's follow-up
+     wait, its bar asks for a follow-up. A trip waiting on nothing never asks,
+     however old its updates, and a placeholder waits on nothing. Once the trip
+     has left, only its balance can still be waited on. A skipped prompt's
+     `nothing` row is not an update, so it never makes a trip look followed
+     up. The wait and the snooze are the office's `follow-up-v1` row. */
+  const FOLLOW_UP = { waitDays: 3, snoozeHours: 24 };
+  let followUp = { ...FOLLOW_UP };
+  function setFollowUp(value) {
+    const num = (v, d) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);
+    followUp = { waitDays: num(value?.wait_days, FOLLOW_UP.waitDays), snoozeHours: num(value?.snooze_hours, FOLLOW_UP.snoozeHours) };
+  }
+  const BALANCE_DAYS = 14;
+  const WAIT_WORDS = { confirmation: 'confirmation', po: 'PO', itinerary: 'itinerary', balance: 'balance' };
+  function waitsOf(trip) {
+    if (tripColorOf(trip) === 'amber') return [];
+    const today = iso(new Date());
+    const left = !!trip.start_date && trip.start_date <= today;
+    const waits = [];
+    const { price, remaining, rung } = billingOf(trip);
+    if (!left) {
+      if (trip.confirmed === false) waits.push('confirmation');
+      else if (price > 0 && (rung === 'pending' || rung === 'contract_signed')) waits.push('po');
+      if (!latestItinerary(trip) && !trip.itinerary_not_needed) waits.push('itinerary');
+    }
+    const soon = !!trip.start_date && daysBetween(parseISO(today), parseISO(trip.start_date)) <= BALANCE_DAYS;
+    if (trip.confirmed !== false && remaining > 0 && soon && (rung === 'po_partial' || rung === 'deposit_received')) {
+      waits.push('balance');
+    }
+    return waits;
+  }
+  // The updates newest first, without the skipped prompts' rows.
+  const updatesOf = trip => (trip.trip_updates || []).filter(u => u.kind !== 'nothing')
+    .sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at));
+  const quietSince = trip => updatesOf(trip)[0]?.created_at ?? trip.created_at ?? null;
+  /* A dismissed reminder is each person's own, kept in this browser until the
+     snooze runs out, so one person's dismissal never hides a trip from
+     another. A real update ends the wait itself. */
+  const DISMISS_KEY = 'scheduler.follow-up-dismissed';
+  function dismissals() {
+    try { return JSON.parse(localStorage.getItem(DISMISS_KEY) || '{}') || {}; } catch { return {}; }
+  }
+  function dismissFollowUp(tripId) {
+    const all = dismissals();
+    const now = Date.now();
+    for (const [id, until] of Object.entries(all)) if (until <= now) delete all[id];
+    all[tripId] = now + followUp.snoozeHours * 36e5;
+    try { localStorage.setItem(DISMISS_KEY, JSON.stringify(all)); } catch { /* kept for this page only */ }
+  }
+  function asksFollowUp(trip) {
+    if (!waitsOf(trip).length) return false;
+    const since = quietSince(trip);
+    if (since && Date.now() - Date.parse(since) <= followUp.waitDays * 864e5) return false;
+    return !(dismissals()[trip.id] > Date.now());
+  }
+  // "7d" for how long ago, the way a chat says it, and "today" for today.
+  const agoShort = at => {
+    const d = Math.floor((Date.now() - Date.parse(at)) / 864e5);
+    return d <= 0 ? 'today' : `${d}d`;
+  };
 
   let editing = null;   // { id, before: {...} }
 
@@ -6937,13 +7021,28 @@
      so the bar can sit outside it. It is taken away while a bar is dragged,
      because the trip it points at is moving. */
   const TIP_GAP = 4;
-  function placeBarOpen(bar = selectedBar()) {
+  let peekBar = null;
+  let poppedFor = null;
+  function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
-    if (none) { schEl.style.removeProperty('--scheduler-docked-h'); return; }
+    if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
+    // A hovered bar that is not the selected one shows its card alone.
+    barShortcuts.toggleAttribute('data-peek', bar !== selectedBar());
     drawShortcuts(bar);
+    /* The card pops each time it comes to a trip, and not while it follows
+       the same one through a scroll or a redraw. It starts once the bar is
+       placed, because the pop's scale would shrink what the placing measures. */
+    const target = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}|${barShortcuts.hasAttribute('data-peek')}`;
+    const pop = () => {
+      if (target === poppedFor) return;
+      poppedFor = target;
+      barShortcuts.removeAttribute('data-pop');
+      void barShortcuts.offsetWidth;
+      barShortcuts.setAttribute('data-pop', '');
+    };
 
     /* Compact: a block one slot wide has nothing to float beside, so the bar
        docks to the bottom edge and takes the trip's rows with it. It stays
@@ -6962,6 +7061,7 @@
          view's to choose. */
       schEl.style.setProperty('--scheduler-docked-h',
         `${Math.round(barShortcuts.getBoundingClientRect().height)}px`);
+      pop();
       return;
     }
     schEl.style.removeProperty('--scheduler-docked-h');
@@ -6971,9 +7071,13 @@
        stick to its edges, and then written in the track's own coordinates,
        which is where the bar is laid out. */
     const pane = schEl.getBoundingClientRect();
-    const host = barShortcuts.parentElement.getBoundingClientRect();
+    // The card floats fixed to the window, so the pane's edge never cuts it,
+    // and its place is written in the window's coordinates.
+    const fixed = getComputedStyle(barShortcuts).position === 'fixed';
+    const host = fixed ? { top: 0, left: 0 } : barShortcuts.parentElement.getBoundingClientRect();
     const box = bar.getBoundingClientRect();
-    const tip = barShortcuts.getBoundingClientRect();
+    // Its layout size, which a pop still running does not scale.
+    const tip = { width: barShortcuts.offsetWidth, height: barShortcuts.offsetHeight };
     const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const ceiling = band ? band.bottom : pane.top;
@@ -6996,6 +7100,7 @@
     // Half a slot in from the trip's own start edge, wherever the bar ended up.
     barShortcuts.style.setProperty('--scheduler-open-tip',
       `${Math.max(8, Math.min(tip.width - 20, box.left - x + 16))}px`);
+    pop();
   }
 
   /* The other bars of the trip in the editor: its return leg, or the same leg
@@ -7011,8 +7116,52 @@
     }
   }
 
+  /* HOVERING A BAR SHOWS ITS CARD, after a short wait so a pointer crossing
+     the week does not light every bar, and leaving it brings the card back to
+     the selected trip or takes it away. The pointer can cross onto the card
+     to scroll it or dismiss its reminder. Only where there is hover to be had
+     and the board is not the compact one, whose bar docks instead. */
+  let peekTimer = 0;
+  let unpeekTimer = 0;
+  let peekWant = null;
+  const canPeek = () => matchMedia('(hover: hover)').matches && pageEl?.getAttribute('data-board') !== 'compact';
+  const unpeek = () => {
+    clearTimeout(peekTimer);
+    peekWant = null;
+    clearTimeout(unpeekTimer);
+    unpeekTimer = setTimeout(() => {
+      if (!peekBar) return;
+      peekBar = null;
+      placeBarOpen();
+    }, 180);
+  };
+  gridEl?.addEventListener('mouseover', e => {
+    const bar = e.target.closest('.scheduler-bar[data-trip-id]');
+    if (!bar || !canPeek()) return;
+    clearTimeout(unpeekTimer);
+    if (bar === peekWant || bar === ((peekBar?.isConnected ? peekBar : null) ?? selectedBar())) return;
+    peekWant = bar;
+    clearTimeout(peekTimer);
+    peekTimer = setTimeout(() => {
+      peekWant = null;
+      if (!bar.isConnected) return;
+      peekBar = bar === selectedBar() ? null : bar;
+      placeBarOpen();
+    }, 280);
+  });
+  gridEl?.addEventListener('mouseout', e => {
+    const bar = e.target.closest('.scheduler-bar[data-trip-id]');
+    if (!bar || bar.contains(e.relatedTarget) || barShortcuts?.contains(e.relatedTarget)) return;
+    unpeek();
+  });
+  barShortcuts?.addEventListener('mouseenter', () => clearTimeout(unpeekTimer));
+  barShortcuts?.addEventListener('mouseleave', e => {
+    if (!e.relatedTarget?.closest?.('.scheduler-bar[data-trip-id]')) unpeek();
+  });
+
   function syncSelection() {
     const bar = selectedBar();
+    peekBar = null;
     placeBarOpen(bar);
     markEditorBars();
     const on = currentTripDay();
@@ -9409,9 +9558,12 @@
        need. A fourth and beyond are added from the right-click menu. */
     const slots = ['open', ...shortcutChoice.filter(Boolean)];
     while (slots.length < SHORTCUT_MIN) slots.push(null);
+    // Add update is always the last slot, after the person's own choices.
+    slots.push('add_update');
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
-      bar.dataset.hotelBooked, isEditorBar(bar), slots.join()].join('|');
+      bar.dataset.hotelBooked, isEditorBar(bar), slots.join(), cardKey(trip)].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
     // carries the trip's rows ahead of them.
@@ -9422,7 +9574,7 @@
       const btn = el('button', 'scheduler-bar-shortcut');
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
-      const action = SHORTCUT_ACTIONS.find(a => a.id === id);
+      const action = id === 'add_update' ? ADD_UPDATE : SHORTCUT_ACTIONS.find(a => a.id === id);
       if (!action) {
         btn.classList.add('scheduler-bar-shortcut--empty');
         btn.setAttribute('aria-label', 'Add a shortcut');
@@ -9439,12 +9591,120 @@
       if (why) btn.setAttribute('aria-disabled', 'true');
       btn.appendChild(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'));
       return btn;
-    }));
+    }), ...(trip ? [drawCard(trip)] : []));
+    barShortcuts.toggleAttribute('data-card', !!trip);
+  }
+
+  /* Add update opens the trip with its Updates box in hand; on the trip the
+     editor already holds it goes straight to the box. It is not one of the
+     choices, because every trip has it. */
+  const ADD_UPDATE = { id: 'add_update', label: 'Add update', icon: '#m-add_comment', blocked: () => null,
+    run: bar => {
+      const toBox = () => {
+        const box = document.getElementById('scheduler-f-update');
+        if (!box) return;
+        box.scrollIntoView({ block: 'center' });
+        box.focus();
+      };
+      if (isEditorBar(bar)) { toBox(); return; }
+      const ref = barRef(bar);
+      whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
+    } };
+
+  /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: the
+     reminder while the trip asks for a follow-up, the standing note pinned,
+     then every update newest first with who and how long ago, three showing
+     and the rest scrolling. With none yet the row says so, and the time at
+     its end is the booking's, so the card still says how long the trip has
+     gone without one. Each person keeps one of Carbon's avatar colours, picked
+     by their name, so a face is learnt. */
+  // The five mid tones, each of which holds white initials at 4.5 to 1.
+  const AVATAR_COLOURS = ['rux--user-avatar--order-1-cyan', 'rux--user-avatar--order-3-green',
+    'rux--user-avatar--order-4-magenta', 'rux--user-avatar--order-5-purple', 'rux--user-avatar--order-6-teal'];
+  const avatarColour = name => {
+    let h = 0;
+    for (const ch of String(name)) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+    return AVATAR_COLOURS[h % AVATAR_COLOURS.length];
+  };
+  const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip),
+    (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
+  function drawCard(trip) {
+    const card = el('div', 'scheduler-card');
+    card.dataset.tripId = trip.id;
+    let i = 0;
+    const row = (cls, tag = 'div') => {
+      const r = el(tag, `scheduler-card__row ${cls}`);
+      r.style.setProperty('--i', String(i++));
+      return r;
+    };
+    if (asksFollowUp(trip)) {
+      const band = row('scheduler-card__asks');
+      const hours = followUp.snoozeHours;
+      const snooze = hours % 24 ? `${hours} hour${hours === 1 ? '' : 's'}` : `${hours / 24} day${hours === 24 ? '' : 's'}`;
+      const dismiss = el('button', 'scheduler-card__dismiss');
+      dismiss.type = 'button';
+      dismiss.dataset.dismiss = trip.id;
+      dismiss.title = `Dismiss for ${snooze}`;
+      dismiss.setAttribute('aria-label', `Dismiss the follow-up for ${snooze}`);
+      dismiss.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
+      band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'),
+        el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`), dismiss);
+      card.appendChild(band);
+    }
+    if (trip.notes) {
+      const note = row('scheduler-card__note');
+      note.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, trip.notes));
+      card.appendChild(note);
+    }
+    const list = el('ol', 'scheduler-card__list');
+    list.setAttribute('aria-label', 'Updates, newest first');
+    const updates = updatesOf(trip);
+    updates.forEach((u, n) => {
+      const li = row(`scheduler-card__update${n === 0 ? ' scheduler-card__update--newest' : ''}`, 'li');
+      const imported = u.kind === 'imported';
+      const who = imported ? 'From the old notes' : u.actor_name || 'Someone';
+      const face = el('div', `rux--user-avatar rux--user-avatar--sm ${imported ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
+        imported ? '' : who.charAt(0).toUpperCase());
+      face.title = who;
+      face.setAttribute('role', 'img');
+      face.setAttribute('aria-label', who);
+      const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
+      when.title = updateStamp(u);
+      li.append(face, el('span', 'scheduler-card__words', u.body), when);
+      list.appendChild(li);
+    });
+    if (!updates.length) {
+      const li = row('scheduler-card__update', 'li');
+      li.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
+      if (trip.created_at) {
+        const when = el('span', 'scheduler-card__when', agoShort(trip.created_at));
+        when.title = `Booked ${new Date(trip.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+        li.appendChild(when);
+      }
+      list.appendChild(li);
+    }
+    card.appendChild(list);
+    return card;
   }
 
   // A slot acts on the selected bar. An empty slot opens Customize shortcuts at
   // that slot, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    // The reminder's ✕ acts on the trip the card shows, peeked or selected.
+    const dismiss = e.target.closest('.scheduler-card__dismiss');
+    if (dismiss) {
+      dismissFollowUp(dismiss.dataset.dismiss);
+      for (const b of gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(dismiss.dataset.dismiss)}"]`)) {
+        for (const m of b.querySelectorAll('.scheduler-bar__msg--asks')) {
+          m.classList.replace('scheduler-bar__msg--asks', updatesOf(panelIndex.trips.get(b.dataset.tripId) || {}).length
+            ? 'scheduler-bar__msg--quiet' : 'scheduler-bar__msg--none');
+          m.title = m.getAttribute('aria-label');
+        }
+      }
+      shortcutsDrawn = '';
+      placeBarOpen();
+      return;
+    }
     const btn = e.target.closest('.scheduler-bar-shortcut');
     const bar = selectedBar();
     if (!btn || !bar || btn.getAttribute('aria-disabled') === 'true') return;
@@ -9453,7 +9713,7 @@
       openShortcutsModal(first < 0 ? SHORTCUT_SLOTS : first + 1);
       return;
     }
-    SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut)?.run(bar, btn);
+    (btn.dataset.shortcut === 'add_update' ? ADD_UPDATE : SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });
 
   const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');
@@ -10067,6 +10327,7 @@
       trip_assignments: [...(tr.trip_assignments || [])]
         .map(a => ({ ...a, trip_drivers: [...(a.trip_drivers || [])].sort(byId) }))
         .sort(byId),
+      trip_updates: [...(tr.trip_updates || [])].sort(byId),
     });
     const drawn = (data.trips || [])
       .filter(tr => legsOf(tr).some(l => clip(l.from, l.to, weekStart, weekEnd)))
@@ -10119,7 +10380,7 @@
      All thirteen the week is drawn from broadcast their changes; `contacts` is
      the one left out, because a booking contact is read far more often than it
      is edited and it is the table of customers' own details. */
-  const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops',
+  const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings'];
   const LIVE_SETTLE = 400;

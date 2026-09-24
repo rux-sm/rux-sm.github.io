@@ -759,3 +759,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   inset-inline-end: var(--rux-spacing-03);
   pointer-events: none;
 }
+
+/* A face on the trip card: Carbon's avatar writes its initial in inverse text,
+   which is dark in the dark themes and vanishes on the avatar's fill, so the
+   initial takes the on-colour text every fill is picked to hold. The class
+   pair is Carbon's own specificity for a size variant. */
+.scheduler-card .rux--user-avatar { color: var(--rux-text-on-color); }

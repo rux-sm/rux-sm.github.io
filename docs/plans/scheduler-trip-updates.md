@@ -42,16 +42,19 @@ standing facts about the trip. No note in the table contains a newline.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
 - **The bar's notes row goes;** that row holds the pending and requirement
-  icons. The bar carries a small speech-bubble icon at the drivers row's end,
+  icons, the view menu calls it Status icons, and the note is read on the
+  card. The bar carries a small speech-bubble icon at the drivers row's end,
   its bottom corner, and the names give way to it. With the drivers row
   hidden from the view menu, the icon moves up as the warning marks do. It is
   a mark, not a button, because the bar is the button: Enter and Space select
   a bar as a click does, and Escape lets it go.
 - **The icon says who needs a follow-up.** A trip is waiting on the customer
   while it is not confirmed, its PO or deposit is pending, its itinerary is
-  missing, or its balance is unpaid near departure. Once the newest update on
+  missing, or its balance is unpaid within two weeks of leaving; once it has
+  left, only the balance can still be waited on. Once the newest update on
   such a trip is older than the follow-up wait, its icon asks; a trip waiting
-  on nothing never asks, however old its updates.
+  on nothing never asks, however old its updates, and a placeholder waits on
+  nothing.
 - **The follow-up wait is the office's setting,** a `follow-up-v1` settings
   row edited from the Trips page as Vehicle types is from Fleet, starting at
   3 days.
@@ -71,8 +74,8 @@ standing facts about the trip. No note in the table contains a newline.
   docked shortcut bar.
 - **The card arrives with a small pop:** it rises 6px from the arrow's side
   and grows from 94% over 240ms on Carbon's expressive entrance curve, each
-  update following 40ms after the one above, and leaves in 110ms; reduced
-  motion keeps only a fade.
+  update following 40ms after the one above, and leaves at once; docked, and
+  under reduced motion, it only fades in.
 - **The editor lists every update** with a box to add one without changing
   anything else. Its Add update button is the outlined kind, so Save stays
   the panel's one main button.
@@ -89,10 +92,6 @@ None open.
 
 ## Tasks
 
-- [ ] Replace the bar's notes row with the icon row, put the update icon at
-  the drivers row's end, and make the shortcut bar the one card, updates
-  below its icons, Dismiss an icon at the reminder row's end and Add update
-  the last shortcut icon.
 - [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
   Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.

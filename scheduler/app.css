@@ -592,28 +592,142 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcut[aria-disabled="true"] { cursor: default; }
 .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
 
+/* THE CARD: the trip's reminder, note and updates under the shortcut slots,
+   so only ever one thing floats over the week. Hovering a bar shows the card
+   alone (`data-peek`); selecting it adds the slots on top. It is 20rem wide,
+   and the slots keep their size at its start. Its ink is the surface's own, so
+   the same rules read on the floating inverse chip and on the docked sheet. */
+.scheduler-bar-shortcuts[data-card] {
+  flex-wrap: wrap;
+  inline-size: min(20rem, calc(100vw - 2 * var(--rux-spacing-05)));
+  --card-ink: var(--rux-text-inverse);
+  --card-surface: var(--rux-layer-selected-inverse);
+  --card-icon: var(--rux-icon-inverse);
+  --card-hover: var(--rux-background-inverse-hover);
+  --card-rule: color-mix(in srgb, var(--card-ink) 35%, transparent);
+  transform-origin: var(--scheduler-open-tip, 2rem) 100%;
+}
+.scheduler-bar-shortcuts[data-card][data-side="below"] { transform-origin: var(--scheduler-open-tip, 2rem) 0; }
+/* Floating, it is fixed to the window rather than laid out in the pane, so a
+   card below the last bus is not cut by the pane's edge. No ancestor of the
+   track makes a containing block, as the docked sheet relies on too. Over the
+   week's sticky bands and under the trip panel. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) { position: fixed; z-index: 996; }
+.scheduler-bar-shortcuts[data-card][data-docked] {
+  inline-size: auto;
+  --card-ink: var(--rux-text-primary);
+  --card-surface: var(--rux-layer-02);
+  --card-icon: var(--rux-icon-primary);
+  --card-hover: var(--rux-layer-hover-02);
+}
+.scheduler-bar-shortcuts[data-peek] > .scheduler-bar-shortcut { display: none; }
+.scheduler-card {
+  flex: 1 0 100%;
+  min-inline-size: 0;
+  color: var(--card-ink);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+/* Every line is a row with a rule above it, as compact as it goes: 12px type
+   on a 16px line, 4px above and below. The slots' row, where there is one,
+   takes the first rule. */
+.scheduler-card__row {
+  padding: var(--rux-spacing-02) var(--rux-spacing-04);
+  border-block-start: 1px solid var(--card-rule);
+}
+.scheduler-bar-shortcuts[data-peek] .scheduler-card > :first-child,
+.scheduler-bar-shortcuts[data-peek] .scheduler-card > .scheduler-card__list:first-child > :first-child { border-block-start: 0; }
+/* The reminder is a band, first: the warning colour tinted across the row
+   with a 3px strip down its start, its bell in the card's ink, and its
+   dismiss at the row's end. */
+.scheduler-card__asks {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  align-items: center;
+  background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
+  border-inline-start: 3px solid var(--rux-support-warning);
+  padding-inline-start: calc(var(--rux-spacing-04) - 3px);
+}
+.scheduler-card__asks > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__asks > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-card__dismiss {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-block: calc(-1 * var(--rux-spacing-01));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--card-icon);
+  cursor: pointer;
+}
+.scheduler-card__dismiss:hover { background: var(--card-hover); }
+.scheduler-card__dismiss:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+/* The standing note wears a pin and reads quieter than the updates. */
+.scheduler-card__note { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; white-space: pre-wrap; overflow-wrap: anywhere; }
+.scheduler-card__note > svg { flex: none; inline-size: 1rem; block-size: 1rem; opacity: .7; }
+.scheduler-card__note > span { opacity: .8; }
+/* Three updates show and the rest scroll: each row is the 24px avatar with
+   4px above and below, 2rem in all; a longer update wraps and takes more. */
+.scheduler-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-block-size: calc(3 * 2rem + 3px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* An update: who, as Carbon's small avatar in their own colour, the words,
+   and how long ago as a short tag at the end. The newest reads heavier. */
+.scheduler-card__update { display: flex; gap: var(--rux-spacing-03); align-items: center; }
+.scheduler-card__update > .rux--user-avatar { flex: none; }
+.scheduler-card__words { flex: 1; min-inline-size: 0; overflow-wrap: anywhere; }
+.scheduler-card__when { flex: none; opacity: .6; font-variant-numeric: tabular-nums; }
+.scheduler-card__update--newest .scheduler-card__words { font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-card__empty { opacity: .7; }
+/* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
+   from 94%, on Carbon's expressive entrance curve over its moderate-02
+   duration, each row following 40ms after the one above it. Reduced motion
+   keeps a fade. Docked, it only fades, because a sheet does not grow out of a
+   trip. */
+@keyframes scheduler-card-in {
+  from { opacity: 0; transform: translateY(var(--card-rise, 6px)) scale(.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes scheduler-card-row-in { from { opacity: 0; transform: translateY(4px); } }
+@keyframes scheduler-card-fade { from { opacity: 0; } }
+.scheduler-bar-shortcuts[data-card][data-side="below"] { --card-rise: -6px; }
+.scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-in 240ms cubic-bezier(0, 0, .3, 1) both; }
+.scheduler-bar-shortcuts[data-pop] .scheduler-card__row {
+  animation: scheduler-card-row-in 200ms cubic-bezier(0, 0, .3, 1) both;
+  animation-delay: calc(80ms + var(--i, 0) * 40ms);
+}
+.scheduler-bar-shortcuts[data-pop][data-docked] { animation-name: scheduler-card-fade; }
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-fade 110ms linear both; }
+  .scheduler-bar-shortcuts[data-pop] .scheduler-card__row { animation: none; }
+}
+
 /* A requirement the bus fails, or a missing itinerary: the missing item's icon
    on the warning colour, in the text colour that reads on it, so it shows on
    every bar tint. They sit at the end of the notes row, because a note gives
    way by the letter and a crew gives way a whole name at a time. The copy
    on the destination row shows only while the notes row is turned off. */
-/* The marks lead the notes row, at the bar's own start, so they begin where
-   every other row begins and read down the week as a column. The note follows
-   and gives way to them, which is why they share this row rather than the
-   drivers row: a note ends in an ellipsis, a crew loses a whole name. */
+/* The marks have the notes row to themselves, at the bar's own start, so they
+   begin where every other row begins and read down the week as a column. The
+   trip's note is read on its card. */
 /* The gap is a step wider than elsewhere because the glyph fills its box: at
    16 there is no air inside a mark, so all of it is here. Two marks would
    otherwise sit 2px apart and the strip would read as one run. */
 .scheduler-bar__warn { display: flex; gap: var(--rux-spacing-02); flex: none; }
-/* The row hands its first child the shrinking, which on this row is now the
-   marks: without this they are squeezed and every chip with them. The note
-   gives way instead, and `min-inline-size` is what lets a flex item cut below
-   its own text rather than push the row wide. */
+/* The row hands its first child the shrinking, which on this row is the
+   marks: without this they are squeezed and every chip with them. `fitMarks`
+   hides what does not fit instead. */
 .scheduler-bar__notes > .scheduler-bar__warn { flex: none; }
-.scheduler-bar__notes > .scheduler-bar__note { flex: 0 1 auto; min-inline-size: 0; }
-/* And the note follows the marks rather than being thrown to the far end:
-   the row spaces its parts apart, which is what carried the marks to the end
-   while the note led it. */
 .scheduler-bar__notes { justify-content: flex-start; }
 /* On the destination row they travel to the end instead, with the reference,
    because the destination is the row's own subject and wants the near side. */
@@ -637,6 +751,30 @@ button.scheduler-row-head__num::after {
    rather than at the far side of the row. */
 .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
 .scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__warn { margin-inline-start: 0; }
+/* THE UPDATES MARK, in the bar's bottom corner at the drivers row's end, a
+   step wider than a mark and as tall as the row; the crew gives way to it. The
+   filled bubble says the trip has updates, the outline that it has none, drawn
+   quieter than the text, and the warning colour every other mark wears, set
+   per theme, that it asks for a follow-up. The destination row's copy shows
+   only while the drivers row is off, and then it holds the first day's end in
+   place of the reference or the marks beside it. */
+.scheduler-bar__msg {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
+  block-size: var(--scheduler-row-h);
+  margin-inline-start: auto;
+}
+.scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-bar__msg--asks { color: var(--scheduler-mark-warning); }
+.scheduler-bar__msg--none { opacity: .7; }
+.scheduler-bar__drivers > .scheduler-bar__crew { flex: 0 1 auto; }
+.scheduler-bar__msg--dest { display: none; }
+.scheduler-week--no-drivers .scheduler-bar__msg--dest { display: flex; margin-inline-end: var(--scheduler-day-one-end); }
+.scheduler-week--no-drivers .scheduler-bar__dest > :is(.scheduler-bar__ref, .scheduler-bar__warn) { margin-inline-end: 0; }
+.scheduler-bar__dest > :is(.scheduler-bar__ref, .scheduler-bar__warn) ~ .scheduler-bar__msg { margin-inline-start: 0; }
 /* EVERY MARK IS THE GLYPH ALONE, carrying its state in its own colour: the
    mark-warning colour while something is still to be done, and the bar's own
    text colour once nothing is. A filled square each was too heavy a block beside a

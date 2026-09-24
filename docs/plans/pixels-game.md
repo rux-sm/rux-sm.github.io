@@ -42,7 +42,10 @@ from Design and plays well on rux's phone.
 
 ## Questions
 
-- Is Pixels the name, or would you rather another word?
+- Is Pixels the name, or another word: Nono, Mosaic, Squares or Grid?
+- Which look, from `pixels/specimen.html`: Ink, Accent or Tiles?
+- Should the maker let you paint in colour, shown only once the puzzle is
+  solved, as the DS reveals a colour picture? The puzzle stays black and white.
 - Should the game also have Picross DS's free mode, where mistakes are not
   checked and you find them yourself when the picture is wrong?
 - Should it start with a few puzzles made by me, or empty until you draw some?

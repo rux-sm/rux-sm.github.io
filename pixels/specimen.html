@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en" data-theme="g100">
+<head>
+<script src="/funnel.js"></script>
+<style>html:not([data-rux-unlocked]){visibility:hidden}</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style specimen — Pixels</title>
+<link rel="stylesheet" href="/design/assets/fonts/plex.css">
+<link rel="stylesheet" href="/design/css/rux.css">
+<link rel="stylesheet" href="/design/css/rux-theme.css">
+<link rel="stylesheet" href="/design/css/rux-overrides.css">
+<script src="/design/js/custom-themes.js"></script>
+<script src="/design/js/theme.js"></script>
+<style>
+body { background: var(--rux-background); color: var(--rux-text-primary); }
+.pixels-spec { max-inline-size: 72rem; margin: auto; padding: 2rem 1rem 6rem; }
+.pixels-bar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; justify-content: space-between; margin-block-end: 2.5rem; }
+.pixels-section { margin-block-end: 3.5rem; }
+.pixels-section > h2 { margin-block-end: 1rem; }
+.pixels-row { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; }
+.pixels-label { font-size: .75rem; color: var(--rux-text-secondary); margin-block-end: .5rem; }
+
+/* The phone: rux's iPhone page is 402 wide. */
+.pixels-phone { inline-size: 402px; max-inline-size: 100%; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-background); padding: 1rem; display: grid; gap: 1rem; }
+.pixels-top { display: flex; justify-content: space-between; align-items: baseline; }
+.pixels-clock { font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.pixels-status { font-size: .875rem; color: var(--rux-text-secondary); min-block-size: 1.25rem; }
+.pixels-status[data-error] { color: var(--rux-text-error, var(--rux-support-error)); }
+.pixels-tools { inline-size: 100%; }
+
+/* The board. Clues sit in the first row and column of one grid, so a row's
+   numbers and its squares always line up. */
+.pixels-board { --cell: 30px; --line: var(--rux-border-subtle-01); --guide: var(--rux-border-strong-01); --fill: var(--rux-text-primary);
+  display: grid; grid-template-columns: auto repeat(10, var(--cell)); grid-template-rows: auto repeat(10, var(--cell));
+  inline-size: max-content; user-select: none; -webkit-user-select: none; touch-action: none; }
+.pixels-board--sm { --cell: 20px; font-size: .75rem; }
+.pixels-board--accent { --fill: var(--rux-background-brand); }
+.pixels-cell { position: relative; background: var(--rux-layer-01); border-inline-end: 1px solid var(--line); border-block-end: 1px solid var(--line); cursor: pointer; }
+.pixels-cell[data-x="4"] { border-inline-end-color: var(--guide); }
+.pixels-cell[data-y="4"] { border-block-end-color: var(--guide); }
+.pixels-cell[data-x="0"] { border-inline-start: 1px solid var(--guide); }
+.pixels-cell[data-y="0"] { border-block-start: 1px solid var(--guide); }
+.pixels-cell[data-x="9"] { border-inline-end-color: var(--guide); }
+.pixels-cell[data-y="9"] { border-block-end-color: var(--guide); }
+.pixels-cell.is-line { background: var(--rux-highlight); }
+.pixels-cell.is-cursor { outline: 2px solid var(--rux-focus); outline-offset: -2px; z-index: 1; }
+.pixels-cell.is-fill { background: var(--fill); }
+.pixels-cell.is-x::before, .pixels-cell.is-x::after { content: ''; position: absolute; inset-inline: 22%; inset-block-start: calc(50% - 1px); block-size: 2px; background: var(--rux-icon-secondary); transform: rotate(45deg); }
+.pixels-cell.is-x::after { transform: rotate(-45deg); }
+.pixels-cell.is-miss::before, .pixels-cell.is-miss::after { background: var(--rux-support-error); }
+.pixels-cell.is-unknown { box-shadow: inset 0 0 0 3px var(--rux-support-warning); }
+
+/* Tiles: each square stands apart, like a pixel. */
+.pixels-board--tiles .pixels-cell { border: 2px solid var(--rux-background); background: var(--rux-layer-accent-01); }
+.pixels-board--tiles .pixels-cell.is-line { background: var(--rux-highlight); }
+.pixels-board--tiles .pixels-cell.is-fill { background: var(--fill); }
+.pixels-board--tiles .pixels-cell[data-x="4"] { border-inline-end-width: 4px; }
+.pixels-board--tiles .pixels-cell[data-y="4"] { border-block-end-width: 4px; }
+
+.pixels-clue { display: flex; gap: .5em; justify-content: end; align-items: center; padding-inline: .5rem; font-weight: 600; font-variant-numeric: tabular-nums; font-size: .875rem; }
+.pixels-board--sm .pixels-clue { font-size: .75rem; padding-inline: .375rem; gap: .4em; }
+.pixels-clue--col { flex-direction: column; justify-content: end; gap: .15em; padding: .5rem 0 .375rem; }
+.pixels-clue.is-line { background: var(--rux-highlight); }
+.pixels-clue.is-done { color: var(--rux-text-disabled); }
+
+/* The finished picture: no lines, no clues. */
+.pixels-picture { display: grid; grid-template-columns: repeat(10, var(--px, 16px)); grid-auto-rows: var(--px, 16px); inline-size: max-content; background: var(--rux-layer-01); }
+.pixels-picture > span[data-on] { background: var(--rux-text-primary); }
+.pixels-solved { display: grid; gap: 1rem; justify-items: center; text-align: center; padding: 2rem 1rem; }
+
+.pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: 1rem; max-inline-size: 48rem; }
+.pixels-list .rux--tile { display: grid; gap: .75rem; }
+.pixels-list .pixels-picture { --px: 8px; }
+.pixels-blank { inline-size: 80px; block-size: 80px; display: grid; place-items: center; background: var(--rux-layer-02); color: var(--rux-text-secondary); font-size: 1.5rem; font-weight: 600; }
+.pixels-meta { font-size: .875rem; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+
+.pixels-maker-side { display: grid; gap: 1rem; align-content: start; min-inline-size: 16rem; }
+.pixels-actions { display: flex; gap: .5rem; }
+</style>
+</head>
+<body>
+<!-- SPRITE:BEGIN — generated, do not edit. npm run build rewrites this block
+     from design/assets/icons.svg. It is inlined because a use element that
+     points at another file draws nothing in Safari or over file://. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<!-- Generated by tools/build-icons.mjs. Do not edit by hand.
+     i- path data: Carbon Design System, Copyright IBM Corp. 2015, 2026.
+     m- path data: Material Symbols, Copyright Google LLC.
+     Both licensed under the Apache License, Version 2.0. r- is drawn here.
+     The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></symbol>
+</svg>
+<!-- SPRITE:END -->
+<main class="pixels-spec">
+  <div class="pixels-bar">
+    <h1 class="rux--type-productive-heading-05">Pixels — style specimen</h1>
+    <div class="rux--form-item">
+      <div class="rux--select rux--select--inline">
+        <label class="rux--label" for="pixels-theme">Theme</label>
+        <div class="rux--select-input--inline__wrapper">
+          <div class="rux--select-input__wrapper">
+            <select id="pixels-theme" class="rux--select-input">
+              <option class="rux--select-option" value="white">White</option>
+              <option class="rux--select-option" value="g10">Gray 10</option>
+              <option class="rux--select-option" value="g90">Gray 90</option>
+              <option class="rux--select-option" value="g100">Gray 100</option>
+              <option class="rux--select-option" value="geist-dark">Geist dark</option>
+              <option class="rux--select-option" value="ant-dark">Ant dark</option>
+              <option class="rux--select-option" value="spotify-dark">Spotify dark</option>
+            </select>
+            <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="pixels-section" aria-labelledby="pixels-h-play">
+    <h2 id="pixels-h-play" class="rux--type-productive-heading-03">Play it</h2>
+    <div class="pixels-row">
+      <div class="pixels-phone">
+        <div class="pixels-top">
+          <span class="rux--type-productive-heading-02">Puzzle 2</span>
+          <span class="pixels-clock" id="pixels-clock">00:00</span>
+        </div>
+        <div id="pixels-game"></div>
+        <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
+        <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg pixels-tools" role="tablist" aria-label="Tool" id="pixels-tool">
+          <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" data-tool="fill"><span class="rux--content-switcher__label">Fill</span></button>
+          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" data-tool="x"><span class="rux--content-switcher__label">X</span></button>
+        </div>
+      </div>
+      <div>
+        <p class="pixels-label">Look</p>
+        <div class="rux--content-switcher rux--layout--size-md" role="tablist" aria-label="Look" id="pixels-look" style="inline-size:20rem">
+          <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" data-look=""><span class="rux--content-switcher__label">Ink</span></button>
+          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" data-look="accent"><span class="rux--content-switcher__label">Accent</span></button>
+          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" data-look="tiles"><span class="rux--content-switcher__label">Tiles</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pixels-section" aria-labelledby="pixels-h-looks">
+    <h2 id="pixels-h-looks" class="rux--type-productive-heading-03">Three looks</h2>
+    <div class="pixels-row" id="pixels-looks"></div>
+  </section>
+
+  <section class="pixels-section" aria-labelledby="pixels-h-solved">
+    <h2 id="pixels-h-solved" class="rux--type-productive-heading-03">Solved</h2>
+    <div class="pixels-phone pixels-solved">
+      <div class="pixels-picture" style="--px:24px" id="pixels-reveal"></div>
+      <div>
+        <p class="rux--type-productive-heading-03">House</p>
+        <p class="pixels-meta">07:45 · 1 mistake</p>
+      </div>
+      <button type="button" class="rux--btn rux--btn--primary">Next puzzle</button>
+    </div>
+  </section>
+
+  <section class="pixels-section" aria-labelledby="pixels-h-make">
+    <h2 id="pixels-h-make" class="rux--type-productive-heading-03">Make a puzzle</h2>
+    <div class="pixels-row">
+      <div id="pixels-maker"></div>
+      <div class="pixels-maker-side">
+        <div id="pixels-check"></div>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-name">Name</label></div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper"><input id="pixels-name" class="rux--text-input" type="text" value="Smile"></div>
+          </div>
+        </div>
+        <div class="pixels-actions">
+          <button type="button" class="rux--btn rux--btn--primary" id="pixels-save">Save</button>
+          <button type="button" class="rux--btn rux--btn--ghost" id="pixels-clear">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pixels-section" aria-labelledby="pixels-h-list">
+    <h2 id="pixels-h-list" class="rux--type-productive-heading-03">Puzzles</h2>
+    <div class="pixels-list" id="pixels-list"></div>
+  </section>
+</main>
+
+<script>
+/* Invented pictures. # is a filled square. */
+const PICTURES = {
+  heart: `..........|.##....##.|####..####|##########|##########|.########.|..######..|...####...|....##....|..........`,
+  house: `....##....|...####...|..######..|.########.|##########|.#......#.|.#.##...#.|.#.##.###.|.#....###.|.########.`,
+  fish:  `..........|...####...|.#######.#|###.######|##########|.#######.#|...####...|..........|..........|..........`,
+  smile: `..######..|.#......#.|#..#..#..#|#..#..#..#|#........#|#.#....#.#|#..####..#|.#......#.|..######..|..........`,
+};
+const grid = s => s.split('|').map(r => [...r].map(c => c === '#' ? 1 : 0));
+const clues = line => { const r = []; let n = 0; for (const c of line) { if (c) n++; else if (n) { r.push(n); n = 0; } } if (n) r.push(n); return r.length ? r : [0]; };
+const column = (g, x) => g.map(r => r[x]);
+
+/* Line solver: tries every placement of a line's runs that fits what is
+   already known; a square every placement agrees on is decided. What is left
+   undecided after no line can move is what needs guessing. */
+function solveLine(clue, known) {
+  const L = known.length, runs = clue[0] === 0 ? [] : clue, cur = new Array(L).fill(0);
+  let agree = null;
+  const place = (i, start) => {
+    if (i === runs.length) {
+      for (let k = start; k < L; k++) if (known[k] === 1) return;
+      const line = cur.slice(); for (let k = start; k < L; k++) line[k] = 0;
+      if (!agree) agree = line; else for (let k = 0; k < L; k++) if (agree[k] !== line[k]) agree[k] = -1;
+      return;
+    }
+    const need = runs.slice(i + 1).reduce((a, b) => a + b + 1, 0);
+    for (let s = start; s + runs[i] + need <= L; s++) {
+      if (s > start && known[s - 1] === 1) break;
+      let ok = true;
+      for (let k = s; k < s + runs[i]; k++) if (known[k] === 0) { ok = false; break; }
+      if (!ok || (s + runs[i] < L && known[s + runs[i]] === 1)) continue;
+      for (let k = start; k < s; k++) cur[k] = 0;
+      for (let k = s; k < s + runs[i]; k++) cur[k] = 1;
+      if (s + runs[i] < L) cur[s + runs[i]] = 0;
+      place(i + 1, s + runs[i] + 1);
+    }
+  };
+  place(0, 0);
+  return agree;
+}
+function unreached(g) {
+  const rc = g.map(clues), cc = g[0].map((_, x) => clues(column(g, x)));
+  const k = g.map(r => r.map(() => -1));
+  for (let changed = true; changed;) {
+    changed = false;
+    for (let y = 0; y < 10; y++) solveLine(rc[y], k[y]).forEach((v, x) => { if (v !== -1 && k[y][x] === -1) { k[y][x] = v; changed = true; } });
+    for (let x = 0; x < 10; x++) solveLine(cc[x], column(k, x)).forEach((v, y) => { if (v !== -1 && k[y][x] === -1) { k[y][x] = v; changed = true; } });
+  }
+  return k.map(r => r.map(v => v === -1));
+}
+
+/* Draws a board with its clues. state[y][x]: 0 empty, 1 filled, 2 X, 3 mistake. */
+function drawBoard(host, answer, state, opts = {}) {
+  host.innerHTML = '';
+  const b = document.createElement('div');
+  b.className = 'pixels-board' + (opts.look ? ' pixels-board--' + opts.look : '') + (opts.small ? ' pixels-board--sm' : '');
+  b.setAttribute('role', 'grid');
+  b.appendChild(document.createElement('div'));
+  const done = (line, want) => line.map(v => v === 1 ? 1 : 0).join() === want.join();
+  for (let x = 0; x < 10; x++) {
+    const c = document.createElement('div');
+    c.className = 'pixels-clue pixels-clue--col';
+    c.dataset.col = x;
+    clues(column(answer, x)).forEach(n => c.append(Object.assign(document.createElement('span'), { textContent: n })));
+    if (opts.grey !== false && done(column(state, x), column(answer, x))) c.classList.add('is-done');
+    b.appendChild(c);
+  }
+  for (let y = 0; y < 10; y++) {
+    const c = document.createElement('div');
+    c.className = 'pixels-clue';
+    c.dataset.row = y;
+    clues(answer[y]).forEach(n => c.append(Object.assign(document.createElement('span'), { textContent: n })));
+    if (opts.grey !== false && done(state[y], answer[y])) c.classList.add('is-done');
+    b.appendChild(c);
+    for (let x = 0; x < 10; x++) {
+      const s = document.createElement('div');
+      s.className = 'pixels-cell' + ({ 1: ' is-fill', 2: ' is-x', 3: ' is-x is-miss' }[state[y][x]] || '') + (opts.unknown?.[y][x] ? ' is-unknown' : '');
+      s.dataset.x = x; s.dataset.y = y;
+      s.setAttribute('role', 'gridcell');
+      b.appendChild(s);
+    }
+  }
+  host.appendChild(b);
+  return b;
+}
+function highlight(b, y, x) {
+  b.querySelectorAll('.is-line, .is-cursor').forEach(e => e.classList.remove('is-line', 'is-cursor'));
+  if (y == null) return;
+  b.querySelectorAll(`.pixels-cell[data-y="${y}"], .pixels-cell[data-x="${x}"], .pixels-clue[data-row="${y}"], .pixels-clue[data-col="${x}"]`).forEach(e => e.classList.add('is-line'));
+  b.querySelector(`.pixels-cell[data-y="${y}"][data-x="${x}"]`).classList.add('is-cursor');
+}
+
+/* Dragging paints along the first row or column the finger moves in. */
+function drag(host, onStart, onPaint) {
+  let from = null, axis = null, last = null;
+  const at = e => { const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('.pixels-cell'); return el && host.contains(el) ? [+el.dataset.y, +el.dataset.x] : null; };
+  host.addEventListener('pointerdown', e => { const p = at(e); if (!p) return; e.preventDefault(); from = last = p; axis = null; onStart(...p); });
+  host.addEventListener('pointermove', e => {
+    const p = at(e);
+    if (!from) { if (p && e.pointerType === 'mouse') onPaint(...p, true); return; }
+    if (!p) return;
+    if (!axis && (p[0] !== from[0] || p[1] !== from[1])) axis = p[0] === from[0] ? 'row' : 'col';
+    if (!axis) return;
+    // A fast finger skips squares between two moves; paint every one.
+    const i = axis === 'row' ? 1 : 0, to = p[i];
+    for (let n = last[i]; n !== to;) { n += Math.sign(to - n); onPaint(axis === 'row' ? from[0] : n, axis === 'row' ? n : from[1]); }
+    last = axis === 'row' ? [from[0], to] : [to, from[1]];
+  });
+  addEventListener('pointerup', () => { from = null; });
+}
+
+function switcher(el, on) {
+  el.addEventListener('click', e => {
+    const btn = e.target.closest('button'); if (!btn) return;
+    el.querySelectorAll('button').forEach(b => { const s = b === btn; b.classList.toggle('rux--content-switcher--selected', s); b.setAttribute('aria-selected', s); });
+    on(btn);
+  });
+}
+
+/* ---- The game ---- */
+const answer = grid(PICTURES.house);
+const state = answer.map(r => r.map(() => 0));
+let tool = 'fill', look = '', mistakes = 0, penalty = 0, started = Date.now(), solved = false, cursor = [0, 0], action = null;
+const gameHost = document.getElementById('pixels-game'), status = document.getElementById('pixels-status');
+let board;
+const render = () => { board = drawBoard(gameHost, answer, state, { look }); highlight(board, ...cursor); };
+const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+setInterval(() => { if (!solved) document.getElementById('pixels-clock').textContent = fmt(Math.floor((Date.now() - started) / 1000) + penalty); }, 250);
+
+function act(y, x) {
+  const v = state[y][x];
+  if (tool === 'fill') {
+    if (action !== 'fill' || v !== 0) return;
+    if (answer[y][x]) state[y][x] = 1;
+    else {
+      state[y][x] = 3; mistakes++;
+      const add = [120, 240, 480][Math.min(mistakes, 3) - 1]; penalty += add;
+      status.dataset.error = '';
+      status.textContent = `Not this one · +${add / 60}:00`;
+    }
+  } else if (action === 'x' && v === 0) state[y][x] = 2;
+  else if (action === 'unx' && v === 2) state[y][x] = 0;
+  cursor = [y, x];
+  if (answer.every((r, yy) => r.every((c, xx) => !c || state[yy][xx] === 1))) {
+    solved = true; delete status.dataset.error;
+    status.textContent = `Solved · House · ${mistakes} mistake${mistakes === 1 ? '' : 's'}`;
+  }
+  render();
+}
+drag(gameHost,
+  (y, x) => { const v = state[y][x]; action = tool === 'fill' ? 'fill' : v === 2 ? 'unx' : 'x'; act(y, x); },
+  (y, x, hover) => { if (hover) { cursor = [y, x]; highlight(board, y, x); } else act(y, x); });
+switcher(document.getElementById('pixels-tool'), b => { tool = b.dataset.tool; });
+switcher(document.getElementById('pixels-look'), b => { look = b.dataset.look; render(); });
+addEventListener('keydown', e => {
+  if (e.target.closest('input, select')) return;
+  const mv = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+  if (mv) { e.preventDefault(); cursor = [(cursor[0] + mv[0] + 10) % 10, (cursor[1] + mv[1] + 10) % 10]; highlight(board, ...cursor); return; }
+  const k = e.key.toLowerCase();
+  if (k === 'z' || k === ' ') { e.preventDefault(); const t = tool; tool = 'fill'; action = 'fill'; act(...cursor); tool = t; }
+  if (k === 'x') { const t = tool; tool = 'x'; action = state[cursor[0]][cursor[1]] === 2 ? 'unx' : 'x'; act(...cursor); tool = t; }
+});
+render();
+
+/* ---- Three looks, the same game part-way through ---- */
+const mid = answer.map((r, y) => r.map((c, x) => y < 5 ? c : (y === 6 && x === 2 ? 3 : (!c && y === 5 ? 2 : (c && x > 5 ? 1 : 0)))));
+[['', 'Ink'], ['accent', 'Accent'], ['tiles', 'Tiles']].forEach(([l, name]) => {
+  const w = document.createElement('div');
+  w.innerHTML = `<p class="pixels-label">${name}</p><div></div>`;
+  document.getElementById('pixels-looks').appendChild(w);
+  const b = drawBoard(w.lastChild, answer, mid, { look: l, small: true });
+  highlight(b, 6, 2);
+});
+
+/* ---- Pictures ---- */
+function picture(el, g) { el.innerHTML = g.flat().map(c => c ? '<span data-on></span>' : '<span></span>').join(''); return el; }
+picture(document.getElementById('pixels-reveal'), answer);
+
+/* ---- The maker ---- */
+const draft = grid(PICTURES.smile);
+const makerHost = document.getElementById('pixels-maker'), check = document.getElementById('pixels-check'), save = document.getElementById('pixels-save');
+let paint = 1;
+function renderMaker() {
+  const unknown = unreached(draft), n = unknown.flat().filter(Boolean).length, empty = draft.flat().every(c => !c);
+  drawBoard(makerHost, draft, draft, { unknown, grey: false });
+  check.innerHTML = empty ? '<span class="rux--tag rux--layout--size-md rux--tag--gray">Empty</span>'
+    : n ? `<span class="rux--tag rux--layout--size-md rux--tag--red">${n} squares need guessing</span>`
+    : '<span class="rux--tag rux--layout--size-md rux--tag--green">Solvable</span>';
+  save.disabled = empty || n > 0;
+}
+drag(makerHost, (y, x) => { paint = draft[y][x] ? 0 : 1; draft[y][x] = paint; renderMaker(); },
+  (y, x, hover) => { if (!hover && draft[y][x] !== paint) { draft[y][x] = paint; renderMaker(); } });
+document.getElementById('pixels-clear').addEventListener('click', () => { draft.forEach(r => r.fill(0)); renderMaker(); });
+renderMaker();
+
+/* ---- The list ---- */
+[['Heart', 'heart', '03:12'], ['House', 'house', '07:45'], [null, 'fish'], [null, 'heart']].forEach(([name, key, time], i) => {
+  const a = document.createElement('a');
+  a.className = 'rux--link rux--tile rux--tile--clickable';
+  a.href = '#';
+  a.innerHTML = (name ? '<div class="pixels-picture"></div>' : '<div class="pixels-blank">?</div>')
+    + `<div><p class="rux--type-productive-heading-02">${name || 'Puzzle ' + (i + 1)}</p><p class="pixels-meta">${time || 'Not solved'}</p></div>`;
+  if (name) picture(a.firstChild, grid(PICTURES[key]));
+  document.getElementById('pixels-list').appendChild(a);
+});
+
+/* ---- Theme ---- */
+const themeSel = document.getElementById('pixels-theme');
+themeSel.value = document.documentElement.dataset.theme;
+themeSel.addEventListener('change', () => { document.documentElement.dataset.theme = themeSel.value; });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
+</body>
+</html>

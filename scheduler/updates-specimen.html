@@ -292,8 +292,14 @@
 }
 @keyframes scheduler-card-fade { from { opacity: 0; } }
 
+/* THE CARD'S RULES are the inverse surface's text at a fifth, a hairline that
+   reads on the light card in every theme: Carbon's own inverse border is the
+   card's own colour in the dark themes, and would vanish. Each rule runs the
+   card's full width, under the icons and between every line. */
+.scheduler-card { --card-rule: color-mix(in srgb, var(--rux-text-inverse) 20%, transparent); }
+
 /* The shortcut icons, the selected bar's top row. */
-.scheduler-card__icons { display: flex; border-block-end: 1px solid var(--rux-border-inverse); }
+.scheduler-card__icons { display: flex; }
 .scheduler-card__icons[hidden] { display: none; }
 .scheduler-card__icon {
   display: flex;
@@ -308,22 +314,28 @@
   cursor: pointer;
 }
 .scheduler-card__icon:hover { background: var(--rux-background-inverse-hover); }
-.scheduler-card__icon--asks { color: var(--rux-support-warning-inverse); }
-.scheduler-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-04);
-  max-block-size: 18rem;
-  overflow-y: auto;
+/* Every line is a row with a rule above it, compact: 8px above and below. */
+.scheduler-card__row {
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  border-block-start: 1px solid var(--card-rule);
 }
-.scheduler-card__note { padding-inline-start: var(--rux-spacing-03); border-inline-start: 3px solid var(--rux-border-inverse); white-space: pre-wrap; }
+.scheduler-card > .scheduler-card__row:first-child,
+.scheduler-card > .scheduler-card__list:first-child > .scheduler-card__row:first-child { border-block-start: 0; }
+.scheduler-card__note { white-space: pre-wrap; opacity: .85; }
 .scheduler-card__asks { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; }
 .scheduler-card__asks svg { flex: none; color: var(--rux-support-warning-inverse); }
-.scheduler-card__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+/* THREE UPDATES SHOW, and the rest scroll: each row is a line of words and a
+   line of who and when, 8px above and below, 3rem in all. */
+.scheduler-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-block-size: calc(3 * 3rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 .scheduler-card__meta, .scheduler-card__empty { opacity: .7; }
-.scheduler-card__meta { margin-block-start: var(--rux-spacing-01); }
-.scheduler-card__actions { display: flex; justify-content: flex-end; border-block-start: 1px solid var(--rux-border-inverse); }
+.scheduler-card__actions { display: flex; justify-content: flex-end; border-block-start: 1px solid var(--card-rule); }
 .scheduler-card__action {
   padding: var(--rux-spacing-03) var(--rux-spacing-05);
   border: 0;
@@ -592,7 +604,10 @@
     foxwoods: { name: 'Foxwoods', note: '', booked: '2026-09-08T08:30', waits: [], updates: [] },
     dc: { name: 'Washington, DC', note: 'Overnight drive, two drivers.', booked: '2026-08-20T09:00', waits: ['PO'],
       updates: [
+        { at: '2026-08-18T09:40', who: 'Dana', text: 'Asked for dates and headcount' },
+        { at: '2026-08-21T16:05', who: 'Dana', text: 'Customer sent the itinerary' },
         { at: '2026-08-28T14:02', who: 'Dana', text: 'Quote sent' },
+        { at: '2026-08-31T11:20', who: 'Rux', text: 'Called the customer, PO in process' },
         { at: '2026-09-02T10:30', who: 'Rux', text: 'Follow-up email sent' },
       ] },
     sixflags: { name: 'Six Flags', note: 'Lunch stop at noon.', booked: '2026-08-30T13:00', waits: ['Itinerary'],
@@ -705,17 +720,17 @@
       }
       bubble.appendChild(icons);
     }
-    const body = el('div', 'scheduler-card__body');
-    if (t.note) body.appendChild(el('div', 'scheduler-card__note scheduler-card__item rux--type-body-compact-01', t.note));
+    const body = bubble;
+    if (t.note) body.appendChild(el('div', 'scheduler-card__row scheduler-card__note scheduler-card__item rux--type-body-compact-01', t.note));
     let i = 1;
     if (asks(id)) {
-      const line = el('div', 'scheduler-card__asks scheduler-card__item rux--type-body-compact-01');
+      const line = el('div', 'scheduler-card__row scheduler-card__asks scheduler-card__item rux--type-body-compact-01');
       line.style.setProperty('--i', i++);
       line.append(svg('#m-chat-fill'), el('span', null,
         `Follow up: waiting on ${t.waits.map(w => WAITS[w]).join(' and ')}, quiet for ${ago(since(t)).replace(' ago', '')}.`));
       body.appendChild(line);
     } else if (t.waits.length) {
-      const line = el('p', 'scheduler-card__empty scheduler-card__item rux--type-helper-text-01',
+      const line = el('p', 'scheduler-card__row scheduler-card__empty scheduler-card__item rux--type-helper-text-01',
         `Waiting on ${t.waits.map(w => WAITS[w]).join(' and ')}.`);
       line.style.setProperty('--i', i++);
       body.appendChild(line);
@@ -723,15 +738,14 @@
     const list = el('ol', 'scheduler-card__list');
     list.setAttribute('aria-label', 'Updates, newest first');
     for (const u of [...t.updates].reverse()) {
-      const li = el('li', 'scheduler-card__item');
+      const li = el('li', 'scheduler-card__row scheduler-card__item');
       li.style.setProperty('--i', i++);
       li.append(el('div', 'rux--type-body-compact-01', u.text),
         el('div', 'scheduler-card__meta rux--type-label-01', `${u.who} · ${ago(u.at)}`));
       list.appendChild(li);
     }
-    if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__empty scheduler-card__item rux--type-body-compact-01', 'No updates yet.'));
+    if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__row scheduler-card__empty scheduler-card__item rux--type-body-compact-01', 'No updates yet.'));
     body.appendChild(list);
-    bubble.appendChild(body);
     const actions = el('div', 'scheduler-card__actions');
     if (asks(id)) {
       const dismiss = el('button', 'scheduler-card__action rux--type-body-compact-01', 'Dismiss');

@@ -55,7 +55,8 @@ standing facts about the trip. No note in the table contains a newline.
   longest waiting first.
 - **One card per bar, in the shortcut bar's own style:** hovering a bar shows
   its card with the standing note pinned first, what it waits on, and the
-  updates newest first with who and when, scrolling rather than cut short;
+  updates newest first with who and when, each a compact row under a
+  full-width rule, three showing and the rest scrolling;
   selecting the bar adds the shortcut icons as the card's top row, so only
   one thing ever floats over the week. On a phone the updates sit under the
   docked shortcut bar.

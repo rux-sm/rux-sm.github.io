@@ -532,11 +532,17 @@
         shell.getAttribute('data-theme') === 'g100' && !shell.style.getPropertyValue('--rux-background'),
         `shell data-theme=${shell.getAttribute('data-theme')}, --rux-background=${shell.style.getPropertyValue('--rux-background') || 'unset'}`);
 
-      localStorage.setItem(T.KEY, JSON.stringify({ theme: 'geist-dark' }));
+      localStorage.setItem(T.KEY, JSON.stringify({ theme: 'ant-dark' }));
       T.apply();
       record('theme', 'a theme above those four takes the shell too, on its layer-01',
-        shell.getAttribute('data-theme') === 'geist-dark'
+        shell.getAttribute('data-theme') === 'ant-dark'
           && shell.style.getPropertyValue('--rux-background') === 'var(--rux-layer-01)',
+        `shell data-theme=${shell.getAttribute('data-theme')}, --rux-background=${shell.style.getPropertyValue('--rux-background') || 'unset'}`);
+
+      localStorage.setItem(T.KEY, JSON.stringify({ theme: 'geist-dark' }));
+      T.apply();
+      record('theme', "geist-dark takes the shell on the page's own background",
+        shell.getAttribute('data-theme') === 'geist-dark' && !shell.style.getPropertyValue('--rux-background'),
         `shell data-theme=${shell.getAttribute('data-theme')}, --rux-background=${shell.style.getPropertyValue('--rux-background') || 'unset'}`);
     }
 

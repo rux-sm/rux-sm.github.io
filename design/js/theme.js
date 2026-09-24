@@ -19,7 +19,9 @@
    keeps that exactly: the header stays g100. A theme ABOVE those four is
    rux's own and is the whole page's, so the header takes it too — with its
    background on the theme's `layer-01`, the raised surface a tile uses, so
-   the bar still stands off the page instead of running into it. A header
+   the bar still stands off the page instead of running into it. Geist is the
+   exception: its header is the page's own black, parted by a hairline, so
+   geist-dark keeps the page's background. A header
    with no `data-theme` of its own — the kitchen sink's specimens, inside a
    themed sandbox — is left to its sandbox.
 
@@ -156,12 +158,15 @@
   // The shell's zone. Carbon's four keep the g100 bar its markup names, and
   // above them the bar takes the theme's raised surface — `layer-01`, what a
   // tile is drawn on — rather than the page's own background, which would
-  // leave the bar and the page one 1px border apart. Set inline because a
-  // saved theme writes its own `background` inline too, and this has to beat
-  // it; clearOverrides() takes it off again on the next apply().
+  // leave the bar and the page one 1px border apart. Geist draws its header on
+  // the page's own surface and parts it with a line, so a geist-dark bar, or a
+  // saved theme built on it, is left on the page's background. Set inline
+  // because a saved theme writes its own `background` inline too, and this has
+  // to beat it; clearOverrides() takes it off again on the next apply().
+  const FLAT = new Set(['geist-dark']);
   const dressShell = (el, name, custom) => {
     wear(el, name, custom);
-    if (custom || !CARBON.has(name)) el.style.setProperty('--rux-background', 'var(--rux-layer-01)');
+    if ((custom || !CARBON.has(name)) && !FLAT.has(el.dataset.theme)) el.style.setProperty('--rux-background', 'var(--rux-layer-01)');
     dressMark(el);
   };
 

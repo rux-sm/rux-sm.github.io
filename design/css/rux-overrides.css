@@ -358,6 +358,15 @@
   border-start-end-radius: 8px;
   overflow: hidden;
 }
+/* GEIST'S HEADER IS PARTED BY THE SAME HAIRLINE AS EVERY OTHER REGION. The bar
+   sits on the page's own black (js/theme.js leaves it there), so the line under
+   it is its only edge, and it takes border-subtle-01 -- the 14% white Geist
+   draws between every region -- rather than the fainter step Carbon gives a
+   header outside any layer. */
+[data-theme="geist-dark"] .rux--header,
+.rux--header[data-theme="geist-dark"] {
+  border-block-end-color: var(--rux-border-subtle-01);
+}
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255
    255 / 0.14) -- which is what border-subtle-01 already resolves to here. The

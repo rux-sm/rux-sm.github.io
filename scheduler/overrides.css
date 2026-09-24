@@ -292,19 +292,17 @@
   letter-spacing: var(--rux-heading-compact-02-letter-spacing);
 }
 
-/* The line tabs take `spacing-03` inline padding in place of `spacing-05`, so
-   all five fit the panel without scrolling, and the list starts 8px in,
-   so the first label lines up with the fields' 16px, as Carbon asks. The list
-   fills the strip and carries the tabs' own 2px line under all of it, the
-   trailing rule Carbon allows from the last tab to the content's edge. It is a
-   shadow, which paints under the tabs, so the selected indicator shows over it. */
+/* The contained tabs take `spacing-03` inline padding in place of
+   `spacing-05`, so all six fit the panel without scrolling. The list fills
+   the strip in the board's band surface, so past the last tab the strip is the
+   same grey band the day row and the availability roster's heading are, and
+   the three read as one row across the screen. */
 #scheduler-panel-body .rux--tabs__nav-link {
   padding-inline: var(--rux-spacing-03);
 }
 #scheduler-panel-body .rux--tab--list {
   flex: 1 1 auto;
-  padding-inline-start: var(--rux-spacing-03);
-  box-shadow: inset 0 -2px 0 var(--rux-border-subtle);
+  background: var(--scheduler-band-surface);
 }
 /* The week picker's input is never seen: the week label is its trigger, and
    Design's `.rux--date-picker__input[hidden]` hides the input. This hides its

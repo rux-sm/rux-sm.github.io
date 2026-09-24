@@ -1575,18 +1575,6 @@
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
-  const def = (rows) => {
-    const dl = el('dl', 'scheduler-def');
-    for (const [k, v] of rows) {
-      if (!v) continue;
-      // A value may be a node, so a row can carry a tag rather than a word.
-      const dd = el('dd');
-      if (v instanceof Node) dd.appendChild(v); else dd.textContent = v;
-      dl.append(el('dt', null, k), dd);
-    }
-    return dl;
-  };
-
   /* A section can carry one control on its heading line, as each billing
      switch does. The head is app markup rather than a `contained-list`
      header, because Contract holds form fields, not list rows; every billing
@@ -1634,7 +1622,7 @@
      fieldset stays Carbon's own. */
   const fieldGroup = (title, ...nodes) => {
     const set = el('fieldset', 'rux--fieldset');
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-5');
     stack.append(...nodes);
     set.append(el('legend', 'scheduler-panel-section__title', title), stack);
     const wrap = el('div', 'scheduler-panel-section');
@@ -2316,7 +2304,7 @@
     }
     const line = picker;
     if (!RELIEF.has(role)) return line;
-    const box = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-5');
     const time = timeField(`${id}-time`, 'Swap time', seat.reportTime);
     const note = textField(`${id}-note`, 'Note', seat.note);
     const noteInput = note.querySelector('input');
@@ -2392,11 +2380,11 @@
     });
     busPick.dataset.fleetLeg = leg;
     busPick.dataset.fleetBus = bus.key;
-    /* The bus and its drivers are one group of fields 24px apart; each relief,
-       with its swap time and note, is a group of its own, 32px from the next,
+    /* The bus and its drivers are one group of fields 16px apart; each relief,
+       with its swap time and note, is a group of its own, 24px from the next,
        as the Details tab spaces its contacts. ROLES lists the reliefs last. */
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-7');
-    const seats = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    const seats = el('div', 'rux--stack-vertical rux--stack-scale-5');
     seats.append(full(busPick));
     stack.append(seats);
     for (const r of ROLES) {
@@ -2447,18 +2435,14 @@
   function drawFleet(focusId) {
     if (!editing?.fleet) return;
     const dups = fleetDuplicates();
-    panelFleet.replaceChildren();
-    const reqs = [
-      document.getElementById('scheduler-f-vehicle')?.value || null,
-      ...editableNeeds().filter(r => needPressed(r.id)).map(r => r.label),
-    ].filter(Boolean).join(', ');
-    if (reqs) panelFleet.appendChild(section(null, def([['Needs', reqs]])));
+    // What the trip needs stays, and keeps any focus in it; the buses redraw.
+    for (const n of [...panelFleet.children]) if (!n.hasAttribute('data-fleet-needs')) n.remove();
     const split = fleetSplit();
     for (const leg of ['outbound', 'return']) {
       const buses = editing.fleet[leg];
-      const body = el('div', 'rux--stack-vertical rux--stack-scale-7');
+      const body = el('div', 'rux--stack-vertical rux--stack-scale-6');
       body.appendChild(busCountField(leg, buses.length));
-      // The tiles part by 16px, closer than the 32px under Buses needed.
+      // The tiles part by 16px, closer than the 24px under Buses needed.
       const tiles = el('div', 'rux--stack-vertical rux--stack-scale-5');
       buses.forEach((b, i) => tiles.appendChild(busGroup(leg, b, i, buses.length, dups)));
       body.appendChild(tiles);
@@ -5396,14 +5380,19 @@
     /* The ranges name their own legs. The outbound range shows for every type,
        so it reads Drop-off only while a split is selected; the return pair
        shows only for a split and keeps its Pick-up labels. */
+    /* One Dates label over the pair, the end's own label left blank to keep
+       the two boxes level, and each box named for a screen reader. A split
+       names both, since its return pair is two more. */
     const outLabels = split =>
-      split ? ['Drop-off start', 'Drop-off end'] : ['Start date', 'End date'];
+      split ? ['Drop-off start', 'Drop-off end'] : ['Dates', '\u00a0'];
     const setOutLabels = split => {
       const [a, b] = outLabels(split);
       const la = panelDetails.querySelector('label[for="scheduler-f-start"]');
       const lb = panelDetails.querySelector('label[for="scheduler-f-end"]');
       if (la) la.textContent = a;
       if (lb) lb.textContent = b;
+      document.getElementById('scheduler-f-start')?.setAttribute('aria-label', split ? 'Drop-off start' : 'Start date');
+      document.getElementById('scheduler-f-end')?.setAttribute('aria-label', split ? 'Drop-off end' : 'End date');
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
@@ -5470,7 +5459,7 @@
     };
     const hotelOut = hotelLeg('outbound', 'Hotel confirmation');
     const hotelBack = hotelLeg('return', 'Pick-up hotel confirmation');
-    const hotelBox = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-hotel');
+    const hotelBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-hotel');
     hotelBox.append(hotelOut, hotelBack);
     // A split trip's first hotel is the drop-off's, and its second row shows.
     const setHotelLegs = split => {
@@ -5482,10 +5471,10 @@
     flags.querySelector(`#${needFieldId('hotel')}`)
       ?.addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
 
-    /* The trip's own fields are one stack, 24px apart. Destination has Type
-       beside it and Customer has Vehicle, each short menu a third of the row
-       beside what it describes, so the split type is named "Split" there,
-       which a third fits; the date labels still say Drop-off and Pick-up. The trip bar's
+    /* The trip's own fields are one stack, 16px apart. Destination has Type
+       beside it, a short menu a third of the row, so the split type is named
+       "Split" there, which a third fits; the date labels still say Drop-off
+       and Pick-up. The trip bar's
        colour is picked from the Trip heading's menu, as from the bar's own:
        it is seldom changed and the bar itself shows it, so its field stays in
        the page, hidden, for Save to read. */
@@ -5511,9 +5500,39 @@
         run: () => { colorItem.setColor(c.value); refreshDirty(); tripMenu.focus(); },
       })), 'Trip bar color');
     });
-    const topFields = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    /* A one-day trip leaves the end box empty, which Save reads as the start
+       day, and the box says Same day. */
+    const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date,
+      trip.end_date && trip.end_date !== trip.start_date ? trip.end_date : '');
+    outRange.querySelector('#scheduler-f-end').placeholder = 'Same day';
+    outRange.querySelector('#scheduler-f-start').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off start' : 'Start date');
+    outRange.querySelector('#scheduler-f-end').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off end' : 'End date');
+
+    /* Notes shows its box once the trip has a note. An empty one shows Add a
+       note in its place, which opens the box; the box stays in the page,
+       hidden, for Save to read and a draft to fill, and a draft's note opens
+       it. */
+    const notesItem = notesField('scheduler-f-notes', 'Notes', trip.notes);
+    const notesShown = el('div');
+    notesShown.appendChild(notesItem);
+    const notesAdd = el('div');
+    const addNote = el('button', 'rux--btn rux--btn--ghost rux--btn--sm scheduler-add-note', 'Add a note');
+    addNote.type = 'button';
+    addNote.appendChild(svgUse('#m-add', '16', '0 0 32 32'));
+    addNote.lastChild.setAttribute('class', 'rux--btn__icon');
+    const notesAddItem = el('div', 'rux--form-item');
+    notesAddItem.append(el('div', 'rux--label', 'Notes'), addNote);
+    notesAdd.appendChild(notesAddItem);
+    const notesBox = notesItem.querySelector('textarea');
+    const openNotes = () => { notesShown.hidden = false; notesAdd.hidden = true; };
+    notesShown.hidden = !trip.notes?.trim();
+    notesAdd.hidden = !notesShown.hidden;
+    addNote.addEventListener('click', () => { openNotes(); notesBox.focus(); });
+    notesBox.addEventListener('input', () => { if (notesBox.value.trim()) openNotes(); });
+
+    const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
-      dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date, trip.end_date || trip.start_date),
+      outRange,
       returnDates,
       wide(
         textField('scheduler-f-destination', 'Destination', trip.destination),
@@ -5524,24 +5543,37 @@
           [SPLIT, 'Split'],
         ]),
       ),
-      wide(
-        /* The customer is `trips.customer_id`, with its name in `trips.customer`
-           for rux-ui. A trip not linked yet offers the customer whose name its
-           typed one matches exactly, and Save keeps it. */
-        customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
-          (panelIndex.customers || []).find(c => c.id === trip.customer_id)
-            || (!trip.customer_id && trip.customer
-              ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
-          trip.customer),
-        selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
-          [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
-      ),
+      /* The customer is `trips.customer_id`, with its name in `trips.customer`
+         for rux-ui. A trip not linked yet offers the customer whose name its
+         typed one matches exactly, and Save keeps it. */
+      customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
+        (panelIndex.customers || []).find(c => c.id === trip.customer_id)
+          || (!trip.customer_id && trip.customer
+            ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
+        trip.customer),
       colorBox,
-      notesField('scheduler-f-notes', 'Notes', trip.notes),
+      notesShown,
+      notesAdd,
+    );
+    panelDetails.appendChild(section('Trip', topFields, tripMenu));
+
+    /* WHAT THE TRIP NEEDS opens the Fleet tab, beside the buses it is asked
+       of: the vehicle type, then the needs, then each leg's hotel while Hotel
+       is ticked. It is drawn once per opening, and `drawFleet` redraws only
+       the bus sections after it. */
+    const needsStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    needsStack.append(
+      selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
+        [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
       flags,
       hotelBox,
     );
-    panelDetails.appendChild(section('Trip', topFields, tripMenu));
+    const needsSection = section('What the trip needs', needsStack);
+    needsSection.dataset.fleetNeeds = '';
+    needsSection.addEventListener('input', refreshDirty);
+    needsSection.addEventListener('change', refreshDirty);
+    panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();
+    panelFleet.prepend(needsSection);
     panelUpdates?.replaceChildren(...updatesTab(trip, creating));
 
     /* ── Booking contact ──
@@ -5565,7 +5597,7 @@
       thread.appendChild(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url));
       thread.hidden = true;
       const threadField = thread.querySelector('#scheduler-f-cthread');
-      const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       bookingStack.append(
         pair(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
           'scheduler-f-cfind', 'Booking contact name'),
@@ -5635,9 +5667,9 @@
          contact when it has none, and the section's menu adds one up to the
          schema's five or removes the last. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
-      /* A stack, 32px between contacts, each contact one row of its name
+      /* A stack, 24px between contacts, each contact one row of its name
          beside its phone. */
-      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-7');
+      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-6');
 
       // What the drawn contacts hold, in `tripContact`'s shape.
       const readContacts = () => [...rowsHost.children].map((_, i) => {
@@ -5926,7 +5958,7 @@
 
       /* One field per row: an address search needs the whole width to show
          what is being typed, and the rest follow it so the column reads down. */
-      const fields = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      const fields = el('div', 'rux--stack-vertical rux--stack-scale-5');
 
       /* A round trip ends where it began, so its drop-off is shown and not
          asked: "Drop-off" reads as where the group is let out for the day,
@@ -5934,7 +5966,7 @@
          whatever is entered there, so the misreading moves Yard return by
          hours without saying so. The fields stay in the page, hidden, because
          the timeline and Save read them wherever they are. */
-      const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-route-drop');
+      const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-route-drop');
       dropBox.append(full(dropName), full(dropField));
       const dropSaid = el('p', 'rux--form__helper-text scheduler-route-note');
       const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Set a different drop-off');
@@ -6257,7 +6289,7 @@
          `rux--stack-vertical` is `display: grid`, which overrides the bare
          `[hidden]` attribute. */
       const gate = (fields, help) => {
-        const box = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-milestone-fields');
+        const box = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-milestone-fields');
         box.append(...fields);
         if (help) box.appendChild(help);
         return box;

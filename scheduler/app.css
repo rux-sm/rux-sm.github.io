@@ -1480,14 +1480,14 @@ button.scheduler-row-head__num::after {
 /* A tag the trip's vehicle does not offer; the tag's own display would keep it. */
 .scheduler-needs__tags > [hidden] { display: none; }
 
-/* A section of an editor tab sits 32px below what comes before it, a step
-   above the 24px between fields, which is the spacing Carbon's form pattern
-   gives a side panel. Its heading is `heading-compact-01`, 14px at 600 in
+/* A section of an editor tab sits 24px below what comes before it, a step
+   above the 16px between fields: Carbon's form pattern for a side panel, one
+   step tighter, so a trip reads in less scrolling. Its heading is `heading-compact-01`, 14px at 600 in
    primary text: over the 12px field labels and under the panel's 16px title,
    the order Carbon asks a group heading to keep. It stands 16px over its first
    label, twice the 8px between a label and its field, so the heading and the
    label read as two levels. */
-.scheduler-panel-section { margin-block-start: var(--rux-spacing-07); }
+.scheduler-panel-section { margin-block-start: var(--rux-spacing-06); }
 .scheduler-panel-section__title {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
@@ -1528,19 +1528,22 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-02); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
+/* Add a note stands where the empty Notes box would, its text lined up with
+   the fields' left edge rather than the button's padding. */
+.scheduler-add-note { align-self: flex-start; margin-inline-start: calc(-1 * var(--rux-spacing-05)); }
 /* The update prompt: what changed, the box, then the quick reasons in a row. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 .scheduler-prompt-reasons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }
 
-/* A section that follows anything on its tab opens with a 1px rule, 32px under
-   what precedes it and 24px over its heading. Carbon has no rule for rules in a
+/* A section that follows anything on its tab opens with a 1px rule, 24px under
+   what precedes it and 16px over its heading. Carbon has no rule for rules in a
    form; this is its subtle border, the one for dividers on the panel's layer,
    run to the panel's edges like the header's and the tab strip's lines. */
 #scheduler-panel-body .rux--tab-content > * + .scheduler-panel-section::before {
   content: "";
   display: block;
   margin-inline: calc(-1 * var(--rux-spacing-05));
-  margin-block-end: var(--rux-spacing-06);
+  margin-block-end: var(--rux-spacing-05);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 /* A group's heading line with an overflow menu trigger at its end. The line

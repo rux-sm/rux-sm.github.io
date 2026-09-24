@@ -32,9 +32,21 @@ retired with its tables.
   action waits until the three cards are done.
 - **Every player signs in, and a seat is an account.** The name shown is the
   account's own name.
-- **The database decides every move.** The deck's order sits in a table no
-  page can read, and each move is a function that checks it is that
-  account's turn. The old game let any page act for any player.
+- **Four tables.** `sevens_tables` is each game: its host, whether it is
+  waiting, playing or finished, the round, the dealer and whose turn it is.
+  `sevens_seats` is each player at a table: the account, seat order, total
+  score and whether they are in, stayed, busted or frozen this round.
+  `sevens_cards` is all 94 cards of a game, one row each: in the deck with its
+  place, in a player's hand, or discarded, with who drew it and in which
+  round. `sevens_moves` is the history of every flip, stay, action and bust,
+  which the table page shows as it happens.
+- **A card in the deck is hidden by the database.** Row security shows a page
+  every card in a hand or the discard pile and none in the deck, so the order
+  cannot be read; a page sees only how many are left.
+- **The database decides every move.** Each move is a function that checks it
+  is that account's turn. The old game let any page act for any player.
+- **Any player with Sevens sees the open tables and joins one,** and whoever
+  started a table deals when everyone is in.
 - **Only accounts with Sevens ticked can play.** The database checks the
   ticked app itself, not only that the account is staff, so a friend given
   Sevens alone can play and reads nothing else.
@@ -51,8 +63,6 @@ retired with its tables.
 - Who will you play with, and do they have log-ins yet? Each player needs an
   account, made in the Supabase dashboard, with Sevens ticked on the Access
   page.
-- One shared table like the old game, or anyone can start a table and the
-  others join it from a list?
 - Should a slow turn time out, or should the host be able to skip a player
   who left?
 - Keep the old game's chat, or leave it out since you are usually talking

@@ -1406,7 +1406,6 @@
      moves the frame on its own, and a form that cannot be drawn has none. */
   host?.setFormControls([], []);
   host?.setFormNote('');
-  host?.setFormPdf?.(null);
   /* The panel's Open as a page goes where this frame is now, not where the
      panel first pointed it: a tile on the hub moves the frame on its own. */
   host?.setFormLink?.(location.href);
@@ -1821,156 +1820,6 @@
     draw();
   });
 
-  /* ── Download as a PDF ──
-     A file saved straight to Downloads, without the print dialog. The form is
-     drawn to a picture page by page and the pictures are bound into a PDF, so
-     the file looks exactly like the paper but its text cannot be selected;
-     Save as PDF in the print dialog still makes one with real text. The two
-     libraries load on the first press, because most visits never make one. */
-  const PDF_LIBS = [
-    ['https://cdn.jsdelivr.net/npm/html2canvas-pro@2.4.5/dist/html2canvas-pro.min.js',
-      'sha384-qpISIG3GeYccibLkLsLFyYlTHbXmLeV1MZZsOPGYw1S4INBU4nOH3Sdb+18D5K0o'],
-    ['https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js',
-      'sha384-qovJwSBbRDPP5cEjCp8S0UP66wrvnjaa60XMOGzTNanrThcrGfXfnZkvgY8N1KT3'],
-  ];
-  let pdfLibs = null;
-  const loadPdfLibs = () => (pdfLibs ??= Promise.all(PDF_LIBS.map(([src, integrity]) =>
-    new Promise((resolve, reject) => {
-      const script = el('script');
-      script.src = src;
-      script.integrity = integrity;
-      script.crossOrigin = 'anonymous';
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('The PDF maker did not load.'));
-      document.head.appendChild(script);
-    }))).catch(err => { pdfLibs = null; throw err; }));
-
-  /* THE COPY IS STYLED AS PAPER. Every print rule is switched on and every
-     screen rule off in the copy the picture is taken of, so the PDF gets what
-     the printer gets: white stock, no Add a row, no folds, no dotted rules. */
-  function asOnPaper(doc) {
-    const flip = rules => {
-      for (const rule of rules) {
-        const media = rule.media?.mediaText;
-        if (media && !/\bnot\b/.test(media)) {
-          if (/\bprint\b/.test(media)) rule.media.mediaText = media.replace(/\bprint\b/g, 'all');
-          else if (/\bscreen\b/.test(media)) rule.media.mediaText = 'not all';
-        }
-        if (rule.cssRules) flip(rule.cssRules);
-      }
-    };
-    for (const style of doc.styleSheets) {
-      try { flip(style.cssRules); } catch { /* another origin's sheet is not ours to read */ }
-    }
-  }
-
-  /* AN ICON IS DRAWN IN PLACE. The picture takes each drawing on its own,
-     where a reference to the page's sprite finds nothing, so the symbol's
-     paths are copied into the drawing that names it, in the ink it shows in. */
-  function inlineIcons(root) {
-    const doc = root.ownerDocument;
-    for (const use of root.querySelectorAll('svg use')) {
-      const symbol = doc.querySelector(use.getAttribute('href'));
-      const svg = use.ownerSVGElement;
-      if (!symbol || !svg) continue;
-      const ink = doc.defaultView.getComputedStyle(svg).color;
-      if (symbol.getAttribute('viewBox')) svg.setAttribute('viewBox', symbol.getAttribute('viewBox'));
-      svg.setAttribute('fill', ink);
-      use.replaceWith(...[...symbol.childNodes].map(n => n.cloneNode(true)));
-    }
-  }
-
-  const slug = text => String(text ?? '').normalize('NFKD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-
-  // The quote keeps the name the office gives it; the rest are the form, the
-  // copy and the trip's day.
-  function pdfName() {
-    const { form, blank } = current;
-    const copy = current.every[current.chosen];
-    const named = form.fileName?.(copy);
-    const parts = named ? [named]
-      : [slug(form.name), blank ? 'blank' : slug(form.copyName?.(copy)), copy?.trip?.start_date];
-    return `${parts.filter(Boolean).join('_')}.pdf`;
-  }
-
-  // Drawn at 2.5 times its size, about 240 dots to the inch, unless the form is
-  // so long that the picture would pass what a browser will draw.
-  const PDF_SCALE = 2.5;
-  const PDF_MAX_PX = 16000;
-
-  let makingPdf = false;
-  async function savePdf() {
-    if (!current || makingPdf) return;
-    makingPdf = true;
-    flash('Making the PDF…');
-    try {
-      await loadPdfLibs();
-      const paper = current.form.page || {};
-      const inches = value => (String(value).endsWith('in') ? parseFloat(value) : NaN);
-      const wide = inches(paper.width) || 8.5;
-      const tall = inches(paper.height) || 11;
-      const margin = inches(paper.margin) || 0;
-      const flows = sheet.dataset.sheet === 'flows';
-      const usable = (tall - margin * 2) * 96;
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'in', format: [wide, tall], orientation: wide > tall ? 'landscape' : 'portrait' });
-      const pages = [];
-      for (const card of sheet.querySelectorAll(':scope > .scheduler-form')) {
-        const guess = flows ? breakTops(card, usable).length + 1 : 1;
-        const scale = Math.min(PDF_SCALE, PDF_MAX_PX / (guess * tall * 96));
-        let tops = [];
-        const canvas = await window.html2canvas(card, {
-          scale,
-          backgroundColor: '#ffffff',
-          logging: false,
-          // Wide enough that nothing around the form squeezes it.
-          windowWidth: Math.max(1400, wide * 96 + 200),
-          onclone: (doc, copy) => {
-            asOnPaper(doc);
-            inlineIcons(copy);
-            // On paper a flowing form takes the width between the margins.
-            if (flows) copy.style.inlineSize = `${(wide - margin * 2) * 96}px`;
-            tops = flows ? breakTops(copy, usable) : [];
-          },
-        });
-        if (!flows) {
-          pages.push({ canvas, from: 0, to: canvas.height, x: 0, y: 0, w: wide });
-          continue;
-        }
-        const cuts = [0, ...tops.map(t => Math.round(t * scale)), canvas.height];
-        for (let i = 0; i < cuts.length - 1; i++) {
-          pages.push({ canvas, from: cuts[i], to: cuts[i + 1], x: margin, y: margin, w: wide - margin * 2 });
-        }
-      }
-      for (const [i, page] of pages.entries()) {
-        if (i) pdf.addPage([wide, tall], wide > tall ? 'landscape' : 'portrait');
-        const slice = document.createElement('canvas');
-        slice.width = page.canvas.width;
-        slice.height = Math.max(1, page.to - page.from);
-        const pen = slice.getContext('2d');
-        pen.fillStyle = '#ffffff';
-        pen.fillRect(0, 0, slice.width, slice.height);
-        pen.drawImage(page.canvas, 0, page.from, slice.width, slice.height, 0, 0, slice.width, slice.height);
-        const h = page.w * (slice.height / slice.width);
-        pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', page.x, page.y, page.w, h);
-        // The same Page 1 of 2 the printer puts in the bottom margin.
-        if (flows && pages.length > 1) {
-          pdf.setFont('helvetica', 'normal');
-          pdf.setFontSize(8);
-          pdf.setTextColor(82, 82, 82);
-          pdf.text(`Page ${i + 1} of ${pages.length}`, wide / 2, tall - margin + 0.08 + 0.11, { align: 'center' });
-        }
-      }
-      pdf.save(pdfName());
-      flash('');
-    } catch (err) {
-      flash(`The PDF was not made. ${err.message}`, true);
-    } finally {
-      makingPdf = false;
-    }
-  }
-
   /* A line in the toolbar. `say` replaces what the sheet is holding, which is
      right for "this form cannot be drawn" and wrong for anything said while a
      form is on it. */
@@ -2214,24 +2063,6 @@
       actions.push(print);
     }
 
-    /* DOWNLOAD PDF, a cell of its own after the prints, as the panel's own
-       Download follows its printer for a stored file; in the panel that button
-       is the panel's. */
-    let save = null;
-    if (host) host.setFormPdf?.(savePdf);
-    else {
-      save = el('button', 'scheduler-print__cell scheduler-print__cell--action');
-      save.type = 'button';
-      save.title = 'Download PDF';
-      save.setAttribute('aria-label', 'Download PDF');
-      save.appendChild(sprite('#m-download', 'scheduler-print__cell-icon'));
-      save.addEventListener('click', async () => {
-        save.disabled = true;
-        await savePdf();
-        save.disabled = false;
-      });
-    }
-
     /* Print all covers the same list the head's own offers: every envelope on
        the trip, including a bus with a single driver on a trip that has three
        more buses. In the panel it is under the overflow, because the row
@@ -2278,7 +2109,6 @@
       prints.append(...actions);
       nodes.push(prints);
     } else nodes.push(...actions);
-    if (save) nodes.push(save);
 
     if (host) host.setFormControls(nodes, menu, steps);
     else controls.replaceChildren(...nodes);

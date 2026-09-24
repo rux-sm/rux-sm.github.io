@@ -206,8 +206,9 @@
   its end. The icon asks for a follow-up, in the warning colour, when a trip
   waits on the customer and its newest update is older than the follow-up
   wait. Hovering a bar opens its card, in the shortcut bar's own style, with the
-  standing note, what the trip waits on, the updates newest first, and
-  Dismiss; selecting the bar adds the shortcut icons on top. The
+  standing note, what the trip waits on with its dismiss at the row's end,
+  and the updates newest first; selecting the bar adds the shortcut icons on
+  top, Add update the last of them. The
   panel's Save shows the prompt. The rules and the script are this page's
   own, so trying it changes nothing on the live board. -->
 <style>
@@ -329,6 +330,24 @@
 .scheduler-card__asks { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; }
 .scheduler-card__asks svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--rux-support-warning-inverse); }
 .scheduler-card__asks strong { font-weight: var(--rux-heading-compact-01-font-weight); display: block; }
+.scheduler-card__asks-text { flex: 1; min-inline-size: 0; }
+/* An action on a row, at its end: a 24px square, its icon 16px. */
+.scheduler-card__row-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-block: calc(-1 * var(--rux-spacing-01));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--rux-icon-inverse);
+  cursor: pointer;
+}
+.scheduler-card__row-icon:hover { background: var(--rux-background-inverse-hover); }
+.scheduler-card__row-icon svg { color: inherit; }
 /* THREE UPDATES SHOW, and the rest scroll: each row is a line of words and a
    line of who and when, 4px above and below, 2.5rem in all. */
 .scheduler-card__list {
@@ -340,18 +359,6 @@
   overscroll-behavior: contain;
 }
 .scheduler-card__meta, .scheduler-card__empty { opacity: .7; }
-.scheduler-card__actions { display: flex; justify-content: flex-end; border-block-start: 1px solid var(--card-rule); }
-.scheduler-card__action {
-  padding: var(--rux-spacing-02) var(--rux-spacing-04);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  border: 0;
-  background: none;
-  color: var(--rux-link-inverse);
-  font: inherit;
-  cursor: pointer;
-}
-.scheduler-card__action:hover { background: var(--rux-background-inverse-hover); }
 
 /* The trial's own controls over the board. */
 .scheduler-trial-controls { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); align-items: flex-end; }
@@ -374,7 +381,7 @@
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
         <h1 class="rux--visually-hidden">Trip updates specimen</h1>
-        <p>A trial of Updates, on invented trips and no network; today is Wednesday. The speech bubble at the end of each bar's icon row turns amber when the trip is waiting on the customer and nobody has written an update for longer than the follow-up wait. Hover a bar for its card; click it to select it, and the shortcut icons join the card's top row. Dismiss hides a reminder until the snooze runs out. The first icon opens the trip, and its Save shows the prompt. Nothing here is saved.</p>
+        <p>A trial of Updates, on invented trips and no network; today is Wednesday. The speech bubble at the end of each bar's icon row turns amber when the trip is waiting on the customer and nobody has written an update for longer than the follow-up wait. Hover a bar for its card; click it to select it, and the shortcut icons join the card's top row. The ✕ on a reminder dismisses it until the snooze runs out. The first icon opens the trip, and its Save shows the prompt; the last adds an update. Nothing here is saved.</p>
 
         <div class="scheduler-trial-controls">
           <div class="rux--form-item">
@@ -716,6 +723,7 @@
         ['#m-attachment', 'Itinerary', null],
         ['#m-description', 'All forms', null],
         ['#m-palette', 'Color', null],
+        ['#m-chat', 'Add update', () => { hideCard(true); openTrip(id); document.getElementById('trial-update-text').focus(); }],
       ]) {
         const b = el('button', 'scheduler-card__icon');
         b.type = 'button';
@@ -733,9 +741,21 @@
     if (asks(id)) {
       const line = el('div', 'scheduler-card__row scheduler-card__asks scheduler-card__item');
       line.style.setProperty('--i', i++);
-      const said = el('span');
+      const said = el('span', 'scheduler-card__asks-text');
       said.append(el('strong', null, 'Follow up'), el('span', null, `quiet for ${ago(since(t)).replace(' ago', '')}`));
-      line.append(svg('#m-chat-fill'), said);
+      // Dismiss is the reminder's own, so it sits on the reminder's row.
+      const snooze = document.getElementById('trial-snooze').value === '4h' ? '4 hours' : '1 day';
+      const dismiss = el('button', 'scheduler-card__row-icon');
+      dismiss.type = 'button';
+      dismiss.title = `Dismiss for ${snooze}`;
+      dismiss.setAttribute('aria-label', `Dismiss the reminder for ${snooze}`);
+      dismiss.appendChild(svg('#m-close'));
+      dismiss.addEventListener('click', () => {
+        dismissed[id] = TODAY.getTime() + (snooze === '4 hours' ? 4 * 36e5 : DAY);
+        drawBar(id);
+        showCard(id, true);
+      });
+      line.append(svg('#m-chat-fill'), said, dismiss);
       body.appendChild(line);
     } else if (t.waits.length) {
       const line = el('p', 'scheduler-card__row scheduler-card__empty scheduler-card__item',
@@ -754,23 +774,6 @@
     }
     if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__row scheduler-card__empty scheduler-card__item', 'No updates yet.'));
     body.appendChild(list);
-    const actions = el('div', 'scheduler-card__actions');
-    if (asks(id)) {
-      const dismiss = el('button', 'scheduler-card__action', 'Dismiss');
-      dismiss.type = 'button';
-      dismiss.addEventListener('click', () => {
-        const snooze = document.getElementById('trial-snooze').value;
-        dismissed[id] = TODAY.getTime() + (snooze === '4h' ? 4 * 36e5 : DAY);
-        drawBar(id);
-        showCard(id, true);
-      });
-      actions.appendChild(dismiss);
-    }
-    const add = el('button', 'scheduler-card__action', 'Add update');
-    add.type = 'button';
-    add.addEventListener('click', () => { hideCard(true); openTrip(id); document.getElementById('trial-update-text').focus(); });
-    actions.appendChild(add);
-    bubble.appendChild(actions);
   }
 
   // `quiet` redraws in place without the entrance, for a change on the card.

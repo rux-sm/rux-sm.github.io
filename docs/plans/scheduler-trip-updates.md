@@ -86,7 +86,8 @@ None open.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
   filled in, the quick reasons and No update.
 - [ ] Replace the bar's notes row with the icon row and the update icon, and
-  make the shortcut bar the one card, updates below its icons, with Dismiss.
+  make the shortcut bar the one card, updates below its icons, Dismiss an
+  icon at the reminder row's end and Add update the last shortcut icon.
 - [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
   Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.

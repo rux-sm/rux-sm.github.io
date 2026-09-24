@@ -314,30 +314,37 @@
   cursor: pointer;
 }
 .scheduler-card__icon:hover { background: var(--rux-background-inverse-hover); }
-/* Every line is a row with a rule above it, compact: 8px above and below. */
+/* Every line is a row with a rule above it, as compact as it goes: 12px
+   type on a 16px line, 4px above and below. */
 .scheduler-card__row {
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--card-rule);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-card > .scheduler-card__row:first-child,
 .scheduler-card > .scheduler-card__list:first-child > .scheduler-card__row:first-child { border-block-start: 0; }
 .scheduler-card__note { white-space: pre-wrap; opacity: .85; }
 .scheduler-card__asks { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; }
-.scheduler-card__asks svg { flex: none; color: var(--rux-support-warning-inverse); }
+.scheduler-card__asks svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--rux-support-warning-inverse); }
+.scheduler-card__asks strong { font-weight: var(--rux-heading-compact-01-font-weight); display: block; }
 /* THREE UPDATES SHOW, and the rest scroll: each row is a line of words and a
-   line of who and when, 8px above and below, 3rem in all. */
+   line of who and when, 4px above and below, 2.5rem in all. */
 .scheduler-card__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-block-size: calc(3 * 3rem);
+  max-block-size: calc(3 * 2.5rem);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 .scheduler-card__meta, .scheduler-card__empty { opacity: .7; }
 .scheduler-card__actions { display: flex; justify-content: flex-end; border-block-start: 1px solid var(--card-rule); }
 .scheduler-card__action {
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-02) var(--rux-spacing-04);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
   border: 0;
   background: none;
   color: var(--rux-link-inverse);
@@ -721,16 +728,17 @@
       bubble.appendChild(icons);
     }
     const body = bubble;
-    if (t.note) body.appendChild(el('div', 'scheduler-card__row scheduler-card__note scheduler-card__item rux--type-body-compact-01', t.note));
+    if (t.note) body.appendChild(el('div', 'scheduler-card__row scheduler-card__note scheduler-card__item', t.note));
     let i = 1;
     if (asks(id)) {
-      const line = el('div', 'scheduler-card__row scheduler-card__asks scheduler-card__item rux--type-body-compact-01');
+      const line = el('div', 'scheduler-card__row scheduler-card__asks scheduler-card__item');
       line.style.setProperty('--i', i++);
-      line.append(svg('#m-chat-fill'), el('span', null,
-        `Follow up: waiting on ${t.waits.map(w => WAITS[w]).join(' and ')}, quiet for ${ago(since(t)).replace(' ago', '')}.`));
+      const said = el('span');
+      said.append(el('strong', null, 'Follow up'), el('span', null, `quiet for ${ago(since(t)).replace(' ago', '')}`));
+      line.append(svg('#m-chat-fill'), said);
       body.appendChild(line);
     } else if (t.waits.length) {
-      const line = el('p', 'scheduler-card__row scheduler-card__empty scheduler-card__item rux--type-helper-text-01',
+      const line = el('p', 'scheduler-card__row scheduler-card__empty scheduler-card__item',
         `Waiting on ${t.waits.map(w => WAITS[w]).join(' and ')}.`);
       line.style.setProperty('--i', i++);
       body.appendChild(line);
@@ -740,15 +748,15 @@
     for (const u of [...t.updates].reverse()) {
       const li = el('li', 'scheduler-card__row scheduler-card__item');
       li.style.setProperty('--i', i++);
-      li.append(el('div', 'rux--type-body-compact-01', u.text),
-        el('div', 'scheduler-card__meta rux--type-label-01', `${u.who} · ${ago(u.at)}`));
+      li.append(el('div', null, u.text),
+        el('div', 'scheduler-card__meta', `${u.who} · ${ago(u.at)}`));
       list.appendChild(li);
     }
-    if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__row scheduler-card__empty scheduler-card__item rux--type-body-compact-01', 'No updates yet.'));
+    if (!t.updates.length) list.appendChild(el('li', 'scheduler-card__row scheduler-card__empty scheduler-card__item', 'No updates yet.'));
     body.appendChild(list);
     const actions = el('div', 'scheduler-card__actions');
     if (asks(id)) {
-      const dismiss = el('button', 'scheduler-card__action rux--type-body-compact-01', 'Dismiss');
+      const dismiss = el('button', 'scheduler-card__action', 'Dismiss');
       dismiss.type = 'button';
       dismiss.addEventListener('click', () => {
         const snooze = document.getElementById('trial-snooze').value;
@@ -758,7 +766,7 @@
       });
       actions.appendChild(dismiss);
     }
-    const add = el('button', 'scheduler-card__action rux--type-body-compact-01', 'Add update');
+    const add = el('button', 'scheduler-card__action', 'Add update');
     add.type = 'button';
     add.addEventListener('click', () => { hideCard(true); openTrip(id); document.getElementById('trial-update-text').focus(); });
     actions.appendChild(add);
